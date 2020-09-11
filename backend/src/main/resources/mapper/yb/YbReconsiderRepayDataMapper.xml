@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cc.mrbird.febs.yb.dao.YbReconsiderRepayDataMapper">
+
+        <!-- 通用查询映射结果 -->
+        <resultMap id="BaseResultMap" type="cc.mrbird.febs.yb.entity.YbReconsiderRepayData">
+                    <id column="id" property="id"/>
+                    <result column="pid" property="pid"/>
+                    <result column="belongDate" property="belongDate"/>
+                    <result column="belongDateStr" property="belongDateStr"/>
+                    <result column="hospitalCode" property="hospitalCode"/>
+                    <result column="hospitalName" property="hospitalName"/>
+                    <result column="orderNumber" property="orderNumber"/>
+                    <result column="serialNo" property="serialNo"/>
+                    <result column="billNo" property="billNo"/>
+                    <result column="projectCode" property="projectCode"/>
+                    <result column="projectName" property="projectName"/>
+                    <result column="medicalPrice" property="medicalPrice"/>
+                    <result column="ruleName" property="ruleName"/>
+                    <result column="deductPrice" property="deductPrice"/>
+                    <result column="deductReason" property="deductReason"/>
+                    <result column="repaymentPrice" property="repaymentPrice"/>
+                    <result column="repaymentReason" property="repaymentReason"/>
+                    <result column="doctorName" property="doctorName"/>
+                    <result column="deptCode" property="deptCode"/>
+                    <result column="deptName" property="deptName"/>
+                    <result column="costDate" property="costDate"/>
+                    <result column="costDateStr" property="costDateStr"/>
+                    <result column="hospitalizedNo" property="hospitalizedNo"/>
+                    <result column="treatmentMode" property="treatmentMode"/>
+                    <result column="settlementDate" property="settlementDate"/>
+                    <result column="settlementDateStr" property="settlementDateStr"/>
+                    <result column="personalNo" property="personalNo"/>
+                    <result column="insuredName" property="insuredName"/>
+                    <result column="dataType" property="dataType"/>
+            <result column="repayType" property="repayType"/>
+                    <result column="seekState" property="seekState"/>
+            <result column="updateType" property="updateType"/>
+            <result column="belongDateUpload" property="belongDateUpload"/>
+            <result column="orderNumberNew" property="orderNumberNew"/>
+            <result column="warnType" property="warnType"/>
+                    <result column="COMMENTS" property="comments"/>
+                    <result column="STATE" property="state"/>
+                    <result column="IS_DELETEMARK" property="isDeletemark"/>
+                    <result column="MODIFY_TIME" property="modifyTime"/>
+                    <result column="CREATE_TIME" property="createTime"/>
+                    <result column="CREATE_USER_ID" property="createUserId"/>
+                    <result column="MODIFY_USER_ID" property="modifyUserId"/>
+        </resultMap>
+
+        <!-- 通用查询结果列 -->
+        <sql id="Base_Column_List">
+        id, pid, belongDate, belongDateStr, hospitalCode, hospitalName, orderNumber, serialNo, billNo, projectCode, projectName, medicalPrice, ruleName, deductPrice, deductReason, repaymentPrice, repaymentReason, doctorName, deptCode, deptName, costDate, costDateStr, hospitalizedNo, treatmentMode, settlementDate, settlementDateStr, personalNo, insuredName, dataType,repayType, seekState,updateType,belongDateUpload,orderNumberNew,warnType, COMMENTS, STATE, IS_DELETEMARK, MODIFY_TIME, CREATE_TIME, CREATE_USER_ID, MODIFY_USER_ID
+    </sql>
+    <update id="updateYbReconsiderRepayData" parameterType="cc.mrbird.febs.yb.entity.YbReconsiderRepayData">
+        update yb_reconsider_repay_data
+        <trim prefix="set" suffixOverrides=",">
+<if test="pid != null">pid=#{pid},</if>
+<if test="belongDate != null">belongDate=#{belongDate},</if>
+<if test="belongDateStr != null">belongDateStr=#{belongDateStr},</if>
+<if test="hospitalCode != null">hospitalCode=#{hospitalCode},</if>
+<if test="hospitalName != null">hospitalName=#{hospitalName},</if>
+<if test="orderNumber != null">orderNumber=#{orderNumber},</if>
+<if test="serialNo != null">serialNo=#{serialNo},</if>
+<if test="billNo != null">billNo=#{billNo},</if>
+<if test="projectCode != null">projectCode=#{projectCode},</if>
+<if test="projectName != null">projectName=#{projectName},</if>
+<if test="medicalPrice != null">medicalPrice=#{medicalPrice},</if>
+<if test="ruleName != null">ruleName=#{ruleName},</if>
+<if test="deductPrice != null">deductPrice=#{deductPrice},</if>
+<if test="deductReason != null">deductReason=#{deductReason},</if>
+<if test="repaymentPrice != null">repaymentPrice=#{repaymentPrice},</if>
+<if test="repaymentReason != null">repaymentReason=#{repaymentReason},</if>
+<if test="doctorName != null">doctorName=#{doctorName},</if>
+<if test="deptCode != null">deptCode=#{deptCode},</if>
+<if test="deptName != null">deptName=#{deptName},</if>
+<if test="costDate != null">costDate=#{costDate},</if>
+<if test="costDateStr != null">costDateStr=#{costDateStr},</if>
+<if test="hospitalizedNo != null">hospitalizedNo=#{hospitalizedNo},</if>
+<if test="treatmentMode != null">treatmentMode=#{treatmentMode},</if>
+<if test="settlementDate != null">settlementDate=#{settlementDate},</if>
+<if test="settlementDateStr != null">settlementDateStr=#{settlementDateStr},</if>
+<if test="personalNo != null">personalNo=#{personalNo},</if>
+<if test="insuredName != null">insuredName=#{insuredName},</if>
+<if test="dataType != null">dataType=#{dataType},</if>
+            <if test="repayType != null">repayType=#{repayType},</if>
+<if test="seekState != null">seekState=#{seekState},</if>
+<if test="updateType != null">updateType=#{updateType},</if>
+<if test="belongDateUpload != null">belongDateUpload=#{belongDateUpload},</if>
+<if test="orderNumberNew != null">orderNumberNew=#{orderNumberNew},</if>
+<if test="warnType != null">warnType=#{warnType},</if>
+<if test="comments != null">COMMENTS=#{comments},</if>
+<if test="state != null">STATE=#{state},</if>
+<if test="isDeletemark != null">IS_DELETEMARK=#{isDeletemark},</if>
+<if test="modifyTime != null">MODIFY_TIME=#{modifyTime},</if>
+<if test="createTime != null">CREATE_TIME=#{createTime},</if>
+<if test="createUserId != null">CREATE_USER_ID=#{createUserId},</if>
+<if test="modifyUserId != null">MODIFY_USER_ID=#{modifyUserId},</if>
+        </trim>
+                where id=#{id}
+
+    </update>
+    <select id="findYbReconsiderRepayData" resultType="cc.mrbird.febs.yb.entity.YbReconsiderRepayData" parameterType="cc.mrbird.febs.yb.entity.YbReconsiderRepayData">
+        select  *  from yb_reconsider_repay_data
+        where  1=1
+            <if test="ybReconsiderRepayData.id != null and ybReconsiderRepayData.id != ''"> and id =#{ ybReconsiderRepayData.id} </if>
+            <if test="ybReconsiderRepayData.pid != null and ybReconsiderRepayData.pid != ''"> and pid like concat('%', #{ ybReconsiderRepayData.pid} ,'%')</if>
+        <if test="ybReconsiderRepayData.belongDateFrom!= null">
+            AND ybReconsiderRepayData.belongDate <![CDATA[ >= ]]>  belongDateFrom}
+        </if>
+        <if test="ybReconsiderRepayData.belongDateTo!= null">
+            AND ybReconsiderRepayData.belongDate <![CDATA[ <= ]]>  belongDateTo}
+        </if>
+            <if test="ybReconsiderRepayData.belongDateStr != null and ybReconsiderRepayData.belongDateStr != ''"> and belongDateStr like concat('%', #{ ybReconsiderRepayData.belongDateStr} ,'%')</if>
+            <if test="ybReconsiderRepayData.hospitalCode != null and ybReconsiderRepayData.hospitalCode != ''"> and hospitalCode like concat('%', #{ ybReconsiderRepayData.hospitalCode} ,'%')</if>
+            <if test="ybReconsiderRepayData.hospitalName != null and ybReconsiderRepayData.hospitalName != ''"> and hospitalName like concat('%', #{ ybReconsiderRepayData.hospitalName} ,'%')</if>
+            <if test="ybReconsiderRepayData.orderNumber != null and ybReconsiderRepayData.orderNumber != ''"> and orderNumber like concat('%', #{ ybReconsiderRepayData.orderNumber} ,'%')</if>
+            <if test="ybReconsiderRepayData.serialNo != null and ybReconsiderRepayData.serialNo != ''"> and serialNo like concat('%', #{ ybReconsiderRepayData.serialNo} ,'%')</if>
+            <if test="ybReconsiderRepayData.billNo != null and ybReconsiderRepayData.billNo != ''"> and billNo like concat('%', #{ ybReconsiderRepayData.billNo} ,'%')</if>
+            <if test="ybReconsiderRepayData.projectCode != null and ybReconsiderRepayData.projectCode != ''"> and projectCode like concat('%', #{ ybReconsiderRepayData.projectCode} ,'%')</if>
+            <if test="ybReconsiderRepayData.projectName != null and ybReconsiderRepayData.projectName != ''"> and projectName like concat('%', #{ ybReconsiderRepayData.projectName} ,'%')</if>
+            <if test="ybReconsiderRepayData.ruleName != null and ybReconsiderRepayData.ruleName != ''"> and ruleName like concat('%', #{ ybReconsiderRepayData.ruleName} ,'%')</if>
+            <if test="ybReconsiderRepayData.deductReason != null and ybReconsiderRepayData.deductReason != ''"> and deductReason like concat('%', #{ ybReconsiderRepayData.deductReason} ,'%')</if>
+            <if test="ybReconsiderRepayData.repaymentReason != null and ybReconsiderRepayData.repaymentReason != ''"> and repaymentReason like concat('%', #{ ybReconsiderRepayData.repaymentReason} ,'%')</if>
+            <if test="ybReconsiderRepayData.doctorName != null and ybReconsiderRepayData.doctorName != ''"> and doctorName like concat('%', #{ ybReconsiderRepayData.doctorName} ,'%')</if>
+            <if test="ybReconsiderRepayData.deptCode != null and ybReconsiderRepayData.deptCode != ''"> and deptCode like concat('%', #{ ybReconsiderRepayData.deptCode} ,'%')</if>
+            <if test="ybReconsiderRepayData.deptName != null and ybReconsiderRepayData.deptName != ''"> and deptName like concat('%', #{ ybReconsiderRepayData.deptName} ,'%')</if>
+        <if test="ybReconsiderRepayData.costDateFrom!= null">
+            AND ybReconsiderRepayData.costDate <![CDATA[ >= ]]>  costDateFrom}
+        </if>
+        <if test="ybReconsiderRepayData.costDateTo!= null">
+            AND ybReconsiderRepayData.costDate <![CDATA[ <= ]]>  costDateTo}
+        </if>
+            <if test="ybReconsiderRepayData.costDateStr != null and ybReconsiderRepayData.costDateStr != ''"> and costDateStr like concat('%', #{ ybReconsiderRepayData.costDateStr} ,'%')</if>
+            <if test="ybReconsiderRepayData.hospitalizedNo != null and ybReconsiderRepayData.hospitalizedNo != ''"> and hospitalizedNo like concat('%', #{ ybReconsiderRepayData.hospitalizedNo} ,'%')</if>
+            <if test="ybReconsiderRepayData.treatmentMode != null and ybReconsiderRepayData.treatmentMode != ''"> and treatmentMode like concat('%', #{ ybReconsiderRepayData.treatmentMode} ,'%')</if>
+        <if test="ybReconsiderRepayData.settlementDateFrom!= null">
+            AND ybReconsiderRepayData.settlementDate <![CDATA[ >= ]]>  settlementDateFrom}
+        </if>
+        <if test="ybReconsiderRepayData.settlementDateTo!= null">
+            AND ybReconsiderRepayData.settlementDate <![CDATA[ <= ]]>  settlementDateTo}
+        </if>
+            <if test="ybReconsiderRepayData.settlementDateStr != null and ybReconsiderRepayData.settlementDateStr != ''"> and settlementDateStr like concat('%', #{ ybReconsiderRepayData.settlementDateStr} ,'%')</if>
+            <if test="ybReconsiderRepayData.personalNo != null and ybReconsiderRepayData.personalNo != ''"> and personalNo like concat('%', #{ ybReconsiderRepayData.personalNo} ,'%')</if>
+            <if test="ybReconsiderRepayData.insuredName != null and ybReconsiderRepayData.insuredName != ''"> and insuredName like concat('%', #{ ybReconsiderRepayData.insuredName} ,'%')</if>
+        <if test="ybReconsiderRepayData.dataType != null"> and dataType =#{ ybReconsiderRepayData.dataType} </if>
+        <if test="ybReconsiderRepayData.repayType != null"> and repayType =#{ ybReconsiderRepayData.repayType} </if>
+        <if test="ybReconsiderRepayData.seekState != null"> and seekState =#{ ybReconsiderRepayData.seekState} </if>
+        <if test="ybReconsiderRepayData.updateType != null"> and updateType =#{ ybReconsiderRepayData.updateType} </if>
+        <if test="ybReconsiderRepayData.orderNumberNew != null and ybReconsiderRepayData.orderNumberNew != ''"> and orderNumberNew like concat('%', #{ ybReconsiderRepayData.orderNumberNew} ,'%')</if>
+        <if test="ybReconsiderRepayData.belongDateUpload != null and ybReconsiderRepayData.belongDateUpload != ''"> and belongDateUpload like concat('%', #{ ybReconsiderRepayData.belongDateUpload} ,'%')</if>
+        <if test="ybReconsiderRepayData.warnType != null"> and warnType =#{ ybReconsiderRepayData.warnType} </if>
+            <if test="ybReconsiderRepayData.comments != null and ybReconsiderRepayData.comments != ''"> and COMMENTS like concat('%', #{ ybReconsiderRepayData.comments} ,'%')</if>
+        <if test="ybReconsiderRepayData.state != null"> and STATE =#{ ybReconsiderRepayData.state} </if>
+        <if test="ybReconsiderRepayData.isDeletemark != null"> and IS_DELETEMARK =#{ ybReconsiderRepayData.isDeletemark} </if>
+        <if test="ybReconsiderRepayData.modifyTimeFrom!= null">
+            AND ybReconsiderRepayData.MODIFY_TIME <![CDATA[ >= ]]>  modifyTimeFrom}
+        </if>
+        <if test="ybReconsiderRepayData.modifyTimeTo!= null">
+            AND ybReconsiderRepayData.MODIFY_TIME <![CDATA[ <= ]]>  modifyTimeTo}
+        </if>
+        <if test="ybReconsiderRepayData.createTimeFrom!= null">
+            AND ybReconsiderRepayData.CREATE_TIME <![CDATA[ >= ]]>  createTimeFrom}
+        </if>
+        <if test="ybReconsiderRepayData.createTimeTo!= null">
+            AND ybReconsiderRepayData.CREATE_TIME <![CDATA[ <= ]]>  createTimeTo}
+        </if>
+</select>
+
+    <select id="findGroupBelongDateStr" resultType="String">
+        SELECT
+            belongDateStr
+        FROM
+            yb_reconsider_repay_data
+        WHERE
+            pid= #{ pid }
+        GROUP BY belongDateStr
+        ORDER BY belongDateStr
+    </select>
+
+</mapper>

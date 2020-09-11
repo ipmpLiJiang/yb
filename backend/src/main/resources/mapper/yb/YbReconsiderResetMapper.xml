@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cc.mrbird.febs.yb.dao.YbReconsiderResetMapper">
+
+        <!-- 通用查询映射结果 -->
+        <resultMap id="BaseResultMap" type="cc.mrbird.febs.yb.entity.YbReconsiderReset">
+                    <id column="id" property="id"/>
+                    <result column="applyDate" property="applyDate"/>
+                    <result column="applyDateStr" property="applyDateStr"/>
+                    <result column="currencyField" property="currencyField"/>
+                    <result column="COMMENTS" property="comments"/>
+                    <result column="STATE" property="state"/>
+                    <result column="IS_DELETEMARK" property="isDeletemark"/>
+                    <result column="MODIFY_TIME" property="modifyTime"/>
+                    <result column="CREATE_TIME" property="createTime"/>
+                    <result column="CREATE_USER_ID" property="createUserId"/>
+                    <result column="MODIFY_USER_ID" property="modifyUserId"/>
+        </resultMap>
+
+        <!-- 通用查询结果列 -->
+        <sql id="Base_Column_List">
+        id, applyDate, applyDateStr,currencyField, COMMENTS, STATE, IS_DELETEMARK, MODIFY_TIME, CREATE_TIME, CREATE_USER_ID, MODIFY_USER_ID
+    </sql>
+    <update id="updateYbReconsiderReset" parameterType="cc.mrbird.febs.yb.entity.YbReconsiderReset">
+        update yb_reconsider_reset
+        <trim prefix="set" suffixOverrides=",">
+<if test="applyDate != null">applyDate=#{applyDate},</if>
+<if test="applyDateStr != null">applyDateStr=#{applyDateStr},</if>
+<if test="comments != null">COMMENTS=#{comments},</if>
+<if test="state != null">STATE=#{state},</if>
+<if test="isDeletemark != null">IS_DELETEMARK=#{isDeletemark},</if>
+<if test="modifyTime != null">MODIFY_TIME=#{modifyTime},</if>
+<if test="createTime != null">CREATE_TIME=#{createTime},</if>
+<if test="createUserId != null">CREATE_USER_ID=#{createUserId},</if>
+<if test="modifyUserId != null">MODIFY_USER_ID=#{modifyUserId},</if>
+        </trim>
+                where id=#{id}
+
+    </update>
+    <select id="findYbReconsiderReset" resultType="cc.mrbird.febs.yb.entity.YbReconsiderReset" parameterType="cc.mrbird.febs.yb.entity.YbReconsiderReset">
+        select  *  from yb_reconsider_reset
+        where  1=1
+            <if test="ybReconsiderReset.id != null and ybReconsiderReset.id != ''"> and id =#{ ybReconsiderReset.id} </if>
+        <if test="ybReconsiderReset.applyDateFrom!= null">
+            AND ybReconsiderReset.applyDate <![CDATA[ >= ]]>  applyDateFrom}
+        </if>
+        <if test="ybReconsiderReset.applyDateTo!= null">
+            AND ybReconsiderReset.applyDate <![CDATA[ <= ]]>  applyDateTo}
+        </if>
+            <if test="ybReconsiderReset.applyDateStr != null and ybReconsiderReset.applyDateStr != ''"> and applyDateStr like concat('%', #{ ybReconsiderReset.applyDateStr} ,'%')</if>
+            <if test="ybReconsiderReset.comments != null and ybReconsiderReset.comments != ''"> and COMMENTS like concat('%', #{ ybReconsiderReset.comments} ,'%')</if>
+        <if test="ybReconsiderReset.state != null"> and STATE =#{ ybReconsiderReset.state} </if>
+        <if test="ybReconsiderReset.isDeletemark != null"> and IS_DELETEMARK =#{ ybReconsiderReset.isDeletemark} </if>
+        <if test="ybReconsiderReset.modifyTimeFrom!= null">
+            AND ybReconsiderReset.MODIFY_TIME <![CDATA[ >= ]]>  modifyTimeFrom}
+        </if>
+        <if test="ybReconsiderReset.modifyTimeTo!= null">
+            AND ybReconsiderReset.MODIFY_TIME <![CDATA[ <= ]]>  modifyTimeTo}
+        </if>
+        <if test="ybReconsiderReset.createTimeFrom!= null">
+            AND ybReconsiderReset.CREATE_TIME <![CDATA[ >= ]]>  createTimeFrom}
+        </if>
+        <if test="ybReconsiderReset.createTimeTo!= null">
+            AND ybReconsiderReset.CREATE_TIME <![CDATA[ <= ]]>  createTimeTo}
+        </if>
+</select>
+
+</mapper>

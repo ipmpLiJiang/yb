@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cc.mrbird.febs.yb.dao.YbHandleVerifyMapper">
+
+        <!-- 通用查询映射结果 -->
+        <resultMap id="BaseResultMap" type="cc.mrbird.febs.yb.entity.YbHandleVerify">
+                    <id column="id" property="id"/>
+                    <result column="applyDate" property="applyDate"/>
+                    <result column="applyDateStr" property="applyDateStr"/>
+                    <result column="currencyField" property="currencyField"/>
+                    <result column="COMMENTS" property="comments"/>
+                    <result column="STATE" property="state"/>
+                    <result column="IS_DELETEMARK" property="isDeletemark"/>
+                    <result column="MODIFY_TIME" property="modifyTime"/>
+                    <result column="CREATE_TIME" property="createTime"/>
+                    <result column="CREATE_USER_ID" property="createUserId"/>
+                    <result column="MODIFY_USER_ID" property="modifyUserId"/>
+        </resultMap>
+
+        <!-- 通用查询结果列 -->
+        <sql id="Base_Column_List">
+        id, applyDate, applyDateStr, currencyField, COMMENTS, STATE, IS_DELETEMARK, MODIFY_TIME, CREATE_TIME, CREATE_USER_ID, MODIFY_USER_ID
+    </sql>
+    <update id="updateYbHandleVerify" parameterType="cc.mrbird.febs.yb.entity.YbHandleVerify">
+        update yb_handle_verify
+        <trim prefix="set" suffixOverrides=",">
+<if test="applyDate != null">applyDate=#{applyDate},</if>
+<if test="applyDateStr != null">applyDateStr=#{applyDateStr},</if>
+<if test="currencyField != null">currencyField=#{currencyField},</if>
+<if test="comments != null">COMMENTS=#{comments},</if>
+<if test="state != null">STATE=#{state},</if>
+<if test="isDeletemark != null">IS_DELETEMARK=#{isDeletemark},</if>
+<if test="modifyTime != null">MODIFY_TIME=#{modifyTime},</if>
+<if test="createTime != null">CREATE_TIME=#{createTime},</if>
+<if test="createUserId != null">CREATE_USER_ID=#{createUserId},</if>
+<if test="modifyUserId != null">MODIFY_USER_ID=#{modifyUserId},</if>
+        </trim>
+                where id=#{id}
+
+    </update>
+    <select id="findYbHandleVerify" resultType="cc.mrbird.febs.yb.entity.YbHandleVerify" parameterType="cc.mrbird.febs.yb.entity.YbHandleVerify">
+        select  *  from yb_handle_verify
+        where  1=1
+            <if test="ybHandleVerify.id != null and ybHandleVerify.id != ''"> and id =#{ ybHandleVerify.id} </if>
+        <if test="ybHandleVerify.applyDateFrom!= null">
+            AND ybHandleVerify.applyDate <![CDATA[ >= ]]>  applyDateFrom}
+        </if>
+        <if test="ybHandleVerify.applyDateTo!= null">
+            AND ybHandleVerify.applyDate <![CDATA[ <= ]]>  applyDateTo}
+        </if>
+            <if test="ybHandleVerify.applyDateStr != null and ybHandleVerify.applyDateStr != ''"> and applyDateStr like concat('%', #{ ybHandleVerify.applyDateStr} ,'%')</if>
+            <if test="ybHandleVerify.currencyField != null and ybHandleVerify.currencyField != ''"> and currencyField like concat('%', #{ ybHandleVerify.currencyField} ,'%')</if>
+            <if test="ybHandleVerify.comments != null and ybHandleVerify.comments != ''"> and COMMENTS like concat('%', #{ ybHandleVerify.comments} ,'%')</if>
+        <if test="ybHandleVerify.state != null"> and STATE =#{ ybHandleVerify.state} </if>
+        <if test="ybHandleVerify.isDeletemark != null"> and IS_DELETEMARK =#{ ybHandleVerify.isDeletemark} </if>
+        <if test="ybHandleVerify.modifyTimeFrom!= null">
+            AND ybHandleVerify.MODIFY_TIME <![CDATA[ >= ]]>  modifyTimeFrom}
+        </if>
+        <if test="ybHandleVerify.modifyTimeTo!= null">
+            AND ybHandleVerify.MODIFY_TIME <![CDATA[ <= ]]>  modifyTimeTo}
+        </if>
+        <if test="ybHandleVerify.createTimeFrom!= null">
+            AND ybHandleVerify.CREATE_TIME <![CDATA[ >= ]]>  createTimeFrom}
+        </if>
+        <if test="ybHandleVerify.createTimeTo!= null">
+            AND ybHandleVerify.CREATE_TIME <![CDATA[ <= ]]>  createTimeTo}
+        </if>
+</select>
+
+</mapper>

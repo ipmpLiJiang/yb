@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cc.mrbird.febs.yb.dao.YbReconsiderRuleMapper">
+
+        <!-- 通用查询映射结果 -->
+        <resultMap id="BaseResultMap" type="cc.mrbird.febs.yb.entity.YbReconsiderRule">
+                    <id column="id" property="id"/>
+                    <result column="rno" property="rno"/>
+                    <result column="rdescribe" property="rdescribe"/>
+                    <result column="rxplain" property="rxplain"/>
+                    <result column="rkeypoints" property="rkeypoints"/>
+                    <result column="rmaterials" property="rmaterials"/>
+                    <result column="operatorid" property="operatorid"/>
+                    <result column="operatorname" property="operatorname"/>
+                    <result column="COMMENTS" property="comments"/>
+                    <result column="STATE" property="state"/>
+                    <result column="IS_DELETEMARK" property="isDeletemark"/>
+                    <result column="MODIFY_TIME" property="modifyTime"/>
+                    <result column="CREATE_TIME" property="createTime"/>
+                    <result column="CREATE_USER_ID" property="createUserId"/>
+                    <result column="MODIFY_USER_ID" property="modifyUserId"/>
+        </resultMap>
+
+        <!-- 通用查询结果列 -->
+        <sql id="Base_Column_List">
+        id, rno, rdescribe, rxplain, rkeypoints, rmaterials, operatorid, operatorname, COMMENTS, STATE, IS_DELETEMARK, MODIFY_TIME, CREATE_TIME, CREATE_USER_ID, MODIFY_USER_ID
+    </sql>
+    <update id="updateYbReconsiderRule" parameterType="cc.mrbird.febs.yb.entity.YbReconsiderRule">
+        update yb_reconsider_rule
+        <trim prefix="set" suffixOverrides=",">
+<if test="rno != null">rno=#{rno},</if>
+<if test="rdescribe != null">rdescribe=#{rdescribe},</if>
+<if test="rxplain != null">rxplain=#{rxplain},</if>
+<if test="rkeypoints != null">rkeypoints=#{rkeypoints},</if>
+<if test="rmaterials != null">rmaterials=#{rmaterials},</if>
+<if test="operatorid != null">operatorid=#{operatorid},</if>
+<if test="operatorname != null">operatorname=#{operatorname},</if>
+<if test="comments != null">COMMENTS=#{comments},</if>
+<if test="state != null">STATE=#{state},</if>
+<if test="isDeletemark != null">IS_DELETEMARK=#{isDeletemark},</if>
+<if test="modifyTime != null">MODIFY_TIME=#{modifyTime},</if>
+<if test="createTime != null">CREATE_TIME=#{createTime},</if>
+<if test="createUserId != null">CREATE_USER_ID=#{createUserId},</if>
+<if test="modifyUserId != null">MODIFY_USER_ID=#{modifyUserId},</if>
+        </trim>
+                where id=#{id}
+
+    </update>
+    <select id="findYbReconsiderRule" resultType="cc.mrbird.febs.yb.entity.YbReconsiderRule" parameterType="cc.mrbird.febs.yb.entity.YbReconsiderRule">
+        select  *  from yb_reconsider_rule
+        where  1=1
+        <if test="ybReconsiderRule.id != null"> and ybReconsiderRule.id =#{ ybReconsiderRule.id} </if>
+        <if test="ybReconsiderRule.rno != null"> and ybReconsiderRule.rno =#{ ybReconsiderRule.rno} </if>
+            <if test="ybReconsiderRule.rdescribe != null and ybReconsiderRule.rdescribe != ''"> and ybReconsiderRule.rdescribe like concat('%', #{ ybReconsiderRule.rdescribe} ,'%')</if>
+            <if test="ybReconsiderRule.rxplain != null and ybReconsiderRule.rxplain != ''"> and ybReconsiderRule.rxplain like concat('%', #{ ybReconsiderRule.rxplain} ,'%')</if>
+            <if test="ybReconsiderRule.rkeypoints != null and ybReconsiderRule.rkeypoints != ''"> and ybReconsiderRule.rkeypoints like concat('%', #{ ybReconsiderRule.rkeypoints} ,'%')</if>
+            <if test="ybReconsiderRule.rmaterials != null and ybReconsiderRule.rmaterials != ''"> and ybReconsiderRule.rmaterials like concat('%', #{ ybReconsiderRule.rmaterials} ,'%')</if>
+            <if test="ybReconsiderRule.operatorname != null and ybReconsiderRule.operatorname != ''"> and ybReconsiderRule.operatorname like concat('%', #{ ybReconsiderRule.operatorname} ,'%')</if>
+            <if test="ybReconsiderRule.comments != null and ybReconsiderRule.comments != ''"> and ybReconsiderRule.COMMENTS like concat('%', #{ ybReconsiderRule.comments} ,'%')</if>
+        <if test="ybReconsiderRule.state != null"> and ybReconsiderRule.STATE =#{ ybReconsiderRule.state} </if>
+        <if test="ybReconsiderRule.isDeletemark != null"> and ybReconsiderRule.IS_DELETEMARK =#{ ybReconsiderRule.isDeletemark} </if>
+        <if test="ybReconsiderRule.modifyTimeFrom!= null">
+            AND ybReconsiderRule.MODIFY_TIME <![CDATA[ >= ]]>  #{ybReconsiderRule.modifyTimeFrom}
+        </if>
+        <if test="ybReconsiderRule.modifyTimeTo!= null">
+            AND ybReconsiderRule.MODIFY_TIME <![CDATA[ <= ]]>  #{ybReconsiderRule.modifyTimeTo}
+        </if>
+        <if test="ybReconsiderRule.createTimeFrom!= null">
+            AND ybReconsiderRule.CREATE_TIME <![CDATA[ >= ]]>  #{ybReconsiderRule.createTimeFrom}
+        </if>
+        <if test="ybReconsiderRule.createTimeTo!= null">
+            AND ybReconsiderRule.CREATE_TIME <![CDATA[ <= ]]>  #{ybReconsiderRule.createTimeTo}
+        </if>
+</select>
+
+</mapper>

@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cc.mrbird.febs.yb.dao.YbReconsiderInpatientfeesMapper">
+
+        <!-- 通用查询映射结果 -->
+        <resultMap id="BaseResultMap" type="cc.mrbird.febs.yb.entity.YbReconsiderInpatientfees">
+                    <id column="id" property="id"/>
+                    <result column="inpatientId" property="inpatientId"/>
+                    <result column="patientName" property="patientName"/>
+                    <result column="settlementId" property="settlementId"/>
+                    <result column="billNo" property="billNo"/>
+                    <result column="transNo" property="transNo"/>
+                    <result column="itemId" property="itemId"/>
+                    <result column="itemCode" property="itemCode"/>
+                    <result column="itemName" property="itemName"/>
+                    <result column="itemCount" property="itemCount"/>
+                    <result column="itemPrice" property="itemPrice"/>
+                    <result column="itemAmount" property="itemAmount"/>
+                    <result column="feeDate" property="feeDate"/>
+                    <result column="deptId" property="deptId"/>
+                    <result column="deptName" property="deptName"/>
+                    <result column="orderDocId" property="orderDocId"/>
+                    <result column="orderDocName" property="orderDocName"/>
+                    <result column="excuteDeptId" property="excuteDeptId"/>
+                    <result column="excuteDeptName" property="excuteDeptName"/>
+                    <result column="excuteDocId" property="excuteDocId"/>
+                    <result column="excuteDocName" property="excuteDocName"/>
+                    <result column="settlementDate" property="settlementDate"/>
+                    <result column="COMMENTS" property="comments"/>
+                    <result column="STATE" property="state"/>
+                    <result column="IS_DELETEMARK" property="isDeletemark"/>
+                    <result column="MODIFY_TIME" property="modifyTime"/>
+                    <result column="CREATE_TIME" property="createTime"/>
+                    <result column="CREATE_USER_ID" property="createUserId"/>
+                    <result column="MODIFY_USER_ID" property="modifyUserId"/>
+        </resultMap>
+
+        <!-- 通用查询结果列 -->
+        <sql id="Base_Column_List">
+        id, inpatientId, patientName, settlementId, billNo, transNo, itemId, itemCode, itemName, itemCount, itemPrice, itemAmount, feeDate, deptId, deptName, orderDocId, orderDocName, excuteDeptId, excuteDeptName, excuteDocId, excuteDocName, settlementDate, COMMENTS, STATE, IS_DELETEMARK, MODIFY_TIME, CREATE_TIME, CREATE_USER_ID, MODIFY_USER_ID
+    </sql>
+    <update id="updateYbReconsiderInpatientfees" parameterType="cc.mrbird.febs.yb.entity.YbReconsiderInpatientfees">
+        update yb_reconsider_inpatientfees
+        <trim prefix="set" suffixOverrides=",">
+<if test="inpatientId != null">inpatientId=#{inpatientId},</if>
+<if test="patientName != null">patientName=#{patientName},</if>
+<if test="settlementId != null">settlementId=#{settlementId},</if>
+<if test="billNo != null">billNo=#{billNo},</if>
+<if test="transNo != null">transNo=#{transNo},</if>
+<if test="itemId != null">itemId=#{itemId},</if>
+<if test="itemCode != null">itemCode=#{itemCode},</if>
+<if test="itemName != null">itemName=#{itemName},</if>
+<if test="itemCount != null">itemCount=#{itemCount},</if>
+<if test="itemPrice != null">itemPrice=#{itemPrice},</if>
+<if test="itemAmount != null">itemAmount=#{itemAmount},</if>
+<if test="feeDate != null">feeDate=#{feeDate},</if>
+<if test="deptId != null">deptId=#{deptId},</if>
+<if test="deptName != null">deptName=#{deptName},</if>
+<if test="orderDocId != null">orderDocId=#{orderDocId},</if>
+<if test="orderDocName != null">orderDocName=#{orderDocName},</if>
+<if test="excuteDeptId != null">excuteDeptId=#{excuteDeptId},</if>
+<if test="excuteDeptName != null">excuteDeptName=#{excuteDeptName},</if>
+<if test="excuteDocId != null">excuteDocId=#{excuteDocId},</if>
+<if test="excuteDocName != null">excuteDocName=#{excuteDocName},</if>
+<if test="settlementDate != null">settlementDate=#{settlementDate},</if>
+<if test="comments != null">COMMENTS=#{comments},</if>
+<if test="state != null">STATE=#{state},</if>
+<if test="isDeletemark != null">IS_DELETEMARK=#{isDeletemark},</if>
+<if test="modifyTime != null">MODIFY_TIME=#{modifyTime},</if>
+<if test="createTime != null">CREATE_TIME=#{createTime},</if>
+<if test="createUserId != null">CREATE_USER_ID=#{createUserId},</if>
+<if test="modifyUserId != null">MODIFY_USER_ID=#{modifyUserId},</if>
+        </trim>
+                where id=#{id}
+
+    </update>
+    <select id="findYbReconsiderInpatientfees" resultType="cc.mrbird.febs.yb.entity.YbReconsiderInpatientfees" parameterType="cc.mrbird.febs.yb.entity.YbReconsiderInpatientfees">
+        select  *  from yb_reconsider_inpatientfees
+        where  1=1
+        <if test="ybReconsiderInpatientfees.id != null"> and id =#{ ybReconsiderInpatientfees.id} </if>
+            <if test="ybReconsiderInpatientfees.inpatientId != null and ybReconsiderInpatientfees.inpatientId != ''"> and inpatientId like concat('%', #{ ybReconsiderInpatientfees.inpatientId} ,'%')</if>
+            <if test="ybReconsiderInpatientfees.patientName != null and ybReconsiderInpatientfees.patientName != ''"> and patientName like concat('%', #{ ybReconsiderInpatientfees.patientName} ,'%')</if>
+            <if test="ybReconsiderInpatientfees.settlementId != null and ybReconsiderInpatientfees.settlementId != ''"> and settlementId like concat('%', #{ ybReconsiderInpatientfees.settlementId} ,'%')</if>
+            <if test="ybReconsiderInpatientfees.billNo != null and ybReconsiderInpatientfees.billNo != ''"> and billNo like concat('%', #{ ybReconsiderInpatientfees.billNo} ,'%')</if>
+            <if test="ybReconsiderInpatientfees.transNo != null and ybReconsiderInpatientfees.transNo != ''"> and transNo like concat('%', #{ ybReconsiderInpatientfees.transNo} ,'%')</if>
+            <if test="ybReconsiderInpatientfees.itemId != null and ybReconsiderInpatientfees.itemId != ''"> and itemId like concat('%', #{ ybReconsiderInpatientfees.itemId} ,'%')</if>
+            <if test="ybReconsiderInpatientfees.itemCode != null and ybReconsiderInpatientfees.itemCode != ''"> and itemCode like concat('%', #{ ybReconsiderInpatientfees.itemCode} ,'%')</if>
+            <if test="ybReconsiderInpatientfees.itemName != null and ybReconsiderInpatientfees.itemName != ''"> and itemName like concat('%', #{ ybReconsiderInpatientfees.itemName} ,'%')</if>
+        <if test="ybReconsiderInpatientfees.feeDateFrom!= null">
+            AND ybReconsiderInpatientfees.feeDate <![CDATA[ >= ]]>  feeDateFrom}
+        </if>
+        <if test="ybReconsiderInpatientfees.feeDateTo!= null">
+            AND ybReconsiderInpatientfees.feeDate <![CDATA[ <= ]]>  feeDateTo}
+        </if>
+            <if test="ybReconsiderInpatientfees.deptId != null and ybReconsiderInpatientfees.deptId != ''"> and deptId like concat('%', #{ ybReconsiderInpatientfees.deptId} ,'%')</if>
+            <if test="ybReconsiderInpatientfees.deptName != null and ybReconsiderInpatientfees.deptName != ''"> and deptName like concat('%', #{ ybReconsiderInpatientfees.deptName} ,'%')</if>
+            <if test="ybReconsiderInpatientfees.orderDocId != null and ybReconsiderInpatientfees.orderDocId != ''"> and orderDocId like concat('%', #{ ybReconsiderInpatientfees.orderDocId} ,'%')</if>
+            <if test="ybReconsiderInpatientfees.orderDocName != null and ybReconsiderInpatientfees.orderDocName != ''"> and orderDocName like concat('%', #{ ybReconsiderInpatientfees.orderDocName} ,'%')</if>
+            <if test="ybReconsiderInpatientfees.excuteDeptId != null and ybReconsiderInpatientfees.excuteDeptId != ''"> and excuteDeptId like concat('%', #{ ybReconsiderInpatientfees.excuteDeptId} ,'%')</if>
+            <if test="ybReconsiderInpatientfees.excuteDeptName != null and ybReconsiderInpatientfees.excuteDeptName != ''"> and excuteDeptName like concat('%', #{ ybReconsiderInpatientfees.excuteDeptName} ,'%')</if>
+            <if test="ybReconsiderInpatientfees.excuteDocId != null and ybReconsiderInpatientfees.excuteDocId != ''"> and excuteDocId like concat('%', #{ ybReconsiderInpatientfees.excuteDocId} ,'%')</if>
+            <if test="ybReconsiderInpatientfees.excuteDocName != null and ybReconsiderInpatientfees.excuteDocName != ''"> and excuteDocName like concat('%', #{ ybReconsiderInpatientfees.excuteDocName} ,'%')</if>
+        <if test="ybReconsiderInpatientfees.settlementDateFrom!= null">
+            AND ybReconsiderInpatientfees.settlementDate <![CDATA[ >= ]]>  settlementDateFrom}
+        </if>
+        <if test="ybReconsiderInpatientfees.settlementDateTo!= null">
+            AND ybReconsiderInpatientfees.settlementDate <![CDATA[ <= ]]>  settlementDateTo}
+        </if>
+            <if test="ybReconsiderInpatientfees.comments != null and ybReconsiderInpatientfees.comments != ''"> and COMMENTS like concat('%', #{ ybReconsiderInpatientfees.comments} ,'%')</if>
+        <if test="ybReconsiderInpatientfees.state != null"> and STATE =#{ ybReconsiderInpatientfees.state} </if>
+        <if test="ybReconsiderInpatientfees.isDeletemark != null"> and IS_DELETEMARK =#{ ybReconsiderInpatientfees.isDeletemark} </if>
+        <if test="ybReconsiderInpatientfees.modifyTimeFrom!= null">
+            AND ybReconsiderInpatientfees.MODIFY_TIME <![CDATA[ >= ]]>  modifyTimeFrom}
+        </if>
+        <if test="ybReconsiderInpatientfees.modifyTimeTo!= null">
+            AND ybReconsiderInpatientfees.MODIFY_TIME <![CDATA[ <= ]]>  modifyTimeTo}
+        </if>
+        <if test="ybReconsiderInpatientfees.createTimeFrom!= null">
+            AND ybReconsiderInpatientfees.CREATE_TIME <![CDATA[ >= ]]>  createTimeFrom}
+        </if>
+        <if test="ybReconsiderInpatientfees.createTimeTo!= null">
+            AND ybReconsiderInpatientfees.CREATE_TIME <![CDATA[ <= ]]>  createTimeTo}
+        </if>
+</select>
+
+    <select id="findYbReconsiderInpatientfeesEq" resultType="cc.mrbird.febs.yb.entity.YbReconsiderInpatientfees" parameterType="cc.mrbird.febs.yb.entity.YbReconsiderInpatientfees">
+        select  *  from yb_reconsider_inpatientfees
+        where  1=1
+        <if test="ybReconsiderInpatientfees.id != null"> and id =#{ ybReconsiderInpatientfees.id} </if>
+        <if test="ybReconsiderInpatientfees.inpatientId != null and ybReconsiderInpatientfees.inpatientId != ''"> and inpatientId = #{ ybReconsiderInpatientfees.inpatientId} </if>
+        <if test="ybReconsiderInpatientfees.patientName != null and ybReconsiderInpatientfees.patientName != ''"> and patientName = #{ ybReconsiderInpatientfees.patientName} </if>
+        <if test="ybReconsiderInpatientfees.settlementId != null and ybReconsiderInpatientfees.settlementId != ''"> and settlementId = #{ ybReconsiderInpatientfees.settlementId} </if>
+        <if test="ybReconsiderInpatientfees.billNo != null and ybReconsiderInpatientfees.billNo != ''"> and billNo = #{ ybReconsiderInpatientfees.billNo} </if>
+        <if test="ybReconsiderInpatientfees.transNo != null and ybReconsiderInpatientfees.transNo != ''"> and transNo = #{ ybReconsiderInpatientfees.transNo} </if>
+        <if test="ybReconsiderInpatientfees.itemId != null and ybReconsiderInpatientfees.itemId != ''"> and itemId = #{ ybReconsiderInpatientfees.itemId} </if>
+        <if test="ybReconsiderInpatientfees.itemCode != null and ybReconsiderInpatientfees.itemCode != ''"> and itemCode = #{ ybReconsiderInpatientfees.itemCode} </if>
+        <if test="ybReconsiderInpatientfees.itemName != null and ybReconsiderInpatientfees.itemName != ''"> and itemName = #{ ybReconsiderInpatientfees.itemName} </if>
+        <if test="ybReconsiderInpatientfees.feeDateFrom!= null">
+            AND ybReconsiderInpatientfees.feeDate <![CDATA[ >= ]]>  feeDateFrom}
+        </if>
+        <if test="ybReconsiderInpatientfees.feeDateTo!= null">
+            AND ybReconsiderInpatientfees.feeDate <![CDATA[ <= ]]>  feeDateTo}
+        </if>
+        <if test="ybReconsiderInpatientfees.deptId != null and ybReconsiderInpatientfees.deptId != ''"> and deptId = #{ ybReconsiderInpatientfees.deptId} </if>
+        <if test="ybReconsiderInpatientfees.deptName != null and ybReconsiderInpatientfees.deptName != ''"> and deptName = #{ ybReconsiderInpatientfees.deptName} </if>
+        <if test="ybReconsiderInpatientfees.orderDocId != null and ybReconsiderInpatientfees.orderDocId != ''"> and orderDocId = #{ ybReconsiderInpatientfees.orderDocId} </if>
+        <if test="ybReconsiderInpatientfees.orderDocName != null and ybReconsiderInpatientfees.orderDocName != ''"> and orderDocName = #{ ybReconsiderInpatientfees.orderDocName} </if>
+        <if test="ybReconsiderInpatientfees.excuteDeptId != null and ybReconsiderInpatientfees.excuteDeptId != ''"> and excuteDeptId = #{ ybReconsiderInpatientfees.excuteDeptId} </if>
+        <if test="ybReconsiderInpatientfees.excuteDeptName != null and ybReconsiderInpatientfees.excuteDeptName != ''"> and excuteDeptName = #{ ybReconsiderInpatientfees.excuteDeptName} </if>
+        <if test="ybReconsiderInpatientfees.excuteDocId != null and ybReconsiderInpatientfees.excuteDocId != ''"> and excuteDocId = #{ ybReconsiderInpatientfees.excuteDocId} </if>
+        <if test="ybReconsiderInpatientfees.excuteDocName != null and ybReconsiderInpatientfees.excuteDocName != ''"> and excuteDocName = #{ ybReconsiderInpatientfees.excuteDocName} </if>
+        <if test="ybReconsiderInpatientfees.settlementDateFrom!= null">
+            AND ybReconsiderInpatientfees.settlementDate <![CDATA[ >= ]]>  settlementDateFrom}
+        </if>
+        <if test="ybReconsiderInpatientfees.settlementDateTo!= null">
+            AND ybReconsiderInpatientfees.settlementDate <![CDATA[ <= ]]>  settlementDateTo}
+        </if>
+        <if test="ybReconsiderInpatientfees.comments != null and ybReconsiderInpatientfees.comments != ''"> and COMMENTS = #{ ybReconsiderInpatientfees.comments} </if>
+        <if test="ybReconsiderInpatientfees.state != null"> and STATE =#{ ybReconsiderInpatientfees.state} </if>
+        <if test="ybReconsiderInpatientfees.isDeletemark != null"> and IS_DELETEMARK =#{ ybReconsiderInpatientfees.isDeletemark} </if>
+        <if test="ybReconsiderInpatientfees.modifyTimeFrom!= null">
+            AND ybReconsiderInpatientfees.MODIFY_TIME <![CDATA[ >= ]]>  modifyTimeFrom}
+        </if>
+        <if test="ybReconsiderInpatientfees.modifyTimeTo!= null">
+            AND ybReconsiderInpatientfees.MODIFY_TIME <![CDATA[ <= ]]>  modifyTimeTo}
+        </if>
+        <if test="ybReconsiderInpatientfees.createTimeFrom!= null">
+            AND ybReconsiderInpatientfees.CREATE_TIME <![CDATA[ >= ]]>  createTimeFrom}
+        </if>
+        <if test="ybReconsiderInpatientfees.createTimeTo!= null">
+            AND ybReconsiderInpatientfees.CREATE_TIME <![CDATA[ <= ]]>  createTimeTo}
+        </if>
+    </select>
+
+</mapper>

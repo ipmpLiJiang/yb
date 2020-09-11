@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cc.mrbird.febs.yb.dao.YbReconsiderResetMainMapper">
+
+        <!-- 通用查询映射结果 -->
+        <resultMap id="BaseResultMap" type="cc.mrbird.febs.yb.entity.YbReconsiderResetMain">
+                    <id column="id" property="id"/>
+                    <result column="pid" property="pid"/>
+                    <result column="serialNo" property="serialNo"/>
+                    <result column="billNo" property="billNo"/>
+                    <result column="medicalPrice" property="medicalPrice"/>
+                    <result column="ruleName" property="ruleName"/>
+                    <result column="deductPrice" property="deductPrice"/>
+                    <result column="hospitalizedNo" property="hospitalizedNo"/>
+                    <result column="treatmentMode" property="treatmentMode"/>
+                    <result column="settlementDate" property="settlementDate"/>
+                    <result column="settlementDateStr" property="settlementDateStr"/>
+                    <result column="personalNo" property="personalNo"/>
+                    <result column="insuredName" property="insuredName"/>
+                    <result column="insuredType" property="insuredType"/>
+                    <result column="areaName" property="areaName"/>
+                    <result column="COMMENTS" property="comments"/>
+                    <result column="STATE" property="state"/>
+                    <result column="IS_DELETEMARK" property="isDeletemark"/>
+                    <result column="MODIFY_TIME" property="modifyTime"/>
+                    <result column="CREATE_TIME" property="createTime"/>
+                    <result column="CREATE_USER_ID" property="createUserId"/>
+                    <result column="MODIFY_USER_ID" property="modifyUserId"/>
+        </resultMap>
+
+        <!-- 通用查询结果列 -->
+        <sql id="Base_Column_List">
+        id, pid, serialNo, billNo, medicalPrice, ruleName, deductPrice, hospitalizedNo, treatmentMode, settlementDate, settlementDateStr, personalNo, insuredName, insuredType, areaName, COMMENTS, STATE, IS_DELETEMARK, MODIFY_TIME, CREATE_TIME, CREATE_USER_ID, MODIFY_USER_ID
+    </sql>
+    <update id="updateYbReconsiderResetMain" parameterType="cc.mrbird.febs.yb.entity.YbReconsiderResetMain">
+        update yb_reconsider_reset_main
+        <trim prefix="set" suffixOverrides=",">
+<if test="pid != null">pid=#{pid},</if>
+<if test="serialNo != null">serialNo=#{serialNo},</if>
+<if test="billNo != null">billNo=#{billNo},</if>
+<if test="medicalPrice != null">medicalPrice=#{medicalPrice},</if>
+<if test="ruleName != null">ruleName=#{ruleName},</if>
+<if test="deductPrice != null">deductPrice=#{deductPrice},</if>
+<if test="hospitalizedNo != null">hospitalizedNo=#{hospitalizedNo},</if>
+<if test="treatmentMode != null">treatmentMode=#{treatmentMode},</if>
+<if test="settlementDate != null">settlementDate=#{settlementDate},</if>
+<if test="settlementDateStr != null">settlementDateStr=#{settlementDateStr},</if>
+<if test="personalNo != null">personalNo=#{personalNo},</if>
+<if test="insuredName != null">insuredName=#{insuredName},</if>
+<if test="insuredType != null">insuredType=#{insuredType},</if>
+<if test="areaName != null">areaName=#{areaName},</if>
+<if test="comments != null">COMMENTS=#{comments},</if>
+<if test="state != null">STATE=#{state},</if>
+<if test="isDeletemark != null">IS_DELETEMARK=#{isDeletemark},</if>
+<if test="modifyTime != null">MODIFY_TIME=#{modifyTime},</if>
+<if test="createTime != null">CREATE_TIME=#{createTime},</if>
+<if test="createUserId != null">CREATE_USER_ID=#{createUserId},</if>
+<if test="modifyUserId != null">MODIFY_USER_ID=#{modifyUserId},</if>
+        </trim>
+                where id=#{id}
+
+    </update>
+    <select id="findYbReconsiderResetMain" resultType="cc.mrbird.febs.yb.entity.YbReconsiderResetMain" parameterType="cc.mrbird.febs.yb.entity.YbReconsiderResetMain">
+        select  *  from yb_reconsider_reset_main
+        where  1=1
+            <if test="ybReconsiderResetMain.id != null and ybReconsiderResetMain.id != ''"> and id =#{ ybReconsiderResetMain.id} </if>
+            <if test="ybReconsiderResetMain.pid != null and ybReconsiderResetMain.pid != ''"> and pid like concat('%', #{ ybReconsiderResetMain.pid} ,'%')</if>
+            <if test="ybReconsiderResetMain.serialNo != null and ybReconsiderResetMain.serialNo != ''"> and serialNo like concat('%', #{ ybReconsiderResetMain.serialNo} ,'%')</if>
+            <if test="ybReconsiderResetMain.billNo != null and ybReconsiderResetMain.billNo != ''"> and billNo like concat('%', #{ ybReconsiderResetMain.billNo} ,'%')</if>
+            <if test="ybReconsiderResetMain.ruleName != null and ybReconsiderResetMain.ruleName != ''"> and ruleName like concat('%', #{ ybReconsiderResetMain.ruleName} ,'%')</if>
+            <if test="ybReconsiderResetMain.hospitalizedNo != null and ybReconsiderResetMain.hospitalizedNo != ''"> and hospitalizedNo like concat('%', #{ ybReconsiderResetMain.hospitalizedNo} ,'%')</if>
+            <if test="ybReconsiderResetMain.treatmentMode != null and ybReconsiderResetMain.treatmentMode != ''"> and treatmentMode like concat('%', #{ ybReconsiderResetMain.treatmentMode} ,'%')</if>
+        <if test="ybReconsiderResetMain.settlementDateFrom!= null">
+            AND ybReconsiderResetMain.settlementDate <![CDATA[ >= ]]>  settlementDateFrom}
+        </if>
+        <if test="ybReconsiderResetMain.settlementDateTo!= null">
+            AND ybReconsiderResetMain.settlementDate <![CDATA[ <= ]]>  settlementDateTo}
+        </if>
+            <if test="ybReconsiderResetMain.settlementDateStr != null and ybReconsiderResetMain.settlementDateStr != ''"> and settlementDateStr like concat('%', #{ ybReconsiderResetMain.settlementDateStr} ,'%')</if>
+            <if test="ybReconsiderResetMain.personalNo != null and ybReconsiderResetMain.personalNo != ''"> and personalNo like concat('%', #{ ybReconsiderResetMain.personalNo} ,'%')</if>
+            <if test="ybReconsiderResetMain.insuredName != null and ybReconsiderResetMain.insuredName != ''"> and insuredName like concat('%', #{ ybReconsiderResetMain.insuredName} ,'%')</if>
+            <if test="ybReconsiderResetMain.insuredType != null and ybReconsiderResetMain.insuredType != ''"> and insuredType like concat('%', #{ ybReconsiderResetMain.insuredType} ,'%')</if>
+            <if test="ybReconsiderResetMain.areaName != null and ybReconsiderResetMain.areaName != ''"> and areaName like concat('%', #{ ybReconsiderResetMain.areaName} ,'%')</if>
+            <if test="ybReconsiderResetMain.comments != null and ybReconsiderResetMain.comments != ''"> and COMMENTS like concat('%', #{ ybReconsiderResetMain.comments} ,'%')</if>
+        <if test="ybReconsiderResetMain.state != null"> and STATE =#{ ybReconsiderResetMain.state} </if>
+        <if test="ybReconsiderResetMain.isDeletemark != null"> and IS_DELETEMARK =#{ ybReconsiderResetMain.isDeletemark} </if>
+        <if test="ybReconsiderResetMain.modifyTimeFrom!= null">
+            AND ybReconsiderResetMain.MODIFY_TIME <![CDATA[ >= ]]>  modifyTimeFrom}
+        </if>
+        <if test="ybReconsiderResetMain.modifyTimeTo!= null">
+            AND ybReconsiderResetMain.MODIFY_TIME <![CDATA[ <= ]]>  modifyTimeTo}
+        </if>
+        <if test="ybReconsiderResetMain.createTimeFrom!= null">
+            AND ybReconsiderResetMain.CREATE_TIME <![CDATA[ >= ]]>  createTimeFrom}
+        </if>
+        <if test="ybReconsiderResetMain.createTimeTo!= null">
+            AND ybReconsiderResetMain.CREATE_TIME <![CDATA[ <= ]]>  createTimeTo}
+        </if>
+</select>
+
+</mapper>

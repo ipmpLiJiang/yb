@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cc.mrbird.febs.yb.dao.YbBReconsiderMapper">
+
+        <!-- 通用查询映射结果 -->
+        <resultMap id="BaseResultMap" type="cc.mrbird.febs.yb.entity.YbBReconsider">
+                    <id column="id" property="id"/>
+                    <result column="rdescribe" property="rdescribe"/>
+                    <result column="rxplain" property="rxplain"/>
+                    <result column="rkeypoints" property="rkeypoints"/>
+                    <result column="rmaterials" property="rmaterials"/>
+                    <result column="operatorid" property="operatorid"/>
+                    <result column="operatorname" property="operatorname"/>
+                    <result column="COMMENTS" property="comments"/>
+                    <result column="STATE" property="state"/>
+                    <result column="IS_DELETEMARK" property="isDeletemark"/>
+                    <result column="MODIFY_TIME" property="modifyTime"/>
+                    <result column="CREATE_TIME" property="createTime"/>
+                    <result column="CREATE_USER_ID" property="createUserId"/>
+                    <result column="MODIFY_USER_ID" property="modifyUserId"/>
+        </resultMap>
+
+        <!-- 通用查询结果列 -->
+        <sql id="Base_Column_List">
+        id, rdescribe, rxplain, rkeypoints, rmaterials, operatorid, operatorname, COMMENTS, STATE, IS_DELETEMARK, MODIFY_TIME, CREATE_TIME, CREATE_USER_ID, MODIFY_USER_ID
+    </sql>
+    <update id="updateYbBReconsider" parameterType="cc.mrbird.febs.yb.entity.YbBReconsider">
+        update yb_b_reconsider
+        <trim prefix="set" suffixOverrides=",">
+<if test="rdescribe != null">rdescribe=#{rdescribe},</if>
+<if test="rxplain != null">rxplain=#{rxplain},</if>
+<if test="rkeypoints != null">rkeypoints=#{rkeypoints},</if>
+<if test="rmaterials != null">rmaterials=#{rmaterials},</if>
+<if test="operatorid != null">operatorid=#{operatorid},</if>
+<if test="operatorname != null">operatorname=#{operatorname},</if>
+<if test="comments != null">COMMENTS=#{comments},</if>
+<if test="state != null">STATE=#{state},</if>
+<if test="isDeletemark != null">IS_DELETEMARK=#{isDeletemark},</if>
+<if test="modifyTime != null">MODIFY_TIME=#{modifyTime},</if>
+<if test="createTime != null">CREATE_TIME=#{createTime},</if>
+<if test="createUserId != null">CREATE_USER_ID=#{createUserId},</if>
+<if test="modifyUserId != null">MODIFY_USER_ID=#{modifyUserId},</if>
+        </trim>
+                where id=#{id}
+
+    </update>
+    <select id="findYbBReconsider" resultType="cc.mrbird.febs.yb.entity.YbBReconsider" parameterType="cc.mrbird.febs.yb.entity.YbBReconsider">
+        select  *  from yb_b_reconsider
+        where  1=1
+        <if test="ybBReconsider.id != null"> and ybBReconsider.id =#{ ybBReconsider.id} </if>
+            <if test="ybBReconsider.rdescribe != null and ybBReconsider.rdescribe != ''"> and ybBReconsider.rdescribe like concat('%', #{ ybBReconsider.rdescribe} ,'%')</if>
+            <if test="ybBReconsider.rxplain != null and ybBReconsider.rxplain != ''"> and ybBReconsider.rxplain like concat('%', #{ ybBReconsider.rxplain} ,'%')</if>
+            <if test="ybBReconsider.rkeypoints != null and ybBReconsider.rkeypoints != ''"> and ybBReconsider.rkeypoints like concat('%', #{ ybBReconsider.rkeypoints} ,'%')</if>
+            <if test="ybBReconsider.rmaterials != null and ybBReconsider.rmaterials != ''"> and ybBReconsider.rmaterials like concat('%', #{ ybBReconsider.rmaterials} ,'%')</if>
+            <if test="ybBReconsider.operatorname != null and ybBReconsider.operatorname != ''"> and ybBReconsider.operatorname like concat('%', #{ ybBReconsider.operatorname} ,'%')</if>
+            <if test="ybBReconsider.comments != null and ybBReconsider.comments != ''"> and ybBReconsider.COMMENTS like concat('%', #{ ybBReconsider.comments} ,'%')</if>
+        <if test="ybBReconsider.state != null"> and ybBReconsider.STATE =#{ ybBReconsider.state} </if>
+        <if test="ybBReconsider.isDeletemark != null"> and ybBReconsider.IS_DELETEMARK =#{ ybBReconsider.isDeletemark} </if>
+        <if test="ybBReconsider.modifyTimeFrom!= null">
+            AND ybBReconsider.MODIFY_TIME <![CDATA[ >= ]]>  #{ybBReconsider.modifyTimeFrom}
+        </if>
+        <if test="ybBReconsider.modifyTimeTo!= null">
+            AND ybBReconsider.MODIFY_TIME <![CDATA[ <= ]]>  #{ybBReconsider.modifyTimeTo}
+        </if>
+        <if test="ybBReconsider.createTimeFrom!= null">
+            AND ybBReconsider.CREATE_TIME <![CDATA[ >= ]]>  #{ybBReconsider.createTimeFrom}
+        </if>
+        <if test="ybBReconsider.createTimeTo!= null">
+            AND ybBReconsider.CREATE_TIME <![CDATA[ <= ]]>  #{ybBReconsider.createTimeTo}
+        </if>
+</select>
+
+</mapper>

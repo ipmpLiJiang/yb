@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cc.mrbird.febs.scm.dao.ScmDPlanMapper">
+
+        <!-- 通用查询映射结果 -->
+        <resultMap id="BaseResultMap" type="cc.mrbird.febs.scm.entity.ScmDPlan">
+                    <id column="ID" property="id"/>
+                    <result column="CODE" property="code"/>
+                    <result column="NAME" property="name"/>
+                    <result column="EBELN" property="ebeln"/>
+                    <result column="EBELP" property="ebelp"/>
+                    <result column="LIFNR" property="lifnr"/>
+                    <result column="MATNR" property="matnr"/>
+                    <result column="TXZ01" property="txz01"/>
+                    <result column="WERKS" property="werks"/>
+                    <result column="WERKST" property="werkst"/>
+                    <result column="LGORT" property="lgort"/>
+                    <result column="MENGE" property="menge"/>
+                    <result column="MEINS" property="meins"/>
+                    <result column="MSEHT" property="mseht"/>
+                    <result column="NETPR" property="netpr"/>
+                    <result column="EINDT" property="eindt"/>
+                    <result column="BEDAT" property="bedat"/>
+                    <result column="STATUS" property="status"/>
+                    <result column="FREEUSE1" property="freeuse1"/>
+                    <result column="FREEUSE2" property="freeuse2"/>
+                    <result column="FREEUSE3" property="freeuse3"/>
+                    <result column="COMMENTS" property="comments"/>
+                    <result column="STATE" property="state"/>
+                    <result column="CREATE_USER_ID" property="createUserId"/>
+                    <result column="CREATE_TIME" property="createTime"/>
+                    <result column="CREATE_DEPART_ID" property="createDepartId"/>
+                    <result column="MODIFY_USER_ID" property="modifyUserId"/>
+                    <result column="MODIFY_TIME" property="modifyTime"/>
+                    <result column="MODIFY_DEPART_ID" property="modifyDepartId"/>
+                    <result column="DATA_TIMESTAMP" property="dataTimestamp"/>
+                    <result column="DATA_ORGANISE_ID" property="dataOrganiseId"/>
+                    <result column="ALLMENGE" property="allmenge"/>
+                    <result column="SUREMENGE" property="suremenge"/>
+                    <result column="BSART" property="bsart"/>
+                    <result column="SEND_DEAPRT_ID" property="sendDeaprtId"/>
+                    <result column="SEND_DEAPRT_NAME" property="sendDeaprtName"/>
+                    <result column="SEND_DEAPRT_CONTACT" property="sendDeaprtContact"/>
+                    <result column="SEND_DEAPRT_PHONE" property="sendDeaprtPhone"/>
+        </resultMap>
+
+        <!-- 通用查询结果列 -->
+        <sql id="Base_Column_List">
+        ID, CODE, NAME, EBELN, EBELP, LIFNR, MATNR, TXZ01, WERKS, WERKST, LGORT, MENGE, MEINS, MSEHT, NETPR, EINDT, BEDAT, STATUS, FREEUSE1, FREEUSE2, FREEUSE3, COMMENTS, STATE, CREATE_USER_ID, CREATE_TIME, CREATE_DEPART_ID, MODIFY_USER_ID, MODIFY_TIME, MODIFY_DEPART_ID, DATA_TIMESTAMP, DATA_ORGANISE_ID, ALLMENGE, SUREMENGE, BSART, SEND_DEAPRT_ID, SEND_DEAPRT_NAME, SEND_DEAPRT_CONTACT, SEND_DEAPRT_PHONE
+    </sql>
+    <update id="updateScmDPlan" parameterType="cc.mrbird.febs.scm.entity.ScmDPlan">
+        update scm_d_plan
+        <trim prefix="set" suffixOverrides=",">
+<if test="code != null">CODE=#{code},</if>
+<if test="name != null">NAME=#{name},</if>
+<if test="ebeln != null">EBELN=#{ebeln},</if>
+<if test="ebelp != null">EBELP=#{ebelp},</if>
+<if test="lifnr != null">LIFNR=#{lifnr},</if>
+<if test="matnr != null">MATNR=#{matnr},</if>
+<if test="txz01 != null">TXZ01=#{txz01},</if>
+<if test="werks != null">WERKS=#{werks},</if>
+<if test="werkst != null">WERKST=#{werkst},</if>
+<if test="lgort != null">LGORT=#{lgort},</if>
+<if test="menge != null">MENGE=#{menge},</if>
+<if test="meins != null">MEINS=#{meins},</if>
+<if test="mseht != null">MSEHT=#{mseht},</if>
+<if test="netpr != null">NETPR=#{netpr},</if>
+<if test="eindt != null">EINDT=#{eindt},</if>
+<if test="bedat != null">BEDAT=#{bedat},</if>
+<if test="status != null">STATUS=#{status},</if>
+<if test="freeuse1 != null">FREEUSE1=#{freeuse1},</if>
+<if test="freeuse2 != null">FREEUSE2=#{freeuse2},</if>
+<if test="freeuse3 != null">FREEUSE3=#{freeuse3},</if>
+<if test="comments != null">COMMENTS=#{comments},</if>
+<if test="state != null">STATE=#{state},</if>
+<if test="createUserId != null">CREATE_USER_ID=#{createUserId},</if>
+<if test="createTime != null">CREATE_TIME=#{createTime},</if>
+<if test="createDepartId != null">CREATE_DEPART_ID=#{createDepartId},</if>
+<if test="modifyUserId != null">MODIFY_USER_ID=#{modifyUserId},</if>
+<if test="modifyTime != null">MODIFY_TIME=#{modifyTime},</if>
+<if test="modifyDepartId != null">MODIFY_DEPART_ID=#{modifyDepartId},</if>
+<if test="dataTimestamp != null">DATA_TIMESTAMP=#{dataTimestamp},</if>
+<if test="dataOrganiseId != null">DATA_ORGANISE_ID=#{dataOrganiseId},</if>
+<if test="allmenge != null">ALLMENGE=#{allmenge},</if>
+<if test="suremenge != null">SUREMENGE=#{suremenge},</if>
+<if test="bsart != null">BSART=#{bsart},</if>
+<if test="sendDeaprtId != null">SEND_DEAPRT_ID=#{sendDeaprtId},</if>
+<if test="sendDeaprtName != null">SEND_DEAPRT_NAME=#{sendDeaprtName},</if>
+<if test="sendDeaprtContact != null">SEND_DEAPRT_CONTACT=#{sendDeaprtContact},</if>
+<if test="sendDeaprtPhone != null">SEND_DEAPRT_PHONE=#{sendDeaprtPhone},</if>
+        </trim>
+        where id=#{id}
+    </update>
+</mapper>

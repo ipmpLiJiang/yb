@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cc.mrbird.febs.yb.dao.YbHandleVerifyDataMapper">
+
+        <!-- 通用查询映射结果 -->
+        <resultMap id="BaseResultMap" type="cc.mrbird.febs.yb.entity.YbHandleVerifyData">
+                    <id column="id" property="id"/>
+                    <result column="pid" property="pid"/>
+                    <result column="resetId" property="resetId"/>
+                    <result column="applyDataId" property="applyDataId"/>
+                    <result column="verifyId" property="verifyId"/>
+                    <result column="manageId" property="manageId"/>
+                    <result column="doctorCode" property="doctorCode"/>
+                    <result column="doctorName" property="doctorName"/>
+                    <result column="deptCode" property="deptCode"/>
+                    <result column="deptName" property="deptName"/>
+                    <result column="operateReason" property="operateReason"/>
+                    <result column="operateDate" property="operateDate"/>
+                    <result column="matchPersonId" property="matchPersonId"/>
+                    <result column="matchPersonName" property="matchPersonName"/>
+                    <result column="matchDate" property="matchDate"/>
+                    <result column="reviewerId" property="reviewerId"/>
+                    <result column="reviewerName" property="reviewerName"/>
+                    <result column="reviewerDate" property="reviewerDate"/>
+                    <result column="sendPersonId" property="sendPersonId"/>
+                    <result column="sendPersonName" property="sendPersonName"/>
+                    <result column="sendDate" property="sendDate"/>
+                    <result column="currencyField" property="currencyField"/>
+                    <result column="dataType" property="dataType"/>
+                    <result column="COMMENTS" property="comments"/>
+                    <result column="STATE" property="state"/>
+                    <result column="IS_DELETEMARK" property="isDeletemark"/>
+                    <result column="MODIFY_TIME" property="modifyTime"/>
+                    <result column="CREATE_TIME" property="createTime"/>
+                    <result column="CREATE_USER_ID" property="createUserId"/>
+                    <result column="MODIFY_USER_ID" property="modifyUserId"/>
+                    <result column="resultId" property="resultId"/>
+        </resultMap>
+
+        <!-- 通用查询结果列 -->
+        <sql id="Base_Column_List">
+        id, pid, resetId, applyDataId, verifyId, manageId, doctorCode, doctorName, deptCode, deptName, operateReason, operateDate, matchPersonId, matchPersonName, matchDate, reviewerId, reviewerName, reviewerDate, sendPersonId, sendPersonName, sendDate, currencyField, dataType, COMMENTS, STATE, IS_DELETEMARK, MODIFY_TIME, CREATE_TIME, CREATE_USER_ID, MODIFY_USER_ID, resultId
+    </sql>
+    <update id="updateYbHandleVerifyData" parameterType="cc.mrbird.febs.yb.entity.YbHandleVerifyData">
+        update yb_handle_verify_data
+        <trim prefix="set" suffixOverrides=",">
+<if test="pid != null">pid=#{pid},</if>
+<if test="resetId != null">resetId=#{resetId},</if>
+<if test="applyDataId != null">applyDataId=#{applyDataId},</if>
+<if test="verifyId != null">verifyId=#{verifyId},</if>
+<if test="manageId != null">manageId=#{manageId},</if>
+<if test="doctorCode != null">doctorCode=#{doctorCode},</if>
+<if test="doctorName != null">doctorName=#{doctorName},</if>
+<if test="deptCode != null">deptCode=#{deptCode},</if>
+<if test="deptName != null">deptName=#{deptName},</if>
+<if test="operateReason != null">operateReason=#{operateReason},</if>
+<if test="operateDate != null">operateDate=#{operateDate},</if>
+<if test="matchPersonId != null">matchPersonId=#{matchPersonId},</if>
+<if test="matchPersonName != null">matchPersonName=#{matchPersonName},</if>
+<if test="matchDate != null">matchDate=#{matchDate},</if>
+<if test="reviewerId != null">reviewerId=#{reviewerId},</if>
+<if test="reviewerName != null">reviewerName=#{reviewerName},</if>
+<if test="reviewerDate != null">reviewerDate=#{reviewerDate},</if>
+<if test="sendPersonId != null">sendPersonId=#{sendPersonId},</if>
+<if test="sendPersonName != null">sendPersonName=#{sendPersonName},</if>
+<if test="sendDate != null">sendDate=#{sendDate},</if>
+<if test="currencyField != null">currencyField=#{currencyField},</if>
+<if test="dataType != null">dataType=#{dataType},</if>
+<if test="comments != null">COMMENTS=#{comments},</if>
+<if test="state != null">STATE=#{state},</if>
+<if test="isDeletemark != null">IS_DELETEMARK=#{isDeletemark},</if>
+<if test="modifyTime != null">MODIFY_TIME=#{modifyTime},</if>
+<if test="createTime != null">CREATE_TIME=#{createTime},</if>
+<if test="createUserId != null">CREATE_USER_ID=#{createUserId},</if>
+<if test="modifyUserId != null">MODIFY_USER_ID=#{modifyUserId},</if>
+<if test="resultId != null">resultId=#{resultId},</if>
+        </trim>
+                where id=#{id}
+
+    </update>
+    <select id="findYbHandleVerifyData" resultType="cc.mrbird.febs.yb.entity.YbHandleVerifyData" parameterType="cc.mrbird.febs.yb.entity.YbHandleVerifyData">
+        select  *  from yb_handle_verify_data
+        where  1=1
+            <if test="ybHandleVerifyData.id != null and ybHandleVerifyData.id != ''"> and id =#{ ybHandleVerifyData.id} </if>
+            <if test="ybHandleVerifyData.pid != null and ybHandleVerifyData.pid != ''"> and pid like concat('%', #{ ybHandleVerifyData.pid} ,'%')</if>
+            <if test="ybHandleVerifyData.resetId != null and ybHandleVerifyData.resetId != ''"> and resetId like concat('%', #{ ybHandleVerifyData.resetId} ,'%')</if>
+            <if test="ybHandleVerifyData.applyDataId != null and ybHandleVerifyData.applyDataId != ''"> and applyDataId like concat('%', #{ ybHandleVerifyData.applyDataId} ,'%')</if>
+            <if test="ybHandleVerifyData.verifyId != null and ybHandleVerifyData.verifyId != ''"> and verifyId like concat('%', #{ ybHandleVerifyData.verifyId} ,'%')</if>
+            <if test="ybHandleVerifyData.manageId != null and ybHandleVerifyData.manageId != ''"> and manageId like concat('%', #{ ybHandleVerifyData.manageId} ,'%')</if>
+            <if test="ybHandleVerifyData.doctorCode != null and ybHandleVerifyData.doctorCode != ''"> and doctorCode like concat('%', #{ ybHandleVerifyData.doctorCode} ,'%')</if>
+            <if test="ybHandleVerifyData.doctorName != null and ybHandleVerifyData.doctorName != ''"> and doctorName like concat('%', #{ ybHandleVerifyData.doctorName} ,'%')</if>
+            <if test="ybHandleVerifyData.deptCode != null and ybHandleVerifyData.deptCode != ''"> and deptCode like concat('%', #{ ybHandleVerifyData.deptCode} ,'%')</if>
+            <if test="ybHandleVerifyData.deptName != null and ybHandleVerifyData.deptName != ''"> and deptName like concat('%', #{ ybHandleVerifyData.deptName} ,'%')</if>
+            <if test="ybHandleVerifyData.operateReason != null and ybHandleVerifyData.operateReason != ''"> and operateReason like concat('%', #{ ybHandleVerifyData.operateReason} ,'%')</if>
+        <if test="ybHandleVerifyData.operateDateFrom!= null">
+            AND ybHandleVerifyData.operateDate <![CDATA[ >= ]]>  operateDateFrom}
+        </if>
+        <if test="ybHandleVerifyData.operateDateTo!= null">
+            AND ybHandleVerifyData.operateDate <![CDATA[ <= ]]>  operateDateTo}
+        </if>
+            <if test="ybHandleVerifyData.matchPersonName != null and ybHandleVerifyData.matchPersonName != ''"> and matchPersonName like concat('%', #{ ybHandleVerifyData.matchPersonName} ,'%')</if>
+        <if test="ybHandleVerifyData.matchDateFrom!= null">
+            AND ybHandleVerifyData.matchDate <![CDATA[ >= ]]>  matchDateFrom}
+        </if>
+        <if test="ybHandleVerifyData.matchDateTo!= null">
+            AND ybHandleVerifyData.matchDate <![CDATA[ <= ]]>  matchDateTo}
+        </if>
+            <if test="ybHandleVerifyData.reviewerName != null and ybHandleVerifyData.reviewerName != ''"> and reviewerName like concat('%', #{ ybHandleVerifyData.reviewerName} ,'%')</if>
+        <if test="ybHandleVerifyData.reviewerDateFrom!= null">
+            AND ybHandleVerifyData.reviewerDate <![CDATA[ >= ]]>  reviewerDateFrom}
+        </if>
+        <if test="ybHandleVerifyData.reviewerDateTo!= null">
+            AND ybHandleVerifyData.reviewerDate <![CDATA[ <= ]]>  reviewerDateTo}
+        </if>
+            <if test="ybHandleVerifyData.sendPersonName != null and ybHandleVerifyData.sendPersonName != ''"> and sendPersonName like concat('%', #{ ybHandleVerifyData.sendPersonName} ,'%')</if>
+        <if test="ybHandleVerifyData.sendDateFrom!= null">
+            AND ybHandleVerifyData.sendDate <![CDATA[ >= ]]>  sendDateFrom}
+        </if>
+        <if test="ybHandleVerifyData.sendDateTo!= null">
+            AND ybHandleVerifyData.sendDate <![CDATA[ <= ]]>  sendDateTo}
+        </if>
+            <if test="ybHandleVerifyData.currencyField != null and ybHandleVerifyData.currencyField != ''"> and currencyField like concat('%', #{ ybHandleVerifyData.currencyField} ,'%')</if>
+        <if test="ybHandleVerifyData.dataType != null"> and dataType =#{ ybHandleVerifyData.dataType} </if>
+            <if test="ybHandleVerifyData.comments != null and ybHandleVerifyData.comments != ''"> and COMMENTS like concat('%', #{ ybHandleVerifyData.comments} ,'%')</if>
+        <if test="ybHandleVerifyData.state != null"> and STATE =#{ ybHandleVerifyData.state} </if>
+        <if test="ybHandleVerifyData.isDeletemark != null"> and IS_DELETEMARK =#{ ybHandleVerifyData.isDeletemark} </if>
+        <if test="ybHandleVerifyData.modifyTimeFrom!= null">
+            AND ybHandleVerifyData.MODIFY_TIME <![CDATA[ >= ]]>  modifyTimeFrom}
+        </if>
+        <if test="ybHandleVerifyData.modifyTimeTo!= null">
+            AND ybHandleVerifyData.MODIFY_TIME <![CDATA[ <= ]]>  modifyTimeTo}
+        </if>
+        <if test="ybHandleVerifyData.createTimeFrom!= null">
+            AND ybHandleVerifyData.CREATE_TIME <![CDATA[ >= ]]>  createTimeFrom}
+        </if>
+        <if test="ybHandleVerifyData.createTimeTo!= null">
+            AND ybHandleVerifyData.CREATE_TIME <![CDATA[ <= ]]>  createTimeTo}
+        </if>
+            <if test="ybHandleVerifyData.resultId != null and ybHandleVerifyData.resultId != ''"> and resultId like concat('%', #{ ybHandleVerifyData.resultId} ,'%')</if>
+</select>
+
+</mapper>

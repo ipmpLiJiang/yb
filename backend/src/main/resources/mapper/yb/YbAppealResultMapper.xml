@@ -1,0 +1,296 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cc.mrbird.febs.yb.dao.YbAppealResultMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="cc.mrbird.febs.yb.entity.YbAppealResult">
+        <id column="id" property="id"/>
+        <result column="applyDataId" property="applyDataId"/>
+        <result column="verifyId" property="verifyId"/>
+        <result column="manageId" property="manageId"/>
+        <result column="doctorCode" property="doctorCode"/>
+        <result column="doctorName" property="doctorName"/>
+        <result column="deptCode" property="deptCode"/>
+        <result column="deptName" property="deptName"/>
+        <result column="operateReason" property="operateReason"/>
+        <result column="operateDate" property="operateDate"/>
+        <result column="currencyField" property="currencyField"/>
+        <result column="sourceType" property="sourceType"/>
+        <result column="resetDataId" property="resetDataId"/>
+        <result column="repayDataId" property="repayDataId"/>
+        <result column="resetPersonId" property="resetPersonId"/>
+        <result column="resetPersonName" property="resetPersonName"/>
+        <result column="resetDate" property="resetDate"/>
+        <result column="repayPersonId" property="repayPersonId"/>
+        <result column="repayPersonName" property="repayPersonName"/>
+        <result column="repayDate" property="repayDate"/>
+        <result column="dataType" property="dataType"/>
+        <result column="COMMENTS" property="comments"/>
+        <result column="STATE" property="state"/>
+        <result column="IS_DELETEMARK" property="isDeletemark"/>
+        <result column="MODIFY_TIME" property="modifyTime"/>
+        <result column="CREATE_TIME" property="createTime"/>
+        <result column="CREATE_USER_ID" property="createUserId"/>
+        <result column="MODIFY_USER_ID" property="modifyUserId"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, applyDataId, verifyId, manageId, doctorCode, doctorName, deptCode, deptName, operateReason, operateDate, currencyField,sourceType,resetDataId,repayDataId,resetPersonId,resetPersonName,resetDate,repayPersonId,repayPersonName,repayDate,dataType, COMMENTS, STATE, IS_DELETEMARK, MODIFY_TIME, CREATE_TIME, CREATE_USER_ID, MODIFY_USER_ID
+    </sql>
+    <update id="updateYbAppealResult" parameterType="cc.mrbird.febs.yb.entity.YbAppealResult">
+        update yb_appeal_result
+        <trim prefix="set" suffixOverrides=",">
+            <if test="applyDataId != null">applyDataId=#{applyDataId},</if>
+            <if test="verifyId != null">verifyId=#{verifyId},</if>
+            <if test="manageId != null">manageId=#{manageId},</if>
+            <if test="doctorCode != null">doctorCode=#{doctorCode},</if>
+            <if test="doctorName != null">doctorName=#{doctorName},</if>
+            <if test="deptCode != null">deptCode=#{deptCode},</if>
+            <if test="deptName != null">deptName=#{deptName},</if>
+            <if test="operateReason != null">operateReason=#{operateReason},</if>
+            <if test="operateDate != null">operateDate=#{operateDate},</if>
+            <if test="currencyField != null">currencyField=#{currencyField},</if>
+            <if test="sourceType != null">sourceType=#{sourceType},</if>
+            <if test="resetPersonId != null">resetPersonId=#{resetPersonId},</if>
+            <if test="resetPersonName != null">resetPersonName=#{resetPersonName},</if>
+            <if test="resetDate != null">resetDate=#{resetDate},</if>
+            <if test="repayPersonId != null">repayPersonId=#{repayPersonId},</if>
+            <if test="repayPersonName != null">repayPersonName=#{repayPersonName},</if>
+            <if test="repayDate != null">repayDate=#{repayDate},</if>
+            <if test="dataType != null">dataType=#{dataType},</if>
+            <if test="comments != null">COMMENTS=#{comments},</if>
+            <if test="state != null">STATE=#{state},</if>
+            <if test="isDeletemark != null">IS_DELETEMARK=#{isDeletemark},</if>
+            <if test="modifyTime != null">MODIFY_TIME=#{modifyTime},</if>
+            <if test="createTime != null">CREATE_TIME=#{createTime},</if>
+            <if test="createUserId != null">CREATE_USER_ID=#{createUserId},</if>
+            <if test="modifyUserId != null">MODIFY_USER_ID=#{modifyUserId},</if>
+        </trim>
+        where id=#{id}
+
+    </update>
+    <select id="findYbAppealResult" resultType="cc.mrbird.febs.yb.entity.YbAppealResult"
+            parameterType="cc.mrbird.febs.yb.entity.YbAppealResult">
+        select * from yb_appeal_result
+        where 1=1
+        <if test="ybAppealResult.id != null and ybAppealResult.id != ''">and id =#{ ybAppealResult.id}</if>
+        <if test="ybAppealResult.applyDataId != null and ybAppealResult.applyDataId != ''">and applyDataId
+            =#{ ybAppealResult.applyDataId}
+        </if>
+        <if test="ybAppealResult.verifyId != null and ybAppealResult.verifyId != ''">and verifyId
+            =#{ ybAppealResult.verifyId}
+        </if>
+        <if test="ybAppealResult.manageId != null and ybAppealResult.manageId != ''">and manageId
+            =#{ ybAppealResult.manageId}
+        </if>
+        <if test="ybAppealResult.doctorCode != null and ybAppealResult.doctorCode != ''">and doctorCode like concat('%',
+            #{ ybAppealResult.doctorCode} ,'%')
+        </if>
+        <if test="ybAppealResult.doctorName != null and ybAppealResult.doctorName != ''">and doctorName like concat('%',
+            #{ ybAppealResult.doctorName} ,'%')
+        </if>
+        <if test="ybAppealResult.deptCode != null and ybAppealResult.deptCode != ''">and deptCode like concat('%',
+            #{ ybAppealResult.deptCode} ,'%')
+        </if>
+        <if test="ybAppealResult.deptName != null and ybAppealResult.deptName != ''">and deptName like concat('%',
+            #{ ybAppealResult.deptName} ,'%')
+        </if>
+        <if test="ybAppealResult.operateReason != null and ybAppealResult.operateReason != ''">and operateReason like
+            concat('%', #{ ybAppealResult.operateReason} ,'%')
+        </if>
+        <if test="ybAppealResult.operateDateFrom!= null">
+            AND ybAppealResult.operateDate <![CDATA[ >= ]]>  operateDateFrom}
+        </if>
+        <if test="ybAppealResult.operateDateTo!= null">
+            AND ybAppealResult.operateDate <![CDATA[ <= ]]>  operateDateTo}
+        </if>
+        <if test="ybAppealResult.currencyField != null and ybAppealResult.currencyField != ''">and currencyField like
+            concat('%', #{ ybAppealResult.currencyField} ,'%')
+        </if>
+        <if test="ybAppealResult.sourceType != null">and sourceType =#{ ybAppealResult.sourceType}</if>
+        <if test="ybAppealResult.resetPersonId != null">and resetPersonId =#{ ybAppealResult.resetPersonId}</if>
+        <if test="ybAppealResult.resetPersonName != null and ybAppealResult.resetPersonName != ''">and resetPersonName
+            =#{ ybAppealResult.resetPersonName}
+        </if>
+        <if test="ybAppealResult.resetDateFrom!= null">
+            AND ybAppealResult.resetDate <![CDATA[ >= ]]>  resetDateFrom}
+        </if>
+        <if test="ybAppealResult.resetDateTo!= null">
+            AND ybAppealResult.resetDate <![CDATA[ <= ]]>  resetDateTo}
+        </if>
+        <if test="ybAppealResult.repayPersonId != null">and repayPersonId =#{ ybAppealResult.repayPersonId}</if>
+        <if test="ybAppealResult.repayPersonName != null and ybAppealResult.repayPersonName != ''">and repayPersonName
+            =#{ ybAppealResult.repayPersonName}
+        </if>
+        <if test="ybAppealResult.repayDateFrom!= null">
+            AND ybAppealResult.repayDate <![CDATA[ >= ]]>  repayDateFrom}
+        </if>
+        <if test="ybAppealResult.repayDateTo!= null">
+            AND ybAppealResult.repayDate <![CDATA[ <= ]]>  repayDateTo}
+        </if>
+        <if test="ybAppealResult.comments != null and ybAppealResult.comments != ''">and COMMENTS like concat('%',
+            #{ ybAppealResult.comments} ,'%')
+        </if>
+        <if test="ybAppealResult.state != null">and STATE =#{ ybAppealResult.state}</if>
+        <if test="ybAppealResult.isDeletemark != null">and IS_DELETEMARK =#{ ybAppealResult.isDeletemark}</if>
+        <if test="ybAppealResult.modifyTimeFrom!= null">
+            AND ybAppealResult.MODIFY_TIME <![CDATA[ >= ]]>  modifyTimeFrom}
+        </if>
+        <if test="ybAppealResult.modifyTimeTo!= null">
+            AND ybAppealResult.MODIFY_TIME <![CDATA[ <= ]]>  modifyTimeTo}
+        </if>
+        <if test="ybAppealResult.createTimeFrom!= null">
+            AND ybAppealResult.CREATE_TIME <![CDATA[ >= ]]>  createTimeFrom}
+        </if>
+        <if test="ybAppealResult.createTimeTo!= null">
+            AND ybAppealResult.CREATE_TIME <![CDATA[ <= ]]>  createTimeTo}
+        </if>
+    </select>
+    <select id="findAppealResultGroupDept" resultType="String"
+            parameterType="cc.mrbird.febs.yb.entity.YbAppealResultView">
+        SELECT
+        yb_appeal_result.deptName
+        FROM
+        yb_appeal_result
+        INNER JOIN com_file ON
+        com_file.REF_TAB_ID = yb_appeal_result.id and
+        com_file.IS_DELETEMARK = 1
+        INNER JOIN yb_reconsider_apply_data ON
+        yb_reconsider_apply_data.id = yb_appeal_result.applyDataId
+        INNER JOIN yb_reconsider_apply ON
+        yb_reconsider_apply.id = yb_reconsider_apply_data.pid
+        WHERE
+        yb_appeal_result.IS_DELETEMARK = 1
+        <if test="ybAppealResultView.sourceType != null">and yb_appeal_result.sourceType =
+            #{ybAppealResultView.sourceType}
+        </if>
+        <if test="ybAppealResultView.dataType != null">and yb_appeal_result.dataType = #{ybAppealResultView.dataType}
+        </if>
+        <if test="ybAppealResultView.state != null and ybAppealResultView.state==12">and yb_appeal_result.STATE IN
+            (1,2)
+        </if>
+        <if test="ybAppealResultView.state != null and ybAppealResultView.state==1">and yb_appeal_result.STATE = 1</if>
+        <if test="ybAppealResultView.state != null and ybAppealResultView.state==2">and yb_appeal_result.STATE = 2</if>
+        <if test="ybAppealResultView.applyDateStr != null">and yb_reconsider_apply.applyDateStr =
+            #{ybAppealResultView.applyDateStr}
+        </if>
+        <if test="ybAppealResultView.typeno != null">and yb_reconsider_apply_data.typeno =
+            #{ybAppealResultView.typeno}
+        </if>
+        group BY
+        yb_appeal_result.deptName
+    </select>
+    <select id="findAppealResulDataByReset" resultType="cc.mrbird.febs.yb.entity.YbAppealResult">
+        SELECT
+        yb_appeal_result.*
+        FROM
+        yb_appeal_result
+        INNER JOIN yb_reconsider_apply_data on
+        yb_reconsider_apply_data.IS_DELETEMARK = 1 AND
+        yb_reconsider_apply_data.id = yb_appeal_result.applyDataId
+        INNER JOIN yb_reconsider_apply on
+        yb_reconsider_apply.id = yb_reconsider_apply_data.pid AND
+        yb_reconsider_apply.IS_DELETEMARK = 1
+        where
+        yb_appeal_result.IS_DELETEMARK = 1 AND
+        yb_appeal_result.STATE = 1 AND
+        yb_appeal_result.sourceType = 0 AND
+        yb_appeal_result.resetDataId IS NULL AND
+        yb_reconsider_apply.applyDateStr = #{ applyDateStr}
+        <if test="dataType != null">and yb_appeal_result.dataType =#{ dataType}</if>
+    </select>
+    <select id="findAppealResulDataByRepay" resultType="cc.mrbird.febs.yb.entity.YbAppealResult">
+        SELECT
+        yb_appeal_result.*
+        FROM
+        yb_appeal_result
+        INNER JOIN yb_reconsider_apply_data on
+        yb_reconsider_apply_data.IS_DELETEMARK = 1 AND
+        yb_reconsider_apply_data.id = yb_appeal_result.applyDataId
+        INNER JOIN yb_reconsider_apply on
+        yb_reconsider_apply.id = yb_reconsider_apply_data.pid AND
+        yb_reconsider_apply.IS_DELETEMARK = 1
+        where
+        yb_appeal_result.IS_DELETEMARK = 1 AND
+        yb_appeal_result.STATE = 2 AND
+        yb_appeal_result.sourceType = 0 AND
+        yb_appeal_result.resetDataId IS NOT NULL AND
+        yb_appeal_result.repayDataId IS NULL AND
+        yb_reconsider_apply.applyDateStr = #{ applyDateStr}
+        <if test="dataType != null">and yb_appeal_result.dataType =#{ dataType}</if>
+    </select>
+    <select id="findAppealResulDataHandle" resultType="cc.mrbird.febs.yb.entity.YbAppealResult">
+        SELECT
+            yb_appeal_result.*
+        FROM
+            yb_appeal_result
+        INNER JOIN yb_reconsider_apply_data ON
+            yb_reconsider_apply_data.id = yb_appeal_result.applyDataId AND
+            yb_reconsider_apply_data.IS_DELETEMARK = 1
+        INNER JOIN yb_reconsider_apply ON
+            yb_reconsider_apply.id = yb_reconsider_apply_data.pid AND
+            yb_reconsider_apply.IS_DELETEMARK = 1
+        WHERE
+            yb_reconsider_apply.applyDateStr = #{applyDateStr} AND
+            yb_appeal_result.IS_DELETEMARK = 1 AND
+            yb_appeal_result.STATE = 2 AND
+            yb_appeal_result.resetDataId IS NOT NULL AND
+            NOT EXISTS (
+                SELECT
+                    yb_handle_verify_data.ID
+                FROM
+                    yb_handle_verify_data
+                INNER JOIN yb_handle_verify ON yb_handle_verify.ID = yb_handle_verify_data.pid
+                AND yb_handle_verify.applyDateStr = #{applyDateStr}
+                AND yb_handle_verify.IS_DELETEMARK = 1
+                WHERE
+                    yb_handle_verify_data.IS_DELETEMARK = 1
+                AND yb_reconsider_apply.applyDateStr = yb_handle_verify.applyDateStr
+                AND yb_appeal_result.id = yb_handle_verify_data.resultId
+                AND yb_appeal_result.resetDataId = yb_handle_verify_data.resetId
+            )
+</select>
+    <update id="updateAppealResulResetData">
+        UPDATE yb_appeal_result
+        INNER JOIN yb_reconsider_apply_data ON
+            yb_reconsider_apply_data.IS_DELETEMARK = 1 AND
+            yb_reconsider_apply_data.id = yb_appeal_result.applyDataId
+        INNER JOIN yb_reconsider_apply ON
+            yb_reconsider_apply.IS_DELETEMARK = 1 AND
+            yb_reconsider_apply.id = yb_reconsider_apply_data.pid
+        INNER JOIN (
+            SELECT
+                yb_reconsider_reset_data.id,
+                yb_reconsider_reset.applyDateStr,
+                yb_reconsider_reset_data.billNo,
+                yb_reconsider_reset_data.serialNo,
+                yb_reconsider_reset_data.projectCode,
+                yb_reconsider_reset_data.projectName,
+                yb_reconsider_reset_data.ruleName
+            FROM
+                yb_reconsider_reset_data
+                INNER JOIN yb_reconsider_reset ON
+                    yb_reconsider_reset.IS_DELETEMARK = 1 AND
+                    yb_reconsider_reset_data.pid = yb_reconsider_reset.id
+            WHERE
+                yb_reconsider_reset_data.IS_DELETEMARK = 1 AND
+                yb_reconsider_reset.applyDateStr = #{applyDateStr}
+        ) rrd ON rrd.billNo = yb_reconsider_apply_data.billNo AND
+                    rrd.serialNo = yb_reconsider_apply_data.serialNo AND
+                    rrd.projectCode = yb_reconsider_apply_data.projectCode AND
+                    rrd.projectName = yb_reconsider_apply_data.projectName AND
+                    rrd.ruleName = yb_reconsider_apply_data.ruleName AND
+                    rrd.applyDateStr = yb_reconsider_apply.applyDateStr
+        SET
+            yb_appeal_result.resetDataId = rrd.id,
+            yb_appeal_result.resetPersonId = #{resetPersonId},
+            yb_appeal_result.resetPersonName = #{resetPersonName},
+            yb_appeal_result.resetDate = #{resetDate}
+        WHERE
+            yb_appeal_result.IS_DELETEMARK = 1 AND
+            yb_appeal_result.STATE = 1 AND
+            yb_appeal_result.resetDataId IS NULL AND
+            yb_reconsider_apply.applyDateStr = #{applyDateStr}
+    </update>
+</mapper>

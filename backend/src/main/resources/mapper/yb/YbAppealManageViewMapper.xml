@@ -1,0 +1,267 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cc.mrbird.febs.yb.dao.YbAppealManageViewMapper">
+
+        <!-- 通用查询映射结果 -->
+        <resultMap id="BaseResultMap" type="cc.mrbird.febs.yb.entity.YbAppealManageView">
+                    <result column="serialNo" property="serialNo"/>
+                    <result column="billNo" property="billNo"/>
+                    <result column="proposalCode" property="proposalCode"/>
+                    <result column="projectCode" property="projectCode"/>
+                    <result column="projectName" property="projectName"/>
+                    <result column="num" property="num"/>
+                    <result column="medicalPrice" property="medicalPrice"/>
+                    <result column="ruleName" property="ruleName"/>
+                    <result column="deductPrice" property="deductPrice"/>
+                    <result column="deductReason" property="deductReason"/>
+                    <result column="repaymentReason" property="repaymentReason"/>
+                    <result column="doctorName" property="doctorName"/>
+                    <result column="deptCode" property="deptCode"/>
+                    <result column="deptName" property="deptName"/>
+                    <result column="enterHospitalDate" property="enterHospitalDate"/>
+                    <result column="outHospitalDate" property="outHospitalDate"/>
+                    <result column="costDate" property="costDate"/>
+            <result column="enterHospitalDateStr" property="enterHospitalDateStr"/>
+            <result column="outHospitalDateStr" property="outHospitalDateStr"/>
+            <result column="costDateStr" property="costDateStr"/>
+                    <result column="hospitalizedNo" property="hospitalizedNo"/>
+                    <result column="treatmentMode" property="treatmentMode"/>
+                    <result column="settlementDate" property="settlementDate"/>
+            <result column="settlementDateStr" property="settlementDateStr"/>
+                    <result column="personalNo" property="personalNo"/>
+                    <result column="insuredName" property="insuredName"/>
+                    <result column="cardNumber" property="cardNumber"/>
+                    <result column="areaName" property="areaName"/>
+                    <result column="versionNumber" property="versionNumber"/>
+                    <result column="backAppeal" property="backAppeal"/>
+                    <result column="typeno" property="typeno"/>
+                    <result column="applyDate" property="applyDate"/>
+                    <result column="applyDateStr" property="applyDateStr"/>
+                    <result column="operatorId" property="operatorId"/>
+                    <result column="operatorName" property="operatorName"/>
+                    <result column="id" property="id"/>
+                    <result column="applyDataId" property="applyDataId"/>
+                    <result column="verifyId" property="verifyId"/>
+                    <result column="readyDoctorCode" property="readyDoctorCode"/>
+                    <result column="readyDoctorName" property="readyDoctorName"/>
+                    <result column="readyDeptCode" property="readyDeptCode"/>
+                    <result column="readyDeptName" property="readyDeptName"/>
+                    <result column="changeDoctorCode" property="changeDoctorCode"/>
+                    <result column="changeDoctorName" property="changeDoctorName"/>
+                    <result column="changeDeptCode" property="changeDeptCode"/>
+                    <result column="changeDeptName" property="changeDeptName"/>
+                    <result column="operateReason" property="operateReason"/>
+                    <result column="operateDate" property="operateDate"/>
+                    <result column="acceptState" property="acceptState"/>
+                    <result column="refuseId" property="refuseId"/>
+                    <result column="refuseName" property="refuseName"/>
+                    <result column="refuseReason" property="refuseReason"/>
+                    <result column="refuseDate" property="refuseDate"/>
+                    <result column="adminPersonId" property="adminPersonId"/>
+                    <result column="adminPersonName" property="adminPersonName"/>
+                    <result column="adminChangeDate" property="adminChangeDate"/>
+                    <result column="adminReason" property="adminReason"/>
+                    <result column="enableDate" property="enableDate"/>
+                    <result column="enableType" property="enableType"/>
+                    <result column="sourceType" property="sourceType"/>
+            <result column="dataType" property="dataType"/>
+            <result column="orderNumber" property="orderNumber"/>
+                    <result column="COMMENTS" property="comments"/>
+                    <result column="STATE" property="state"/>
+                    <result column="IS_DELETEMARK" property="isDeletemark"/>
+                    <result column="MODIFY_TIME" property="modifyTime"/>
+                    <result column="CREATE_TIME" property="createTime"/>
+                    <result column="CREATE_USER_ID" property="createUserId"/>
+                    <result column="MODIFY_USER_ID" property="modifyUserId"/>
+                    <result column="currencyField" property="currencyField"/>
+        </resultMap>
+
+        <!-- 通用查询结果列 -->
+        <sql id="Base_Column_List">
+        serialNo, billNo, proposalCode, projectCode, projectName, num, medicalPrice, ruleName, deductPrice, deductReason, repaymentReason, doctorName, deptCode, deptName, enterHospitalDate, outHospitalDate, costDate,enterHospitalDateStr,outHospitalDateStr,costDateStr, hospitalizedNo, treatmentMode, settlementDate,settlementDateStr, personalNo, insuredName, cardNumber, areaName, versionNumber, backAppeal, typeno, applyDate, applyDateStr, operatorId, operatorName, id, applyDataId, verifyId, readyDoctorCode, readyDoctorName, readyDeptCode, readyDeptName, changeDoctorCode, changeDoctorName, changeDeptCode, changeDeptName, operateReason, operateDate, acceptState, refuseId, refuseName, refuseReason, refuseDate, adminPersonId, adminPersonName, adminChangeDate, adminReason,enableDate,enableType,sourceType, dataType,orderNumber,COMMENTS, STATE, IS_DELETEMARK, MODIFY_TIME, CREATE_TIME, CREATE_USER_ID, MODIFY_USER_ID, currencyField
+    </sql>
+    <update id="updateYbAppealManageView" parameterType="cc.mrbird.febs.yb.entity.YbAppealManageView">
+        update yb_appeal_manage_view
+        <trim prefix="set" suffixOverrides=",">
+<if test="serialNo != null">serialNo=#{serialNo},</if>
+<if test="billNo != null">billNo=#{billNo},</if>
+<if test="proposalCode != null">proposalCode=#{proposalCode},</if>
+<if test="projectCode != null">projectCode=#{projectCode},</if>
+<if test="projectName != null">projectName=#{projectName},</if>
+<if test="num != null">num=#{num},</if>
+<if test="medicalPrice != null">medicalPrice=#{medicalPrice},</if>
+<if test="ruleName != null">ruleName=#{ruleName},</if>
+<if test="deductPrice != null">deductPrice=#{deductPrice},</if>
+<if test="deductReason != null">deductReason=#{deductReason},</if>
+<if test="repaymentReason != null">repaymentReason=#{repaymentReason},</if>
+<if test="doctorName != null">doctorName=#{doctorName},</if>
+<if test="deptCode != null">deptCode=#{deptCode},</if>
+<if test="deptName != null">deptName=#{deptName},</if>
+<if test="enterHospitalDate != null">enterHospitalDate=#{enterHospitalDate},</if>
+<if test="outHospitalDate != null">outHospitalDate=#{outHospitalDate},</if>
+<if test="costDate != null">costDate=#{costDate},</if>
+<if test="hospitalizedNo != null">hospitalizedNo=#{hospitalizedNo},</if>
+<if test="treatmentMode != null">treatmentMode=#{treatmentMode},</if>
+<if test="settlementDate != null">settlementDate=#{settlementDate},</if>
+<if test="personalNo != null">personalNo=#{personalNo},</if>
+<if test="insuredName != null">insuredName=#{insuredName},</if>
+<if test="cardNumber != null">cardNumber=#{cardNumber},</if>
+<if test="areaName != null">areaName=#{areaName},</if>
+<if test="versionNumber != null">versionNumber=#{versionNumber},</if>
+<if test="backAppeal != null">backAppeal=#{backAppeal},</if>
+<if test="typeno != null">typeno=#{typeno},</if>
+<if test="applyDate != null">applyDate=#{applyDate},</if>
+<if test="applyDateStr != null">applyDateStr=#{applyDateStr},</if>
+<if test="operatorId != null">operatorId=#{operatorId},</if>
+<if test="operatorName != null">operatorName=#{operatorName},</if>
+<if test="id != null">id=#{id},</if>
+<if test="applyDataId != null">applyDataId=#{applyDataId},</if>
+<if test="verifyId != null">verifyId=#{verifyId},</if>
+<if test="readyDoctorCode != null">readyDoctorCode=#{readyDoctorCode},</if>
+<if test="readyDoctorName != null">readyDoctorName=#{readyDoctorName},</if>
+<if test="readyDeptCode != null">readyDeptCode=#{readyDeptCode},</if>
+<if test="readyDeptName != null">readyDeptName=#{readyDeptName},</if>
+<if test="changeDoctorCode != null">changeDoctorCode=#{changeDoctorCode},</if>
+<if test="changeDoctorName != null">changeDoctorName=#{changeDoctorName},</if>
+<if test="changeDeptCode != null">changeDeptCode=#{changeDeptCode},</if>
+<if test="changeDeptName != null">changeDeptName=#{changeDeptName},</if>
+<if test="operateReason != null">operateReason=#{operateReason},</if>
+<if test="operateDate != null">operateDate=#{operateDate},</if>
+<if test="acceptState != null">acceptState=#{acceptState},</if>
+<if test="refuseId != null">refuseId=#{refuseId},</if>
+<if test="refuseName != null">refuseName=#{refuseName},</if>
+<if test="refuseReason != null">refuseReason=#{refuseReason},</if>
+<if test="refuseDate != null">refuseDate=#{refuseDate},</if>
+<if test="adminPersonId != null">adminPersonId=#{adminPersonId},</if>
+<if test="adminPersonName != null">adminPersonName=#{adminPersonName},</if>
+<if test="adminChangeDate != null">adminChangeDate=#{adminChangeDate},</if>
+<if test="adminReason != null">adminReason=#{adminReason},</if>
+<if test="enableDate != null">enableDate=#{enableDate},</if>
+<if test="enableType != null">enableType=#{enableType},</if>
+<if test="comments != null">COMMENTS=#{comments},</if>
+<if test="state != null">STATE=#{state},</if>
+<if test="isDeletemark != null">IS_DELETEMARK=#{isDeletemark},</if>
+<if test="modifyTime != null">MODIFY_TIME=#{modifyTime},</if>
+<if test="createTime != null">CREATE_TIME=#{createTime},</if>
+<if test="createUserId != null">CREATE_USER_ID=#{createUserId},</if>
+<if test="modifyUserId != null">MODIFY_USER_ID=#{modifyUserId},</if>
+<if test="currencyField != null">currencyField=#{currencyField},</if>
+        </trim>
+
+    </update>
+    <select id="findYbAppealManageView" resultType="cc.mrbird.febs.yb.entity.YbAppealManageView" parameterType="cc.mrbird.febs.yb.entity.YbAppealManageView">
+        select  *  from yb_appeal_manage_view
+        where  1=1
+            <if test="ybAppealManageView.serialNo != null and ybAppealManageView.serialNo != ''"> and serialNo like concat('%', #{ ybAppealManageView.serialNo} ,'%')</if>
+            <if test="ybAppealManageView.billNo != null and ybAppealManageView.billNo != ''"> and billNo like concat('%', #{ ybAppealManageView.billNo} ,'%')</if>
+            <if test="ybAppealManageView.proposalCode != null and ybAppealManageView.proposalCode != ''"> and proposalCode like concat('%', #{ ybAppealManageView.proposalCode} ,'%')</if>
+            <if test="ybAppealManageView.projectCode != null and ybAppealManageView.projectCode != ''"> and projectCode like concat('%', #{ ybAppealManageView.projectCode} ,'%')</if>
+            <if test="ybAppealManageView.projectName != null and ybAppealManageView.projectName != ''"> and projectName like concat('%', #{ ybAppealManageView.projectName} ,'%')</if>
+            <if test="ybAppealManageView.ruleName != null and ybAppealManageView.ruleName != ''"> and ruleName like concat('%', #{ ybAppealManageView.ruleName} ,'%')</if>
+            <if test="ybAppealManageView.deductReason != null and ybAppealManageView.deductReason != ''"> and deductReason like concat('%', #{ ybAppealManageView.deductReason} ,'%')</if>
+            <if test="ybAppealManageView.repaymentReason != null and ybAppealManageView.repaymentReason != ''"> and repaymentReason like concat('%', #{ ybAppealManageView.repaymentReason} ,'%')</if>
+            <if test="ybAppealManageView.doctorName != null and ybAppealManageView.doctorName != ''"> and doctorName like concat('%', #{ ybAppealManageView.doctorName} ,'%')</if>
+            <if test="ybAppealManageView.deptCode != null and ybAppealManageView.deptCode != ''"> and deptCode like concat('%', #{ ybAppealManageView.deptCode} ,'%')</if>
+            <if test="ybAppealManageView.deptName != null and ybAppealManageView.deptName != ''"> and deptName like concat('%', #{ ybAppealManageView.deptName} ,'%')</if>
+        <if test="ybAppealManageView.enterHospitalDateFrom!= null">
+            AND ybAppealManageView.enterHospitalDate <![CDATA[ >= ]]>  enterHospitalDateFrom}
+        </if>
+        <if test="ybAppealManageView.enterHospitalDateTo!= null">
+            AND ybAppealManageView.enterHospitalDate <![CDATA[ <= ]]>  enterHospitalDateTo}
+        </if>
+        <if test="ybAppealManageView.outHospitalDateFrom!= null">
+            AND ybAppealManageView.outHospitalDate <![CDATA[ >= ]]>  outHospitalDateFrom}
+        </if>
+        <if test="ybAppealManageView.outHospitalDateTo!= null">
+            AND ybAppealManageView.outHospitalDate <![CDATA[ <= ]]>  outHospitalDateTo}
+        </if>
+        <if test="ybAppealManageView.costDateFrom!= null">
+            AND ybAppealManageView.costDate <![CDATA[ >= ]]>  costDateFrom}
+        </if>
+        <if test="ybAppealManageView.costDateTo!= null">
+            AND ybAppealManageView.costDate <![CDATA[ <= ]]>  costDateTo}
+        </if>
+            <if test="ybAppealManageView.hospitalizedNo != null and ybAppealManageView.hospitalizedNo != ''"> and hospitalizedNo like concat('%', #{ ybAppealManageView.hospitalizedNo} ,'%')</if>
+            <if test="ybAppealManageView.treatmentMode != null and ybAppealManageView.treatmentMode != ''"> and treatmentMode like concat('%', #{ ybAppealManageView.treatmentMode} ,'%')</if>
+        <if test="ybAppealManageView.settlementDateFrom!= null">
+            AND ybAppealManageView.settlementDate <![CDATA[ >= ]]>  settlementDateFrom}
+        </if>
+        <if test="ybAppealManageView.settlementDateTo!= null">
+            AND ybAppealManageView.settlementDate <![CDATA[ <= ]]>  settlementDateTo}
+        </if>
+            <if test="ybAppealManageView.personalNo != null and ybAppealManageView.personalNo != ''"> and personalNo like concat('%', #{ ybAppealManageView.personalNo} ,'%')</if>
+            <if test="ybAppealManageView.insuredName != null and ybAppealManageView.insuredName != ''"> and insuredName like concat('%', #{ ybAppealManageView.insuredName} ,'%')</if>
+            <if test="ybAppealManageView.cardNumber != null and ybAppealManageView.cardNumber != ''"> and cardNumber like concat('%', #{ ybAppealManageView.cardNumber} ,'%')</if>
+            <if test="ybAppealManageView.areaName != null and ybAppealManageView.areaName != ''"> and areaName like concat('%', #{ ybAppealManageView.areaName} ,'%')</if>
+            <if test="ybAppealManageView.versionNumber != null and ybAppealManageView.versionNumber != ''"> and versionNumber like concat('%', #{ ybAppealManageView.versionNumber} ,'%')</if>
+            <if test="ybAppealManageView.backAppeal != null and ybAppealManageView.backAppeal != ''"> and backAppeal like concat('%', #{ ybAppealManageView.backAppeal} ,'%')</if>
+        <if test="ybAppealManageView.typeno != null"> and typeno =#{ ybAppealManageView.typeno} </if>
+        <if test="ybAppealManageView.applyDateFrom!= null">
+            AND ybAppealManageView.applyDate <![CDATA[ >= ]]>  applyDateFrom}
+        </if>
+        <if test="ybAppealManageView.applyDateTo!= null">
+            AND ybAppealManageView.applyDate <![CDATA[ <= ]]>  applyDateTo}
+        </if>
+            <if test="ybAppealManageView.applyDateStr != null and ybAppealManageView.applyDateStr != ''"> and applyDateStr like concat('%', #{ ybAppealManageView.applyDateStr} ,'%')</if>
+            <if test="ybAppealManageView.operatorName != null and ybAppealManageView.operatorName != ''"> and operatorName like concat('%', #{ ybAppealManageView.operatorName} ,'%')</if>
+        <if test="ybAppealManageView.id != null"> and id =#{ ybAppealManageView.id} </if>
+        <if test="ybAppealManageView.applyDataId != null"> and applyDataId =#{ ybAppealManageView.applyDataId} </if>
+        <if test="ybAppealManageView.verifyId != null"> and verifyId =#{ ybAppealManageView.verifyId} </if>
+            <if test="ybAppealManageView.readyDoctorCode != null and ybAppealManageView.readyDoctorCode != ''"> and readyDoctorCode like concat('%', #{ ybAppealManageView.readyDoctorCode} ,'%')</if>
+            <if test="ybAppealManageView.readyDoctorName != null and ybAppealManageView.readyDoctorName != ''"> and readyDoctorName like concat('%', #{ ybAppealManageView.readyDoctorName} ,'%')</if>
+            <if test="ybAppealManageView.readyDeptCode != null and ybAppealManageView.readyDeptCode != ''"> and readyDeptCode like concat('%', #{ ybAppealManageView.readyDeptCode} ,'%')</if>
+            <if test="ybAppealManageView.readyDeptName != null and ybAppealManageView.readyDeptName != ''"> and readyDeptName like concat('%', #{ ybAppealManageView.readyDeptName} ,'%')</if>
+            <if test="ybAppealManageView.changeDoctorCode != null and ybAppealManageView.changeDoctorCode != ''"> and changeDoctorCode like concat('%', #{ ybAppealManageView.changeDoctorCode} ,'%')</if>
+            <if test="ybAppealManageView.changeDoctorName != null and ybAppealManageView.changeDoctorName != ''"> and changeDoctorName like concat('%', #{ ybAppealManageView.changeDoctorName} ,'%')</if>
+            <if test="ybAppealManageView.changeDeptCode != null and ybAppealManageView.changeDeptCode != ''"> and changeDeptCode like concat('%', #{ ybAppealManageView.changeDeptCode} ,'%')</if>
+            <if test="ybAppealManageView.changeDeptName != null and ybAppealManageView.changeDeptName != ''"> and changeDeptName like concat('%', #{ ybAppealManageView.changeDeptName} ,'%')</if>
+            <if test="ybAppealManageView.operateReason != null and ybAppealManageView.operateReason != ''"> and operateReason like concat('%', #{ ybAppealManageView.operateReason} ,'%')</if>
+        <if test="ybAppealManageView.operateDateFrom!= null">
+            AND ybAppealManageView.operateDate <![CDATA[ >= ]]>  operateDateFrom}
+        </if>
+        <if test="ybAppealManageView.operateDateTo!= null">
+            AND ybAppealManageView.operateDate <![CDATA[ <= ]]>  operateDateTo}
+        </if>
+        <if test="ybAppealManageView.acceptState != null"> and acceptState =#{ ybAppealManageView.acceptState} </if>
+            <if test="ybAppealManageView.refuseName != null and ybAppealManageView.refuseName != ''"> and refuseName like concat('%', #{ ybAppealManageView.refuseName} ,'%')</if>
+            <if test="ybAppealManageView.refuseReason != null and ybAppealManageView.refuseReason != ''"> and refuseReason like concat('%', #{ ybAppealManageView.refuseReason} ,'%')</if>
+        <if test="ybAppealManageView.refuseDateFrom!= null">
+            AND ybAppealManageView.refuseDate <![CDATA[ >= ]]>  refuseDateFrom}
+        </if>
+        <if test="ybAppealManageView.refuseDateTo!= null">
+            AND ybAppealManageView.refuseDate <![CDATA[ <= ]]>  refuseDateTo}
+        </if>
+            <if test="ybAppealManageView.adminPersonName != null and ybAppealManageView.adminPersonName != ''"> and adminPersonName like concat('%', #{ ybAppealManageView.adminPersonName} ,'%')</if>
+        <if test="ybAppealManageView.adminChangeDateFrom!= null">
+            AND ybAppealManageView.adminChangeDate <![CDATA[ >= ]]>  adminChangeDateFrom}
+        </if>
+        <if test="ybAppealManageView.adminChangeDateTo!= null">
+            AND ybAppealManageView.adminChangeDate <![CDATA[ <= ]]>  adminChangeDateTo}
+        </if>
+            <if test="ybAppealManageView.adminReason != null and ybAppealManageView.adminReason != ''"> and adminReason like concat('%', #{ ybAppealManageView.adminReason} ,'%')</if>
+        <if test="ybAppealManageView.enableDateFrom!= null">
+            AND ybAppealManageView.enableDate <![CDATA[ >= ]]>  enableDateFrom}
+        </if>
+        <if test="ybAppealManageView.enableDateTo!= null">
+            AND ybAppealManageView.enableDate <![CDATA[ <= ]]>  enableDateTo}
+        </if>
+        <if test="ybAppealManageView.enableType != null"> and enableType =#{ ybAppealManageView.enableType} </if>
+        <if test="ybAppealManageView.sourceType != null"> and sourceType =#{ ybAppealManageView.sourceType} </if>
+        <if test="ybAppealManageView.comments != null and ybAppealManageView.comments != ''"> and COMMENTS like concat('%', #{ ybAppealManageView.comments} ,'%')</if>
+        <if test="ybAppealManageView.state != null"> and STATE =#{ ybAppealManageView.state} </if>
+        <if test="ybAppealManageView.isDeletemark != null"> and IS_DELETEMARK =#{ ybAppealManageView.isDeletemark} </if>
+        <if test="ybAppealManageView.modifyTimeFrom!= null">
+            AND ybAppealManageView.MODIFY_TIME <![CDATA[ >= ]]>  modifyTimeFrom}
+        </if>
+        <if test="ybAppealManageView.modifyTimeTo!= null">
+            AND ybAppealManageView.MODIFY_TIME <![CDATA[ <= ]]>  modifyTimeTo}
+        </if>
+        <if test="ybAppealManageView.createTimeFrom!= null">
+            AND ybAppealManageView.CREATE_TIME <![CDATA[ >= ]]>  createTimeFrom}
+        </if>
+        <if test="ybAppealManageView.createTimeTo!= null">
+            AND ybAppealManageView.CREATE_TIME <![CDATA[ <= ]]>  createTimeTo}
+        </if>
+            <if test="ybAppealManageView.currencyField != null and ybAppealManageView.currencyField != ''"> and currencyField like concat('%', #{ ybAppealManageView.currencyField} ,'%')</if>
+</select>
+</mapper>
