@@ -28,7 +28,7 @@ import com.wuwenze.poi.annotation.ExcelField;
 @Excel("明细扣款")
 @Data
 //@Accessors(chain = true)
-public class YbReconsiderResetData implements Serializable {
+public class YbReconsiderResetData implements Comparable<YbReconsiderResetData> {
 
     private static final long serialVersionUID = 1L;
 
@@ -353,5 +353,16 @@ public class YbReconsiderResetData implements Serializable {
     public static final String CREATE_USER_ID = "CREATE_USER_ID";
 
     public static final String MODIFY_USER_ID = "MODIFY_USER_ID";
+
+    @Override
+    public int compareTo(YbReconsiderResetData o) {
+        if (this.getOrderNumber() != null && o.getOrderNumber() != null) {
+            return this.getOrderNumber().compareTo(o.getOrderNumber());
+        } else if (this.getOrderNumber() != null) {
+            return 1;
+        } else {
+            return 0;
+        }
+    }
 
 }

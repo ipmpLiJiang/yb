@@ -49,6 +49,17 @@
                 <a-button type="primary" style="margin-right:20px" >数据剔除</a-button>
               </a-popconfirm>
             </a-col>
+            <a-col :span=4>
+              <a-popconfirm
+                title="确定导出数据？"
+                v-show="tableSelectKey==4?true:false"
+                @confirm="exportExcel"
+                okText="确定"
+                cancelText="取消"
+              >
+                <a-button type="primary" style="margin-right:20px" >导出数据</a-button>
+              </a-popconfirm>
+            </a-col>
             <a-col :span=3>
               <a-button
                 type="primary"
@@ -219,6 +230,20 @@ export default {
       const newFileList = this.fileList.slice()
       newFileList.splice(index, 1)
       this.fileList = newFileList
+    },
+    exportExcel () {
+      // if (this.tableSelectKey === '1') {
+      //   this.$refs.ybReconsiderResetData.exportExcel()
+      // } else if (this.tableSelectKey === '2') {
+      //   this.$refs.ybReconsiderResetMain.exportExcel()
+      // } else if (this.tableSelectKey === '3') {
+      //   this.$refs.ybReconsiderResetExcept.exportExcel()
+      // } else if (this.tableSelectKey === '4') {
+      //   this.$refs.ybReconsiderResetUnknown.search()
+      // } else {
+      //   console.log('exportExcel')
+      // }
+      this.$refs.ybReconsiderResetData.exportExcel()
     },
     updateSearch () {
       if (this.tableSelectKey === '1') {

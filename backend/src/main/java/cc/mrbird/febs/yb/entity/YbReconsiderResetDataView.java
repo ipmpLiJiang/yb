@@ -28,7 +28,7 @@ import com.wuwenze.poi.annotation.ExcelField;
 @Excel("yb_reconsider_reset_data_view")
 @Data
 @Accessors(chain = true)
-public class YbReconsiderResetDataView implements Serializable {
+public class YbReconsiderResetDataView implements Serializable, Comparable<YbReconsiderResetDataView> {
 
     private static final long serialVersionUID = 1L;
 
@@ -326,5 +326,16 @@ public class YbReconsiderResetDataView implements Serializable {
     public static final String CURRENCYFIELD = "currencyField";
 
     public static final String SEEKSTATE = "seekState";
+
+    @Override
+    public int compareTo(YbReconsiderResetDataView o) {
+        if (this.getOrderNumber() != null && o.getOrderNumber() != null) {
+            return this.getOrderNumber().compareTo(o.getOrderNumber());
+        } else if (this.getOrderNumber() != null) {
+            return 1;
+        } else {
+            return 0;
+        }
+    }
 
 }

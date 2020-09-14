@@ -2,6 +2,7 @@ package cc.mrbird.febs.yb.service.impl;
 
 import cc.mrbird.febs.common.domain.QueryRequest;
 import cc.mrbird.febs.common.utils.SortUtil;
+import cc.mrbird.febs.yb.entity.YbAppealResultView;
 import cc.mrbird.febs.yb.entity.YbReconsiderResetDataView;
 import cc.mrbird.febs.yb.dao.YbReconsiderResetDataViewMapper;
 import cc.mrbird.febs.yb.service.IYbReconsiderResetDataViewService;
@@ -17,10 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.time.LocalDate;
 
 /**
@@ -114,6 +112,41 @@ public class YbReconsiderResetDataViewServiceImpl extends ServiceImpl<YbReconsid
     public void updateYbReconsiderResetDataView(YbReconsiderResetDataView ybReconsiderResetDataView) {
 //        ybReconsiderResetDataView.setModifyTime(new Date());
         this.baseMapper.updateYbReconsiderResetDataView(ybReconsiderResetDataView);
+    }
+
+    @Override
+    public List<YbReconsiderResetDataView> findYbReconsiderResetDataList(YbReconsiderResetDataView ybReconsiderResetDataView) {
+        List<YbReconsiderResetDataView> list = new ArrayList<YbReconsiderResetDataView>();
+        try {
+            LambdaQueryWrapper<YbReconsiderResetDataView> queryWrapper = new LambdaQueryWrapper<>();
+            if (ybReconsiderResetDataView.getApplyDateStr() != null) {
+                queryWrapper.eq(YbReconsiderResetDataView::getApplyDateStr, ybReconsiderResetDataView.getApplyDateStr());
+            }
+            if (ybReconsiderResetDataView.getState() != null) {
+                queryWrapper.eq(YbReconsiderResetDataView::getState, ybReconsiderResetDataView.getState());
+            }
+            if (ybReconsiderResetDataView.getSeekState() != null) {
+                queryWrapper.eq(YbReconsiderResetDataView::getSeekState, ybReconsiderResetDataView.getSeekState());
+            }
+            if (ybReconsiderResetDataView.getId() != null) {
+                queryWrapper.eq(YbReconsiderResetDataView::getId, ybReconsiderResetDataView.getId());
+            }
+            if (ybReconsiderResetDataView.getDataType() != null) {
+                queryWrapper.eq(YbReconsiderResetDataView::getDataType, ybReconsiderResetDataView.getDataType());
+            }
+            if (ybReconsiderResetDataView.getOrderNumber() != null) {
+                queryWrapper.eq(YbReconsiderResetDataView::getOrderNumber, ybReconsiderResetDataView.getOrderNumber());
+            }
+            if (ybReconsiderResetDataView.getResetId() != null) {
+                queryWrapper.eq(YbReconsiderResetDataView::getResetId, ybReconsiderResetDataView.getResetId());
+            }
+            list = this.baseMapper.selectList(queryWrapper);
+
+            return list;
+        } catch (Exception e) {
+            log.error("获取字典信息失败", e);
+            return list;
+        }
     }
 
     @Override

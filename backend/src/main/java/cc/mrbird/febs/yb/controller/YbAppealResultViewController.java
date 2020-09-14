@@ -180,7 +180,7 @@ public class YbAppealResultViewController extends BaseController {
 
                 List<YbAppealResultDataExport> dataList = new ArrayList<YbAppealResultDataExport>();
                 List<YbAppealResultMainExport> mainList = new ArrayList<YbAppealResultMainExport>();
-                //int i = 1;
+
                 SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
                 String dateString = "";
 
@@ -258,7 +258,7 @@ public class YbAppealResultViewController extends BaseController {
                     //反馈申诉
                     are.setBackAppeal(item.getOperateReason());
                     dataList.add(are);
-                    //i++;
+
                 }
                 //主单扣款
                 for (YbAppealResultView item : appealResultViewMainList) {
@@ -316,7 +316,7 @@ public class YbAppealResultViewController extends BaseController {
                     //反馈申诉
                     are.setBackAppeal(item.getOperateReason());
                     mainList.add(are);
-                    //i++;
+
                 }
                 String guid = UUID.randomUUID().toString();
                 String filePath = febsProperties.getUploadPath(); // 上传后的路径

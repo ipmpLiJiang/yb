@@ -26,7 +26,7 @@ import com.wuwenze.poi.annotation.ExcelField;
 @Excel("yb_reconsider_inpatientfees")
 @Data
 @Accessors(chain = true)
-public class YbReconsiderInpatientfees implements Serializable{
+public class YbReconsiderInpatientfees implements Serializable {
 
 private static final long serialVersionUID=1L;
 

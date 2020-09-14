@@ -79,9 +79,7 @@ export default {
     columns () {
       return [{
         title: '序号',
-        customRender: (text, record, index) => {
-          return this.rowNo(index)
-        },
+        dataIndex: 'orderNumber',
         fixed: 'left',
         width: 70
       },
@@ -302,6 +300,8 @@ export default {
         params.pageSize = this.pagination.defaultPageSize
         params.pageNum = this.pagination.defaultCurrent
       }
+      params.sortField = 'orderNumber'
+      params.sortOrder = 'ascend'
       this.$get('ybHandleVerifyDataView', {
         ...params
       }).then((r) => {

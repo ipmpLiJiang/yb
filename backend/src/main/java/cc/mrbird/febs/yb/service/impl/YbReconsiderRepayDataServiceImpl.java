@@ -222,7 +222,9 @@ public class YbReconsiderRepayDataServiceImpl extends ServiceImpl<YbReconsiderRe
                                     updateResult.setRepayDate(new Date());
                                     updateResult.setRepayPersonId(uid);
                                     updateResult.setRepayPersonName(uname);
-
+                                    if (warnType == 2) {
+                                        updateRepayData.setOrderNumberNew(rAd.getOrderNumber());
+                                    }
                                     updateRepayData.setWarnType(warnType);
                                     updateRepayData.setSeekState(1);
 
@@ -233,7 +235,8 @@ public class YbReconsiderRepayDataServiceImpl extends ServiceImpl<YbReconsiderRe
                         } else {
                             //3 有序号 没有匹配到, 字段匹配到了 暂时 state = 1 一对多(单个或多个 待确认还款)
                             //6 无序号 字段匹配到多个 暂时 state = 1 一对多
-                            if (warnType == 3 || warnType == 6) {
+                            //5 序号 匹配到多个 暂时 state = 1 一对多
+                            if (warnType == 3 || warnType == 6 || warnType == 5) {
                                 String orderNumberNews = "";
                                 for (YbReconsiderResetData rad3 : searchResetDataList) {
                                     if ("".equals(orderNumberNews)) {

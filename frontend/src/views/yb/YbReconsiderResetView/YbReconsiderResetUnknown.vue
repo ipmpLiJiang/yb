@@ -70,9 +70,7 @@ export default {
     columns () {
       return [{
         title: '序号',
-        customRender: (text, record, index) => {
-          return this.rowNo(index)
-        },
+        dataIndex: 'orderNumber',
         fixed: 'left',
         width: 70
       },
@@ -184,6 +182,18 @@ export default {
     look (record, index) {
       record.rowNo = this.rowNo(index)
       this.$emit('look', record)
+    },
+    exportExcel () {
+      if (this.dataSource.length > 0) {
+        let queryParams = {}
+        queryParams.applyDateStr = this.applyDate
+        queryParams.state = 2
+        this.$export('ybReconsiderResetDataView/excel1', {
+          ...queryParams
+        })
+      } else {
+        this.$message.success('导出Excel,无数据!')
+      }
     },
     search () {
       let { sortedInfo } = this

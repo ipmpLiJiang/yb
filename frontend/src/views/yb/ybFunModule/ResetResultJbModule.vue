@@ -7,7 +7,7 @@
         >
             <a-col :span=6>
             <div style="height:40px">
-                序号：{{ybResetResultModule.rowNo}}</div>
+                序号：{{ybResetResultModule.orderNumber}}</div>
             </a-col>
             <a-col :span=6>
             <div style="height:40px">

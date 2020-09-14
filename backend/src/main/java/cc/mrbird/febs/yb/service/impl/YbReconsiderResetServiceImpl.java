@@ -5,16 +5,13 @@ import cc.mrbird.febs.common.utils.SortUtil;
 import cc.mrbird.febs.yb.entity.YbReconsiderReset;
 import cc.mrbird.febs.yb.dao.YbReconsiderResetMapper;
 import cc.mrbird.febs.yb.entity.YbReconsiderResetData;
-import cc.mrbird.febs.yb.entity.YbReconsiderResetMain;
 import cc.mrbird.febs.yb.service.*;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -24,7 +21,6 @@ import java.util.Date;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
-import java.time.LocalDate;
 
 /**
  * <p>
@@ -41,8 +37,6 @@ public class YbReconsiderResetServiceImpl extends ServiceImpl<YbReconsiderResetM
 
     @Autowired
     public IYbReconsiderResetDataService iYbReconsiderResetDataService;
-    @Autowired
-    public IYbReconsiderResetMainService iYbReconsiderResetMainService;
 
     @Override
     public IPage<YbReconsiderReset> findYbReconsiderResets(QueryRequest request, YbReconsiderReset ybReconsiderReset) {

@@ -73,9 +73,7 @@ export default {
     columns () {
       return [{
         title: '序号',
-        customRender: (text, record, index) => {
-          return this.rowNo(index)
-        },
+        dataIndex: 'orderNumber',
         fixed: 'left',
         width: 70
       },

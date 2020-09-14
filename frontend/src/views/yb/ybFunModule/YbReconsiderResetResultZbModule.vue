@@ -219,7 +219,7 @@ export default {
     fetch (params = {}) {
       params.applyDateStr = this.ybReconsiderResetResult.belongDateStr
       let warnType = this.ybReconsiderResetResult.warnType
-      if (warnType === 3 || warnType === 6) {
+      if (warnType === 3 || warnType === 6 || warnType === 2 || warnType === 5) {
         params.orderNumber = this.ybReconsiderResetResult.orderNumberNew
       } else {
         params.orderNumber = this.ybReconsiderResetResult.orderNumber

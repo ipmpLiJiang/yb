@@ -39,7 +39,7 @@ public class ${entity} extends ${superEntityClass}#if(${activeRecord})<${entity}
 #elseif(${activeRecord})
 public class ${entity} extends Model<${entity}> {
 #else
-public class ${entity} implements Serializable{
+public class ${entity} implements Serializable , Comparable<${entity}>{
 #end
 
 private static final long serialVersionUID=1L;
@@ -150,4 +150,14 @@ public String toString() {
         "}";
         }
 #end
+@Override
+public int compareTo(${entity} o) {
+        if (this.getId() != null && o.getId() != null) {
+        return this.getId().compareTo(o.getId());
+        } else if (this.getId() != null) {
+        return 1;
+        } else {
+        return 0;
         }
+        }
+}
