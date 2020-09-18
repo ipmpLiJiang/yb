@@ -1,5 +1,7 @@
 package cc.mrbird.febs.yb.controller;
 
+import cc.mrbird.febs.com.entity.ComFile;
+import cc.mrbird.febs.com.service.IComFileService;
 import cc.mrbird.febs.common.annotation.Log;
 import cc.mrbird.febs.common.controller.BaseController;
 import cc.mrbird.febs.common.domain.FebsResponse;
@@ -7,12 +9,15 @@ import cc.mrbird.febs.common.domain.router.VueRouter;
 import cc.mrbird.febs.common.exception.FebsException;
 import cc.mrbird.febs.common.domain.QueryRequest;
 
+import cc.mrbird.febs.common.properties.FebsProperties;
+import cc.mrbird.febs.yb.domain.ResponseResultData;
 import cc.mrbird.febs.yb.service.IYbAppealResultService;
 import cc.mrbird.febs.yb.entity.YbAppealResult;
 
 import cc.mrbird.febs.common.utils.FebsUtil;
 import cc.mrbird.febs.system.domain.User;
 import com.baomidou.mybatisplus.core.toolkit.StringPool;
+import com.google.common.io.Files;
 import com.wuwenze.poi.ExcelKit;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -23,10 +28,8 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.io.File;
+import java.util.*;
 
 /**
  * @author viki
@@ -42,6 +45,12 @@ public class YbAppealResultController extends BaseController {
     private String message;
     @Autowired
     public IYbAppealResultService iYbAppealResultService;
+
+    @Autowired
+    IComFileService iComFileService;
+
+    @Autowired
+    FebsProperties febsProperties;
 
 
     /**
@@ -136,24 +145,104 @@ public class YbAppealResultController extends BaseController {
     @Log("查询创建")
     @PostMapping("findCreateAppealResult")
     @RequiresPermissions("ybAppealResult:findCreate")
-    public FebsResponse findCreateAppealResults(YbAppealResult ybAppealResult){
+    public FebsResponse findCreateAppealResults(YbAppealResult ybAppealResult) {
         int success = 1;
         try {
             User currentUser = FebsUtil.getCurrentUser();
             Long uid = currentUser.getUserId();
             String uname = currentUser.getUsername();
-            ybAppealResult = this.iYbAppealResultService.findCreateAppealResult(ybAppealResult,uid,uname);
+            ybAppealResult = this.iYbAppealResultService.findCreateAppealResult(ybAppealResult, uid, uname);
         } catch (Exception e) {
             message = "创建失败";
             success = 0;
             log.error(message, e);
         }
         Map<String, Object> result = new HashMap<>();
-        result.put("success",success);
+        result.put("success", success);
         result.put("message", message);
         result.put("data", ybAppealResult);
         return new FebsResponse().put("data", result);
     }
 
+    @Log("查询创建")
+    @PostMapping("findLoadLastAppealResul")
+    @RequiresPermissions("ybAppealResult:findCreate")
+    public FebsResponse findLoadLastAppealResuls(YbAppealResult ybAppealResult) {
+        int success = 0;
+        try {
+
+            String loadId = ybAppealResult.getId();//获得传过来的 sourceType==1 的 manageId
+            //获取当前是否上传过附件 sourceType==1
+            List<ComFile> comFileList = this.iComFileService.findListComFile(loadId);
+            if (comFileList.size() == 0) {
+                String applyDateStr = ybAppealResult.getCurrencyField(); //获得传过来的 applyDateStr
+                //获得之前申诉记录
+                ybAppealResult = this.iYbAppealResultService.findLoadLastAppealResulData(ybAppealResult);
+                if (ybAppealResult != null) {
+
+                    comFileList = this.iComFileService.findListComFile(ybAppealResult.getId());
+                    if (comFileList.size() > 0) {
+                        List<ComFile> loadLastList = new ArrayList<ComFile>();
+
+                        String filePath = febsProperties.getUploadPath(); // 上传后的路径
+                        String oldDept = filePath + applyDateStr + "/" + ybAppealResult.getDeptName() + ybAppealResult.getId() + "正常";
+                        String newDept = filePath + applyDateStr + "/" + ybAppealResult.getDeptName() + loadId + "剔除";
+
+                        File f = new File(newDept);
+                        if (!f.exists()) {
+                            f.mkdirs(); //创建目录
+                        }
+
+                        for (ComFile comfile : comFileList) {
+                            ComFile file = new ComFile();
+                            file.setId(UUID.randomUUID().toString());
+                            file.setRefTabId(loadId);
+                            file.setServerName(comfile.getServerName());
+                            file.setClientName(comfile.getClientName());
+                            file.setRefTabTable(comfile.getRefTabTable());
+                            file.setIsDeletemark(1);
+                            file.setCreateTime(new Date());
+
+                            String oldFileUrl = oldDept + "/" + comfile.getServerName();
+                            String newFileUrl = newDept + "/" + comfile.getServerName();
+                            File oldFile = new File(oldFileUrl);
+                            if (oldFile.exists()) {
+                                File newFile = new File(newFileUrl);
+                                Files.copy(oldFile, newFile);
+                                loadLastList.add(file);
+                            }
+                        }
+
+                        if (loadLastList.size() > 0) {
+                            boolean bl = this.iComFileService.loadLastComFiles(loadLastList);
+                            if (bl) {
+                                success = 1;
+                                message = "获取数据成功.";
+                            }
+                        }
+                    }else{
+                        message = "上次未上传复议图片.";
+                    }
+                }else{
+                    message = "未找到上次复议图片和申诉理由.";
+                }
+            }else{
+                message = "当前已上传图片，请先删除后再重新获取上次复议图片和申诉理由.";
+            }
+        } catch (Exception e) {
+            message = "获取数据失败.";
+            success = 0;
+            log.error(message, e);
+        }
+        ResponseResultData rrd = new ResponseResultData();
+        rrd.setMessage(message);
+        rrd.setSuccess(success);
+        if(ybAppealResult.getOperateReason()!=null) {
+            rrd.setData(ybAppealResult.getOperateReason());
+        }else{
+            rrd.setData("");
+        }
+        return new FebsResponse().data(rrd);
+    }
 
 }

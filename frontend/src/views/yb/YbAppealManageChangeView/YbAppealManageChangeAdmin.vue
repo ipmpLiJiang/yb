@@ -21,11 +21,11 @@
             <div class="editable-row-operations">
               <span>
                 <a
-                  @click="() => detail(record,index)"
+                  @click.stop="() => detail(record,index)"
                 >查看详情</a>
                 <a-divider type="vertical" />
                 <a
-                  @click="() => change(record,index)"
+                  @click.stop="() => change(record,index)"
                 >变更</a>
               </span>
             </div>

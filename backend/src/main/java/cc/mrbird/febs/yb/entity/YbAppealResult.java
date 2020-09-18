@@ -122,12 +122,6 @@ private static final long serialVersionUID=1L;
     @ExcelField(value ="剔除明细扣款")
     private String resetDataId;
 
-    /**
-     * 还款明细
-     */
-    @TableField("repayDataId")
-    @ExcelField(value ="还款明细")
-    private String repayDataId;
 
     /**
      * 剔除人代码
@@ -152,28 +146,6 @@ private static final long serialVersionUID=1L;
     private transient String resetDateFrom;
     private transient String resetDateTo;
 
-    /**
-     * 还款人代码
-     */
-    @TableField("repayPersonId")
-    @ExcelField(value ="还款人代码")
-    private Long repayPersonId;
-
-    /**
-     * 还款人
-     */
-    @TableField("repayPersonName")
-    @ExcelField(value ="还款人")
-    private String repayPersonName;
-
-    /**
-     * 还款日期
-     */
-    @TableField("repayDate")
-    @ExcelField(value ="还款日期")
-    private Date repayDate;
-    private transient String repayDateFrom;
-    private transient String repayDateTo;
 
     /**
      * 数据类型
@@ -181,6 +153,13 @@ private static final long serialVersionUID=1L;
     @TableField("dataType")
     //@ExcelField(value ="数据类型")
     private Integer dataType;
+
+    /**
+     * 还款状态
+     */
+    @TableField("repayState")
+    //@ExcelField(value ="还款状态")
+    private Integer repayState;
 
     /**
      * 备注
@@ -263,7 +242,6 @@ private static final long serialVersionUID=1L;
 
     public static final String RESETDATAID ="resetDataId";
 
-    public static final String REPAYDATAID ="repayDataId";
 
     public static final String RESETPERSONID ="resetPersonId" ;
 
@@ -271,13 +249,9 @@ private static final long serialVersionUID=1L;
 
     public static final String RESETDATE ="resetDate" ;
 
-    public static final String REPAYPERSONID ="repayPersonId" ;
-
-    public static final String REPAYPERSONNAME ="repayPersonName" ;
-
-    public static final String REPAYDATE ="repayDate" ;
-
     public static final String DATATYPE ="dataType" ;
+
+    public static final String REPAYSTATE ="repayState" ;
 
     public static final String COMMENTS ="COMMENTS" ;
 

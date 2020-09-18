@@ -17,14 +17,11 @@
         <result column="currencyField" property="currencyField"/>
         <result column="sourceType" property="sourceType"/>
         <result column="resetDataId" property="resetDataId"/>
-        <result column="repayDataId" property="repayDataId"/>
         <result column="resetPersonId" property="resetPersonId"/>
         <result column="resetPersonName" property="resetPersonName"/>
         <result column="resetDate" property="resetDate"/>
-        <result column="repayPersonId" property="repayPersonId"/>
-        <result column="repayPersonName" property="repayPersonName"/>
-        <result column="repayDate" property="repayDate"/>
         <result column="dataType" property="dataType"/>
+        <result column="repayState" property="repayState"/>
         <result column="COMMENTS" property="comments"/>
         <result column="STATE" property="state"/>
         <result column="IS_DELETEMARK" property="isDeletemark"/>
@@ -36,7 +33,7 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, applyDataId, verifyId, manageId, doctorCode, doctorName, deptCode, deptName, operateReason, operateDate, currencyField,sourceType,resetDataId,repayDataId,resetPersonId,resetPersonName,resetDate,repayPersonId,repayPersonName,repayDate,dataType, COMMENTS, STATE, IS_DELETEMARK, MODIFY_TIME, CREATE_TIME, CREATE_USER_ID, MODIFY_USER_ID
+        id, applyDataId, verifyId, manageId, doctorCode, doctorName, deptCode, deptName, operateReason, operateDate, currencyField,sourceType,resetDataId,resetPersonId,resetPersonName,resetDate,dataType,repayState, COMMENTS, STATE, IS_DELETEMARK, MODIFY_TIME, CREATE_TIME, CREATE_USER_ID, MODIFY_USER_ID
     </sql>
     <update id="updateYbAppealResult" parameterType="cc.mrbird.febs.yb.entity.YbAppealResult">
         update yb_appeal_result
@@ -52,13 +49,12 @@
             <if test="operateDate != null">operateDate=#{operateDate},</if>
             <if test="currencyField != null">currencyField=#{currencyField},</if>
             <if test="sourceType != null">sourceType=#{sourceType},</if>
+            <if test="resetDataId != null">resetDataId=#{resetDataId},</if>
             <if test="resetPersonId != null">resetPersonId=#{resetPersonId},</if>
             <if test="resetPersonName != null">resetPersonName=#{resetPersonName},</if>
             <if test="resetDate != null">resetDate=#{resetDate},</if>
-            <if test="repayPersonId != null">repayPersonId=#{repayPersonId},</if>
-            <if test="repayPersonName != null">repayPersonName=#{repayPersonName},</if>
-            <if test="repayDate != null">repayDate=#{repayDate},</if>
             <if test="dataType != null">dataType=#{dataType},</if>
+            <if test="repayState != null">repayState=#{repayState},</if>
             <if test="comments != null">COMMENTS=#{comments},</if>
             <if test="state != null">STATE=#{state},</if>
             <if test="isDeletemark != null">IS_DELETEMARK=#{isDeletemark},</if>
@@ -109,6 +105,7 @@
             concat('%', #{ ybAppealResult.currencyField} ,'%')
         </if>
         <if test="ybAppealResult.sourceType != null">and sourceType =#{ ybAppealResult.sourceType}</if>
+        <if test="ybAppealResult.repayState != null">and repayState =#{ ybAppealResult.repayState}</if>
         <if test="ybAppealResult.resetPersonId != null">and resetPersonId =#{ ybAppealResult.resetPersonId}</if>
         <if test="ybAppealResult.resetPersonName != null and ybAppealResult.resetPersonName != ''">and resetPersonName
             =#{ ybAppealResult.resetPersonName}
@@ -118,16 +115,6 @@
         </if>
         <if test="ybAppealResult.resetDateTo!= null">
             AND ybAppealResult.resetDate <![CDATA[ <= ]]>  resetDateTo}
-        </if>
-        <if test="ybAppealResult.repayPersonId != null">and repayPersonId =#{ ybAppealResult.repayPersonId}</if>
-        <if test="ybAppealResult.repayPersonName != null and ybAppealResult.repayPersonName != ''">and repayPersonName
-            =#{ ybAppealResult.repayPersonName}
-        </if>
-        <if test="ybAppealResult.repayDateFrom!= null">
-            AND ybAppealResult.repayDate <![CDATA[ >= ]]>  repayDateFrom}
-        </if>
-        <if test="ybAppealResult.repayDateTo!= null">
-            AND ybAppealResult.repayDate <![CDATA[ <= ]]>  repayDateTo}
         </if>
         <if test="ybAppealResult.comments != null and ybAppealResult.comments != ''">and COMMENTS like concat('%',
             #{ ybAppealResult.comments} ,'%')
@@ -216,7 +203,7 @@
         yb_appeal_result.STATE = 2 AND
         yb_appeal_result.sourceType = 0 AND
         yb_appeal_result.resetDataId IS NOT NULL AND
-        yb_appeal_result.repayDataId IS NULL AND
+        yb_appeal_result.repayState in (2,3) AND
         yb_reconsider_apply.applyDateStr = #{ applyDateStr}
         <if test="dataType != null">and yb_appeal_result.dataType =#{ dataType}</if>
     </select>

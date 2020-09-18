@@ -25,6 +25,22 @@
               </span>
             </div>
           </template>
+          <template
+            slot="operationDeductReason"
+            slot-scope="text, record, index"
+          >
+            <a-popover title="扣款原因" trigger="hover">
+              <template slot="content">
+                <p>{{record.deductReason}}</p>
+              </template>
+              <p v-if="record.deductReason.length > 12">
+                {{record.deductReason.substring(0,12)}}...
+              </p>
+              <p v-else>
+                {{record.deductReason}}
+              </p>
+            </a-popover>
+          </template>
         </a-table>
   </div>
 </template>
@@ -115,7 +131,7 @@ export default {
       },
       {
         title: '扣除原因',
-        dataIndex: 'deductReason',
+        scopedSlots: { customRender: 'operationDeductReason' },
         width: 200
       },
       {
@@ -253,7 +269,9 @@ export default {
         this.dataSource = data.rows
         this.pagination = pagination
         if (this.dataSource.length > 0) {
-          this.$emit('uploadDisabled')
+          this.$emit('uploadDisabled', true)
+        } else {
+          this.$emit('uploadDisabled', false)
         }
       })
       this.selectedRowKeys = []

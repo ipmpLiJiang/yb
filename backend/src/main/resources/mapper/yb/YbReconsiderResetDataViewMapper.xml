@@ -45,11 +45,12 @@
             <result column="insuredType" property="insuredType"/>
             <result column="dataType" property="dataType"/>
             <result column="orderNumber" property="orderNumber"/>
+            <result column="repaymentPrice" property="repaymentPrice"/>
         </resultMap>
 
         <!-- 通用查询结果列 -->
         <sql id="Base_Column_List">
-        id, serialNo, billNo, projectCode, projectName, medicalPrice, ruleName, deductPrice, deductReason, repaymentReason, doctorName, deptCode, deptName, costDate, costDateStr, hospitalizedNo, treatmentMode, settlementDate, settlementDateStr, personalNo, insuredName, cardNumber, areaName, resetId, applyDate, applyDateStr, applyDataId, reconsiderApplyId, appealResultId, verifyId, manageId, arDoctorCode, arDoctorName, arDeptCode, arDeptName, typeno, operateType,currencyField,insuredType,dataType,orderNumber
+        id, serialNo, billNo, projectCode, projectName, medicalPrice, ruleName, deductPrice, deductReason, repaymentReason, doctorName, deptCode, deptName, costDate, costDateStr, hospitalizedNo, treatmentMode, settlementDate, settlementDateStr, personalNo, insuredName, cardNumber, areaName, resetId, applyDate, applyDateStr, applyDataId, reconsiderApplyId, appealResultId, verifyId, manageId, arDoctorCode, arDoctorName, arDeptCode, arDeptName, typeno, operateType,currencyField,insuredType,dataType,orderNumber,repaymentPrice
     </sql>
     <update id="updateYbReconsiderResetDataView" parameterType="cc.mrbird.febs.yb.entity.YbReconsiderResetDataView">
         update yb_reconsider_reset_data_view

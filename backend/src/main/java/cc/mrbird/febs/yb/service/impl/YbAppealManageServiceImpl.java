@@ -146,6 +146,7 @@ public class YbAppealManageServiceImpl extends ServiceImpl<YbAppealManageMapper,
         newAppealResult.setCreateUserId(uId);
         newAppealResult.setCreateTime(thisDate);
         newAppealResult.setState(1);
+        newAppealResult.setRepayState(1);
         newAppealResult.setIsDeletemark(1);
         return this.iYbAppealResultService.saveOrUpdate(newAppealResult);
     }

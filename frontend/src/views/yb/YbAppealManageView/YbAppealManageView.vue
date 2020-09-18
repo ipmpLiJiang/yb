@@ -103,6 +103,20 @@
             >
             </ybAppealManage-completed>
           </a-tab-pane>
+          <a-tab-pane
+            key="5"
+            :forceRender="true"
+            tab="已过期"
+          >
+          <!-- 已过期 -->
+          <ybAppealManage-overdue
+              ref="ybAppealManageOverdue"
+              :searchText = 'searchText'
+              :applyDate='formatDate()'
+              @onHistoryLook="onHistoryLook"
+            >
+            </ybAppealManage-overdue>
+          </a-tab-pane>
         </a-tabs>
       </div>
     </template>
@@ -150,11 +164,12 @@ import YbAppealManageLook from './YbAppealManageLook'
 import YbAppealManageReject from './YbAppealManageReject'
 import YbAppealManageHistory from '../ybFunModule/YbAppealManageHistoryModule'
 import YbAppealManageUpload from './YbAppealManageUpload'
+import YbAppealManageOverdue from './YbAppealManageOverdue'
 
 export default {
   name: 'YbAppealManageView',
   components: {
-    YbAppealManageAccept, YbAppealManageRefused, YbAppealManageLook, YbAppealManageReject, YbAppealManageStayed, YbAppealManageCompleted, YbAppealManageHistory, YbAppealManageUpload},
+    YbAppealManageAccept, YbAppealManageRefused, YbAppealManageLook, YbAppealManageReject, YbAppealManageStayed, YbAppealManageCompleted, YbAppealManageHistory, YbAppealManageUpload, YbAppealManageOverdue},
   data () {
     return {
       monthFormat: 'YYYY-MM',
@@ -186,8 +201,10 @@ export default {
         this.$refs.ybAppealManageRefused.search()
       } else if (key === '3') {
         this.$refs.ybAppealManageStayed.search()
-      } else {
+      } else if (key === '4') {
         this.$refs.ybAppealManageCompleted.search()
+      } else {
+        this.$refs.ybAppealManageOverdue.search()
       }
     },
     handleLookSuccess () {
@@ -248,8 +265,10 @@ export default {
         this.$refs.ybAppealManageRefused.onHistory()
       } else if (key === '3') {
         this.$refs.ybAppealManageStayed.onHistory()
-      } else {
+      } else if (key === '4') {
         this.$refs.ybAppealManageCompleted.onHistory()
+      } else {
+        this.$refs.ybAppealManageOverdue.onHistory()
       }
     },
     reset () {

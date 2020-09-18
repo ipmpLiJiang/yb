@@ -8,7 +8,7 @@
           :dataSource="dataSource"
           :pagination="pagination"
           :loading="loading"
-          :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
+          :rowSelection="{type: 'radio', selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
           @change="handleTableChange"
           :bordered="bordered"
           :customRow="handleClickRow"
@@ -155,6 +155,8 @@ export default {
               return '医保拒绝'
             case 6:
               return '已上传'
+            case 7:
+              return '过期'
             default:
               return text
           }
@@ -179,6 +181,7 @@ export default {
           click: () => {
             let target = this.selectedRowKeys.filter(key => key === record.id)[0]
             if (target === undefined) {
+              this.selectedRowKeys = []
               this.selectedRowKeys.push(record.id)
             } else {
               this.selectedRowKeys.splice(this.selectedRowKeys.indexOf(record.id), 1)

@@ -31,6 +31,7 @@
                     <result column="insuredType" property="insuredType"/>
                     <result column="dataType" property="dataType"/>
             <result column="orderNumber" property="orderNumber"/>
+            <result column="repaymentPrice" property="repaymentPrice"/>
                     <result column="COMMENTS" property="comments"/>
                     <result column="STATE" property="state"/>
                     <result column="IS_DELETEMARK" property="isDeletemark"/>
@@ -42,7 +43,7 @@
 
         <!-- 通用查询结果列 -->
         <sql id="Base_Column_List">
-        id, pid, serialNo, billNo, projectCode, projectName, medicalPrice, ruleName, deductPrice, deductReason, repaymentReason, doctorName, deptCode, deptName, costDate, costDateStr, hospitalizedNo, treatmentMode, settlementDate, settlementDateStr, personalNo, insuredName, cardNumber, areaName,insuredType,dataType,orderNumber, COMMENTS, STATE, IS_DELETEMARK, MODIFY_TIME, CREATE_TIME, CREATE_USER_ID, MODIFY_USER_ID
+        id, pid, serialNo, billNo, projectCode, projectName, medicalPrice, ruleName, deductPrice, deductReason, repaymentReason, doctorName, deptCode, deptName, costDate, costDateStr, hospitalizedNo, treatmentMode, settlementDate, settlementDateStr, personalNo, insuredName, cardNumber, areaName,insuredType,dataType,orderNumber,repaymentPrice, COMMENTS, STATE, IS_DELETEMARK, MODIFY_TIME, CREATE_TIME, CREATE_USER_ID, MODIFY_USER_ID
     </sql>
     <update id="updateYbReconsiderResetData" parameterType="cc.mrbird.febs.yb.entity.YbReconsiderResetData">
         update yb_reconsider_reset_data
@@ -73,6 +74,7 @@
 <if test="areaName != null">areaName=#{areaName},</if>
             <if test="dataType != null">dataType=#{dataType},</if>
             <if test="orderNumber != null">orderNumber=#{orderNumber},</if>
+            <if test="repaymentPrice != null">repaymentPrice=#{repaymentPrice},</if>
 <if test="comments != null">COMMENTS=#{comments},</if>
 <if test="state != null">STATE=#{state},</if>
 <if test="isDeletemark != null">IS_DELETEMARK=#{isDeletemark},</if>
@@ -120,6 +122,7 @@
             <if test="ybReconsiderResetData.cardNumber != null and ybReconsiderResetData.cardNumber != ''"> and cardNumber like concat('%', #{ ybReconsiderResetData.cardNumber} ,'%')</if>
             <if test="ybReconsiderResetData.areaName != null and ybReconsiderResetData.areaName != ''"> and areaName like concat('%', #{ ybReconsiderResetData.areaName} ,'%')</if>
             <if test="ybReconsiderResetData.comments != null and ybReconsiderResetData.comments != ''"> and COMMENTS like concat('%', #{ ybReconsiderResetData.comments} ,'%')</if>
+        <if test="ybReconsiderResetData.repaymentPrice != null"> and repaymentPrice =#{ ybReconsiderResetData.repaymentPrice} </if>
         <if test="ybReconsiderResetData.state != null"> and STATE =#{ ybReconsiderResetData.state} </if>
         <if test="ybReconsiderResetData.isDeletemark != null"> and IS_DELETEMARK =#{ ybReconsiderResetData.isDeletemark} </if>
         <if test="ybReconsiderResetData.modifyTimeFrom!= null">
@@ -148,6 +151,31 @@
         yb_reconsider_reset_data.IS_DELETEMARK = 1 AND
         yb_reconsider_reset.applyDateStr = #{ applyDateStr}
         <if test="dataType != null"> and yb_reconsider_reset_data.dataType =#{ dataType} </if>
+    </select>
+
+    <select id="findResetNotExistsRepayByApplyDate" resultType="cc.mrbird.febs.yb.entity.YbReconsiderResetData">
+        SELECT
+            yb_reconsider_reset_data.*
+        FROM
+            yb_reconsider_reset_data
+        INNER JOIN yb_reconsider_reset ON
+            yb_reconsider_reset.id = yb_reconsider_reset_data.pid AND
+            yb_reconsider_reset.IS_DELETEMARK = 1
+        WHERE
+            yb_reconsider_reset_data.IS_DELETEMARK = 1 AND
+            yb_reconsider_reset.applyDateStr = #{ applyDateStr} AND
+            NOT EXISTS (
+                SELECT yb_reconsider_repay_data.id FROM
+                yb_reconsider_repay_data
+                INNER JOIN yb_reconsider_repay ON
+                    yb_reconsider_repay_data.pid = yb_reconsider_repay.id AND
+                    yb_reconsider_repay.applyDateStr = #{ applyDateStr}
+                WHERE
+                    yb_reconsider_repay_data.seekState = 1 AND
+                    yb_reconsider_repay_data.resetDataId = yb_reconsider_reset_data.id AND
+                    yb_reconsider_repay_data.dataType = yb_reconsider_reset_data.dataType
+            )
+        <if test="dataType != null"> AND yb_reconsider_reset_data.dataType =#{ dataType} </if>
     </select>
 
 </mapper>

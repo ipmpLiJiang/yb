@@ -8,10 +8,9 @@
           :dataSource="dataSource"
           :pagination="pagination"
           :loading="loading"
-          :rowSelection="{type: 'radio', selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
+          :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
           @change="handleTableChange"
           :bordered="bordered"
-          :customRow="handleClickRow"
           :scroll="{ x: 900 }"
         >
           <template
@@ -21,8 +20,23 @@
             <div class="editable-row-operations">
               <span>
                 <a
-                  @click.stop="() => look(record,index)"
-                >查看申诉材料</a>
+                  @click="() => look(record,index)"
+                >查看还款材料</a>
+              </span>
+            </div>
+          </template>
+          <template
+            slot="operation1"
+            slot-scope="text, record, index"
+          >
+            <div v-if="record.orderNumber==''">
+              <span style="color:red">
+                {{record.orderNumberNew}}
+              </span>
+            </div>
+            <div v-else>
+              <span>
+                {{record.orderNumber}}
               </span>
             </div>
           </template>
@@ -33,16 +47,13 @@
 <script>
 import moment from 'moment'
 export default {
-  name: 'YbAppealResultTwo',
+  name: 'YbReconsiderRepayData',
   props: {
-    applyDate: {
+    pid: {
       default: ''
     },
-    searchText: {
+    belongDateStr: {
       default: ''
-    },
-    searchDataType: {
-      default: 0
     }
   },
   data () {
@@ -67,109 +78,69 @@ export default {
       },
       loading: false,
       bordered: true,
-      ybAppealResult: {}
+      ybReconsiderRepay: {}
     }
   },
   computed: {
     columns () {
       return [{
         title: '序号',
-        dataIndex: 'orderNumber',
-        fixed: 'left',
-        width: 70
-      },
-      {
-        title: '意见书编码',
-        dataIndex: 'proposalCode',
-        fixed: 'left',
-        width: 120
-      },
-      {
-        title: '项目编码',
-        dataIndex: 'projectCode',
+        dataIndex: 'operation1',
+        scopedSlots: { customRender: 'operation1' },
         fixed: 'left',
         width: 100
+      },
+      {
+        title: '单据号',
+        dataIndex: 'billNo',
+        fixed: 'left',
+        width: 150
       },
       {
         title: '项目名称',
         dataIndex: 'projectName',
-        fixed: 'left',
-        width: 100
-      },
-      {
-        title: '数量',
-        dataIndex: 'num',
-        width: 70
-      },
-      {
-        title: '医保内金额',
-        dataIndex: 'medicalPrice',
-        width: 105
-      },
-      {
-        title: '规则名称',
-        dataIndex: 'ruleName',
-        width: 100
+        width: 250
       },
       {
         title: '扣除金额',
         dataIndex: 'deductPrice',
-        width: 100
+        width: 150
       },
       {
-        title: '扣除原因',
-        dataIndex: 'deductReason',
-        width: 200
+        title: '还款金额',
+        dataIndex: 'repaymentPrice',
+        width: 150
       },
       {
         title: '费用日期',
-        dataIndex: 'costDateStr',
+        dataIndex: 'costDateStr'
+      },
+      {
+        title: '状态',
+        dataIndex: 'seekState',
         customRender: (text, row, index) => {
-          if (text !== '' && text !== null) {
-            return moment(text).format('YYYY-MM-DD')
-          } else {
-            return text
+          switch (text) {
+            case 0:
+              return '未还款'
+            case 1:
+              return '已还款'
+            default:
+              return text
           }
         },
-        width: 110
-      },
-      {
-        title: '科室名称',
-        dataIndex: 'arDeptname',
         width: 120
-      },
-      {
-        title: '医生姓名',
-        dataIndex: 'arDoctorname',
-        width: 120
-      },
-      {
-        title: '申请理由',
-        dataIndex: 'operateReason',
-        width: 120
-      },
-      {
-        title: '申请日期',
-        dataIndex: 'operateDate',
-        customRender: (text, row, index) => {
-          if (text !== '' && text !== null) {
-            return moment(text).format('YYYY-MM-DD')
-          } else {
-            return text
-          }
-        },
-        width: 110
       },
       {
         title: '操作',
         dataIndex: 'operation',
         scopedSlots: { customRender: 'operation' },
         fixed: 'right',
-        width: 120
+        width: 150
       }]
     }
   },
   mounted () {
+    // this.fetch()
   },
   methods: {
     moment,
@@ -177,53 +148,12 @@ export default {
       return (this.pagination.defaultCurrent - 1) *
             this.pagination.defaultPageSize + index + 1
     },
-    handleClickRow (record, index) {
-      return {
-        on: {
-          click: () => {
-            let target = this.selectedRowKeys.filter(key => key === record.id)[0]
-            if (target === undefined) {
-              this.selectedRowKeys = []
-              this.selectedRowKeys.push(record.id)
-            } else {
-              this.selectedRowKeys.splice(this.selectedRowKeys.indexOf(record.id), 1)
-            }
-          }
-        }
-      }
-    },
     onSelectChange (selectedRowKeys) {
       this.selectedRowKeys = selectedRowKeys
-    },
-    exportExcel () {
-      if (this.dataSource.length > 0) {
-        let queryParams = {}
-        queryParams.applyDateStr = this.applyDate
-        queryParams.typeno = 2
-        queryParams.sourceType = 0
-        this.$export('ybAppealResultView/excel1', {
-          ...queryParams
-        })
-      } else {
-        this.$message.success('导出Excel,无数据!')
-      }
     },
     look (record, index) {
       record.rowNo = this.rowNo(index)
       this.$emit('look', record)
-    },
-    onHistory () {
-      let selectedRowKeys = this.selectedRowKeys
-      if (selectedRowKeys.length === 1) {
-        let target = this.dataSource.filter(item => selectedRowKeys[0] === item.id)[0]
-        let indOf = this.dataSource.indexOf(target)
-        target.rowNo = this.rowNo(indOf)
-        this.$emit('onHistoryLook', target)
-      } else if (selectedRowKeys.length === 0) {
-        this.$message.success('未选择行')
-      } else {
-        this.$message.success('请选择单行')
-      }
     },
     search () {
       let { sortedInfo } = this
@@ -266,12 +196,13 @@ export default {
     },
     fetch (params = {}) {
       this.loading = true
-      params.applyDateStr = this.applyDate
-      params.currencyField = this.searchText
-      params.dataType = this.searchDataType
-      params.typeno = 2
-      params.state = 12 // IN(1,2)
-      params.sourceType = 0
+      params.pid = this.pid
+      params.state = 0
+      params.dataType = 0
+      if (this.belongDateStr !== '') {
+        params.belongDateStr = this.belongDateStr
+      }
+      // params.seekState = 0
       if (this.paginationInfo) {
         // 如果分页信息不为空，则设置表格当前第几页，每页条数，并设置查询分页参数
         this.$refs.TableInfo.pagination.current = this.paginationInfo.current
@@ -285,7 +216,7 @@ export default {
       }
       params.sortField = 'orderNumber'
       params.sortOrder = 'ascend'
-      this.$get('ybAppealResultView', {
+      this.$get('ybReconsiderRepayData', {
         ...params
       }).then((r) => {
         let data = r.data

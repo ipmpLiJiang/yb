@@ -1,50 +1,60 @@
 <template>
-  <div id="tab" style="margin: 0px!important">
-        <!-- 表格区域 -->
-        <a-table
-          ref="TableInfo"
-          :columns="columns"
-          :rowKey="record => record.id"
-          :dataSource="dataSource"
-          :pagination="pagination"
-          :loading="loading"
-          :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
-          @change="handleTableChange"
-          :bordered="bordered"
-          :scroll="{ x: 900 }"
+  <a-drawer
+    title="查看还款明细"
+    :maskClosable="false"
+    width=75%
+    placement="right"
+    :closable="true"
+    @close="onClose"
+    :visible="lookVisiable"
+    style="height: calc(100% - 55px);overflow: auto;padding-bottom: 53px;"
+  >
+    <resetResult-module
+    ref="resetResultModule"
+    :ybResetResultModule="ybReconsiderResetResult"
+    >
+    </resetResult-module>
+    <template>
+      <!-- 表格区域 -->
+      <a-table
+        ref="TableInfo"
+        :columns="columns"
+        :rowKey="record => record.id"
+        :dataSource="dataSource"
+        :pagination="pagination"
+        :loading="loading"
+        :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
+        @change="handleTableChange"
+        :bordered="bordered"
+        :scroll="{ x: 700 }"
+      >
+      <a slot="action" slot-scope="text">action</a>
+        <template
+          slot="remark"
+          slot-scope="text, record"
         >
-          <template
-            slot="operation"
-            slot-scope="text, record, index"
-          >
-            <div class="editable-row-operations">
-              <span>
-                <a v-show="record.seekState===1?false:true"
-                  @click="() => exceptReset(record,index)"
-                >手动剔除</a>
-                <a v-show="record.seekState===0?false:true"
-                  @click="() => look(record,index)"
-                >查看申诉材料</a>
-              </span>
-            </div>
-          </template>
-          <template slot="operationDeductReason" slot-scope="text, record, index">
-             <span :title="record.deductReason">{{record.deductReason}}</span>
-           </template>
-        </a-table>
-  </div>
+          <a-popover placement="topLeft">
+            <template slot="content">
+              <div style="max-width: 200px">{{text}}</div>
+            </template>
+            <p style="width: 200px;margin-bottom: 0">{{text}}</p>
+          </a-popover>
+        </template>
+      </a-table>
+    </template>
+  </a-drawer>
 </template>
 
 <script>
 import moment from 'moment'
+import ResetResultModule from './ResetResultModule'
 export default {
-  name: 'YbReconsiderResetExcept',
+  name: 'YbReconsiderResetResultModule',
+  components: {
+    ResetResultModule},
   props: {
-    applyDate: {
-      default: ''
-    },
-    searchText: {
-      default: ''
+    lookVisiable: {
+      default: false
     }
   },
   data () {
@@ -69,7 +79,7 @@ export default {
       },
       loading: false,
       bordered: true,
-      ybAppealResult: {}
+      ybReconsiderResetResult: {}
     }
   },
   computed: {
@@ -79,12 +89,6 @@ export default {
         dataIndex: 'orderNumber',
         fixed: 'left',
         width: 70
-      },
-      {
-        title: '交易流水号',
-        dataIndex: 'serialNo',
-        fixed: 'left',
-        width: 120
       },
       {
         title: '单据号',
@@ -120,58 +124,44 @@ export default {
         width: 100
       },
       {
+        title: '还款金额',
+        dataIndex: 'repaymentPrice',
+        width: 100
+      },
+      {
         title: '扣除原因',
-        scopedSlots: {customRender: 'operationDeductReason'},
-        ellipsis: true,
+        dataIndex: 'deductReason',
         width: 200
-      },
-      {
-        title: '还款原因',
-        dataIndex: 'repaymentReason',
-        width: 200
-      },
-      {
-        title: '医生姓名',
-        dataIndex: 'doctorName',
-        width: 120
-      },
-      {
-        title: '科室编码',
-        dataIndex: 'deptCode',
-        width: 120
-      },
-      {
-        title: '科室名称',
-        dataIndex: 'deptName',
-        width: 120
       },
       {
         title: '费用日期',
         dataIndex: 'costDateStr',
+        width: 110
+      },
+      {
+        title: '科室名称',
+        dataIndex: 'arDeptname',
+        fixed: 'right',
         width: 120
       },
       {
+        title: '医生姓名',
+        dataIndex: 'arDoctorname',
+        fixed: 'right',
+        width: 105
+      },
+      {
         title: '状态',
-        dataIndex: 'seekState',
+        dataIndex: 'repayDataId',
         customRender: (text, row, index) => {
-          switch (text) {
-            case 0:
-              return '未剔除'
-            case 1:
-              return '已剔除'
-            default:
-              return text
+          if (text !== null) {
+            return '已还款'
+          } else {
+            return '未还款'
           }
         },
         fixed: 'right',
         width: 90
-      },
-      {
-        title: '操作',
-        dataIndex: 'operation',
-        scopedSlots: { customRender: 'operation' },
-        fixed: 'right',
-        width: 120
       }]
     }
   },
@@ -179,20 +169,34 @@ export default {
   },
   methods: {
     moment,
-    rowNo (index) {
-      return (this.pagination.defaultCurrent - 1) *
-            this.pagination.defaultPageSize + index + 1
+    reset () {
+      // 取消选中
+      this.selectedRowKeys = []
+      // 重置分页
+      this.$refs.TableInfo.pagination.current = this.pagination.defaultCurrent
+      if (this.paginationInfo) {
+        this.paginationInfo.current = this.pagination.defaultCurrent
+        this.paginationInfo.pageSize = this.pagination.defaultPageSize
+      }
+      // 重置列排序规则
+      this.sortedInfo = null
+      this.paginationInfo = null
+      // 重置查询参数
+      this.queryParams = {}
+      this.dataSource = []
+    },
+    onClose () {
+      this.loading = false
+      this.ybReconsiderResetResult = {}
+      this.reset()
+      this.$emit('close')
     },
     onSelectChange (selectedRowKeys) {
       this.selectedRowKeys = selectedRowKeys
     },
-    look (record, index) {
-      record.rowNo = this.rowNo(index)
-      this.$emit('look', record)
-    },
-    exceptReset (record, index) {
-      record.rowNo = this.rowNo(index)
-      this.$emit('exceptReset', record)
+    setFormValues ({ ...ybReconsiderResetResult }) {
+      this.ybReconsiderResetResult = ybReconsiderResetResult
+      this.search()
     },
     search () {
       let { sortedInfo } = this
@@ -208,22 +212,6 @@ export default {
         ...this.queryParams
       })
     },
-    reset () {
-      // 取消选中
-      this.selectedRowKeys = []
-      // 重置分页
-      this.$refs.TableInfo.pagination.current = this.pagination.defaultCurrent
-      if (this.paginationInfo) {
-        this.paginationInfo.current = this.pagination.defaultCurrent
-        this.paginationInfo.pageSize = this.pagination.defaultPageSize
-      }
-      // 重置列排序规则
-      this.sortedInfo = null
-      this.paginationInfo = null
-      // 重置查询参数
-      this.queryParams = {}
-      this.fetch()
-    },
     handleTableChange (pagination, filters, sorter) {
       this.sortedInfo = sorter
       this.paginationInfo = pagination
@@ -234,12 +222,15 @@ export default {
       })
     },
     fetch (params = {}) {
+      params.applyDateStr = this.ybReconsiderResetResult.belongDateStr
+      let warnType = this.ybReconsiderResetResult.warnType
+      if (warnType === 3 || warnType === 6 || warnType === 2 || warnType === 5) {
+        params.orderNumber = this.ybReconsiderResetResult.orderNumberNew
+      } else {
+        params.orderNumber = this.ybReconsiderResetResult.orderNumber
+      }
+      params.dataType = this.ybReconsiderResetResult.dataType
       this.loading = true
-      params.applyDateStr = this.applyDate
-      params.currencyField = this.searchText
-      params.state = 1
-      // params.dataType = 0
-      // params.seekState = 0
       if (this.paginationInfo) {
         // 如果分页信息不为空，则设置表格当前第几页，每页条数，并设置查询分页参数
         this.$refs.TableInfo.pagination.current = this.paginationInfo.current
@@ -251,9 +242,8 @@ export default {
         params.pageSize = this.pagination.defaultPageSize
         params.pageNum = this.pagination.defaultCurrent
       }
-      params.sortField = 'orderNumber'
-      params.sortOrder = 'ascend'
-      this.$get('ybReconsiderResetDataView', {
+
+      this.$get('ybReconsiderResetResultView', {
         ...params
       }).then((r) => {
         let data = r.data
@@ -263,13 +253,11 @@ export default {
         this.dataSource = data.rows
         this.pagination = pagination
       })
-      this.selectedRowKeys = []
     }
   }
 }
 </script>
 
-<style scoped>
-.editable-row-operations a {
-  margin-right: 8px;
-}
+<style lang="less" scoped>
+@import "../../../../static/less/Common";
+</style>

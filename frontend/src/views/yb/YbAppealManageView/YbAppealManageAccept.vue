@@ -21,15 +21,15 @@
             <div class="editable-row-operations">
               <span>
                 <a
-                  @click="() => look(record,index)"
+                  @click.stop="() => look(record,index)"
                 >查看</a>
                 <a-divider type="vertical" />
                 <a
-                  @click="() => accept(record)"
+                  @click.stop="() => accept(record)"
                 >接受</a>
                 <a-divider type="vertical" />
                 <a
-                  @click="() => reject(record,index)"
+                  @click.stop="() => reject(record,index)"
                   :disabled="record.enableType===1?false:true"
                 >拒绝</a>
               </span>

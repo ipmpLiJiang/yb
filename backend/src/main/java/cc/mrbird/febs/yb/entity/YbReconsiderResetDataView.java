@@ -262,6 +262,13 @@ public class YbReconsiderResetDataView implements Serializable, Comparable<YbRec
     //@ExcelField(value ="查找状态")
     private Integer seekState;
 
+    /**
+     * 还款金额
+     */
+    @TableField("repaymentPrice")
+    @ExcelField(value = "还款金额")
+    private BigDecimal repaymentPrice;
+
 
     public static final String ID = "id";
 
@@ -312,6 +319,8 @@ public class YbReconsiderResetDataView implements Serializable, Comparable<YbRec
     public static final String INSUREDTYPE = "insuredType";
 
     public static final String DATATYPE = "dataType";
+
+    public static final String REPAYMENTPRICE = "repaymentPrice";
 
     public static final String ORDERNUMBER = "orderNumber";
 

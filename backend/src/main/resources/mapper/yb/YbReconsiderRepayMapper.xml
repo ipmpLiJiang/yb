@@ -10,6 +10,8 @@
                     <result column="uploadFileName" property="uploadFileName"/>
                     <result column="repayType" property="repayType"/>
             <result column="dataType" property="dataType"/>
+            <result column="applyDateStr" property="applyDateStr"/>
+            <result column="applyDate" property="applyDate"/>
                     <result column="currencyField" property="currencyField"/>
                     <result column="COMMENTS" property="comments"/>
                     <result column="STATE" property="state"/>
@@ -22,7 +24,7 @@
 
         <!-- 通用查询结果列 -->
         <sql id="Base_Column_List">
-        id, operatorId, operatorName, uploadFileName, repayType,dataType, currencyField, COMMENTS, STATE, IS_DELETEMARK, MODIFY_TIME, CREATE_TIME, CREATE_USER_ID, MODIFY_USER_ID
+        id, operatorId, operatorName, uploadFileName, repayType,dataType,applyDate,applyDateStr, currencyField, COMMENTS, STATE, IS_DELETEMARK, MODIFY_TIME, CREATE_TIME, CREATE_USER_ID, MODIFY_USER_ID
     </sql>
     <update id="updateYbReconsiderRepay" parameterType="cc.mrbird.febs.yb.entity.YbReconsiderRepay">
         update yb_reconsider_repay
@@ -32,6 +34,8 @@
 <if test="uploadFileName != null">uploadFileName=#{uploadFileName},</if>
 <if test="repayType != null">repayType=#{repayType},</if>
             <if test="dataType != null">dataType=#{dataType},</if>
+            <if test="applyDate != null">applyDate=#{applyDate},</if>
+            <if test="applyDateStr != null">applyDateStr=#{applyDateStr},</if>
 <if test="currencyField != null">currencyField=#{currencyField},</if>
 <if test="comments != null">COMMENTS=#{comments},</if>
 <if test="state != null">STATE=#{state},</if>
@@ -54,6 +58,13 @@
         <if test="ybReconsiderRepay.dataType != null"> and dataType =#{ ybReconsiderRepay.dataType} </if>
             <if test="ybReconsiderRepay.currencyField != null and ybReconsiderRepay.currencyField != ''"> and currencyField like concat('%', #{ ybReconsiderRepay.currencyField} ,'%')</if>
             <if test="ybReconsiderRepay.comments != null and ybReconsiderRepay.comments != ''"> and COMMENTS like concat('%', #{ ybReconsiderRepay.comments} ,'%')</if>
+        <if test="ybReconsiderRepay.applyDateStr != null and ybReconsiderRepay.applyDateStr != ''"> and applyDateStr = #{ ybReconsiderRepay.applyDateStr} </if>
+        <if test="ybReconsiderRepay.applyDateFrom!= null">
+            AND ybReconsiderRepay.applyDate <![CDATA[ >= ]]>  applyDateFrom}
+        </if>
+        <if test="ybReconsiderRepay.applyDateTo!= null">
+            AND ybReconsiderRepay.applyDate <![CDATA[ <= ]]>  applyDateTo}
+        </if>
         <if test="ybReconsiderRepay.state != null"> and STATE =#{ ybReconsiderRepay.state} </if>
         <if test="ybReconsiderRepay.isDeletemark != null"> and IS_DELETEMARK =#{ ybReconsiderRepay.isDeletemark} </if>
         <if test="ybReconsiderRepay.modifyTimeFrom!= null">

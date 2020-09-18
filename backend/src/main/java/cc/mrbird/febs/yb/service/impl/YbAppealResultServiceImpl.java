@@ -150,5 +150,19 @@ public class YbAppealResultServiceImpl extends ServiceImpl<YbAppealResultMapper,
         return  this.baseMapper.findAppealResulDataHandle(applyDateStr);
     }
 
+    //手动剔除业务
+    @Override
+    public YbAppealResult findLoadLastAppealResulData(YbAppealResult appealResult) {
+        YbAppealResult ybAppealResult = null;
+                LambdaQueryWrapper<YbAppealResult> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(YbAppealResult::getApplyDataId,appealResult.getApplyDataId());
+        queryWrapper.eq(YbAppealResult::getVerifyId,appealResult.getVerifyId());
+        List<YbAppealResult>  list = this.baseMapper.selectList(queryWrapper);
+        if(list.size() > 0) {
+            ybAppealResult = list.get(0);
+        }
+
+        return ybAppealResult;
+    }
 
 }

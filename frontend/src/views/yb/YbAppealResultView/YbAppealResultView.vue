@@ -16,7 +16,7 @@
           <a-col :span=8>
             复议年月：
             <a-month-picker
-              placeholder="请输入复议年月"
+              placeholder="请选择复议年月"
               @change="monthChange"
               :default-value="formatDate()"
               :format="monthFormat"

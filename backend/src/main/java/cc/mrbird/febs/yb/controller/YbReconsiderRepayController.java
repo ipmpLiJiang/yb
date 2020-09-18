@@ -12,6 +12,7 @@ import cc.mrbird.febs.common.domain.QueryRequest;
 
 import cc.mrbird.febs.common.properties.FebsProperties;
 import cc.mrbird.febs.yb.domain.ResponseImportResultData;
+import cc.mrbird.febs.yb.domain.ResponseResultData;
 import cc.mrbird.febs.yb.entity.*;
 import cc.mrbird.febs.yb.service.IYbReconsiderRepayService;
 
@@ -122,6 +123,30 @@ public class YbReconsiderRepayController extends BaseController {
         }
     }
 
+    @Log("删除")
+    @DeleteMapping("deleteReconsiderRepay/{id}")
+    @RequiresPermissions("ybReconsiderRepay:delete")
+    public FebsResponse deleteReconsiderRepay(@NotBlank(message = "{required}") @PathVariable String id) {
+        int success = 0;
+        try {
+            // String[] arr_ids = ids.split(StringPool.COMMA);
+            message = this.iYbReconsiderRepayService.deleteReconsiderRepay(id);
+            if (message.equals("")) {
+                message = "删除失败.";
+            } else if (message.equals("ok")) {
+                message = "删除成功.";
+                success = 1;
+            }
+        } catch (Exception e) {
+            message = "删除失败";
+            log.error(message, e);
+        }
+        ResponseResultData rrd = new ResponseResultData();
+        rrd.setSuccess(success);
+        rrd.setMessage(message);
+        return new FebsResponse().data(rrd);
+    }
+
     @PostMapping("excel")
     @RequiresPermissions("ybReconsiderRepay:export")
     public void export(QueryRequest request, YbReconsiderRepay ybReconsiderRepay, HttpServletResponse response) throws FebsException {
@@ -160,7 +185,126 @@ public class YbReconsiderRepayController extends BaseController {
 
     @PostMapping("importReconsiderRepayData")
     @RequiresPermissions("ybReconsiderRepay:add")
-    public FebsResponse importReconsiderRepayData(@RequestParam MultipartFile file, @RequestParam Integer repayType, @RequestParam Integer dataType) {
+    public FebsResponse importReconsiderRepayData(@RequestParam MultipartFile file, @RequestParam String applyDateStr, @RequestParam Integer repayType, @RequestParam Integer dataType) {
+        int success = 0;
+        String uploadFileName = "";
+        if (file.isEmpty()) {
+            message = "空文件";
+        } else {
+            uploadFileName = file.getOriginalFilename();
+            boolean blError = false;
+            try {
+                String guid = UUID.randomUUID().toString();
+                String filePath = febsProperties.getUploadPath(); // 上传后的路径
+                File getFile = FileHelpers.fileUpLoad(file, filePath, guid, "ReconsiderRepayTemp");
+
+                List<YbReconsiderRepayData> listRrd = new ArrayList<YbReconsiderRepayData>();
+
+                List<Object[]> objJb = ImportExcelUtils.importExcelBySheetIndex(getFile, 0, 0, 0);
+                List<String> orderNumberList = new ArrayList<>();
+                String congfu = "";
+                if (objJb.size() > 1) {
+                    if (objJb.get(0).length == 7) {
+                        for (int i = 1; i < objJb.size(); i++) {
+                            message = "Excel导入 数据读取失败，请确保Excel列表数据正确无误.";
+                            YbReconsiderRepayData rrd = new YbReconsiderRepayData();
+                            rrd.setId(UUID.randomUUID().toString());
+                            rrd.setPid(guid);
+                            rrd.setBelongDateStr(applyDateStr);
+                            Date belongDate = DataTypeHelpers.stringDateFormat(applyDateStr + "-15", "yyyy-MM-dd", true);
+                            rrd.setBelongDate(belongDate);
+                            rrd.setIsDeletemark(1);
+                            String strOrderNumber = DataTypeHelpers.importTernaryOperate(objJb.get(i), 0);//序号',
+                            if (!DataTypeHelpers.isNullOrEmpty(strOrderNumber)) {
+                                if (!orderNumberList.stream().anyMatch(task -> task.equals(strOrderNumber))) {
+                                    orderNumberList.add(strOrderNumber);
+                                } else {
+                                    congfu = DataTypeHelpers.stringSeparate(congfu, strOrderNumber, "、");
+                                }
+                            }
+                            rrd.setOrderNumber(strOrderNumber);
+
+                            String strbelongDateUpload = DataTypeHelpers.importTernaryOperate(objJb.get(i), 1);//序号',
+                            rrd.setBelongDateUpload(strbelongDateUpload);
+
+                            String strBillNo = DataTypeHelpers.importTernaryOperate(objJb.get(i), 2);//'单据号',
+                            rrd.setBillNo(strBillNo);
+                            String strProjectName = DataTypeHelpers.importTernaryOperate(objJb.get(i), 3);//'项目名称',
+                            rrd.setProjectName(strProjectName);
+                            BigDecimal bd = new BigDecimal(0);
+
+                            String strDeductPrice = DataTypeHelpers.importTernaryOperate(objJb.get(i), 4);//'扣除金额',
+                            if (DataTypeHelpers.isNumeric(strDeductPrice)) {
+                                bd = new BigDecimal(strDeductPrice);
+                                rrd.setDeductPrice(bd);
+                            }
+                            String strCostDateStr = DataTypeHelpers.importTernaryOperate(objJb.get(i), 5);//'费用日期str',
+                            rrd.setCostDateStr(strCostDateStr);
+
+                            String strPepaymentPrice = DataTypeHelpers.importTernaryOperate(objJb.get(i), 6);//'还款金额',
+                            if (DataTypeHelpers.isNumeric(strPepaymentPrice)) {
+                                bd = new BigDecimal(strPepaymentPrice);
+                                rrd.setRepaymentPrice(bd);
+                            }
+
+
+                            rrd.setUpdateType(0);
+                            rrd.setWarnType(0);
+                            rrd.setRepayType(repayType);
+                            rrd.setDataType(dataType);
+                            rrd.setSeekState(0);
+                            rrd.setState(0);
+                            listRrd.add(rrd);
+                        }
+                    } else {
+                        blError = true;
+                        message = "Excel导入失败，Sheet 列表列数不正确";
+                    }
+                }
+
+
+                if (!blError) {
+                    if (listRrd.size() > 0) {
+                        String mms = "上传的还款单Excel  ";
+                        //mms += dataType == 0 ? "明细扣款" : "主单扣款";
+                        //mms += repayType == 0 ? " 居保 ， " : repayType == 1 ? " 职保 ， " : " ， ";
+
+                        if (!DataTypeHelpers.isNullOrEmpty(congfu)) {
+                            message = mms + " 序号： " + congfu + " 重复 , 请检查后重新上传.";
+                        } else {
+                            User currentUser = FebsUtil.getCurrentUser();
+                            Long uid = currentUser.getUserId();
+                            String uname = currentUser.getUsername();
+                            blError = this.iYbReconsiderRepayService.importReconsiderRepay(listRrd, uid, uname, uploadFileName);
+                            if (blError) {
+                                success = 1;
+                                message = "Excel导入成功.";
+                            }
+                        }
+                    } else {
+                        message = "Excel导入失败，Sheet页 无数据";
+                    }
+                }
+            } catch (Exception ex) {
+                if ("".equals(message)) {
+                    message = "Excel导入失败.";
+                }
+                log.error(message, ex);
+            }
+        }
+
+        ResponseImportResultData rrd = new ResponseImportResultData();
+        rrd.setSuccess(success);
+        rrd.setMessage(message);
+
+        rrd.setFileName(uploadFileName);
+        return new FebsResponse().data(rrd);
+
+    }
+
+    @PostMapping("importReconsiderRepayData1")
+    @RequiresPermissions("ybReconsiderRepay:add")
+    public FebsResponse importReconsiderRepayData1(@RequestParam MultipartFile file, @RequestParam Integer repayType, @RequestParam Integer dataType) {
         int success = 0;
         String uploadFileName = "";
         if (file.isEmpty()) {
@@ -216,7 +360,7 @@ public class YbReconsiderRepayController extends BaseController {
                                         rrd.setPid(guid);
                                         rrd.setBelongDateStr(value);
                                         rrd.setBelongDateUpload(valueSheet);
-                                        Date belongDate = DataTypeHelpers.stringDateFormat(value + "-15", "yyyy-MM-dd",true);
+                                        Date belongDate = DataTypeHelpers.stringDateFormat(value + "-15", "yyyy-MM-dd", true);
                                         rrd.setBelongDate(belongDate);
                                         rrd.setIsDeletemark(1);
                                         String strOrderNumber = DataTypeHelpers.importTernaryOperate(objJb.get(i), 0);//序号',
@@ -306,7 +450,7 @@ public class YbReconsiderRepayController extends BaseController {
                                         break;
                                     } else {
                                         rrd.setBelongDateStr(strBelongDateStr);
-                                        Date belongDate = DataTypeHelpers.stringDateFormat(strBelongDateStr + "-15", "yyyy-MM-dd",true);
+                                        Date belongDate = DataTypeHelpers.stringDateFormat(strBelongDateStr + "-15", "yyyy-MM-dd", true);
                                         rrd.setBelongDate(belongDate);
                                     }
 
@@ -346,7 +490,7 @@ public class YbReconsiderRepayController extends BaseController {
                                 blError = true;
                                 message = "Excel导入失败，Sheet " + value + " 列表列数不正确";
                             }
-                        } else{
+                        } else {
                             blError = true;
                             message = "Excel导入失败，Sheet " + value + " 无数据";
                         }
@@ -362,7 +506,7 @@ public class YbReconsiderRepayController extends BaseController {
                                 success = 1;
                                 message = "Excel导入成功.";
                             }
-                        }else{
+                        } else {
                             message = "Excel导入失败，Sheet页 无数据";
                         }
                     }

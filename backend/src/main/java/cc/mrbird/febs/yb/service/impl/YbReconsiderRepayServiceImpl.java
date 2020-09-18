@@ -2,6 +2,7 @@ package cc.mrbird.febs.yb.service.impl;
 
 import cc.mrbird.febs.common.domain.QueryRequest;
 import cc.mrbird.febs.common.utils.SortUtil;
+import cc.mrbird.febs.yb.entity.YbReconsiderApplyData;
 import cc.mrbird.febs.yb.entity.YbReconsiderRepay;
 import cc.mrbird.febs.yb.dao.YbReconsiderRepayMapper;
 import cc.mrbird.febs.yb.entity.YbReconsiderRepayData;
@@ -46,9 +47,16 @@ public class YbReconsiderRepayServiceImpl extends ServiceImpl<YbReconsiderRepayM
     public IPage<YbReconsiderRepay> findYbReconsiderRepays(QueryRequest request, YbReconsiderRepay ybReconsiderRepay) {
         try {
             LambdaQueryWrapper<YbReconsiderRepay> queryWrapper = new LambdaQueryWrapper<>();
-            queryWrapper.eq(YbReconsiderRepay::getIsDeletemark, 1);//1是未删 0是已删
+            String sql = " IS_DELETEMARK = 1 ";
+            // queryWrapper.eq(YbReconsiderRepay::getIsDeletemark, 1);//1是未删 0是已删
+            if (ybReconsiderRepay.getCreateTimeFrom() != null) {
+                sql += " AND CREATE_TIME >= '" + ybReconsiderRepay.getCreateTimeFrom() + "' ";
+            }
+            if (ybReconsiderRepay.getCreateTimeTo() != null) {
+                sql += " AND CREATE_TIME <= '" + ybReconsiderRepay.getCreateTimeTo() + "' ";
+            }
 
-
+            queryWrapper.apply(sql);
             Page<YbReconsiderRepay> page = new Page<>();
             SortUtil.handlePageSort(request, page, false);//true 是属性  false是数据库字段可两个
             return this.page(page, queryWrapper);
@@ -88,12 +96,44 @@ public class YbReconsiderRepayServiceImpl extends ServiceImpl<YbReconsiderRepayM
         this.baseMapper.updateYbReconsiderRepay(ybReconsiderRepay);
     }
 
+
     @Override
     @Transactional
     public void deleteYbReconsiderRepays(String[] Ids) {
         List<String> list = Arrays.asList(Ids);
         this.baseMapper.deleteBatchIds(list);
+
     }
+
+    @Override
+    @Transactional
+    public String deleteReconsiderRepay(String Id) {
+        String message = "";
+        LambdaQueryWrapper<YbReconsiderRepay> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(YbReconsiderRepay::getId, Id);
+        List<YbReconsiderRepay> repayList = this.list(queryWrapper);
+        if (repayList.size() == 1) {
+            YbReconsiderRepay ybReconsiderRepay = repayList.get(0);
+            if (ybReconsiderRepay.getState() == 0) {
+                LambdaQueryWrapper<YbReconsiderRepayData> queryWrapperData = new LambdaQueryWrapper<>();
+                queryWrapperData.eq(YbReconsiderRepayData::getPid, ybReconsiderRepay.getId());
+                boolean bl = iYbReconsiderRepayDataService.remove(queryWrapperData);
+                if (bl) {
+                    int count = this.baseMapper.deleteById(ybReconsiderRepay.getId());
+                    if (count > 0) {
+                        message = "ok";
+                    }
+                }
+            } else {
+                message = "该数据已经操作过还款,无法删除,请重新刷新.";
+            }
+        } else {
+            message = "未找到该数据,请重新刷新.";
+        }
+
+        return message;
+    }
+
 
     @Override
     @Transactional
@@ -109,11 +149,13 @@ public class YbReconsiderRepayServiceImpl extends ServiceImpl<YbReconsiderRepayM
         ybReconsiderRepay.setRepayType(ybReconsiderRepayData.getRepayType());
         ybReconsiderRepay.setDataType(ybReconsiderRepayData.getDataType());
         ybReconsiderRepay.setUploadFileName(uploadFileName);
+        ybReconsiderRepay.setApplyDate(ybReconsiderRepayData.getBelongDate());
+        ybReconsiderRepay.setApplyDateStr(ybReconsiderRepayData.getBelongDateStr());
         ybReconsiderRepay.setState(0);
 
         boolean isTrue = this.save(ybReconsiderRepay);
         if (isTrue) {
-                isTrue = this.iYbReconsiderRepayDataService.saveBatch(list);
+            isTrue = this.iYbReconsiderRepayDataService.saveBatch(list);
         }
 
         return isTrue;

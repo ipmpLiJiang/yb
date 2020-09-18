@@ -45,6 +45,15 @@
     <template>
     </template>
     <div style="margin-top:20px;">
+      <a-popconfirm
+        title="确定获取上次复议数据！"
+        @confirm="loadLastData"
+        v-show="isShow"
+        okText="确定"
+        cancelText="取消"
+      >
+        <a-button type="primary" style="margin-right: .8rem">获取上次复议数据</a-button>
+      </a-popconfirm>
     <div style="padding-top:20px;padding-bottom:20px;border: 1px solid #e8e8e8;">
       <template>
         <a-form :form="form">
@@ -205,6 +214,7 @@ export default {
       ybAppealManage: {},
       previewVisible: false,
       previewImage: '',
+      isShow: false,
       fileList: [],
       form: this.$form.createForm(this)
     }
@@ -425,9 +435,39 @@ export default {
       this.ybAppealManageUpload = {}
       this.fileList = []
       this.previewVisible = false
+      this.isShow = false
       this.previewImage = ''
       this.reset()
       this.$emit('close')
+    },
+    loadLastData () {
+      if (this.ybAppealManageUpload.sourceType === 1) {
+        let formData = {
+          verifyId: this.ybAppealManageUpload.verifySendId,
+          applyDataId: this.ybAppealManageUpload.applyDataId,
+          id: this.ybAppealManageUpload.id,
+          currencyField: this.ybAppealManageUpload.applyDateStr
+        }
+        this.$post('ybAppealResult/findLoadLastAppealResul', {
+          ...formData
+        }).then((r) => {
+          if (r.data.data.success === 1) {
+            this.findFileList(formData.id)
+          } else {
+            if (r.data.data.message !== '') {
+              this.$message.error(r.data.data.message)
+            } else {
+              this.$message.error('获取上次复议数据操作失败.')
+            }
+          }
+          if (r.data.data.data !== '') {
+            this.form.getFieldDecorator('operateReason')
+            this.form.setFieldsValue({
+              'operateReason': r.data.data.data
+            })
+          }
+        })
+      }
     },
     handleSubmit (type) {
       this.form.validateFields((err, values) => {
@@ -475,6 +515,12 @@ export default {
     },
     setFormValues ({ ...ybAppealManageUpload }) {
       this.ybAppealManageUpload = ybAppealManageUpload
+
+      if (this.ybAppealManageUpload.sourceType === 1) {
+        this.isShow = true
+      } else {
+        this.isShow = false
+      }
 
       this.form.getFieldDecorator('operateReason')
       this.form.setFieldsValue({

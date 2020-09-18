@@ -15,7 +15,7 @@
                 label="操作时间"
                 v-bind="formItemLayout"
               >
-                <a-date-picker @change="oncreateTimeFromChange" />
+                <a-date-picker v-model="queryParams.createTimeFrom" @change="oncreateTimeFromChange" />
               </a-form-item>
             </a-col>
             <a-col
@@ -26,7 +26,7 @@
                 label="至"
                 v-bind="formItemLayout"
               >
-                <a-date-picker @change="oncreateTimeToChange" />
+                <a-date-picker v-model="queryParams.createTimeTo" @change="oncreateTimeToChange" />
               </a-form-item>
             </a-col>
           </div>

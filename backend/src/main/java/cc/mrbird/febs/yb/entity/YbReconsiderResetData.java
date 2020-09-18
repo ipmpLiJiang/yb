@@ -231,6 +231,13 @@ public class YbReconsiderResetData implements Comparable<YbReconsiderResetData> 
     private Integer seekState;
 
     /**
+     * 还款金额
+     */
+    @TableField("repaymentPrice")
+    @ExcelField(value = "还款金额")
+    private BigDecimal repaymentPrice;
+
+    /**
      * 备注
      */
     @TableField("COMMENTS")
@@ -343,6 +350,8 @@ public class YbReconsiderResetData implements Comparable<YbReconsiderResetData> 
     public static final String STATE = "STATE";
 
     public static final String SEEKSTATE = "seekState";
+
+    public static final String REPAYMENTPRICE = "repaymentPrice";
 
     public static final String IS_DELETEMARK = "IS_DELETEMARK";
 

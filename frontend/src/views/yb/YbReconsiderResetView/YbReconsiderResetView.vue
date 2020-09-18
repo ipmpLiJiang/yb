@@ -49,10 +49,9 @@
                 <a-button type="primary" style="margin-right:20px" >数据剔除</a-button>
               </a-popconfirm>
             </a-col>
-            <a-col :span=4>
+            <a-col :span=4 v-show="tableSelectKey==4?true:false">
               <a-popconfirm
                 title="确定导出数据？"
-                v-show="tableSelectKey==4?true:false"
                 @confirm="exportExcel"
                 okText="确定"
                 cancelText="取消"
@@ -197,8 +196,8 @@ export default {
     monthChange (date, dateString) {
       this.searchApplyDate = dateString
     },
-    uploadDisabled () {
-      this.fileDisabled = true
+    uploadDisabled (isDisabled) {
+      this.fileDisabled = isDisabled
     },
     update () {
       let updateParam = {
@@ -243,7 +242,7 @@ export default {
       // } else {
       //   console.log('exportExcel')
       // }
-      this.$refs.ybReconsiderResetData.exportExcel()
+      this.$refs.ybReconsiderResetUnknown.exportExcel()
     },
     updateSearch () {
       if (this.tableSelectKey === '1') {
@@ -253,7 +252,6 @@ export default {
       }
     },
     beforeUpload (file) {
-      debugger
       const isExcel = file.type === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
       if (!isExcel) {
         this.$error({

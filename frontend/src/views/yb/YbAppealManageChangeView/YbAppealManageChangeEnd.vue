@@ -21,7 +21,7 @@
             <div class="editable-row-operations">
               <span>
                 <a
-                  @click="() => detail(record,index)"
+                  @click.stop="() => detail(record,index)"
                 >查看详情</a>
               </span>
             </div>

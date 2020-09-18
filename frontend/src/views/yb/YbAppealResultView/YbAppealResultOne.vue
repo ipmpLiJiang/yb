@@ -8,7 +8,7 @@
           :dataSource="dataSource"
           :pagination="pagination"
           :loading="loading"
-          :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
+          :rowSelection="{type: 'radio', selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
           @change="handleTableChange"
           :bordered="bordered"
           :customRow="handleClickRow"
@@ -21,7 +21,7 @@
             <div class="editable-row-operations">
               <span>
                 <a
-                  @click="() => look(record,index)"
+                  @click.stop="() => look(record,index)"
                 >查看申诉材料</a>
               </span>
             </div>
@@ -184,6 +184,7 @@ export default {
           click: () => {
             let target = this.selectedRowKeys.filter(key => key === record.id)[0]
             if (target === undefined) {
+              this.selectedRowKeys = []
               this.selectedRowKeys.push(record.id)
             } else {
               this.selectedRowKeys.splice(this.selectedRowKeys.indexOf(record.id), 1)

@@ -107,6 +107,11 @@ public class YbReconsiderResetDataServiceImpl extends ServiceImpl<YbReconsiderRe
     }
 
     @Override
+    public List<YbReconsiderResetData> findResetNotExistsRepayByApplyDates(String applyDateStr, Integer dataType) {
+        return  this.baseMapper.findResetNotExistsRepayByApplyDate(applyDateStr,dataType);
+    }
+
+    @Override
     @Transactional
     public String updateHandleResetDatas(String resultId,String resetId, Long uid, String uname) {
         String message = "";
@@ -127,6 +132,7 @@ public class YbReconsiderResetDataServiceImpl extends ServiceImpl<YbReconsiderRe
                         updateResult.setResetDate(new Date());
                         updateResult.setResetPersonId(uid);
                         updateResult.setResetPersonName(uname);
+                        updateResult.setRepayState(2);
                         updateResult.setState(2);
 
                         int count = this.baseMapper.updateById(updateResetData);
@@ -215,6 +221,7 @@ public class YbReconsiderResetDataServiceImpl extends ServiceImpl<YbReconsiderRe
                                     updateResult.setResetDate(new Date());
                                     updateResult.setResetPersonId(uid);
                                     updateResult.setResetPersonName(uname);
+                                    updateResult.setRepayState(2);
 
                                     updateResetData.setSeekState(1);
 

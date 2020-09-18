@@ -184,7 +184,7 @@ public class ComFileController extends BaseController {
         String strSourceType = sourceType == 0 ? "正常" : "剔除";
         String deptName = inUploadFile.getDeptName();
         String path = febsProperties.getUploadPath();
-            String address = path + inUploadFile.getApplyDateStr() + "/" + deptName;
+        String address = path + inUploadFile.getApplyDateStr() + "/" + deptName;
         String fileName = "";
         if (inUploadFile.getFileName() != null && inUploadFile.getFileName() != "") {
             fileName = inUploadFile.getFileName() + ".zip";
@@ -343,7 +343,7 @@ public class ComFileController extends BaseController {
         try {
             String strId = inUploadFile.getId();
             ComFile comFile = this.iComFileService.findComFileById(strId);
-            if(comFile!=null) {
+            if (comFile != null) {
                 String strRefId = comFile.getRefTabId();
                 int sourceType = inUploadFile.getSourceType();
                 String strSourceType = sourceType == 0 ? "正常" : "剔除";
@@ -374,8 +374,12 @@ public class ComFileController extends BaseController {
         boolean flag = false;
         File file = new File(sPath);
         // 路径为文件且不为空则进行删除
-        if (file.isFile() && file.exists()) {
-            file.delete();
+        if (file.exists()) {
+            if (file.isFile()) {
+                file.delete();
+                flag = true;
+            }
+        }else{
             flag = true;
         }
         return flag;

@@ -278,6 +278,12 @@ private static final long serialVersionUID=1L;
     @ExcelField(value ="保险类型")
     private Integer repayType;
 
+    /**
+     * 剔除明细扣款
+     */
+    @TableField("resetDataId")
+    @ExcelField(value ="剔除明细扣款")
+    private String resetDataId;
 
     /**
      * 备注
@@ -404,6 +410,8 @@ private static final long serialVersionUID=1L;
 
     public static final String REPAYTYPE ="repayType" ;
 
+    public static final String RESETDATAID ="resetDataId";
+
     public static final String COMMENTS ="COMMENTS" ;
 
     public static final String STATE ="STATE" ;
@@ -417,5 +425,5 @@ private static final long serialVersionUID=1L;
     public static final String CREATE_USER_ID ="CREATE_USER_ID" ;
 
     public static final String MODIFY_USER_ID ="MODIFY_USER_ID" ;
-
-        }
+    
+}

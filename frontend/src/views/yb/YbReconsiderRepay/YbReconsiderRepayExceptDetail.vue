@@ -1,19 +1,19 @@
 <template>
   <a-drawer
-    title="手动剔除"
+    title="查看还款明细"
     :maskClosable="false"
     width=75%
     placement="right"
     :closable="true"
     @close="onClose"
-    :visible="exceptResetVisiable"
+    :visible="lookVisiable"
     style="height: calc(100% - 55px);overflow: auto;padding-bottom: 53px;"
   >
-    <resetData-module
-    ref="resetDataModule"
-    :ybResetDataModule="ybReconsiderResetExceptDetail"
+    <resetResult-module
+    ref="resetResultModule"
+    :ybResetResultModule="ybReconsiderRepayExcep"
     >
-    </resetData-module>
+    </resetResult-module>
     <template>
       <!-- 表格区域 -->
       <a-table
@@ -23,7 +23,7 @@
         :dataSource="dataSource"
         :pagination="pagination"
         :loading="loading"
-        :rowSelection="{type: 'radio', selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
+        :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
         @change="handleTableChange"
         :bordered="bordered"
         :scroll="{ x: 700 }"
@@ -47,13 +47,12 @@
       <a-row justify="center" type="flex">
         <a-col :span=3>
           <a-popconfirm
-            title="确定剔除该数据？"
-            @confirm="handleReset"
-            :disabled="isUpdate"
+            title="确定还款该数据？"
+            @confirm="handleRepay"
             okText="确定"
             cancelText="取消"
           >
-            <a-button type="primary" style="margin-right: .8rem">剔除</a-button>
+            <a-button type="primary" style="margin-right: .8rem">还款</a-button>
           </a-popconfirm>
         </a-col>
         <a-col :span=1>
@@ -71,13 +70,13 @@
 
 <script>
 import moment from 'moment'
-import ResetDataModule from '../ybFunModule/ResetDataModule'
+import ResetResultModule from '../ybFunModule/ResetResultModule'
 export default {
-  name: 'YbReconsiderResetExceptDetail',
+  name: 'YbReconsiderRepayExceptDetail',
   components: {
-    ResetDataModule},
+    ResetResultModule},
   props: {
-    exceptResetVisiable: {
+    lookVisiable: {
       default: false
     }
   },
@@ -103,23 +102,20 @@ export default {
       },
       loading: false,
       bordered: true,
-      isUpdate: false,
-      ybReconsiderResetExceptDetail: {}
+      ybReconsiderRepayExcep: {}
     }
   },
   computed: {
     columns () {
       return [{
         title: '序号',
-        customRender: (text, record, index) => {
-          return this.rowNo(index)
-        },
+        dataIndex: 'orderNumber',
         fixed: 'left',
         width: 70
       },
       {
-        title: '意见书编码',
-        dataIndex: 'proposalCode',
+        title: '单据号',
+        dataIndex: 'billNo',
         fixed: 'left',
         width: 120
       },
@@ -134,11 +130,6 @@ export default {
         dataIndex: 'projectName',
         fixed: 'left',
         width: 100
-      },
-      {
-        title: '数量',
-        dataIndex: 'num',
-        width: 70
       },
       {
         title: '医保内金额',
@@ -156,6 +147,11 @@ export default {
         width: 100
       },
       {
+        title: '还款金额',
+        dataIndex: 'repaymentPrice',
+        width: 100
+      },
+      {
         title: '扣除原因',
         dataIndex: 'deductReason',
         width: 200
@@ -163,30 +159,6 @@ export default {
       {
         title: '费用日期',
         dataIndex: 'costDateStr',
-        customRender: (text, row, index) => {
-          if (text !== '' && text !== null) {
-            return moment(text).format('YYYY-MM-DD')
-          } else {
-            return text
-          }
-        },
-        width: 110
-      },
-      {
-        title: '申请理由',
-        dataIndex: 'operateReason',
-        width: 120
-      },
-      {
-        title: '申请日期',
-        dataIndex: 'operateDate',
-        customRender: (text, row, index) => {
-          if (text !== '' && text !== null) {
-            return moment(text).format('YYYY-MM-DD')
-          } else {
-            return text
-          }
-        },
         width: 110
       },
       {
@@ -203,12 +175,12 @@ export default {
       },
       {
         title: '状态',
-        dataIndex: 'resetDataId',
+        dataIndex: 'repayDataId',
         customRender: (text, row, index) => {
           if (text !== null) {
-            return '已剔除'
+            return '已还款'
           } else {
-            return '未剔除'
+            return '未还款'
           }
         },
         fixed: 'right',
@@ -220,10 +192,6 @@ export default {
   },
   methods: {
     moment,
-    rowNo (index) {
-      return (this.pagination.defaultCurrent - 1) *
-            this.pagination.defaultPageSize + index + 1
-    },
     reset () {
       // 取消选中
       this.selectedRowKeys = []
@@ -242,17 +210,17 @@ export default {
     },
     onClose () {
       this.loading = false
-      this.ybReconsiderResetExceptDetail = {}
+      this.ybReconsiderRepayExcep = {}
       this.reset()
-      this.$emit('close', this.isUpdate)
+      this.$emit('close')
     },
-    handleReset () {
+    handleRepay () {
       if (this.selectedRowKeys.length === 1) {
         let updateParams = {
           resultId: this.selectedRowKeys[0],
-          resetId: this.ybReconsiderResetExceptDetail.id
+          repayId: this.ybReconsiderRepayExcep.id
         }
-        this.$put('ybReconsiderResetData/updateHandleResetData', {
+        this.$put('ybReconsiderRepayData/updateHandleRepayData', {
           ...updateParams
         }).then((r) => {
           if (r.data.data.success === 1) {
@@ -263,7 +231,7 @@ export default {
             this.$message.warning(r.data.data.message)
           }
         }).catch(() => {
-          this.$message.error('剔除数据操作失败.')
+          this.$message.error('还款数据操作失败.')
         })
       } else {
         this.$message.error('列表未选择或选中多个.')
@@ -273,8 +241,8 @@ export default {
     onSelectChange (selectedRowKeys) {
       this.selectedRowKeys = selectedRowKeys
     },
-    setFormValues ({ ...ybReconsiderResetExceptDetail }) {
-      this.ybReconsiderResetExceptDetail = ybReconsiderResetExceptDetail
+    setFormValues ({ ...ybReconsiderRepayExcep }) {
+      this.ybReconsiderRepayExcep = ybReconsiderRepayExcep
       this.search()
     },
     search () {
@@ -301,16 +269,16 @@ export default {
       })
     },
     fetch (params = {}) {
-      params.applyDateStr = this.ybReconsiderResetExceptDetail.applyDateStr
-      params.billNo = this.ybReconsiderResetExceptDetail.billNo
-      params.serialNo = this.ybReconsiderResetExceptDetail.serialNo
-      params.ruleName = this.ybReconsiderResetExceptDetail.ruleName
-      params.projectCode = this.ybReconsiderResetExceptDetail.projectCode
-      params.projectName = this.ybReconsiderResetExceptDetail.projectName
-      params.personalNo = this.ybReconsiderResetExceptDetail.personalNo
-      params.dataType = this.ybReconsiderResetExceptDetail.dataType
+      params.applyDateStr = this.ybReconsiderRepayExcep.applyDateStr
+      let warnType = this.ybReconsiderRepayExcep.warnType
+      if (warnType === 3 || warnType === 2 || warnType === 5) {
+        params.orderNumber = this.ybReconsiderRepayExcep.orderNumberNew
+      } else {
+        params.orderNumber = this.ybReconsiderRepayExcep.orderNumber
+      }
+      params.dataType = this.ybReconsiderRepayExcep.dataType
       params.sourceType = 0
-      params.state = 1
+      params.state = 2
       this.loading = true
       if (this.paginationInfo) {
         // 如果分页信息不为空，则设置表格当前第几页，每页条数，并设置查询分页参数
@@ -323,9 +291,8 @@ export default {
         params.pageSize = this.pagination.defaultPageSize
         params.pageNum = this.pagination.defaultCurrent
       }
-      params.sortField = 'create_Time'
-      params.sortOrder = 'descend'
-      this.$get('ybAppealResultView/findAppealResultViewReset', {
+
+      this.$get('ybReconsiderRepayResultView', {
         ...params
       }).then((r) => {
         let data = r.data

@@ -103,6 +103,11 @@ public class ComFileServiceImpl extends ServiceImpl<ComFileMapper, ComFile> impl
         }
     }
 
+    public boolean loadLastComFiles(List<ComFile> listComFile){
+        boolean bl = this.saveBatch(listComFile);
+        return  bl;
+    }
+
     @Override
     @Transactional
     public void createComFile(ComFile comFile) {

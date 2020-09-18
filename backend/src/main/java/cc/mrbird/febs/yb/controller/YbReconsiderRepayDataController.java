@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -159,16 +160,27 @@ public class YbReconsiderRepayDataController extends BaseController {
             User currentUser = FebsUtil.getCurrentUser();
             Long uid = currentUser.getUserId();
             String uname = currentUser.getUsername();
-            message = this.iYbReconsiderRepayDataService.updateRepayDatas(ybReconsiderRepayData,uid,uname);
-            if("".equals(message)){
-                responseResultData.setSuccess(1);
-                message = "还款数据成功.";
+
+            message = this.iYbReconsiderRepayDataService.updateOrderNumberRepayDatas(ybReconsiderRepayData,uid,uname);
+            if("ok".equals(message)){
+                message = this.iYbReconsiderRepayDataService.updateFieldRepayDatas(ybReconsiderRepayData,uid,uname);
+                if("ok".equals(message) || "repay0".equals(message)) {
+                    responseResultData.setSuccess(1);
+                    message = "还款数据成功.";
+                }else {
+                    if(message.equals("result0")){
+                        message = "模糊匹配，未找到有效的申诉上传数据.";
+                    }
+                }
             }
             if(message.equals("update0")){
-                message = "未找到可更新的数据";
+                message = "未找到可更新的数据.";
             }
             if(message.equals("result0")){
-                message = "未找到有效的申诉上传数据";
+                message = "未找到有效的申诉上传数据.";
+            }
+            if(message.equals("")){
+                message = "未找到可变更的数据.";
             }
             responseResultData.setMessage(message);
         } catch (Exception e) {

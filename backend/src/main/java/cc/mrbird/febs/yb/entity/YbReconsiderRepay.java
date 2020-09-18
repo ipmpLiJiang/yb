@@ -69,6 +69,22 @@ private static final long serialVersionUID=1L;
     private Integer dataType;
 
     /**
+     * 复议年月
+     */
+    @TableField("applyDate")
+    @ExcelField(value ="复议年月")
+    private Date applyDate;
+    private transient String applyDateFrom;
+    private transient String applyDateTo;
+
+    /**
+     * 复议年月Str
+     */
+    @TableField("applyDateStr")
+    @ExcelField(value ="复议年月Str")
+    private String applyDateStr;
+
+    /**
      * 通用
      */
     @TableField("currencyField")

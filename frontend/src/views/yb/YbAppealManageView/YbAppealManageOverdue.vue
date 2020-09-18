@@ -1,6 +1,6 @@
 <template>
   <div id="tab" style="margin: 0px!important">
-        <!-- 表格区域 -->
+        <!-- 已完成 表格区域 -->
         <a-table
           ref="TableInfo"
           :columns="columns"
@@ -14,18 +14,6 @@
           :customRow="handleClickRow"
           :scroll="{ x: 900 }"
         >
-          <template
-            slot="operation"
-            slot-scope="text, record, index"
-          >
-            <div class="editable-row-operations">
-              <span>
-                <a
-                  @click.stop="() => look(record,index)"
-                >查看申诉材料</a>
-              </span>
-            </div>
-          </template>
         </a-table>
   </div>
 </template>
@@ -33,16 +21,13 @@
 <script>
 import moment from 'moment'
 export default {
-  name: 'YbAppealResultTwo',
+  name: 'YbAppealManageOverdue',
   props: {
     applyDate: {
       default: ''
     },
     searchText: {
       default: ''
-    },
-    searchDataType: {
-      default: 0
     }
   },
   data () {
@@ -67,7 +52,7 @@ export default {
       },
       loading: false,
       bordered: true,
-      ybAppealResult: {}
+      ybAppealManage: {}
     }
   },
   computed: {
@@ -97,9 +82,19 @@ export default {
         width: 100
       },
       {
+        title: '医生姓名',
+        dataIndex: 'readyDoctorName',
+        width: 120
+      },
+      {
+        title: '科室名称',
+        dataIndex: 'readyDeptName',
+        width: 120
+      },
+      {
         title: '数量',
         dataIndex: 'num',
-        width: 70
+        width: 100
       },
       {
         title: '医保内金额',
@@ -131,45 +126,48 @@ export default {
             return text
           }
         },
-        width: 110
-      },
-      {
-        title: '科室名称',
-        dataIndex: 'arDeptname',
         width: 120
       },
       {
         title: '医生姓名',
-        dataIndex: 'arDoctorname',
-        width: 120
+        dataIndex: 'doctorName',
+        width: 100
       },
       {
-        title: '申请理由',
-        dataIndex: 'operateReason',
-        width: 120
+        title: '科室名称',
+        dataIndex: 'deptName',
+        width: 100
       },
       {
-        title: '申请日期',
-        dataIndex: 'operateDate',
+        title: '状态',
+        dataIndex: 'acceptState',
         customRender: (text, row, index) => {
-          if (text !== '' && text !== null) {
-            return moment(text).format('YYYY-MM-DD')
-          } else {
-            return text
+          switch (text) {
+            case 0:
+              return '待接收'
+            case 1:
+              return '已接受'
+            case 2:
+              return '已拒绝'
+            case 3:
+              return '管理员更改'
+            case 4:
+              return '医保拒绝'
+            case 6:
+              return '已上传'
+            case 7:
+              return '过期'
+            default:
+              return text
           }
         },
-        width: 110
-      },
-      {
-        title: '操作',
-        dataIndex: 'operation',
-        scopedSlots: { customRender: 'operation' },
         fixed: 'right',
-        width: 120
+        width: 100
       }]
     }
   },
   mounted () {
+    // this.fetch()
   },
   methods: {
     moment,
@@ -194,23 +192,6 @@ export default {
     },
     onSelectChange (selectedRowKeys) {
       this.selectedRowKeys = selectedRowKeys
-    },
-    exportExcel () {
-      if (this.dataSource.length > 0) {
-        let queryParams = {}
-        queryParams.applyDateStr = this.applyDate
-        queryParams.typeno = 2
-        queryParams.sourceType = 0
-        this.$export('ybAppealResultView/excel1', {
-          ...queryParams
-        })
-      } else {
-        this.$message.success('导出Excel,无数据!')
-      }
-    },
-    look (record, index) {
-      record.rowNo = this.rowNo(index)
-      this.$emit('look', record)
     },
     onHistory () {
       let selectedRowKeys = this.selectedRowKeys
@@ -267,11 +248,8 @@ export default {
     fetch (params = {}) {
       this.loading = true
       params.applyDateStr = this.applyDate
+      params.acceptState = 7
       params.currencyField = this.searchText
-      params.dataType = this.searchDataType
-      params.typeno = 2
-      params.state = 12 // IN(1,2)
-      params.sourceType = 0
       if (this.paginationInfo) {
         // 如果分页信息不为空，则设置表格当前第几页，每页条数，并设置查询分页参数
         this.$refs.TableInfo.pagination.current = this.paginationInfo.current
@@ -285,7 +263,7 @@ export default {
       }
       params.sortField = 'orderNumber'
       params.sortOrder = 'ascend'
-      this.$get('ybAppealResultView', {
+      this.$get('ybAppealManageView', {
         ...params
       }).then((r) => {
         let data = r.data

@@ -21,7 +21,7 @@
             <div class="editable-row-operations">
               <span>
                 <a
-                  @click="() => examine(record,index)"
+                  @click.stop="() => examine(record,index)"
                 >审核</a>
               </span>
             </div>

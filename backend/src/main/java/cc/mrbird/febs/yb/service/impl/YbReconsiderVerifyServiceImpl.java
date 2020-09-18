@@ -184,6 +184,7 @@ public class YbReconsiderVerifyServiceImpl extends ServiceImpl<YbReconsiderVerif
             YbAppealManage ybAppealManage = new YbAppealManage();
             ybAppealManage.setSourceType(0);
             ybAppealManage.setVerifyId(ybReconsiderVerify.getId());
+            ybAppealManage.setVerifySendId(ybReconsiderVerify.getId());
             ybAppealManage.setApplyDataId(ybReconsiderVerify.getApplyDataId());
             ybAppealManage.setReadyDeptCode(ybReconsiderVerify.getVerifyDeptCode());
             ybAppealManage.setReadyDeptName(ybReconsiderVerify.getVerifyDeptName());

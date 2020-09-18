@@ -45,15 +45,13 @@
                     <result column="resetDate" property="resetDate"/>
                     <result column="resetPersonId" property="resetPersonId"/>
                     <result column="resetPersonName" property="resetPersonName"/>
-                    <result column="repayDataId" property="repayDataId"/>
-                    <result column="repayDate" property="repayDate"/>
-                    <result column="repayPersonId" property="repayPersonId"/>
-                    <result column="repayPersonName" property="repayPersonName"/>
+            <result column="repayState" property="repayState"/>
+            <result column="repaymentPrice" property="repaymentPrice"/>
         </resultMap>
 
         <!-- 通用查询结果列 -->
         <sql id="Base_Column_List">
-        id, serialNo, billNo, projectCode, projectName, medicalPrice, ruleName, deductPrice, deductReason, repaymentReason, doctorName, deptCode, deptName, costDate, costDateStr, hospitalizedNo, treatmentMode, settlementDate, settlementDateStr, personalNo, insuredName, cardNumber, areaName, insuredType, dataType, orderNumber, STATE, seekState, resetId, applyDate, applyDateStr, currencyField, ar_doctorCode, ar_doctorName, ar_deptCode, ar_deptName, applyDataId, resultId, resetDate, resetPersonId, resetPersonName, repayDataId, repayDate, repayPersonId, repayPersonName
+        id, serialNo, billNo, projectCode, projectName, medicalPrice, ruleName, deductPrice, deductReason, repaymentReason, doctorName, deptCode, deptName, costDate, costDateStr, hospitalizedNo, treatmentMode, settlementDate, settlementDateStr, personalNo, insuredName, cardNumber, areaName, insuredType, dataType, orderNumber, STATE, seekState, resetId, applyDate, applyDateStr, currencyField, ar_doctorCode, ar_doctorName, ar_deptCode, ar_deptName, applyDataId, resultId, resetDate, resetPersonId, resetPersonName,repayState,repaymentPrice
     </sql>
     <update id="updateYbReconsiderResetResultView" parameterType="cc.mrbird.febs.yb.entity.YbReconsiderResetResultView">
         update yb_reconsider_reset_result_view
@@ -99,10 +97,6 @@
 <if test="resetDate != null">resetDate=#{resetDate},</if>
 <if test="resetPersonId != null">resetPersonId=#{resetPersonId},</if>
 <if test="resetPersonName != null">resetPersonName=#{resetPersonName},</if>
-<if test="repayDataId != null">repayDataId=#{repayDataId},</if>
-<if test="repayDate != null">repayDate=#{repayDate},</if>
-<if test="repayPersonId != null">repayPersonId=#{repayPersonId},</if>
-<if test="repayPersonName != null">repayPersonName=#{repayPersonName},</if>
         </trim>
 
     </update>
@@ -167,14 +161,6 @@
             AND ybReconsiderResetResultView.resetDate <![CDATA[ <= ]]>  resetDateTo}
         </if>
             <if test="ybReconsiderResetResultView.resetPersonName != null and ybReconsiderResetResultView.resetPersonName != ''"> and resetPersonName like concat('%', #{ ybReconsiderResetResultView.resetPersonName} ,'%')</if>
-            <if test="ybReconsiderResetResultView.repayDataId != null and ybReconsiderResetResultView.repayDataId != ''"> and repayDataId like concat('%', #{ ybReconsiderResetResultView.repayDataId} ,'%')</if>
-        <if test="ybReconsiderResetResultView.repayDateFrom!= null">
-            AND ybReconsiderResetResultView.repayDate <![CDATA[ >= ]]>  repayDateFrom}
-        </if>
-        <if test="ybReconsiderResetResultView.repayDateTo!= null">
-            AND ybReconsiderResetResultView.repayDate <![CDATA[ <= ]]>  repayDateTo}
-        </if>
-            <if test="ybReconsiderResetResultView.repayPersonName != null and ybReconsiderResetResultView.repayPersonName != ''"> and repayPersonName like concat('%', #{ ybReconsiderResetResultView.repayPersonName} ,'%')</if>
 </select>
 
 </mapper>

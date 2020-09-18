@@ -15,7 +15,7 @@
                 label="操作时间"
                 v-bind="formItemLayout"
               >
-                <a-date-picker @change="oncreateTimeFromChange" />
+                <a-date-picker v-model="queryParams.createTimeFrom" @change="oncreateTimeFromChange" />
               </a-form-item>
             </a-col>
             <a-col
@@ -26,7 +26,7 @@
                 label="至"
                 v-bind="formItemLayout"
               >
-                <a-date-picker @change="oncreateTimeToChange" />
+                <a-date-picker v-model="queryParams.createTimeTo" @change="oncreateTimeToChange" />
               </a-form-item>
             </a-col>
           </div>
@@ -94,8 +94,7 @@
           <a-divider type="vertical" />
           <a
             v-hasPermission="['ybReconsiderRepay:view']"
-            @click="lookJb(record)"
-            :disabled="record.state==0?false:true"
+            @click="look(record)"
           >
             查看
           </a>
@@ -119,21 +118,15 @@
             <a-row>
               <a-col>
                 <a-form-item
-                  label="保险类型"
+                  label="复议年月"
                   v-bind="formItemLayout"
                 >
-                  <a-select
-                    :value="selectRepayType"
-                    style="width: 100px"
-                    @change="handleRepayTypeChange"
-                  >
-                    <a-select-option
-                      v-for="d in selectRepayTypeSource"
-                      :key="d.value"
-                    >
-                      {{ d.text }}
-                    </a-select-option>
-                  </a-select>
+                  <a-month-picker
+                    placeholder="请选择复议年月"
+                    @change="monthChange"
+                    :default-value="formatDate()"
+                    :format="monthFormat"
+                  />
                 </a-form-item>
               </a-col>
             </a-row>
@@ -150,6 +143,27 @@
                   >
                     <a-select-option
                       v-for="d in selectDataTypeSource"
+                      :key="d.value"
+                    >
+                      {{ d.text }}
+                    </a-select-option>
+                  </a-select>
+                </a-form-item>
+              </a-col>
+            </a-row>
+            <a-row>
+              <a-col>
+                <a-form-item
+                  label="保险类型"
+                  v-bind="formItemLayout"
+                >
+                  <a-select
+                    :value="selectRepayType"
+                    style="width: 100px"
+                    @change="handleRepayTypeChange"
+                  >
+                    <a-select-option
+                      v-for="d in selectRepayTypeSource"
                       :key="d.value"
                     >
                       {{ d.text }}
@@ -194,32 +208,32 @@
     </template>
     <a-modal
       title="查看还款单明细"
-      :visible="lookJbVisiable"
+      :visible="lookVisiable"
       :footer="null"
       width="100%"
       style="padding-top:0px;"
       :maskClosable="false"
-      @cancel="handleCancelJb"
+      @cancel="handleCancel"
     >
-      <ybReconsiderRepayJb-view
-      ref="ybReconsiderRepayJbView"
-      @cancel="handleCancelJb"
+      <ybReconsiderRepay-view
+      ref="ybReconsiderRepayView"
+      @cancel="handleCancel"
       >
-      </ybReconsiderRepayJb-view>
+      </ybReconsiderRepay-view>
     </a-modal>
   </a-card>
 </template>
 
 <script>
 import moment from 'moment'
-import YbReconsiderRepayJbView from './YbReconsiderRepayJbView'
+import YbReconsiderRepayView from './YbReconsiderRepayView'
 const formItemLayout = {
   labelCol: { span: 8 },
   wrapperCol: { span: 15, offset: 1 }
 }
 export default {
   name: 'YbReconsiderRepay',
-  components: { YbReconsiderRepayJbView },
+  components: { YbReconsiderRepayView },
   data () {
     return {
       advanced: false,
@@ -258,8 +272,10 @@ export default {
       fileList: [],
       spinning: false,
       delayTime: 500,
-      lookJbVisiable: false,
+      lookVisiable: false,
       bordered: true,
+      selectApplyDateStr: this.formatDate(),
+      monthFormat: 'YYYY-MM',
       tableFormat: 'YYYY-MM-DD'
     }
   },
@@ -275,6 +291,11 @@ export default {
         width: 80
       },
       {
+        title: '复议年月',
+        dataIndex: 'applyDateStr',
+        width: 100
+      },
+      {
         title: '保险类型',
         dataIndex: 'repayType',
         customRender: (text, row, index) => {
@@ -283,6 +304,8 @@ export default {
               return '居保'
             case 1:
               return '职保'
+            case 2:
+              return '无'
             default:
               return text
           }
@@ -307,12 +330,12 @@ export default {
       {
         title: '文件名称',
         dataIndex: 'uploadFileName',
-        width: 300
+        width: 250
       },
       {
         title: '操作员',
         dataIndex: 'operatorName',
-        width: 150
+        width: 100
       },
       {
         title: '操作时间',
@@ -335,20 +358,39 @@ export default {
   },
   methods: {
     moment,
-    lookJb (record) {
-      setTimeout(() => {
-        this.$refs.ybReconsiderRepayJbView.setFormValues(record)
-      }, 200)
-      this.lookJbVisiable = true
+    formatDate () {
+      let datemonth = moment().format('YYYY-MM')
+      return datemonth
     },
-    handleCancelJb () {
-      this.lookJbVisiable = false
+    monthChange (date, dateString) {
+      this.selectApplyDateStr = dateString
+    },
+    look (record) {
+      setTimeout(() => {
+        this.$refs.ybReconsiderRepayView.setFormValues(record)
+      }, 200)
+      this.lookVisiable = true
+    },
+    handleCancel () {
+      this.lookVisiable = false
     },
     handleRepayTypeChange (value) {
       this.selectRepayType = value
     },
     handleDataTypeChange (value) {
       this.selectDataType = value
+      if (value === 1) {
+        this.selectRepayTypeSource = [
+          { text: '无', value: 2 }
+        ]
+        this.selectRepayType = 2
+      } else {
+        this.selectRepayTypeSource = [
+          { text: '居保', value: 0 },
+          { text: '职保', value: 1 }
+        ]
+        this.selectRepayType = 0
+      }
     },
     importShow () {
       this.importVisible = true
@@ -393,6 +435,7 @@ export default {
       formData.append('file', file)
       formData.append('repayType', this.selectRepayType)
       formData.append('dataType', this.selectDataType)
+      formData.append('applyDateStr', this.selectApplyDateStr)
       this.$upload('ybReconsiderRepay/importReconsiderRepayData', formData).then((r) => {
         debugger
         if (r.data.data.success === 1) {
@@ -419,17 +462,18 @@ export default {
         centered: true,
         onOk () {
           let ybReconsiderRepayIds = record.id
-          that.$delete('ybReconsiderRepay/' + ybReconsiderRepayIds).then(() => {
-            that.$message.success('删除成功')
-            that.selectedRowKeys = []
-            that.search()
+          that.$delete('ybReconsiderRepay/deleteReconsiderRepay/' + ybReconsiderRepayIds).then((r) => {
+            if (r.data.data.success === 1) {
+              that.$message.success('删除成功')
+              that.selectedRowKeys = []
+              that.search()
+            } else {
+              that.$message.error(r.data.data.message)
+            }
           }
           )
         }
       })
-    },
-    look (record) {
-      console.log('1')
     },
     search () {
       let { sortedInfo } = this

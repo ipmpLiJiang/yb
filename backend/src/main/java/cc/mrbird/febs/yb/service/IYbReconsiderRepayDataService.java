@@ -31,7 +31,9 @@ public interface IYbReconsiderRepayDataService extends IService<YbReconsiderRepa
 
         List<String> findGroupBelongDateStrs(String pid);
 
-        String updateRepayDatas(YbReconsiderRepayData ybReconsiderRepayData,Long uid,String uname);
+        String updateOrderNumberRepayDatas(YbReconsiderRepayData ybReconsiderRepayData,Long uid,String uname);
+
+        String updateFieldRepayDatas(YbReconsiderRepayData ybReconsiderRepayData,Long uid,String uname);
 
         String updateHandleRepayDatas(String resultId,String resetId, Long uid, String uname);
         }

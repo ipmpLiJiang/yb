@@ -155,8 +155,8 @@ public class YbReconsiderResetController extends BaseController {
         if (file.isEmpty()) {
             message = "空文件";
         } else {
-            YbReconsiderReset yRr  = this.iYbReconsiderResetService.findReconsiderResetByApplyDateStr(applyDateStr);
-            if(yRr==null) {
+            YbReconsiderReset yRr = this.iYbReconsiderResetService.findReconsiderResetByApplyDateStr(applyDateStr);
+            if (yRr == null) {
                 boolean blError = false;
                 try {
                     String guid = UUID.randomUUID().toString();
@@ -197,8 +197,14 @@ public class YbReconsiderResetController extends BaseController {
                                 reconsiderReset.setIsDeletemark(1);
                                 reconsiderReset.setApplyDateStr(applyDateStr);
                                 String newApplyDateStr = applyDateStr + "15";
-                                Date applyDate = DataTypeHelpers.stringDateFormat(newApplyDateStr, null,false);
+                                Date applyDate = DataTypeHelpers.stringDateFormat(newApplyDateStr, null, false);
                                 reconsiderReset.setApplyDate(applyDate);
+                                List<String> mxOrderNumberList = new ArrayList<>();
+                                String mxCongfu = "";
+                                boolean mxIsNull = false;
+                                List<String> zdOrderNumberList = new ArrayList<>();
+                                String zdCongfu = "";
+                                boolean zdIsNull = false;
                                 if (objMx.size() > 1) {
                                     if (objMx.get(0).length == 20) {
                                         for (int i = 1; i < objMx.size(); i++) {
@@ -208,6 +214,15 @@ public class YbReconsiderResetController extends BaseController {
                                             rrData.setPid(guid);
                                             rrData.setIsDeletemark(1);
                                             String strOrderNumber = DataTypeHelpers.importTernaryOperate(objMx.get(i), 0);//序号',
+                                            if (!DataTypeHelpers.isNullOrEmpty(strOrderNumber)) {
+                                                if (!mxOrderNumberList.stream().anyMatch(task -> task.equals(strOrderNumber))) {
+                                                    mxOrderNumberList.add(strOrderNumber);
+                                                } else {
+                                                    mxCongfu = DataTypeHelpers.stringSeparate(mxCongfu, strOrderNumber, "、");
+                                                }
+                                            } else {
+                                                mxIsNull = true;
+                                            }
                                             rrData.setOrderNumber(strOrderNumber);
                                             String strSerialNo = DataTypeHelpers.importTernaryOperate(objMx.get(i), 1);//交易流水号',
                                             rrData.setSerialNo(strSerialNo);
@@ -276,6 +291,15 @@ public class YbReconsiderResetController extends BaseController {
                                                 rrMain.setId(UUID.randomUUID().toString());
                                                 rrMain.setPid(guid);
                                                 String strOrderNumber = DataTypeHelpers.importTernaryOperate(objZd.get(i), 0);//序号',
+                                                if (!DataTypeHelpers.isNullOrEmpty(strOrderNumber)) {
+                                                    if (!zdOrderNumberList.stream().anyMatch(task -> task.equals(strOrderNumber))) {
+                                                        zdOrderNumberList.add(strOrderNumber);
+                                                    } else {
+                                                        zdCongfu = DataTypeHelpers.stringSeparate(zdCongfu, strOrderNumber, "、");
+                                                    }
+                                                } else {
+                                                    zdIsNull = true;
+                                                }
                                                 rrMain.setOrderNumber(strOrderNumber);
                                                 String strSerialNo = DataTypeHelpers.importTernaryOperate(objZd.get(i), 1);//交易流水号',
                                                 rrMain.setSerialNo(strSerialNo);
@@ -318,9 +342,42 @@ public class YbReconsiderResetController extends BaseController {
                                     }
                                 }
                                 if (!blError) {
-                                    this.iYbReconsiderResetService.importReconsiderResets(reconsiderReset, ListData, ListMain);
-                                    success = 1;
-                                    message = "Excel导入成功.";
+                                    message = "";
+                                    if (ListData.size() > 0) {
+                                        if (mxIsNull) {
+                                            message = "明细扣款存在序号为空数据";
+                                        }
+                                        if (!DataTypeHelpers.isNullOrEmpty(mxCongfu)) {
+                                            if (!DataTypeHelpers.isNullOrEmpty(message)) {
+                                                message += " , 序号： " + mxCongfu + " 重复";
+                                            }else{
+                                                message = "明细扣款 序号： " + mxCongfu + " 重复";
+                                            }
+                                        }
+                                    }
+                                    if (ListMain.size() > 0) {
+                                        if (!DataTypeHelpers.isNullOrEmpty(message)) {
+                                            message += " 。 ";
+                                        }
+                                        if (zdIsNull) {
+                                            message += "主单扣款存在序号为空数据";
+                                        }
+                                        if (!DataTypeHelpers.isNullOrEmpty(zdCongfu)) {
+                                            if (!DataTypeHelpers.isNullOrEmpty(message)) {
+                                                message += " , 序号： " + zdCongfu + " 重复";
+                                            }else{
+                                                message += "主单扣款 序号： " + zdCongfu + " 重复";
+                                            }
+                                        }
+                                    }
+                                    if (!DataTypeHelpers.isNullOrEmpty(message)) {
+                                        message = "上传的剔除Excel  " + message + "。 请检查后重新上传.";
+                                    }
+                                    if (DataTypeHelpers.isNullOrEmpty(message)) {
+                                        this.iYbReconsiderResetService.importReconsiderResets(reconsiderReset, ListData, ListMain);
+                                        success = 1;
+                                        message = "Excel导入成功.";
+                                    }
                                 }
                             } else {
                                 message = "Excel导入失败,需确保存在两个Sheet 明细扣款、主单扣款,并确认列表数据是否正确.";
@@ -342,7 +399,7 @@ public class YbReconsiderResetController extends BaseController {
                     }
                     log.error(message, ex);
                 }
-            }else{
+            } else {
                 message = "已导入过剔除数据.";
             }
         }
