@@ -1,0 +1,154 @@
+<template>
+    <div>
+      <a-row justify="center" type="flex">
+        <a-col :span=8>
+          <a-form-item
+            label="绩效落实年月"
+            v-bind="formItemLayout"
+          >
+            <a-month-picker
+              placeholder="请输入绩效落实年月"
+              @change="monthChange"
+              v-decorator="['implementDate', {rules: [{ required: true, message: '绩效落实年月不能为空' }] }]"
+              :default-value="formatDate()"
+              :format="monthFormat"
+            />
+          </a-form-item>
+        </a-col>
+        <a-col :span=8>
+          <a-form-item
+            label="分摊方式"
+            v-bind="formItemLayout"
+          >
+            <a-form-item label="Radio.Group">
+              <a-radio-group v-decorator="['shareState']">
+                <a-radio value="0">
+                  个人分摊
+                </a-radio>
+                <a-radio value="1">
+                  科室个人
+                </a-radio>
+              </a-radio-group>
+            </a-form-item>
+          </a-form-item>
+        </a-col>
+      </a-row>
+      <a-row justify="center" type="flex">
+        <a-col :span=16>
+          <a-form-item
+            v-bind="formItemLayout"
+            label="分摊方案"
+          >
+            <a-textarea
+              placeholder="请输入分摊方案"
+              v-decorator="['shareProgramme', {rules: [{ required: true, message: '分摊方案不能为空' }] }]"
+              :rows="6"
+            />
+          </a-form-item>
+        </a-col>
+      </a-row>
+      <div class="drawer-bootom-button">
+      <a-popconfirm
+        title="确定放弃编辑？"
+        @confirm="onClose"
+        okText="确定"
+        cancelText="取消"
+      >
+        <a-button style="margin-right: .8rem">取消</a-button>
+      </a-popconfirm>
+      <a-button
+        @click="handleSubmit"
+        type="primary"
+        :loading="loading"
+      >提交</a-button>
+    </div>
+    </div>
+</template>
+<script>
+import moment from 'moment'
+const formItemLayout = {
+  labelCol: { span: 5 },
+  wrapperCol: { span: 15, offset: 1 }
+}
+export default {
+  name: 'YbAppealResultDeductImplementEdit',
+  props: {
+  },
+  data () {
+    return {
+      formItemLayout,
+      loading: false,
+      monthFormat: 'YYYY-MM',
+      selectImplementDate: this.formatDate(),
+      selectImplementDateStr: this.formatDate(),
+      form: this.$form.createForm(this),
+      ybAppealResult: {
+      },
+      ybAppealResultDeductImplement: {
+      }
+    }
+  },
+  computed: {
+  },
+  mounted () {
+  },
+  methods: {
+    moment,
+    reset () {
+      this.loading = false
+      this.ybAppealResult = {}
+      this.ybAppealResultDeductImplement = {}
+      this.form.resetFields()
+    },
+    onClose () {
+      this.reset()
+      this.$emit('close')
+    },
+    formatDate () {
+      let datemonth = moment().format('YYYY-MM')
+      return datemonth
+    },
+    monthChange (date, dateString) {
+      this.selectImplementDateStr = dateString
+      this.selectImplementDate = date
+    },
+    setFormValues ({ ...ybAppealResult }) {
+      this.ybAppealResult = ybAppealResult
+      this.selectImplementDateStr = this.formatDate()
+      this.selectImplementDate = this.formatDate() + '-15'
+    },
+    handleSubmit () {
+      this.form.validateFields((err, values) => {
+        if (!err) {
+          this.setFields()
+          this.ybAppealResultDeductImplement.resetDataId = this.ybAppealResult.resetDataId
+          this.ybAppealResultDeductImplement.resultId = this.ybAppealResult.id
+          this.ybAppealResultDeductImplement.implementDate = this.ybAppealResultDeductImplement.implementDateStr + '-15'
+          this.$post('ybAppealResultDeductimplement', {
+            ...this.ybAppealResultDeductImplement
+          }).then((r) => {
+            if (r.data.data.success === 1) {
+              this.reset()
+              this.$emit('success')
+            } else {
+              this.$message.error(r.data.data.message)
+            }
+          }).catch(() => {
+            this.loading = false
+          })
+        }
+      })
+    },
+    setFields () {
+      let values = this.form.getFieldsValue(['shareState', 'shareProgramme'])
+      if (typeof values !== 'undefined') {
+        Object.keys(values).forEach(_key => { this.ybAppealResultDeductImplement[_key] = values[_key] })
+      }
+    }
+  }
+}
+</script>
+
+<style lang="less" scoped>
+@import "../../../../static/less/Common";
+</style>

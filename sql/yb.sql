@@ -201,6 +201,25 @@ repayState int(4) DEFAULT 1 COMMENT '还款状态', -- 1 成功 2 失败 3 部分调整
   PRIMARY KEY (id)
 ) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
 
+#DROP TABLE IF EXISTS yb_appeal_result_deductImplement;
+CREATE TABLE yb_appeal_result_deductImplement (
+  id char(36) NOT NULL COMMENT '扣款落实Id',
+	resultId char(36) NOT NULL COMMENT '复议上传Id',
+	resetDataId  char(36) NOT NULL COMMENT '剔除明细Id',
+	implementDate datetime NOT NULL COMMENT '绩效年月',
+	implementDateStr varchar(10) NOT NULL COMMENT '绩效年月Str',
+	shareState int(4) DEFAULT 0 COMMENT '分摊方式', # 0 个人 1科室
+	shareProgramme varchar(200) DEFAULT NULL COMMENT '分摊方案',
+  COMMENTS varchar(1000) DEFAULT NULL COMMENT '备注',
+  STATE int(4) DEFAULT 1 COMMENT '状态',
+  IS_DELETEMARK tinyint(4) DEFAULT NULL COMMENT '是否删除',
+  MODIFY_TIME datetime DEFAULT NULL  COMMENT '修改时间',
+  CREATE_TIME datetime DEFAULT NULL  COMMENT '创建时间',
+  CREATE_USER_ID bigint(11) DEFAULT NULL COMMENT '创建人',
+  MODIFY_USER_ID bigint(11) DEFAULT NULL COMMENT '修改人',
+  PRIMARY KEY (id)
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
+
 
 #DROP TABLE IF EXISTS yb_reconsider_InpatientFees;
 CREATE TABLE yb_reconsider_InpatientFees (
@@ -851,6 +870,188 @@ FROM
 WHERE
 		yb_reconsider_reset_data.IS_DELETEMARK = 1;
 
+DROP VIEW IF EXISTS yb_appeal_result_report_view;
+create view yb_appeal_result_report_view
+as
+select	
+	ad.serialNo,#交易流水号
+	ad.billNo,#单据号
+	ad.proposalCode,#意见书编码
+	ad.projectCode,#项目编码
+	ad.projectName,#项目名称
+	ad.num,#数量
+	ad.medicalPrice,#医保内金额
+	ad.ruleName,#规则名称
+	ad.deductPrice,#扣除金额
+	ad.deductReason,#扣除原因
+	ad.repaymentReason,#还款原因
+	ad.doctorName,#医生姓名
+	ad.deptCode,#科室编码
+	ad.deptName,#科室名称
+	ad.enterHospitalDate,#入院日期
+	ad.outHospitalDate,#出院日期
+	ad.costDate,#费用日期
+	ad.enterHospitalDateStr,#入院日期Str
+	ad.outHospitalDateStr,#出院日期Str
+	ad.costDateStr,#费用日期Str
+	ad.hospitalizedNo,#住院号
+	ad.treatmentMode,#就医方式
+	ad.settlementDate,#结算日期
+	ad.settlementDateStr,#结算日期Str
+	ad.personalNo,#个人编号
+	ad.insuredName,#参保人姓名
+	ad.cardNumber,#医保卡号
+	ad.areaName,#统筹区名称
+	ad.versionNumber,#版本号
+	ad.backAppeal,#反馈申诉
+	ad.typeno,	#版本类型
+	ad.insuredType,
+	ad.dataType,
+	ad.orderNumber,
+	ra.applyDate, #复议年月
+	ra.applyDateStr, #复议年月Str
+	ra.operatorId, #操作员代码'
+  ra.operatorName, #操作员名称,
+	ra.resetState raResetState,
+	ra.resultState raResultState,
+	ra.repayState raRepayState,
+  art.id,
+	art.manageId,
+	art.applyDataId,
+  art.verifyId,
+	art.doctorCode ar_doctorCode,
+	art.doctorName ar_doctorName,
+	art.deptCode ar_deptCode,
+	art.deptName ar_deptName,
+	art.operateReason,
+	art.operateDate,
+	art.COMMENTS,
+	art.STATE,
+	art.IS_DELETEMARK,
+	art.MODIFY_TIME,
+	art.CREATE_TIME,
+	art.CREATE_USER_ID,
+	art.MODIFY_USER_ID,
+	art.sourceType,
+	art.resetDataId,
+	art.repayState,
+	art.currencyField,
+	resetDate.repaymentPrice,
+	CASE WHEN art.state = 1 or (art.state = 2 and (art.repayState = 1 or art.repayState = 3)) THEN 1 
+	WHEN art.state = 2 and art.repayState = 2 THEN 0 ELSE 2 END isSuccess,
+	CASE WHEN art.state = 1 THEN ad.deductPrice WHEN ad.deductPrice = resetDate.deductPrice 
+	THEN 0 ELSE ad.deductPrice - resetDate.deductPrice  END adjustPrice
+from 
+	yb_reconsider_apply_data ad 		
+	INNER JOIN yb_reconsider_apply ra ON
+		ra.id = ad.pid AND
+		ra.resetState = 1 AND
+		ra.IS_DELETEMARK = 1
+  INNER JOIN yb_appeal_result art ON
+		art.applyDataId = ad.id AND
+		art.IS_DELETEMARK = 1
+	LEFT JOIN (
+		SELECT 
+			yb_reconsider_reset.applyDateStr, 
+			yb_reconsider_reset_data.id,
+			yb_reconsider_reset_data.repaymentPrice,
+			yb_reconsider_reset_data.deductPrice
+		FROM 
+			yb_reconsider_reset_data
+		INNER JOIN yb_reconsider_reset ON
+			yb_reconsider_reset_data.pid = yb_reconsider_reset.id	AND 
+			yb_reconsider_reset.IS_DELETEMARK = 1
+		WHERE
+			yb_reconsider_reset_data.seekState = 1 AND 
+			yb_reconsider_reset_data.IS_DELETEMARK = 1
+	) resetDate ON resetDate.id = art.resetDataId AND resetDate.applyDateStr = ra.applyDateStr
+where
+    ad.IS_DELETEMARK = 1;
+
+DROP VIEW IF EXISTS yb_appeal_result_deductImplement_view;
+create view yb_appeal_result_deductImplement_view
+as
+select	
+	ad.serialNo,#交易流水号
+	ad.billNo,#单据号
+	ad.proposalCode,#意见书编码
+	ad.projectCode,#项目编码
+	ad.projectName,#项目名称
+	ad.num,#数量
+	ad.medicalPrice,#医保内金额
+	ad.ruleName,#规则名称
+	ad.deductPrice,#扣除金额
+	ad.deductReason,#扣除原因
+	ad.repaymentReason,#还款原因
+	ad.doctorName,#医生姓名
+	ad.deptCode,#科室编码
+	ad.deptName,#科室名称
+	ad.enterHospitalDate,#入院日期
+	ad.outHospitalDate,#出院日期
+	ad.costDate,#费用日期
+	ad.enterHospitalDateStr,#入院日期Str
+	ad.outHospitalDateStr,#出院日期Str
+	ad.costDateStr,#费用日期Str
+	ad.hospitalizedNo,#住院号
+	ad.treatmentMode,#就医方式
+	ad.settlementDate,#结算日期
+	ad.settlementDateStr,#结算日期Str
+	ad.personalNo,#个人编号
+	ad.insuredName,#参保人姓名
+	ad.cardNumber,#医保卡号
+	ad.areaName,#统筹区名称
+	ad.versionNumber,#版本号
+	ad.backAppeal,#反馈申诉
+	ad.typeno,	#版本类型
+	ad.insuredType,
+	ad.dataType,
+	ad.orderNumber,
+	ra.applyDate, #复议年月
+	ra.applyDateStr, #复议年月Str
+	ra.operatorId, #操作员代码'
+  ra.operatorName, #操作员名称,
+	ra.resetState raResetState,
+	ra.resultState raResultState,
+	ra.repayState raRepayState,
+  art.id,
+	art.manageId,
+	art.applyDataId,
+  art.verifyId,
+	art.doctorCode ar_doctorCode,
+	art.doctorName ar_doctorName,
+	art.deptCode ar_deptCode,
+	art.deptName ar_deptName,
+	art.operateReason,
+	art.operateDate,
+	art.COMMENTS,
+	art.STATE,
+	art.IS_DELETEMARK,
+	art.MODIFY_TIME,
+	art.CREATE_TIME,
+	art.CREATE_USER_ID,
+	art.MODIFY_USER_ID,
+	art.sourceType,
+	art.resetDataId,
+	art.repayState,
+	art.currencyField,
+	ardi.implementDate, #'绩效年月'
+	ardi.implementDateStr, #'绩效年月Str'
+	ardi.shareState, #'分摊方式'  # 0 个人 1科室
+	ardi.shareProgramme
+from 
+	yb_reconsider_apply_data ad 		
+	INNER JOIN yb_reconsider_apply ra ON
+		ra.id = ad.pid AND
+		ra.resetState = 1 AND
+		ra.IS_DELETEMARK = 1
+  INNER JOIN yb_appeal_result art ON
+		art.applyDataId = ad.id AND
+		art.state = 2 AND
+		art.IS_DELETEMARK = 1
+	INNER JOIN yb_appeal_result_deductImplement ardi ON
+		ardi.resultId = art.id
+where
+    ad.IS_DELETEMARK = 1;
 
 
 DROP PROCEDURE IF EXISTS p_appeal_manage_enableOverdue;

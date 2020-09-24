@@ -329,8 +329,7 @@ export default {
       },
       {
         title: '文件名称',
-        dataIndex: 'uploadFileName',
-        width: 250
+        dataIndex: 'uploadFileName'
       },
       {
         title: '操作员',
@@ -342,14 +341,15 @@ export default {
         customRender: (text, row, index) => {
           return moment(text).format(this.tableFormat)
         },
-        dataIndex: 'createTime'
+        dataIndex: 'createTime',
+        width: 120
       },
       {
         title: '操作',
         dataIndex: 'operation',
         scopedSlots: { customRender: 'operation' },
         fixed: 'right',
-        width: 200
+        width: 150
       }]
     }
   },

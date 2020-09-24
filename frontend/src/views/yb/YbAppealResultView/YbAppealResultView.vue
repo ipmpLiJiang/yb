@@ -5,11 +5,8 @@
     class="card-area"
   >
     <template>
-      <div style="text-align:center;margin-bottom:20px">
-        <a-row
-          justify="center"
-          align="middle"
-        >
+      <div style="margin-bottom:20px">
+        <a-row justify="center" type="flex">
           <a-col :span=1>
             &nbsp;
           </a-col>
