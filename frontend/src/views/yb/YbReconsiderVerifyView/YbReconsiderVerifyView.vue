@@ -27,12 +27,15 @@
             >筛选</a-button>
           </a-col>
           <a-col :span=10>
-            <a-button
-              type="primary"
-              style="margin-right:15px"
+            <a-popconfirm
+              title="确定自动匹配？"
               v-show="tableSelectKey==1||tableSelectKey==4?true:false"
               @click="addImport"
-            >自动匹配</a-button>
+              okText="确定"
+              cancelText="取消"
+            >
+              <a-button type="primary" style="margin-right: 15px">自动匹配</a-button>
+            </a-popconfirm>
             <a-button
               type="primary"
               v-show="tableSelectKey==1?true:false"
@@ -164,15 +167,9 @@
               label="项目名称："
             >
             <a-input-group compact>
-              <a-select style="width: 80px" v-model="searchItem.project.type" default-value="LIKE">
-                <a-select-option value="EQ">
-                  等于
-                </a-select-option>
-                <a-select-option value="LIKE">
-                  包含
-                </a-select-option>
-                <a-select-option value="NOTLIKE">
-                  不包含
+              <a-select style="width: 85px" v-model="searchItem.project.type" default-value="LIKE">
+                <a-select-option v-for="item in handleQuerySymbol" :key="item.value" :value="item.value">
+                  {{item.text}}
                 </a-select-option>
               </a-select>
               <a-input style="width: 220px"  v-model="searchItem.project.projectName" />
@@ -185,15 +182,9 @@
               label="规则名称："
             >
             <a-input-group compact>
-              <a-select style="width: 80px" v-model="searchItem.rule.type" default-value="LIKE">
-                <a-select-option value="EQ">
-                  等于
-                </a-select-option>
-                <a-select-option value="LIKE">
-                  包含
-                </a-select-option>
-                <a-select-option value="NOTLIKE">
-                  不包含
+              <a-select style="width: 85px" v-model="searchItem.rule.type" default-value="LIKE">
+                <a-select-option v-for="item in handleQuerySymbol" :key="item.value" :value="item.value">
+                  {{item.text}}
                 </a-select-option>
               </a-select>
               <a-input style="width: 220px" v-model="searchItem.rule.ruleName" />
@@ -206,15 +197,9 @@
               label="科室名称："
             >
             <a-input-group compact>
-              <a-select style="width: 80px" v-model="searchItem.dept.type" default-value="LIKE">
-                <a-select-option value="EQ">
-                  等于
-                </a-select-option>
-                <a-select-option value="LIKE">
-                  包含
-                </a-select-option>
-                <a-select-option value="NOTLIKE">
-                  不包含
+              <a-select style="width: 85px" v-model="searchItem.dept.type" default-value="LIKE">
+                <a-select-option v-for="item in handleQuerySymbol" :key="item.value" :value="item.value">
+                  {{item.text}}
                 </a-select-option>
               </a-select>
               <a-input style="width: 220px" v-model="searchItem.dept.deptName" />
@@ -306,6 +291,11 @@ export default {
       spinning: false,
       delayTime: 500,
       selectDate: {},
+      handleQuerySymbol: [
+        {text: '等于', value: 'EQ'},
+        {text: '包含', value: 'LIKE'},
+        {text: '不包含', value: 'NOTLIKE'}
+      ],
       searchItem: {
         project: {type: 'LIKE', projectName: ''},
         rule: {type: 'LIKE', ruleName: ''},

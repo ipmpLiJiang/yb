@@ -74,11 +74,12 @@
                     <result column="CREATE_USER_ID" property="createUserId"/>
                     <result column="MODIFY_USER_ID" property="modifyUserId"/>
                     <result column="currencyField" property="currencyField"/>
+            <result column="approvalState" property="approvalState"/>
         </resultMap>
 
         <!-- 通用查询结果列 -->
         <sql id="Base_Column_List">
-        serialNo, billNo, proposalCode, projectCode, projectName, num, medicalPrice, ruleName, deductPrice, deductReason, repaymentReason, doctorName, deptCode, deptName, enterHospitalDate, outHospitalDate, costDate,enterHospitalDateStr,outHospitalDateStr,costDateStr, hospitalizedNo, treatmentMode, settlementDate,settlementDateStr, personalNo, insuredName, cardNumber, areaName, versionNumber, backAppeal, typeno, applyDate, applyDateStr, operatorId, operatorName, id, applyDataId, verifyId, readyDoctorCode, readyDoctorName, readyDeptCode, readyDeptName, changeDoctorCode, changeDoctorName, changeDeptCode, changeDeptName, operateReason, operateDate, acceptState, refuseId, refuseName, refuseReason, refuseDate, adminPersonId, adminPersonName, adminChangeDate, adminReason,enableDate,enableType,sourceType, dataType,orderNumber,COMMENTS, STATE, IS_DELETEMARK, MODIFY_TIME, CREATE_TIME, CREATE_USER_ID, MODIFY_USER_ID, currencyField
+        serialNo, billNo, proposalCode, projectCode, projectName, num, medicalPrice, ruleName, deductPrice, deductReason, repaymentReason, doctorName, deptCode, deptName, enterHospitalDate, outHospitalDate, costDate,enterHospitalDateStr,outHospitalDateStr,costDateStr, hospitalizedNo, treatmentMode, settlementDate,settlementDateStr, personalNo, insuredName, cardNumber, areaName, versionNumber, backAppeal, typeno, applyDate, applyDateStr, operatorId, operatorName, id, applyDataId, verifyId, readyDoctorCode, readyDoctorName, readyDeptCode, readyDeptName, changeDoctorCode, changeDoctorName, changeDeptCode, changeDeptName, operateReason, operateDate, acceptState, refuseId, refuseName, refuseReason, refuseDate, adminPersonId, adminPersonName, adminChangeDate, adminReason,enableDate,enableType,sourceType, dataType,orderNumber,COMMENTS, STATE, IS_DELETEMARK, MODIFY_TIME, CREATE_TIME, CREATE_USER_ID, MODIFY_USER_ID, currencyField,approvalState
     </sql>
     <update id="updateYbAppealManageView" parameterType="cc.mrbird.febs.yb.entity.YbAppealManageView">
         update yb_appeal_manage_view

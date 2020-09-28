@@ -555,6 +555,13 @@ public class YbAppealManageView implements Serializable {
     @ExcelField(value ="发送关联Id")
     private String verifySendId;
 
+    /**
+     * 审批状态
+     */
+    @TableField("approvalState")
+    //@ExcelField(value ="审批状态")
+    private Integer approvalState;
+
 
     public static final String SERIALNO = "serialNo";
 
@@ -700,5 +707,5 @@ public class YbAppealManageView implements Serializable {
 
     public static final String VERIFYSENDID = "verifySendId";
 
-
+    public static final String APPROVALSTATE = "approvalState";
 }

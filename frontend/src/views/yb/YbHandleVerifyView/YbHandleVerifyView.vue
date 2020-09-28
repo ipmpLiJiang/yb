@@ -64,7 +64,7 @@
           >
             <ybHandleVerifyData-send
               ref="ybHandleVerifyDataSend"
-              :applyDate='formatDate()'
+              :applyDate="searchApplyDate"
               :searchText = "searchText"
             >
             </ybHandleVerifyData-send>
@@ -76,7 +76,7 @@
           >
             <ybHandleVerifyData-end
               ref="ybHandleVerifyDataEnd"
-              :applyDate='formatDate()'
+              :applyDate="searchApplyDate"
               :searchText = "searchText"
             >
             </ybHandleVerifyData-end>

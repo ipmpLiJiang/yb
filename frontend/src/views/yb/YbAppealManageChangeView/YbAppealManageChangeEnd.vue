@@ -8,7 +8,7 @@
           :dataSource="dataSource"
           :pagination="pagination"
           :loading="loading"
-          :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
+          :rowSelection="{type: 'radio', selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
           @change="handleTableChange"
           :bordered="bordered"
           :customRow="handleClickRow"
@@ -64,7 +64,8 @@ export default {
       },
       loading: false,
       bordered: true,
-      ybAppealManage: {}
+      ybAppealManage: {},
+      tableFormat: 'YYYY-MM-DD'
     }
   },
   computed: {
@@ -123,7 +124,11 @@ export default {
         dataIndex: 'costDateStr',
         customRender: (text, row, index) => {
           if (text !== '' && text !== null) {
-            return moment(text).format('YYYY-MM-DD')
+            if (isNaN(text) && !isNaN(Date.parse(text))) {
+              return moment(text).format(this.tableFormat)
+            } else {
+              return text
+            }
           } else {
             return text
           }
@@ -150,12 +155,32 @@ export default {
         dataIndex: 'operateDate',
         customRender: (text, row, index) => {
           if (text !== '' && text !== null) {
-            return moment(text).format('YYYY-MM-DD')
+            if (isNaN(text) && !isNaN(Date.parse(text))) {
+              return moment(text).format(this.tableFormat)
+            } else {
+              return text
+            }
           } else {
             return text
           }
         },
         width: 110
+      },
+      {
+        title: '审核结果',
+        dataIndex: 'approvalState',
+        customRender: (text, row, index) => {
+          switch (text) {
+            case 1:
+              return '同意'
+            case 2:
+              return '拒绝'
+            default:
+              return text
+          }
+        },
+        fixed: 'right',
+        width: 90
       },
       {
         title: '操作',
@@ -181,6 +206,7 @@ export default {
           click: () => {
             let target = this.selectedRowKeys.filter(key => key === record.id)[0]
             if (target === undefined) {
+              this.selectedRowKeys = []
               this.selectedRowKeys.push(record.id)
             } else {
               this.selectedRowKeys.splice(this.selectedRowKeys.indexOf(record.id), 1)

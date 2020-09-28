@@ -1,7 +1,8 @@
 <template>
     <div>
+      <a-form :form="form">
       <a-row justify="center" type="flex">
-        <a-col :span=8>
+        <a-col :span=9>
           <a-form-item
             label="绩效落实年月"
             v-bind="formItemLayout"
@@ -9,34 +10,34 @@
             <a-month-picker
               placeholder="请输入绩效落实年月"
               @change="monthChange"
-              v-decorator="['implementDate', {rules: [{ required: true, message: '绩效落实年月不能为空' }] }]"
-              :default-value="formatDate()"
+              v-decorator="['implementDateStr', {rules: [{ required: true, message: '绩效落实年月不能为空' }] }]"
               :format="monthFormat"
             />
           </a-form-item>
         </a-col>
-        <a-col :span=8>
+        <a-col :span=12>
           <a-form-item
             label="分摊方式"
             v-bind="formItemLayout"
           >
-            <a-form-item label="Radio.Group">
-              <a-radio-group v-decorator="['shareState']">
-                <a-radio value="0">
-                  个人分摊
-                </a-radio>
-                <a-radio value="1">
-                  科室个人
-                </a-radio>
-              </a-radio-group>
-            </a-form-item>
+            <a-radio-group v-decorator="['shareState']">
+              <a-radio value="0">
+                个人分摊
+              </a-radio>
+              <a-radio value="1">
+                科室个人
+              </a-radio>
+            </a-radio-group>
           </a-form-item>
         </a-col>
       </a-row>
-      <a-row justify="center" type="flex">
-        <a-col :span=16>
+      <a-row type="flex" justify="start">
+        <a-col :span=21>
           <a-form-item
-            v-bind="formItemLayout"
+            v-bind="{
+              labelCol: { span: 5 },
+              wrapperCol: { span: 17, offset: 1 }
+            }"
             label="分摊方案"
           >
             <a-textarea
@@ -47,6 +48,8 @@
           </a-form-item>
         </a-col>
       </a-row>
+      <br>
+      </a-form>
       <div class="drawer-bootom-button">
       <a-popconfirm
         title="确定放弃编辑？"
@@ -67,8 +70,8 @@
 <script>
 import moment from 'moment'
 const formItemLayout = {
-  labelCol: { span: 5 },
-  wrapperCol: { span: 15, offset: 1 }
+  labelCol: { span: 9 },
+  wrapperCol: { span: 13, offset: 1 }
 }
 export default {
   name: 'YbAppealResultDeductImplementEdit',
@@ -79,7 +82,6 @@ export default {
       formItemLayout,
       loading: false,
       monthFormat: 'YYYY-MM',
-      selectImplementDate: this.formatDate(),
       selectImplementDateStr: this.formatDate(),
       form: this.$form.createForm(this),
       ybAppealResult: {
@@ -110,12 +112,19 @@ export default {
     },
     monthChange (date, dateString) {
       this.selectImplementDateStr = dateString
-      this.selectImplementDate = date
     },
     setFormValues ({ ...ybAppealResult }) {
       this.ybAppealResult = ybAppealResult
       this.selectImplementDateStr = this.formatDate()
-      this.selectImplementDate = this.formatDate() + '-15'
+
+      this.form.getFieldDecorator('shareState')
+      this.form.getFieldDecorator('shareProgramme')
+      this.form.getFieldDecorator('implementDateStr')
+      this.form.setFieldsValue({
+        shareState: '0',
+        shareProgramme: '',
+        implementDateStr: this.selectImplementDateStr
+      })
     },
     handleSubmit () {
       this.form.validateFields((err, values) => {
@@ -123,7 +132,8 @@ export default {
           this.setFields()
           this.ybAppealResultDeductImplement.resetDataId = this.ybAppealResult.resetDataId
           this.ybAppealResultDeductImplement.resultId = this.ybAppealResult.id
-          this.ybAppealResultDeductImplement.implementDate = this.ybAppealResultDeductImplement.implementDateStr + '-15'
+          this.ybAppealResultDeductImplement.implementDateStr = this.selectImplementDateStr
+
           this.$post('ybAppealResultDeductimplement', {
             ...this.ybAppealResultDeductImplement
           }).then((r) => {

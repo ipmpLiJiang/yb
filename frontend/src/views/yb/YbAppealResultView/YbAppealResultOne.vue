@@ -67,7 +67,8 @@ export default {
       },
       loading: false,
       bordered: true,
-      ybAppealResult: {}
+      ybAppealResult: {},
+      tableFormat: 'YYYY-MM-DD'
     }
   },
   computed: {
@@ -127,7 +128,7 @@ export default {
         customRender: (text, row, index) => {
           if (text !== '' && text !== null) {
             if (isNaN(text) && !isNaN(Date.parse(text))) {
-              return moment(text).format('YYYY-MM-DD')
+              return moment(text).format(this.tableFormat)
             } else {
               return text
             }
@@ -141,32 +142,6 @@ export default {
         title: '科室名称',
         dataIndex: 'arDeptname',
         width: 120
-      },
-      {
-        title: '医生姓名',
-        dataIndex: 'arDoctorname',
-        width: 120
-      },
-      {
-        title: '申请理由',
-        dataIndex: 'operateReason',
-        width: 120
-      },
-      {
-        title: '申请日期',
-        dataIndex: 'operateDate',
-        customRender: (text, row, index) => {
-          if (text !== '' && text !== null) {
-            if (isNaN(text) && !isNaN(Date.parse(text))) {
-              return moment(text).format('YYYY-MM-DD')
-            } else {
-              return text
-            }
-          } else {
-            return text
-          }
-        },
-        width: 110
       },
       {
         title: '操作',

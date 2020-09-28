@@ -33,18 +33,18 @@
               />
             </a-form-item>
           </a-col>
-          <a-col :span=4>
+          <a-col :span=5>
               <a-form-item
                 label="扣款类型"
                 v-bind="formItemLayout"
               >
                 <a-select
-                  :value="selectDataType"
+                  :value="searchDataType"
                    @change="handleDataTypeChange"
                   style="width: 100px"
                 >
                   <a-select-option
-                    v-for="d in selectDataTypeSource"
+                    v-for="d in selectDataTypeDataSource"
                     :key="d.value"
                   >
                     {{ d.text }}
@@ -53,7 +53,7 @@
               </a-form-item>
           </a-col>
           <a-col :span=5>
-            <a-input-search placeholder="请输入关键字" v-model="searchText" style="width: 200px" enter-button @search="search" />
+            <a-input-search placeholder="请输入关键字" v-model="searchText" style="width: 200px" enter-button @search="searchTable" />
           </a-col>
         </a-row>
       </a-form>
@@ -71,6 +71,12 @@
           >
             <ybAppealResultDeductImplement-stayed
               ref="ybAppealResultDeductImplementStayed"
+              :applyDateStr="searchApplyDate"
+              :applyDateToStr="searchToApplyDate"
+              :defaultFormatDate="formatDate()"
+              :searchDataType="searchDataType"
+              :searchText="searchText"
+              @edit="edit"
             >
             </ybAppealResultDeductImplement-stayed>
           </a-tab-pane>
@@ -81,6 +87,11 @@
           >
             <ybAppealResultDeductImplement-complete
               ref="ybAppealResultDeductImplementComplete"
+              :applyDateStr="searchApplyDate"
+              :applyDateToStr="searchToApplyDate"
+              :defaultFormatDate="formatDate()"
+              :searchText="searchText"
+              :searchDataType="searchDataType"
             >
             </ybAppealResultDeductImplement-complete>
           </a-tab-pane>
@@ -108,7 +119,7 @@ import YbAppealResultDeductImplementComplete from './YbAppealResultDeductImpleme
 import YbAppealResultDeductImplementStayed from './YbAppealResultDeductImplementStayed'
 import YbAppealResultDeductImplementEdit from './YbAppealResultDeductImplementEdit'
 const formItemLayout = {
-  labelCol: { span: 5 },
+  labelCol: { span: 8 },
   wrapperCol: { span: 15, offset: 1 }
 }
 export default {
@@ -124,7 +135,9 @@ export default {
       searchDataType: 0,
       editVisible: false,
       searchApplyDate: this.formatDate(),
+      searchToApplyDate: this.formatDate(),
       selectDataTypeDataSource: [
+        {text: '全部', value: 2},
         {text: '明细扣款', value: 0},
         {text: '主单扣款', value: 1}
       ],
@@ -142,28 +155,18 @@ export default {
       return datemonth
     },
     monthChange (date, dateString) {
-      this.selectApplyDateStr = dateString
+      this.searchApplyDate = dateString
     },
     monthToChange (date, dateString) {
-      this.selectToApplyDateStr = dateString
+      this.searchToApplyDate = dateString
     },
-    showModal () {
+    edit (record) {
+      this.showModal(record)
+    },
+    showModal (record) {
       this.editVisible = true
-      let editParams = {}
-      editParams.applyDateStr = this.searchApplyDate
-      if (this.tableSelectKey === '1') {
-        editParams.typeno = 1
-        editParams.sourceType = 0
-      } else if (this.tableSelectKey === '2') {
-        editParams.typeno = 2
-        editParams.sourceType = 0
-      } else {
-        editParams.typeno = undefined
-        editParams.sourceType = 1
-      }
-      editParams.dataType = this.searchDataType
       setTimeout(() => {
-        this.$refs.ybAppealResultDeductImplementEdit.setFormValues(editParams)
+        this.$refs.ybAppealResultDeductImplementEdit.setFormValues(record)
       }, 200)
     },
     handleOk (e) {

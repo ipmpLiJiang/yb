@@ -119,6 +119,11 @@ export default {
         width: 100
       },
       {
+        title: '入院时间',
+        dataIndex: 'enterHospitalDateStr',
+        width: 120
+      },
+      {
         title: '结算日期',
         dataIndex: 'settlementDateStr',
         customRender: (text, row, index) => {
@@ -135,20 +140,14 @@ export default {
         width: 120
       },
       {
-        title: '参保人',
+        title: '参保人姓名',
         dataIndex: 'insuredName',
-        width: 100
+        width: 110
       },
       {
         title: '就医方式',
         dataIndex: 'treatmentMode',
         width: 100
-      },
-      {
-        title: '住院号',
-        dataIndex: 'hospitalizedNo',
-        fixed: 'right',
-        width: 120
       },
       {
         title: '复议科室',
@@ -160,7 +159,7 @@ export default {
         title: '复议医生',
         dataIndex: 'verifyDoctorName',
         fixed: 'right',
-        width: 120
+        width: 100
       },
       {
         title: '操作',

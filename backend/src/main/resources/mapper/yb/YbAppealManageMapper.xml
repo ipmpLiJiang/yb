@@ -30,7 +30,8 @@
                     <result column="currencyField" property="currencyField"/>
                     <result column="sourceType" property="sourceType"/>
             <result column="dataType" property="dataType"/>
-                    <result column="COMMENTS" property="comments"/>
+            <result column="approvalState" property="approvalState"/>
+            <result column="COMMENTS" property="comments"/>
                     <result column="STATE" property="state"/>
                     <result column="IS_DELETEMARK" property="isDeletemark"/>
                     <result column="MODIFY_TIME" property="modifyTime"/>
@@ -41,7 +42,7 @@
 
         <!-- 通用查询结果列 -->
         <sql id="Base_Column_List">
-        id, applyDataId, verifyId, readyDoctorCode, readyDoctorName, readyDeptCode, readyDeptName, changeDoctorCode, changeDoctorName, changeDeptCode, changeDeptName, acceptState, operateReason, operateDate, refuseId, refuseName, refuseReason, refuseDate, adminPersonId, adminPersonName, adminChangeDate, adminReason,enableDate, currencyField,sourceType,dataType, COMMENTS, STATE, IS_DELETEMARK, MODIFY_TIME, CREATE_TIME, CREATE_USER_ID, MODIFY_USER_ID
+        id, applyDataId, verifyId, readyDoctorCode, readyDoctorName, readyDeptCode, readyDeptName, changeDoctorCode, changeDoctorName, changeDeptCode, changeDeptName, acceptState, operateReason, operateDate, refuseId, refuseName, refuseReason, refuseDate, adminPersonId, adminPersonName, adminChangeDate, adminReason,enableDate, currencyField,sourceType,dataType,approvalState, COMMENTS, STATE, IS_DELETEMARK, MODIFY_TIME, CREATE_TIME, CREATE_USER_ID, MODIFY_USER_ID
     </sql>
     <update id="updateYbAppealManage" parameterType="cc.mrbird.febs.yb.entity.YbAppealManage">
         update yb_appeal_manage
@@ -71,6 +72,7 @@
 <if test="currencyField != null">currencyField=#{currencyField},</if>
 <if test="sourceType != null">sourceType=#{sourceType},</if>
 <if test="dataType != null">dataType=#{dataType},</if>
+<if test="approvalState != null">approvalState=#{approvalState},</if>
 <if test="comments != null">COMMENTS=#{comments},</if>
 <if test="state != null">STATE=#{state},</if>
 <if test="isDeletemark != null">IS_DELETEMARK=#{isDeletemark},</if>
@@ -130,6 +132,7 @@
         <if test="ybAppealManage.sourceType != null"> and sourceType =#{ ybAppealManage.sourceType} </if>
             <if test="ybAppealManage.comments != null and ybAppealManage.comments != ''"> and COMMENTS like concat('%', #{ ybAppealManage.comments} ,'%')</if>
         <if test="ybAppealManage.state != null"> and STATE =#{ ybAppealManage.state} </if>
+        <if test="ybAppealManage.approvalState != null"> and approvalState =#{ ybAppealManage.approvalState} </if>
         <if test="ybAppealManage.isDeletemark != null"> and IS_DELETEMARK =#{ ybAppealManage.isDeletemark} </if>
         <if test="ybAppealManage.modifyTimeFrom!= null">
             AND ybAppealManage.MODIFY_TIME <![CDATA[ >= ]]>  modifyTimeFrom}
@@ -173,6 +176,7 @@
             <if test="currencyField != null">currencyField=#{currencyField},</if>
             <if test="sourceType != null">sourceType=#{sourceType},</if>
             <if test="dataType != null">dataType=#{dataType},</if>
+            <if test="approvalState != null">approvalState=#{approvalState},</if>
             <if test="comments != null">COMMENTS=#{comments},</if>
             <if test="state != null">STATE=#{state},</if>
             <if test="isDeletemark != null">IS_DELETEMARK=#{isDeletemark},</if>
@@ -213,6 +217,7 @@
             <if test="currencyField != null">currencyField=#{currencyField},</if>
             <if test="sourceType != null">sourceType=#{sourceType},</if>
             <if test="dataType != null">dataType=#{dataType},</if>
+            <if test="approvalState != null">approvalState=#{approvalState},</if>
             <if test="comments != null">COMMENTS=#{comments},</if>
             <if test="state != null">STATE=#{state},</if>
             <if test="isDeletemark != null">IS_DELETEMARK=#{isDeletemark},</if>
@@ -255,6 +260,7 @@
             <if test="dataType != null">dataType=#{dataType},</if>
             <if test="comments != null">COMMENTS=#{comments},</if>
             <if test="state != null">STATE=#{state},</if>
+            <if test="approvalState != null">approvalState=#{approvalState},</if>
             <if test="isDeletemark != null">IS_DELETEMARK=#{isDeletemark},</if>
             <if test="modifyTime != null">MODIFY_TIME=#{modifyTime},</if>
             <if test="createTime != null">CREATE_TIME=#{createTime},</if>

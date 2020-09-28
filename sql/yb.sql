@@ -1,6 +1,7 @@
+#复议规则
 DROP TABLE IF EXISTS yb_reconsider_rule;
 CREATE TABLE yb_reconsider_rule (
-  id char(36) NOT NULL COMMENT '规则编号',
+  id char(36) NOT NULL COMMENT '复议规则id',
 	gzNo int(11) NOT NULL COMMENT '序号',
   gzDescribe varchar(255) NOT NULL COMMENT '规则描述',
   gzXplain varchar(255) NOT NULL COMMENT '规则解释',
@@ -18,12 +19,12 @@ CREATE TABLE yb_reconsider_rule (
   PRIMARY KEY (ID)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 
-
+#复议申请
 DROP TABLE IF EXISTS yb_reconsider_apply;
 CREATE TABLE yb_reconsider_apply (
   id char(36) NOT NULL COMMENT '规则编号',
   applyDate datetime NOT NULL COMMENT '复议年月',
-  applyDateStr varchar(10) DEFAULT NULL COMMENT '复议年月Str',
+  applyDateStr varchar(10) NOT NULL COMMENT '复议年月Str',
   operatorId bigint(11) NOT NULL COMMENT '操作员代码',
   operatorName varchar(50) NOT NULL COMMENT '操作员名称',
   uploadFileNameOne varchar(100) DEFAULT NULL COMMENT '审核一上传名称',
@@ -44,11 +45,11 @@ CREATE TABLE yb_reconsider_apply (
 ) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
 
 
-
+#复议申请明细
 DROP TABLE IF EXISTS yb_reconsider_apply_data;
 CREATE TABLE yb_reconsider_apply_data (
   id char(36) NOT NULL COMMENT '申请数据明细',
-	orderNumber varchar(50) DEFAULT NULL COMMENT '序号',
+	orderNumber varchar(50) NOT NULLL COMMENT '序号',
 	pid char(36) NOT NULL COMMENT '申请编号',
   serialNo varchar(100) NOT NULL COMMENT '交易流水号',
 	billNo varchar(50) NOT NULL COMMENT '单据号',
@@ -93,7 +94,7 @@ CREATE TABLE yb_reconsider_apply_data (
   PRIMARY KEY (id)
 ) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
 
-
+#核对申请
 #DROP TABLE IF EXISTS yb_reconsider_verify;
 CREATE TABLE yb_reconsider_verify (
   id char(36) NOT NULL COMMENT '核对申请',
@@ -104,8 +105,8 @@ CREATE TABLE yb_reconsider_verify (
 	verifyDeptName varchar(100) NOT NULL COMMENT '参考复议科室',
 	operateReason varchar(1000) DEFAULT NULL COMMENT '操作理由',
 	operateDate datetime DEFAULT NULL COMMENT '操作日期',
-	matchPersonId bigint(11) NOT NULL COMMENT '匹配人代码',
-	matchPersonName varchar(50) NOT NULL COMMENT '匹配人',
+	matchPersonId bigint(11) DEFAULT NULL COMMENT '匹配人代码',
+	matchPersonName varchar(50) DEFAULT NULL COMMENT '匹配人',
 	matchDate datetime DEFAULT NULL COMMENT '匹配日期', 
 	reviewerId bigint(11) DEFAULT NULL COMMENT '审核人代码',
 	reviewerName varchar(50) DEFAULT NULL COMMENT '审核人',
@@ -113,7 +114,7 @@ CREATE TABLE yb_reconsider_verify (
 	sendPersonId bigint(11) DEFAULT NULL COMMENT '发送人代码',
 	sendPersonName varchar(50) DEFAULT NULL COMMENT '发送人',	
 	sendDate datetime DEFAULT NULL COMMENT '发送日期', 
-	currencyField varchar(100) DEFAULT NULL COMMENT '通用',
+	currencyField varchar(50) DEFAULT NULL COMMENT '通用',
 dataType int(4) NOT NULL COMMENT '扣款类型', -- 0 明细扣款 1 主单扣款
   COMMENTS varchar(1000) DEFAULT NULL COMMENT '备注',
   STATE int(4) DEFAULT 1 COMMENT '状态',#1待审核、2已审核、3已发送
@@ -125,7 +126,7 @@ dataType int(4) NOT NULL COMMENT '扣款类型', -- 0 明细扣款 1 主单扣款
   PRIMARY KEY (id)
 ) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
 
-
+#申诉管理
 #DROP TABLE IF EXISTS yb_appeal_manage;
 CREATE TABLE yb_appeal_manage (
   id char(36) NOT NULL COMMENT '申诉管理',
@@ -140,7 +141,7 @@ CREATE TABLE yb_appeal_manage (
 	changeDoctorName varchar(50) DEFAULT NULL COMMENT '变更医生',
   changeDeptCode varchar(100) DEFAULT NULL COMMENT '变更复议科室编码',
 	changeDeptName varchar(100) DEFAULT NULL COMMENT '变更复议科室',	
-	acceptState int(4) DEFAULT 0 COMMENT '接受状态',#0待接收，1接受，2不接受，3管理员更改，4医保拒绝，6已上传
+	acceptState int(4) DEFAULT 0 COMMENT '接受状态',#0待接收，1接受，2不接受，3管理员更改，4医保拒绝，6已上传，7已过期(未申诉)
 	operateReason varchar(1000) DEFAULT NULL COMMENT '操作理由',
 	operateProcess varchar(50) DEFAULT NULL COMMENT '操作过程',
 	operateDate datetime DEFAULT NULL COMMENT '操作日期',	
@@ -154,7 +155,8 @@ CREATE TABLE yb_appeal_manage (
 	adminReason varchar(1000) DEFAULT NULL COMMENT '管理员理由',
 	enableDate datetime DEFAULT NULL COMMENT '可操作日期',
 	sourceType int(4) DEFAULT 0 COMMENT '来源类型',//0正常流程、1剔除业务
-	currencyField varchar(100) DEFAULT NULL COMMENT '通用',
+	currencyField varchar(50) DEFAULT NULL COMMENT '通用',
+	approvalState DEFAULT 0 COMMENT '审批状态',//0正常 1同意 2拒绝
 dataType int(4) NOT NULL COMMENT '扣款类型', -- 0 明细扣款 1 主单扣款
   COMMENTS varchar(1000) DEFAULT NULL COMMENT '备注',
   STATE int(4) DEFAULT 1 COMMENT '状态',
@@ -183,12 +185,10 @@ CREATE TABLE yb_appeal_result (
 	resetDate datetime DEFAULT NULL COMMENT '剔除日期',
         resetPersonId bigint(11) DEFAULT NULL COMMENT '剔除人代码',
 	resetPersonName varchar(50) DEFAULT NULL COMMENT '剔除人',
-	// repayDataId  char(36) DEFAULT NULL COMMENT '还款明细Id',
-	// repayDate datetime DEFAULT NULL COMMENT '还款日期',
-        // repayPersonId bigint(11) DEFAULT NULL COMMENT '还款人代码',
-	// repayPersonName varchar(50) DEFAULT NULL COMMENT '还款人',
 	sourceType int(4) DEFAULT 0 COMMENT '来源类型',//0正常流程、1剔除业务
-	currencyField varchar(100) DEFAULT NULL COMMENT '通用',
+	#isDeductImplement int(4) DEFAULT 0 COMMENT '是否填报扣款落实',// 0未填报、1已填报
+	#isRepayImplement int(4) DEFAULT 0 COMMENT '是否填报还款落实',// 0未填报、1已填报
+	currencyField varchar(50) DEFAULT NULL COMMENT '通用',
 dataType int(4) NOT NULL COMMENT '扣款类型', -- 0 明细扣款 1 主单扣款
 repayState int(4) DEFAULT 1 COMMENT '还款状态', -- 1 成功 2 失败 3 部分调整 
   COMMENTS varchar(1000) DEFAULT NULL COMMENT '备注',
@@ -273,6 +273,7 @@ CREATE TABLE com_configureManage (
   PRIMARY KEY (ID)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 
+#剔除
 DROP TABLE IF EXISTS yb_reconsider_reset;
 CREATE TABLE yb_reconsider_reset (
   id char(36) NOT NULL COMMENT '剔除表',
@@ -289,6 +290,7 @@ CREATE TABLE yb_reconsider_reset (
   PRIMARY KEY (ID)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 
+#剔除明细
 DROP TABLE IF EXISTS yb_reconsider_reset_data;
 CREATE TABLE yb_reconsider_reset_data (
   id char(36) NOT NULL COMMENT '剔除表明细扣款',
@@ -319,7 +321,7 @@ orderNumber varchar(50) DEFAULT NULL COMMENT '序号',
 	insuredType varchar(50) DEFAULT NULL COMMENT '参保类型',
 	dataType int(4) NOT NULL COMMENT '扣款类型', -- 0 明细扣款 1 主单扣款
   COMMENTS varchar(1000) DEFAULT NULL COMMENT '备注',
-  seekState int(4) DEFAULT 0 COMMENT '查找状态',-- 0未匹配 1已匹配
+  seekState int(4) DEFAULT 0 COMMENT '匹配状态',-- 0未匹配 1已匹配
 repaymentPrice decimal(17,4)  DEFAULT NULL COMMENT '还款金额',
   STATE int(4) DEFAULT 0 COMMENT '状态',-- 0上传 1一对多 2未知
   IS_DELETEMARK tinyint(4) DEFAULT NULL COMMENT '是否删除',
@@ -330,7 +332,7 @@ repaymentPrice decimal(17,4)  DEFAULT NULL COMMENT '还款金额',
   PRIMARY KEY (id)
 ) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
 
-
+#人工复议
 DROP TABLE IF EXISTS yb_handle_verify;
 CREATE TABLE yb_handle_verify (
   id char(36) NOT NULL COMMENT '手动核对',
@@ -358,7 +360,7 @@ CREATE TABLE yb_handle_verify_data (
 	manageId  char(36) NOT NULL COMMENT '管理Id',
 	doctorCode varchar(50) NOT NULL COMMENT '复议医生编码',
 	doctorName varchar(50) NOT NULL COMMENT '复议医生',
-  deptCode varchar(100) NOT NULL COMMENT '复议科室编码',
+  	deptCode varchar(100) NOT NULL COMMENT '复议科室编码',
 	deptName varchar(100) NOT NULL COMMENT '复议科室',
 	operateReason varchar(1000) DEFAULT NULL COMMENT '操作理由',
 	operateDate datetime DEFAULT NULL COMMENT '操作日期',
@@ -607,6 +609,7 @@ select
 	am.sourceType,
 	am.operateProcess,
 	am.verifySendId,
+	am.approvalState,
 	case when (UNIX_TIMESTAMP(am.enableDate)-UNIX_TIMESTAMP(sysdate()))/(60*60*24) > 0 then 1 else 0 end enableType 
 from 
 	yb_reconsider_apply_data ad 		
@@ -1037,7 +1040,8 @@ select
 	ardi.implementDate, #'绩效年月'
 	ardi.implementDateStr, #'绩效年月Str'
 	ardi.shareState, #'分摊方式'  # 0 个人 1科室
-	ardi.shareProgramme
+	ardi.shareProgramme,
+	ardi.id deductImplementId
 from 
 	yb_reconsider_apply_data ad 		
 	INNER JOIN yb_reconsider_apply ra ON
@@ -1047,8 +1051,9 @@ from
   INNER JOIN yb_appeal_result art ON
 		art.applyDataId = ad.id AND
 		art.state = 2 AND
+		art.sourceType = 0 AND
 		art.IS_DELETEMARK = 1
-	INNER JOIN yb_appeal_result_deductImplement ardi ON
+	LEFT JOIN yb_appeal_result_deductImplement ardi ON
 		ardi.resultId = art.id
 where
     ad.IS_DELETEMARK = 1;

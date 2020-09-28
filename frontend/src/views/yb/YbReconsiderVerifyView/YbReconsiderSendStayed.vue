@@ -69,7 +69,8 @@ export default {
       },
       loading: false,
       bordered: true,
-      ybReconsiderVerify: {}
+      ybReconsiderVerify: {},
+      tableFormat: 'YYYY-MM-DD'
     }
   },
   computed: {
@@ -129,7 +130,7 @@ export default {
         customRender: (text, row, index) => {
           if (text !== '' && text !== null) {
             if (isNaN(text) && !isNaN(Date.parse(text))) {
-              return moment(text).format('YYYY-MM-DD')
+              return moment(text).format(this.tableFormat)
             } else {
               return text
             }
@@ -140,26 +141,16 @@ export default {
         width: 120
       },
       {
-        title: '医生姓名',
-        dataIndex: 'doctorName',
-        width: 100
-      },
-      {
-        title: '科室名称',
-        dataIndex: 'deptName',
-        width: 100
-      },
-      {
-        title: '参考复议医生',
-        dataIndex: 'verifyDoctorName',
-        fixed: 'right',
-        width: 120
-      },
-      {
-        title: '参考复议科室',
+        title: '复议科室',
         dataIndex: 'verifyDeptName',
         fixed: 'right',
         width: 120
+      },
+      {
+        title: '复议医生',
+        dataIndex: 'verifyDoctorName',
+        fixed: 'right',
+        width: 100
       },
       {
         title: '操作',

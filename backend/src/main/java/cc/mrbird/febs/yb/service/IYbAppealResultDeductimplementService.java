@@ -28,5 +28,5 @@ public interface IYbAppealResultDeductimplementService extends IService<YbAppeal
 
         void deleteYbAppealResultDeductimplements(String[]Ids);
 
-        boolean createAppealResultDeductimplement(YbAppealResultDeductimplement ybAppealResultDeductimplement);
+        String createAppealResultDeductimplement(YbAppealResultDeductimplement ybAppealResultDeductimplement);
         }

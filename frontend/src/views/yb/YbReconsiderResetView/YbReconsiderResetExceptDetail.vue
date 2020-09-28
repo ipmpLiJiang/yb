@@ -25,6 +25,7 @@
         :loading="loading"
         :rowSelection="{type: 'radio', selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
         @change="handleTableChange"
+        :customRow="handleClickRow"
         :bordered="bordered"
         :scroll="{ x: 700 }"
       >
@@ -223,6 +224,21 @@ export default {
     rowNo (index) {
       return (this.pagination.defaultCurrent - 1) *
             this.pagination.defaultPageSize + index + 1
+    },
+    handleClickRow (record, index) {
+      return {
+        on: {
+          click: () => {
+            let target = this.selectedRowKeys.filter(key => key === record.id)[0]
+            if (target === undefined) {
+              this.selectedRowKeys = []
+              this.selectedRowKeys.push(record.id)
+            } else {
+              this.selectedRowKeys.splice(this.selectedRowKeys.indexOf(record.id), 1)
+            }
+          }
+        }
+      }
     },
     reset () {
       // 取消选中

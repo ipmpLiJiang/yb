@@ -99,4 +99,8 @@
         and state = #{state}
     </delete>
 
+    <select id="findReconsiderApplyByApplyDateStr" resultType="cc.mrbird.febs.yb.entity.YbReconsiderApply">
+        select *  from yb_reconsider_apply where applyDateStr = #{applyDateStr}  limit 1
+    </select>
+
 </mapper>

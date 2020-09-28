@@ -11,6 +11,9 @@
             justify="center"
             align="middle"
           >
+            <a-col :span=1>
+              &nbsp;
+            </a-col>
             <a-col :span=6>
               复议年月：
               <a-month-picker

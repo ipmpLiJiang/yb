@@ -23,7 +23,6 @@
         :dataSource="dataSource"
         :pagination="pagination"
         :loading="loading"
-        :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
         @change="handleTableChange"
         :bordered="bordered"
         :scroll="{ x: 700 }"

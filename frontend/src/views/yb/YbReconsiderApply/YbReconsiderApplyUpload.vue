@@ -6,10 +6,6 @@
     <div style="text-align:center;">
       <a-spin tip="Loading..." :spinning="spinning" :delay="delayTime">
           <div>
-      <a-form
-        :form="form"
-        layout="horizontal"
-      >
         <a-row justify='center'>
           <a-col :span=17>
             <a-form-item
@@ -19,10 +15,9 @@
               }"
               label="复议年月"
             >
-              <a-month-picker
-                placeholder="请输入复议年月"
-                v-decorator="['applyDate', {rules: [{ required: true, message: '复议年月不能为空' }] }]"
-                :format="monthFormat"
+            <a-input
+                placeholder="复议年月"
+                v-model="applyDateStr"
               />
             </a-form-item>
           </a-col>
@@ -35,7 +30,7 @@
             >
               <a-input
                 placeholder="上传文件名称"
-                v-decorator="['filename', {rules: [{ required: true, message: '上传文件名称不能为空' }] }]"
+                v-model="uploadFileName"
               />
             </a-form-item>
           </a-col>
@@ -68,7 +63,6 @@
             >关闭</a-button>
           </a-col>
         </a-row>
-      </a-form>
       </div>
         </a-spin>
     </div>
@@ -126,7 +120,6 @@ export default {
     return {
       formItemLayout,
       ybReconsiderApplyUpload: {},
-      form: this.$form.createForm(this),
       monthFormat: 'YYYY-MM',
       fileList: [],
       pid: '0',
@@ -135,6 +128,8 @@ export default {
       tableSelectKey: '1',
       spinning: false,
       delayTime: 500,
+      applyDateStr: '',
+      uploadFileName: '',
       searchApplyDate: this.formatDate()
     }
   },
@@ -172,24 +167,7 @@ export default {
       }
     },
     setFormValues ({ ...ybReconsiderApply }, typeno) {
-      let fields = ['applyDate']
-      let fieldDates = ['applyDate']
-      Object.keys(ybReconsiderApply).forEach((key) => {
-        if (fields.indexOf(key) !== -1) {
-          this.form.getFieldDecorator(key)
-          let obj = {}
-          if (fieldDates.indexOf(key) !== -1) {
-            if (ybReconsiderApply[key] !== '') {
-              obj[key] = moment(ybReconsiderApply[key])
-            } else {
-              obj[key] = ''
-            }
-          } else {
-            obj[key] = ybReconsiderApply[key]
-          }
-          this.form.setFieldsValue(obj)
-        }
-      })
+      this.applyDateStr = ybReconsiderApply.applyDateStr
       this.pid = ybReconsiderApply.id
       this.typeno = typeno
       if (this.pid !== null && this.pid !== 0 && this.pid !== undefined) {
@@ -200,18 +178,14 @@ export default {
         }
       }
       if (typeno === 1) {
-        this.form.setFieldsValue({
-          filename: ybReconsiderApply.uploadFileNameOne
-        })
+        this.uploadFileName = ybReconsiderApply.uploadFileNameOne
         if (ybReconsiderApply.state === 1) {
           this.showBtn = true
         } else {
           this.showBtn = false
         }
       } else {
-        this.form.setFieldsValue({
-          filename: ybReconsiderApply.uploadFileNameTwo
-        })
+        this.uploadFileName = ybReconsiderApply.uploadFileNameTwo
         if (ybReconsiderApply.state === 4 || ybReconsiderApply.state === 3 || ybReconsiderApply.state === 2) {
           this.showBtn = true
         } else {
@@ -245,9 +219,7 @@ export default {
       formData.append('typeno', this.typeno)
       this.$upload('ybReconsiderApplyData/importReconsiderApplyData', formData).then((r) => {
         if (r.data.data.success === 1) {
-          this.form.setFieldsValue({
-            filename: r.data.data.fileName
-          })
+          this.uploadFileName = r.data.data.fileName
           this.searchTable()
           this.showBtn = false
           this.spinning = false

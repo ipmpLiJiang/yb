@@ -88,11 +88,6 @@ public class YbAppealResultViewController extends BaseController {
         return getDataTable(this.iYbAppealResultViewService.findAppealResultViewRepays(request, ybAppealResultView));
     }
 
-    @GetMapping("findAppealResultViewReport")
-    @RequiresPermissions("ybAppealResultView:view")
-    public Map<String, Object> findAppealResultViewReport(QueryRequest request, YbAppealResultView ybAppealResultView) {
-        return getDataTable(this.iYbAppealResultViewService.findYbAppealResultReportViews(request, ybAppealResultView));
-    }
 
     /**
      * 添加
@@ -428,6 +423,7 @@ public class YbAppealResultViewController extends BaseController {
         }
     }
 
+    /*
     @PostMapping("reportExcel")
     public void reportExcel(QueryRequest request, YbAppealResultView ybAppealResultView, HttpServletResponse response) throws FebsException {
         try {
@@ -729,7 +725,7 @@ public class YbAppealResultViewController extends BaseController {
             throw new FebsException(message);
         }
     }
-
+    */
     @GetMapping("/{id}")
     public YbAppealResultView detail(@NotBlank(message = "{required}") @PathVariable String id) {
         YbAppealResultView ybAppealResultView = this.iYbAppealResultViewService.getById(id);

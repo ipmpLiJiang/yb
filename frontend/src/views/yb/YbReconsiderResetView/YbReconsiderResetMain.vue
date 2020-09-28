@@ -102,6 +102,11 @@ export default {
         width: 100
       },
       {
+        title: '费用日期',
+        dataIndex: 'costDateStr',
+        width: 120
+      },
+      {
         title: '住院号',
         dataIndex: 'hospitalizedNo',
         width: 100
@@ -110,22 +115,6 @@ export default {
         title: '就医方式',
         dataIndex: 'treatmentMode',
         width: 100
-      },
-      {
-        title: '结算日期',
-        dataIndex: 'settlementDateStr',
-        customRender: (text, row, index) => {
-          if (text !== '' && text !== null) {
-            if (isNaN(text) && !isNaN(Date.parse(text))) {
-              return moment(text).format('YYYY-MM-DD')
-            } else {
-              return text
-            }
-          } else {
-            return text
-          }
-        },
-        width: 110
       },
       {
         title: '个人编号',

@@ -143,7 +143,15 @@ export default {
         title: '入院日期',
         dataIndex: 'enterHospitalDateStr',
         customRender: (text, row, index) => {
-          return moment(text).format('YYYY-MM-DD')
+          if (text !== '' && text !== null) {
+            if (isNaN(text) && !isNaN(Date.parse(text))) {
+              return moment(text).format(this.tableFormat)
+            } else {
+              return text
+            }
+          } else {
+            return text
+          }
         },
         width: 120
       },
@@ -151,7 +159,15 @@ export default {
         title: '出院日期',
         dataIndex: 'outHospitalDateStr',
         customRender: (text, row, index) => {
-          return moment(text).format(this.tableFormat)
+          if (text !== '' && text !== null) {
+            if (isNaN(text) && !isNaN(Date.parse(text))) {
+              return moment(text).format(this.tableFormat)
+            } else {
+              return text
+            }
+          } else {
+            return text
+          }
         },
         width: 120
       },
@@ -159,7 +175,15 @@ export default {
         title: '费用日期',
         dataIndex: 'costDateStr',
         customRender: (text, row, index) => {
-          return moment(text).format(this.tableFormat)
+          if (text !== '' && text !== null) {
+            if (isNaN(text) && !isNaN(Date.parse(text))) {
+              return moment(text).format(this.tableFormat)
+            } else {
+              return text
+            }
+          } else {
+            return text
+          }
         },
         width: 120
       },
@@ -177,7 +201,15 @@ export default {
         title: '结算日期',
         dataIndex: 'settlementDateStr',
         customRender: (text, row, index) => {
-          return moment(text).format(this.tableFormat)
+          if (text !== '' && text !== null) {
+            if (isNaN(text) && !isNaN(Date.parse(text))) {
+              return moment(text).format(this.tableFormat)
+            } else {
+              return text
+            }
+          } else {
+            return text
+          }
         },
         width: 120
       },

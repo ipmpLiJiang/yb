@@ -92,7 +92,6 @@
         :dataSource="dataSource"
         :pagination="pagination"
         :loading="loading"
-        :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
         @change="handleTableChange"
         :bordered="bordered"
         :scroll="{ x: 900 }"
@@ -144,6 +143,7 @@
 
 <script>
 import moment from 'moment'
+import { custom } from '../../js/custom'
 import YbAppealManageResultLookModule from '../ybFunModule/YbAppealManageResultLookModule'
 import YbAppealManageHistory from '../ybFunModule/YbAppealManageHistoryReportModule'
 const formItemLayout = {
@@ -338,9 +338,9 @@ export default {
         this.$message.success('导出Excel,无数据!')
       }
     },
-    onSelectChange (selectedRowKeys) {
-      this.selectedRowKeys = selectedRowKeys
-    },
+    // onSelectChange (selectedRowKeys) {
+    //   this.selectedRowKeys = selectedRowKeys
+    // },
     handleOk (e) {
       this.lookVisiable = false
     },
@@ -392,67 +392,14 @@ export default {
         ...this.queryParams
       })
     },
-    resetApplyDateStr () {
-      if (this.selectApplyDateStr !== '' && this.selectApplyDateStr !== null && this.selectApplyDateStr !== undefined) {
-        if (this.selectToApplyDateStr === '' || this.selectToApplyDateStr === null || this.selectToApplyDateStr === undefined) {
-          this.selectToApplyDateStr = this.selectApplyDateStr
-        }
-      }
-      if (this.selectToApplyDateStr !== '' && this.selectToApplyDateStr !== null && this.selectToApplyDateStr !== undefined) {
-        if (this.selectApplyDateStr === '' || this.selectApplyDateStr === null || this.selectApplyDateStr === undefined) {
-          this.selectApplyDateStr = this.selectToApplyDateStr
-        }
-      }
-      if ((this.selectToApplyDateStr === '' || this.selectToApplyDateStr === null || this.selectToApplyDateStr === undefined) && (this.selectApplyDateStr === '' || this.selectApplyDateStr === null || this.selectApplyDateStr === undefined)) {
-        this.selectToApplyDateStr = this.formatDate()
-        this.selectApplyDateStr = this.formatDate()
-      }
-    },
-    checkApplyDateStr (maxMonth) {
-      let ads1 = this.selectApplyDateStr.split('-')
-      let ads2 = this.selectToApplyDateStr.split('-')
-
-      let nian1 = parseInt(ads1[0])
-      let yue1 = parseInt(ads1[1])
-
-      let nian = parseInt(ads2[0])
-      let yue = parseInt(ads2[1])
-      let y = 0
-      let b = false
-
-      if (nian >= nian1) {
-        if (nian === nian1) {
-          if (yue >= yue1) {
-            if (yue === yue1) {
-              y = 0
-            } else {
-              y = yue - yue1
-            }
-          } else {
-            b = true
-          }
-        } else {
-          y = (nian - nian1) * 12 + yue - yue1
-        }
-      } else {
-        b = true
-      }
-      let msg = '复议年月选择区间有误，不能大于' + maxMonth + '个月，请重新选择.'
-      if (b === true) {
-        return msg
-      } else {
-        y = y + 1
-        if (y > maxMonth) {
-          return msg
-        } else {
-          return ''
-        }
-      }
-    },
     fetch (params = {}) {
-      this.resetApplyDateStr()
-      debugger
-      let msg = this.checkApplyDateStr(3)
+      console.log(this.selectApplyDateStr)
+      console.log(this.selectToApplyDateStr)
+      let arrDateStr = custom.resetApplyDateStr(this.selectApplyDateStr, this.selectToApplyDateStr, this.formatDate())
+      this.selectApplyDateStr = arrDateStr[0]
+      this.selectToApplyDateStr = arrDateStr[1]
+
+      let msg = custom.checkApplyDateStr(this.selectApplyDateStr, this.selectToApplyDateStr, 3)
       if (msg === '') {
         params.applyDateFrom = this.selectApplyDateStr
         params.applyDateTo = this.selectToApplyDateStr

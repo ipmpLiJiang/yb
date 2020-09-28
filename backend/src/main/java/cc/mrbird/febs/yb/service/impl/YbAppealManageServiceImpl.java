@@ -236,6 +236,7 @@ public class YbAppealManageServiceImpl extends ServiceImpl<YbAppealManageMapper,
             ybAppealManage.setRefuseName(Uname);
             ybAppealManage.setRefuseDate(thisDate);
             ybAppealManage.setOperateProcess("变更申请-拒绝");
+            ybAppealManage.setApprovalState(type);
 
             newAppealManage.setReadyDeptCode(ybAppealManage.getReadyDeptCode());
             newAppealManage.setReadyDeptName(ybAppealManage.getReadyDeptName());
@@ -251,6 +252,7 @@ public class YbAppealManageServiceImpl extends ServiceImpl<YbAppealManageMapper,
             newAppealManage.setReadyDoctorName(ybAppealManage.getChangeDoctorName());
             ybAppealManage.setRefuseReason("");
             ybAppealManage.setOperateProcess("变更申请-同意");
+            ybAppealManage.setApprovalState(type);
 
             LambdaQueryWrapper<YbAppealManage> queryWrapper = new LambdaQueryWrapper<>();
             queryWrapper.eq(YbAppealManage::getAcceptState,2);

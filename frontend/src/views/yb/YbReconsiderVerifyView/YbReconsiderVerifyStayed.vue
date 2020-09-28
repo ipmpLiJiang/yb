@@ -153,7 +153,8 @@ export default {
       selectDeptValue: undefined,
       selectDoctorDataSource: [], // 搜索事件
       selectDoctorValue: undefined,
-      ybReconsiderVerify: {}
+      ybReconsiderVerify: {},
+      tableFormat: 'YYYY-MM-DD'
     }
   },
   computed: {
@@ -213,7 +214,7 @@ export default {
         customRender: (text, row, index) => {
           if (text !== '' && text !== null) {
             if (isNaN(text) && !isNaN(Date.parse(text))) {
-              return moment(text).format('YYYY-MM-DD')
+              return moment(text).format(this.tableFormat)
             } else {
               return text
             }
@@ -234,16 +235,16 @@ export default {
         width: 100
       },
       {
-        title: '参考复议医生',
-        dataIndex: 'verifyDoctorName',
-        scopedSlots: { customRender: 'verifyDoctorName' },
+        title: '参考复议科室',
+        dataIndex: 'verifyDeptName',
+        scopedSlots: { customRender: 'verifyDeptName' },
         fixed: 'right',
         width: 125
       },
       {
-        title: '参考复议科室',
-        dataIndex: 'verifyDeptName',
-        scopedSlots: { customRender: 'verifyDeptName' },
+        title: '参考复议医生',
+        dataIndex: 'verifyDoctorName',
+        scopedSlots: { customRender: 'verifyDoctorName' },
         fixed: 'right',
         width: 125
       },

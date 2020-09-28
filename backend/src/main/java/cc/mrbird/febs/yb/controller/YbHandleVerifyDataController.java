@@ -163,7 +163,7 @@ public class YbHandleVerifyDataController extends BaseController {
             Long uid = currentUser.getUserId();
             String uname = currentUser.getUsername();
             this.iYbHandleVerifyDataService.importCreateHandleVerifyData(applyDateStr,uid,uname);
-            message = "获得剔除数据成功.";
+            message = "获得剔除操作成功,如未获取到数据，请检查是否剔除完成操作.";
             success = 1;
         } catch (Exception e) {
             message = "获取失败";

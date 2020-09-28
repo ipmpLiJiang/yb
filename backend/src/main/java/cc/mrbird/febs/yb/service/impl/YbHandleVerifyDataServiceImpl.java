@@ -6,10 +6,7 @@ import cc.mrbird.febs.common.domain.QueryRequest;
 import cc.mrbird.febs.common.utils.SortUtil;
 import cc.mrbird.febs.yb.entity.*;
 import cc.mrbird.febs.yb.dao.YbHandleVerifyDataMapper;
-import cc.mrbird.febs.yb.service.IYbAppealManageService;
-import cc.mrbird.febs.yb.service.IYbAppealResultService;
-import cc.mrbird.febs.yb.service.IYbHandleVerifyDataService;
-import cc.mrbird.febs.yb.service.IYbHandleVerifyService;
+import cc.mrbird.febs.yb.service.*;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
@@ -49,6 +46,9 @@ public class YbHandleVerifyDataServiceImpl extends ServiceImpl<YbHandleVerifyDat
     IComConfiguremanageService iComConfiguremanageService;
     @Autowired
     IYbAppealManageService iYbAppealManageService;
+
+    @Autowired
+    IYbReconsiderApplyService iYbReconsiderApplyService;
 
 
     @Override
@@ -106,49 +106,54 @@ public class YbHandleVerifyDataServiceImpl extends ServiceImpl<YbHandleVerifyDat
     @Override
     @Transactional
     public void importCreateHandleVerifyData(String applyDateStr, Long uid, String uname) {
-        Date thisDate = new java.sql.Timestamp(new Date().getTime());
-        List<YbAppealResult> appealResultList = this.iYbAppealResultService.findAppealResulDataHandles(applyDateStr);
-        if (appealResultList.size() > 0) {
-            LambdaQueryWrapper<YbHandleVerify> wrapper = new LambdaQueryWrapper<YbHandleVerify>();
-            wrapper.eq(YbHandleVerify::getApplyDateStr, applyDateStr);
-            List<YbHandleVerify> handleVerifyList = this.iYbHandleVerifyService.list(wrapper);
-            List<YbHandleVerifyData> insertHandleDataList = new ArrayList<YbHandleVerifyData>();
-            String guid = UUID.randomUUID().toString();
+        YbReconsiderApply ybReconsiderApply = this.iYbReconsiderApplyService.findReconsiderApplyByApplyDateStrs(applyDateStr);
+        if (ybReconsiderApply != null) {
+            if (ybReconsiderApply.getResetState() == 1) {
+                Date thisDate = new java.sql.Timestamp(new Date().getTime());
+                List<YbAppealResult> appealResultList = this.iYbAppealResultService.findAppealResulDataHandles(applyDateStr);
+                if (appealResultList.size() > 0) {
+                    LambdaQueryWrapper<YbHandleVerify> wrapper = new LambdaQueryWrapper<YbHandleVerify>();
+                    wrapper.eq(YbHandleVerify::getApplyDateStr, applyDateStr);
+                    List<YbHandleVerify> handleVerifyList = this.iYbHandleVerifyService.list(wrapper);
+                    List<YbHandleVerifyData> insertHandleDataList = new ArrayList<YbHandleVerifyData>();
+                    String guid = UUID.randomUUID().toString();
 
-            if (handleVerifyList.size() == 0) {
-                YbHandleVerify insert = new YbHandleVerify();
-                insert.setId(guid);
-                insert.setApplyDateStr(applyDateStr);
-                insert.setIsDeletemark(1);
-                insert.setCreateTime(thisDate);
-                insert.setCreateUserId(uid);
-                this.iYbHandleVerifyService.save(insert);
-            }else {
-                guid = handleVerifyList.get(0).getId();
-            }
+                    if (handleVerifyList.size() == 0) {
+                        YbHandleVerify insert = new YbHandleVerify();
+                        insert.setId(guid);
+                        insert.setApplyDateStr(applyDateStr);
+                        insert.setIsDeletemark(1);
+                        insert.setCreateTime(thisDate);
+                        insert.setCreateUserId(uid);
+                        this.iYbHandleVerifyService.save(insert);
+                    } else {
+                        guid = handleVerifyList.get(0).getId();
+                    }
 
-            for (YbAppealResult item : appealResultList) {
-                YbHandleVerifyData insertData = new YbHandleVerifyData();
-                insertData.setId(UUID.randomUUID().toString());
-                insertData.setPid(guid);
-                insertData.setState(0);
-                insertData.setIsDeletemark(1);
-                insertData.setApplyDataId(item.getApplyDataId());
-                insertData.setVerifyId(item.getVerifyId());
-                insertData.setManageId(item.getManageId());
-                insertData.setResultId(item.getId());
-                insertData.setResetId(item.getResetDataId());
-                insertData.setDataType(item.getDataType());
-                insertData.setDeptCode(item.getDeptCode());
-                insertData.setDeptName(item.getDeptName());
-                insertData.setDoctorCode(item.getDoctorCode());
-                insertData.setDoctorName(item.getDoctorName());
-                insertData.setMatchPersonId(uid);
-                insertData.setMatchPersonName(uname);
-                insertData.setMatchDate(thisDate);
-                insertHandleDataList.add(insertData);
+                    for (YbAppealResult item : appealResultList) {
+                        YbHandleVerifyData insertData = new YbHandleVerifyData();
+                        insertData.setId(UUID.randomUUID().toString());
+                        insertData.setPid(guid);
+                        insertData.setState(0);
+                        insertData.setIsDeletemark(1);
+                        insertData.setApplyDataId(item.getApplyDataId());
+                        insertData.setVerifyId(item.getVerifyId());
+                        insertData.setManageId(item.getManageId());
+                        insertData.setResultId(item.getId());
+                        insertData.setResetId(item.getResetDataId());
+                        insertData.setDataType(item.getDataType());
+                        insertData.setDeptCode(item.getDeptCode());
+                        insertData.setDeptName(item.getDeptName());
+                        insertData.setDoctorCode(item.getDoctorCode());
+                        insertData.setDoctorName(item.getDoctorName());
+                        insertData.setMatchPersonId(uid);
+                        insertData.setMatchPersonName(uname);
+                        insertData.setMatchDate(thisDate);
+                        insertHandleDataList.add(insertData);
+                    }
+                    this.saveBatch(insertHandleDataList);
+                }
             }
-            this.saveBatch(insertHandleDataList);
         }
 
     }

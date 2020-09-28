@@ -79,14 +79,27 @@ public class YbAppealResultDeductimplementServiceImpl extends ServiceImpl<YbAppe
 
     @Override
     @Transactional
-    public boolean createAppealResultDeductimplement(YbAppealResultDeductimplement ybAppealResultDeductimplement) {
-        ybAppealResultDeductimplement.setCreateTime(new Date());
-        if (ybAppealResultDeductimplement.getId() == null || "".equals(ybAppealResultDeductimplement.getId())) {
-            ybAppealResultDeductimplement.setId(UUID.randomUUID().toString());
+    public String createAppealResultDeductimplement(YbAppealResultDeductimplement ybAppealResultDeductimplement) {
+        LambdaQueryWrapper<YbAppealResultDeductimplement> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(YbAppealResultDeductimplement::getResultId,ybAppealResultDeductimplement.getResultId());
+        wrapper.eq(YbAppealResultDeductimplement::getResetDataId,ybAppealResultDeductimplement.getResetDataId());
+        List<YbAppealResultDeductimplement> list = this.list(wrapper);
+        if(list.size()==0) {
+            ybAppealResultDeductimplement.setCreateTime(new Date());
+            if (ybAppealResultDeductimplement.getId() == null || "".equals(ybAppealResultDeductimplement.getId())) {
+                ybAppealResultDeductimplement.setId(UUID.randomUUID().toString());
+            }
+            ybAppealResultDeductimplement.setCreateTime(new Date());
+            ybAppealResultDeductimplement.setIsDeletemark(1);
+            boolean bl = this.save(ybAppealResultDeductimplement);
+            if(bl){
+                return  "ok";
+            }else{
+                return "n1";
+            }
+        }else{
+            return "n2";
         }
-        ybAppealResultDeductimplement.setCreateTime(new Date());
-        ybAppealResultDeductimplement.setIsDeletemark(1);
-        return this.save(ybAppealResultDeductimplement);
     }
 
     @Override

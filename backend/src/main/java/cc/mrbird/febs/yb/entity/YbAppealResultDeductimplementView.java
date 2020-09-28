@@ -505,6 +505,12 @@ private static final long serialVersionUID=1L;
             @ExcelField(value ="分摊方案")
     private String shareProgramme;
 
+    /**
+     * 扣款落实ID
+     */
+    @TableField("deductImplementId")
+    @ExcelField(value ="扣款落实ID")
+    private String deductImplementId;
 
 
     public static final String SERIALNO ="serialNo" ;
@@ -638,6 +644,8 @@ private static final long serialVersionUID=1L;
     public static final String SHARESTATE ="shareState" ;
 
     public static final String SHAREPROGRAMME ="shareProgramme" ;
+
+    public static final String DEDUCTIMPLEMENTID ="deductImplementId" ;
 
 @Override
 public int compareTo(YbAppealResultDeductimplementView o) {

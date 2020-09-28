@@ -1,5 +1,6 @@
 package cc.mrbird.febs.yb.controller;
 
+import cc.mrbird.febs.com.controller.DataTypeHelpers;
 import cc.mrbird.febs.common.annotation.Log;
 import cc.mrbird.febs.common.controller.BaseController;
 import cc.mrbird.febs.common.domain.FebsResponse;
@@ -25,6 +26,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -71,12 +73,20 @@ public class YbAppealResultDeductimplementController extends BaseController {
         try {
             User currentUser = FebsUtil.getCurrentUser();
             ybAppealResultDeductimplement.setCreateUserId(currentUser.getUserId());
-            boolean bl = this.iYbAppealResultDeductimplementService.createAppealResultDeductimplement(ybAppealResultDeductimplement);
-            if(bl){
+            if(ybAppealResultDeductimplement.getImplementDateStr()!=null) {
+                Date implementDate = DataTypeHelpers.stringDateFormat(ybAppealResultDeductimplement.getImplementDateStr() + "-15", "yyyy-MM-dd", true);
+                ybAppealResultDeductimplement.setImplementDate(implementDate);
+            }
+            String msg = this.iYbAppealResultDeductimplementService.createAppealResultDeductimplement(ybAppealResultDeductimplement);
+            if(msg.equals("ok")){
                 success = 1;
                 message = "提交数据成功.";
             }else{
-                message = "提交数据失败.";
+                if(msg.equals("n1")) {
+                    message = "提交数据失败.";
+                }else{
+                    message = "提交失败,该条数据已提交过扣款落实.";
+                }
             }
         } catch (Exception e) {
             message = "提交数据失败.";

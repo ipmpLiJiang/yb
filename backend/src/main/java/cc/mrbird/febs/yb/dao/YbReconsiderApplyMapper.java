@@ -10,14 +10,18 @@ import java.util.List;
 
 /**
  * <p>
- *  Mapper 接口
+ * Mapper 接口
  * </p>
  *
  * @author viki
  * @since 2020-07-23
  */
 public interface YbReconsiderApplyMapper extends BaseMapper<YbReconsiderApply> {
-        void updateYbReconsiderApply(YbReconsiderApply ybReconsiderApply);
-        IPage<YbReconsiderApply> findYbReconsiderApply(Page page, @Param("ybReconsiderApply") YbReconsiderApply ybReconsiderApply);
-        void deleteBatchStateIdsYbReconsiderApply(@Param("listString") List<String> listString, @Param("state") Integer state);
+    void updateYbReconsiderApply(YbReconsiderApply ybReconsiderApply);
+
+    IPage<YbReconsiderApply> findYbReconsiderApply(Page page, @Param("ybReconsiderApply") YbReconsiderApply ybReconsiderApply);
+
+    void deleteBatchStateIdsYbReconsiderApply(@Param("listString") List<String> listString, @Param("state") Integer state);
+
+    YbReconsiderApply findReconsiderApplyByApplyDateStr(@Param("applyDateStr") String applyDateStr);
 }

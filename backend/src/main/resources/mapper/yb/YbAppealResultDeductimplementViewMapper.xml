@@ -70,11 +70,13 @@
                     <result column="implementDateStr" property="implementDateStr"/>
                     <result column="shareState" property="shareState"/>
                     <result column="shareProgramme" property="shareProgramme"/>
+            <result column="deductImplementId" property="deductImplementId"/>
+
         </resultMap>
 
         <!-- 通用查询结果列 -->
         <sql id="Base_Column_List">
-        serialNo, billNo, proposalCode, projectCode, projectName, num, medicalPrice, ruleName, deductPrice, deductReason, repaymentReason, doctorName, deptCode, deptName, enterHospitalDate, outHospitalDate, costDate, enterHospitalDateStr, outHospitalDateStr, costDateStr, hospitalizedNo, treatmentMode, settlementDate, settlementDateStr, personalNo, insuredName, cardNumber, areaName, versionNumber, backAppeal, typeno, insuredType, dataType, orderNumber, applyDate, applyDateStr, operatorId, operatorName, raResetState, raResultState, raRepayState, id, manageId, applyDataId, verifyId, ar_doctorCode, ar_doctorName, ar_deptCode, ar_deptName, operateReason, operateDate, COMMENTS, STATE, IS_DELETEMARK, MODIFY_TIME, CREATE_TIME, CREATE_USER_ID, MODIFY_USER_ID, sourceType, resetDataId, repayState, currencyField, implementDate, implementDateStr, shareState, shareProgramme
+        serialNo, billNo, proposalCode, projectCode, projectName, num, medicalPrice, ruleName, deductPrice, deductReason, repaymentReason, doctorName, deptCode, deptName, enterHospitalDate, outHospitalDate, costDate, enterHospitalDateStr, outHospitalDateStr, costDateStr, hospitalizedNo, treatmentMode, settlementDate, settlementDateStr, personalNo, insuredName, cardNumber, areaName, versionNumber, backAppeal, typeno, insuredType, dataType, orderNumber, applyDate, applyDateStr, operatorId, operatorName, raResetState, raResultState, raRepayState, id, manageId, applyDataId, verifyId, ar_doctorCode, ar_doctorName, ar_deptCode, ar_deptName, operateReason, operateDate, COMMENTS, STATE, IS_DELETEMARK, MODIFY_TIME, CREATE_TIME, CREATE_USER_ID, MODIFY_USER_ID, sourceType, resetDataId, repayState, currencyField, implementDate, implementDateStr, shareState, shareProgramme,deductImplementId
     </sql>
     <update id="updateYbAppealResultDeductimplementView" parameterType="cc.mrbird.febs.yb.entity.YbAppealResultDeductimplementView">
         update yb_appeal_result_deductimplement_view

@@ -235,6 +235,13 @@ private static final long serialVersionUID=1L;
     private String verifySendId;
 
     /**
+     * 审批状态
+     */
+    @TableField("approvalState")
+    //@ExcelField(value ="审批状态")
+    private Integer approvalState;
+
+    /**
      * 备注
      */
     @TableField("COMMENTS")
@@ -344,6 +351,8 @@ private static final long serialVersionUID=1L;
     public static final String OPERATEPROCESS = "operateProcess";
 
     public static final String VERIFYSENDID = "verifySendId";
+
+    public static final String APPROVALSTATE = "approvalState";
 
     public static final String COMMENTS ="COMMENTS" ;
 

@@ -8,7 +8,6 @@
           :dataSource="dataSource"
           :pagination="pagination"
           :loading="loading"
-          :rowSelection="{type: 'radio', selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
           @change="handleTableChange"
           :bordered="bordered"
           :scroll="{ x: 900 }"
@@ -19,9 +18,19 @@
 
 <script>
 import moment from 'moment'
+import { custom } from '../../js/custom'
 export default {
   name: 'YbAppealResultDeductImplementComplete',
   props: {
+    applyDateStr: {
+      default: ''
+    },
+    applyDateToStr: {
+      default: ''
+    },
+    defaultFormatDate: {
+      default: ''
+    },
     searchText: {
       default: ''
     },
@@ -128,7 +137,7 @@ export default {
           }
         },
         fixed: 'right',
-        width: 80
+        width: 90
       },
       {
         title: '分摊方式',
@@ -144,7 +153,7 @@ export default {
           }
         },
         fixed: 'right',
-        width: 80
+        width: 90
       },
       {
         title: '分摊方案',
@@ -206,37 +215,50 @@ export default {
     },
     fetch (params = {}) {
       this.loading = true
-      params.applyDateStr = this.applyDate
-      params.currencyField = this.searchText
-      params.dataType = this.searchDataType
-      params.typeno = 2
-      params.state = 12 // IN(1,2)
-      params.sourceType = 0
-      if (this.paginationInfo) {
-        // 如果分页信息不为空，则设置表格当前第几页，每页条数，并设置查询分页参数
-        this.$refs.TableInfo.pagination.current = this.paginationInfo.current
-        this.$refs.TableInfo.pagination.pageSize = this.paginationInfo.pageSize
-        params.pageSize = this.paginationInfo.pageSize
-        params.pageNum = this.paginationInfo.current
+      let dateStr = this.applyDateStr
+      let dateToStr = this.applyDateToStr
+
+      let arrDateStr = custom.resetApplyDateStr(dateStr, dateToStr, this.defaultFormatDate)
+      dateStr = arrDateStr[0]
+      dateToStr = arrDateStr[1]
+
+      let msg = custom.checkApplyDateStr(dateStr, dateToStr, 3)
+      if (msg === '') {
+        params.applyDateFrom = dateStr
+        params.applyDateTo = dateToStr
+        params.currencyField = this.searchText
+        if (this.searchDataType !== 2) {
+          params.dataType = this.searchDataType
+        }
+        params.deductImplementId = 'isNotNull' // 随便传一个值，代表已经填过扣款落实表
+        if (this.paginationInfo) {
+          // 如果分页信息不为空，则设置表格当前第几页，每页条数，并设置查询分页参数
+          this.$refs.TableInfo.pagination.current = this.paginationInfo.current
+          this.$refs.TableInfo.pagination.pageSize = this.paginationInfo.pageSize
+          params.pageSize = this.paginationInfo.pageSize
+          params.pageNum = this.paginationInfo.current
+        } else {
+          // 如果分页信息为空，则设置为默认值
+          params.pageSize = this.pagination.defaultPageSize
+          params.pageNum = this.pagination.defaultCurrent
+        }
+        params.sortField = 'applyDateStr asc,orderNumber'
+        // params.sortOrder = 'descend'
+        params.sortOrder = 'ascend'
+        this.$get('ybAppealResultDeductimplementView', {
+          ...params
+        }).then((r) => {
+          let data = r.data
+          const pagination = { ...this.pagination }
+          pagination.total = data.total
+          this.loading = false
+          this.dataSource = data.rows
+          this.pagination = pagination
+        })
+        this.selectedRowKeys = []
       } else {
-        // 如果分页信息为空，则设置为默认值
-        params.pageSize = this.pagination.defaultPageSize
-        params.pageNum = this.pagination.defaultCurrent
+        this.$message.error(msg)
       }
-      params.sortField = 'applyDateStr asc,orderNumber'
-      // params.sortOrder = 'descend'
-      params.sortOrder = 'ascend'
-      this.$get('ybAppealResultDeductImplementView', {
-        ...params
-      }).then((r) => {
-        let data = r.data
-        const pagination = { ...this.pagination }
-        pagination.total = data.total
-        this.loading = false
-        this.dataSource = data.rows
-        this.pagination = pagination
-      })
-      this.selectedRowKeys = []
     }
   }
 }

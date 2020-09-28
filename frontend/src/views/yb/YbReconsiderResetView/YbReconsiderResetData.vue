@@ -29,7 +29,7 @@
             slot="operationDeductReason"
             slot-scope="text, record, index"
           >
-            <a-popover title="扣款原因" trigger="hover">
+            <a-popover trigger="hover">
               <template slot="content">
                 <p>{{record.deductReason}}</p>
               </template>
@@ -135,28 +135,28 @@ export default {
         width: 200
       },
       {
-        title: '还款原因',
-        dataIndex: 'repaymentReason',
-        width: 200
-      },
-      {
-        title: '医生姓名',
-        dataIndex: 'doctorName',
+        title: '费用日期',
+        dataIndex: 'costDateStr',
         width: 120
       },
       {
-        title: '科室编码',
-        dataIndex: 'deptCode',
-        width: 120
+        title: '住院号',
+        dataIndex: 'hospitalizedNo',
+        width: 100
+      },
+      {
+        title: '就医方式',
+        dataIndex: 'treatmentMode',
+        width: 100
+      },
+      {
+        title: '个人编号',
+        dataIndex: 'personalNo',
+        width: 110
       },
       {
         title: '科室名称',
         dataIndex: 'deptName',
-        width: 120
-      },
-      {
-        title: '费用日期',
-        dataIndex: 'costDateStr',
         width: 120
       },
       {

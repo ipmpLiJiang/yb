@@ -148,5 +148,8 @@ public class YbReconsiderApplyServiceImpl extends ServiceImpl<YbReconsiderApplyM
         return  bl;
     }
 
-
+    @Override
+    public YbReconsiderApply findReconsiderApplyByApplyDateStrs(String appltDateStr){
+        return  this.baseMapper.findReconsiderApplyByApplyDateStr(appltDateStr);
+    }
 }

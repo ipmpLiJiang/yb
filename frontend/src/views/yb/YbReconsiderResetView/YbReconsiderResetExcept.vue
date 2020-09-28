@@ -126,11 +126,6 @@ export default {
         width: 200
       },
       {
-        title: '还款原因',
-        dataIndex: 'repaymentReason',
-        width: 200
-      },
-      {
         title: '医生姓名',
         dataIndex: 'doctorName',
         width: 120

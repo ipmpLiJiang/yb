@@ -8,7 +8,7 @@
           :dataSource="dataSource"
           :pagination="pagination"
           :loading="loading"
-          :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
+          :rowSelection="{type: 'radio', selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
           @change="handleTableChange"
           :bordered="bordered"
           :customRow="handleClickRow"
@@ -52,7 +52,8 @@ export default {
       },
       loading: false,
       bordered: true,
-      ybAppealManage: {}
+      ybAppealManage: {},
+      tableFormat: 'YYYY-MM-DD'
     }
   },
   computed: {
@@ -80,16 +81,6 @@ export default {
         dataIndex: 'projectName',
         fixed: 'left',
         width: 100
-      },
-      {
-        title: '医生姓名',
-        dataIndex: 'readyDoctorName',
-        width: 120
-      },
-      {
-        title: '科室名称',
-        dataIndex: 'readyDeptName',
-        width: 120
       },
       {
         title: '数量',
@@ -121,7 +112,11 @@ export default {
         dataIndex: 'costDateStr',
         customRender: (text, row, index) => {
           if (text !== '' && text !== null) {
-            return moment(text).format('YYYY-MM-DD')
+            if (isNaN(text) && !isNaN(Date.parse(text))) {
+              return moment(text).format(this.tableFormat)
+            } else {
+              return text
+            }
           } else {
             return text
           }
@@ -179,6 +174,7 @@ export default {
           click: () => {
             let target = this.selectedRowKeys.filter(key => key === record.id)[0]
             if (target === undefined) {
+              this.selectedRowKeys = []
               this.selectedRowKeys.push(record.id)
             } else {
               this.selectedRowKeys.splice(this.selectedRowKeys.indexOf(record.id), 1)

@@ -3,15 +3,17 @@ package cc.mrbird.febs.yb.service;
 import cc.mrbird.febs.yb.entity.YbReconsiderApply;
 import cc.mrbird.febs.yb.entity.YbReconsiderApplyData;
 import com.baomidou.mybatisplus.extension.service.IService;
+
 import java.util.List;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import cc.mrbird.febs.common.domain.QueryRequest;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * <p>
- *  服务类
+ * 服务类
  * </p>
  *
  * @author viki
@@ -19,19 +21,21 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
  */
 public interface IYbReconsiderApplyService extends IService<YbReconsiderApply> {
 
-        IPage<YbReconsiderApply> findYbReconsiderApplys(QueryRequest request, YbReconsiderApply ybReconsiderApply);
+    IPage<YbReconsiderApply> findYbReconsiderApplys(QueryRequest request, YbReconsiderApply ybReconsiderApply);
 
-        IPage<YbReconsiderApply> findYbReconsiderApplyList(QueryRequest request, YbReconsiderApply ybReconsiderApply);
+    IPage<YbReconsiderApply> findYbReconsiderApplyList(QueryRequest request, YbReconsiderApply ybReconsiderApply);
 
-        void createYbReconsiderApply(YbReconsiderApply ybReconsiderApply);
+    void createYbReconsiderApply(YbReconsiderApply ybReconsiderApply);
 
-        void updateYbReconsiderApply(YbReconsiderApply ybReconsiderApply);
+    void updateYbReconsiderApply(YbReconsiderApply ybReconsiderApply);
 
-        void deleteYbReconsiderApplys(String[]Ids);
+    void deleteYbReconsiderApplys(String[] Ids);
 
     void deleteBatchStateIdsYbReconsiderApplys(String[] Ids, Integer state);
 
-    boolean updateYbReconsiderApplyState(String applyDateStr,Integer state);
+    boolean updateYbReconsiderApplyState(String applyDateStr, Integer state);
 
     String createReconsiderApplyCheck(YbReconsiderApply ybReconsiderApply);
-        }
+
+    YbReconsiderApply findReconsiderApplyByApplyDateStrs(String applyDateStr);
+}
