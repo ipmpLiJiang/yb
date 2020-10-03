@@ -183,8 +183,9 @@ public class YbReconsiderRepayController extends BaseController {
         return resultNianYue;
     }
 
+    //一次上传一个月还款数据
     @PostMapping("importReconsiderRepayData")
-    @RequiresPermissions("ybReconsiderRepay:add")
+    @RequiresPermissions("ybReconsiderRepay:import")
     public FebsResponse importReconsiderRepayData(@RequestParam MultipartFile file, @RequestParam String applyDateStr, @RequestParam Integer repayType, @RequestParam Integer dataType) {
         int success = 0;
         String uploadFileName = "";
@@ -302,8 +303,9 @@ public class YbReconsiderRepayController extends BaseController {
 
     }
 
+    //多年月
     @PostMapping("importReconsiderRepayData1")
-    @RequiresPermissions("ybReconsiderRepay:add")
+    @RequiresPermissions("ybReconsiderRepay:import")
     public FebsResponse importReconsiderRepayData1(@RequestParam MultipartFile file, @RequestParam Integer repayType, @RequestParam Integer dataType) {
         int success = 0;
         String uploadFileName = "";

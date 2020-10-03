@@ -108,8 +108,6 @@ public class YbReconsiderVerifyServiceImpl extends ServiceImpl<YbReconsiderVerif
         this.baseMapper.insertMainReconsiderVerifyImport(applyDate, matchPersonId, matchPersonName);
     }
 
-
-
     @Override
     @Transactional
     public void updateSendStates(List<YbReconsiderVerify> list, Long uId, String Uname) {

@@ -133,7 +133,8 @@ public class YbReconsiderRepayDataController extends BaseController {
         }
     }
 
-    @PostMapping("excel1")
+    @PostMapping("excelRepay")
+    @RequiresPermissions("ybReconsiderRepayData:exportData")
     public void export1(QueryRequest request, YbReconsiderRepayData ybReconsiderRepayData, HttpServletResponse response) throws FebsException {
         try {
             List<YbReconsiderRepayData> ybReconsiderRepayDatas = this.iYbReconsiderRepayDataService.findReconsiderRepayLists(ybReconsiderRepayData);

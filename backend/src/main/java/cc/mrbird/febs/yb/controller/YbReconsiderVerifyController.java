@@ -180,7 +180,7 @@ public class YbReconsiderVerifyController extends BaseController {
 
     @Log("修改")
     @PutMapping("updateSendState")
-    @RequiresPermissions("ybReconsiderVerify:sendStateUpdate")
+    @RequiresPermissions("ybReconsiderVerify:stateUpdate")
     public void updateSendState(String dataJson) throws FebsException {
         try {
             User currentUser = FebsUtil.getCurrentUser();
@@ -200,7 +200,7 @@ public class YbReconsiderVerifyController extends BaseController {
 
     @Log("修改")
     @PutMapping("updateMainSendState")
-    @RequiresPermissions("ybReconsiderVerify:sendStateUpdate")
+    @RequiresPermissions("ybReconsiderVerify:stateUpdate")
     public void updateMainSendState(String dataJson) throws FebsException {
         try {
             User currentUser = FebsUtil.getCurrentUser();
@@ -221,7 +221,7 @@ public class YbReconsiderVerifyController extends BaseController {
     //单个，多个核对
     @Log("修改")
     @PutMapping("updateReviewerState")
-    @RequiresPermissions("ybReconsiderVerify:reviewerStateUpdate")
+    @RequiresPermissions("ybReconsiderVerify:stateUpdate")
     public void updateReviewerState(String dataJson) throws FebsException {
         try {
             User currentUser = FebsUtil.getCurrentUser();

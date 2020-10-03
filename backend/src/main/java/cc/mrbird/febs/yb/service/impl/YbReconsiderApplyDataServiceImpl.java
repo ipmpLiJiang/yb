@@ -58,6 +58,7 @@ public class YbReconsiderApplyDataServiceImpl extends ServiceImpl<YbReconsiderAp
     public IPage<YbReconsiderApplyData> findYbReconsiderApplyDataList(QueryRequest request, YbReconsiderApplyData ybReconsiderApplyData) {
         try {
             Page<YbReconsiderApplyData> page = new Page<>();
+            ybReconsiderApplyData.setIsDeletemark(1);
             SortUtil.handlePageSort(request, page, false);//true 是属性  false是数据库字段可两个
             return this.baseMapper.findYbReconsiderApplyData(page, ybReconsiderApplyData);
         } catch (Exception e) {

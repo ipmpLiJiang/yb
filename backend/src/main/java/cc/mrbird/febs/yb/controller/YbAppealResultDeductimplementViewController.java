@@ -27,7 +27,6 @@ import java.util.List;
 import java.util.Map;
 
 /**
- *
  * @author viki
  * @since 2020-09-24
  */
@@ -36,96 +35,107 @@ import java.util.Map;
 @RestController
 @RequestMapping("ybAppealResultDeductimplementView")
 
-public class YbAppealResultDeductimplementViewController extends BaseController{
+public class YbAppealResultDeductimplementViewController extends BaseController {
 
-private String message;
-@Autowired
-public IYbAppealResultDeductimplementViewService iYbAppealResultDeductimplementViewService;
+    private String message;
+    @Autowired
+    public IYbAppealResultDeductimplementViewService iYbAppealResultDeductimplementViewService;
 
 
-/**
- * 分页查询数据
- *
- * @param  request 分页信息
- * @param ybAppealResultDeductimplementView 查询条件
- * @return
- */
-@GetMapping
-@RequiresPermissions("ybAppealResultDeductimplementView:view")
-public Map<String, Object> List(QueryRequest request, YbAppealResultDeductimplementView ybAppealResultDeductimplementView){
+    /**
+     * 分页查询数据
+     *
+     * @param request                           分页信息
+     * @param ybAppealResultDeductimplementView 查询条件
+     * @return
+     */
+    @GetMapping
+    @RequiresPermissions("ybAppealResultDeductimplementView:view")
+    public Map<String, Object> List(QueryRequest request, YbAppealResultDeductimplementView ybAppealResultDeductimplementView) {
         return getDataTable(this.iYbAppealResultDeductimplementViewService.findYbAppealResultDeductimplementViews(request, ybAppealResultDeductimplementView));
-        }
+    }
 
-/**
- * 添加
- * @param  ybAppealResultDeductimplementView
- * @return
- */
-@Log("新增/按钮")
-@PostMapping
-@RequiresPermissions("ybAppealResultDeductimplementView:add")
-public void addYbAppealResultDeductimplementView(@Valid YbAppealResultDeductimplementView ybAppealResultDeductimplementView)throws FebsException{
-        try{
-        User currentUser= FebsUtil.getCurrentUser();
-        ybAppealResultDeductimplementView.setCreateUserId(currentUser.getUserId());
-        this.iYbAppealResultDeductimplementViewService.createYbAppealResultDeductimplementView(ybAppealResultDeductimplementView);
-        }catch(Exception e){
-        message="新增/按钮失败" ;
-        log.error(message,e);
-        throw new FebsException(message);
-        }
-        }
+    @GetMapping("findAppealResultDeductimplementUserView")
+    @RequiresPermissions("ybAppealResultDeductimplementView:userView")
+    public Map<String, Object> userList(QueryRequest request, YbAppealResultDeductimplementView ybAppealResultDeductimplementView) {
+        User currentUser = FebsUtil.getCurrentUser();
+        ybAppealResultDeductimplementView.setArDoctorcode(currentUser.getUsername());
+        return getDataTable(this.iYbAppealResultDeductimplementViewService.findYbAppealResultDeductimplementViews(request, ybAppealResultDeductimplementView));
+    }
 
-/**
- * 修改
- * @param ybAppealResultDeductimplementView
- * @return
- */
-@Log("修改")
-@PutMapping
-@RequiresPermissions("ybAppealResultDeductimplementView:update")
-public void updateYbAppealResultDeductimplementView(@Valid YbAppealResultDeductimplementView ybAppealResultDeductimplementView)throws FebsException{
-        try{
-        User currentUser= FebsUtil.getCurrentUser();
-      ybAppealResultDeductimplementView.setModifyUserId(currentUser.getUserId());
-        this.iYbAppealResultDeductimplementViewService.updateYbAppealResultDeductimplementView(ybAppealResultDeductimplementView);
-        }catch(Exception e){
-        message="修改失败" ;
-        log.error(message,e);
-        throw new FebsException(message);
-        }
-        }
-
-
-@Log("删除")
-@DeleteMapping("/{ids}")
-@RequiresPermissions("ybAppealResultDeductimplementView:delete")
-public void deleteYbAppealResultDeductimplementViews(@NotBlank(message = "{required}") @PathVariable String ids)throws FebsException{
-        try{
-        String[]arr_ids=ids.split(StringPool.COMMA);
-        this.iYbAppealResultDeductimplementViewService.deleteYbAppealResultDeductimplementViews(arr_ids);
-        }catch(Exception e){
-        message="删除失败" ;
-        log.error(message,e);
-        throw new FebsException(message);
-        }
-        }
-@PostMapping("excel")
-@RequiresPermissions("ybAppealResultDeductimplementView:export")
-public void export(QueryRequest request, YbAppealResultDeductimplementView ybAppealResultDeductimplementView, HttpServletResponse response) throws FebsException {
+    /**
+     * 添加
+     *
+     * @param ybAppealResultDeductimplementView
+     * @return
+     */
+    @Log("新增/按钮")
+    @PostMapping
+    @RequiresPermissions("ybAppealResultDeductimplementView:add")
+    public void addYbAppealResultDeductimplementView(@Valid YbAppealResultDeductimplementView ybAppealResultDeductimplementView) throws FebsException {
         try {
-        List<YbAppealResultDeductimplementView> ybAppealResultDeductimplementViews = this.iYbAppealResultDeductimplementViewService.findYbAppealResultDeductimplementViews(request, ybAppealResultDeductimplementView).getRecords();
-        ExcelKit.$Export(YbAppealResultDeductimplementView.class, response).downXlsx(ybAppealResultDeductimplementViews, false);
+            User currentUser = FebsUtil.getCurrentUser();
+            ybAppealResultDeductimplementView.setCreateUserId(currentUser.getUserId());
+            this.iYbAppealResultDeductimplementViewService.createYbAppealResultDeductimplementView(ybAppealResultDeductimplementView);
         } catch (Exception e) {
-        message = "导出Excel失败";
-        log.error(message, e);
-        throw new FebsException(message);
+            message = "新增/按钮失败";
+            log.error(message, e);
+            throw new FebsException(message);
         }
-        }
+    }
 
-@GetMapping("/{id}")
-public YbAppealResultDeductimplementView detail(@NotBlank(message = "{required}") @PathVariable String id) {
-    YbAppealResultDeductimplementView ybAppealResultDeductimplementView=this.iYbAppealResultDeductimplementViewService.getById(id);
+    /**
+     * 修改
+     *
+     * @param ybAppealResultDeductimplementView
+     * @return
+     */
+    @Log("修改")
+    @PutMapping
+    @RequiresPermissions("ybAppealResultDeductimplementView:update")
+    public void updateYbAppealResultDeductimplementView(@Valid YbAppealResultDeductimplementView ybAppealResultDeductimplementView) throws FebsException {
+        try {
+            User currentUser = FebsUtil.getCurrentUser();
+            ybAppealResultDeductimplementView.setModifyUserId(currentUser.getUserId());
+            this.iYbAppealResultDeductimplementViewService.updateYbAppealResultDeductimplementView(ybAppealResultDeductimplementView);
+        } catch (Exception e) {
+            message = "修改失败";
+            log.error(message, e);
+            throw new FebsException(message);
+        }
+    }
+
+
+    @Log("删除")
+    @DeleteMapping("/{ids}")
+    @RequiresPermissions("ybAppealResultDeductimplementView:delete")
+    public void deleteYbAppealResultDeductimplementViews(@NotBlank(message = "{required}") @PathVariable String ids) throws FebsException {
+        try {
+            String[] arr_ids = ids.split(StringPool.COMMA);
+            this.iYbAppealResultDeductimplementViewService.deleteYbAppealResultDeductimplementViews(arr_ids);
+        } catch (Exception e) {
+            message = "删除失败";
+            log.error(message, e);
+            throw new FebsException(message);
+        }
+    }
+
+    @PostMapping("excel")
+    @RequiresPermissions("ybAppealResultDeductimplementView:export")
+    public void export(QueryRequest request, YbAppealResultDeductimplementView ybAppealResultDeductimplementView, HttpServletResponse response) throws FebsException {
+        try {
+            List<YbAppealResultDeductimplementView> ybAppealResultDeductimplementViews = this.iYbAppealResultDeductimplementViewService.findYbAppealResultDeductimplementViews(request, ybAppealResultDeductimplementView).getRecords();
+            ExcelKit.$Export(YbAppealResultDeductimplementView.class, response).downXlsx(ybAppealResultDeductimplementViews, false);
+        } catch (Exception e) {
+            message = "导出Excel失败";
+            log.error(message, e);
+            throw new FebsException(message);
+        }
+    }
+
+    @GetMapping("/{id}")
+    public YbAppealResultDeductimplementView detail(@NotBlank(message = "{required}") @PathVariable String id) {
+        YbAppealResultDeductimplementView ybAppealResultDeductimplementView = this.iYbAppealResultDeductimplementViewService.getById(id);
         return ybAppealResultDeductimplementView;
-        }
-        }
+    }
+}

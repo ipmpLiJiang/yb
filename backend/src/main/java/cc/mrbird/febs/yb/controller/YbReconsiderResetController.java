@@ -115,28 +115,6 @@ public class YbReconsiderResetController extends BaseController {
         }
     }
 
-    @Log("修改")
-    @PutMapping("updateApplyState")
-    @RequiresPermissions("ybReconsiderReset:add")
-    public FebsResponse updateReconsiderResetApplyState(@Valid YbReconsiderReset ybReconsiderReset){
-        int success = 0;
-        try {
-            message = this.iYbReconsiderResetService.updateReconsiderApplyState(ybReconsiderReset);
-            if(message.equals("ok")){
-                success = 1;
-                message = "完成剔除成功";
-            }
-        } catch (Exception e) {
-            message = "完成剔除失败.";
-            log.error(message, e);
-        }
-        ResponseResult rr = new ResponseResult();
-        rr.setMessage(message);
-        rr.setSuccess(success);
-        return new FebsResponse().data(rr);
-    }
-
-
     @Log("删除")
     @DeleteMapping("/{ids}")
     @RequiresPermissions("ybReconsiderReset:delete")
@@ -170,8 +148,30 @@ public class YbReconsiderResetController extends BaseController {
         return ybReconsiderReset;
     }
 
+    //复议申请更新resetState状态 按钮完成剔除
+    @Log("修改")
+    @PutMapping("updateApplyState")
+    @RequiresPermissions("ybReconsiderReset:updateResetState")
+    public FebsResponse updateReconsiderResetApplyState(@Valid YbReconsiderReset ybReconsiderReset){
+        int success = 0;
+        try {
+            message = this.iYbReconsiderResetService.updateReconsiderApplyState(ybReconsiderReset);
+            if(message.equals("ok")){
+                success = 1;
+                message = "完成剔除成功";
+            }
+        } catch (Exception e) {
+            message = "完成剔除失败.";
+            log.error(message, e);
+        }
+        ResponseResult rr = new ResponseResult();
+        rr.setMessage(message);
+        rr.setSuccess(success);
+        return new FebsResponse().data(rr);
+    }
+
     @PostMapping("importReconsiderReset")
-    @RequiresPermissions("ybReconsiderReset:add")
+    @RequiresPermissions("ybReconsiderReset:import")
     public FebsResponse importReconsiderReset(@RequestParam MultipartFile file, @RequestParam String applyDateStr) {
         int success = 0;
         if (file.isEmpty()) {

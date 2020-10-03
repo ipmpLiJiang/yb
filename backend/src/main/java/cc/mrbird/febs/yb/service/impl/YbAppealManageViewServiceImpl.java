@@ -63,21 +63,39 @@ public class YbAppealManageViewServiceImpl extends ServiceImpl<YbAppealManageVie
                         " or deductReason like'%" + ybAppealManageView.getCurrencyField() + "%')";
             }
             queryWrapper.apply(sql);
-//                queryWrapper.eq(ybAppealManageView::getIsDeletemark, 1)
-//                .eq(ybAppealManageView::getApplyDateStr, ybAppealManageView.getApplyDateStr()));
-//
-//                if(ybAppealManageView.getAcceptState() !=null){
-//                    queryWrapper.eq(ybAppealManageView::getAcceptState,ybAppealManageView.getAcceptState());
-//                }
-//                if(ybAppealManageView.getComments() !=null){
-//                    queryWrapper.and(wrapper ->
-//                    wrapper.like(ybAppealManageView::getSerialNo,ybAppealManageView.getComments())
-//                    .or().like(ybAppealManageView::getBillNo,ybAppealManageView.getComments())
-//                    .or().like(ybAppealManageView::getProposalCode,ybAppealManageView.getComments())
-//                    .or().like(ybAppealManageView::getProjectCode,ybAppealManageView.getComments())
-//                    .or().like(ybAppealManageView::getProjectName,ybAppealManageView.getComments())
-//                    .or().like(ybAppealManageView::getDeductReason,ybAppealManageView.getComments()));
-//                }
+            SortUtil.handlePageSort(request, page, false);//true 是属性  false是数据库字段可两个
+            return this.page(page, queryWrapper);
+        } catch (Exception e) {
+            log.error("获取字典信息失败", e);
+            return null;
+        }
+    }
+
+    @Override
+    public IPage<YbAppealManageView> findAppealManageUserViews(QueryRequest request, YbAppealManageView ybAppealManageView) {
+        try {
+            LambdaQueryWrapper<YbAppealManageView> queryWrapper = new LambdaQueryWrapper<>();
+            Page<YbAppealManageView> page = new Page<>();
+
+            String sql = "(";
+            sql += " applyDateStr='" + ybAppealManageView.getApplyDateStr() + "' ";
+
+            sql += " and readyDoctorCode ='" + ybAppealManageView.getReadyDoctorCode() + "'";
+
+            if (ybAppealManageView.getAcceptState() != null) {
+                sql += " and acceptState = " + ybAppealManageView.getAcceptState();
+            }
+            sql += ")";
+            if (ybAppealManageView.getCurrencyField() != null && !"".equals(ybAppealManageView.getCurrencyField())) {
+                sql += " and (serialNo like'%" + ybAppealManageView.getCurrencyField() + "%'" +
+                        " or billNo like'%" + ybAppealManageView.getCurrencyField() + "%'" +
+                        " or proposalCode like'%" + ybAppealManageView.getCurrencyField() + "%'" +
+                        " or projectCode like'%" + ybAppealManageView.getCurrencyField() + "%'" +
+                        " or ruleName like'%" + ybAppealManageView.getCurrencyField() + "%'" +
+                        " or projectName like'%" + ybAppealManageView.getCurrencyField() + "%'" +
+                        " or deductReason like'%" + ybAppealManageView.getCurrencyField() + "%')";
+            }
+            queryWrapper.apply(sql);
             SortUtil.handlePageSort(request, page, false);//true 是属性  false是数据库字段可两个
             return this.page(page, queryWrapper);
         } catch (Exception e) {

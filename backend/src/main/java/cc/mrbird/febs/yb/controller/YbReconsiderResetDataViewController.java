@@ -146,7 +146,8 @@ public class YbReconsiderResetDataViewController extends BaseController {
         return ybReconsiderResetDataView;
     }
 
-    @PostMapping("excel1")
+    @PostMapping("excelReset")
+    @RequiresPermissions("ybReconsiderResetDataView:exportData")
     public void export1(QueryRequest request, YbReconsiderResetDataView resetDataView, HttpServletResponse response) throws FebsException {
         try {
             List<YbReconsiderResetDataView> resetDataList = this.iYbReconsiderResetDataViewService.findYbReconsiderResetDataList(resetDataView);

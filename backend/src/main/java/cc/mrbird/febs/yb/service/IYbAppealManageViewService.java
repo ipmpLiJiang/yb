@@ -25,6 +25,8 @@ public interface IYbAppealManageViewService extends IService<YbAppealManageView>
 
     IPage<YbAppealManageView> findYbAppealManageViewList(QueryRequest request, YbAppealManageView ybAppealManageView);
 
+    IPage<YbAppealManageView> findAppealManageUserViews(QueryRequest request, YbAppealManageView ybAppealManageView);
+
     void createYbAppealManageView(YbAppealManageView ybAppealManageView);
 
     void updateYbAppealManageView(YbAppealManageView ybAppealManageView);

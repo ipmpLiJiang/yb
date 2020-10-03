@@ -126,6 +126,8 @@ dataType int(4) NOT NULL COMMENT '扣款类型', -- 0 明细扣款 1 主单扣款
   PRIMARY KEY (id)
 ) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
 
+
+
 #申诉管理
 #DROP TABLE IF EXISTS yb_appeal_manage;
 CREATE TABLE yb_appeal_manage (
@@ -201,6 +203,7 @@ repayState int(4) DEFAULT 1 COMMENT '还款状态', -- 1 成功 2 失败 3 部分调整
   PRIMARY KEY (id)
 ) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
 
+#扣款落实
 #DROP TABLE IF EXISTS yb_appeal_result_deductImplement;
 CREATE TABLE yb_appeal_result_deductImplement (
   id char(36) NOT NULL COMMENT '扣款落实Id',
@@ -335,7 +338,7 @@ repaymentPrice decimal(17,4)  DEFAULT NULL COMMENT '还款金额',
 #人工复议
 DROP TABLE IF EXISTS yb_handle_verify;
 CREATE TABLE yb_handle_verify (
-  id char(36) NOT NULL COMMENT '手动核对',
+  id char(36) NOT NULL COMMENT '人工复议',
   applyDate datetime DEFAULT NULL COMMENT '复议年月',
   applyDateStr varchar(10) NOT NULL COMMENT '复议年月Str',
   currencyField varchar(100) DEFAULT NULL COMMENT '通用',
@@ -351,8 +354,8 @@ CREATE TABLE yb_handle_verify (
 
 DROP TABLE IF EXISTS yb_handle_verify_data;
 CREATE TABLE yb_handle_verify_data (
-  id char(36) NOT NULL COMMENT '手动核对明细',
-	pid char(36) NOT NULL COMMENT '手动核对Id',
+  id char(36) NOT NULL COMMENT '人工复议明细',
+	pid char(36) NOT NULL COMMENT '人工复议Id',
 	resetId char(36) NOT NULL COMMENT '剔除明细Id',  
 	resultId char(36) NOT NULL COMMENT '复议上传Id',  
 	applyDataId char(36) NOT NULL COMMENT '复议申请明细',
@@ -385,6 +388,7 @@ CREATE TABLE yb_handle_verify_data (
   PRIMARY KEY (id)
 ) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
 
+#还款核对
 DROP TABLE IF EXISTS yb_reconsider_repay;
 CREATE TABLE yb_reconsider_repay (
   id char(36) NOT NULL COMMENT '还款核对',
@@ -440,7 +444,7 @@ CREATE TABLE yb_reconsider_repay_data (
 	insuredName varchar(50) DEFAULT NULL COMMENT '参保人姓名',
 	resetDataId  char(36) DEFAULT NULL COMMENT '剔除明细扣款Id',
 	dataType int(4) NOT NULL COMMENT '扣款类型', -- 0 明细扣款 1 主单扣款
-	seekState int(4) DEFAULT 0 COMMENT '查找状态',-- 0未匹配 1已匹配
+	seekState int(4) DEFAULT 0 COMMENT '匹配状态',-- 0未匹配 1已匹配
 	updateType int(4) DEFAULT 0 COMMENT '更新类型',-- 0序号更新 1规则更新
 	repayType int(4)  DEFAULT NULL COMMENT '保险类型',-- 0 居保 1职保  主单扣款不区分职保 居保 默认值为NULL
 	warnType int(4) DEFAULT 0 COMMENT '提醒状态',-- 1序号正常(一个 用序号匹配) 2新序号(一个 无序号匹配) 3新序号(多个 序号错误，无序号匹配) 4全无匹配 5异常匹配
@@ -1060,8 +1064,60 @@ where
 
 
 DROP PROCEDURE IF EXISTS p_appeal_manage_enableOverdue;
-
 CREATE PROCEDURE p_appeal_manage_enableOverdue()
+begin
+    declare m_id char(36);
+		declare t_update INTEGER DEFAULT 0; 
+		declare t_error INTEGER DEFAULT 0;    
+		declare done int default 0;
+    -- 声明游标
+    declare mc cursor for select id from yb_appeal_manage where IS_DELETEMARK = 1 AND enableDate <= now() and acceptState = 0;
+    declare continue handler for not found set done = 1;
+		declare CONTINUE HANDLER FOR SQLEXCEPTION SET t_error=1; 
+				
+		START TRANSACTION;
+    -- 打开游标
+    open mc;
+		
+		-- 循环
+		itemloop: loop
+    -- 获取结果
+    fetch mc into m_id;
+		
+			if done = 1 then
+					leave itemloop;
+			end if;
+		
+			update yb_appeal_manage 
+			set 
+				acceptState= 1,
+				operateReason='自动接受',
+				operateDate=now(),
+				operateProcess= '待申诉-自动接受'
+			where 
+				id = m_id;			
+			
+			set t_update = 1;
+
+		end loop;
+    -- 关闭游标
+    close mc;
+		
+		IF t_error = 1 THEN    
+				ROLLBACK;    
+		ELSE    
+				if t_update = 1 then
+					COMMIT;
+				else
+					select '无更新条数'; 
+				end if;
+		END IF;
+   select t_error; 
+end;
+
+DROP PROCEDURE IF EXISTS p_appeal_manage_applyEndDateOne;
+
+CREATE PROCEDURE p_appeal_manage_applyEndDateOne()
 begin
     declare m_id char(36);
 		declare m_acceptState int;
@@ -1069,7 +1125,25 @@ begin
 		declare t_error INTEGER DEFAULT 0;    
 		declare done int default 0;
     -- 声明游标
-    declare mc cursor for select id,acceptState from yb_appeal_manage where IS_DELETEMARK = 1 AND enableDate <= now() and acceptState in(0,1);
+    declare mc cursor for 
+		SELECT
+			yb_appeal_manage.id,
+			yb_appeal_manage.acceptState
+		FROM
+			yb_appeal_manage
+			INNER JOIN yb_reconsider_apply_data ON 
+				yb_appeal_manage.applyDataId = yb_reconsider_apply_data.id and
+				yb_reconsider_apply_data.typeno = 1 and
+				yb_reconsider_apply_data.IS_DELETEMARK = 1
+			INNER JOIN yb_reconsider_apply ON
+				yb_reconsider_apply.id = yb_reconsider_apply_data.pid and
+				yb_reconsider_apply.applyDateStr = DATE_FORMAT(now(), '%Y-%m')  AND
+				yb_reconsider_apply.endDateOne <= now() AND 
+				yb_reconsider_apply.IS_DELETEMARK = 1
+		WHERE
+			yb_appeal_manage.IS_DELETEMARK = 1 AND
+			yb_appeal_manage.acceptState in(0,1);
+			
     declare continue handler for not found set done = 1;
 		declare CONTINUE HANDLER FOR SQLEXCEPTION SET t_error=1; 
 				
@@ -1140,7 +1214,108 @@ begin
 				end if;
 		END IF;
    select t_error; 
-end
+end;
+
+DROP PROCEDURE IF EXISTS p_appeal_manage_applyEndDateTwo;
+
+CREATE PROCEDURE p_appeal_manage_applyEndDateTwo()
+begin
+    declare m_id char(36);
+		declare m_acceptState int;
+		declare t_update INTEGER DEFAULT 0; 
+		declare t_error INTEGER DEFAULT 0;    
+		declare done int default 0;
+    -- 声明游标
+    declare mc cursor for 
+		SELECT
+			yb_appeal_manage.id,
+			yb_appeal_manage.acceptState
+		FROM
+			yb_appeal_manage
+			INNER JOIN yb_reconsider_apply_data ON 
+				yb_appeal_manage.applyDataId = yb_reconsider_apply_data.id and
+				yb_reconsider_apply_data.typeno = 2 and
+				yb_reconsider_apply_data.IS_DELETEMARK = 1
+			INNER JOIN yb_reconsider_apply ON
+				yb_reconsider_apply.id = yb_reconsider_apply_data.pid and
+				yb_reconsider_apply.applyDateStr = DATE_FORMAT(now(), '%Y-%m')  AND
+				yb_reconsider_apply.endDateTwo <= now() AND 
+				yb_reconsider_apply.IS_DELETEMARK = 1
+		WHERE
+			yb_appeal_manage.IS_DELETEMARK = 1 AND
+			yb_appeal_manage.acceptState in(0,1);
+			
+    declare continue handler for not found set done = 1;
+		declare CONTINUE HANDLER FOR SQLEXCEPTION SET t_error=1; 
+				
+		START TRANSACTION;
+    -- 打开游标
+    open mc;
+		
+		-- 循环
+		itemloop: loop
+    -- 获取结果
+    fetch mc into m_id,m_acceptState;
+		
+			if done = 1 then
+					leave itemloop;
+			end if;
+		
+			update yb_appeal_manage 
+			set 
+				acceptState= 7,
+				operateReason='过期',
+				operateDate=now(),
+				operateProcess= case when m_acceptState=0 then '接受申请-过期' else '待申诉-过期' end		
+			where 
+				id = m_id;
+				
+			insert into yb_appeal_result
+			(
+				id,applyDataId,verifyId,manageId,doctorCode,doctorName,deptCode,deptName,
+				operateReason,operateDate,state,sourceType,dataType,repayState,
+				IS_DELETEMARK,CREATE_TIME
+			)
+			SELECT
+				id,
+				applyDataId,
+				verifyId,
+				id,
+				readyDoctorCode,
+				readyDoctorName,
+				readyDeptCode,
+				readyDeptName,
+				'过期',
+				now(),
+				1,
+				sourceType,
+				dataType,
+				1,
+				1,
+				now()
+			FROM
+				yb_appeal_manage 
+			WHERE
+				id = m_id;
+			
+			
+			set t_update = 1;
+
+		end loop;
+    -- 关闭游标
+    close mc;
+		
+		IF t_error = 1 THEN    
+				ROLLBACK;    
+		ELSE    
+				if t_update = 1 then
+					COMMIT;
+				else
+					select '无更新条数'; 
+				end if;
+		END IF;
+   select t_error; 
+end;
 
 
 DROP EVENT IF EXISTS e_appeal_manage_enableOverdue;

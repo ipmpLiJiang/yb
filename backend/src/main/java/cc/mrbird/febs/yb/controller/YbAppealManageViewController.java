@@ -55,6 +55,14 @@ public class YbAppealManageViewController extends BaseController {
         return getDataTable(this.iYbAppealManageViewService.findYbAppealManageViews(request, ybAppealManageView));
     }
 
+    @GetMapping("appealManageUserView")
+    @RequiresPermissions("ybAppealManageView:userView")
+    public Map<String, Object> userList(QueryRequest request, YbAppealManageView ybAppealManageView) {
+        User currentUser = FebsUtil.getCurrentUser();
+        ybAppealManageView.setReadyDoctorCode(currentUser.getUsername());
+        return getDataTable(this.iYbAppealManageViewService.findAppealManageUserViews(request, ybAppealManageView));
+    }
+
     /**
      * 添加
      *

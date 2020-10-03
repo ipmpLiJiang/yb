@@ -48,31 +48,31 @@ public class YbAppealResultViewServiceImpl extends ServiceImpl<YbAppealResultVie
             sql += " applyDateStr ='" + ybAppealResultView.getApplyDateStr() + "' ";
             if (ybAppealResultView.getTypeno() != null) {
                 if (ybAppealResultView.getTypeno() == 1) {
-                    sql = sql + " and typeno = 1";
+                    sql +=  " and typeno = 1";
                 } else {
-                    sql = sql + " and typeno = 2";
+                    sql +=  " and typeno = 2";
                 }
             }
             if (ybAppealResultView.getDataType() != null) {
                 if (ybAppealResultView.getDataType() == 0) {
-                    sql = sql + " and dataType = 0";
+                    sql +=  " and dataType = 0";
                 } else {
-                    sql = sql + " and dataType = 1";
+                    sql +=  " and dataType = 1";
                 }
             }
             if (ybAppealResultView.getSourceType() != null) {
-                sql = sql + " and sourceType = " + ybAppealResultView.getSourceType();
+                sql +=  " and sourceType = " + ybAppealResultView.getSourceType();
             }
             if (ybAppealResultView.getState() != null) {
                 if (ybAppealResultView.getState() == 12) {
-                    sql = sql + " and STATE IN (1,2)";
+                    sql +=  " and STATE IN (1,2)";
                 }
                 if (ybAppealResultView.getState() == 1) {
-                    sql = sql + " and STATE = 1";
+                    sql +=  " and STATE = 1";
                 }
             }
 
-            sql = sql + ")";
+            sql +=  ")";
             if (ybAppealResultView.getCurrencyField() != null && !"".equals(ybAppealResultView.getCurrencyField())) {
                 if (ybAppealResultView.getDataType() != null) {
                     if (ybAppealResultView.getDataType() == 0) {
@@ -147,13 +147,13 @@ public class YbAppealResultViewServiceImpl extends ServiceImpl<YbAppealResultVie
             String sql = "(";
             sql += " applyDateStr ='" + ybAppealResultView.getApplyDateStr() + "' ";
             if (ybAppealResultView.getSourceType() != null) {
-                sql = sql + " and sourceType = " + ybAppealResultView.getSourceType();
+                sql +=  " and sourceType = " + ybAppealResultView.getSourceType();
             }
             if (ybAppealResultView.getState() != null) {
-                sql = sql + " and STATE = " + ybAppealResultView.getState();
+                sql +=  " and STATE = " + ybAppealResultView.getState();
             }
 
-            sql = sql + ")";
+            sql +=  ")";
             if (ybAppealResultView.getOrderNumber() != null && !"".equals(ybAppealResultView.getOrderNumber())) {
 
             }
@@ -231,7 +231,7 @@ public class YbAppealResultViewServiceImpl extends ServiceImpl<YbAppealResultVie
             }
 
             if (ybAppealResultView.getSourceType() != null) {
-                sql = sql + " and sourceType = " + ybAppealResultView.getSourceType();
+                sql +=  " and sourceType = " + ybAppealResultView.getSourceType();
             }
 
             if (ybAppealResultView.getArDeptname() != null) {

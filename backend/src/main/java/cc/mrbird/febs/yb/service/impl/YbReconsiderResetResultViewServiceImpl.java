@@ -42,7 +42,7 @@ public class YbReconsiderResetResultViewServiceImpl extends ServiceImpl<YbRecons
                 sql += " and dataType = " + ybReconsiderResetResultView.getDataType();
             }
 
-            sql = sql + ")";
+            sql +=  ")";
             if (ybReconsiderResetResultView.getOrderNumber() != null) {
                 String orderNumbers = ybReconsiderResetResultView.getOrderNumber();
                 String[] orderNumberArr = orderNumbers.split(",");

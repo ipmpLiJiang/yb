@@ -64,33 +64,33 @@ public class YbAppealResultDeductimplementViewServiceImpl extends ServiceImpl<Yb
 
                 if (ybAppealResultDeductimplementView.getTypeno() != null) {
                     if (ybAppealResultDeductimplementView.getTypeno() == 1) {
-                        sql = sql + " and typeno = 1";
+                        sql +=  " and typeno = 1";
                     } else {
-                        sql = sql + " and typeno = 2";
+                        sql +=  " and typeno = 2";
                     }
                 }
 
                 if (ybAppealResultDeductimplementView.getDataType() != null) {
                     if (ybAppealResultDeductimplementView.getDataType() == 0) {
-                        sql = sql + " and dataType = 0";
+                        sql +=  " and dataType = 0";
                     } else {
-                        sql = sql + " and dataType = 1";
+                        sql +=  " and dataType = 1";
                     }
                 }
 
                 if(ybAppealResultDeductimplementView.getDeductImplementId()!=null){
-                    sql = sql + " and deductImplementId IS NOT NULL";
+                    sql +=  " and deductImplementId IS NOT NULL";
                 }else{
-                    sql = sql + " and deductImplementId IS NULL";
+                    sql +=  " and deductImplementId IS NULL";
                 }
 
                 if (ybAppealResultDeductimplementView.getArDoctorcode() != null) {
-                    sql = sql + " and arDoctorCode = '" + ybAppealResultDeductimplementView.getArDoctorcode() + "'";
+                    sql +=  " and arDoctorCode = '" + ybAppealResultDeductimplementView.getArDoctorcode() + "'";
                 }
 
-                sql = sql + " and STATE = 2 and raResetState = 1 and sourceType = 0 ";
+                sql +=  " and STATE = 2 and raResetState = 1 and sourceType = 0 ";
 
-                sql = sql + ")";
+                sql +=  ")";
                 if (ybAppealResultDeductimplementView.getCurrencyField() != null && !"".equals(ybAppealResultDeductimplementView.getCurrencyField())) {
                     if (ybAppealResultDeductimplementView.getDataType() != null) {
                         if (ybAppealResultDeductimplementView.getDataType() == 0) {
@@ -132,6 +132,7 @@ public class YbAppealResultDeductimplementViewServiceImpl extends ServiceImpl<Yb
         }
 
     }
+
 
     @Override
     public IPage<YbAppealResultDeductimplementView> findYbAppealResultDeductimplementViewList(QueryRequest

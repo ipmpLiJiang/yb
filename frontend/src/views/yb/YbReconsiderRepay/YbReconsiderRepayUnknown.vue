@@ -148,7 +148,7 @@ export default {
           queryParams.belongDateStr = this.belongDateStr
         }
 
-        this.$export('ybReconsiderRepayData/excel1', {
+        this.$export('ybReconsiderRepayData/excelRepay', {
           ...queryParams
         })
       } else {

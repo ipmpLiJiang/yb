@@ -336,7 +336,7 @@ export default {
       }
       params.sortField = 'orderNumber'
       params.sortOrder = 'ascend'
-      this.$get('ybAppealManageView', {
+      this.$get('ybAppealManageView/appealManageUserView', {
         ...params
       }).then((r) => {
         let data = r.data

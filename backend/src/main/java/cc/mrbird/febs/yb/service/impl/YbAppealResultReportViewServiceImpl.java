@@ -64,36 +64,36 @@ public class YbAppealResultReportViewServiceImpl extends ServiceImpl<YbAppealRes
 
                 if (ybAppealResultReportView.getTypeno() != null) {
                     if (ybAppealResultReportView.getTypeno() == 1) {
-                        sql = sql + " and typeno = 1";
+                        sql +=  " and typeno = 1";
                     } else {
-                        sql = sql + " and typeno = 2";
+                        sql +=  " and typeno = 2";
                     }
                 }
                 if (ybAppealResultReportView.getDataType() != null) {
                     if (ybAppealResultReportView.getDataType() == 0) {
-                        sql = sql + " and dataType = 0";
+                        sql +=  " and dataType = 0";
                     } else {
-                        sql = sql + " and dataType = 1";
+                        sql +=  " and dataType = 1";
                     }
                 }
                 if (ybAppealResultReportView.getSourceType() != null) {
-                    sql = sql + " and sourceType = " + ybAppealResultReportView.getSourceType();
+                    sql +=  " and sourceType = " + ybAppealResultReportView.getSourceType();
                 }
                 if (ybAppealResultReportView.getState() != null) {
                     if (ybAppealResultReportView.getState() == 1) {
-                        sql = sql + " and (STATE = 1 or (STATE = 2 and (repayState = 1 or repayState = 3)))";
+                        sql +=  " and (STATE = 1 or (STATE = 2 and (repayState = 1 or repayState = 3)))";
                     } else {
-                        sql = sql + " and STATE = 2 and repayState = 2";
+                        sql +=  " and STATE = 2 and repayState = 2";
                     }
                 }
 
                 if (ybAppealResultReportView.getArDoctorcode() != null) {
-                    sql = sql + " and arDoctorCode = '" + ybAppealResultReportView.getArDoctorcode() + "'";
+                    sql +=  " and arDoctorCode = '" + ybAppealResultReportView.getArDoctorcode() + "'";
                 }
 
-                sql = sql + " and raResetState = 1";
+                sql +=  " and raResetState = 1";
 
-                sql = sql + ")";
+                sql +=  ")";
                 if (ybAppealResultReportView.getCurrencyField() != null && !"".equals(ybAppealResultReportView.getCurrencyField())) {
                     if (ybAppealResultReportView.getDataType() != null) {
                         if (ybAppealResultReportView.getDataType() == 0) {
@@ -196,36 +196,39 @@ public class YbAppealResultReportViewServiceImpl extends ServiceImpl<YbAppealRes
 
                 if (ybAppealResultReportView.getTypeno() != null) {
                     if (ybAppealResultReportView.getTypeno() == 1) {
-                        sql = sql + " and typeno = 1";
+                        sql +=  " and typeno = 1";
                     } else {
-                        sql = sql + " and typeno = 2";
+                        sql +=  " and typeno = 2";
                     }
                 }
                 if (ybAppealResultReportView.getDataType() != null) {
                     if (ybAppealResultReportView.getDataType() == 0) {
-                        sql = sql + " and dataType = 0";
+                        sql +=  " and dataType = 0";
                     } else {
-                        sql = sql + " and dataType = 1";
+                        sql +=  " and dataType = 1";
                     }
                 }
                 if (ybAppealResultReportView.getSourceType() != null) {
-                    sql = sql + " and sourceType = " + ybAppealResultReportView.getSourceType();
+                    sql +=  " and sourceType = " + ybAppealResultReportView.getSourceType();
                 }
                 if (ybAppealResultReportView.getState() != null) {
                     if (ybAppealResultReportView.getState() == 1) {
-                        sql = sql + " and (STATE = 1 or (STATE = 2 and (repayState = 1 or repayState = 3)))";
+                        sql +=  " and (STATE = 1 or (STATE = 2 and (repayState = 1 or repayState = 3)))";
                     } else {
-                        sql = sql + " and STATE = 2 and repayState = 2";
+                        sql +=  " and STATE = 2 and repayState = 2";
                     }
                 }
 
                 if (ybAppealResultReportView.getArDoctorcode() != null) {
-                    sql = sql + " and arDoctorCode = '" + ybAppealResultReportView.getArDoctorcode() + "'";
+                    sql +=  " and arDoctorCode = '" + ybAppealResultReportView.getArDoctorcode() + "'";
                 }
 
-                sql = sql + " and raResetState = 1";
+                sql +=  " and raResetState = 1";
 
-                sql = sql + ")";
+                if(ybAppealResultReportView.getArDoctorcode()!=null) {
+                    sql += " and ar_doctorCode = '" + ybAppealResultReportView.getArDoctorcode() + "'";
+                }
+                sql +=  ")";
                 if (ybAppealResultReportView.getCurrencyField() != null && !"".equals(ybAppealResultReportView.getCurrencyField())) {
                     if (ybAppealResultReportView.getDataType() != null) {
                         if (ybAppealResultReportView.getDataType() == 0) {

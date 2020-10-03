@@ -183,7 +183,7 @@ export default {
         let queryParams = {}
         queryParams.applyDateStr = this.applyDate
         queryParams.state = 2
-        this.$export('ybReconsiderResetDataView/excel1', {
+        this.$export('ybReconsiderResetDataView/excelReset', {
           ...queryParams
         })
       } else {

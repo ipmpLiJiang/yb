@@ -191,7 +191,7 @@ export default {
       return dataSource
     },
     ajaxDoc (keyword) {
-      let dataSource = [{value: '101A', text: '测试医生1'}, {value: '102A', text: '测试医生2'}, {value: '103A', text: '测试医生3'}]
+      let dataSource = [{value: 'mrbird', text: '系统管理员'}, {value: '102A', text: '测试医生2'}, {value: '103A', text: '测试医生3'}]
       return dataSource
     },
     setFormValues ({ ...ybReconsiderVerifyView }) {

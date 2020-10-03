@@ -29,8 +29,7 @@
           <a-col :span=10>
             <a-popconfirm
               title="确定自动匹配？"
-              v-show="tableSelectKey==1||tableSelectKey==4?true:false"
-              @click="addImport"
+              @confirm="addImport"
               okText="确定"
               cancelText="取消"
             >
@@ -345,7 +344,6 @@ export default {
     selectDeptChange (item) {
       this.selectDate.deptCode = item.value
       this.selectDate.deptName = item.text
-      console.log(item)
     },
     showUpdateModal () {
       this.selectDate = {}
@@ -389,6 +387,7 @@ export default {
       if (this.tableSelectKey === '4') {
         url = 'importMainReconsiderVerify'
       }
+
       this.$post('ybReconsiderVerify/' + url, {
         applyDate: this.searchApplyDate
       }).then(() => {
