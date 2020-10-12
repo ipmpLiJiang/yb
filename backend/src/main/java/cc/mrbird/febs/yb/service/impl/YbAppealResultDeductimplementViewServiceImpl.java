@@ -3,6 +3,7 @@ package cc.mrbird.febs.yb.service.impl;
 import cc.mrbird.febs.com.controller.DataTypeHelpers;
 import cc.mrbird.febs.common.domain.QueryRequest;
 import cc.mrbird.febs.common.utils.SortUtil;
+import cc.mrbird.febs.yb.entity.YbAppealResultDeductimplement;
 import cc.mrbird.febs.yb.entity.YbAppealResultDeductimplementView;
 import cc.mrbird.febs.yb.dao.YbAppealResultDeductimplementViewMapper;
 import cc.mrbird.febs.yb.entity.YbAppealResultView;
@@ -50,16 +51,21 @@ public class YbAppealResultDeductimplementViewServiceImpl extends ServiceImpl<Yb
             if (listStr.size() > 0) {
                 String sql = "(";
 
-                // String sqlApplyDateStr = "";
                 if (listStr.size() == 1) {
-//                    sqlApplyDateStr = listStr.get(0);
-                    sql += " applyDateStr = '" + ybAppealResultDeductimplementView.getApplyDateFrom() + "'";
+                    if(ybAppealResultDeductimplementView.getDeductImplementId()!=null) {
+                        sql += " implementDateStr = '" + ybAppealResultDeductimplementView.getApplyDateFrom() + "'";
+                    }else{
+                        sql += " applyDateStr = '" + ybAppealResultDeductimplementView.getApplyDateFrom() + "'";
+                    }
                 } else {
-                    //sqlApplyDateStr = "'" + DataTypeHelpers.stringListSeparate(listStr, "','") + "'";
                     String applyDateStrForm = ybAppealResultDeductimplementView.getApplyDateFrom() + "-01";
                     String applyDateStrTo = ybAppealResultDeductimplementView.getApplyDateTo() + "-" + String.valueOf(DataTypeHelpers.stringDateFormatMaxDay(ybAppealResultDeductimplementView.getApplyDateTo() + "-01", "", false));
 
-                    sql += " applyDate >= '" + applyDateStrForm + "' and applyDate <= '" + applyDateStrTo + "' ";
+                    if(ybAppealResultDeductimplementView.getDeductImplementId()!=null) {
+                        sql += " implementDate >= '" + applyDateStrForm + "' and implementDate <= '" + applyDateStrTo + "' ";
+                    }else{
+                        sql += " applyDate >= '" + applyDateStrForm + "' and applyDate <= '" + applyDateStrTo + "' ";
+                    }
                 }
 
                 if (ybAppealResultDeductimplementView.getTypeno() != null) {
@@ -84,8 +90,8 @@ public class YbAppealResultDeductimplementViewServiceImpl extends ServiceImpl<Yb
                     sql +=  " and deductImplementId IS NULL";
                 }
 
-                if (ybAppealResultDeductimplementView.getArDoctorcode() != null) {
-                    sql +=  " and arDoctorCode = '" + ybAppealResultDeductimplementView.getArDoctorcode() + "'";
+                if (ybAppealResultDeductimplementView.getArDoctorCode() != null) {
+                    sql +=  " and arDoctorCode = '" + ybAppealResultDeductimplementView.getArDoctorCode() + "'";
                 }
 
                 sql +=  " and STATE = 2 and raResetState = 1 and sourceType = 0 ";

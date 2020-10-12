@@ -2,11 +2,11 @@
 DROP TABLE IF EXISTS yb_reconsider_rule;
 CREATE TABLE yb_reconsider_rule (
   id char(36) NOT NULL COMMENT '复议规则id',
-	gzNo int(11) NOT NULL COMMENT '序号',
-  gzDescribe varchar(255) NOT NULL COMMENT '规则描述',
-  gzXplain varchar(255) NOT NULL COMMENT '规则解释',
-  keypoints varchar(255) NOT NULL COMMENT '复议重点',
-	materials varchar(2000) NOT NULL COMMENT '复议资料',
+	rNo int(11) NOT NULL COMMENT '序号',
+  rDescribe varchar(255) NOT NULL COMMENT '规则描述',
+  rXplain varchar(255) NOT NULL COMMENT '规则解释',
+  rkeypoints varchar(255) NOT NULL COMMENT '复议重点',
+	rmaterials varchar(2000) NOT NULL COMMENT '复议资料',
 	operatorId bigint(11) NOT NULL COMMENT '操作员代码',
 	operatorName varchar(50) NOT NULL COMMENT '操作员名称',
   COMMENTS varchar(1000) DEFAULT NULL COMMENT '备注',
@@ -35,7 +35,7 @@ CREATE TABLE yb_reconsider_apply (
   repayState int(4) DEFAULT 0 COMMENT '还款状态', #0未还款 1已还款
   resetState int(4) DEFAULT 0 COMMENT '剔除状态', #0未剔除 1已剔除
   COMMENTS varchar(1000) DEFAULT NULL COMMENT '备注',
-  STATE int(4) DEFAULT 1 COMMENT '状态',#1待复议 2上传一 3申述一 4上传二 5申述二 6已剔除 7已还款
+  STATE int(4) DEFAULT 1 COMMENT '状态',#1待复议 2上传一 3申述一 4上传二 5申述二 6已剔除 7还款中
   IS_DELETEMARK tinyint(4) DEFAULT NULL COMMENT '是否删除',
   MODIFY_TIME datetime DEFAULT NULL  COMMENT '修改时间',
   CREATE_TIME datetime DEFAULT NULL  COMMENT '创建时间',
@@ -143,7 +143,7 @@ CREATE TABLE yb_appeal_manage (
 	changeDoctorName varchar(50) DEFAULT NULL COMMENT '变更医生',
   changeDeptCode varchar(100) DEFAULT NULL COMMENT '变更复议科室编码',
 	changeDeptName varchar(100) DEFAULT NULL COMMENT '变更复议科室',	
-	acceptState int(4) DEFAULT 0 COMMENT '接受状态',#0待接收，1接受，2不接受，3管理员更改，4医保拒绝，6已上传，7已过期(未申诉)
+	acceptState int(4) DEFAULT 0 COMMENT '接受状态',#0待接收，1接受，2不接受，3管理员更改，4医保拒绝，6已上传，7未申诉
 	operateReason varchar(1000) DEFAULT NULL COMMENT '操作理由',
 	operateProcess varchar(50) DEFAULT NULL COMMENT '操作过程',
 	operateDate datetime DEFAULT NULL COMMENT '操作日期',	
@@ -207,12 +207,30 @@ repayState int(4) DEFAULT 1 COMMENT '还款状态', -- 1 成功 2 失败 3 部分调整
 #DROP TABLE IF EXISTS yb_appeal_result_deductImplement;
 CREATE TABLE yb_appeal_result_deductImplement (
   id char(36) NOT NULL COMMENT '扣款落实Id',
-	resultId char(36) NOT NULL COMMENT '复议上传Id',
+	resultId char(36) NOT NULL COMMENT '申诉上传Id',
 	resetDataId  char(36) NOT NULL COMMENT '剔除明细Id',
 	implementDate datetime NOT NULL COMMENT '绩效年月',
 	implementDateStr varchar(10) NOT NULL COMMENT '绩效年月Str',
 	shareState int(4) DEFAULT 0 COMMENT '分摊方式', # 0 个人 1科室
-	shareProgramme varchar(200) DEFAULT NULL COMMENT '分摊方案',
+	shareProgramme varchar(1000) DEFAULT NULL COMMENT '分摊方案',
+  COMMENTS varchar(1000) DEFAULT NULL COMMENT '备注',
+  STATE int(4) DEFAULT 1 COMMENT '状态',
+  IS_DELETEMARK tinyint(4) DEFAULT NULL COMMENT '是否删除',
+  MODIFY_TIME datetime DEFAULT NULL  COMMENT '修改时间',
+  CREATE_TIME datetime DEFAULT NULL  COMMENT '创建时间',
+  CREATE_USER_ID bigint(11) DEFAULT NULL COMMENT '创建人',
+  MODIFY_USER_ID bigint(11) DEFAULT NULL COMMENT '修改人',
+  PRIMARY KEY (id)
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
+
+#还款落实
+#DROP TABLE IF EXISTS yb_appeal_result_repayment;
+CREATE TABLE yb_appeal_result_repayment (
+  id char(36) NOT NULL COMMENT '还款落实Id',
+  resultId char(36) NOT NULL COMMENT '申诉上传Id',
+  resetDataId  char(36) NOT NULL COMMENT '剔除明细Id',
+  deductImplementId char(36) NOT NULL COMMENT '扣除落实Id',
+  repaymentProgramme varchar(1000) DEFAULT NULL COMMENT '还款方案',
   COMMENTS varchar(1000) DEFAULT NULL COMMENT '备注',
   STATE int(4) DEFAULT 1 COMMENT '状态',
   IS_DELETEMARK tinyint(4) DEFAULT NULL COMMENT '是否删除',
@@ -357,7 +375,7 @@ CREATE TABLE yb_handle_verify_data (
   id char(36) NOT NULL COMMENT '人工复议明细',
 	pid char(36) NOT NULL COMMENT '人工复议Id',
 	resetId char(36) NOT NULL COMMENT '剔除明细Id',  
-	resultId char(36) NOT NULL COMMENT '复议上传Id',  
+	resultId char(36) NOT NULL COMMENT '申诉上传Id',  
 	applyDataId char(36) NOT NULL COMMENT '复议申请明细',
 	verifyId  char(36) NOT NULL COMMENT '核对Id',
 	manageId  char(36) NOT NULL COMMENT '管理Id',
@@ -442,7 +460,9 @@ CREATE TABLE yb_reconsider_repay_data (
   settlementDateStr varchar(50) DEFAULT NULL COMMENT '结算日期Str',
 	personalNo varchar(50) DEFAULT NULL COMMENT '个人编号',
 	insuredName varchar(50) DEFAULT NULL COMMENT '参保人姓名',
+	applyDataId char(36) DEFAULT NULL COMMENT '复议申请明细',
 	resetDataId  char(36) DEFAULT NULL COMMENT '剔除明细扣款Id',
+	resultId char(36) DEFAULT NULL COMMENT '申诉上传Id',  
 	dataType int(4) NOT NULL COMMENT '扣款类型', -- 0 明细扣款 1 主单扣款
 	seekState int(4) DEFAULT 0 COMMENT '匹配状态',-- 0未匹配 1已匹配
 	updateType int(4) DEFAULT 0 COMMENT '更新类型',-- 0序号更新 1规则更新
@@ -674,10 +694,10 @@ select
   art.id,
 	art.applyDataId,
   art.verifyId,
-	art.doctorCode ar_doctorCode,
-	art.doctorName ar_doctorName,
-	art.deptCode ar_deptCode,
-	art.deptName ar_deptName,
+	art.doctorCode arDoctorCode,
+	art.doctorName arDoctorName,
+	art.deptCode arDeptCode,
+	art.deptName arDeptName,
 	art.operateReason,
 	art.operateDate,
 	art.COMMENTS,
@@ -796,10 +816,10 @@ select
 	hvd.manageId,
 	hvd.resetId,
 	hvd.resultId,
-	hvd.doctorCode hv_doctorCode,
-	hvd.doctorName hv_doctorName,
-	hvd.deptCode hv_deptCode,
-	hvd.deptName hv_deptName,
+	hvd.doctorCode hvDoctorCode,
+	hvd.doctorName hvDoctorName,
+	hvd.deptCode hvDeptCode,
+	hvd.deptName hvDeptName,
 	hvd.operateReason,
 	hvd.operateDate,
 	hvd.STATE,
@@ -853,10 +873,10 @@ SELECT
 	yb_reconsider_reset.applyDate,  -- 日期
 	yb_reconsider_reset.applyDateStr,-- 年月 
 	yb_reconsider_reset.currencyField, -- 通用
-	yb_appeal_result.doctorCode ar_doctorCode,
-	yb_appeal_result.doctorName ar_doctorName,
-	yb_appeal_result.deptCode ar_deptCode,
-	yb_appeal_result.deptName ar_deptName,
+	yb_appeal_result.doctorCode arDoctorCode,
+	yb_appeal_result.doctorName arDoctorName,
+	yb_appeal_result.deptCode arDeptCode,
+	yb_appeal_result.deptName arDeptName,
 	yb_appeal_result.applyDataId,
 	yb_appeal_result.id resultId,
 	yb_appeal_result.resetDate,
@@ -926,10 +946,10 @@ select
 	art.manageId,
 	art.applyDataId,
   art.verifyId,
-	art.doctorCode ar_doctorCode,
-	art.doctorName ar_doctorName,
-	art.deptCode ar_deptCode,
-	art.deptName ar_deptName,
+	art.doctorCode arDoctorCode,
+	art.doctorName arDoctorName,
+	art.deptCode arDeptCode,
+	art.deptName arDeptName,
 	art.operateReason,
 	art.operateDate,
 	art.COMMENTS,
@@ -956,22 +976,12 @@ from
 		ra.IS_DELETEMARK = 1
   INNER JOIN yb_appeal_result art ON
 		art.applyDataId = ad.id AND
+		art.sourceType = 0 AND
 		art.IS_DELETEMARK = 1
-	LEFT JOIN (
-		SELECT 
-			yb_reconsider_reset.applyDateStr, 
-			yb_reconsider_reset_data.id,
-			yb_reconsider_reset_data.repaymentPrice,
-			yb_reconsider_reset_data.deductPrice
-		FROM 
-			yb_reconsider_reset_data
-		INNER JOIN yb_reconsider_reset ON
-			yb_reconsider_reset_data.pid = yb_reconsider_reset.id	AND 
-			yb_reconsider_reset.IS_DELETEMARK = 1
-		WHERE
-			yb_reconsider_reset_data.seekState = 1 AND 
-			yb_reconsider_reset_data.IS_DELETEMARK = 1
-	) resetDate ON resetDate.id = art.resetDataId AND resetDate.applyDateStr = ra.applyDateStr
+	LEFT JOIN yb_reconsider_reset_data resetDate on
+		resetDate.id = art.resetDataId AND
+		resetDate.seekState = 1 AND 
+		resetDate.IS_DELETEMARK = 1
 where
     ad.IS_DELETEMARK = 1;
 
@@ -1024,10 +1034,10 @@ select
 	art.manageId,
 	art.applyDataId,
   art.verifyId,
-	art.doctorCode ar_doctorCode,
-	art.doctorName ar_doctorName,
-	art.deptCode ar_deptCode,
-	art.deptName ar_deptName,
+	art.doctorCode arDoctorCode,
+	art.doctorName arDoctorName,
+	art.deptCode arDeptCode,
+	art.deptName arDeptName,
 	art.operateReason,
 	art.operateDate,
 	art.COMMENTS,
@@ -1062,6 +1072,83 @@ from
 where
     ad.IS_DELETEMARK = 1;
 
+DROP VIEW IF EXISTS yb_appeal_result_repayment_view;
+create view yb_appeal_result_repayment_view
+as
+select
+	yb_reconsider_repay_data.id,
+	yb_reconsider_repay.applyDate,
+	yb_reconsider_repay.applyDateStr,
+	yb_reconsider_repay.dataType,#扣款类型', -- 0 明细扣款 1 主单扣款
+  yb_reconsider_repay.repayType,#保险类型 0 居保 1职保  主单扣款不区分职保 居保 默认值为NULL
+	yb_reconsider_repay_data.belongDate ,#所属期
+	yb_reconsider_repay_data.belongDateStr,#所属期Str
+	yb_reconsider_repay_data.hospitalCode,#医院编号
+	yb_reconsider_repay_data.hospitalName,#医院名称
+	CASE WHEN yb_reconsider_repay_data.updateType = 0 THEN yb_reconsider_repay_data.orderNumber
+	ELSE yb_reconsider_repay_data.orderNumberNew END orderNumber,#序号
+	yb_reconsider_repay_data.orderNumberNew,#序号new
+  yb_reconsider_repay_data.serialNo,#交易流水号
+	yb_reconsider_repay_data.billNo,#单据号
+	yb_reconsider_repay_data.projectCode,#项目编码
+	yb_reconsider_repay_data.projectName,#项目名称
+	yb_reconsider_repay_data.medicalPrice,#医保内金额
+	yb_reconsider_repay_data.ruleName,#规则名称
+	yb_reconsider_repay_data.deductPrice,#扣除金额
+	yb_reconsider_repay_data.deductReason,#扣除原因
+	yb_reconsider_repay_data.repaymentPrice,#还款金额
+	yb_reconsider_repay_data.repaymentReason,#还款原因
+	yb_reconsider_repay_data.doctorName,#医生姓名
+	yb_reconsider_repay_data.deptCode,#科室编码
+	yb_reconsider_repay_data.deptName,#科室名称
+	yb_reconsider_repay_data.costDate,#费用日期
+  yb_reconsider_repay_data.costDateStr,#费用日期str
+	yb_reconsider_repay_data.hospitalizedNo,#住院号
+	yb_reconsider_repay_data.treatmentMode,#就医方式
+	yb_reconsider_repay_data.settlementDate,#结算日期
+  yb_reconsider_repay_data.settlementDateStr,#结算日期Str
+	yb_reconsider_repay_data.personalNo,#个人编号
+	yb_reconsider_repay_data.insuredName,#参保人姓名
+	yb_reconsider_repay_data.updateType,#更新类型 0序号更新 1规则更新
+	yb_reconsider_repay_data.warnType,#提醒状态 1序号正常 2新序号 3新序号(多个 序号错误，无序号匹配) 4全无匹配 5异常匹配
+	yb_appeal_result.doctorCode arDoctorCode,
+	yb_appeal_result.doctorName arDoctorName,
+	yb_appeal_result.deptCode arDeptCode,
+	yb_appeal_result.deptName arDeptName,
+	yb_appeal_result_repayment.id repaymentId,
+	yb_reconsider_repay_data.resultId,
+	yb_reconsider_repay_data.resetDataId,
+	yb_appeal_result_deductimplement.id deductImplementId,
+	yb_appeal_result_deductimplement.shareProgramme,
+	yb_appeal_result_deductimplement.shareState, # 0 个人 1科室
+	yb_appeal_result_repayment.repaymentProgramme,
+	yb_reconsider_repay.currencyField
+from 
+	yb_reconsider_repay_data
+	INNER JOIN yb_reconsider_repay ON
+		yb_reconsider_repay_data.pid = yb_reconsider_repay.id AND
+		yb_reconsider_repay.IS_DELETEMARK = 1
+	INNER JOIN yb_appeal_result ON
+		yb_appeal_result.id = yb_reconsider_repay_data.resultId AND
+		yb_appeal_result.sourceType = 0 AND
+		yb_appeal_result.IS_DELETEMARK = 1
+	INNER JOIN yb_appeal_result_deductimplement ON
+		yb_appeal_result_deductimplement.resultId = yb_appeal_result.id AND
+		yb_appeal_result_deductimplement.IS_DELETEMARK = 1
+	INNER JOIN yb_reconsider_apply_data ON
+		yb_reconsider_repay_data.applyDataId = yb_reconsider_apply_data.id AND
+		yb_reconsider_apply_data.IS_DELETEMARK = 1
+	INNER JOIN yb_reconsider_apply ON
+		yb_reconsider_apply.id = yb_reconsider_apply_data.pid AND
+		yb_reconsider_apply.repayState = 1 AND
+		yb_reconsider_apply.IS_DELETEMARK = 1
+	LEFT JOIN yb_appeal_result_repayment ON
+		yb_appeal_result_repayment.resultId = yb_appeal_result.id AND 
+		yb_appeal_result_repayment.IS_DELETEMARK = 1
+where
+		yb_reconsider_repay_data.seekState = 1 AND
+    yb_reconsider_repay_data.IS_DELETEMARK = 1;
+
 
 DROP PROCEDURE IF EXISTS p_appeal_manage_enableOverdue;
 CREATE PROCEDURE p_appeal_manage_enableOverdue()
@@ -1071,7 +1158,23 @@ begin
 		declare t_error INTEGER DEFAULT 0;    
 		declare done int default 0;
     -- 声明游标
-    declare mc cursor for select id from yb_appeal_manage where IS_DELETEMARK = 1 AND enableDate <= now() and acceptState = 0;
+    declare mc cursor for 
+		SELECT
+			yb_appeal_manage.id
+		FROM
+			yb_appeal_manage
+			INNER JOIN yb_reconsider_apply_data ON 
+				yb_appeal_manage.applyDataId = yb_reconsider_apply_data.id AND
+				yb_reconsider_apply_data.IS_DELETEMARK = 1
+			INNER JOIN yb_reconsider_apply ON
+				yb_reconsider_apply.id = yb_reconsider_apply_data.pid AND
+				yb_reconsider_apply.applyDateStr = DATE_FORMAT(now(), '%Y-%m')  AND
+				yb_reconsider_apply.IS_DELETEMARK = 1
+		WHERE
+			yb_appeal_manage.IS_DELETEMARK = 1 AND 
+			yb_appeal_manage.enableDate <= now() AND 
+			yb_appeal_manage.acceptState = 0;
+
     declare continue handler for not found set done = 1;
 		declare CONTINUE HANDLER FOR SQLEXCEPTION SET t_error=1; 
 				
@@ -1163,9 +1266,9 @@ begin
 			update yb_appeal_manage 
 			set 
 				acceptState= 7,
-				operateReason='过期',
+				operateReason='未申诉',
 				operateDate=now(),
-				operateProcess= case when m_acceptState=0 then '接受申请-过期' else '待申诉-过期' end		
+				operateProcess= case when m_acceptState=0 then '接受申请-未申诉' else '待申诉-未申诉' end		
 			where 
 				id = m_id;
 				
@@ -1184,7 +1287,7 @@ begin
 				readyDoctorName,
 				readyDeptCode,
 				readyDeptName,
-				'过期',
+				'未申诉',
 				now(),
 				1,
 				sourceType,
@@ -1264,9 +1367,9 @@ begin
 			update yb_appeal_manage 
 			set 
 				acceptState= 7,
-				operateReason='过期',
+				operateReason='未申诉',
 				operateDate=now(),
-				operateProcess= case when m_acceptState=0 then '接受申请-过期' else '待申诉-过期' end		
+				operateProcess= case when m_acceptState=0 then '接受申请-未申诉' else '待申诉-未申诉' end		
 			where 
 				id = m_id;
 				
@@ -1285,7 +1388,7 @@ begin
 				readyDoctorName,
 				readyDeptCode,
 				readyDeptName,
-				'过期',
+				'未申诉',
 				now(),
 				1,
 				sourceType,

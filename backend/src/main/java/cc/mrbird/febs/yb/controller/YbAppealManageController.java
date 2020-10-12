@@ -2,10 +2,12 @@ package cc.mrbird.febs.yb.controller;
 
 import cc.mrbird.febs.common.annotation.Log;
 import cc.mrbird.febs.common.controller.BaseController;
+import cc.mrbird.febs.common.domain.FebsResponse;
 import cc.mrbird.febs.common.domain.QueryRequest;
 import cc.mrbird.febs.common.exception.FebsException;
 import cc.mrbird.febs.common.utils.FebsUtil;
 import cc.mrbird.febs.system.domain.User;
+import cc.mrbird.febs.yb.domain.ResponseResult;
 import cc.mrbird.febs.yb.entity.YbAppealManage;
 import cc.mrbird.febs.yb.service.IYbAppealManageService;
 import com.alibaba.fastjson.JSON;
@@ -152,7 +154,8 @@ public class YbAppealManageController extends BaseController {
     @Log("修改")
     @PutMapping("updateUploadState")
     @RequiresPermissions("ybAppealManage:uploadState")
-    public void updateUploadState(String dataJson) throws FebsException {
+    public FebsResponse updateUploadState(String dataJson) {
+        int success = 0;
         try {
             User currentUser = FebsUtil.getCurrentUser();
             Long uid = currentUser.getUserId();
@@ -161,12 +164,21 @@ public class YbAppealManageController extends BaseController {
             YbAppealManage ybAppealManage = JSON.parseObject(dataJson, new TypeReference<YbAppealManage>() {
             });
 
-            this.iYbAppealManageService.updateUploadStates(ybAppealManage,uid ,uname);
+            message = this.iYbAppealManageService.updateUploadStates(ybAppealManage,uid ,uname);
+            if(message.equals("ok")){
+                success = 1;
+                message = "操作成功.";
+            }
         } catch (Exception e) {
-            message = "操作失败";
+            message = "操作失败.";
             log.error(message, e);
-            throw new FebsException(message);
         }
+
+        ResponseResult rr = new ResponseResult();
+        rr.setMessage(message);
+        rr.setSuccess(success);
+
+        return new FebsResponse().data(rr);
     }
 
 

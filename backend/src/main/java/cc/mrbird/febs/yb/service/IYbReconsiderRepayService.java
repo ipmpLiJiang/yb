@@ -32,5 +32,7 @@ public interface IYbReconsiderRepayService extends IService<YbReconsiderRepay> {
 
         String deleteReconsiderRepay(String Id);
 
+    String updateReconsiderApplyState(YbReconsiderRepay ybReconsiderRepay);
+
     boolean importReconsiderRepay(List<YbReconsiderRepayData> list, Long uid, String uname, String uploadFileName);
 }

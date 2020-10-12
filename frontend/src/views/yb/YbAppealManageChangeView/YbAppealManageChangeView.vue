@@ -136,7 +136,7 @@ export default {
   data () {
     return {
       monthFormat: 'YYYY-MM',
-      searchApplyDate: undefined,
+      searchApplyDate: this.formatDate(),
       detailVisiable: false,
       handleVisiable: false,
       historyVisiable: false,
@@ -148,12 +148,12 @@ export default {
   computed: {
   },
   mounted () {
-    this.searchApplyDate = this.formatDate()
   },
   methods: {
     moment,
     formatDate () {
-      return moment(Date.now()).format(this.monthFormat)
+      let datemonth = moment().format('YYYY-MM')
+      return datemonth
     },
     callback (key) {
       this.tableSelectKey = key

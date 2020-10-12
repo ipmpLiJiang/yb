@@ -234,8 +234,8 @@ public class YbAppealResultViewServiceImpl extends ServiceImpl<YbAppealResultVie
                 sql +=  " and sourceType = " + ybAppealResultView.getSourceType();
             }
 
-            if (ybAppealResultView.getArDeptname() != null) {
-                sql += " and ar_deptName = '" + ybAppealResultView.getArDeptname() + "'";
+            if (ybAppealResultView.getArDeptName() != null) {
+                sql += " and arDeptName = '" + ybAppealResultView.getArDeptName() + "'";
             }
 
             queryWrapper.apply(sql);

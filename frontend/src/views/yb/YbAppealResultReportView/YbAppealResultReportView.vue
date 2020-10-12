@@ -251,12 +251,12 @@ export default {
       },
       {
         title: '科室名称',
-        dataIndex: 'arDeptname',
+        dataIndex: 'arDeptName',
         width: 120
       },
       {
         title: '医生姓名',
-        dataIndex: 'arDoctorname',
+        dataIndex: 'arDoctorName',
         width: 110
       },
       {
@@ -393,8 +393,6 @@ export default {
       })
     },
     fetch (params = {}) {
-      console.log(this.selectApplyDateStr)
-      console.log(this.selectToApplyDateStr)
       let arrDateStr = custom.resetApplyDateStr(this.selectApplyDateStr, this.selectToApplyDateStr, this.formatDate())
       this.selectApplyDateStr = arrDateStr[0]
       this.selectToApplyDateStr = arrDateStr[1]

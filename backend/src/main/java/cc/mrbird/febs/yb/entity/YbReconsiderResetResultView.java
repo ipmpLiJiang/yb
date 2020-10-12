@@ -264,30 +264,30 @@ public class YbReconsiderResetResultView implements Serializable {
     /**
      * 医生编码
      */
-    @TableField("ar_doctorCode")
+    @TableField("arDoctorCode")
     @ExcelField(value = "医生编码")
-    private String arDoctorcode;
+    private String arDoctorCode;
 
     /**
      * 医生
      */
-    @TableField("ar_doctorName")
+    @TableField("arDoctorName")
     @ExcelField(value = "医生")
-    private String arDoctorname;
+    private String arDoctorName;
 
     /**
      * 科室编码
      */
-    @TableField("ar_deptCode")
+    @TableField("arDeptCode")
     @ExcelField(value = "科室编码")
-    private String arDeptcode;
+    private String arDeptCode;
 
     /**
      * 科室
      */
-    @TableField("ar_deptName")
+    @TableField("arDeptName")
     @ExcelField(value = "科室")
-    private String arDeptname;
+    private String arDeptName;
 
     /**
      * 复议申请明细
@@ -399,13 +399,13 @@ public class YbReconsiderResetResultView implements Serializable {
 
     public static final String CURRENCYFIELD = "currencyField";
 
-    public static final String AR_DOCTORCODE = "ar_doctorCode";
+    public static final String ARDOCTORCODE = "arDoctorCode";
 
-    public static final String AR_DOCTORNAME = "ar_doctorName";
+    public static final String ARDOCTORNAME = "arDoctorName";
 
-    public static final String AR_DEPTCODE = "ar_deptCode";
+    public static final String ARDEPTCODE = "arDeptCode";
 
-    public static final String AR_DEPTNAME = "ar_deptName";
+    public static final String ARDEPTNAME = "arDeptName";
 
     public static final String APPLYDATAID = "applyDataId";
 

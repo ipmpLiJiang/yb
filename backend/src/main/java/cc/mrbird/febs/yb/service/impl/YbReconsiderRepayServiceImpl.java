@@ -3,8 +3,8 @@ package cc.mrbird.febs.yb.service.impl;
 import cc.mrbird.febs.common.domain.QueryRequest;
 import cc.mrbird.febs.common.utils.SortUtil;
 import cc.mrbird.febs.yb.dao.YbReconsiderRepayMapper;
-import cc.mrbird.febs.yb.entity.YbReconsiderRepay;
-import cc.mrbird.febs.yb.entity.YbReconsiderRepayData;
+import cc.mrbird.febs.yb.entity.*;
+import cc.mrbird.febs.yb.service.IYbReconsiderApplyService;
 import cc.mrbird.febs.yb.service.IYbReconsiderRepayDataService;
 import cc.mrbird.febs.yb.service.IYbReconsiderRepayService;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -38,6 +38,8 @@ public class YbReconsiderRepayServiceImpl extends ServiceImpl<YbReconsiderRepayM
     @Autowired
     IYbReconsiderRepayDataService iYbReconsiderRepayDataService;
 
+    @Autowired
+    IYbReconsiderApplyService iYbReconsiderApplyService;
     @Override
     public IPage<YbReconsiderRepay> findYbReconsiderRepays(QueryRequest request, YbReconsiderRepay ybReconsiderRepay) {
         try {
@@ -155,6 +157,57 @@ public class YbReconsiderRepayServiceImpl extends ServiceImpl<YbReconsiderRepayM
 
         return isTrue;
     }
+    @Override
+    @Transactional
+    public String updateReconsiderApplyState(YbReconsiderRepay ybReconsiderRepay) {
+        String message = "";
+        LambdaQueryWrapper<YbReconsiderApply> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(YbReconsiderApply::getApplyDateStr, ybReconsiderRepay.getApplyDateStr());
+        List<YbReconsiderApply> list = this.iYbReconsiderApplyService.list(wrapper);
+        if (list.size() > 0) {
+            if (list.get(0).getResetState() == 1) {
+                if (list.get(0).getRepayState() == 0) {
+                    LambdaQueryWrapper<YbReconsiderRepay> wrapperRepay = new LambdaQueryWrapper<>();
+                    wrapperRepay.eq(YbReconsiderRepay::getId, ybReconsiderRepay.getId());
+                    List<YbReconsiderRepay> listRepay = this.list(wrapperRepay);
+                    if (listRepay.size() > 0) {
+                        YbReconsiderRepay searchReconsiderRepay = listRepay.get(0);
+                        LambdaQueryWrapper<YbReconsiderRepayData> wrapperRepayData = new LambdaQueryWrapper<>();
+                        wrapperRepayData.eq(YbReconsiderRepayData::getPid, searchReconsiderRepay.getId());
+                        List<YbReconsiderRepayData> listRepayData = this.iYbReconsiderRepayDataService.list(wrapperRepayData);
+                        if (listRepayData.size() > 0) {
+                            long count = listRepayData.stream().filter(s -> (s.getState() == 0 || s.getState() == 1) &&
+                                    s.getSeekState() == 0).count();
+                            if (count == 0) {
+                                YbReconsiderApply update = new YbReconsiderApply();
+                                update.setId(list.get(0).getId());
+                                update.setModifyTime(new Date());
+                                update.setState(7);
+                                update.setRepayState(1);
+                                boolean bl = this.iYbReconsiderApplyService.updateById(update);
+                                if (bl) {
+                                    message = "ok";
+                                }
+                            } else {
+                                message = "该年月 " + ybReconsiderRepay.getApplyDateStr() + " 还款业务还有未处理完的数据.";
+                            }
+                        } else {
+                            message = "该年月 " + ybReconsiderRepay.getApplyDateStr() + " 未找到还款上传明细.";
+                        }
+                    } else {
+                        message = "该年月 " + ybReconsiderRepay.getApplyDateStr() + " 未上传还款数据.";
+                    }
+                } else {
+                    message = "该年月 " + ybReconsiderRepay.getApplyDateStr() + " 已完成还款完成操作.";
+                }
+            } else {
+                message = "该年月 " + ybReconsiderRepay.getApplyDateStr() + " 复议审核剔除状态未更新.";
+            }
+        } else {
+            message = "该年月 " + ybReconsiderRepay.getApplyDateStr() + " 未找到复议审核数据或还未上传复议数据.";
+        }
 
+        return message;
+    }
 
 }

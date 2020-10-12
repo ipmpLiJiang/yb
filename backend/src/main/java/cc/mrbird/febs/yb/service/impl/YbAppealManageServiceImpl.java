@@ -116,14 +116,14 @@ public class YbAppealManageServiceImpl extends ServiceImpl<YbAppealManageMapper,
                 item.setOperateProcess("接受申请-待申诉");
             }
             LambdaQueryWrapper<YbAppealManage> queryWrapper = new LambdaQueryWrapper<>();
-            queryWrapper.eq(YbAppealManage::getAcceptState,0);
-            queryWrapper.eq(YbAppealManage::getId,item.getId());
-            this.baseMapper.update(item,queryWrapper);
+            queryWrapper.eq(YbAppealManage::getAcceptState, 0);
+            queryWrapper.eq(YbAppealManage::getId, item.getId());
+            this.baseMapper.update(item, queryWrapper);
         }
 
     }
 
-    private boolean createUpdateAcceptAppealResult(YbAppealManage ybAppealManage,Date thisDate,Long uId, String Uname){
+    private boolean createUpdateAcceptAppealResult(YbAppealManage ybAppealManage, Date thisDate, Long uId, String Uname) {
         YbAppealResult newAppealResult = new YbAppealResult();
         newAppealResult.setId(ybAppealManage.getId());
         newAppealResult.setSourceType(ybAppealManage.getSourceType());
@@ -147,33 +147,47 @@ public class YbAppealManageServiceImpl extends ServiceImpl<YbAppealManageMapper,
 
     @Override
     @Transactional
-    public void updateUploadStates(YbAppealManage ybAppealManage, Long uId, String Uname) throws Exception {
-        Date thisDate = new Date();
-        boolean isTrue = true;
-        YbAppealManage updateAppealManage = new YbAppealManage();
-        if (ybAppealManage.getAcceptState() == 6) {
-            isTrue = this.createUpdateAcceptAppealResult(ybAppealManage,thisDate,uId,Uname);
+    public String updateUploadStates(YbAppealManage ybAppealManage, Long uId, String Uname) {
+        String message = "";
+        LambdaQueryWrapper<YbAppealManage> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(YbAppealManage::getId, ybAppealManage.getId());
+        List<YbAppealManage> manageList = this.list(queryWrapper);
+        if (manageList.size() > 0) {
+            YbAppealManage am = manageList.get(0);
+            if (am.getAcceptState() == 1) {
+                Date thisDate = new Date();
+                boolean isTrue = true;
+                YbAppealManage updateAppealManage = new YbAppealManage();
+                if (ybAppealManage.getAcceptState() == 6) {
+                    isTrue = this.createUpdateAcceptAppealResult(ybAppealManage, thisDate, uId, Uname);
 
-            updateAppealManage.setOperateProcess("待申诉-已申诉");
-        }
-
-        updateAppealManage.setId(ybAppealManage.getId());
-        updateAppealManage.setModifyUserId(uId);
-        updateAppealManage.setModifyTime(thisDate);
-        updateAppealManage.setOperateDate(thisDate);
-        updateAppealManage.setOperateReason(ybAppealManage.getOperateReason());
-        updateAppealManage.setAcceptState(ybAppealManage.getAcceptState());
-        if(isTrue) {
-            LambdaQueryWrapper<YbAppealManage> queryWrapper = new LambdaQueryWrapper<>();
-            queryWrapper.eq(YbAppealManage::getAcceptState,1);
-            queryWrapper.eq(YbAppealManage::getId,updateAppealManage.getId());
-            int count = this.baseMapper.update(updateAppealManage,queryWrapper);
-            if(count == 0){
-                throw  new Exception("复议申诉状态更新失败.");
+                    updateAppealManage.setOperateProcess("待申诉-已申诉");
+                }
+                updateAppealManage.setId(ybAppealManage.getId());
+                updateAppealManage.setModifyUserId(uId);
+                updateAppealManage.setModifyTime(thisDate);
+                updateAppealManage.setOperateDate(thisDate);
+                updateAppealManage.setOperateReason(ybAppealManage.getOperateReason());
+                updateAppealManage.setAcceptState(ybAppealManage.getAcceptState());
+                if (isTrue) {
+                    queryWrapper.eq(YbAppealManage::getAcceptState, 1);
+                    int count = this.baseMapper.update(updateAppealManage, queryWrapper);
+                    if (count == 0) {
+                        message = "复议申诉状态更新失败.";
+                    } else{
+                        message = "ok";
+                    }
+                } else {
+                    message = "复议结果数据创建失败.";
+                }
+            }else{
+                message = "该申诉数据已申诉.";
             }
-        } else {
-            throw new Exception("复议上传数据创建失败.");
+        }else{
+            message = "未找到申诉数据.";
         }
+
+        return  message;
     }
 
     /*
@@ -255,9 +269,9 @@ public class YbAppealManageServiceImpl extends ServiceImpl<YbAppealManageMapper,
             ybAppealManage.setApprovalState(type);
 
             LambdaQueryWrapper<YbAppealManage> queryWrapper = new LambdaQueryWrapper<>();
-            queryWrapper.eq(YbAppealManage::getAcceptState,2);
-            queryWrapper.eq(YbAppealManage::getId,ybAppealManage.getId());
-            this.baseMapper.update(ybAppealManage,queryWrapper);
+            queryWrapper.eq(YbAppealManage::getAcceptState, 2);
+            queryWrapper.eq(YbAppealManage::getId, ybAppealManage.getId());
+            this.baseMapper.update(ybAppealManage, queryWrapper);
         }
         this.createYbAppealManage(newAppealManage);
     }
@@ -306,9 +320,9 @@ public class YbAppealManageServiceImpl extends ServiceImpl<YbAppealManageMapper,
         //方法 更改状态为0的数据 业务更改 管理员更改状态为1的数据 所有不调用该方法
         //方法 更改状态为1的数据
         LambdaQueryWrapper<YbAppealManage> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(YbAppealManage::getAcceptState,1);
-        queryWrapper.eq(YbAppealManage::getId,ybAppealManage.getId());
-        this.baseMapper.update(updateAppealManage,queryWrapper);
+        queryWrapper.eq(YbAppealManage::getAcceptState, 1);
+        queryWrapper.eq(YbAppealManage::getId, ybAppealManage.getId());
+        this.baseMapper.update(updateAppealManage, queryWrapper);
 
         YbAppealManage newAppealManage = new YbAppealManage();
         newAppealManage.setId(UUID.randomUUID().toString());
@@ -343,9 +357,9 @@ public class YbAppealManageServiceImpl extends ServiceImpl<YbAppealManageMapper,
     @Transactional
     public void updateExamineStates(YbAppealManage ybAppealManage) {
         LambdaQueryWrapper<YbAppealManage> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(YbAppealManage::getAcceptState,2);
-        queryWrapper.eq(YbAppealManage::getId,ybAppealManage.getId());
-        this.baseMapper.update(ybAppealManage,queryWrapper);
+        queryWrapper.eq(YbAppealManage::getAcceptState, 2);
+        queryWrapper.eq(YbAppealManage::getId, ybAppealManage.getId());
+        this.baseMapper.update(ybAppealManage, queryWrapper);
     }
 
 }

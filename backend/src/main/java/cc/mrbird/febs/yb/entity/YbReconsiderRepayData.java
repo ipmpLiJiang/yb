@@ -286,6 +286,21 @@ private static final long serialVersionUID=1L;
     private String resetDataId;
 
     /**
+     * '复议上传Id'
+     */
+    @TableField("resultId")
+    @ExcelField(value ="'复议上传Id'")
+    private String resultId;
+
+
+    /**
+     * '复议申请明细'
+     */
+    @TableField("applyDataId")
+    @ExcelField(value ="'复议申请明细'")
+    private String applyDataId;
+
+    /**
      * 备注
      */
     @TableField("COMMENTS")
@@ -411,6 +426,10 @@ private static final long serialVersionUID=1L;
     public static final String REPAYTYPE ="repayType" ;
 
     public static final String RESETDATAID ="resetDataId";
+
+    public static final String RESULTID ="resultId" ;
+
+    public static final String APPLYDATAID ="applyDataId" ;
 
     public static final String COMMENTS ="COMMENTS" ;
 

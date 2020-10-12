@@ -224,8 +224,11 @@ public class YbReconsiderRepayDataServiceImpl extends ServiceImpl<YbReconsiderRe
                                 }
 
                                 updateResetData.setRepaymentPrice(repaymentPrice);
-
+                                updateRepayData.setResultId(updateResult.getId());
                                 updateRepayData.setResetDataId(rAd.getId());
+                                updateRepayData.setResultId(searchResultList.get(0).getId());
+
+                                updateRepayData.setApplyDataId(searchResultList.get(0).getApplyDataId());
                                 updateRepayData.setWarnType(1);
                                 updateRepayData.setSeekState(1);
 
@@ -358,7 +361,10 @@ public class YbReconsiderRepayDataServiceImpl extends ServiceImpl<YbReconsiderRe
 
                                 updateRepayData.setOrderNumberNew(rAd.getOrderNumber());
                                 updateRepayData.setResetDataId(rAd.getId());
+                                updateRepayData.setResultId(searchResultList.get(0).getId());
+                                updateRepayData.setApplyDataId(searchResultList.get(0).getApplyDataId());
                                 updateRepayData.setWarnType(2);
+                                updateRepayData.setUpdateType(1);
                                 updateRepayData.setSeekState(1);
 
                                 updateResetDataList.add(updateResetData);
@@ -596,6 +602,9 @@ public class YbReconsiderRepayDataServiceImpl extends ServiceImpl<YbReconsiderRe
                         updateRepayData.setSeekState(1);
                         updateRepayData.setWarnType(5);
                         updateRepayData.setResetDataId(reconsiderResetData.getId());
+                        updateRepayData.setResultId(appealResult.getId());
+                        updateRepayData.setApplyDataId(appealResult.getApplyDataId());
+                        updateRepayData.setUpdateType(1);
                         updateRepayData.setState(0);
                         updateRepayData.setOrderNumberNew(reconsiderResetData.getOrderNumber());
 

@@ -12,6 +12,7 @@ import cc.mrbird.febs.common.domain.QueryRequest;
 
 import cc.mrbird.febs.common.properties.FebsProperties;
 import cc.mrbird.febs.yb.domain.ResponseImportResultData;
+import cc.mrbird.febs.yb.domain.ResponseResult;
 import cc.mrbird.febs.yb.domain.ResponseResultData;
 import cc.mrbird.febs.yb.entity.*;
 import cc.mrbird.febs.yb.service.IYbReconsiderRepayService;
@@ -121,6 +122,28 @@ public class YbReconsiderRepayController extends BaseController {
             log.error(message, e);
             throw new FebsException(message);
         }
+    }
+
+    //复议申请更新repayState状态 按钮完成还款
+    @Log("修改")
+    @PutMapping("updateApplyState")
+    @RequiresPermissions("ybReconsiderRepay:updateRepayState")
+    public FebsResponse updateReconsiderRepayApplyState(@Valid YbReconsiderRepay ybReconsiderRepay){
+        int success = 0;
+        try {
+            message = this.iYbReconsiderRepayService.updateReconsiderApplyState(ybReconsiderRepay);
+            if(message.equals("ok")){
+                success = 1;
+                message = "完成还款成功";
+            }
+        } catch (Exception e) {
+            message = "完成还款失败.";
+            log.error(message, e);
+        }
+        ResponseResult rr = new ResponseResult();
+        rr.setMessage(message);
+        rr.setSuccess(success);
+        return new FebsResponse().data(rr);
     }
 
     @Log("删除")

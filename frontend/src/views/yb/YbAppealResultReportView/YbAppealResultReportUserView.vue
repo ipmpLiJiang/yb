@@ -151,7 +151,7 @@ const formItemLayout = {
   wrapperCol: { span: 15, offset: 1 }
 }
 export default {
-  name: 'YbAppealResultReportView',
+  name: 'YbAppealResultReportUserView',
   components: { YbAppealManageHistory, YbAppealManageResultLookModule },
   data () {
     return {
@@ -247,16 +247,6 @@ export default {
       {
         title: '费用日期',
         dataIndex: 'costDateStr',
-        width: 110
-      },
-      {
-        title: '科室名称',
-        dataIndex: 'arDeptname',
-        width: 120
-      },
-      {
-        title: '医生姓名',
-        dataIndex: 'arDoctorname',
         width: 110
       },
       {
@@ -393,8 +383,6 @@ export default {
       })
     },
     fetch (params = {}) {
-      console.log(this.selectApplyDateStr)
-      console.log(this.selectToApplyDateStr)
       let arrDateStr = custom.resetApplyDateStr(this.selectApplyDateStr, this.selectToApplyDateStr, this.formatDate())
       this.selectApplyDateStr = arrDateStr[0]
       this.selectToApplyDateStr = arrDateStr[1]

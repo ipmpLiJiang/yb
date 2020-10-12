@@ -3,13 +3,16 @@ package cc.mrbird.febs.yb.service.impl;
 import cc.mrbird.febs.common.domain.QueryRequest;
 import cc.mrbird.febs.common.utils.SortUtil;
 import cc.mrbird.febs.yb.dao.YbReconsiderVerifyViewMapper;
+import cc.mrbird.febs.yb.entity.YbReconsiderApply;
 import cc.mrbird.febs.yb.entity.YbReconsiderVerifyView;
+import cc.mrbird.febs.yb.service.IYbReconsiderApplyService;
 import cc.mrbird.febs.yb.service.IYbReconsiderVerifyViewService;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,6 +35,8 @@ import java.util.List;
 @Transactional(propagation = Propagation.SUPPORTS, readOnly = true, rollbackFor = Exception.class)
 public class YbReconsiderVerifyViewServiceImpl extends ServiceImpl<YbReconsiderVerifyViewMapper, YbReconsiderVerifyView> implements IYbReconsiderVerifyViewService {
 
+    @Autowired
+    IYbReconsiderApplyService iYbReconsiderApplyService;
 
     @Override
     public IPage<YbReconsiderVerifyView> findYbReconsiderVerifyViews(QueryRequest request, YbReconsiderVerifyView ybReconsiderVerifyView) {

@@ -140,7 +140,7 @@ export default {
       },
       {
         title: '科室名称',
-        dataIndex: 'arDeptname',
+        dataIndex: 'arDeptName',
         width: 120
       },
       {

@@ -87,13 +87,13 @@ export default {
         title: '意见书编码',
         dataIndex: 'proposalCode',
         fixed: 'left',
-        width: 120
+        width: 130
       },
       {
         title: '项目名称',
         dataIndex: 'projectName',
         fixed: 'left',
-        width: 100
+        width: 130
       },
       {
         title: '数量',
@@ -127,12 +127,12 @@ export default {
       },
       {
         title: '科室名称',
-        dataIndex: 'arDeptname',
+        dataIndex: 'arDeptName',
         width: 120
       },
       {
         title: '医生姓名',
-        dataIndex: 'arDoctorname',
+        dataIndex: 'arDoctorName',
         width: 110
       },
       {
@@ -216,7 +216,6 @@ export default {
       })
     },
     fetch (params = {}) {
-      this.loading = true
       let dateStr = this.applyDateStr
       let dateToStr = this.applyDateToStr
 
@@ -226,6 +225,7 @@ export default {
 
       let msg = custom.checkApplyDateStr(dateStr, dateToStr, 3)
       if (msg === '') {
+        this.loading = true
         params.applyDateFrom = dateStr
         params.applyDateTo = dateToStr
         params.currencyField = this.searchText

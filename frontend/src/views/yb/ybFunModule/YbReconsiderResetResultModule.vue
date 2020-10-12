@@ -140,13 +140,13 @@ export default {
       },
       {
         title: '科室名称',
-        dataIndex: 'arDeptname',
+        dataIndex: 'arDeptName',
         fixed: 'right',
         width: 120
       },
       {
         title: '医生姓名',
-        dataIndex: 'arDoctorname',
+        dataIndex: 'arDoctorName',
         fixed: 'right',
         width: 105
       },

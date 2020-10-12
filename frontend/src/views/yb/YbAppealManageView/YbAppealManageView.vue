@@ -11,7 +11,8 @@
               复议年月：
               <a-month-picker
                 placeholder="请输入复议年月"
-                :default-value="formatDate()"
+                @change="monthChange"
+                :default-value="searchApplyDate"
                 :format="monthFormat"
               />
           </a-col>
@@ -19,10 +20,14 @@
             <a-input-search placeholder="请输入关键字" v-model="searchText" style="width: 200px" enter-button @search="searchTable" />
           </a-col>
           <a-col :span=3 v-show="tableSelectKey==1?true:false">
-            <a-button
-            type="primary"
-            @click="batchAccept"
-            >批量接受</a-button>
+            <a-popconfirm
+              title="确定批量接受？"
+              @confirm="batchAccept"
+              okText="确定"
+              cancelText="取消"
+            >
+              <a-button type="primary" style="margin-right: 15px">批量接受</a-button>
+            </a-popconfirm>
           </a-col>
           <a-col :span=3>
             <a-button
@@ -52,8 +57,8 @@
               <!-- 接受申请 -->
             <ybAppealManage-accept
               ref="ybAppealManageAccept"
-              :applyDate='formatDate()'
-              :searchText = 'searchText'
+              :applyDate='searchApplyDate'
+              :searchText='searchText'
               @look="look"
               @reject="reject"
               @onHistoryLook="onHistoryLook"
@@ -68,8 +73,8 @@
           <!-- 已拒绝 -->
             <ybAppealManage-refused
               ref="ybAppealManageRefused"
-              :searchText = 'searchText'
-              :applyDate='formatDate()'
+              :searchText='searchText'
+              :applyDate='searchApplyDate'
               @onHistoryLook="onHistoryLook"
             >
             </ybAppealManage-refused>
@@ -82,8 +87,8 @@
           <!-- 待申诉 -->
           <ybAppealManage-stayed
               ref="ybAppealManageStayed"
-              :searchText = 'searchText'
-              :applyDate='formatDate()'
+              :searchText='searchText'
+              :applyDate='searchApplyDate'
               @appeal='appeal'
               @onHistoryLook="onHistoryLook"
             >
@@ -97,8 +102,8 @@
           <!-- 已申诉 -->
           <ybAppealManage-completed
               ref="ybAppealManageCompleted"
-              :searchText = 'searchText'
-              :applyDate='formatDate()'
+              :searchText='searchText'
+              :applyDate='searchApplyDate'
               @onHistoryLook="onHistoryLook"
             >
             </ybAppealManage-completed>
@@ -106,13 +111,13 @@
           <a-tab-pane
             key="5"
             :forceRender="true"
-            tab="已过期"
+            tab="未申诉"
           >
-          <!-- 已过期 -->
+          <!-- 未申诉 -->
           <ybAppealManage-overdue
               ref="ybAppealManageOverdue"
-              :searchText = 'searchText'
-              :applyDate='formatDate()'
+              :searchText='searchText'
+              :applyDate='searchApplyDate'
               @onHistoryLook="onHistoryLook"
             >
             </ybAppealManage-overdue>
@@ -173,7 +178,7 @@ export default {
   data () {
     return {
       monthFormat: 'YYYY-MM',
-      searchApplyDate: undefined,
+      searchApplyDate: this.formatDate(),
       ybAppealManage: {},
       rejectVisiable: false,
       lookVisiable: false,
@@ -186,12 +191,15 @@ export default {
   computed: {
   },
   mounted () {
-    this.searchApplyDate = this.formatDate()
   },
   methods: {
     moment,
     formatDate () {
-      return moment(Date.now()).format(this.monthFormat)
+      let datemonth = moment().format('YYYY-MM')
+      return datemonth
+    },
+    monthChange (date, dateString) {
+      this.searchApplyDate = dateString
     },
     callback (key) {
       this.tableSelectKey = key

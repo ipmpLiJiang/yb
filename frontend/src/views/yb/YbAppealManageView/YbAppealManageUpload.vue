@@ -496,13 +496,17 @@ export default {
           this.$put('ybAppealManage/updateUploadState', {
             dataJson: jsonString
           }).then((r) => {
-            if (acceptState === 6) {
-              this.$message.success('提交成功！')
-              this.onClose()
-              this.$emit('success')
+            if (r.data.data.success === 1) {
+              if (acceptState === 6) {
+                this.$message.success('提交成功！')
+                this.onClose()
+                this.$emit('success')
+              } else {
+                this.loading = false
+                this.$message.success('保存成功！')
+              }
             } else {
-              this.loading = false
-              this.$message.success('保存成功！')
+              this.$message.error(r.data.data.message)
             }
           }).catch(() => {
             this.loading = false

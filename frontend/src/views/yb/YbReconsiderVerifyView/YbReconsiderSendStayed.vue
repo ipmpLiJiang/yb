@@ -170,6 +170,20 @@ export default {
       return (this.pagination.defaultCurrent - 1) *
             this.pagination.defaultPageSize + index + 1
     },
+    handleClickRow (record, index) {
+      return {
+        on: {
+          click: () => {
+            let target = this.selectedRowKeys.filter(key => key === record.id)[0]
+            if (target === undefined) {
+              this.selectedRowKeys.push(record.id)
+            } else {
+              this.selectedRowKeys.splice(this.selectedRowKeys.indexOf(record.id), 1)
+            }
+          }
+        }
+      }
+    },
     batchSend () {
       this.loading = true
       let selectedRowKeys = this.selectedRowKeys

@@ -15,10 +15,7 @@
         >
           <a-col :span=6>
             <a-form-item
-              v-bind="{
-            labelCol: { span: 7 },
-            wrapperCol: { span: 16 }
-          }"
+              v-bind="formItemLayout"
               label="文件名称"
             >
               <a-input
@@ -65,11 +62,24 @@
             :span=2
             v-show="tableSelectKey==1?true:false"
           >
-            <a-button
-              type="primary"
-              style="margin-left: 12px"
-              @click="update"
-            >自动还款</a-button>
+            <a-popconfirm
+              title="确定自动还款？"
+              @confirm="update"
+              okText="确定"
+              cancelText="取消"
+            >
+              <a-button type="primary" style="margin-right:10px" >自动还款</a-button>
+            </a-popconfirm>
+          </a-col>
+          <a-col :span=2 >
+            <a-popconfirm
+              title="确定完成还款？"
+              @confirm="updateApplyState"
+              okText="确定"
+              cancelText="取消"
+            >
+              <a-button type="primary" style="margin-right:10px" >完成还款</a-button>
+            </a-popconfirm>
           </a-col>
           <a-col
             :span=3
@@ -77,11 +87,11 @@
           >
             <a-button
               type="primary"
-              style="margin-left: 12px"
+              style="margin-right: 10px"
               @click="exportExcel"
             >未知数据导出</a-button>
           </a-col>
-          <a-col :span=3>
+          <a-col>
             <a-button
               style="margin-left: 12px"
               @click="onClose"
@@ -188,6 +198,7 @@ export default {
       dataTypeName: '',
       spinning: false,
       delayTime: 500,
+      isUpdate: false,
       tableSelectKey: '1'
     }
   },
@@ -207,7 +218,7 @@ export default {
       this.tableSelectKey = '1'
       this.searchBelongDateStr = ''
       this.selectBelongDateStrDataSource = []
-      this.$emit('cancel')
+      this.$emit('cancel', this.isUpdate)
     },
     handleLookClose () {
       this.lookVisiable = false
@@ -227,6 +238,23 @@ export default {
     exportExcel () {
       this.$refs.ybReconsiderRepayUnknown.exportExcel()
     },
+    updateApplyState () {
+      let updateParam = {
+        applyDateStr: this.searchBelongDateStr,
+        id: this.ybReconsiderRepay.id
+      }
+      this.$put('ybReconsiderRepay/updateApplyState', {
+        ...updateParam
+      }).then((r) => {
+        if (r.data.data.success === 1) {
+          this.$message.success(r.data.data.message)
+        } else {
+          this.$message.error(r.data.data.message)
+        }
+      }).catch(() => {
+        this.$message.error('还款完成操作失败.')
+      })
+    },
     update () {
       let updateParam = {
         pid: this.ybReconsiderRepay.id,
@@ -241,6 +269,7 @@ export default {
         ...updateParam
       }).then((r) => {
         if (r.data.data.success === 1) {
+          this.isUpdate = true
           this.searchTable()
           this.$message.success(r.data.data.message)
           this.spinning = false
@@ -289,6 +318,7 @@ export default {
       })
     },
     setFormValues ({ ...ybReconsiderRepay }) {
+      this.isUpdate = false
       this.ybReconsiderRepay = ybReconsiderRepay
       this.tableSelectKey = '1'
       this.uploadFileName = ybReconsiderRepay.uploadFileName

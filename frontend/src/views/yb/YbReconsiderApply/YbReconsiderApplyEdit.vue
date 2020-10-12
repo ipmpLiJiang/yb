@@ -121,10 +121,9 @@ export default {
     handleSubmit () {
       this.form.validateFields((err, values) => {
         if (!err) {
+          this.setFields()
           let ybReconsiderApply = this.form.getFieldsValue()
           ybReconsiderApply.id = this.ybReconsiderApply.id
-          ybReconsiderApply.endDateOne = this.ybReconsiderApply.endDateOne
-          ybReconsiderApply.endDateTwo = this.ybReconsiderApply.endDateTwo
           this.$put('ybReconsiderApply', {
             ...ybReconsiderApply
           }).then(() => {
@@ -135,6 +134,12 @@ export default {
           })
         }
       })
+    },
+    setFields () {
+      let values = this.form.getFieldsValue(['endDateOne', 'endDateTwo'])
+      if (typeof values !== 'undefined') {
+        Object.keys(values).forEach(_key => { this.ybReconsiderApply[_key] = values[_key] })
+      }
     }
   }
 }

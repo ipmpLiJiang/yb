@@ -136,7 +136,7 @@ export default {
         customRender: (text, row, index) => {
           switch (text) {
             case 0:
-              return '待接收'
+              return '待接受'
             case 1:
               return '已接受'
             case 2:
@@ -146,12 +146,14 @@ export default {
             case 4:
               return '医保拒绝'
             case 6:
-              return '已上传'
+              return '已申诉'
+            case 7:
+              return '未申诉'
             default:
               return text
           }
         },
-        width: 120
+        width: 130
       },
       {
         title: '操作过程',

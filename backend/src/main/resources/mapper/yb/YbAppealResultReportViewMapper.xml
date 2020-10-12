@@ -49,10 +49,10 @@
                     <result column="manageId" property="manageId"/>
                     <result column="applyDataId" property="applyDataId"/>
                     <result column="verifyId" property="verifyId"/>
-                    <result column="ar_doctorCode" property="arDoctorcode"/>
-                    <result column="ar_doctorName" property="arDoctorname"/>
-                    <result column="ar_deptCode" property="arDeptcode"/>
-                    <result column="ar_deptName" property="arDeptname"/>
+                    <result column="arDoctorCode" property="arDoctorCode"/>
+                    <result column="arDoctorName" property="arDoctorName"/>
+                    <result column="arDeptCode" property="arDeptCode"/>
+                    <result column="arDeptName" property="arDeptName"/>
                     <result column="operateReason" property="operateReason"/>
                     <result column="operateDate" property="operateDate"/>
                     <result column="COMMENTS" property="comments"/>
@@ -74,7 +74,7 @@
 
         <!-- 通用查询结果列 -->
         <sql id="Base_Column_List">
-        serialNo, billNo, proposalCode, projectCode, projectName, num, medicalPrice, ruleName, deductPrice, deductReason, repaymentReason, doctorName, deptCode, deptName, enterHospitalDate, outHospitalDate, costDate, enterHospitalDateStr, outHospitalDateStr, costDateStr, hospitalizedNo, treatmentMode, settlementDate, settlementDateStr, personalNo, insuredName, cardNumber, areaName, versionNumber, backAppeal, typeno, insuredType, dataType, orderNumber, applyDate, applyDateStr, operatorId, operatorName, raResetState, raResultState, raRepayState, id, manageId, applyDataId, verifyId, ar_doctorCode, ar_doctorName, ar_deptCode, ar_deptName, operateReason, operateDate, COMMENTS, STATE, IS_DELETEMARK, MODIFY_TIME, CREATE_TIME, CREATE_USER_ID, MODIFY_USER_ID, sourceType, resetDataId, repayState, currencyField, repaymentPrice, adjustPrice,isSuccess
+        serialNo, billNo, proposalCode, projectCode, projectName, num, medicalPrice, ruleName, deductPrice, deductReason, repaymentReason, doctorName, deptCode, deptName, enterHospitalDate, outHospitalDate, costDate, enterHospitalDateStr, outHospitalDateStr, costDateStr, hospitalizedNo, treatmentMode, settlementDate, settlementDateStr, personalNo, insuredName, cardNumber, areaName, versionNumber, backAppeal, typeno, insuredType, dataType, orderNumber, applyDate, applyDateStr, operatorId, operatorName, raResetState, raResultState, raRepayState, id, manageId, applyDataId, verifyId, arDoctorCode, arDoctorName, arDeptCode, arDeptName, operateReason, operateDate, COMMENTS, STATE, IS_DELETEMARK, MODIFY_TIME, CREATE_TIME, CREATE_USER_ID, MODIFY_USER_ID, sourceType, resetDataId, repayState, currencyField, repaymentPrice, adjustPrice,isSuccess
     </sql>
     <update id="updateYbAppealResultReportView" parameterType="cc.mrbird.febs.yb.entity.YbAppealResultReportView">
         update yb_appeal_result_report_view
@@ -124,10 +124,10 @@
 <if test="manageId != null">manageId=#{manageId},</if>
 <if test="applyDataId != null">applyDataId=#{applyDataId},</if>
 <if test="verifyId != null">verifyId=#{verifyId},</if>
-<if test="arDoctorcode != null">ar_doctorCode=#{arDoctorcode},</if>
-<if test="arDoctorname != null">ar_doctorName=#{arDoctorname},</if>
-<if test="arDeptcode != null">ar_deptCode=#{arDeptcode},</if>
-<if test="arDeptname != null">ar_deptName=#{arDeptname},</if>
+<if test="arDoctorCode != null">arDoctorCode=#{arDoctorCode},</if>
+<if test="arDoctorName != null">arDoctorName=#{arDoctorName},</if>
+<if test="arDeptCode != null">arDeptCode=#{arDeptCode},</if>
+<if test="arDeptName != null">arDeptName=#{arDeptName},</if>
 <if test="operateReason != null">operateReason=#{operateReason},</if>
 <if test="operateDate != null">operateDate=#{operateDate},</if>
 <if test="comments != null">COMMENTS=#{comments},</if>
@@ -215,10 +215,10 @@
             <if test="ybAppealResultReportView.manageId != null and ybAppealResultReportView.manageId != ''"> and manageId like concat('%', #{ ybAppealResultReportView.manageId} ,'%')</if>
             <if test="ybAppealResultReportView.applyDataId != null and ybAppealResultReportView.applyDataId != ''"> and applyDataId like concat('%', #{ ybAppealResultReportView.applyDataId} ,'%')</if>
             <if test="ybAppealResultReportView.verifyId != null and ybAppealResultReportView.verifyId != ''"> and verifyId like concat('%', #{ ybAppealResultReportView.verifyId} ,'%')</if>
-            <if test="ybAppealResultReportView.arDoctorcode != null and ybAppealResultReportView.arDoctorcode != ''"> and ar_doctorCode like concat('%', #{ ybAppealResultReportView.arDoctorcode} ,'%')</if>
-            <if test="ybAppealResultReportView.arDoctorname != null and ybAppealResultReportView.arDoctorname != ''"> and ar_doctorName like concat('%', #{ ybAppealResultReportView.arDoctorname} ,'%')</if>
-            <if test="ybAppealResultReportView.arDeptcode != null and ybAppealResultReportView.arDeptcode != ''"> and ar_deptCode like concat('%', #{ ybAppealResultReportView.arDeptcode} ,'%')</if>
-            <if test="ybAppealResultReportView.arDeptname != null and ybAppealResultReportView.arDeptname != ''"> and ar_deptName like concat('%', #{ ybAppealResultReportView.arDeptname} ,'%')</if>
+            <if test="ybAppealResultReportView.arDoctorCode != null and ybAppealResultReportView.arDoctorCode != ''"> and arDoctorCode like concat('%', #{ ybAppealResultReportView.arDoctorCode} ,'%')</if>
+            <if test="ybAppealResultReportView.arDoctorName != null and ybAppealResultReportView.arDoctorName != ''"> and arDoctorName like concat('%', #{ ybAppealResultReportView.arDoctorName} ,'%')</if>
+            <if test="ybAppealResultReportView.arDeptCode != null and ybAppealResultReportView.arDeptCode != ''"> and arDeptCode like concat('%', #{ ybAppealResultReportView.arDeptCode} ,'%')</if>
+            <if test="ybAppealResultReportView.arDeptName != null and ybAppealResultReportView.arDeptName != ''"> and arDeptName like concat('%', #{ ybAppealResultReportView.arDeptName} ,'%')</if>
             <if test="ybAppealResultReportView.operateReason != null and ybAppealResultReportView.operateReason != ''"> and operateReason like concat('%', #{ ybAppealResultReportView.operateReason} ,'%')</if>
         <if test="ybAppealResultReportView.operateDateFrom!= null">
             AND ybAppealResultReportView.operateDate <![CDATA[ >= ]]>  operateDateFrom}

@@ -353,30 +353,30 @@ private static final long serialVersionUID=1L;
     /**
      * 医生编码
      */
-    @TableField("ar_doctorCode")
+    @TableField("arDoctorCode")
             @ExcelField(value ="医生编码")
-    private String arDoctorcode;
+    private String arDoctorCode;
 
     /**
      * 医生
      */
-    @TableField("ar_doctorName")
+    @TableField("arDoctorName")
             @ExcelField(value ="医生")
-    private String arDoctorname;
+    private String arDoctorName;
 
     /**
      * 科室编码
      */
-    @TableField("ar_deptCode")
+    @TableField("arDeptCode")
             @ExcelField(value ="科室编码")
-    private String arDeptcode;
+    private String arDeptCode;
 
     /**
      * 科室
      */
-    @TableField("ar_deptName")
+    @TableField("arDeptName")
             @ExcelField(value ="科室")
-    private String arDeptname;
+    private String arDeptName;
 
     /**
      * 理由
@@ -583,13 +583,13 @@ private static final long serialVersionUID=1L;
 
     public static final String VERIFYID ="verifyId" ;
 
-    public static final String AR_DOCTORCODE ="ar_doctorCode" ;
+    public static final String ARDOCTORCODE ="arDoctorCode" ;
 
-    public static final String AR_DOCTORNAME ="ar_doctorName" ;
+    public static final String ARDOCTORNAME ="arDoctorName" ;
 
-    public static final String AR_DEPTCODE ="ar_deptCode" ;
+    public static final String ARDEPTCODE ="arDeptCode" ;
 
-    public static final String AR_DEPTNAME ="ar_deptName" ;
+    public static final String ARDEPTNAME ="arDeptName" ;
 
     public static final String OPERATEREASON ="operateReason" ;
 

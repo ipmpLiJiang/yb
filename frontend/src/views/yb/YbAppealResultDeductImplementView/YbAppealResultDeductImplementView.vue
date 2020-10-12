@@ -7,13 +7,12 @@
     <template>
       <a-form layout="horizontal">
         <a-row justify="center" type="flex">
-          <a-col :span=4>
+          <a-col :span=5>
             <a-form-item
-              label="复议年月"
+              :label="applyDateText"
               v-bind="formItemLayout"
             >
               <a-month-picker
-                placeholder="请选择复议年月"
                 @change="monthChange"
                 :default-value="formatDate()"
                 :format="monthFormat"
@@ -100,7 +99,7 @@
     </template>
     <template>
       <div>
-        <a-modal :width="800" :maskClosable="false" :footer="null" v-model="editVisible" title="导出图片" @ok="handleOk">
+        <a-modal :width="800" :maskClosable="false" :footer="null" v-model="editVisible" title="录入扣款方案" @ok="handleOk">
           <ybAppealResultDeductImplement-edit
           ref="ybAppealResultDeductImplementEdit"
           @close="handleOk"
@@ -141,6 +140,7 @@ export default {
         {text: '明细扣款', value: 0},
         {text: '主单扣款', value: 1}
       ],
+      applyDateText: '复议年月',
       tableSelectKey: '1'
     }
   },
@@ -185,8 +185,10 @@ export default {
     callback (key) {
       this.tableSelectKey = key
       if (key === '1') {
+        this.applyDateText = '复议年月'
         this.$refs.ybAppealResultDeductImplementStayed.search()
       } else if (key === '2') {
+        this.applyDateText = '绩效落实年月'
         this.$refs.ybAppealResultDeductImplementComplete.search()
       } else {
         console.log('ok')

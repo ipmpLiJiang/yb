@@ -170,6 +170,7 @@
 </template>
 
 <script>
+import moment from 'moment'
 import YbReconsiderApplyAdd from './YbReconsiderApplyAdd'
 import YbReconsiderApplyEdit from './YbReconsiderApplyEdit'
 import YbReconsiderApplyUpload from './YbReconsiderApplyUpload'
@@ -208,6 +209,7 @@ export default {
       loading: false,
       bordered: true,
       uploadTitle: '上传审核一',
+      tableFormat: 'YYYY-MM-DD',
       gotoVisiable: false
     }
   },
@@ -233,8 +235,51 @@ export default {
         width: 100
       },
       {
+        title: '审核一结束日期',
+        dataIndex: 'endDateOne',
+        customRender: (text, row, index) => {
+          if (text !== '' && text !== null) {
+            if (isNaN(text) && !isNaN(Date.parse(text))) {
+              return moment(text).format(this.tableFormat)
+            } else {
+              return text
+            }
+          } else {
+            return text
+          }
+        },
+        width: 140
+      },
+      {
+        title: '审核二结束日期',
+        dataIndex: 'endDateTwo',
+        customRender: (text, row, index) => {
+          if (text !== '' && text !== null) {
+            if (isNaN(text) && !isNaN(Date.parse(text))) {
+              return moment(text).format(this.tableFormat)
+            } else {
+              return text
+            }
+          } else {
+            return text
+          }
+        },
+        width: 140
+      },
+      {
         title: '操作时间',
-        dataIndex: 'createTime'
+        dataIndex: 'createTime',
+        customRender: (text, row, index) => {
+          if (text !== '' && text !== null) {
+            if (isNaN(text) && !isNaN(Date.parse(text))) {
+              return moment(text).format(this.tableFormat)
+            } else {
+              return text
+            }
+          } else {
+            return text
+          }
+        }
       },
       {
         title: '状态',
@@ -254,7 +299,7 @@ export default {
             case 6:
               return '已剔除'
             case 7:
-              return '已还款'
+              return '还款中'
             default:
               return text
           }
@@ -274,6 +319,7 @@ export default {
     this.fetch()
   },
   methods: {
+    moment,
     onSelectChange (selectedRowKeys) {
       this.selectedRowKeys = selectedRowKeys
     },

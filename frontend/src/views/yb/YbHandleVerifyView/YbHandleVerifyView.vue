@@ -11,9 +11,6 @@
             justify="center"
             align="middle"
           >
-            <a-col :span=1>
-              &nbsp;
-            </a-col>
             <a-col :span=7>
               复议年月：
               <a-month-picker
@@ -23,7 +20,7 @@
                 :format="monthFormat"
               />
             </a-col>
-            <a-col :span=6>
+            <a-col :span=7>
               <a-input-search placeholder="请输入关键字" v-model="searchText" style="width: 200px" enter-button @search="searchTable" />
             </a-col>
             <a-col :span=3 v-show="tableSelectKey==1?true:false">

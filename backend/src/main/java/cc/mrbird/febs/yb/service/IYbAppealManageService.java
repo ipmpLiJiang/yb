@@ -36,7 +36,7 @@ public interface IYbAppealManageService extends IService<YbAppealManage> {
 
     void updateAcceptRejectStates(List<YbAppealManage> list, Long uId, String Uname);
 
-    void updateUploadStates(YbAppealManage ybAppealManage, Long uId, String Uname) throws Exception;
+    String updateUploadStates(YbAppealManage ybAppealManage, Long uId, String Uname);
 
     void updateExamineStates(YbAppealManage ybAppealManage);
 }

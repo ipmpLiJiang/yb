@@ -47,10 +47,10 @@
                     <result column="manageId" property="manageId"/>
                     <result column="resetId" property="resetId"/>
                     <result column="resultId" property="resultId"/>
-                    <result column="hv_doctorCode" property="hvDoctorcode"/>
-                    <result column="hv_doctorName" property="hvDoctorname"/>
-                    <result column="hv_deptCode" property="hvDeptcode"/>
-                    <result column="hv_deptName" property="hvDeptname"/>
+                    <result column="hvDoctorCode" property="hvDoctorCode"/>
+                    <result column="hvDoctorName" property="hvDoctorName"/>
+                    <result column="hvDeptCode" property="hvDeptCode"/>
+                    <result column="hvDeptName" property="hvDeptName"/>
                     <result column="operateReason" property="operateReason"/>
                     <result column="operateDate" property="operateDate"/>
                     <result column="STATE" property="state"/>
@@ -60,7 +60,7 @@
 
         <!-- 通用查询结果列 -->
         <sql id="Base_Column_List">
-        serialNo, billNo, proposalCode, projectCode, projectName, num, medicalPrice, ruleName, deductPrice, deductReason, repaymentReason, doctorName, deptCode, deptName, enterHospitalDate, outHospitalDate, costDate, enterHospitalDateStr, outHospitalDateStr, costDateStr, hospitalizedNo, treatmentMode, settlementDate, settlementDateStr, personalNo, insuredName, cardNumber, areaName, versionNumber, backAppeal, typeno, insuredType, dataType, orderNumber, applyDate, applyDateStr, id, pid, applyDataId, verifyId, manageId, resetId, resultId, hv_doctorCode, hv_doctorName, hv_deptCode, hv_deptName, operateReason, operateDate, STATE, IS_DELETEMARK, currencyField
+        serialNo, billNo, proposalCode, projectCode, projectName, num, medicalPrice, ruleName, deductPrice, deductReason, repaymentReason, doctorName, deptCode, deptName, enterHospitalDate, outHospitalDate, costDate, enterHospitalDateStr, outHospitalDateStr, costDateStr, hospitalizedNo, treatmentMode, settlementDate, settlementDateStr, personalNo, insuredName, cardNumber, areaName, versionNumber, backAppeal, typeno, insuredType, dataType, orderNumber, applyDate, applyDateStr, id, pid, applyDataId, verifyId, manageId, resetId, resultId, hvDoctorCode, hvDoctorName, hvDeptCode, hvDeptName, operateReason, operateDate, STATE, IS_DELETEMARK, currencyField
     </sql>
     <update id="updateYbHandleVerifyDataView" parameterType="cc.mrbird.febs.yb.entity.YbHandleVerifyDataView">
         update yb_handle_verify_data_view
@@ -108,10 +108,10 @@
 <if test="manageId != null">manageId=#{manageId},</if>
 <if test="resetId != null">resetId=#{resetId},</if>
 <if test="resultId != null">resultId=#{resultId},</if>
-<if test="hvDoctorcode != null">hv_doctorCode=#{hvDoctorcode},</if>
-<if test="hvDoctorname != null">hv_doctorName=#{hvDoctorname},</if>
-<if test="hvDeptcode != null">hv_deptCode=#{hvDeptcode},</if>
-<if test="hvDeptname != null">hv_deptName=#{hvDeptname},</if>
+<if test="hvDoctorCode != null">hvDoctorCode=#{hvDoctorCode},</if>
+<if test="hvDoctorName != null">hvDoctorName=#{hvDoctorName},</if>
+<if test="hvDeptCode != null">hvDeptCode=#{hvDeptCode},</if>
+<if test="hvDeptName != null">hvDeptName=#{hvDeptName},</if>
 <if test="operateReason != null">operateReason=#{operateReason},</if>
 <if test="operateDate != null">operateDate=#{operateDate},</if>
 <if test="state != null">STATE=#{state},</if>
@@ -188,10 +188,10 @@
             <if test="ybHandleVerifyDataView.manageId != null and ybHandleVerifyDataView.manageId != ''"> and manageId like concat('%', #{ ybHandleVerifyDataView.manageId} ,'%')</if>
             <if test="ybHandleVerifyDataView.resetId != null and ybHandleVerifyDataView.resetId != ''"> and resetId like concat('%', #{ ybHandleVerifyDataView.resetId} ,'%')</if>
             <if test="ybHandleVerifyDataView.resultId != null and ybHandleVerifyDataView.resultId != ''"> and resultId like concat('%', #{ ybHandleVerifyDataView.resultId} ,'%')</if>
-            <if test="ybHandleVerifyDataView.hvDoctorcode != null and ybHandleVerifyDataView.hvDoctorcode != ''"> and hv_doctorCode like concat('%', #{ ybHandleVerifyDataView.hvDoctorcode} ,'%')</if>
-            <if test="ybHandleVerifyDataView.hvDoctorname != null and ybHandleVerifyDataView.hvDoctorname != ''"> and hv_doctorName like concat('%', #{ ybHandleVerifyDataView.hvDoctorname} ,'%')</if>
-            <if test="ybHandleVerifyDataView.hvDeptcode != null and ybHandleVerifyDataView.hvDeptcode != ''"> and hv_deptCode like concat('%', #{ ybHandleVerifyDataView.hvDeptcode} ,'%')</if>
-            <if test="ybHandleVerifyDataView.hvDeptname != null and ybHandleVerifyDataView.hvDeptname != ''"> and hv_deptName like concat('%', #{ ybHandleVerifyDataView.hvDeptname} ,'%')</if>
+            <if test="ybHandleVerifyDataView.hvDoctorCode != null and ybHandleVerifyDataView.hvDoctorCode != ''"> and hvDoctorCode like concat('%', #{ ybHandleVerifyDataView.hvDoctorCode} ,'%')</if>
+            <if test="ybHandleVerifyDataView.hvDoctorName != null and ybHandleVerifyDataView.hvDoctorName != ''"> and hvDoctorName like concat('%', #{ ybHandleVerifyDataView.hvDoctorName} ,'%')</if>
+            <if test="ybHandleVerifyDataView.hvDeptCode != null and ybHandleVerifyDataView.hvDeptCode != ''"> and hvDeptCode like concat('%', #{ ybHandleVerifyDataView.hvDeptCode} ,'%')</if>
+            <if test="ybHandleVerifyDataView.hvDeptName != null and ybHandleVerifyDataView.hvDeptName != ''"> and hvDeptName like concat('%', #{ ybHandleVerifyDataView.hvDeptName} ,'%')</if>
             <if test="ybHandleVerifyDataView.operateReason != null and ybHandleVerifyDataView.operateReason != ''"> and operateReason like concat('%', #{ ybHandleVerifyDataView.operateReason} ,'%')</if>
         <if test="ybHandleVerifyDataView.operateDateFrom!= null">
             AND ybHandleVerifyDataView.operateDate <![CDATA[ >= ]]>  operateDateFrom}

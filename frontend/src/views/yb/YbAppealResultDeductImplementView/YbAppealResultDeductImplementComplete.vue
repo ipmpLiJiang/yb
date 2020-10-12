@@ -75,13 +75,13 @@ export default {
         title: '意见书编码',
         dataIndex: 'proposalCode',
         fixed: 'left',
-        width: 120
+        width: 130
       },
       {
         title: '项目名称',
         dataIndex: 'projectName',
         fixed: 'left',
-        width: 100
+        width: 130
       },
       {
         title: '数量',
@@ -115,12 +115,12 @@ export default {
       },
       {
         title: '科室名称',
-        dataIndex: 'arDeptname',
+        dataIndex: 'arDeptName',
         width: 120
       },
       {
         title: '医生姓名',
-        dataIndex: 'arDoctorname',
+        dataIndex: 'arDoctorName',
         width: 110
       },
       {
@@ -136,6 +136,12 @@ export default {
               return text
           }
         },
+        fixed: 'right',
+        width: 90
+      },
+      {
+        title: '落实年月',
+        dataIndex: 'implementDateStr',
         fixed: 'right',
         width: 90
       },
@@ -214,7 +220,6 @@ export default {
       })
     },
     fetch (params = {}) {
-      this.loading = true
       let dateStr = this.applyDateStr
       let dateToStr = this.applyDateToStr
 
@@ -224,13 +229,14 @@ export default {
 
       let msg = custom.checkApplyDateStr(dateStr, dateToStr, 3)
       if (msg === '') {
+        this.loading = true
         params.applyDateFrom = dateStr
         params.applyDateTo = dateToStr
         params.currencyField = this.searchText
         if (this.searchDataType !== 2) {
           params.dataType = this.searchDataType
         }
-        params.deductImplementId = 'isNotNull' // 随便传一个值，代表已经填过扣款落实表
+        params.deductImplementId = '1' // 随便传一个值，代表已经填过扣款落实表
         if (this.paginationInfo) {
           // 如果分页信息不为空，则设置表格当前第几页，每页条数，并设置查询分页参数
           this.$refs.TableInfo.pagination.current = this.paginationInfo.current

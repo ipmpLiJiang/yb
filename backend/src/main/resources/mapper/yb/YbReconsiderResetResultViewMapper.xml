@@ -36,10 +36,10 @@
                     <result column="applyDate" property="applyDate"/>
                     <result column="applyDateStr" property="applyDateStr"/>
                     <result column="currencyField" property="currencyField"/>
-                    <result column="ar_doctorCode" property="arDoctorcode"/>
-                    <result column="ar_doctorName" property="arDoctorname"/>
-                    <result column="ar_deptCode" property="arDeptcode"/>
-                    <result column="ar_deptName" property="arDeptname"/>
+                    <result column="arDoctorCode" property="arDoctorCode"/>
+                    <result column="arDoctorName" property="arDoctorName"/>
+                    <result column="arDeptCode" property="arDeptCode"/>
+                    <result column="arDeptName" property="arDeptName"/>
                     <result column="applyDataId" property="applyDataId"/>
                     <result column="resultId" property="resultId"/>
                     <result column="resetDate" property="resetDate"/>
@@ -51,7 +51,7 @@
 
         <!-- 通用查询结果列 -->
         <sql id="Base_Column_List">
-        id, serialNo, billNo, projectCode, projectName, medicalPrice, ruleName, deductPrice, deductReason, repaymentReason, doctorName, deptCode, deptName, costDate, costDateStr, hospitalizedNo, treatmentMode, settlementDate, settlementDateStr, personalNo, insuredName, cardNumber, areaName, insuredType, dataType, orderNumber, STATE, seekState, resetId, applyDate, applyDateStr, currencyField, ar_doctorCode, ar_doctorName, ar_deptCode, ar_deptName, applyDataId, resultId, resetDate, resetPersonId, resetPersonName,repayState,repaymentPrice
+        id, serialNo, billNo, projectCode, projectName, medicalPrice, ruleName, deductPrice, deductReason, repaymentReason, doctorName, deptCode, deptName, costDate, costDateStr, hospitalizedNo, treatmentMode, settlementDate, settlementDateStr, personalNo, insuredName, cardNumber, areaName, insuredType, dataType, orderNumber, STATE, seekState, resetId, applyDate, applyDateStr, currencyField, arDoctorCode, arDoctorName, arDeptCode, arDeptName, applyDataId, resultId, resetDate, resetPersonId, resetPersonName,repayState,repaymentPrice
     </sql>
     <update id="updateYbReconsiderResetResultView" parameterType="cc.mrbird.febs.yb.entity.YbReconsiderResetResultView">
         update yb_reconsider_reset_result_view
@@ -88,10 +88,10 @@
 <if test="applyDate != null">applyDate=#{applyDate},</if>
 <if test="applyDateStr != null">applyDateStr=#{applyDateStr},</if>
 <if test="currencyField != null">currencyField=#{currencyField},</if>
-<if test="arDoctorcode != null">ar_doctorCode=#{arDoctorcode},</if>
-<if test="arDoctorname != null">ar_doctorName=#{arDoctorname},</if>
-<if test="arDeptcode != null">ar_deptCode=#{arDeptcode},</if>
-<if test="arDeptname != null">ar_deptName=#{arDeptname},</if>
+<if test="arDoctorCode != null">arDoctorCode=#{arDoctorCode},</if>
+<if test="arDoctorName != null">arDoctorName=#{arDoctorName},</if>
+<if test="arDeptCode != null">arDeptCode=#{arDeptCode},</if>
+<if test="arDeptName != null">arDeptName=#{arDeptName},</if>
 <if test="applyDataId != null">applyDataId=#{applyDataId},</if>
 <if test="resultId != null">resultId=#{resultId},</if>
 <if test="resetDate != null">resetDate=#{resetDate},</if>
@@ -148,10 +148,10 @@
         </if>
             <if test="ybReconsiderResetResultView.applyDateStr != null and ybReconsiderResetResultView.applyDateStr != ''"> and applyDateStr like concat('%', #{ ybReconsiderResetResultView.applyDateStr} ,'%')</if>
             <if test="ybReconsiderResetResultView.currencyField != null and ybReconsiderResetResultView.currencyField != ''"> and currencyField like concat('%', #{ ybReconsiderResetResultView.currencyField} ,'%')</if>
-            <if test="ybReconsiderResetResultView.arDoctorcode != null and ybReconsiderResetResultView.arDoctorcode != ''"> and ar_doctorCode like concat('%', #{ ybReconsiderResetResultView.arDoctorcode} ,'%')</if>
-            <if test="ybReconsiderResetResultView.arDoctorname != null and ybReconsiderResetResultView.arDoctorname != ''"> and ar_doctorName like concat('%', #{ ybReconsiderResetResultView.arDoctorname} ,'%')</if>
-            <if test="ybReconsiderResetResultView.arDeptcode != null and ybReconsiderResetResultView.arDeptcode != ''"> and ar_deptCode like concat('%', #{ ybReconsiderResetResultView.arDeptcode} ,'%')</if>
-            <if test="ybReconsiderResetResultView.arDeptname != null and ybReconsiderResetResultView.arDeptname != ''"> and ar_deptName like concat('%', #{ ybReconsiderResetResultView.arDeptname} ,'%')</if>
+            <if test="ybReconsiderResetResultView.arDoctorCode != null and ybReconsiderResetResultView.arDoctorCode != ''"> and arDoctorCode like concat('%', #{ ybReconsiderResetResultView.arDoctorCode} ,'%')</if>
+            <if test="ybReconsiderResetResultView.arDoctorName != null and ybReconsiderResetResultView.arDoctorName != ''"> and arDoctorName like concat('%', #{ ybReconsiderResetResultView.arDoctorName} ,'%')</if>
+            <if test="ybReconsiderResetResultView.arDeptCode != null and ybReconsiderResetResultView.arDeptCode != ''"> and arDeptCode like concat('%', #{ ybReconsiderResetResultView.arDeptCode} ,'%')</if>
+            <if test="ybReconsiderResetResultView.arDeptName != null and ybReconsiderResetResultView.arDeptName != ''"> and arDeptName like concat('%', #{ ybReconsiderResetResultView.arDeptName} ,'%')</if>
             <if test="ybReconsiderResetResultView.applyDataId != null and ybReconsiderResetResultView.applyDataId != ''"> and applyDataId like concat('%', #{ ybReconsiderResetResultView.applyDataId} ,'%')</if>
             <if test="ybReconsiderResetResultView.resultId != null and ybReconsiderResetResultView.resultId != ''"> and resultId like concat('%', #{ ybReconsiderResetResultView.resultId} ,'%')</if>
         <if test="ybReconsiderResetResultView.resetDateFrom!= null">

@@ -47,7 +47,6 @@ export default {
   methods: {
     downloadFile (record) {
       let formData = {}
-      debugger
       formData.deptName = record.deptName
       formData.applyDateStr = this.appealResultDownLoad.applyDateStr
       if (this.appealResultDownLoad.typeno !== undefined) {
@@ -67,7 +66,7 @@ export default {
           f = f + '_主单扣款'
         }
       } else {
-        f = '手动复议'
+        f = '人工复议'
         formData.state = 1
         formData.sourceType = 1
       }

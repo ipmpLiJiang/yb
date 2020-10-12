@@ -76,7 +76,7 @@ public class YbAppealResultReportViewController extends BaseController {
     @RequiresPermissions("ybAppealResultReportView:userView")
     public Map<String, Object> userList(QueryRequest request, YbAppealResultReportView ybAppealResultReportView) {
         User currentUser = FebsUtil.getCurrentUser();
-        ybAppealResultReportView.setArDoctorcode(currentUser.getUsername());
+        ybAppealResultReportView.setArDoctorCode(currentUser.getUsername());
         return getDataTable(this.iYbAppealResultReportViewService.findYbAppealResultReportViews(request, ybAppealResultReportView));
     }
 
@@ -464,7 +464,7 @@ public class YbAppealResultReportViewController extends BaseController {
     public void reportUserExcel(QueryRequest request, YbAppealResultReportView ybAppealResultReportView, HttpServletResponse response) throws FebsException {
         try {
             User currentUser = FebsUtil.getCurrentUser();
-            ybAppealResultReportView.setArDoctorcode(currentUser.getUsername());
+            ybAppealResultReportView.setArDoctorCode(currentUser.getUsername());
             List<YbAppealResultReportView> appealResultReportList = this.iYbAppealResultReportViewService.findYbAppealResultReportLists(ybAppealResultReportView);
 
             if (appealResultReportList.size() > 0) {

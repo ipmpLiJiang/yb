@@ -71,6 +71,7 @@
       <div id="tab">
         <a-tabs
           type="card"
+          :activeKey="tableSelectKey"
           @change="callback"
         >
           <a-tab-pane
@@ -186,7 +187,7 @@ export default {
         }
       } else {
         this.uploadFileName = ybReconsiderApply.uploadFileNameTwo
-        if (ybReconsiderApply.state === 4 || ybReconsiderApply.state === 3 || ybReconsiderApply.state === 2) {
+        if (ybReconsiderApply.state === 2) {
           this.showBtn = true
         } else {
           this.showBtn = false

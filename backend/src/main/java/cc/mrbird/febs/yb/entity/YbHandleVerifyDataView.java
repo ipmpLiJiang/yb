@@ -338,30 +338,30 @@ private static final long serialVersionUID=1L;
     /**
      * 复议医生编码
      */
-    @TableField("hv_doctorCode")
+    @TableField("hvDoctorCode")
             @ExcelField(value ="复议医生编码")
-    private String hvDoctorcode;
+    private String hvDoctorCode;
 
     /**
      * 复议医生
      */
-    @TableField("hv_doctorName")
+    @TableField("hvDoctorName")
             @ExcelField(value ="复议医生")
-    private String hvDoctorname;
+    private String hvDoctorName;
 
     /**
      * 复议科室编码
      */
-    @TableField("hv_deptCode")
+    @TableField("hvDeptCode")
             @ExcelField(value ="复议科室编码")
-    private String hvDeptcode;
+    private String hvDeptCode;
 
     /**
      * 复议科室
      */
-    @TableField("hv_deptName")
+    @TableField("hvDeptName")
             @ExcelField(value ="复议科室")
-    private String hvDeptname;
+    private String hvDeptName;
 
     /**
      * 操作理由
@@ -488,13 +488,13 @@ private static final long serialVersionUID=1L;
 
     public static final String RESULTID ="resultId" ;
 
-    public static final String HV_DOCTORCODE ="hv_doctorCode" ;
+    public static final String HVDOCTORCODE ="hvDoctorCode" ;
 
-    public static final String HV_DOCTORNAME ="hv_doctorName" ;
+    public static final String HVDOCTORNAME ="hvDoctorName" ;
 
-    public static final String HV_DEPTCODE ="hv_deptCode" ;
+    public static final String HVDEPTCODE ="hvDeptCode" ;
 
-    public static final String HV_DEPTNAME ="hv_deptName" ;
+    public static final String HVDEPTNAME ="hvDeptName" ;
 
     public static final String OPERATEREASON ="operateReason" ;
 

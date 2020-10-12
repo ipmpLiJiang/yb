@@ -5,11 +5,9 @@
   >
     <div :class="advanced ? 'search' : null">
       <a-form layout="horizontal">
-        <a-row>
-          <div :class="advanced ? null: 'fold'">
+        <a-row type="flex" justify="center">
             <a-col
-              :md="6"
-              :sm="24"
+              :span=5
             >
               <a-form-item
                 label="操作时间"
@@ -19,8 +17,7 @@
               </a-form-item>
             </a-col>
             <a-col
-              :md="6"
-              :sm="24"
+              :span=5
             >
               <a-form-item
                 label="至"
@@ -29,8 +26,12 @@
                 <a-date-picker v-model="queryParams.createTimeTo" @change="oncreateTimeToChange" />
               </a-form-item>
             </a-col>
-          </div>
-          <span style="float: right; margin-top: 3px;">
+            <a-col
+              :span=6
+            >&nbsp;</a-col>
+            <a-col
+              :span=7
+            >
             <a-button
               type="primary"
               @click="importShow"
@@ -44,14 +45,7 @@
               style="margin-left: 18px"
               @click="reset"
             >重置</a-button>
-            <a
-              @click="toggleAdvanced"
-              style="margin-left: 8px"
-            >
-              {{advanced ? '收起' : '展开'}}
-              <a-icon :type="advanced ? 'up' : 'down'" />
-            </a>
-          </span>
+          </a-col>
         </a-row>
       </a-form>
     </div>
@@ -109,101 +103,114 @@
         v-model="importVisible"
         title="上传还款单"
       >
-        <a-spin
-          tip="Loading..."
-          :spinning="spinning"
-          :delay="delayTime"
-        >
-          <div>
-            <a-row>
-              <a-col>
-                <a-form-item
-                  label="复议年月"
-                  v-bind="formItemLayout"
+      <a-spin
+        tip="Loading..."
+        :spinning="spinning"
+        :delay="delayTime"
+      >
+        <div>
+          <a-row
+            justify="center"
+            type="flex"
+          >
+            <a-col :span=22>
+              <a-form-item
+                label="复议年月"
+                v-bind="formItemLayout"
+              >
+                <a-month-picker
+                  placeholder="请选择复议年月"
+                  style="width: 120px"
+                  @change="monthChange"
+                  :default-value="formatDate()"
+                  :format="monthFormat"
+                />
+              </a-form-item>
+            </a-col>
+          </a-row>
+          <a-row
+            justify="center"
+            type="flex"
+          >
+            <a-col :span=22>
+              <a-form-item
+                label="扣款类型"
+                v-bind="formItemLayout"
+              >
+                <a-select
+                  :value="selectDataType"
+                  style="width: 120px"
+                  @change="handleDataTypeChange"
                 >
-                  <a-month-picker
-                    placeholder="请选择复议年月"
-                    @change="monthChange"
-                    :default-value="formatDate()"
-                    :format="monthFormat"
-                  />
-                </a-form-item>
-              </a-col>
-            </a-row>
-            <a-row>
-              <a-col>
-                <a-form-item
-                  label="扣款类型"
-                  v-bind="formItemLayout"
-                >
-                  <a-select
-                    :value="selectDataType"
-                    style="width: 100px"
-                    @change="handleDataTypeChange"
+                  <a-select-option
+                    v-for="d in selectDataTypeSource"
+                    :key="d.value"
                   >
-                    <a-select-option
-                      v-for="d in selectDataTypeSource"
-                      :key="d.value"
-                    >
-                      {{ d.text }}
-                    </a-select-option>
-                  </a-select>
-                </a-form-item>
-              </a-col>
-            </a-row>
-            <a-row>
-              <a-col>
-                <a-form-item
-                  label="保险类型"
-                  v-bind="formItemLayout"
+                    {{ d.text }}
+                  </a-select-option>
+                </a-select>
+              </a-form-item>
+            </a-col>
+          </a-row>
+          <a-row
+            justify="center"
+            type="flex"
+          >
+            <a-col :span=22>
+              <a-form-item
+                label="保险类型"
+                v-bind="formItemLayout"
+              >
+                <a-select
+                  :value="selectRepayType"
+                  style="width: 120px"
+                  @change="handleRepayTypeChange"
                 >
-                  <a-select
-                    :value="selectRepayType"
-                    style="width: 100px"
-                    @change="handleRepayTypeChange"
+                  <a-select-option
+                    v-for="d in selectRepayTypeSource"
+                    :key="d.value"
                   >
-                    <a-select-option
-                      v-for="d in selectRepayTypeSource"
-                      :key="d.value"
-                    >
-                      {{ d.text }}
-                    </a-select-option>
-                  </a-select>
-                </a-form-item>
-              </a-col>
-            </a-row>
-            <a-row>
-              <a-col>
-                <a-form-item
-                  label="文件名称"
-                  v-bind="formItemLayout"
-                >
-                  <a-input
-                    placeholder="上传文件名称"
-                    v-model="uploadFileName"
-                  />
-                </a-form-item>
-              </a-col>
-            </a-row>
-            <a-row
-              justify="center"
-              type="flex"
-            >
-              <a-col>
-                <a-upload
-                  name="file"
-                  accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-                  :fileList="fileList"
-                  :beforeUpload="beforeUpload"
-                >
-                  <a-button type="primary">
-                    <a-icon type="upload" /> 上传
-                  </a-button>
-                </a-upload>
-              </a-col>
-            </a-row>
-          </div>
-        </a-spin>
+                    {{ d.text }}
+                  </a-select-option>
+                </a-select>
+              </a-form-item>
+            </a-col>
+          </a-row>
+          <a-row
+            justify="center"
+            type="flex"
+          >
+            <a-col :span=22>
+              <a-form-item
+                label="文件名称"
+                v-bind="formItemLayout"
+              >
+                <a-input
+                  placeholder="上传文件名称"
+                  v-model="uploadFileName"
+                />
+              </a-form-item>
+            </a-col>
+          </a-row>
+          <a-row
+            justify="center"
+            type="flex"
+          >
+            <a-col>
+              <a-upload
+                name="file"
+                accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                :fileList="fileList"
+                :beforeUpload="beforeUpload"
+              >
+                <a-button type="primary">
+                  <a-icon type="upload" /> 上传
+                </a-button>
+              </a-upload>
+            </a-col>
+          </a-row>
+        </div>
+      </a-spin>
       </a-modal>
     </template>
     <a-modal
@@ -228,8 +235,8 @@
 import moment from 'moment'
 import YbReconsiderRepayView from './YbReconsiderRepayView'
 const formItemLayout = {
-  labelCol: { span: 8 },
-  wrapperCol: { span: 15, offset: 1 }
+  labelCol: { span: 9 },
+  wrapperCol: { span: 14, offset: 1 }
 }
 export default {
   name: 'YbReconsiderRepay',
@@ -371,8 +378,11 @@ export default {
         this.$refs.ybReconsiderRepayView.setFormValues(record)
       }, 200)
     },
-    handleCancel () {
+    handleCancel (isUpdate) {
       this.lookVisiable = false
+      if (isUpdate) {
+        this.search()
+      }
     },
     handleRepayTypeChange (value) {
       this.selectRepayType = value
@@ -437,7 +447,6 @@ export default {
       formData.append('dataType', this.selectDataType)
       formData.append('applyDateStr', this.selectApplyDateStr)
       this.$upload('ybReconsiderRepay/importReconsiderRepayData', formData).then((r) => {
-        debugger
         if (r.data.data.success === 1) {
           this.uploadFileName = r.data.data.fileName
           this.spinning = false

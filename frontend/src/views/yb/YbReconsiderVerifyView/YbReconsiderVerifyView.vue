@@ -31,35 +31,40 @@
               title="确定自动匹配？"
               @confirm="addImport"
               okText="确定"
+              style="margin-right: 15px"
               cancelText="取消"
             >
-              <a-button type="primary" style="margin-right: 15px">自动匹配</a-button>
+              <a-button type="primary">自动匹配</a-button>
             </a-popconfirm>
             <a-button
               type="primary"
+              style="margin-right: 15px"
               v-show="tableSelectKey==1?true:false"
-              style="margin-right:15px"
               @click="showUpdateModal"
             >手动匹配</a-button>
             <a-popconfirm
               title="确定批量核对?"
-              :visible="pcmVerifyVisible"
+              style="margin-right: 15px"
+              :visible="pcmVisible"
               ok-text="确定"
               cancel-text="取消"
               v-show="tableSelectKey==1?true:false"
-              style="margin-right:15px"
-              @visibleChange="handleVerifyVisibleChange"
+              @visibleChange="handleVisibleChange"
               @confirm="batchVerify"
-              @cancel="verifyCancel"
+              @cancel="confirmCancel"
             >
               <a-button type="primary">批量核对</a-button>
             </a-popconfirm>
-            <a-button
-              type="primary"
-              style="margin-right:15px"
+            <a-popconfirm
+              title="确定批量发送？"
+              style="margin-right: 15px"
               v-show="tableSelectKey==2||tableSelectKey==4?true:false"
-              @click="batchSend"
-            >批量发送</a-button>
+              @confirm="batchSend"
+              okText="确定"
+              cancelText="取消"
+            >
+              <a-button type="primary">批量发送</a-button>
+            </a-popconfirm>
             <a-button
               type="primary"
               @click="searchTable"
@@ -285,8 +290,8 @@ export default {
       tableSelectKey: '1',
       visibleSearch: false,
       visibleUpdate: false,
-      pcmVerifyVisible: false,
-      selectedRowVerifyKeys: [],
+      pcmVisible: false,
+      selectedPcmRowKeys: [],
       spinning: false,
       delayTime: 500,
       selectDate: {},
@@ -310,7 +315,8 @@ export default {
   methods: {
     moment,
     formatDate () {
-      return moment(Date.now()).format(this.monthFormat)
+      let datemonth = moment().format('YYYY-MM')
+      return datemonth
     },
     showImport (data) {
       this.visibleUpdate = true
@@ -406,26 +412,26 @@ export default {
     },
     batchVerify () {
       this.$refs.ybReconsiderVerifyStayed.batchVerify()
-      this.pcmVerifyVisible = false
-    },
-    verifyCancel () {
-      this.pcmVerifyVisible = false
-    },
-    selectChangeKeyVerify (selectedRowKeys) {
-      this.selectedRowVerifyKeys = selectedRowKeys
-    },
-    handleVerifyVisibleChange (pcmVerifyVisible) {
-      if (this.selectedRowVerifyKeys.length > 0) {
-        this.pcmVerifyVisible = true
-      } else {
-        this.pcmVerifyVisible = false
-      }
+      this.pcmVisible = false
     },
     batchSend () {
       if (this.tableSelectKey === '4') {
         this.$refs.ybReconsiderSendStayedMain.batchSend()
       } else {
         this.$refs.ybReconsiderSendStayed.batchSend()
+      }
+    },
+    confirmCancel () {
+      this.pcmVisible = false
+    },
+    selectChangeKeyVerify (selectedRowKeys) {
+      this.selectedPcmRowKeys = selectedRowKeys
+    },
+    handleVisibleChange (pcmVisible) {
+      if (this.selectedPcmRowKeys.length > 0) {
+        this.pcmVisible = true
+      } else {
+        this.pcmVisible = false
       }
     },
     clearValue () {

@@ -85,7 +85,7 @@
     >
         <div class="editable-row-operations">
         <span v-if="record.editable">
-            <a @click="() => save(record.id)">确定</a>
+            <a @click.stop="() => save(record.id)">确定</a>
             <a-divider type="vertical" />
             <a-popconfirm
             title="确定放弃编辑？"
@@ -97,12 +97,12 @@
         <span v-else>
             <a
             :disabled="editingKey !== ''"
-            @click="() => detail(record,index)"
+            @click.stop="() => detail(record,index)"
             >查看详情</a>
             <a-divider type="vertical" />
             <a
             :disabled="editingKey !== ''"
-            @click="() => edit(record.id)"
+            @click.stop="() => edit(record.id)"
             >核对</a>
         </span>
         </div>
@@ -265,6 +265,20 @@ export default {
     rowNo (index) {
       return (this.pagination.defaultCurrent - 1) *
             this.pagination.defaultPageSize + index + 1
+    },
+    handleClickRow (record, index) {
+      return {
+        on: {
+          click: () => {
+            let target = this.selectedRowKeys.filter(key => key === record.id)[0]
+            if (target === undefined) {
+              this.selectedRowKeys.push(record.id)
+            } else {
+              this.selectedRowKeys.splice(this.selectedRowKeys.indexOf(record.id), 1)
+            }
+          }
+        }
+      }
     },
     detail (record, index) {
       let rNo = this.rowNo(index)

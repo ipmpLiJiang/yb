@@ -87,8 +87,8 @@ public class YbAppealResultReportViewServiceImpl extends ServiceImpl<YbAppealRes
                     }
                 }
 
-                if (ybAppealResultReportView.getArDoctorcode() != null) {
-                    sql +=  " and arDoctorCode = '" + ybAppealResultReportView.getArDoctorcode() + "'";
+                if (ybAppealResultReportView.getArDoctorCode() != null) {
+                    sql +=  " and arDoctorCode = '" + ybAppealResultReportView.getArDoctorCode() + "'";
                 }
 
                 sql +=  " and raResetState = 1";
@@ -219,15 +219,12 @@ public class YbAppealResultReportViewServiceImpl extends ServiceImpl<YbAppealRes
                     }
                 }
 
-                if (ybAppealResultReportView.getArDoctorcode() != null) {
-                    sql +=  " and arDoctorCode = '" + ybAppealResultReportView.getArDoctorcode() + "'";
+                if (ybAppealResultReportView.getArDoctorCode() != null) {
+                    sql +=  " and arDoctorCode = '" + ybAppealResultReportView.getArDoctorCode() + "'";
                 }
 
                 sql +=  " and raResetState = 1";
 
-                if(ybAppealResultReportView.getArDoctorcode()!=null) {
-                    sql += " and ar_doctorCode = '" + ybAppealResultReportView.getArDoctorcode() + "'";
-                }
                 sql +=  ")";
                 if (ybAppealResultReportView.getCurrencyField() != null && !"".equals(ybAppealResultReportView.getCurrencyField())) {
                     if (ybAppealResultReportView.getDataType() != null) {

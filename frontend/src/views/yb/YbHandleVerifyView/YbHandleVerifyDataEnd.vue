@@ -139,13 +139,13 @@ export default {
       },
       {
         title: '复议医生',
-        dataIndex: 'hvDoctorname',
+        dataIndex: 'hvDoctorName',
         fixed: 'right',
         width: 120
       },
       {
         title: '复议科室',
-        dataIndex: 'hvDeptname',
+        dataIndex: 'hvDeptName',
         fixed: 'right',
         width: 120
       },

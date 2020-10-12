@@ -59,11 +59,14 @@
       >
         <a-button style="margin-right: .8rem">取消</a-button>
       </a-popconfirm>
-      <a-button
-        @click="handleSubmit"
-        type="primary"
-        :loading="loading"
-      >提交</a-button>
+      <a-popconfirm
+        title="确定提交数据？"
+        @confirm="handleSubmit"
+        okText="确定"
+        cancelText="取消"
+      >
+        <a-button type="primary" style="margin-right: .8rem">提交</a-button>
+      </a-popconfirm>
     </div>
     </div>
 </template>

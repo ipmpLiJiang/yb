@@ -93,7 +93,7 @@
           <a-tab-pane
             key="3"
             :forceRender="true"
-            tab="手动复议"
+            tab="人工复议"
           >
             <ybAppealResult-handle
               ref="ybAppealResultHandle"

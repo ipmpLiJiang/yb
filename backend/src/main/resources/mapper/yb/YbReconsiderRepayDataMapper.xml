@@ -33,6 +33,8 @@
                     <result column="personalNo" property="personalNo"/>
                     <result column="insuredName" property="insuredName"/>
             <result column="resetDataId" property="resetDataId"/>
+            <result column="resultId" property="resultId"/>
+            <result column="applyDataId" property="applyDataId"/>
                     <result column="dataType" property="dataType"/>
             <result column="repayType" property="repayType"/>
                     <result column="seekState" property="seekState"/>
@@ -51,7 +53,7 @@
 
         <!-- 通用查询结果列 -->
         <sql id="Base_Column_List">
-        id, pid, belongDate, belongDateStr, hospitalCode, hospitalName, orderNumber, serialNo, billNo, projectCode, projectName, medicalPrice, ruleName, deductPrice, deductReason, repaymentPrice, repaymentReason, doctorName, deptCode, deptName, costDate, costDateStr, hospitalizedNo, treatmentMode, settlementDate, settlementDateStr, personalNo, insuredName,resetDataId, dataType,repayType, seekState,updateType,belongDateUpload,orderNumberNew,warnType, COMMENTS, STATE, IS_DELETEMARK, MODIFY_TIME, CREATE_TIME, CREATE_USER_ID, MODIFY_USER_ID
+        id, pid, belongDate, belongDateStr, hospitalCode, hospitalName, orderNumber, serialNo, billNo, projectCode, projectName, medicalPrice, ruleName, deductPrice, deductReason, repaymentPrice, repaymentReason, doctorName, deptCode, deptName, costDate, costDateStr, hospitalizedNo, treatmentMode, settlementDate, settlementDateStr, personalNo, insuredName,resetDataId,resultId,applyDataId, dataType,repayType, seekState,updateType,belongDateUpload,orderNumberNew,warnType, COMMENTS, STATE, IS_DELETEMARK, MODIFY_TIME, CREATE_TIME, CREATE_USER_ID, MODIFY_USER_ID
     </sql>
     <update id="updateYbReconsiderRepayData" parameterType="cc.mrbird.febs.yb.entity.YbReconsiderRepayData">
         update yb_reconsider_repay_data
@@ -83,9 +85,11 @@
 <if test="settlementDateStr != null">settlementDateStr=#{settlementDateStr},</if>
 <if test="personalNo != null">personalNo=#{personalNo},</if>
 <if test="insuredName != null">insuredName=#{insuredName},</if>
-            <if test="resetDataId != null">resetDataId=#{resetDataId},</if>
+<if test="resetDataId != null">resetDataId=#{resetDataId},</if>
+<if test="resultId != null">resultId=#{resultId},</if>
+<if test="applyDataId != null">applyDataId=#{applyDataId},</if>
 <if test="dataType != null">dataType=#{dataType},</if>
-            <if test="repayType != null">repayType=#{repayType},</if>
+<if test="repayType != null">repayType=#{repayType},</if>
 <if test="seekState != null">seekState=#{seekState},</if>
 <if test="updateType != null">updateType=#{updateType},</if>
 <if test="belongDateUpload != null">belongDateUpload=#{belongDateUpload},</if>
@@ -146,6 +150,8 @@
             <if test="ybReconsiderRepayData.personalNo != null and ybReconsiderRepayData.personalNo != ''"> and personalNo like concat('%', #{ ybReconsiderRepayData.personalNo} ,'%')</if>
             <if test="ybReconsiderRepayData.insuredName != null and ybReconsiderRepayData.insuredName != ''"> and insuredName like concat('%', #{ ybReconsiderRepayData.insuredName} ,'%')</if>
         <if test="ybReconsiderRepayData.resetDataId != null and ybReconsiderRepayData.resetDataId != ''"> and resetDataId = #{ ybReconsiderRepayData.resetDataId} </if>
+        <if test="ybReconsiderRepayData.resultId != null and ybReconsiderRepayData.resultId != ''"> and resultId = #{ ybReconsiderRepayData.resultId} </if>
+        <if test="ybReconsiderRepayData.applyDataId != null and ybReconsiderRepayData.applyDataId != ''"> and applyDataId = #{ ybReconsiderRepayData.applyDataId} </if>
         <if test="ybReconsiderRepayData.dataType != null"> and dataType =#{ ybReconsiderRepayData.dataType} </if>
         <if test="ybReconsiderRepayData.repayType != null"> and repayType =#{ ybReconsiderRepayData.repayType} </if>
         <if test="ybReconsiderRepayData.seekState != null"> and seekState =#{ ybReconsiderRepayData.seekState} </if>

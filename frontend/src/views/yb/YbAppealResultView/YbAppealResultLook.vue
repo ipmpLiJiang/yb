@@ -18,7 +18,7 @@
             v-bind="formItemLayout"
             label="科室名称"
           >
-            {{ybAppealResult.arDeptname}}
+            {{ybAppealResult.arDeptName}}
           </a-form-item>
         </a-col>
         <a-col :span=14>
@@ -26,7 +26,7 @@
             v-bind="formItemLayout"
             label="医生姓名"
           >
-            {{ybAppealResult.arDoctorname}}
+            {{ybAppealResult.arDoctorName}}
           </a-form-item>
         </a-col>
       </a-row>
@@ -151,7 +151,7 @@ export default {
     downloadFile () {
       let formData = {}
       formData.id = this.ybAppealResult.id
-      formData.deptName = this.ybAppealResult.arDeptname
+      formData.deptName = this.ybAppealResult.arDeptName
       formData.applyDateStr = this.ybAppealResult.applyDateStr
       formData.typeNo = this.ybAppealResult.typeno
       formData.sourceType = this.ybAppealResult.sourceType
@@ -164,7 +164,7 @@ export default {
     findFileList (ybAppealResult) {
       let formData = {}
       formData.id = ybAppealResult.id
-      formData.deptName = ybAppealResult.arDeptname
+      formData.deptName = ybAppealResult.arDeptName
       formData.applyDateStr = ybAppealResult.applyDateStr
       formData.sourceType = ybAppealResult.sourceType
       this.$post('comFile/listImgComFile', {

@@ -380,6 +380,7 @@
             ra.id = ad.pid and
             ra.IS_DELETEMARK = 1
     WHERE
-        rv.IS_DELETEMARK = 1 and ra.applyDateStr= #{applyDate} and ad.dataType = #{dataType}
+        rv.IS_DELETEMARK = 1 and ra.applyDateStr= #{applyDate} and ad.dataType = #{dataType} and
+        ad.typeno = case when ra.state = 2 then 1 when ra.state >= 4 then 2 else 0 end
 </select>
 </mapper>
