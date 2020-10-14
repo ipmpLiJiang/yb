@@ -27,4 +27,6 @@ public interface IYbDeptService extends IService<YbDept> {
         void updateYbDept(YbDept ybDept);
 
         void deleteYbDepts(String[]Ids);
+
+        List<YbDept> findDeptList(YbDept ybDept);
         }

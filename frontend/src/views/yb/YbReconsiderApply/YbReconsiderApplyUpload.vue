@@ -38,7 +38,7 @@
             <template>
               <a-upload
                 name="file"
-                accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                accept=".xlsx,.xls"
                 :fileList="fileList"
                 :remove="removeUpload"
                 :beforeUpload="beforeUpload"
@@ -195,10 +195,15 @@ export default {
       }
     },
     beforeUpload (file) {
-      const isExcel = file.type === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+      var testmsg = file.name.substring(file.name.lastIndexOf('.') + 1)
+      let isExcel = testmsg === 'xlsx'
+      if (!isExcel) {
+        isExcel = testmsg === 'xls'
+      }
+      // const isExcel = file.type === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
       if (!(isExcel)) {
         this.$error({
-          title: '只能上传.xlsx格式的Excel文档~'
+          title: '只能上传.xlsx,.xls格式的Excel文档~'
         })
         return
       }
@@ -218,6 +223,7 @@ export default {
       formData.append('file', file)
       formData.append('pid', this.pid)
       formData.append('typeno', this.typeno)
+
       this.$upload('ybReconsiderApplyData/importReconsiderApplyData', formData).then((r) => {
         if (r.data.data.success === 1) {
           this.uploadFileName = r.data.data.fileName

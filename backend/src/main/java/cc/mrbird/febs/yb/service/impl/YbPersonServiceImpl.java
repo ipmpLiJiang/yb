@@ -3,6 +3,7 @@ package cc.mrbird.febs.yb.service.impl;
 import cc.mrbird.febs.common.domain.QueryRequest;
 import cc.mrbird.febs.common.utils.SortUtil;
 import cc.mrbird.febs.yb.dao.YbPersonMapper;
+import cc.mrbird.febs.yb.entity.YbDept;
 import cc.mrbird.febs.yb.entity.YbPerson;
 import cc.mrbird.febs.yb.service.IYbPersonService;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -14,12 +15,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+
 /**
  * <p>
- *  服务实现类
+ * 服务实现类
  * </p>
  *
  * @author viki
@@ -31,53 +34,69 @@ import java.util.List;
 public class YbPersonServiceImpl extends ServiceImpl<YbPersonMapper, YbPerson> implements IYbPersonService {
 
 
-@Override
-public IPage<YbPerson> findYbPersons(QueryRequest request, YbPerson ybPerson){
-        try{
-        LambdaQueryWrapper<YbPerson> queryWrapper=new LambdaQueryWrapper<>();
-        queryWrapper.eq(YbPerson::getIsDeletemark, 1);//1是未删 0是已删
+    @Override
+    public IPage<YbPerson> findYbPersons(QueryRequest request, YbPerson ybPerson) {
+        try {
+            LambdaQueryWrapper<YbPerson> queryWrapper = new LambdaQueryWrapper<>();
+            queryWrapper.eq(YbPerson::getIsDeletemark, 1);//1是未删 0是已删
 
 
-        Page<YbPerson> page=new Page<>();
-        SortUtil.handlePageSort(request,page,false);//true 是属性  false是数据库字段可两个
-        return this.page(page,queryWrapper);
-        }catch(Exception e){
-        log.error("获取字典信息失败" ,e);
-        return null;
+            Page<YbPerson> page = new Page<>();
+            SortUtil.handlePageSort(request, page, false);//true 是属性  false是数据库字段可两个
+            return this.page(page, queryWrapper);
+        } catch (Exception e) {
+            log.error("获取字典信息失败", e);
+            return null;
         }
+    }
+
+    @Override
+    public IPage<YbPerson> findYbPersonList(QueryRequest request, YbPerson ybPerson) {
+        try {
+            Page<YbPerson> page = new Page<>();
+            SortUtil.handlePageSort(request, page, false);//true 是属性  false是数据库字段可两个
+            return this.baseMapper.findYbPerson(page, ybPerson);
+        } catch (Exception e) {
+            log.error("获取失败", e);
+            return null;
         }
-@Override
-public IPage<YbPerson> findYbPersonList (QueryRequest request, YbPerson ybPerson){
-        try{
-        Page<YbPerson> page=new Page<>();
-        SortUtil.handlePageSort(request,page,false);//true 是属性  false是数据库字段可两个
-        return  this.baseMapper.findYbPerson(page,ybPerson);
-        }catch(Exception e){
-        log.error("获取失败" ,e);
-        return null;
+    }
+
+    @Override
+    public List<YbPerson> findPersonList(YbPerson ybPerson) {
+        LambdaQueryWrapper<YbPerson> queryWrapper = new LambdaQueryWrapper<>();
+        String sql = " IS_DELETEMARK = 1 ";
+        if (ybPerson.getComments() != null) {
+            sql += " and (personName like '%" + ybPerson.getComments() + "%' or personCode like '%" + ybPerson.getComments() + "%')";
+        }else{
+            sql += " and 1=2";
         }
-        }
-@Override
-@Transactional
-public void createYbPerson(YbPerson ybPerson){
-                ybPerson.setCreateTime(new Date());
+        queryWrapper.apply(sql);
+        List<YbPerson> list = this.list(queryWrapper);
+        return list;
+    }
+
+    @Override
+    @Transactional
+    public void createYbPerson(YbPerson ybPerson) {
+        ybPerson.setCreateTime(new Date());
         ybPerson.setIsDeletemark(1);
         this.save(ybPerson);
-        }
+    }
 
-@Override
-@Transactional
-public void updateYbPerson(YbPerson ybPerson){
+    @Override
+    @Transactional
+    public void updateYbPerson(YbPerson ybPerson) {
         ybPerson.setModifyTime(new Date());
         this.baseMapper.updateYbPerson(ybPerson);
-        }
+    }
 
-@Override
-@Transactional
-public void deleteYbPersons(String[]Ids){
-        List<String> list=Arrays.asList(Ids);
+    @Override
+    @Transactional
+    public void deleteYbPersons(String[] Ids) {
+        List<String> list = Arrays.asList(Ids);
         this.baseMapper.deleteBatchIds(list);
-        }
+    }
 
 
-        }
+}

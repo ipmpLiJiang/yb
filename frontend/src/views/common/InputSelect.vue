@@ -37,7 +37,9 @@ export default {
     // 输入框事件
     handleSearch (keyword) {
       // 模拟往服务器发送请求
-      this.dataSource = this.ajax(keyword)
+      if (keyword !== '') {
+        this.dataSource = this.ajax(keyword)
+      }
     },
     handleChange (value) {
       this.value = value
@@ -50,15 +52,33 @@ export default {
     // 模拟往服务器发送请求
     ajax (keyword) {
       let body = []
+      let params = {comments: keyword}
       if (this.type === 1) {
-        body = [{value: '101A', text: '测试科室1'}, {value: '102A', text: '测试科室2'}, {value: '103A', text: '测试科室3'}]
+        this.$get('ybDept/findDeptList', {
+          ...params
+        }).then((r) => {
+          r.data.data.forEach((item, i) => {
+            body.push({
+              value: item.deptCode,
+              text: item.deptName
+            })
+          })
+        })
+        // body = [{value: '101A', text: '测试科室1'}, {value: '102A', text: '测试科室2'}, {value: '103A', text: '测试科室3'}]
       } else {
-        body = [{value: 'mrbird', text: '系统管理员'}, {value: '102A', text: '测试医生2'}, {value: '103A', text: '测试医生3'}]
+        this.$get('ybPerson/findPersonList', {
+          ...params
+        }).then((r) => {
+          r.data.data.forEach((item, i) => {
+            body.push({
+              value: item.personCode,
+              text: item.personName
+            })
+          })
+        })
+        // body = [{value: 'mrbird', text: '系统管理员'}, {value: '102A', text: '测试医生2'}, {value: '103A', text: '测试医生3'}]
       }
-      return body.map(user => ({
-        text: user.text,
-        value: user.value
-      }))
+      return body
     },
     Load (value, data) {
       this.dataSource = data

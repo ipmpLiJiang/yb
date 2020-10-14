@@ -345,7 +345,6 @@ export default {
     selectDoctorChange (item) {
       this.selectDate.doctorCode = item.value
       this.selectDate.doctorName = item.text
-      console.log(item)
     },
     selectDeptChange (item) {
       this.selectDate.deptCode = item.value

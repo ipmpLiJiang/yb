@@ -66,7 +66,7 @@ public class HanGenerator {
         // strategy.setCapitalMode(true);// 全局大写命名 ORACLE 注意
         //strategy.setTablePrefix(new String[] { "tlog_", "tsys_" });// 此处可以修改为您的表前缀
         strategy.setNaming(NamingStrategy.underline_to_camel);// 表名生成策略
-        strategy.setInclude(new String[]{"yb_appeal_result_repayment_view"}); // 需要生成的表
+        strategy.setInclude(new String[]{"yb_reconsider_priority_level"}); // 需要生成的表
         // strategy.setExclude(new String[]{"test"}); // 排除生成的表
         // 自定义实体父类
         // strategy.setSuperEntityClass("com.baomidou.demo.TestEntity");
@@ -114,7 +114,7 @@ public class HanGenerator {
 
         //在生成页面时候  查询字段设置
         List<String> searchFiledsList = new ArrayList<>();
-        //searchFiledsList.add("gzDescribe");
+        searchFiledsList.add("currencyField");
 
         // 注入自定义配置，可以在 VM 中使用 cfg.abc 【可无】  ${cfg.eliminateFileds}
         InjectionConfig cfg = new InjectionConfig() {

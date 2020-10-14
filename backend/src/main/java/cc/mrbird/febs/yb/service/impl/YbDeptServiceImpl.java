@@ -17,10 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.time.LocalDate;
 
 /**
@@ -63,6 +60,20 @@ public class YbDeptServiceImpl extends ServiceImpl<YbDeptMapper, YbDept> impleme
             log.error("获取失败", e);
             return null;
         }
+    }
+
+    @Override
+    public List<YbDept> findDeptList(YbDept ybDept){
+            LambdaQueryWrapper<YbDept> queryWrapper = new LambdaQueryWrapper<>();
+            String sql = " IS_DELETEMARK = 1 ";
+            if(ybDept.getComments()!=null){
+                sql += " and (deptName like '%"+ybDept.getComments()+"%' or deptCode like '%"+ybDept.getComments()+"%')";
+            }else{
+                sql += " and 1=2";
+            }
+            queryWrapper.apply(sql);
+            List<YbDept> list = this.list(queryWrapper);
+            return list;
     }
 
     @Override

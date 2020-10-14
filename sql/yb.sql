@@ -19,6 +19,28 @@ CREATE TABLE yb_reconsider_rule (
   PRIMARY KEY (ID)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 
+#复议优先级
+DROP TABLE IF EXISTS yb_reconsider_priority_level;
+CREATE TABLE yb_reconsider_priority_level (
+  id char(36) NOT NULL COMMENT '复议规则id',
+  rplName varchar(100) DEFAULT NULL COMMENT '规则名称',
+  doctorCode varchar(50) DEFAULT NULL COMMENT '医生编码',  
+	doctorName varchar(50) DEFAULT NULL COMMENT '医生名称',
+	deptCode varchar(100) NOT NULL COMMENT '科室编码',
+	deptName varchar(100) NOT NULL COMMENT '科室名称',
+	operatorId bigint(11) NOT NULL COMMENT '操作员代码',
+	operatorName varchar(50) NOT NULL COMMENT '操作员名称',
+currencyField varchar(50) DEFAULT NULL COMMENT '通用字段',
+  COMMENTS varchar(1000) DEFAULT NULL COMMENT '备注',
+  STATE int(4) DEFAULT NULL COMMENT '状态', #1规则 2项目 3科室
+  IS_DELETEMARK tinyint(4) DEFAULT NULL COMMENT '是否删除',
+  MODIFY_TIME datetime DEFAULT NULL  COMMENT '修改时间',
+  CREATE_TIME datetime DEFAULT NULL  COMMENT '创建时间',
+  CREATE_USER_ID bigint(11) DEFAULT NULL COMMENT '创建人',
+  MODIFY_USER_ID bigint(11) DEFAULT NULL COMMENT '修改人',
+  PRIMARY KEY (ID)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+
 #复议申请
 DROP TABLE IF EXISTS yb_reconsider_apply;
 CREATE TABLE yb_reconsider_apply (

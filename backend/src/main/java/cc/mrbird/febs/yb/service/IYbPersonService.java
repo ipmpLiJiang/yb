@@ -26,5 +26,7 @@ public interface IYbPersonService extends IService<YbPerson> {
 
         void updateYbPerson(YbPerson ybPerson);
 
+        List<YbPerson> findPersonList(YbPerson ybPerson);
+
         void deleteYbPersons(String[]Ids);
         }
