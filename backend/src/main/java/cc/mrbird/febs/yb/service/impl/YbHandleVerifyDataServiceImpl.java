@@ -1,6 +1,7 @@
 package cc.mrbird.febs.yb.service.impl;
 
 import cc.mrbird.febs.com.controller.DataTypeHelpers;
+import cc.mrbird.febs.com.entity.ComConfiguremanage;
 import cc.mrbird.febs.com.service.IComConfiguremanageService;
 import cc.mrbird.febs.common.domain.QueryRequest;
 import cc.mrbird.febs.common.utils.SortUtil;
@@ -158,11 +159,18 @@ public class YbHandleVerifyDataServiceImpl extends ServiceImpl<YbHandleVerifyDat
 
     }
 
+    private  int getDay(){
+        List<Integer> intList = new ArrayList<>();
+        intList.add(1);//日期增加天数
+        List<ComConfiguremanage> configList = iComConfiguremanageService.getConfigLists(intList);
+        return configList.size() > 0 ? configList.get(0).getIntField() : 2;
+    }
+
     @Override
     @Transactional
     public void updateSendStates(List<YbHandleVerifyData> list, Long uId, String Uname) {
         Date thisDate = new java.sql.Timestamp(new Date().getTime());
-        int day = this.iComConfiguremanageService.getVerifyDay(2);
+        int day = getDay();
         List<YbHandleVerifyData> updateHandleVerifyList = new ArrayList<YbHandleVerifyData>();
         List<YbAppealManage> appealManageList = new ArrayList<YbAppealManage>();
         Date addDate = DataTypeHelpers.addDateMethod(thisDate, day);

@@ -1,16 +1,25 @@
 package cc.mrbird.febs.system.controller;
 
+import cc.mrbird.febs.com.controller.DataTypeHelpers;
+import cc.mrbird.febs.com.controller.ExportExcelUtils;
+import cc.mrbird.febs.com.controller.FileHelpers;
+import cc.mrbird.febs.com.controller.ImportExcelUtils;
 import cc.mrbird.febs.common.annotation.Log;
 import cc.mrbird.febs.common.controller.BaseController;
+import cc.mrbird.febs.common.domain.FebsResponse;
 import cc.mrbird.febs.common.domain.QueryRequest;
 import cc.mrbird.febs.common.exception.FebsException;
+import cc.mrbird.febs.common.properties.FebsProperties;
 import cc.mrbird.febs.common.utils.MD5Util;
-import cc.mrbird.febs.system.domain.Role;
-import cc.mrbird.febs.system.domain.User;
-import cc.mrbird.febs.system.domain.UserConfig;
+import cc.mrbird.febs.system.domain.*;
 import cc.mrbird.febs.system.service.RoleService;
 import cc.mrbird.febs.system.service.UserConfigService;
 import cc.mrbird.febs.system.service.UserService;
+import cc.mrbird.febs.yb.domain.ResponseImportResultData;
+import cc.mrbird.febs.yb.domain.ResponseResultData;
+import cc.mrbird.febs.yb.entity.YbReconsiderApplyData;
+import cc.mrbird.febs.yb.entity.YbReconsiderRepayData;
+import cc.mrbird.febs.yb.entity.YbReconsiderRepayDataExport;
 import com.baomidou.mybatisplus.core.toolkit.StringPool;
 import com.wuwenze.poi.ExcelKit;
 import lombok.extern.slf4j.Slf4j;
@@ -19,12 +28,14 @@ import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
-import java.util.List;
-import java.util.Map;
+import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -41,6 +52,8 @@ public class UserController extends BaseController {
     private UserConfigService userConfigService;
     @Autowired
     private RoleService roleService;
+    @Autowired
+    private FebsProperties febsProperties;
 
     @GetMapping("check/{username}")
     public boolean checkUserName(@NotBlank(message = "{required}") @PathVariable String username) {
@@ -49,11 +62,11 @@ public class UserController extends BaseController {
 
     @GetMapping("/{username}")
     public User detail(@NotBlank(message = "{required}") @PathVariable String username) {
-        User user=this.userService.findByName(username);
+        User user = this.userService.findByName(username);
         //修复用户修改自己的个人信息第二次提示roleId不能为空
-        List<Role> roles=roleService.findUserRole(username);
-        List<Long> roleIds=roles.stream().map(role ->role.getRoleId()).collect(Collectors.toList());
-        String roleIdStr=StringUtils.join(roleIds.toArray(new Long[roleIds.size()]),",");
+        List<Role> roles = roleService.findUserRole(username);
+        List<Long> roleIds = roles.stream().map(role -> role.getRoleId()).collect(Collectors.toList());
+        String roleIdStr = StringUtils.join(roleIds.toArray(new Long[roleIds.size()]), ",");
         user.setRoleId(roleIdStr);
         return user;
     }
@@ -72,6 +85,98 @@ public class UserController extends BaseController {
             this.userService.createUser(user);
         } catch (Exception e) {
             message = "新增用户失败";
+            log.error(message, e);
+            throw new FebsException(message);
+        }
+    }
+
+    @PostMapping("importUser")
+    @RequiresPermissions("user:import")
+    public FebsResponse importUsers(@RequestParam MultipartFile file) {
+        int success = 0;
+        if (file.isEmpty()) {
+            message = "空文件";
+        } else {
+            try {
+                File getFile = DataTypeHelpers.multipartFileToFile(file);
+                List<Object[]> obj = ImportExcelUtils.importExcelBySheetIndex(getFile, 0, 0, 0);
+                List<UserRolesImport> list = new ArrayList<>();
+                List<String> strRoleList = new ArrayList<>();
+                List<String> strDeptList = new ArrayList<>();
+                String strError = "";
+                if (obj.size() > 1) {
+                    for (int i = 1; i < obj.size(); i++) {
+                        UserRolesImport userRole = new UserRolesImport();
+                        String userName = DataTypeHelpers.importTernaryOperate(obj.get(i), 0);
+                        String name = DataTypeHelpers.importTernaryOperate(obj.get(i), 1);
+                        String password = DataTypeHelpers.importTernaryOperate(obj.get(i), 2);
+                        String sex = DataTypeHelpers.importTernaryOperate(obj.get(i), 3);
+                        String email = DataTypeHelpers.importTernaryOperate(obj.get(i), 4);
+                        String tel = DataTypeHelpers.importTernaryOperate(obj.get(i), 5);
+                        String deptName = DataTypeHelpers.importTernaryOperate(obj.get(i), 6);
+                        String roleName = DataTypeHelpers.importTernaryOperate(obj.get(i), 7);
+
+                        userRole.setUserName(userName);
+                        userRole.setXmname(name);
+                        userRole.setPassword(password);
+                        userRole.setSex(sex);
+                        userRole.setEmail(email);
+                        userRole.setTel(tel);
+                        userRole.setDeptName(deptName);
+                        userRole.setRoleName(roleName);
+                        if (!DataTypeHelpers.isNullOrEmpty(roleName)) {
+                            if (!strRoleList.stream().anyMatch(task -> task.equals(roleName))) {
+                                strRoleList.add(roleName);
+                            }
+                        } else {
+                            strError = "角色不能为空";
+                            break;
+                        }
+                        if (!DataTypeHelpers.isNullOrEmpty(deptName)) {
+                            if (!strDeptList.stream().anyMatch(task -> task.equals(deptName))) {
+                                strDeptList.add(deptName);
+                            }
+                        } else {
+                            strError = "部门不能为空";
+                            break;
+                        }
+                        list.add(userRole);
+                    }
+                }
+                if (strError.equals("")) {
+                    String msg = this.userService.importUserRoles(list, strRoleList, strDeptList);
+                    if (msg.equals("roleError")) {
+                        message = "角色未创建";
+                    } else if (msg.equals("deptError")) {
+                        message = "部门未创建";
+                    } else {
+                        message = "新增用户成功";
+                        success = 1;
+                    }
+                } else {
+                    message = strError;
+                }
+
+            } catch (Exception e) {
+                message = "新增用户失败";
+                log.error(message, e);
+            }
+        }
+        ResponseResultData rrd = new ResponseResultData();
+        rrd.setSuccess(success);
+        rrd.setMessage(message);
+        return new FebsResponse().data(rrd);
+
+    }
+
+    @PostMapping("exportUser")
+    @RequiresPermissions("user:import")
+    public void export1(QueryRequest request, HttpServletResponse response) throws FebsException {
+        try {
+            String filePath = febsProperties.getUploadPath(); // 上传后的路径
+            ExportExcelUtils.exportExcel(response, UserRolesImport.class, null, filePath,"userRolesExport", "", "用户信息");
+        } catch (Exception e) {
+            message = "导出Excel失败";
             log.error(message, e);
             throw new FebsException(message);
         }

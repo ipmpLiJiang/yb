@@ -24,67 +24,46 @@
       <div style="margin:20px 0px">
         <a-row
           justify="center"
-          align="middle"
+          type="flex"
         >
-          <a-col :span=1>
-            &nbsp;
-          </a-col>
-          <a-col :span=7>
-              参考复议科室：
-              <a-select
-                show-search
-                :value="selectDeptValue"
-                placeholder="请输入关键词"
-                style="width: 180px"
-                :default-active-first-option="false"
-                :filter-option="false"
-                :not-found-content="null"
-                @search="handleDeptSearch"
-                @change="handleDeptChange"
-              >
-                <a-icon
-                  slot="suffixIcon"
-                  type="search"
-                ></a-icon>
-                <a-select-option
-                  v-for="d in selectDeptDataSource"
-                  :key="d.value"
+          <a-col :span=8>
+              <a-form-item
+              v-bind="{
+                labelCol: { span: 7 },
+                wrapperCol: { span: 16 }
+              }"
+              label="参考复议科室">
+                <input-select
+                  ref="inputSelectVerifyDept"
+                  :type=1
+                  @selectChange=selectDeptChang
                 >
-                  {{ d.text }}
-                </a-select-option>
-              </a-select>
+                </input-select>
+              </a-form-item>
           </a-col>
-          <a-col :span=10>
-              参考复议医生：
-              <a-select
-                show-search
-                :value="selectDoctorValue"
-                placeholder="请输入关键词"
-                style="width: 180px"
-                :default-active-first-option="false"
-                :filter-option="false"
-                :not-found-content="null"
-                @search="handleDoctorSearch"
-                @change="handleDoctorChange"
+          <a-col :span=8>
+            <a-form-item
+              v-bind="{
+                labelCol: { span: 7 },
+                wrapperCol: { span: 16 }
+              }"
+              label="参考复议医生">
+              <input-select
+              ref="inputSelectVerifyDoctor"
+              :type=2
+              @selectChange=selectDoctorChang
               >
-                <a-icon
-                  slot="suffixIcon"
-                  type="search"
-                ></a-icon>
-                <a-select-option
-                  v-for="d in selectDoctorDataSource"
-                  :key="d.value"
-                >
-                  {{ d.text }}
-                </a-select-option>
-              </a-select>
+              </input-select>
+              </a-form-item>
           </a-col>
-          <a-col :span=6>
+          <a-col :span=2>
             <a-button
               @click="handleSubmit"
               type="primary"
               :loading="loading"
             >提交</a-button>
+          </a-col>
+          <a-col :span=3>
             <a-popconfirm
               title="确定放弃编辑？"
               @confirm="onClose"
@@ -103,12 +82,14 @@
 
 <script>
 import moment from 'moment'
+import InputSelect from '../../common/InputSelect'
 import AppealDataModule from '../ybFunModule/AppealDataModule'
 import InpatientfeesModule from '../ybFunModule/InpatientfeesModule'
+
 export default {
   name: 'YbReconsiderVerifyViewData',
   components: {
-    AppealDataModule, InpatientfeesModule},
+    AppealDataModule, InpatientfeesModule, InputSelect },
   props: {
     detailVisiable: {
       default: false
@@ -121,11 +102,7 @@ export default {
       loading: false,
       ybReconsiderVerifyView: {},
       ybReconsiderVerify: {},
-      form: this.$form.createForm(this),
-      selectDeptDataSource: [],
-      selectDeptValue: undefined,
-      selectDoctorDataSource: [],
-      selectDoctorValue: undefined
+      form: this.$form.createForm(this)
     }
   },
   mounted () {
@@ -143,6 +120,7 @@ export default {
       this.$emit('close')
     },
     handleSubmit () {
+      debugger
       this.loading = true
       let arrData = [{
         id: this.ybReconsiderVerify.id,
@@ -163,61 +141,46 @@ export default {
         this.loading = false
       })
     },
-    // 输入框事件
-    handleDeptSearch (keyword) {
-      // 模拟往服务器发送请求
-      this.selectDeptDataSource = this.ajax(keyword)
+    selectDoctorChang (item) {
+      this.ybReconsiderVerify.verifyDoctorCode = item.value
+      this.ybReconsiderVerify.verifyDoctorName = item.text
     },
-    handleDeptChange (value) {
-      const itemText = this.selectDeptDataSource.filter(item => value === item.value)[0]
-      this.selectDeptValue = value
-      this.ybReconsiderVerify.verifyDeptCode = value
-      this.ybReconsiderVerify.verifyDeptName = itemText.text
-    },
-    // 输入框事件
-    handleDoctorSearch (keyword) {
-      // 模拟往服务器发送请求
-      this.selectDoctorDataSource = this.ajaxDoc(keyword)
-    },
-    handleDoctorChange (value) {
-      const itemText = this.selectDoctorDataSource.filter(item => value === item.value)[0]
-      this.selectDoctorValue = value
-      this.ybReconsiderVerify.verifyDoctorCode = value
-      this.ybReconsiderVerify.verifyDoctorName = itemText.text
-    },
-    // 模拟往服务器发送请求
-    ajax (keyword) {
-      let dataSource = [{value: '101A', text: '测试科室1'}, {value: '102A', text: '测试科室2'}, {value: '103A', text: '测试科室3'}]
-      return dataSource
-    },
-    ajaxDoc (keyword) {
-      let dataSource = [{value: 'mrbird', text: '系统管理员'}, {value: '102A', text: '测试医生2'}, {value: '103A', text: '测试医生3'}]
-      return dataSource
+    selectDeptChang (item) {
+      debugger
+      this.ybReconsiderVerify.verifyDeptCode = item.value
+      this.ybReconsiderVerify.verifyDeptName = item.text
     },
     setFormValues ({ ...ybReconsiderVerifyView }) {
+      debugger
       this.ybReconsiderVerifyView = ybReconsiderVerifyView
-      this.selectDeptDataSource = [{
-        text: ybReconsiderVerifyView.verifyDeptName,
-        value: ybReconsiderVerifyView.verifyDeptCode
+      setTimeout(() => {
+        this.setForms(ybReconsiderVerifyView)
+      }, 200)
+    },
+    setForms (target) {
+      debugger
+      this.$refs.inputSelectVerifyDept.dataSource = [{
+        text: target.verifyDeptName,
+        value: target.verifyDeptCode
       }]
-      this.selectDeptValue = ybReconsiderVerifyView.verifyDeptCode
-      this.selectDoctorDataSource = [{
-        text: ybReconsiderVerifyView.verifyDoctorName,
-        value: ybReconsiderVerifyView.verifyDoctorCode
+      this.$refs.inputSelectVerifyDept.value = target.verifyDeptCode
+
+      this.$refs.inputSelectVerifyDoctor.dataSource = [{
+        text: target.verifyDoctorName,
+        value: target.verifyDoctorCode
       }]
-      this.selectDoctorValue = ybReconsiderVerifyView.verifyDoctorCode
+      this.$refs.inputSelectVerifyDoctor.value = target.verifyDoctorCode
+
       this.ybReconsiderVerify = {
-        id: ybReconsiderVerifyView.id,
-        verifyDoctorCode: ybReconsiderVerifyView.verifyDoctorCode,
-        verifyDoctorName: ybReconsiderVerifyView.verifyDoctorName,
-        verifyDeptCode: ybReconsiderVerifyView.verifyDeptCode,
-        verifyDeptName: ybReconsiderVerifyView.verifyDeptName,
+        id: target.id,
+        verifyDoctorCode: target.verifyDoctorCode,
+        verifyDoctorName: target.verifyDoctorName,
+        verifyDeptCode: target.verifyDeptCode,
+        verifyDeptName: target.verifyDeptName,
         state: 2
       }
 
-      setTimeout(() => {
-        this.$refs.inpatientfeesModule.search()
-      }, 200)
+      this.$refs.inpatientfeesModule.search()
     }
   }
 }

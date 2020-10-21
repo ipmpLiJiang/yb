@@ -181,10 +181,11 @@ public class ComFileController extends BaseController {
 //    @RequiresPermissions("comFile:imgExport")
     public void fileImgZip(QueryRequest request, InUploadFile inUploadFile, HttpServletResponse response) throws FebsException {
         int sourceType = inUploadFile.getSourceType();
-        String strSourceType = sourceType == 0 ? "正常" : "剔除";
+        String strSourceType = sourceType == 0 ? "In" : "Out";
         String deptName = inUploadFile.getDeptName();
         String path = febsProperties.getUploadPath();
-        String address = path + inUploadFile.getApplyDateStr() + "/" + deptName;
+        //String address = path + inUploadFile.getApplyDateStr() + "/" + deptName;
+        String address = path + inUploadFile.getApplyDateStr() + "/";
         String fileName = "";
         if (inUploadFile.getFileName() != null && inUploadFile.getFileName() != "") {
             fileName = inUploadFile.getFileName() + ".zip";
@@ -192,7 +193,7 @@ public class ComFileController extends BaseController {
             fileName = UUID.randomUUID().toString() + ".zip";
         }
 
-        String filePath = address + "-" + inUploadFile.getTypeno() + ".zip";
+        String filePath = address + deptName + "-" + inUploadFile.getTypeno() + ".zip";
         try {
             List<ComFile> list = this.iComFileService.findAppealResultComFiles(inUploadFile);
             if (list.size() > 0) {
@@ -254,8 +255,9 @@ public class ComFileController extends BaseController {
             List<ComFile> list = this.iComFileService.findListComFile(inUploadFile.getId());
             String strId = inUploadFile.getId();
             int sourceType = inUploadFile.getSourceType();
-            String strSourceType = sourceType == 0 ? "正常" : "剔除";
-            String deptName = inUploadFile.getDeptName() + strId + strSourceType;
+            String strSourceType = sourceType == 0 ? "In" : "Out";
+            //String deptName = inUploadFile.getDeptName() + strId + strSourceType;
+            String deptName = strId + strSourceType;
             if (list.size() > 0) {
                 for (ComFile item : list) {
                     String fileUrl = febsProperties.getBaseUrl() + "/uploadFile/" + inUploadFile.getApplyDateStr() + "/" + deptName + "/" + item.getServerName();
@@ -299,8 +301,9 @@ public class ComFileController extends BaseController {
         }
         String strId = inUploadFile.getId();
         int sourceType = inUploadFile.getSourceType();
-        String strSourceType = sourceType == 0 ? "正常" : "剔除";
-        String deptName = inUploadFile.getDeptName() + strId + strSourceType;
+        String strSourceType = sourceType == 0 ? "In" : "Out";
+        // String deptName = inUploadFile.getDeptName() + strId + strSourceType;
+        String deptName = strId + strSourceType;
         String fileName2 = file.getOriginalFilename();  // 文件名
         String suffixName = fileName2.substring(fileName2.lastIndexOf("."));  // 后缀名
         String filePath = febsProperties.getUploadPath(); // 上传后的路径
@@ -346,8 +349,9 @@ public class ComFileController extends BaseController {
             if (comFile != null) {
                 String strRefId = comFile.getRefTabId();
                 int sourceType = inUploadFile.getSourceType();
-                String strSourceType = sourceType == 0 ? "正常" : "剔除";
-                String deptName = inUploadFile.getDeptName() + strRefId + strSourceType;
+                String strSourceType = sourceType == 0 ? "In" : "Out";
+                //String deptName = inUploadFile.getDeptName() + strRefId + strSourceType;
+                String deptName = strRefId + strSourceType;
                 String filePath = febsProperties.getUploadPath(); // 上传后的路径
                 String fileUrl = filePath + inUploadFile.getApplyDateStr() + "/" + deptName + "/" + inUploadFile.getSerName();
                 boolean blFile = deleteFile(fileUrl);

@@ -2,8 +2,11 @@ package cc.mrbird.febs.system.service;
 
 import cc.mrbird.febs.common.domain.QueryRequest;
 import cc.mrbird.febs.system.domain.User;
+import cc.mrbird.febs.system.domain.UserRolesImport;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
+
+import java.util.List;
 
 
 public interface UserService extends IService<User> {
@@ -28,9 +31,9 @@ public interface UserService extends IService<User> {
     /**
      * 更新用户登录时间
      *
-     * @param username username
+     * @param user user
      */
-    void updateLoginTime(String username) throws Exception;
+    void updateLoginTime(User user) throws Exception;
 
     /**
      * 新增用户
@@ -38,6 +41,8 @@ public interface UserService extends IService<User> {
      * @param user user
      */
     void createUser(User user) throws Exception;
+
+    String importUserRoles(List<UserRolesImport> userRoleList, List<String> strRoleList, List<String> strDeptList) throws Exception;
 
     /**
      * 修改用户

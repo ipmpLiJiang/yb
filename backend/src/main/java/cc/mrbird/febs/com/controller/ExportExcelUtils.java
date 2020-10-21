@@ -32,10 +32,16 @@ import java.util.stream.Collectors;
  */
 public class ExportExcelUtils {
 
-    public static void exportExcel(HttpServletResponse response, Class<?> clazz, List<?> listData, String filePath, String folderName, String sheetName) throws IOException {
-        String guid = UUID.randomUUID().toString();
-        filePath += folderName + "/" + guid + ".xlsx";
-
+    public static void exportExcel(HttpServletResponse response, Class<?> clazz, List<?> listData, String filePath,String fileName ,String folderName, String sheetName) throws IOException {
+        String fname = UUID.randomUUID().toString();
+        if(!fileName.isEmpty()){
+            fname = fileName;
+        }
+        if(folderName.isEmpty()){
+            filePath += fname + ".xlsx";
+        }else {
+            filePath += folderName + "/" + fname + ".xlsx";
+        }
         ExcelMapping excelMappingData = ExcelMappingFactory.get(clazz);
 
         int sheetColumnCount = excelMappingData.getPropertyList().size();
@@ -53,7 +59,10 @@ public class ExportExcelUtils {
             headerAliasData.put(item.getName(), item.getColumn());
         }
 
-        int rowCount = listData.size();
+        int rowCount = 0;
+        if(listData!=null){
+            rowCount = listData.size();
+        }
         if (rowCount == 0) {
             writer.writeHeadRow(rowHead);
         } else {

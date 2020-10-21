@@ -33,22 +33,73 @@ private static final long serialVersionUID=1L;
      * 人员Id
      */
                     @TableId(value = "id" , type = IdType.AUTO)
-                    @ExcelField(value ="人员Id")
+                    @ExcelField(value ="医生Id")
     private Integer id;
 
     /**
      * 人员编码
      */
     @TableField("personCode")
-            @ExcelField(value ="人员编码")
+            @ExcelField(value ="医生编码")
     private String personCode;
 
     /**
      * 人员名称
      */
     @TableField("personName")
-            @ExcelField(value ="人员名称")
+            @ExcelField(value ="医生名称")
     private String personName;
+
+    /**
+     * 科室编码
+     */
+    @TableField("deptCode")
+    @ExcelField(value ="科室编码")
+    private String deptCode;
+
+    /**
+     * 部门名称
+     */
+    @TableField("deptName")
+    @ExcelField(value ="科室名称")
+    private String deptName;
+
+    /**
+     * 性别
+     */
+    @TableField("sex")
+    @ExcelField(value ="性别")
+    private String sex;
+
+    /**
+     * 邮箱
+     */
+    @TableField("email")
+    @ExcelField(value ="邮箱")
+    private String email;
+
+
+    /**
+     * 联系电话
+     */
+    @TableField("tel")
+    @ExcelField(value ="联系电话")
+    private String tel;
+
+
+    /**
+     * 拼音码
+     */
+    @TableField("spellCode")
+    @ExcelField(value ="拼音码")
+    private String spellCode;
+
+    /**
+     * 五笔码
+     */
+    @TableField("strokeCode")
+    @ExcelField(value ="五笔码")
+    private String strokeCode;
 
     /**
      * 备注
@@ -110,6 +161,20 @@ private static final long serialVersionUID=1L;
     public static final String PERSONCODE ="personCode" ;
 
     public static final String PERSONNAME ="personName" ;
+
+    public static final String DEPTCODE ="deptCode" ;
+
+    public static final String DEPTNAME ="deptName" ;
+
+    public static final String SEX ="sex" ;
+
+    public static final String EMAIL ="email" ;
+
+    public static final String TEL ="tel" ;
+
+    public static final String SPELLCODE ="spellCode" ;
+
+    public static final String STROKECODE ="strokeCode" ;
 
     public static final String COMMENTS ="COMMENTS" ;
 

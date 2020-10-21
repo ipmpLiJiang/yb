@@ -119,7 +119,7 @@ export default {
         width: 120
       },
       {
-        title: '数据来源',
+        title: '流程类型',
         dataIndex: 'sourceType',
         customRender: (text, row, index) => {
           switch (text) {

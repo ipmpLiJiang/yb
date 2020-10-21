@@ -1,5 +1,7 @@
 package cc.mrbird.febs.yb.controller;
 
+import cc.mrbird.febs.com.controller.DataTypeHelpers;
+import cc.mrbird.febs.com.controller.ImportExcelUtils;
 import cc.mrbird.febs.common.annotation.Log;
 import cc.mrbird.febs.common.controller.BaseController;
 import cc.mrbird.febs.common.domain.FebsResponse;
@@ -7,6 +9,8 @@ import cc.mrbird.febs.common.domain.router.VueRouter;
 import cc.mrbird.febs.common.exception.FebsException;
 import cc.mrbird.febs.common.domain.QueryRequest;
 
+import cc.mrbird.febs.system.domain.UserRolesImport;
+import cc.mrbird.febs.yb.domain.ResponseResultData;
 import cc.mrbird.febs.yb.entity.YbDept;
 import cc.mrbird.febs.yb.service.IYbPersonService;
 import cc.mrbird.febs.yb.entity.YbPerson;
@@ -20,10 +24,12 @@ import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -54,13 +60,13 @@ public class YbPersonController extends BaseController {
     @GetMapping
     @RequiresPermissions("ybPerson:view")
     public Map<String, Object> List(QueryRequest request, YbPerson ybPerson) {
-        return getDataTable(this.iYbPersonService.findYbPersons(request, ybPerson));
+        return getDataTable(this.iYbPersonService.findYbPersonList(request, ybPerson));
     }
 
     @GetMapping("findPersonList")
     public FebsResponse findDeptLists(YbPerson ybPerson) {
         List<YbPerson> list = new ArrayList<>();
-        try{
+        try {
             list = this.iYbPersonService.findPersonList(ybPerson);
 
         } catch (Exception e) {
@@ -68,6 +74,32 @@ public class YbPersonController extends BaseController {
         }
 
         return new FebsResponse().data(list);
+    }
+
+    @PostMapping("importUser")
+    @RequiresPermissions("ybPerson:import")
+    public FebsResponse importUsers(Integer type) {
+        int success = 0;
+        try {
+            String msg = this.iYbPersonService.importUserRoles(type);
+            if (msg.equals("roleError")) {
+                message = "角色未创建";
+            } else if (msg.equals("deptError")) {
+                message = "部门未创建";
+            } else {
+                message = "用户同步成功";
+                success = 1;
+            }
+
+        } catch (Exception e) {
+            message = "用户同步失败";
+            log.error(message, e);
+        }
+        ResponseResultData rrd = new ResponseResultData();
+        rrd.setSuccess(success);
+        rrd.setMessage(message);
+        return new FebsResponse().data(rrd);
+
     }
 
     /**

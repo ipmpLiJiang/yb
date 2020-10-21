@@ -14,6 +14,18 @@
           :customRow="handleClickRow"
           :scroll="{ x: 900 }"
         >
+          <template
+            slot="operation"
+            slot-scope="text, record, index"
+          >
+            <div class="editable-row-operations">
+              <span>
+                <a
+                  @click.stop="() => look(record,index)"
+                >查看</a>
+              </span>
+            </div>
+          </template>
         </a-table>
   </div>
 </template>
@@ -104,8 +116,7 @@ export default {
       },
       {
         title: '扣除原因',
-        dataIndex: 'deductReason',
-        width: 200
+        dataIndex: 'deductReason'
       },
       {
         title: '费用日期',
@@ -134,28 +145,25 @@ export default {
         width: 100
       },
       {
-        title: '状态',
-        dataIndex: 'acceptState',
+        title: '流程类型',
+        dataIndex: 'sourceType',
         customRender: (text, row, index) => {
           switch (text) {
             case 0:
-              return '待接受'
+              return '正常流程'
             case 1:
-              return '已接受'
-            case 2:
-              return '已拒绝'
-            case 3:
-              return '管理员更改'
-            case 4:
-              return '医保拒绝'
-            case 6:
-              return '已申诉'
-            case 7:
-              return '未申诉'
+              return '剔除流程'
             default:
               return text
           }
         },
+        fixed: 'right',
+        width: 90
+      },
+      {
+        title: '操作',
+        dataIndex: 'operation',
+        scopedSlots: { customRender: 'operation' },
         fixed: 'right',
         width: 100
       }]
@@ -169,6 +177,10 @@ export default {
     rowNo (index) {
       return (this.pagination.defaultCurrent - 1) *
             this.pagination.defaultPageSize + index + 1
+    },
+    look (record, index) {
+      record.rowNo = this.rowNo(index)
+      this.$emit('look', record)
     },
     handleClickRow (record, index) {
       return {

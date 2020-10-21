@@ -88,17 +88,19 @@ public class ComConfiguremanageServiceImpl extends ServiceImpl<ComConfiguremanag
     }
 
     @Override
-    public int getVerifyDay(int day) {
+    public List<ComConfiguremanage> getConfigLists(List<Integer> ctypeList) {
         LambdaQueryWrapper<ComConfiguremanage> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(ComConfiguremanage::getConfigureType, 1);
-        List<ComConfiguremanage> listFile = this.list(queryWrapper);
-        if (listFile.size() > 0) {
-            int intField = listFile.get(0).getIntField();
-            if (intField > 0) {
-                day = intField;
+        String sql = "";
+        for(Integer type :ctypeList ){
+            if(sql.equals("")){
+                sql = " configureType = " + type;
+            }else{
+                sql += " or configureType = " + type;
             }
         }
-        return day;
+        queryWrapper.apply(sql);
+        List<ComConfiguremanage> configList = this.list(queryWrapper);
+        return configList;
     }
 
 

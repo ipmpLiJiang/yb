@@ -381,6 +381,6 @@
             ra.IS_DELETEMARK = 1
     WHERE
         rv.IS_DELETEMARK = 1 and ra.applyDateStr= #{applyDate} and ad.dataType = #{dataType} and
-        ad.typeno = case when ra.state = 2 then 1 when ra.state >= 4 then 2 else 0 end
+        case when ra.state = 3 then ad.typeno = 1  when ra.state >= 5 then ad.typeno IN(1,2)  else 1=2 end
 </select>
 </mapper>

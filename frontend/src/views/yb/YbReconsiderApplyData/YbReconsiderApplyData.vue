@@ -209,8 +209,7 @@ export default {
       },
       {
         title: '扣除原因',
-        dataIndex: 'deductReason',
-        width: 100
+        dataIndex: 'deductReason'
       },
       {
         title: '还款原因',

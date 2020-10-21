@@ -123,8 +123,7 @@ export default {
       },
       {
         title: '扣除原因',
-        dataIndex: 'deductReason',
-        width: 200
+        dataIndex: 'deductReason'
       },
       {
         title: '费用日期',
@@ -191,10 +190,10 @@ export default {
               applyDataId: target.applyDataId,
               verifyId: target.verifyId,
               resetId: target.resetId,
-              doctorCode: target.hvDoctorcode,
-              doctorName: target.hvDoctorname,
-              deptCode: target.hvDeptcode,
-              deptName: target.hvDeptname,
+              doctorCode: target.hvDoctorCode,
+              doctorName: target.hvDoctorName,
+              deptCode: target.hvDeptCode,
+              deptName: target.hvDeptName,
               dataType: target.dataType}
 
             data.push(arrData)
@@ -220,10 +219,10 @@ export default {
           applyDataId: target.applyDataId,
           verifyId: target.verifyId,
           resetId: target.resetId,
-          doctorCode: target.hvDoctorcode,
-          doctorName: target.hvDoctorname,
-          deptCode: target.hvDeptcode,
-          deptName: target.hvDeptname,
+          doctorCode: target.hvDoctorCode,
+          doctorName: target.hvDoctorName,
+          deptCode: target.hvDeptCode,
+          deptName: target.hvDeptName,
           dataType: target.dataType
         }]
         this.sendService(data)

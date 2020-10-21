@@ -1,13 +1,16 @@
 package cc.mrbird.febs.yb.service.impl;
 
 import cc.mrbird.febs.com.controller.DataTypeHelpers;
+import cc.mrbird.febs.com.entity.ComConfiguremanage;
 import cc.mrbird.febs.com.service.IComConfiguremanageService;
 import cc.mrbird.febs.common.domain.QueryRequest;
 import cc.mrbird.febs.common.utils.SortUtil;
 import cc.mrbird.febs.yb.dao.YbReconsiderVerifyMapper;
 import cc.mrbird.febs.yb.entity.YbAppealManage;
+import cc.mrbird.febs.yb.entity.YbReconsiderApply;
 import cc.mrbird.febs.yb.entity.YbReconsiderVerify;
 import cc.mrbird.febs.yb.service.IYbAppealManageService;
+import cc.mrbird.febs.yb.service.IYbReconsiderApplyService;
 import cc.mrbird.febs.yb.service.IYbReconsiderVerifyService;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -19,10 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * <p>
@@ -38,9 +38,12 @@ import java.util.UUID;
 public class YbReconsiderVerifyServiceImpl extends ServiceImpl<YbReconsiderVerifyMapper, YbReconsiderVerify> implements IYbReconsiderVerifyService {
 
     @Autowired
-    public IYbAppealManageService iYbAppealManageService;
+    private IYbAppealManageService iYbAppealManageService;
     @Autowired
-    public IComConfiguremanageService iComConfiguremanageService;
+    private IComConfiguremanageService iComConfiguremanageService;
+
+    @Autowired
+    private IYbReconsiderApplyService iYbReconsiderApplyService;
 
     @Override
     public IPage<YbReconsiderVerify> findYbReconsiderVerifys(QueryRequest request, YbReconsiderVerify ybReconsiderVerify) {
@@ -74,7 +77,7 @@ public class YbReconsiderVerifyServiceImpl extends ServiceImpl<YbReconsiderVerif
     @Transactional
     public void createYbReconsiderVerify(YbReconsiderVerify ybReconsiderVerify) {
         ybReconsiderVerify.setCreateTime(new Date());
-        if(ybReconsiderVerify.getId() == null || "".equals(ybReconsiderVerify.getId())) {
+        if (ybReconsiderVerify.getId() == null || "".equals(ybReconsiderVerify.getId())) {
             ybReconsiderVerify.setId(UUID.randomUUID().toString());
         }
         ybReconsiderVerify.setIsDeletemark(1);
@@ -100,19 +103,64 @@ public class YbReconsiderVerifyServiceImpl extends ServiceImpl<YbReconsiderVerif
     @Transactional
     public void insertReconsiderVerifyImports(String applyDate, Long matchPersonId, String matchPersonName) {
         this.baseMapper.insertReconsiderVerifyImport(applyDate, matchPersonId, matchPersonName);
+
+        LambdaQueryWrapper<YbReconsiderApply> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(YbReconsiderApply::getIsDeletemark, 1);//1是未删 0是已删
+        queryWrapper.eq(YbReconsiderApply::getApplyDateStr, applyDate);
+        List<YbReconsiderApply> applyList = this.iYbReconsiderApplyService.list(queryWrapper);
+        if (applyList.size() > 0) {
+            YbReconsiderApply ybReconsiderApply = applyList.get(0);
+            if (ybReconsiderApply.getState() == 2 || ybReconsiderApply.getState() == 4) {
+                YbReconsiderApply updateEntity = new YbReconsiderApply();
+                updateEntity.setId(ybReconsiderApply.getId());
+                if (ybReconsiderApply.getState() == 2) { //上传一
+                    updateEntity.setState(3);//申诉一/核对一
+                    this.iYbReconsiderApplyService.updateById(updateEntity);
+                } else if (ybReconsiderApply.getState() == 4) {
+                    updateEntity.setState(5);//申诉二/核对二
+                    this.iYbReconsiderApplyService.updateById(updateEntity);
+                }
+            }
+        }
     }
 
     @Override
     @Transactional
     public void insertMainReconsiderVerifyImports(String applyDate, Long matchPersonId, String matchPersonName) {
         this.baseMapper.insertMainReconsiderVerifyImport(applyDate, matchPersonId, matchPersonName);
+
+        LambdaQueryWrapper<YbReconsiderApply> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(YbReconsiderApply::getIsDeletemark, 1);//1是未删 0是已删
+        queryWrapper.eq(YbReconsiderApply::getApplyDateStr, applyDate);
+        List<YbReconsiderApply> applyList = this.iYbReconsiderApplyService.list(queryWrapper);
+        if (applyList.size() > 0) {
+            YbReconsiderApply ybReconsiderApply = applyList.get(0);
+            if (ybReconsiderApply.getState() == 2 || ybReconsiderApply.getState() == 4) {
+                YbReconsiderApply updateEntity = new YbReconsiderApply();
+                updateEntity.setId(ybReconsiderApply.getId());
+                if (ybReconsiderApply.getState() == 2) { //上传一
+                    updateEntity.setState(3);//申诉一/核对一
+                    this.iYbReconsiderApplyService.updateById(updateEntity);
+                } else if (ybReconsiderApply.getState() == 4) {
+                    updateEntity.setState(5);//申诉二/核对二
+                    this.iYbReconsiderApplyService.updateById(updateEntity);
+                }
+            }
+        }
+    }
+
+    private  int getDay(){
+        List<Integer> intList = new ArrayList<>();
+        intList.add(1);//日期增加天数
+        List<ComConfiguremanage> configList = iComConfiguremanageService.getConfigLists(intList);
+        return configList.size() > 0 ? configList.get(0).getIntField() : 2;
     }
 
     @Override
     @Transactional
     public void updateSendStates(List<YbReconsiderVerify> list, Long uId, String Uname) {
         Date thisDate = new java.sql.Timestamp(new Date().getTime());
-        int day = this.iComConfiguremanageService.getVerifyDay(2);
+        int day = getDay();
 
         Date addDate = DataTypeHelpers.addDateMethod(thisDate, day);
         for (YbReconsiderVerify ybReconsiderVerify : list) {
@@ -145,18 +193,19 @@ public class YbReconsiderVerifyServiceImpl extends ServiceImpl<YbReconsiderVerif
 
             iYbAppealManageService.createYbAppealManage(ybAppealManage);
             LambdaQueryWrapper<YbReconsiderVerify> queryWrapper = new LambdaQueryWrapper<>();
-            queryWrapper.eq(YbReconsiderVerify::getId,ybReconsiderVerify.getId());
-            queryWrapper.eq(YbReconsiderVerify::getDataType,0);
-            queryWrapper.eq(YbReconsiderVerify::getState,2);
-            this.baseMapper.update(ybReconsiderVerify,queryWrapper);
+            queryWrapper.eq(YbReconsiderVerify::getId, ybReconsiderVerify.getId());
+            queryWrapper.eq(YbReconsiderVerify::getDataType, 0);
+            queryWrapper.eq(YbReconsiderVerify::getState, 2);
+            this.baseMapper.update(ybReconsiderVerify, queryWrapper);
         }
     }
+
     //主单扣款更新
     @Override
     @Transactional
     public void updateMainSendStates(List<YbReconsiderVerify> list, Long uId, String Uname) {
         Date thisDate = new java.sql.Timestamp(new Date().getTime());
-        int day = this.iComConfiguremanageService.getVerifyDay(2);
+        int day = getDay();
 
         Date addDate = DataTypeHelpers.addDateMethod(thisDate, day);
         for (YbReconsiderVerify ybReconsiderVerify : list) {
@@ -189,10 +238,10 @@ public class YbReconsiderVerifyServiceImpl extends ServiceImpl<YbReconsiderVerif
 
             iYbAppealManageService.createYbAppealManage(ybAppealManage);
             LambdaQueryWrapper<YbReconsiderVerify> queryWrapper = new LambdaQueryWrapper<>();
-            queryWrapper.eq(YbReconsiderVerify::getId,ybReconsiderVerify.getId());
-            queryWrapper.eq(YbReconsiderVerify::getDataType,1);
-            queryWrapper.eq(YbReconsiderVerify::getState,1);
-            this.baseMapper.update(ybReconsiderVerify,queryWrapper);
+            queryWrapper.eq(YbReconsiderVerify::getId, ybReconsiderVerify.getId());
+            queryWrapper.eq(YbReconsiderVerify::getDataType, 1);
+            queryWrapper.eq(YbReconsiderVerify::getState, 1);
+            this.baseMapper.update(ybReconsiderVerify, queryWrapper);
         }
     }
 
@@ -222,10 +271,10 @@ public class YbReconsiderVerifyServiceImpl extends ServiceImpl<YbReconsiderVerif
                     this.baseMapper.insert(item);
                 } else {
                     LambdaQueryWrapper<YbReconsiderVerify> queryWrapper = new LambdaQueryWrapper<>();
-                    queryWrapper.eq(YbReconsiderVerify::getId,item.getId());
-                    queryWrapper.eq(YbReconsiderVerify::getDataType,0);
-                    queryWrapper.eq(YbReconsiderVerify::getState,1);
-                    this.baseMapper.update(item,queryWrapper);
+                    queryWrapper.eq(YbReconsiderVerify::getId, item.getId());
+                    queryWrapper.eq(YbReconsiderVerify::getDataType, 0);
+                    queryWrapper.eq(YbReconsiderVerify::getState, 1);
+                    this.baseMapper.update(item, queryWrapper);
                 }
             }
         }
@@ -254,10 +303,9 @@ public class YbReconsiderVerifyServiceImpl extends ServiceImpl<YbReconsiderVerif
                     this.baseMapper.insert(item);
                 } else {
                     LambdaQueryWrapper<YbReconsiderVerify> queryWrapper = new LambdaQueryWrapper<>();
-                    queryWrapper.eq(YbReconsiderVerify::getId,item.getId());
-                    queryWrapper.eq(YbReconsiderVerify::getDataType,0);
-                    queryWrapper.eq(YbReconsiderVerify::getState,1);
-                    this.baseMapper.update(item,queryWrapper);
+                    queryWrapper.eq(YbReconsiderVerify::getId, item.getId());
+                    queryWrapper.eq(YbReconsiderVerify::getState, 1);
+                    this.baseMapper.update(item, queryWrapper);
                 }
             }
         }

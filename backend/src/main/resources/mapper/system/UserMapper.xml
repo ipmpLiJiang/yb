@@ -4,6 +4,7 @@
     <resultMap id="BaseResultMap" type="cc.mrbird.febs.system.domain.User">
         <id column="USER_ID" jdbcType="DECIMAL" property="userId"/>
         <result column="USERNAME" jdbcType="VARCHAR" property="username"/>
+        <result column="XMNAME" jdbcType="VARCHAR" property="xmname"/>
         <result column="PASSWORD" jdbcType="VARCHAR" property="password"/>
         <result column="DEPT_ID" jdbcType="DECIMAL" property="deptId"/>
         <result column="EMAIL" jdbcType="VARCHAR" property="email"/>
@@ -21,6 +22,7 @@
         SELECT
         u.user_id userId,
         u.username,
+        u.xmname,
         u.password,
         u.email,
         u.mobile,
@@ -59,6 +61,7 @@
             AND u.status = #{user.status}
         </if>
         group by u.username,
+            u.xmname,
             u.user_id,
             u.password,
             u.email,
@@ -78,6 +81,7 @@
         SELECT
         u.user_id userId,
         u.username,
+        u.xmname,
         u.password,
         u.email,
         u.mobile,
@@ -98,6 +102,7 @@
         LEFT JOIN t_role r ON r.role_id = ur.role_id
         WHERE  u.username = #{username}
         group by u.username,
+            u.xmname,
             u.user_id,
             u.password,
             u.email,

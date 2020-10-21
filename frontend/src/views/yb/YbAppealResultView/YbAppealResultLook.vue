@@ -153,7 +153,7 @@ export default {
       formData.id = this.ybAppealResult.id
       formData.deptName = this.ybAppealResult.arDeptName
       formData.applyDateStr = this.ybAppealResult.applyDateStr
-      formData.typeNo = this.ybAppealResult.typeno
+      formData.typeno = this.ybAppealResult.typeno
       formData.sourceType = this.ybAppealResult.sourceType
       formData.fileName = formData.applyDateStr + formData.deptName + '-' + this.ybAppealResult.typeno
 

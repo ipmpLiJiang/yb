@@ -68,7 +68,7 @@ public class LoginController {
             throw new FebsException("账号已被锁定,请联系管理员！");
 
         // 更新用户登录时间
-        this.userService.updateLoginTime(username);
+        this.userService.updateLoginTime(user);
         // 保存登录记录
         LoginLog loginLog = new LoginLog();
         loginLog.setUsername(username);

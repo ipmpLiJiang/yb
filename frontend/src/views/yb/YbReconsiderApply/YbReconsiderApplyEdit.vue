@@ -31,7 +31,7 @@
         >
         <a-date-picker
           placeholder="请输入审核一结束日期"
-          v-decorator="['endDateOne', {rules: [{ required: true, message: '审核一结束日期不能为空' }] }]"
+          v-decorator="['endDateOne']"
           :format="dayFormat"/>
         </a-form-item>
       </a-row>

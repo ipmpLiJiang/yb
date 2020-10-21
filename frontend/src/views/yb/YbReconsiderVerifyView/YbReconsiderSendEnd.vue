@@ -110,8 +110,7 @@ export default {
       },
       {
         title: '扣除原因',
-        dataIndex: 'deductReason',
-        width: 200
+        dataIndex: 'deductReason'
       },
       {
         title: '费用日期',
@@ -139,7 +138,23 @@ export default {
         title: '复议医生',
         dataIndex: 'verifyDoctorName',
         fixed: 'right',
-        width: 100
+        width: 110
+      },
+      {
+        title: '意见书类型',
+        dataIndex: 'dataType',
+        customRender: (text, row, index) => {
+          switch (text) {
+            case 0:
+              return '审核一'
+            case 1:
+              return '审核二'
+            default:
+              return text
+          }
+        },
+        fixed: 'right',
+        width: 105
       },
       {
         title: '发送日期',

@@ -53,6 +53,17 @@
           <a-menu slot="overlay">
             <a-menu-item v-hasPermission="['user:reset']" key="password-reset" @click="resetPassword">密码重置</a-menu-item>
             <a-menu-item v-hasPermission="['user:export']" key="export-data" @click="exportExcel">导出Excel</a-menu-item>
+            <a-menu-item v-hasPermission="['user:import']" key="export1-data" @click="exportUserTemp">下载模板</a-menu-item>
+            <a-menu-item v-hasPermission="['user:import']" key="import-data">
+              <a-upload
+              name="file"
+              accept=".xlsx,.xls"
+              :fileList="fileList"
+              :beforeUpload="beforeUpload"
+            >
+              上传用户
+            </a-upload>
+            </a-menu-item>
           </a-menu>
           <a-button>
             更多操作 <a-icon type="down" />
@@ -137,6 +148,7 @@ export default {
       dataSource: [],
       selectedRowKeys: [],
       loading: false,
+      fileList: [],
       pagination: {
         pageSizeOptions: ['10', '20', '30', '40', '100'],
         defaultCurrent: 1,
@@ -157,6 +169,9 @@ export default {
         dataIndex: 'username',
         sorter: true,
         sortOrder: sortedInfo.columnKey === 'username' && sortedInfo.order
+      }, {
+        title: '姓名',
+        dataIndex: 'xmname'
       }, {
         title: '性别',
         dataIndex: 'ssex',
@@ -230,6 +245,48 @@ export default {
     this.fetch()
   },
   methods: {
+    exportUserTemp () {
+      this.$download('user/exportUser', {
+      }, '用户信息.xlsx')
+    },
+    beforeUpload (file) {
+      var testmsg = file.name.substring(file.name.lastIndexOf('.') + 1)
+      let isExcel = testmsg === 'xlsx'
+      if (!isExcel) {
+        isExcel = testmsg === 'xls'
+      }
+      // const isExcel = file.type === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+      if (!(isExcel)) {
+        this.$error({
+          title: '只能上传.xlsx,.xls格式的Excel文档~'
+        })
+        return
+      }
+      const isLt2M = file.size / 1024 / 1024 < 5
+      if (!isLt2M) {
+        this.$error({
+          title: '超5M限制，不允许上传~'
+        })
+        return
+      }
+      return (isExcel) && isLt2M && this.handleUpload(file)
+    },
+    handleUpload (file) {
+      const formData = new FormData()
+      formData.append('file', file)
+
+      this.$upload('user/importUser', formData).then((r) => {
+        if (r.data.data.success === 1) {
+          this.search()
+          this.$message.success('Excel导入成功.')
+        } else {
+          this.$message.error(r.data.data.message)
+        }
+      }).catch(() => {
+        this.$message.error('Excel导入失败.')
+      })
+      this.fileList = []
+    },
     onSelectChange (selectedRowKeys) {
       this.selectedRowKeys = selectedRowKeys
     },

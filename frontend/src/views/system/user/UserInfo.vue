@@ -13,6 +13,7 @@
       </a-layout-sider>
       <a-layout-content class="user-content-one">
         <p><a-icon type="user"/>账户：{{userInfoData.username}}</p>
+        <p><a-icon type="user"/>账户：{{userInfoData.xmname}}</p>
         <p :title="userInfoData.roleName"><a-icon type="star"/>角色：{{userInfoData.roleName? userInfoData.roleName: '暂无角色'}}</p>
         <p><a-icon type="skin"/>性别：{{sex}}</p>
         <p><a-icon type="phone"/>电话：{{userInfoData.mobile ? userInfoData.mobile : '暂未绑定电话'}}</p>

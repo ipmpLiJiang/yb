@@ -76,6 +76,7 @@
               :searchText='searchText'
               :applyDate='searchApplyDate'
               @onHistoryLook="onHistoryLook"
+              @look="look"
             >
             </ybAppealManage-refused>
           </a-tab-pane>
@@ -105,6 +106,7 @@
               :searchText='searchText'
               :applyDate='searchApplyDate'
               @onHistoryLook="onHistoryLook"
+              @look="look"
             >
             </ybAppealManage-completed>
           </a-tab-pane>
@@ -119,6 +121,7 @@
               :searchText='searchText'
               :applyDate='searchApplyDate'
               @onHistoryLook="onHistoryLook"
+              @look="look"
             >
             </ybAppealManage-overdue>
           </a-tab-pane>

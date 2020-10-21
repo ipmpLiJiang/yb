@@ -16,6 +16,12 @@
         <a-input @blur="handleUserNameBlur"
                  v-decorator="['username',{rules: [{ required: true, message: '用户名不能为空'}]}]"/>
       </a-form-item>
+      <a-form-item label='姓名' v-bind="formItemLayout">
+        <a-input
+          v-decorator="['xmname',{rules: [
+            { max: 50, message: '长度不能超过50个字符'}
+          ]}]"/>
+      </a-form-item>
       <a-form-item label='密码' v-bind="formItemLayout">
         <a-tooltip title='新用户默认密码为 1234qwer'>
           <a-input type='password' readOnly v-decorator="['password',{ initialValue:defaultPassword }]" />
@@ -168,7 +174,7 @@ export default {
       }
     },
     setUserFields () {
-      let values = this.form.getFieldsValue(['username', 'password', 'email', 'mobile', 'roleId', 'deptId', 'status', 'ssex'])
+      let values = this.form.getFieldsValue(['username', 'xmname', 'password', 'email', 'mobile', 'roleId', 'deptId', 'status', 'ssex'])
       if (typeof values !== 'undefined') {
         Object.keys(values).forEach(_key => { this.user[_key] = values[_key] })
       }

@@ -12,6 +12,12 @@
       <a-form-item label='用户名' v-bind="formItemLayout">
         <a-input readOnly v-decorator="['username']"/>
       </a-form-item>
+      <a-form-item label='姓名' v-bind="formItemLayout">
+        <a-input
+          v-decorator="['xmname',{rules: [
+            { max: 50, message: '长度不能超过50个字符'}
+          ]}]"/>
+      </a-form-item>
       <a-form-item label='邮箱' v-bind="formItemLayout">
         <a-input
           v-decorator="[
@@ -120,7 +126,7 @@ export default {
     },
     setFormValues ({...user}) {
       this.userId = user.userId
-      let fields = ['username', 'email', 'status', 'ssex', 'mobile']
+      let fields = ['username', 'xmname', 'email', 'status', 'ssex', 'mobile']
       Object.keys(user).forEach((key) => {
         if (fields.indexOf(key) !== -1) {
           this.form.getFieldDecorator(key)

@@ -7,7 +7,7 @@
       <a-spin tip="Loading..." :spinning="spinning" :delay="delayTime">
           <div>
         <a-row justify='center'>
-          <a-col :span=17>
+          <a-col :span=16>
             <a-form-item
               v-bind="{
                 labelCol: { span: 8 },
@@ -17,24 +17,26 @@
             >
             <a-input
                 placeholder="复议年月"
-                v-model="applyDateStr"
+                disabled
+                v-model="ybReconsiderApply.applyDateStr"
               />
             </a-form-item>
           </a-col>
         </a-row>
         <a-row justify='center'>
-          <a-col :span=17>
+          <a-col :span=16>
             <a-form-item
               v-bind="formItemLayout"
               label="上传文件名称"
             >
               <a-input
                 placeholder="上传文件名称"
+                disabled
                 v-model="uploadFileName"
               />
             </a-form-item>
           </a-col>
-          <a-col :span=2>
+          <a-col :span=2 v-show="showBtn">
             <template>
               <a-upload
                 name="file"
@@ -43,15 +45,24 @@
                 :remove="removeUpload"
                 :beforeUpload="beforeUpload"
               >
-                <a-button type="primary" v-show="showBtn">
+                <a-button type="primary">
                   <a-icon type="upload" /> 上传 </a-button>
               </a-upload>
             </template>
           </a-col>
-          <a-col :span=2>
+          <a-col :span=2 v-show="showDelBtn">
+            <a-popconfirm
+              title="确定删除明细？"
+              @confirm="deleteData"
+              okText="确定"
+              cancelText="取消"
+            >
+              <a-button type="primary" style="margin-right: .8rem">删除明细</a-button>
+            </a-popconfirm>
+          </a-col>
+          <a-col :span=2 v-show="showBtn">
             <a-button
               type="primary"
-                v-show="showBtn"
               style="margin-left: 8px"
               @click="downloadFile"
             >模板</a-button>
@@ -80,7 +91,7 @@
           >
             <ybReconsiderApply-data
             ref="ybReconsiderApplyData"
-            :pid="pid"
+            :pid="ybReconsiderApply.id"
             :typeno="typeno"
             >
             </ybReconsiderApply-data>
@@ -92,7 +103,7 @@
           >
             <ybReconsiderApply-main
             ref="ybReconsiderApplyMain"
-            :pid="pid"
+            :pid="ybReconsiderApply.id"
             :typeno="typeno"
             >
             </ybReconsiderApply-main>
@@ -120,16 +131,15 @@ export default {
   data () {
     return {
       formItemLayout,
-      ybReconsiderApplyUpload: {},
+      ybReconsiderApply: {},
       monthFormat: 'YYYY-MM',
       fileList: [],
-      pid: '0',
       showBtn: false,
+      showDelBtn: false,
       typeno: 1,
       tableSelectKey: '1',
       spinning: false,
       delayTime: 500,
-      applyDateStr: '',
       uploadFileName: '',
       searchApplyDate: this.formatDate()
     }
@@ -148,10 +158,27 @@ export default {
       this.$download('ybReconsiderApplyData/downFile', {
       }, '复议审核模板.xlsx')
     },
+    deleteData () {
+      if (this.ybReconsiderApply.state === 2 || this.ybReconsiderApply.state === 4) {
+        let params = { pid: this.ybReconsiderApply.id, typeno: this.typeno, state: this.ybReconsiderApply.state }
+        this.$delete('ybReconsiderApplyData/deleteData', params).then((r) => {
+          if (r.data.data.success === 1) {
+            this.$message.success('删除成功')
+            this.searchTable()
+            this.showBtn = true
+            this.showDelBtn = false
+          } else {
+            this.$message.error('删除失败')
+          }
+        })
+      } else {
+        this.$message.warning('当前状态无法删除.')
+      }
+    },
     onClose () {
-      this.ybReconsiderApplyUpload = {}
+      this.ybReconsiderApply = {}
       this.showBtn = false
-      this.pid = '0'
+      this.showDelBtn = false
       this.typeno = 1
       this.tableSelectKey = '1'
       this.fileList = []
@@ -168,10 +195,10 @@ export default {
       }
     },
     setFormValues ({ ...ybReconsiderApply }, typeno) {
-      this.applyDateStr = ybReconsiderApply.applyDateStr
-      this.pid = ybReconsiderApply.id
+      this.ybReconsiderApply = ybReconsiderApply
+      let pid = ybReconsiderApply.id
       this.typeno = typeno
-      if (this.pid !== null && this.pid !== 0 && this.pid !== undefined) {
+      if (pid !== null && pid !== 0 && pid !== undefined) {
         if (this.typeno !== null && this.typeno !== 0 && this.typeno !== undefined) {
           setTimeout(() => {
             this.$refs.ybReconsiderApplyData.search()
@@ -185,12 +212,22 @@ export default {
         } else {
           this.showBtn = false
         }
+        if (this.ybReconsiderApply.state === 2) {
+          this.showDelBtn = true
+        } else {
+          this.showDelBtn = false
+        }
       } else {
         this.uploadFileName = ybReconsiderApply.uploadFileNameTwo
-        if (ybReconsiderApply.state === 2) {
+        if (ybReconsiderApply.state === 2 || ybReconsiderApply.state === 3) {
           this.showBtn = true
         } else {
           this.showBtn = false
+        }
+        if (this.ybReconsiderApply.state === 4) {
+          this.showDelBtn = true
+        } else {
+          this.showDelBtn = false
         }
       }
     },
@@ -221,7 +258,7 @@ export default {
       // 点击删除文件调用removeUpload后会自动调用本方法handleUpload 待解决
       const formData = new FormData()
       formData.append('file', file)
-      formData.append('pid', this.pid)
+      formData.append('pid', this.ybReconsiderApply.id)
       formData.append('typeno', this.typeno)
 
       this.$upload('ybReconsiderApplyData/importReconsiderApplyData', formData).then((r) => {
@@ -229,6 +266,14 @@ export default {
           this.uploadFileName = r.data.data.fileName
           this.searchTable()
           this.showBtn = false
+          if (this.ybReconsiderApply.state === 1) {
+            this.ybReconsiderApply.state = 2
+          } else if (this.ybReconsiderApply.state === 3) {
+            this.ybReconsiderApply.state = 4
+          }
+          if (this.ybReconsiderApply.state === 2 || this.ybReconsiderApply.state === 4) {
+            this.showDelBtn = true
+          }
           this.spinning = false
           this.$message.success('Excel导入成功.')
         } else {

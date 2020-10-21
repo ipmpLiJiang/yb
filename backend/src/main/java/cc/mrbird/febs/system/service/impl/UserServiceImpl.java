@@ -7,12 +7,13 @@ import cc.mrbird.febs.common.utils.SortUtil;
 import cc.mrbird.febs.common.utils.MD5Util;
 import cc.mrbird.febs.system.dao.UserMapper;
 import cc.mrbird.febs.system.dao.UserRoleMapper;
-import cc.mrbird.febs.system.domain.User;
-import cc.mrbird.febs.system.domain.UserRole;
+import cc.mrbird.febs.system.domain.*;
 import cc.mrbird.febs.system.manager.UserManager;
+import cc.mrbird.febs.system.service.RoleService;
 import cc.mrbird.febs.system.service.UserConfigService;
 import cc.mrbird.febs.system.service.UserRoleService;
 import cc.mrbird.febs.system.service.UserService;
+import cc.mrbird.febs.yb.entity.YbAppealManageView;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.StringPool;
@@ -24,9 +25,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service("userService")
@@ -43,6 +43,12 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     private UserRoleService userRoleService;
     @Autowired
     private UserManager userManager;
+
+    @Autowired
+    private DeptServiceImpl deptService;
+
+    @Autowired
+    private RoleServiceImpl roleService;
 
 
     @Override
@@ -65,14 +71,25 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
     @Override
     @Transactional
-    public void updateLoginTime(String username) throws Exception {
-        User user = new User();
-        user.setLastLoginTime(new Date());
+    public void updateLoginTime(User user) throws Exception {
+        User updateUser = new User();
+        updateUser.setLastLoginTime(new Date());
+        String username = user.getUsername();
 
         this.baseMapper.update(user, new LambdaQueryWrapper<User>().eq(User::getUsername, username));
-
+        UserConfig userConfig = this.userManager.getUserConfig(String.valueOf(user.getUserId()));
         // 重新将用户信息加载到 redis中
         cacheService.saveUser(username);
+        if (userConfig == null) {
+            // 创建用户默认的个性化配置
+            userConfigService.initDefaultUserConfig(String.valueOf(user.getUserId()));
+
+            cacheService.saveRoles(username);
+            // 缓存用户权限
+            cacheService.savePermissions(username);
+            // 缓存用户个性化配置
+            cacheService.saveUserConfigs(String.valueOf(user.getUserId()));
+        }
     }
 
     @Override
@@ -198,6 +215,111 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             cacheService.saveUser(username);
         }
 
+    }
+
+    @Override
+    @Transactional
+    public String importUserRoles(List<UserRolesImport> userRoleList, List<String> strRoleList, List<String> strDeptList) throws Exception {
+        String msg = "";
+        List<Dept> deptList = new ArrayList<>();
+        List<Role> roleList = new ArrayList<>();
+        LambdaQueryWrapper<Dept> queryDeptWrapper = new LambdaQueryWrapper<>();
+        String sql = "DEPT_NAME IN (";
+        String strIn = "";
+        for (String deptName : strDeptList) {
+            if (strIn.equals("")) {
+                strIn = "'" + deptName + "'";
+            } else {
+                strIn += ",'" + deptName + "'";
+            }
+        }
+
+        sql += strIn + ")";
+        queryDeptWrapper.apply(sql);
+
+        deptList = deptService.list(queryDeptWrapper);
+        if (deptList.size() == strDeptList.size()) {
+            LambdaQueryWrapper<Role> queryRoleWrapper = new LambdaQueryWrapper<>();
+            sql = "ROLE_NAME IN (";
+            strIn = "";
+            for (String roleName : strRoleList) {
+                if (strIn.equals("")) {
+                    strIn = "'" + roleName + "'";
+                } else {
+                    strIn += ",'" + roleName + "'";
+                }
+            }
+
+            sql += strIn + ")";
+            queryRoleWrapper.apply(sql);
+            roleList = roleService.list(queryRoleWrapper);
+        } else {
+            return "deptError";
+        }
+        if (roleList.size() == strRoleList.size()) {
+            List<Dept> searchDeptList = new ArrayList<>();
+            List<Role> searchRoleList = new ArrayList<>();
+            List<User> searchUserList = new ArrayList<>();
+            List<User> userList = this.list();
+            for (UserRolesImport userRole : userRoleList) {
+                searchUserList = userList.stream().filter(
+                        s -> s.getUsername().equals(userRole.getUserName())
+                ).collect(Collectors.toList());
+                if (searchUserList.size() == 0) {
+                    User user = new User();
+                    user.setCreateTime(new Date());
+                    user.setAvatar(User.DEFAULT_AVATAR);
+                    if(userRole.getPassword()!=null && !"".equals(userRole.getPassword())) {
+                        user.setPassword(MD5Util.encrypt(userRole.getUserName(), userRole.getPassword()));
+                    }else{
+                        user.setPassword(MD5Util.encrypt(userRole.getUserName(), User.DEFAULT_PASSWORD));
+                    }
+                    searchDeptList = deptList.stream().filter(
+                            s -> s.getDeptName().equals(userRole.getDeptName())
+                    ).collect(Collectors.toList());
+
+                    searchRoleList = roleList.stream().filter(
+                            s -> s.getRoleName().equals(userRole.getRoleName())
+                    ).collect(Collectors.toList());
+
+                    user.setRoleId(searchRoleList.get(0).getRoleId().toString());
+                    user.setDeptId(searchDeptList.get(0).getDeptId());
+                    user.setUsername(userRole.getUserName());
+                    user.setXmname(userRole.getXmname());
+                    if (userRole.getEmail() != null) user.setEmail(userRole.getEmail());
+                    if (userRole.getTel() != null) user.setMobile(userRole.getTel());
+                    user.setCreateTime(new Date());
+                    user.setStatus(User.STATUS_VALID);
+                    if (userRole.getSex() != null) {
+                        if (userRole.getSex().equals("男")) {
+                            user.setSsex(User.SEX_MALE);
+                        } else if (userRole.getSex().equals("女")) {
+                            user.setSsex(User.SEX_FEMALE);
+                        } else {
+                            user.setSsex(User.SEX_UNKNOW);
+                        }
+                    } else {
+                        user.setSsex(User.SEX_UNKNOW);
+                    }
+                    user.setAvatar(User.DEFAULT_AVATAR);
+                    user.setDescription("注册用户");
+
+                    save(user);
+
+                    // 保存用户角色
+                    String[] roles = user.getRoleId().split(StringPool.COMMA);
+                    setUserRoles(user, roles);
+
+                    // 创建用户默认的个性化配置
+                    userConfigService.initDefaultUserConfig(String.valueOf(user.getUserId()));
+                    // 将用户相关信息保存到 Redis中
+                    userManager.loadUserRedisCache(user);
+                }
+            }
+        } else {
+            return "roleError";
+        }
+        return msg;
     }
 
     private void setUserRoles(User user, String[] roles) {

@@ -21,7 +21,7 @@
               <span>
                 <a
                   @click="() => look(record,index)"
-                >查看申诉材料</a>
+                >查看剔除明细</a>
               </span>
             </div>
           </template>
@@ -115,8 +115,7 @@ export default {
       },
       {
         title: '扣除原因',
-        dataIndex: 'deductReason',
-        width: 200
+        dataIndex: 'deductReason'
       },
       {
         title: '医生姓名',

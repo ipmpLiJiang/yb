@@ -28,5 +28,5 @@ public interface IComConfiguremanageService extends IService<ComConfiguremanage>
 
         void deleteComConfiguremanages(String[]Ids);
 
-        int getVerifyDay(int day);
+        List<ComConfiguremanage> getConfigLists(List<Integer> ctypeList);
         }

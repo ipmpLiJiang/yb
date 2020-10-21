@@ -116,8 +116,7 @@ export default {
       },
       {
         title: '扣除原因',
-        dataIndex: 'deductReason',
-        width: 200
+        dataIndex: 'deductReason'
       },
       {
         title: '费用日期',
@@ -144,6 +143,22 @@ export default {
         title: '科室名称',
         dataIndex: 'deptName',
         width: 100
+      },
+      {
+        title: '流程类型',
+        dataIndex: 'sourceType',
+        customRender: (text, row, index) => {
+          switch (text) {
+            case 0:
+              return '正常流程'
+            case 1:
+              return '剔除流程'
+            default:
+              return text
+          }
+        },
+        fixed: 'right',
+        width: 90
       },
       {
         title: '操作',

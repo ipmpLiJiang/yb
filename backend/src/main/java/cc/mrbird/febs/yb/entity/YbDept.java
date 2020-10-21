@@ -33,21 +33,21 @@ private static final long serialVersionUID=1L;
      * 部门Id
      */
                     @TableId(value = "id" , type = IdType.AUTO)
-                    @ExcelField(value ="部门Id")
+                    @ExcelField(value ="科室Id")
     private Integer id;
 
     /**
      * 部门编码
      */
     @TableField("deptCode")
-            @ExcelField(value ="部门编码")
+            @ExcelField(value ="科室编码")
     private String deptCode;
 
     /**
      * 部门名称
      */
     @TableField("deptName")
-            @ExcelField(value ="部门名称")
+            @ExcelField(value ="科室名称")
     private String deptName;
 
     /**

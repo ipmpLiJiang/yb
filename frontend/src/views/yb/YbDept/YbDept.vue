@@ -140,6 +140,10 @@ export default {
         defaultPageSize: 10,
         showQuickJumper: true,
         showSizeChanger: true,
+        onChange: (current, size) => {
+          this.pagination.defaultCurrent = current
+          this.pagination.defaultPageSize = size
+        },
         showTotal: (total, range) => `显示 ${range[0]} ~ ${range[1]} 条记录，共 ${total} 条记录`
       },
       queryParams: {
@@ -153,19 +157,22 @@ export default {
   computed: {
     columns () {
       return [{
-        title: '部门Id',
-        dataIndex: 'id',
-        width: 100
+        title: '序号',
+        customRender: (text, record, index) =>
+          `${(this.pagination.defaultCurrent - 1) *
+            this.pagination.defaultPageSize +
+            index +
+            1}`,
+        width: 70
       },
       {
         title: '部门编码',
         dataIndex: 'deptCode',
-        width: 100
+        width: 120
       },
       {
         title: '部门名称',
-        dataIndex: 'deptName',
-        width: 100
+        dataIndex: 'deptName'
       },
       {
         title: '操作',

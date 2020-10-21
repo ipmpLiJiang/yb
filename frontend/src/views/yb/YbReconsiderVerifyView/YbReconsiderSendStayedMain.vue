@@ -45,6 +45,11 @@ export default {
   props: {
     applyDate: {
       default: ''
+    },
+    searchItem: {
+      default () {
+        return {}
+      }
     }
   },
   data () {
@@ -223,6 +228,66 @@ export default {
       this.selectedRowKeys = []
       this.loading = false
     },
+    showImport () {
+      let selectedRowKeys = this.selectedRowKeys
+      if (selectedRowKeys.length > 0) {
+        let data = []
+        for (let key of selectedRowKeys) {
+          let target = this.dataSource.filter(item => key === item.id)[0]
+          let arrData = {
+            id: target.id,
+            applyDataId: target.applyDataId,
+            verifyDoctorCode: target.verifyDoctorCode,
+            verifyDoctorName: target.verifyDoctorName,
+            verifyDeptCode: target.verifyDeptCode,
+            verifyDeptName: target.verifyDeptName
+          }
+          data.push(arrData)
+        }
+        if (data.length > 0) {
+          this.$emit('showImport', data)
+        } else {
+          this.$message.success('未找到对象')
+        }
+      } else {
+        this.$message.success('未选择行')
+      }
+    },
+    handImport (selectDate) {
+      let selectedRowKeys = this.selectedRowKeys
+      if (selectedRowKeys.length > 0) {
+        let data = []
+        for (let key of selectedRowKeys) {
+          let target = this.dataSource.filter(item => key === item.id)[0]
+          let arrData = {
+            id: target.id,
+            applyDataId: target.applyDataId,
+            verifyDoctorCode: selectDate.doctorCode,
+            verifyDoctorName: selectDate.doctorName,
+            verifyDeptCode: selectDate.deptCode,
+            verifyDeptName: selectDate.deptName
+          }
+          data.push(arrData)
+        }
+        if (data.length > 0) {
+          let jsonString = JSON.stringify(data)
+          this.$put('ybReconsiderVerify/updateReconsiderVerifyImport', {
+            dataJson: jsonString
+          }).then(() => {
+            this.$message.success('匹配成功')
+            this.selectedRowKeys = []
+            this.$emit('handImport')
+            this.search()
+          }).catch(() => {
+            this.loading = false
+          })
+        } else {
+          this.$message.success('未找到对象')
+        }
+      } else {
+        this.$message.success('未选择行')
+      }
+    },
     send (key) {
       this.loading = true
       let target = this.dataSource.filter(item => key === item.id)[0]
@@ -298,8 +363,16 @@ export default {
       params.applyDateStr = this.applyDate
       params.state = 1
       params.dataType = 1
-      let searchType = ['LIKE', 'LIKE', 'LIKE']
+      let searchType = [this.searchItem.project.type, this.searchItem.rule.type, this.searchItem.dept.type]
       params.searchType = searchType
+      if (this.searchItem !== undefined) {
+        if (this.searchItem.rule.ruleName !== '') {
+          params.ruleName = this.searchItem.rule.ruleName
+        }
+        if (this.searchItem.dept.deptName !== '') {
+          params.verifyDeptName = this.searchItem.dept.deptName
+        }
+      }
       if (this.paginationInfo) {
         // 如果分页信息不为空，则设置表格当前第几页，每页条数，并设置查询分页参数
         this.$refs.TableInfo.pagination.current = this.paginationInfo.current

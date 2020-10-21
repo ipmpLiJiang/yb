@@ -111,24 +111,22 @@ export default {
   computed: {
     columns () {
       return [{
-        title: '序号',
-        customRender: (text, record, index) => {
-          return this.rowNo(index)
-        },
-        fixed: 'left',
-        width: 70
-      },
-      {
         title: '意见书编码',
         dataIndex: 'proposalCode',
         fixed: 'left',
         width: 120
       },
       {
-        title: '项目编码',
-        dataIndex: 'projectCode',
+        title: '交易流水号',
+        dataIndex: 'serialNo',
         fixed: 'left',
-        width: 100
+        width: 120
+      },
+      {
+        title: '单据号',
+        dataIndex: 'billNo',
+        fixed: 'left',
+        width: 105
       },
       {
         title: '项目名称',
@@ -158,8 +156,7 @@ export default {
       },
       {
         title: '扣除原因',
-        dataIndex: 'deductReason',
-        width: 200
+        dataIndex: 'deductReason'
       },
       {
         title: '费用日期',

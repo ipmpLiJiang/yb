@@ -185,8 +185,8 @@ public class YbAppealResultController extends BaseController {
                         List<ComFile> loadLastList = new ArrayList<ComFile>();
 
                         String filePath = febsProperties.getUploadPath(); // 上传后的路径
-                        String oldDept = filePath + applyDateStr + "/" + ybAppealResult.getDeptName() + ybAppealResult.getId() + "正常";
-                        String newDept = filePath + applyDateStr + "/" + ybAppealResult.getDeptName() + loadId + "剔除";
+                        String oldDept = filePath + applyDateStr + "/" + ybAppealResult.getId() + "In";
+                        String newDept = filePath + applyDateStr + "/" + loadId + "Out";
 
                         File f = new File(newDept);
                         if (!f.exists()) {

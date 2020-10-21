@@ -16,11 +16,12 @@
             复议年月：
             <a-month-picker
               placeholder="请输入复议年月"
+              disabled
               :default-value="formatDate()"
               :format="monthFormat"
             />
           </a-col>
-          <a-col :span=2 v-show="tableSelectKey==1?true:false">
+          <a-col :span=2 v-show="tableSelectKey==1||tableSelectKey==4?true:false">
             <a-button
               type="primary"
               @click="showSearchModal"
@@ -30,6 +31,7 @@
             <a-popconfirm
               title="确定自动匹配？"
               @confirm="addImport"
+              v-show="tableSelectKey==1||tableSelectKey==4?true:false"
               okText="确定"
               style="margin-right: 15px"
               cancelText="取消"
@@ -39,7 +41,7 @@
             <a-button
               type="primary"
               style="margin-right: 15px"
-              v-show="tableSelectKey==1?true:false"
+              v-show="tableSelectKey==1||tableSelectKey==4?true:false"
               @click="showUpdateModal"
             >手动匹配</a-button>
             <a-popconfirm
@@ -106,6 +108,9 @@
             <ybReconsiderSendStayed-main
               ref="ybReconsiderSendStayedMain"
               :applyDate='formatDate()'
+              :searchItem='searchItem'
+              @showImport="showImport"
+              @handImport="handImport"
             >
             </ybReconsiderSendStayed-main>
           </a-tab-pane>
@@ -352,10 +357,18 @@ export default {
     },
     showUpdateModal () {
       this.selectDate = {}
-      this.$refs.ybReconsiderVerifyStayed.showImport()
+      if (this.tableSelectKey === '1') {
+        this.$refs.ybReconsiderVerifyStayed.showImport()
+      } else {
+        this.$refs.ybReconsiderSendStayedMain.showImport()
+      }
     },
     handleUpdateOk (e) {
-      this.$refs.ybReconsiderVerifyStayed.handImport(this.selectDate)
+      if (this.tableSelectKey === '1') {
+        this.$refs.ybReconsiderVerifyStayed.handImport(this.selectDate)
+      } else {
+        this.$refs.ybReconsiderSendStayedMain.handImport(this.selectDate)
+      }
     },
     handImport () {
       this.selectDate = {}
@@ -369,7 +382,11 @@ export default {
       this.visibleSearch = true
     },
     handleSearchOk (e) {
-      this.$refs.ybReconsiderVerifyStayed.search()
+      if (this.tableSelectKey === '1') {
+        this.$refs.ybReconsiderVerifyStayed.search()
+      } else {
+        this.$refs.ybReconsiderSendStayedMain.search()
+      }
       this.visibleSearch = false
     },
     handleSearchCancel (e) {
@@ -396,12 +413,11 @@ export default {
       this.$post('ybReconsiderVerify/' + url, {
         applyDate: this.searchApplyDate
       }).then(() => {
+        this.spinning = false
         this.$message.success('匹配完成')
         if (this.tableSelectKey === '4') {
-          this.spinning = false
           this.$refs.ybReconsiderSendStayedMain.search()
         } else {
-          this.spinning = false
           this.$refs.ybReconsiderVerifyStayed.search()
         }
       }).catch(() => {

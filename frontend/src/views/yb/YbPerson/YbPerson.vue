@@ -7,6 +7,22 @@
       <a-form layout="horizontal">
         <a-row>
           <div :class="advanced ? null: 'fold'">
+          <a-row justify="end" type="flex">
+          <span style="margin-top: 3px;margin-right: 15px;">
+          <a-checkbox :checked="checked"  @change="onChange">
+            配置文件
+          </a-checkbox>
+          <a-popconfirm
+              title="确定同步？"
+              @confirm="userImport"
+              okText="确定"
+              style="margin-left: 15px"
+              cancelText="取消"
+            >
+              <a-button type="primary">同步</a-button>
+            </a-popconfirm>
+            </span>
+          </a-row>
           </div>
           <span style="float: right; margin-top: 3px;">
             <a-button
@@ -140,6 +156,10 @@ export default {
         defaultPageSize: 10,
         showQuickJumper: true,
         showSizeChanger: true,
+        onChange: (current, size) => {
+          this.pagination.defaultCurrent = current
+          this.pagination.defaultPageSize = size
+        },
         showTotal: (total, range) => `显示 ${range[0]} ~ ${range[1]} 条记录，共 ${total} 条记录`
       },
       queryParams: {
@@ -147,25 +167,86 @@ export default {
       addVisiable: false,
       editVisiable: false,
       loading: false,
+      checked: true,
       bordered: true
     }
   },
   computed: {
     columns () {
       return [{
-        title: '人员Id',
-        dataIndex: 'id',
-        width: 100
+        title: '序号',
+        customRender: (text, record, index) =>
+          `${(this.pagination.defaultCurrent - 1) *
+            this.pagination.defaultPageSize +
+            index +
+            1}`,
+        width: 70
       },
       {
-        title: '人员编码',
+        title: '医生编码',
         dataIndex: 'personCode',
         width: 100
       },
       {
-        title: '人员名称',
+        title: '医生名称',
         dataIndex: 'personName',
         width: 100
+      },
+      {
+        title: '科室名称',
+        dataIndex: 'deptName',
+        width: 150
+      },
+      {
+        title: '性别',
+        dataIndex: 'sex',
+        customRender: (text, row, index) => {
+          switch (text) {
+            case '1':
+              return '男'
+            case '2':
+              return '女'
+            case '3':
+              return '未知'
+            default:
+              return text
+          }
+        },
+        width: 70
+      },
+      {
+        title: '邮箱',
+        dataIndex: 'email'
+      },
+      {
+        title: '联系电话',
+        dataIndex: 'tel',
+        width: 130
+      },
+      {
+        title: '拼音码',
+        dataIndex: 'spellCode',
+        width: 90
+      },
+      {
+        title: '五笔码',
+        dataIndex: 'strokeCode',
+        width: 90
+      },
+      {
+        title: '状态',
+        dataIndex: 'state',
+        customRender: (text, row, index) => {
+          switch (text) {
+            case 1:
+              return '已同步'
+            case 0:
+              return '未同步'
+            default:
+              return text
+          }
+        },
+        width: 90
       },
       {
         title: '操作',
@@ -180,6 +261,22 @@ export default {
     this.fetch()
   },
   methods: {
+    onChange () {
+      this.checked = !this.checked
+    },
+    userImport () {
+      let params = { type: this.checked ? 1 : 0 }
+      this.$post('ybPerson/importUser', params).then((r) => {
+        if (r.data.data.success === 1) {
+          this.search()
+          this.$message.success('用户同步成功.')
+        } else {
+          this.$message.error(r.data.data.message)
+        }
+      }).catch(() => {
+        this.$message.error('用户同步失败.')
+      })
+    },
     onSelectChange (selectedRowKeys) {
       this.selectedRowKeys = selectedRowKeys
     },

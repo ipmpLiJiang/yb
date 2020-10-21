@@ -51,6 +51,10 @@ public class User implements Serializable {
     @ExcelField(value = "用户名")
     private String username;
 
+    @Size(max = 50, message = "{noMoreThan}")
+    @ExcelField(value = "姓名")
+    private String xmname;
+
     private String password;
 
     private Long deptId;

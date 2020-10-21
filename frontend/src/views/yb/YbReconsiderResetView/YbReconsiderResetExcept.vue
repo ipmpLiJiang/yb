@@ -24,7 +24,7 @@
                 >手动剔除</a>
                 <a v-show="record.seekState===0?false:true"
                   @click="() => look(record,index)"
-                >查看申诉材料</a>
+                >查看剔除明细</a>
               </span>
             </div>
           </template>

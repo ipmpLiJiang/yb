@@ -4,7 +4,7 @@
       <span style="cursor: pointer">
         <a-avatar class="avatar" size="small" shape="circle"
                   :src="avatar"/>
-        <span class="curr-user">{{user.username}}</span>
+        <span class="curr-user">{{user.username}} {{user.xmname}}</span>
       </span>
       <a-menu style="width: 150px" slot="overlay">
         <a-menu-item @click="openProfile">

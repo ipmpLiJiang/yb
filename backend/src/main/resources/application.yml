@@ -80,6 +80,7 @@ febs:
   openAopLog: true
   uploadPath: D:/Yb/UploadFile/
   baseUrl: http://127.0.0.1:9527
+  #baseUrl: http://192.168.78.136:9527
   # 单次最大批量入库数量
   max:
     batch:

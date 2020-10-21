@@ -2,7 +2,13 @@ package cc.mrbird.febs.com.controller;
 
 import lombok.val;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.math.BigDecimal;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
@@ -40,11 +46,12 @@ public class DataTypeHelpers {
 
     public static boolean isNullOrEmpty(String val) {
         boolean isTrue = false;
-        if(val == null || val.equals("")){
-            isTrue= true;
+        if (val == null || val.equals("")) {
+            isTrue = true;
         }
         return isTrue;
     }
+
     /***
      * 判断 String 是否是 int
      *
@@ -63,13 +70,13 @@ public class DataTypeHelpers {
         } else {
             boolean bl = false;
             String[] strArr = str.split(sep);
-            for (String k : strArr){
-                if(val.equals(k)){
+            for (String k : strArr) {
+                if (val.equals(k)) {
                     bl = true;
                     break;
                 }
             }
-            if(!bl) {
+            if (!bl) {
                 str += sep + val;
             }
         }
@@ -114,7 +121,7 @@ public class DataTypeHelpers {
         return date;
     }
 
-    public static int stringDateFormatMaxDay(String strDate,String format, boolean isFormat){
+    public static int stringDateFormatMaxDay(String strDate, String format, boolean isFormat) {
         if (isNullOrEmpty(format)) {
             format = "yyyyMMdd";
             isFormat = false;
@@ -134,7 +141,7 @@ public class DataTypeHelpers {
         return maxDay;
     }
 
-    public static int dateFormatMaxDay(Date date){
+    public static int dateFormatMaxDay(Date date) {
         Calendar a = Calendar.getInstance();
         a.setTime(date);
         a.set(Calendar.DATE, 1);//把日期设置为当月第一天
@@ -210,5 +217,35 @@ public class DataTypeHelpers {
         Date addDate = calendar.getTime();
 
         return addDate;
+    }
+
+    public static File multipartFileToFile(@RequestParam MultipartFile file) throws Exception {
+
+        File toFile = null;
+        if (file.equals("") || file.getSize() <= 0) {
+            file = null;
+        } else {
+            InputStream ins = null;
+            ins = file.getInputStream();
+            toFile = new File(file.getOriginalFilename());
+            inputStreamToFile(ins, toFile);
+            ins.close();
+        }
+        return toFile;
+    }
+
+    public static void inputStreamToFile(InputStream ins, File file) {
+        try {
+            OutputStream os = new FileOutputStream(file);
+            int bytesRead = 0;
+            byte[] buffer = new byte[8192];
+            while ((bytesRead = ins.read(buffer, 0, 8192)) != -1) {
+                os.write(buffer, 0, bytesRead);
+            }
+            os.close();
+            ins.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

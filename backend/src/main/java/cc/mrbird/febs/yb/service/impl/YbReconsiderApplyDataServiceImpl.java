@@ -7,6 +7,7 @@ import cc.mrbird.febs.yb.dao.YbReconsiderApplyMapper;
 import cc.mrbird.febs.yb.entity.YbReconsiderApply;
 import cc.mrbird.febs.yb.entity.YbReconsiderApplyData;
 import cc.mrbird.febs.yb.service.IYbReconsiderApplyDataService;
+import cc.mrbird.febs.yb.service.IYbReconsiderApplyService;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.Wrapper;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -36,7 +38,9 @@ import java.util.UUID;
 public class YbReconsiderApplyDataServiceImpl extends ServiceImpl<YbReconsiderApplyDataMapper, YbReconsiderApplyData> implements IYbReconsiderApplyDataService {
 
     @Autowired
-    public YbReconsiderApplyMapper ybReconsiderApplyMapper;
+    private YbReconsiderApplyMapper ybReconsiderApplyMapper;
+    @Autowired
+    private IYbReconsiderApplyService iYbReconsiderApplyService;
 
     @Override
     public IPage<YbReconsiderApplyData> findYbReconsiderApplyDatas(QueryRequest request, YbReconsiderApplyData ybReconsiderApplyData) {
@@ -71,7 +75,7 @@ public class YbReconsiderApplyDataServiceImpl extends ServiceImpl<YbReconsiderAp
     @Transactional
     public void createYbReconsiderApplyData(YbReconsiderApplyData ybReconsiderApplyData) {
         ybReconsiderApplyData.setCreateTime(new Date());
-        if(ybReconsiderApplyData.getId() == null || "".equals(ybReconsiderApplyData.getId())) {
+        if (ybReconsiderApplyData.getId() == null || "".equals(ybReconsiderApplyData.getId())) {
             ybReconsiderApplyData.setId(UUID.randomUUID().toString());
         }
         ybReconsiderApplyData.setIsDeletemark(1);
@@ -80,7 +84,7 @@ public class YbReconsiderApplyDataServiceImpl extends ServiceImpl<YbReconsiderAp
 
     @Override
     @Transactional
-    public void createBatchYbReconsiderApplyData(List<YbReconsiderApplyData> list,YbReconsiderApply ybReconsiderApply) {
+    public void createBatchYbReconsiderApplyData(List<YbReconsiderApplyData> list, YbReconsiderApply ybReconsiderApply) {
 
         this.saveBatch(list);
 //        for(YbReconsiderApplyData item : list)
@@ -106,8 +110,33 @@ public class YbReconsiderApplyDataServiceImpl extends ServiceImpl<YbReconsiderAp
     }
 
     @Override
+    @Transactional
+    public int deleteReconsiderApplyDataByPid(YbReconsiderApplyData ybReconsiderApplyData) {
+        int count = 0;
+        LambdaQueryWrapper<YbReconsiderApply> wrapperApply = new LambdaQueryWrapper<>();
+        wrapperApply.eq(YbReconsiderApply::getId, ybReconsiderApplyData.getPid());
+        List<YbReconsiderApply> applyList = iYbReconsiderApplyService.list(wrapperApply);
+        if (applyList.size() > 0) {
+            if (applyList.get(0).getState() == 4 || applyList.get(0).getState() == 2) {
+                LambdaQueryWrapper<YbReconsiderApplyData> wrapper = new LambdaQueryWrapper<>();
+                wrapper.eq(YbReconsiderApplyData::getPid, applyList.get(0).getId());
+                wrapper.eq(YbReconsiderApplyData::getTypeno, ybReconsiderApplyData.getTypeno());
+                this.baseMapper.delete(wrapper);
+
+                int state = applyList.get(0).getState() == 2 ? 1 : 3;
+                YbReconsiderApply updateApply = new YbReconsiderApply();
+                updateApply.setId(applyList.get(0).getId());
+                updateApply.setState(state);
+                ybReconsiderApplyMapper.updateYbReconsiderApply(updateApply);
+                count = 1;
+            }
+        }
+        return 0;
+    }
+
+    @Override
     public List<YbReconsiderApplyData> findReconsiderApplyDataByApplyDates(String applyDateStr, Integer dataType) {
-        return  this.baseMapper.findReconsiderApplyDataByApplyDate(applyDateStr,dataType);
+        return this.baseMapper.findReconsiderApplyDataByApplyDate(applyDateStr, dataType);
     }
 
     @Override
@@ -115,6 +144,7 @@ public class YbReconsiderApplyDataServiceImpl extends ServiceImpl<YbReconsiderAp
     public void createBatchDatas(List<YbReconsiderApplyData> listReconsiderApplyData) {
         this.baseMapper.createBatchData(listReconsiderApplyData);
     }
+
     @Override
     @Transactional
     public void importReconsiderApply(YbReconsiderApply ybReconsiderApply, List<YbReconsiderApplyData> listData, List<YbReconsiderApplyData> listMain) {

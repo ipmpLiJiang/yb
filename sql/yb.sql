@@ -1472,9 +1472,9 @@ DO call p_appeal_manage_enableOverdue();
 
 #DROP TABLE IF EXISTS yb_dept;
 CREATE TABLE yb_dept (
-  id int(11) NOT NULL AUTO_INCREMENT COMMENT '部门Id',
-  deptCode varchar(255) NOT NULL COMMENT '部门编码',
-  deptName varchar(255) NOT NULL COMMENT '部门名称',  
+  id int(11) NOT NULL AUTO_INCREMENT COMMENT '科室Id',
+  deptCode varchar(255) NOT NULL COMMENT '科室编码',
+  deptName varchar(255) NOT NULL COMMENT '科室名称',  
   COMMENTS varchar(1000) DEFAULT NULL COMMENT '备注',
   STATE int(4) DEFAULT NULL COMMENT '状态',
   IS_DELETEMARK tinyint(4) DEFAULT NULL COMMENT '是否删除',
@@ -1487,9 +1487,16 @@ CREATE TABLE yb_dept (
 
 #DROP TABLE IF EXISTS yb_person;
 CREATE TABLE yb_person (
-  id int(11) NOT NULL AUTO_INCREMENT COMMENT '人员Id',
-  personCode varchar(255) NOT NULL COMMENT '人员编码',
-  personName varchar(255) NOT NULL COMMENT '人员名称',  
+  id int(11) NOT NULL AUTO_INCREMENT COMMENT '医生Id',
+  personCode varchar(255) NOT NULL COMMENT '医生编码',
+  personName varchar(255) NOT NULL COMMENT '医生名称',  
+  deptCode varchar(255) NOT NULL COMMENT '科室编码',
+  deptName varchar(255) NOT NULL COMMENT '科室名称', 
+  sex varchar(50) NOT NULL COMMENT '性别', 
+  email varchar(50) NOT NULL COMMENT '邮箱', 
+  tel varchar(50) NOT NULL COMMENT '联系电话', 
+  spellCode varchar(50) NOT NULL COMMENT '拼音码', 
+  strokeCode varchar(50) NOT NULL COMMENT '五笔码', 
   COMMENTS varchar(1000) DEFAULT NULL COMMENT '备注',
   STATE int(4) DEFAULT NULL COMMENT '状态',
   IS_DELETEMARK tinyint(4) DEFAULT NULL COMMENT '是否删除',

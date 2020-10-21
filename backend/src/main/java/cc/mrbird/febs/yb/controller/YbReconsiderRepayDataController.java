@@ -173,7 +173,7 @@ public class YbReconsiderRepayDataController extends BaseController {
 
                 dataList = dataList.stream().sorted(Comparator.comparing(YbReconsiderRepayDataExport::getOrderNumber)).collect(Collectors.toList());
                 String filePath = febsProperties.getUploadPath(); // 上传后的路径
-                ExportExcelUtils.exportExcel(response,YbReconsiderRepayDataExport.class,dataList,filePath,"ReconsiderRepayTemp","还款明细");
+                ExportExcelUtils.exportExcel(response,YbReconsiderRepayDataExport.class,dataList,filePath,"","ReconsiderRepayTemp","还款明细");
             }
         } catch (Exception e) {
             message = "导出Excel失败";

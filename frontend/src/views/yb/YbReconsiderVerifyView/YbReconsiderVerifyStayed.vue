@@ -205,8 +205,7 @@ export default {
       },
       {
         title: '扣除原因',
-        dataIndex: 'deductReason',
-        width: 200
+        dataIndex: 'deductReason'
       },
       {
         title: '费用日期',
@@ -239,14 +238,14 @@ export default {
         dataIndex: 'verifyDeptName',
         scopedSlots: { customRender: 'verifyDeptName' },
         fixed: 'right',
-        width: 125
+        width: 130
       },
       {
         title: '参考复议医生',
         dataIndex: 'verifyDoctorName',
         scopedSlots: { customRender: 'verifyDoctorName' },
         fixed: 'right',
-        width: 125
+        width: 130
       },
       {
         title: '操作',
@@ -385,18 +384,40 @@ export default {
       })
     },
     // 模拟往服务器发送请求
-    ajax (keyword) {
-      let dataSource = [{value: '101A', text: '测试科室1'}, {value: '102A', text: '测试科室2'}, {value: '103A', text: '测试科室3'}]
+    ajaxDept (keyword) {
+      let dataSource = []
+      let params = {comments: keyword}
+      this.$get('ybDept/findDeptList', {
+        ...params
+      }).then((r) => {
+        r.data.data.forEach((item, i) => {
+          dataSource.push({
+            value: item.deptCode,
+            text: item.deptName
+          })
+        })
+      })
       return dataSource
     },
-    ajaxDoc (keyword) {
-      let dataSource = [{value: 'mrbird', text: '系统管理员'}, {value: '102A', text: '测试医生2'}, {value: '103A', text: '测试医生3'}]
+    ajaxDoctor (keyword) {
+      let dataSource = []
+      let params = {comments: keyword}
+      this.$get('ybPerson/findPersonList', {
+        ...params
+      }).then((r) => {
+        r.data.data.forEach((item, i) => {
+          dataSource.push({
+            value: item.personCode,
+            text: item.personName
+          })
+        })
+      })
       return dataSource
     },
     // 输入框事件
     handleDoctorSearch (keyword) {
       // 模拟往服务器发送请求
-      this.selectDoctorDataSource = this.ajaxDoc(keyword)
+      this.selectDoctorDataSource = this.ajaxDoctor(keyword)
     },
     handleDoctorChange (value, key, column) {
       const newData = [...this.dataSource]
@@ -415,7 +436,7 @@ export default {
     // 输入框事件
     handleDeptSearch (keyword) {
       // 模拟往服务器发送请求
-      this.selectDeptDataSource = this.ajax(keyword)
+      this.selectDeptDataSource = this.ajaxDept(keyword)
     },
     handleDeptChange (value, key, column) {
       const newData = [...this.dataSource]

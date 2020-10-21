@@ -32,6 +32,8 @@ public interface IYbReconsiderApplyDataService extends IService<YbReconsiderAppl
 
         void deleteYbReconsiderApplyDatas(String[]Ids);
 
+        int deleteReconsiderApplyDataByPid(YbReconsiderApplyData ybReconsiderApplyData);
+
         List<YbReconsiderApplyData> findReconsiderApplyDataByApplyDates(String applyDateStr, Integer dataType);
 
         void createBatchDatas(List<YbReconsiderApplyData> listReconsiderApplyData);

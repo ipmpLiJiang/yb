@@ -29,4 +29,6 @@ public interface IYbPersonService extends IService<YbPerson> {
         List<YbPerson> findPersonList(YbPerson ybPerson);
 
         void deleteYbPersons(String[]Ids);
+
+        String importUserRoles(Integer type) throws Exception;
         }
