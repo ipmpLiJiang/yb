@@ -102,7 +102,7 @@ export default {
         title: '项目名称',
         dataIndex: 'projectName',
         fixed: 'left',
-        width: 100
+        width: 140
       },
       {
         title: '医保内金额',
@@ -112,7 +112,7 @@ export default {
       {
         title: '规则名称',
         dataIndex: 'ruleName',
-        width: 100
+        width: 140
       },
       {
         title: '扣除金额',
@@ -143,7 +143,7 @@ export default {
       {
         title: '费用日期',
         dataIndex: 'costDateStr',
-        width: 120
+        width: 110
       },
       {
         title: '状态',

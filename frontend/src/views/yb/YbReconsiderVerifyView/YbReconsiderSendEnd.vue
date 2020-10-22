@@ -101,7 +101,7 @@ export default {
       {
         title: '规则名称',
         dataIndex: 'ruleName',
-        width: 100
+        width: 140
       },
       {
         title: '扣除金额',
@@ -110,7 +110,8 @@ export default {
       },
       {
         title: '扣除原因',
-        dataIndex: 'deductReason'
+        dataIndex: 'deductReason',
+        width: 250
       },
       {
         title: '费用日期',
@@ -126,7 +127,7 @@ export default {
             return text
           }
         },
-        width: 120
+        width: 110
       },
       {
         title: '复议科室',
@@ -142,12 +143,12 @@ export default {
       },
       {
         title: '意见书类型',
-        dataIndex: 'dataType',
+        dataIndex: 'typeno',
         customRender: (text, row, index) => {
           switch (text) {
-            case 0:
-              return '审核一'
             case 1:
+              return '审核一'
+            case 2:
               return '审核二'
             default:
               return text

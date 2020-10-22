@@ -76,6 +76,7 @@ public class YbAppealResultViewController extends BaseController {
         return getDataTable(this.iYbAppealResultViewService.findYbAppealResultViews(request, ybAppealResultView));
     }
 
+    //数据剔除详情明细
     @GetMapping("findAppealResultViewReset")
     @RequiresPermissions("ybAppealResultView:view")
     public Map<String, Object> findAppealResultViewReset(QueryRequest request, YbAppealResultView ybAppealResultView) {

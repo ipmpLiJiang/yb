@@ -69,7 +69,7 @@
             }"
             label="拒绝理由"
           >
-          {{ybAppealManageChangeDetail.refuseReason}}11
+          {{ybAppealManageChangeDetail.refuseReason}}
           </a-form-item>
         </a-col>
       </a-row>

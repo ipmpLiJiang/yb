@@ -39,6 +39,9 @@ export default {
     },
     belongDateStr: {
       default: ''
+    },
+    dataType: {
+      default: 0
     }
   },
   data () {
@@ -143,7 +146,7 @@ export default {
         let queryParams = {}
         queryParams.pid = this.pid
         queryParams.state = 2
-        queryParams.dataType = 0
+        queryParams.dataType = this.dataType
         if (this.belongDateStr !== '') {
           queryParams.belongDateStr = this.belongDateStr
         }

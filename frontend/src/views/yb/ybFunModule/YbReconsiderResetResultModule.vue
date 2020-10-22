@@ -2,7 +2,7 @@
   <a-drawer
     title="查看还款明细"
     :maskClosable="false"
-    width=75%
+    width=80%
     placement="right"
     :closable="true"
     @close="onClose"
@@ -97,16 +97,10 @@ export default {
         width: 120
       },
       {
-        title: '项目编码',
-        dataIndex: 'projectCode',
-        fixed: 'left',
-        width: 100
-      },
-      {
         title: '项目名称',
         dataIndex: 'projectName',
         fixed: 'left',
-        width: 100
+        width: 140
       },
       {
         title: '医保内金额',
@@ -116,7 +110,7 @@ export default {
       {
         title: '规则名称',
         dataIndex: 'ruleName',
-        width: 100
+        width: 140
       },
       {
         title: '扣除金额',
@@ -130,7 +124,8 @@ export default {
       },
       {
         title: '扣除原因',
-        dataIndex: 'deductReason'
+        dataIndex: 'deductReason',
+        width: 250
       },
       {
         title: '费用日期',
@@ -141,22 +136,25 @@ export default {
         title: '科室名称',
         dataIndex: 'arDeptName',
         fixed: 'right',
-        width: 120
+        width: 110
       },
       {
         title: '医生姓名',
         dataIndex: 'arDoctorName',
         fixed: 'right',
-        width: 105
+        width: 90
       },
       {
-        title: '状态',
-        dataIndex: 'repayDataId',
+        title: '剔除状态',
+        dataIndex: 'seekState',
         customRender: (text, row, index) => {
-          if (text !== null) {
-            return '已还款'
-          } else {
-            return '未还款'
+          switch (text) {
+            case 0:
+              return '未剔除'
+            case 1:
+              return '已剔除'
+            default:
+              return text
           }
         },
         fixed: 'right',
@@ -223,12 +221,13 @@ export default {
     fetch (params = {}) {
       params.applyDateStr = this.ybReconsiderResetResult.belongDateStr
       let warnType = this.ybReconsiderResetResult.warnType
-      if (warnType === 3 || warnType === 6 || warnType === 2 || warnType === 5) {
+      if (warnType === 2 || warnType === 5) {
         params.orderNumber = this.ybReconsiderResetResult.orderNumberNew
       } else {
         params.orderNumber = this.ybReconsiderResetResult.orderNumber
       }
       params.dataType = this.ybReconsiderResetResult.dataType
+      params.deductPrice = this.ybReconsiderResetResult.deductPrice
       this.loading = true
       if (this.paginationInfo) {
         // 如果分页信息不为空，则设置表格当前第几页，每页条数，并设置查询分页参数

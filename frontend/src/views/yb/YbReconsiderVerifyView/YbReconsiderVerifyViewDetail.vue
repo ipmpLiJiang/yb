@@ -120,7 +120,6 @@ export default {
       this.$emit('close')
     },
     handleSubmit () {
-      debugger
       this.loading = true
       let arrData = [{
         id: this.ybReconsiderVerify.id,
@@ -146,19 +145,16 @@ export default {
       this.ybReconsiderVerify.verifyDoctorName = item.text
     },
     selectDeptChang (item) {
-      debugger
       this.ybReconsiderVerify.verifyDeptCode = item.value
       this.ybReconsiderVerify.verifyDeptName = item.text
     },
     setFormValues ({ ...ybReconsiderVerifyView }) {
-      debugger
       this.ybReconsiderVerifyView = ybReconsiderVerifyView
       setTimeout(() => {
         this.setForms(ybReconsiderVerifyView)
       }, 200)
     },
     setForms (target) {
-      debugger
       this.$refs.inputSelectVerifyDept.dataSource = [{
         text: target.verifyDeptName,
         value: target.verifyDeptCode

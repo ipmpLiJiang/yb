@@ -163,12 +163,12 @@ export default {
         let params = { pid: this.ybReconsiderApply.id, typeno: this.typeno, state: this.ybReconsiderApply.state }
         this.$delete('ybReconsiderApplyData/deleteData', params).then((r) => {
           if (r.data.data.success === 1) {
-            this.$message.success('删除成功')
+            this.$message.success('删除明细成功')
             this.searchTable()
             this.showBtn = true
             this.showDelBtn = false
           } else {
-            this.$message.error('删除失败')
+            this.$message.error('删除明细失败或状态已更新无法删除？')
           }
         })
       } else {
@@ -195,6 +195,7 @@ export default {
       }
     },
     setFormValues ({ ...ybReconsiderApply }, typeno) {
+      this.tableSelectKey = '1'
       this.ybReconsiderApply = ybReconsiderApply
       let pid = ybReconsiderApply.id
       this.typeno = typeno

@@ -116,6 +116,7 @@
               ref="ybReconsiderRepayData"
               :pid="this.ybReconsiderRepay.id"
               :belongDateStr="searchBelongDateStr"
+              :dataType="ybReconsiderRepay.dataType"
               @look="look"
             >
             </ybReconsiderRepay-data>
@@ -129,6 +130,7 @@
               ref="ybReconsiderRepayExcept"
               :pid="this.ybReconsiderRepay.id"
               :belongDateStr="searchBelongDateStr"
+              :dataType="ybReconsiderRepay.dataType"
               @look="look"
               @exceptRepay="exceptRepay"
             >
@@ -143,6 +145,7 @@
               ref="ybReconsiderRepayUnknown"
               :pid="this.ybReconsiderRepay.id"
               :belongDateStr="searchBelongDateStr"
+              :dataType="ybReconsiderRepay.dataType"
               @look="look"
             >
             </ybReconsiderRepay-unknown>
@@ -227,9 +230,11 @@ export default {
       this.lookVisiable = true
       this.$refs.ybReconsiderResetResultModule.setFormValues(record)
     },
-    handleExceptRepayClose () {
+    handleExceptRepayClose (isUpdate) {
       this.exceptRepayVisiable = false
-      this.$refs.ybReconsiderRepayData.search()
+      if (isUpdate) {
+        this.$refs.ybReconsiderRepayExcept.search()
+      }
     },
     exceptRepay (record) {
       this.exceptRepayVisiable = true

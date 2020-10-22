@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -42,7 +43,23 @@ public class YbReconsiderResetResultViewServiceImpl extends ServiceImpl<YbRecons
                 sql += " and dataType = " + ybReconsiderResetResultView.getDataType();
             }
 
-            sql +=  ")";
+            sql += ")";
+
+            if (ybReconsiderResetResultView.getDataType() != null) {
+                if(ybReconsiderResetResultView.getDataType()==0) {
+                    if (ybReconsiderResetResultView.getProjectName() != null) {
+                        sql += " and projectName = '" + ybReconsiderResetResultView.getProjectName() + "'";
+                    }
+                }
+                if (ybReconsiderResetResultView.getBillNo() != null) {
+                    sql += " and billNo = '" + ybReconsiderResetResultView.getBillNo() + "'";
+                }
+            }
+
+            if (ybReconsiderResetResultView.getDeductPrice() != null) {
+                sql += " and deductPrice = " + ybReconsiderResetResultView.getDeductPrice();
+            }
+
             if (ybReconsiderResetResultView.getOrderNumber() != null) {
                 String orderNumbers = ybReconsiderResetResultView.getOrderNumber();
                 String[] orderNumberArr = orderNumbers.split(",");

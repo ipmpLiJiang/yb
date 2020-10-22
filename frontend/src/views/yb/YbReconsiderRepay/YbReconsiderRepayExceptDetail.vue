@@ -23,8 +23,9 @@
         :dataSource="dataSource"
         :pagination="pagination"
         :loading="loading"
-        :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
+        :rowSelection="{type: 'radio', selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
         @change="handleTableChange"
+        :customRow="handleClickRow"
         :bordered="bordered"
         :scroll="{ x: 700 }"
       >
@@ -49,6 +50,8 @@
           <a-popconfirm
             title="确定还款该数据？"
             @confirm="handleRepay"
+            v-show="!isUpdate"
+            :disabled="isUpdate"
             okText="确定"
             cancelText="取消"
           >
@@ -102,6 +105,7 @@ export default {
       },
       loading: false,
       bordered: true,
+      isUpdate: false,
       ybReconsiderRepayExcep: {}
     }
   },
@@ -129,7 +133,7 @@ export default {
         title: '项目名称',
         dataIndex: 'projectName',
         fixed: 'left',
-        width: 100
+        width: 140
       },
       {
         title: '医保内金额',
@@ -139,7 +143,7 @@ export default {
       {
         title: '规则名称',
         dataIndex: 'ruleName',
-        width: 100
+        width: 140
       },
       {
         title: '扣除金额',
@@ -153,7 +157,8 @@ export default {
       },
       {
         title: '扣除原因',
-        dataIndex: 'deductReason'
+        dataIndex: 'deductReason',
+        width: 250
       },
       {
         title: '费用日期',
@@ -173,13 +178,16 @@ export default {
         width: 105
       },
       {
-        title: '状态',
-        dataIndex: 'repayDataId',
+        title: '剔除状态',
+        dataIndex: 'seekState',
         customRender: (text, row, index) => {
-          if (text !== null) {
-            return '已还款'
-          } else {
-            return '未还款'
+          switch (text) {
+            case 0:
+              return '未剔除'
+            case 1:
+              return '已剔除'
+            default:
+              return text
           }
         },
         fixed: 'right',
@@ -207,25 +215,44 @@ export default {
       this.queryParams = {}
       this.dataSource = []
     },
+    handleClickRow (record, index) {
+      return {
+        on: {
+          click: () => {
+            let target = this.selectedRowKeys.filter(key => key === record.id)[0]
+            if (target === undefined) {
+              this.selectedRowKeys = []
+              this.selectedRowKeys.push(record.id)
+            } else {
+              this.selectedRowKeys.splice(this.selectedRowKeys.indexOf(record.id), 1)
+            }
+          }
+        }
+      }
+    },
     onClose () {
       this.loading = false
       this.ybReconsiderRepayExcep = {}
       this.reset()
-      this.$emit('close')
+      this.$emit('close', this.isUpdate)
     },
     handleRepay () {
       if (this.selectedRowKeys.length === 1) {
+        const target = this.dataSource.filter(item => this.selectedRowKeys[0] === item.id)[0]
         let updateParams = {
-          resultId: this.selectedRowKeys[0],
+          resultId: target.resultId,
           repayId: this.ybReconsiderRepayExcep.id
         }
         this.$put('ybReconsiderRepayData/updateHandleRepayData', {
           ...updateParams
         }).then((r) => {
           if (r.data.data.success === 1) {
-            this.search()
-            this.$message.success(r.data.data.message)
             this.isUpdate = true
+            this.ybReconsiderRepayExcep.orderNumberNew = target.orderNumber
+            if (this.dataSource.length !== 1) {
+              this.search()
+            }
+            this.$message.success(r.data.data.message)
           } else {
             this.$message.warning(r.data.data.message)
           }
@@ -241,6 +268,7 @@ export default {
       this.selectedRowKeys = selectedRowKeys
     },
     setFormValues ({ ...ybReconsiderRepayExcep }) {
+      this.isUpdate = false
       this.ybReconsiderRepayExcep = ybReconsiderRepayExcep
       this.search()
     },
@@ -268,16 +296,18 @@ export default {
       })
     },
     fetch (params = {}) {
-      params.applyDateStr = this.ybReconsiderRepayExcep.applyDateStr
-      let warnType = this.ybReconsiderRepayExcep.warnType
-      if (warnType === 3 || warnType === 2 || warnType === 5) {
+      params.applyDateStr = this.ybReconsiderRepayExcep.belongDateStr
+      params.billNo = this.ybReconsiderRepayExcep.billNo
+      console.log(this.ybReconsiderRepayExcep)
+      if (this.ybReconsiderRepayExcep.warnType === 3 && this.ybReconsiderRepayExcep.orderNumberNew !== '' && this.ybReconsiderRepayExcep.orderNumberNew != null) {
         params.orderNumber = this.ybReconsiderRepayExcep.orderNumberNew
-      } else {
-        params.orderNumber = this.ybReconsiderRepayExcep.orderNumber
       }
+      if (this.ybReconsiderRepayExcep.dataType === 0) {
+        params.projectName = this.ybReconsiderRepayExcep.projectName
+      }
+      // let warnType = this.ybReconsiderRepayExcep.warnType
       params.dataType = this.ybReconsiderRepayExcep.dataType
-      params.sourceType = 0
-      params.state = 2
+      params.deductPrice = this.ybReconsiderRepayExcep.deductPrice
       this.loading = true
       if (this.paginationInfo) {
         // 如果分页信息不为空，则设置表格当前第几页，每页条数，并设置查询分页参数
@@ -291,7 +321,7 @@ export default {
         params.pageNum = this.pagination.defaultCurrent
       }
 
-      this.$get('ybReconsiderRepayResultView', {
+      this.$get('ybReconsiderResetResultView', {
         ...params
       }).then((r) => {
         let data = r.data

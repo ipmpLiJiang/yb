@@ -50,6 +50,7 @@
           <a-popconfirm
             title="确定剔除该数据？"
             @confirm="handleReset"
+            v-show="!isUpdate"
             :disabled="isUpdate"
             okText="确定"
             cancelText="取消"
@@ -132,7 +133,7 @@ export default {
         title: '项目名称',
         dataIndex: 'projectName',
         fixed: 'left',
-        width: 100
+        width: 140
       },
       {
         title: '数量',
@@ -147,7 +148,7 @@ export default {
       {
         title: '规则名称',
         dataIndex: 'ruleName',
-        width: 100
+        width: 140
       },
       {
         title: '扣除金额',
@@ -156,7 +157,8 @@ export default {
       },
       {
         title: '扣除原因',
-        dataIndex: 'deductReason'
+        dataIndex: 'deductReason',
+        width: 250
       },
       {
         title: '费用日期',
@@ -269,9 +271,9 @@ export default {
           ...updateParams
         }).then((r) => {
           if (r.data.data.success === 1) {
+            this.isUpdate = true
             this.search()
             this.$message.success(r.data.data.message)
-            this.isUpdate = true
           } else {
             this.$message.warning(r.data.data.message)
           }
@@ -287,6 +289,7 @@ export default {
       this.selectedRowKeys = selectedRowKeys
     },
     setFormValues ({ ...ybReconsiderResetExceptDetail }) {
+      this.isUpdate = false
       this.ybReconsiderResetExceptDetail = ybReconsiderResetExceptDetail
       this.search()
     },

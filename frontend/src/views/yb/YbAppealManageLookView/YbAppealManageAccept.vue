@@ -1,6 +1,6 @@
 <template>
   <div id="tab" style="margin: 0px!important">
-        <!-- 表格区域 -->
+        <!-- 接受申请 表格区域 -->
         <a-table
           ref="TableInfo"
           :columns="columns"
@@ -8,8 +8,10 @@
           :dataSource="dataSource"
           :pagination="pagination"
           :loading="loading"
+          :rowSelection="{type: 'radio', selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
           @change="handleTableChange"
           :bordered="bordered"
+          :customRow="handleClickRow"
           :scroll="{ x: 900 }"
         >
           <template
@@ -19,8 +21,8 @@
             <div class="editable-row-operations">
               <span>
                 <a
-                  @click.stop="() => edit(record,index)"
-                >录入扣款方案</a>
+                  @click.stop="() => look(record,index)"
+                >查看</a>
               </span>
             </div>
           </template>
@@ -30,24 +32,14 @@
 
 <script>
 import moment from 'moment'
-import { custom } from '../../js/custom'
 export default {
-  name: 'YbAppealResultDeductImplementStayed',
+  name: 'YbAppealManageAccept',
   props: {
-    applyDateStr: {
-      default: ''
-    },
-    applyDateToStr: {
-      default: ''
-    },
-    defaultFormatDate: {
+    applyDate: {
       default: ''
     },
     searchText: {
       default: ''
-    },
-    searchDataType: {
-      default: 0
     }
   },
   data () {
@@ -72,7 +64,8 @@ export default {
       },
       loading: false,
       bordered: true,
-      ybAppealResultDeductImplement: {}
+      ybAppealManage: {},
+      tableFormat: 'YYYY-MM-DD'
     }
   },
   computed: {
@@ -87,7 +80,13 @@ export default {
         title: '意见书编码',
         dataIndex: 'proposalCode',
         fixed: 'left',
-        width: 130
+        width: 120
+      },
+      {
+        title: '项目编码',
+        dataIndex: 'projectCode',
+        fixed: 'left',
+        width: 100
       },
       {
         title: '项目名称',
@@ -98,7 +97,7 @@ export default {
       {
         title: '数量',
         dataIndex: 'num',
-        width: 70
+        width: 100
       },
       {
         title: '医保内金额',
@@ -123,58 +122,87 @@ export default {
       {
         title: '费用日期',
         dataIndex: 'costDateStr',
-        width: 110
-      },
-      {
-        title: '科室名称',
-        dataIndex: 'arDeptName',
-        width: 120
+        customRender: (text, row, index) => {
+          if (text !== '' && text !== null) {
+            if (isNaN(text) && !isNaN(Date.parse(text))) {
+              return moment(text).format(this.tableFormat)
+            } else {
+              return text
+            }
+          } else {
+            return text
+          }
+        },
+        width: 115
       },
       {
         title: '医生姓名',
-        dataIndex: 'arDoctorName',
-        width: 110
+        dataIndex: 'doctorName',
+        width: 100
       },
       {
-        title: '扣款类型',
-        dataIndex: 'dataType',
-        customRender: (text, row, index) => {
-          switch (text) {
-            case 0:
-              return '明细扣款'
-            case 1:
-              return '主单扣款'
-            default:
-              return text
-          }
-        },
-        fixed: 'right',
-        width: 90
+        title: '科室名称',
+        dataIndex: 'deptName',
+        width: 100
       },
       {
         title: '操作',
         dataIndex: 'operation',
         scopedSlots: { customRender: 'operation' },
         fixed: 'right',
-        width: 120
+        width: 90
       }]
     }
   },
   mounted () {
-    // this.fetch()
+    this.fetch()
   },
   methods: {
     moment,
+    warning () {
+      this.$warning({
+        title: '操作提示',
+        content: '当前时间已超过可操作时间'
+      })
+    },
     rowNo (index) {
       return (this.pagination.defaultCurrent - 1) *
             this.pagination.defaultPageSize + index + 1
     },
+    handleClickRow (record, index) {
+      return {
+        on: {
+          click: () => {
+            let target = this.selectedRowKeys.filter(key => key === record.id)[0]
+            if (target === undefined) {
+              this.selectedRowKeys = []
+              this.selectedRowKeys.push(record.id)
+            } else {
+              this.selectedRowKeys.splice(this.selectedRowKeys.indexOf(record.id), 1)
+            }
+          }
+        }
+      }
+    },
     onSelectChange (selectedRowKeys) {
       this.selectedRowKeys = selectedRowKeys
     },
-    edit (record, index) {
+    look (record, index) {
       record.rowNo = this.rowNo(index)
-      this.$emit('edit', record)
+      this.$emit('look', record)
+    },
+    onHistory () {
+      let selectedRowKeys = this.selectedRowKeys
+      if (selectedRowKeys.length === 1) {
+        let target = this.dataSource.filter(item => selectedRowKeys[0] === item.id)[0]
+        let indOf = this.dataSource.indexOf(target)
+        target.rowNo = this.rowNo(indOf)
+        this.$emit('onHistoryLook', target)
+      } else if (selectedRowKeys.length === 0) {
+        this.$message.success('未选择行')
+      } else {
+        this.$message.success('请选择单行')
+      }
     },
     search () {
       let { sortedInfo } = this
@@ -216,50 +244,34 @@ export default {
       })
     },
     fetch (params = {}) {
-      let dateStr = this.applyDateStr
-      let dateToStr = this.applyDateToStr
-
-      let arrDateStr = custom.resetApplyDateStr(dateStr, dateToStr, this.defaultFormatDate)
-      dateStr = arrDateStr[0]
-      dateToStr = arrDateStr[1]
-
-      let msg = custom.checkApplyDateStr(dateStr, dateToStr, 3)
-      if (msg === '') {
-        this.loading = true
-        params.applyDateFrom = dateStr
-        params.applyDateTo = dateToStr
-        params.currencyField = this.searchText
-        if (this.searchDataType !== 2) {
-          params.dataType = this.searchDataType
-        }
-        if (this.paginationInfo) {
-          // 如果分页信息不为空，则设置表格当前第几页，每页条数，并设置查询分页参数
-          this.$refs.TableInfo.pagination.current = this.paginationInfo.current
-          this.$refs.TableInfo.pagination.pageSize = this.paginationInfo.pageSize
-          params.pageSize = this.paginationInfo.pageSize
-          params.pageNum = this.paginationInfo.current
-        } else {
-          // 如果分页信息为空，则设置为默认值
-          params.pageSize = this.pagination.defaultPageSize
-          params.pageNum = this.pagination.defaultCurrent
-        }
-        params.sortField = 'applyDateStr asc,orderNumber'
-        // params.sortOrder = 'descend'
-        params.sortOrder = 'ascend'
-        this.$get('ybAppealResultDeductimplementView', {
-          ...params
-        }).then((r) => {
-          let data = r.data
-          const pagination = { ...this.pagination }
-          pagination.total = data.total
-          this.loading = false
-          this.dataSource = data.rows
-          this.pagination = pagination
-        })
-        this.selectedRowKeys = []
+      this.loading = true
+      params.applyDateStr = this.applyDate
+      params.acceptState = 0
+      params.currencyField = this.searchText
+      if (this.paginationInfo) {
+        // 如果分页信息不为空，则设置表格当前第几页，每页条数，并设置查询分页参数
+        this.$refs.TableInfo.pagination.current = this.paginationInfo.current
+        this.$refs.TableInfo.pagination.pageSize = this.paginationInfo.pageSize
+        params.pageSize = this.paginationInfo.pageSize
+        params.pageNum = this.paginationInfo.current
       } else {
-        this.$message.error(msg)
+        // 如果分页信息为空，则设置为默认值
+        params.pageSize = this.pagination.defaultPageSize
+        params.pageNum = this.pagination.defaultCurrent
       }
+      params.sortField = 'orderNumber'
+      params.sortOrder = 'ascend'
+      this.$get('ybAppealManageView', {
+        ...params
+      }).then((r) => {
+        let data = r.data
+        const pagination = { ...this.pagination }
+        pagination.total = data.total
+        this.loading = false
+        this.dataSource = data.rows
+        this.pagination = pagination
+      })
+      this.selectedRowKeys = []
     }
   }
 }

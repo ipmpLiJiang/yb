@@ -9,6 +9,7 @@ import cc.mrbird.febs.common.exception.FebsException;
 import cc.mrbird.febs.common.domain.QueryRequest;
 
 import cc.mrbird.febs.common.properties.FebsProperties;
+import cc.mrbird.febs.yb.domain.ResponseResult;
 import cc.mrbird.febs.yb.domain.ResponseResultData;
 import cc.mrbird.febs.yb.entity.*;
 import cc.mrbird.febs.yb.service.IYbReconsiderRepayDataService;
@@ -207,8 +208,7 @@ public class YbReconsiderRepayDataController extends BaseController {
     @PutMapping("updateRepayData")
     @RequiresPermissions("ybReconsiderRepayData:updateRepayData")
     public FebsResponse updateRepayDatas(@Valid YbReconsiderRepayData ybReconsiderRepayData) {
-        ResponseResultData responseResultData = new ResponseResultData();
-        responseResultData.setSuccess(0);
+        int success = 0;
         try {
             User currentUser = FebsUtil.getCurrentUser();
             Long uid = currentUser.getUserId();
@@ -218,7 +218,7 @@ public class YbReconsiderRepayDataController extends BaseController {
             if("ok".equals(message)){
                 message = this.iYbReconsiderRepayDataService.updateFieldRepayDatas(ybReconsiderRepayData,uid,uname);
                 if("ok".equals(message) || "repay0".equals(message)) {
-                    responseResultData.setSuccess(1);
+                    success = 1;
                     message = "还款数据成功.";
                 }else {
                     if(message.equals("result0")){
@@ -235,36 +235,37 @@ public class YbReconsiderRepayDataController extends BaseController {
             if(message.equals("")){
                 message = "未找到可变更的数据.";
             }
-            responseResultData.setMessage(message);
         } catch (Exception e) {
             message = "还款数据失败.";
             log.error(message, e);
-            responseResultData.setMessage(message);
         }
-        return new FebsResponse().data(responseResultData);
+        ResponseResult rr = new ResponseResult();
+        rr.setSuccess(success);
+        rr.setMessage(message);
+        return new FebsResponse().data(rr);
     }
 
     @Log("修改")
     @PutMapping("updateHandleRepayData")
     @RequiresPermissions("ybReconsiderRepayData:updateRepayData")
     public FebsResponse updateHandleRepayData(String resultId,String repayId) {
-        ResponseResultData responseResultData = new ResponseResultData();
-        responseResultData.setSuccess(0);
+        int success = 0;
         try {
             User currentUser = FebsUtil.getCurrentUser();
             Long uid = currentUser.getUserId();
             String uname = currentUser.getUsername();
             message = this.iYbReconsiderRepayDataService.updateHandleRepayDatas(resultId,repayId,uid,uname);
             if("ok".equals(message)){
-                responseResultData.setSuccess(1);
+                success= 1;
                 message = "还款数据成功.";
             }
-            responseResultData.setMessage(message);
         } catch (Exception e) {
             message = "还款数据失败.";
             log.error(message, e);
-            responseResultData.setMessage(message);
         }
-        return new FebsResponse().data(responseResultData);
+        ResponseResult rr = new ResponseResult();
+        rr.setSuccess(success);
+        rr.setMessage(message);
+        return new FebsResponse().data(rr);
     }
 }

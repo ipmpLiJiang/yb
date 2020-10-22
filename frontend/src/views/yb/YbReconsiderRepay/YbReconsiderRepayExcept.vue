@@ -42,6 +42,9 @@ export default {
     },
     belongDateStr: {
       default: ''
+    },
+    dataType: {
+      default: 0
     }
   },
   data () {
@@ -188,7 +191,7 @@ export default {
       this.loading = true
       params.pid = this.pid
       params.state = 1
-      params.dataType = 0
+      params.dataType = this.dataType
       if (this.belongDateStr !== '') {
         params.belongDateStr = this.belongDateStr
       }

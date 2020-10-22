@@ -53,6 +53,10 @@ public class YbReconsiderRepayDataServiceImpl extends ServiceImpl<YbReconsiderRe
             LambdaQueryWrapper<YbReconsiderRepayData> queryWrapper = new LambdaQueryWrapper<>();
             queryWrapper.eq(YbReconsiderRepayData::getIsDeletemark, 1);//1是未删 0是已删
 
+            if (ybReconsiderRepayData.getPid() != null) {
+                queryWrapper.eq(YbReconsiderRepayData::getPid, ybReconsiderRepayData.getPid());
+            }
+
             if (ybReconsiderRepayData.getBelongDateStr() != null) {
                 queryWrapper.eq(YbReconsiderRepayData::getBelongDateStr, ybReconsiderRepayData.getBelongDateStr());
             }
@@ -94,28 +98,28 @@ public class YbReconsiderRepayDataServiceImpl extends ServiceImpl<YbReconsiderRe
 
     @Override
     public List<YbReconsiderRepayData> findReconsiderRepayLists(YbReconsiderRepayData ybReconsiderRepayData) {
-            LambdaQueryWrapper<YbReconsiderRepayData> queryWrapper = new LambdaQueryWrapper<>();
-            queryWrapper.eq(YbReconsiderRepayData::getIsDeletemark, 1);//1是未删 0是已删
+        LambdaQueryWrapper<YbReconsiderRepayData> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(YbReconsiderRepayData::getIsDeletemark, 1);//1是未删 0是已删
 
-            if (ybReconsiderRepayData.getBelongDateStr() != null) {
-                queryWrapper.eq(YbReconsiderRepayData::getBelongDateStr, ybReconsiderRepayData.getBelongDateStr());
-            }
+        if (ybReconsiderRepayData.getBelongDateStr() != null) {
+            queryWrapper.eq(YbReconsiderRepayData::getBelongDateStr, ybReconsiderRepayData.getBelongDateStr());
+        }
 
-            if (ybReconsiderRepayData.getRepayType() != null) {
-                queryWrapper.eq(YbReconsiderRepayData::getRepayType, ybReconsiderRepayData.getRepayType());
-            }
+        if (ybReconsiderRepayData.getRepayType() != null) {
+            queryWrapper.eq(YbReconsiderRepayData::getRepayType, ybReconsiderRepayData.getRepayType());
+        }
 
-            if (ybReconsiderRepayData.getDataType() != null) {
-                queryWrapper.eq(YbReconsiderRepayData::getDataType, ybReconsiderRepayData.getDataType());
-            }
-            if (ybReconsiderRepayData.getState() != null) {
-                queryWrapper.eq(YbReconsiderRepayData::getState, ybReconsiderRepayData.getState());
-            }
-            if (ybReconsiderRepayData.getSeekState() != null) {
-                queryWrapper.eq(YbReconsiderRepayData::getSeekState, ybReconsiderRepayData.getSeekState());
-            }
+        if (ybReconsiderRepayData.getDataType() != null) {
+            queryWrapper.eq(YbReconsiderRepayData::getDataType, ybReconsiderRepayData.getDataType());
+        }
+        if (ybReconsiderRepayData.getState() != null) {
+            queryWrapper.eq(YbReconsiderRepayData::getState, ybReconsiderRepayData.getState());
+        }
+        if (ybReconsiderRepayData.getSeekState() != null) {
+            queryWrapper.eq(YbReconsiderRepayData::getSeekState, ybReconsiderRepayData.getSeekState());
+        }
 
-            return this.list(queryWrapper);
+        return this.list(queryWrapper);
     }
 
     @Override
@@ -152,7 +156,7 @@ public class YbReconsiderRepayDataServiceImpl extends ServiceImpl<YbReconsiderRe
         String message = "";
         String sql = "";
         LambdaQueryWrapper<YbReconsiderRepayData> queryWrapperRay = new LambdaQueryWrapper<>();
-        sql += " pid = '" + ybReconsiderRepayData.getPid()+ "'";
+        sql += " pid = '" + ybReconsiderRepayData.getPid() + "'";
         sql += " and dataType = " + ybReconsiderRepayData.getDataType();
         sql += " and seekState = " + ybReconsiderRepayData.getSeekState();
         sql += " and state = " + ybReconsiderRepayData.getState();
@@ -205,15 +209,15 @@ public class YbReconsiderRepayDataServiceImpl extends ServiceImpl<YbReconsiderRe
                                 updateResetData.setId(rAd.getId());
 
                                 BigDecimal addDec = null;
-                                if(rrd.getRepaymentPrice()!=null){
+                                if (rrd.getRepaymentPrice() != null) {
                                     addDec = new BigDecimal(rrd.getRepaymentPrice().toString());
-                                }else{
+                                } else {
                                     addDec = new BigDecimal("0");
                                 }
                                 BigDecimal repaymentPrice = new BigDecimal("0");
                                 if (rAd.getRepaymentPrice() != null) {
                                     repaymentPrice = addDec.add(rAd.getRepaymentPrice());
-                                }else{
+                                } else {
                                     repaymentPrice = addDec;
                                 }
 
@@ -239,7 +243,7 @@ public class YbReconsiderRepayDataServiceImpl extends ServiceImpl<YbReconsiderRe
                         }
                     }
                 }
-                boolean bl = false;
+                boolean bl = true;
                 if (updateResultList.size() > 0) {
                     bl = this.iYbAppealResultService.updateBatchById(updateResultList);
                 }
@@ -247,17 +251,16 @@ public class YbReconsiderRepayDataServiceImpl extends ServiceImpl<YbReconsiderRe
                     if (updateResetDataList.size() > 0) {
                         bl = this.iYbReconsiderResetDataService.updateBatchById(updateResetDataList);
                     }
-                    if (bl) {
-                        if (updateRepayDataList.size() > 0) {
-                            bl = this.updateBatchById(updateRepayDataList);
-                            if (bl) {
-                                YbReconsiderRepay ybReconsiderRepay = new YbReconsiderRepay();
-                                ybReconsiderRepay.setId(ybReconsiderRepayData.getPid());
-                                ybReconsiderRepay.setState(1);
-                                bl = iYbReconsiderRepayService.updateById(ybReconsiderRepay);
-                            }
+                }
+                if (bl) {
+                    if (updateRepayDataList.size() > 0) {
+                        bl = this.updateBatchById(updateRepayDataList);
+                        if (bl) {
+                            YbReconsiderRepay ybReconsiderRepay = new YbReconsiderRepay();
+                            ybReconsiderRepay.setId(ybReconsiderRepayData.getPid());
+                            ybReconsiderRepay.setState(1);
+                            bl = iYbReconsiderRepayService.updateById(ybReconsiderRepay);
                         }
-
                     }
                 }
 
@@ -339,15 +342,15 @@ public class YbReconsiderRepayDataServiceImpl extends ServiceImpl<YbReconsiderRe
                                 updateResetData.setId(rAd.getId());
 
                                 BigDecimal addDec = null;
-                                if(rrd.getRepaymentPrice()!=null){
+                                if (rrd.getRepaymentPrice() != null) {
                                     addDec = new BigDecimal(rrd.getRepaymentPrice().toString());
-                                }else{
+                                } else {
                                     addDec = new BigDecimal("0");
                                 }
                                 BigDecimal repaymentPrice = new BigDecimal("0");
                                 if (rAd.getRepaymentPrice() != null) {
                                     repaymentPrice = addDec.add(rAd.getRepaymentPrice());
-                                }else{
+                                } else {
                                     repaymentPrice = addDec;
                                 }
 
@@ -363,7 +366,7 @@ public class YbReconsiderRepayDataServiceImpl extends ServiceImpl<YbReconsiderRe
                                 updateRepayData.setResetDataId(rAd.getId());
                                 updateRepayData.setResultId(searchResultList.get(0).getId());
                                 updateRepayData.setApplyDataId(searchResultList.get(0).getApplyDataId());
-                                updateRepayData.setWarnType(2);
+                                updateRepayData.setWarnType(2);//字段匹配
                                 updateRepayData.setUpdateType(1);
                                 updateRepayData.setSeekState(1);
 
@@ -374,7 +377,7 @@ public class YbReconsiderRepayDataServiceImpl extends ServiceImpl<YbReconsiderRe
                         }
                     } else if (searchResetDataList.size() == 0) {
                         updateRepayData.setState(2);
-                        updateRepayData.setWarnType(4);
+                        updateRepayData.setWarnType(4);//无匹配
                         updateRepayDataList.add(updateRepayData);
                     } else {
                         String orderNumberNews = "";
@@ -382,16 +385,16 @@ public class YbReconsiderRepayDataServiceImpl extends ServiceImpl<YbReconsiderRe
                             if ("".equals(orderNumberNews)) {
                                 orderNumberNews = rad3.getOrderNumber();
                             } else {
-                                orderNumberNews = "," + rad3.getOrderNumber();
+                                orderNumberNews += "," + rad3.getOrderNumber();
                             }
                         }
                         updateRepayData.setOrderNumberNew(orderNumberNews);
                         updateRepayData.setState(1);
-                        updateRepayData.setWarnType(3);
+                        updateRepayData.setWarnType(3);//字段匹配多个
                         updateRepayDataList.add(updateRepayData);
                     }
                 }
-                boolean bl = false;
+                boolean bl = true;
                 if (updateResultList.size() > 0) {
                     bl = this.iYbAppealResultService.updateBatchById(updateResultList);
                 }
@@ -399,17 +402,16 @@ public class YbReconsiderRepayDataServiceImpl extends ServiceImpl<YbReconsiderRe
                     if (updateResetDataList.size() > 0) {
                         bl = this.iYbReconsiderResetDataService.updateBatchById(updateResetDataList);
                     }
-                    if (bl) {
-                        if (updateRepayDataList.size() > 0) {
-                            bl = this.updateBatchById(updateRepayDataList);
-                            if (bl) {
-                                YbReconsiderRepay ybReconsiderRepay = new YbReconsiderRepay();
-                                ybReconsiderRepay.setId(ybReconsiderRepayData.getPid());
-                                ybReconsiderRepay.setState(1);
-                                bl = iYbReconsiderRepayService.updateById(ybReconsiderRepay);
-                            }
+                }
+                if (bl) {
+                    if (updateRepayDataList.size() > 0) {
+                        bl = this.updateBatchById(updateRepayDataList);
+                        if (bl) {
+                            YbReconsiderRepay ybReconsiderRepay = new YbReconsiderRepay();
+                            ybReconsiderRepay.setId(ybReconsiderRepayData.getPid());
+                            ybReconsiderRepay.setState(1);
+                            bl = iYbReconsiderRepayService.updateById(ybReconsiderRepay);
                         }
-
                     }
                 }
                 if (bl) {
@@ -425,167 +427,6 @@ public class YbReconsiderRepayDataServiceImpl extends ServiceImpl<YbReconsiderRe
         return message;
     }
 
-    /*
-    public String updateRepayDatas1(YbReconsiderRepayData ybReconsiderRepayData, Long uid, String uname) {
-        String message = "";
-        LambdaQueryWrapper<YbReconsiderRepayData> queryWrapperRay = new LambdaQueryWrapper<>();
-        queryWrapperRay.eq(YbReconsiderRepayData::getPid, ybReconsiderRepayData.getPid());
-        queryWrapperRay.eq(YbReconsiderRepayData::getDataType, ybReconsiderRepayData.getDataType());
-        queryWrapperRay.eq(YbReconsiderRepayData::getRepayType, ybReconsiderRepayData.getRepayType());
-        queryWrapperRay.eq(YbReconsiderRepayData::getSeekState, ybReconsiderRepayData.getSeekState());
-        queryWrapperRay.eq(YbReconsiderRepayData::getState, ybReconsiderRepayData.getState());
-        queryWrapperRay.eq(YbReconsiderRepayData::getBelongDateStr, ybReconsiderRepayData.getBelongDateStr());
-        int warnType = 0;
-        List<YbReconsiderRepayData> repayDataList = this.list(queryWrapperRay);
-        if (repayDataList.size() > 0) {
-            List<YbReconsiderResetData> resetDataList = this.iYbReconsiderResetDataService.findReconsiderResetByApplyDates(ybReconsiderRepayData.getBelongDateStr(), ybReconsiderRepayData.getDataType());
-            if (resetDataList.size() > 0) {
-                List<YbAppealResult> resultList = this.iYbAppealResultService.findAppealResulDataByRepays(ybReconsiderRepayData.getBelongDateStr(), ybReconsiderRepayData.getDataType());
-                if (resultList.size() == 0) {
-                    message = "result0";
-                }
-                List<YbAppealResult> updateResultList = new ArrayList<YbAppealResult>();
-                List<YbReconsiderRepayData> updateRepayDataList = new ArrayList<YbReconsiderRepayData>();
-                List<YbReconsiderResetData> searchResetDataList = null;
-                List<YbAppealResult> searchResultList = new ArrayList<YbAppealResult>();
-                for (YbReconsiderRepayData rrd : repayDataList) {
-                    YbReconsiderRepayData updateRepayData = new YbReconsiderRepayData();
-                    updateRepayData.setId(rrd.getId());
-
-                    searchResetDataList = new ArrayList<YbReconsiderResetData>();
-                    if (rrd.getOrderNumber() != null && !"".equals(rrd.getOrderNumber())) {
-                        searchResetDataList = resetDataList.stream().filter(
-                                s -> s.getOrderNumber().equals(rrd.getOrderNumber())
-                        ).collect(Collectors.toList());
-
-                        //按序号匹配一个或多个
-                        if (searchResetDataList.size() > 0) {
-                            if (searchResetDataList.size() == 1) {
-                                warnType = 1;//序号匹配一个 暂时 state = 0 上传
-                            } else {
-                                warnType = 5;//序号匹配多个 暂时 state = 1 一对多
-                            }
-                        }
-                    }
-
-                    if (rrd.getOrderNumber() == null || "".equals(rrd.getOrderNumber()) || searchResetDataList.size() == 0) {
-                        // dataType 0 明细扣款 1主单扣款
-                        // repayType 0 居保 1 职保
-                        if (rrd.getRepayType() == 0) {
-                            if (rrd.getDataType() == 0) {
-                                searchResetDataList = resetDataList.stream().filter(
-                                        s -> s.getSerialNo().equals(rrd.getSerialNo()) &&
-                                                s.getBillNo().equals(rrd.getBillNo()) &&
-                                                s.getProjectCode().equals(rrd.getProjectCode()) &&
-                                                s.getProjectName().equals(rrd.getProjectName()) &&
-                                                s.getRuleName().equals(rrd.getRuleName())
-                                ).collect(Collectors.toList());
-                            } else {
-                                searchResetDataList = resetDataList.stream().filter(
-                                        s -> s.getBillNo().equals(rrd.getBillNo())
-                                ).collect(Collectors.toList());
-                            }
-                        } else {
-                            if (rrd.getDataType() == 0) {
-                                searchResetDataList = resetDataList.stream().filter(
-                                        s -> s.getBillNo().equals(rrd.getBillNo()) &&
-                                                s.getProjectName().equals(rrd.getProjectName())
-                                ).collect(Collectors.toList());
-                            } else {
-                                searchResetDataList = resetDataList.stream().filter(
-                                        s -> s.getBillNo().equals(rrd.getBillNo())
-                                ).collect(Collectors.toList());
-                            }
-                        }
-                        //序号和字段都无法匹配
-                        if (searchResetDataList.size() == 0) {
-                            warnType = 4; //序号和字段都无匹配 暂时 state = 2 未知
-                        } else {
-                            if (rrd.getOrderNumber() != null && !"".equals(rrd.getOrderNumber())) {
-                                if (searchResetDataList.size() > 0) {
-                                    warnType = 3; //有序号 没有匹配到, 字段匹配到了 暂时 state = 1 一对多(单个或多个 待确认还款)
-                                }
-                            } else {
-                                if (searchResetDataList.size() == 1) {
-                                    warnType = 2;//无序号 字段匹配到一个 暂时 state = 0 上传
-                                } else {
-                                    warnType = 6;//无序号 字段匹配到多个 暂时 state = 1 一对多
-                                }
-                            }
-                        }
-                    }
-
-                    if (searchResetDataList.size() > 0) {
-                        if (searchResetDataList.size() == 1 && (warnType == 1 || warnType == 2)) {
-                            if (resultList.size() > 0) {
-                                YbReconsiderResetData rAd = searchResetDataList.get(0);
-                                searchResultList = resultList.stream().filter(
-                                        s -> s.getResetDataId().equals(rAd.getId())
-                                ).collect(Collectors.toList());
-                                if (searchResultList.size() == 1) {
-                                    YbAppealResult updateResult = new YbAppealResult();
-                                    updateResult.setId(searchResultList.get(0).getId());
-//                                    updateResult.setRepayDataId(rrd.getId());
-//                                    updateResult.setRepayDate(new Date());
-//                                    updateResult.setRepayPersonId(uid);
-//                                    updateResult.setRepayPersonName(uname);
-                                    if (warnType == 2) {
-                                        updateRepayData.setOrderNumberNew(rAd.getOrderNumber());
-                                    }
-                                    updateRepayData.setWarnType(warnType);
-                                    updateRepayData.setSeekState(1);
-
-                                    updateRepayDataList.add(updateRepayData);
-                                    updateResultList.add(updateResult);
-                                }
-                            }
-                        } else {
-                            //3 有序号 没有匹配到, 字段匹配到了 暂时 state = 1 一对多(单个或多个 待确认还款)
-                            //6 无序号 字段匹配到多个 暂时 state = 1 一对多
-                            //5 序号 匹配到多个 暂时 state = 1 一对多
-                            if (warnType == 3 || warnType == 6 || warnType == 5) {
-                                String orderNumberNews = "";
-                                for (YbReconsiderResetData rad3 : searchResetDataList) {
-                                    if ("".equals(orderNumberNews)) {
-                                        orderNumberNews = rad3.getOrderNumber();
-                                    } else {
-                                        orderNumberNews = "," + rad3.getOrderNumber();
-                                    }
-                                }
-                                updateRepayData.setOrderNumberNew(orderNumberNews);
-                            }
-                            updateRepayData.setWarnType(warnType);
-                            updateRepayData.setState(1);
-                            updateRepayDataList.add(updateRepayData);
-                        }
-                    } else {
-                        updateRepayData.setWarnType(warnType);
-                        updateRepayData.setState(2);
-                        updateRepayDataList.add(updateRepayData);
-                    }
-                }
-
-                if (updateResultList.size() > 0) {
-                    this.iYbAppealResultService.updateBatchById(updateResultList);
-                }
-                if (updateRepayDataList.size() > 0) {
-                    this.updateBatchById(updateRepayDataList);
-                }
-                if (updateResultList.size() == 0 && updateRepayDataList.size() == 0) {
-                    if ("".equals(message)) {
-                        message = "update0";
-                    }
-                }
-            } else {
-                message = "未找到复议审核数据";
-            }
-        } else {
-            message = "未找到还款数据";
-        }
-
-        return message;
-    }
-    */
     @Override
     @Transactional
     public String updateHandleRepayDatas(String resultId, String repayId, Long uid, String uname) {
@@ -593,6 +434,20 @@ public class YbReconsiderRepayDataServiceImpl extends ServiceImpl<YbReconsiderRe
         YbReconsiderRepayData repayData = this.baseMapper.selectById(repayId);
         if (repayData != null) {
             if (repayData.getSeekState() == 0) {
+                List<YbReconsiderRepayData> dataList = new ArrayList<>();
+                if (repayData.getWarnType() == 3) {
+                    LambdaQueryWrapper<YbReconsiderRepayData> queryWrapper = new LambdaQueryWrapper<>();
+                    queryWrapper.eq(YbReconsiderRepayData::getIsDeletemark, 1);//1是未删 0是已删
+                    queryWrapper.eq(YbReconsiderRepayData::getPid, repayData.getPid());
+                    queryWrapper.eq(YbReconsiderRepayData::getRepayType, repayData.getRepayType());
+                    queryWrapper.eq(YbReconsiderRepayData::getDataType, repayData.getDataType());
+                    queryWrapper.eq(YbReconsiderRepayData::getOrderNumberNew, repayData.getOrderNumberNew());
+                    queryWrapper.ne(YbReconsiderRepayData::getId, repayData.getId());
+                    queryWrapper.eq(YbReconsiderRepayData::getWarnType, 3);
+                    queryWrapper.eq(YbReconsiderRepayData::getState, 1);
+                    queryWrapper.eq(YbReconsiderRepayData::getSeekState, 0);
+                    dataList = this.list(queryWrapper);
+                }
                 YbAppealResult appealResult = this.iYbAppealResultService.getById(resultId);
                 if (appealResult != null) {
                     YbReconsiderResetData reconsiderResetData = this.iYbReconsiderResetDataService.getById(appealResult.getResetDataId());
@@ -600,7 +455,7 @@ public class YbReconsiderRepayDataServiceImpl extends ServiceImpl<YbReconsiderRe
                         YbReconsiderRepayData updateRepayData = new YbReconsiderRepayData();
                         updateRepayData.setId(repayData.getId());
                         updateRepayData.setSeekState(1);
-                        updateRepayData.setWarnType(5);
+                        updateRepayData.setWarnType(5);//异常匹配(字段匹配多个，选择一个匹配，在异常数据中匹配)
                         updateRepayData.setResetDataId(reconsiderResetData.getId());
                         updateRepayData.setResultId(appealResult.getId());
                         updateRepayData.setApplyDataId(appealResult.getApplyDataId());
@@ -612,15 +467,15 @@ public class YbReconsiderRepayDataServiceImpl extends ServiceImpl<YbReconsiderRe
                         updateResult.setId(appealResult.getId());
 
                         BigDecimal addDec = null;
-                        if(repayData.getRepaymentPrice()!=null){
+                        if (repayData.getRepaymentPrice() != null) {
                             addDec = new BigDecimal(repayData.getRepaymentPrice().toString());
-                        }else{
+                        } else {
                             addDec = new BigDecimal("0");
                         }
                         BigDecimal repaymentPrice = new BigDecimal("0");
                         if (reconsiderResetData.getRepaymentPrice() != null) {
                             repaymentPrice = addDec.add(reconsiderResetData.getRepaymentPrice());
-                        }else{
+                        } else {
                             repaymentPrice = addDec;
                         }
 
@@ -633,10 +488,39 @@ public class YbReconsiderRepayDataServiceImpl extends ServiceImpl<YbReconsiderRe
                         } else {
                             updateResult.setRepayState(3);
                         }
-
-                        int count = this.baseMapper.updateById(updateRepayData);
-                        if (count > 0) {
-                            Boolean isTrue = this.iYbReconsiderResetDataService.updateById(udpateResetData);
+                        List<YbReconsiderRepayData> updateRepayDataList = new ArrayList<>();
+                        if (repayData.getWarnType() == 3 && dataList != null) {
+                            if (dataList.size() > 0) {
+                                for (YbReconsiderRepayData rrd : dataList) {
+                                    if (rrd.getOrderNumberNew() != null) {
+                                        if (repayData.getOrderNumberNew().equals(rrd.getOrderNumberNew())) {
+                                            String[] strNewArr = rrd.getOrderNumberNew().split(",");
+                                            String newOrderNumber = "";
+                                            for (String o : strNewArr) {
+                                                if (!o.equals(reconsiderResetData.getOrderNumber())) {
+                                                    if (newOrderNumber.equals("")) {
+                                                        newOrderNumber = o;
+                                                    } else {
+                                                        newOrderNumber += "," + o;
+                                                    }
+                                                }
+                                            }
+                                            if (!newOrderNumber.equals("")) {
+                                                YbReconsiderRepayData u = new YbReconsiderRepayData();
+                                                u.setId(rrd.getId());
+                                                u.setOrderNumberNew(newOrderNumber);
+                                                updateRepayDataList.add(u);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        updateRepayDataList.add(updateRepayData);
+                        boolean isTrue = this.updateBatchById(updateRepayDataList);
+                        //int count = this.baseMapper.updateById(updateRepayData);
+                        if (isTrue) {
+                            isTrue = this.iYbReconsiderResetDataService.updateById(udpateResetData);
                             if (isTrue) {
                                 isTrue = this.iYbAppealResultService.updateById(updateResult);
                                 if (isTrue) {

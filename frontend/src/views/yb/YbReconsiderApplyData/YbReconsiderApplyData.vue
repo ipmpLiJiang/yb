@@ -185,7 +185,7 @@ export default {
       {
         title: '项目名称',
         dataIndex: 'projectName',
-        width: 100
+        width: 140
       },
       {
         title: '数量',
@@ -200,7 +200,7 @@ export default {
       {
         title: '规则名称',
         dataIndex: 'ruleName',
-        width: 100
+        width: 140
       },
       {
         title: '扣除金额',
@@ -209,7 +209,8 @@ export default {
       },
       {
         title: '扣除原因',
-        dataIndex: 'deductReason'
+        dataIndex: 'deductReason',
+        width: 250
       },
       {
         title: '还款原因',
@@ -239,12 +240,12 @@ export default {
       {
         title: '出院日期',
         dataIndex: 'outHospitalDate',
-        width: 100
+        width: 110
       },
       {
         title: '费用日期',
         dataIndex: 'costDate',
-        width: 100
+        width: 110
       },
       {
         title: '住院号',
@@ -259,7 +260,7 @@ export default {
       {
         title: '结算日期',
         dataIndex: 'settlementDate',
-        width: 100
+        width: 110
       },
       {
         title: '个人编号',

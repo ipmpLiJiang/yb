@@ -131,7 +131,7 @@ public class YbReconsiderApplyDataServiceImpl extends ServiceImpl<YbReconsiderAp
                 count = 1;
             }
         }
-        return 0;
+        return count;
     }
 
     @Override

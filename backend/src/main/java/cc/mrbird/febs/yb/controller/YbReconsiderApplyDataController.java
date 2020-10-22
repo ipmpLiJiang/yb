@@ -131,20 +131,25 @@ public class YbReconsiderApplyDataController extends BaseController {
     @Log("删除")
     @DeleteMapping("deleteData")
     @RequiresPermissions("ybReconsiderApplyData:delete")
-    public FebsResponse deleteReconsiderApplyByPids(@Valid YbReconsiderApplyData ybReconsiderApplyData){
+    public FebsResponse deleteReconsiderApplyByPids(@Valid YbReconsiderApplyData ybReconsiderApplyData) {
         int success = 0;
         try {
             int count = this.iYbReconsiderApplyDataService.deleteReconsiderApplyDataByPid(ybReconsiderApplyData);
             success = count == 1 ? 1 : 0;
+            if (success == 1) {
+                message = "删除明细成功.";
+            } else {
+                message = "删除明细失败.";
+            }
         } catch (Exception e) {
-            message = "删除失败";
+            message = "删除明细失败.";
             log.error(message, e);
         }
 
         ResponseResult rr = new ResponseResult();
         rr.setSuccess(success);
         rr.setMessage(message);
-        return  new FebsResponse().data(rr);
+        return new FebsResponse().data(rr);
     }
 
     @Log("删除")
@@ -419,7 +424,7 @@ public class YbReconsiderApplyDataController extends BaseController {
                                     ybReconsiderApply.setUploadFileNameTwo(uploadFileName);
                                 }
                                 ybReconsiderApply.setId(pid);
-                                this.iYbReconsiderApplyDataService.importReconsiderApply(ybReconsiderApply,ListData, ListMain);
+                                this.iYbReconsiderApplyDataService.importReconsiderApply(ybReconsiderApply, ListData, ListMain);
                                 success = 1;
                                 message = "Excel导入成功.";
                             }

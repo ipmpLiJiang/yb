@@ -363,10 +363,10 @@ export default {
         })
         return
       }
-      const isLt2M = file.size / 1024 / 1024 < 2
+      const isLt2M = file.size / 1024 < 301
       if (!isLt2M) {
         this.$error({
-          title: '超2M限制，不允许上传~'
+          title: '超300KB限制，不允许上传~'
         })
         return
       }
