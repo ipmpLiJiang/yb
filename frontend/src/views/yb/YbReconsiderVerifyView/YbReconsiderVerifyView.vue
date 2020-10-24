@@ -12,10 +12,7 @@
           justify="center"
           align="middle"
         >
-          <a-col :span=1>
-            &nbsp;
-          </a-col>
-          <a-col :span=13>
+          <a-col :span=10>
             复议年月：
             <a-month-picker
               placeholder="请输入复议年月"
@@ -23,13 +20,13 @@
               :format="monthFormat"
             />
           </a-col>
-          <a-col :span=1 v-show="tableSelectKey==1?true:false">
+          <a-col :span=2 v-show="tableSelectKey==1?true:false">
             <a-button
               type="primary"
               @click="showSearchModal"
             >筛选</a-button>
           </a-col>
-          <a-col :span=9>
+          <a-col :span=10>
             <a-button
               type="primary"
               style="margin-right:15px"

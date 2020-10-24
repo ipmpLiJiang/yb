@@ -32,4 +32,6 @@ public interface IYbReconsiderResetService extends IService<YbReconsiderReset> {
     void importReconsiderResets(YbReconsiderReset ybReconsiderReset, List<YbReconsiderResetData> listData, List<YbReconsiderResetData> listMain);
 
     YbReconsiderReset findReconsiderResetByApplyDateStr(String applyDateStr);
+
+    String updateReconsiderApplyState(YbReconsiderReset ybReconsiderReset);
 }

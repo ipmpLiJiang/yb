@@ -267,17 +267,28 @@ public class YbReconsiderResetDataViewController extends BaseController {
                 String filePath = febsProperties.getUploadPath(); // 上传后的路径
                 filePath += "ReconsiderResetTemp/" + guid + ".xlsx";
 
-                ExcelWriter writer = ExcelUtil.getWriter(filePath,"明细扣款");
+                String sheetName1 = "明细扣款";
+                String sheetName2 = "主单扣款";
+
+                ExcelWriter writer = ExcelUtil.getWriter(filePath,sheetName1);
 
                 ExcelMapping excelMappingData = ExcelMappingFactory.get(YbReconsiderResetUnknownDataExport.class);
+                Map<String,Integer> sheetColumnCountMap =  new LinkedHashMap<>();
+                sheetColumnCountMap.put(sheetName1,excelMappingData.getPropertyList().size());
 
+                List<String> rowHead = new ArrayList<>();
                 Map<String, String> headerAliasData = new LinkedHashMap<>();
                 for(ExcelProperty item : excelMappingData.getPropertyList()){
+                    rowHead.add(item.getColumn());
                     headerAliasData.put(item.getName(), item.getColumn());
                 }
-                writer.setHeaderAlias(headerAliasData);
 
-                writer.write(dataList, true);
+                if(dataList.size()==0) {
+                    writer.writeHeadRow(rowHead);
+                }else {
+                    writer.setHeaderAlias(headerAliasData);
+                    writer.write(dataList, true);
+                }
 
                 //设置所有列为自动宽度，不考虑合并单元格
                 writer.autoSizeColumnAll();
@@ -288,19 +299,27 @@ public class YbReconsiderResetDataViewController extends BaseController {
                     writer.setRowHeight(i,20);
                 }
                 //设置遍历单个列为自动宽度
-                for (int i = 0; i < YbReconsiderResetUnknownDataExport.class.getDeclaredFields().length; i++) {
-                    writer.autoSizeColumn(i);
-                }
+//                for (int i = 0; i < YbReconsiderResetUnknownDataExport.class.getDeclaredFields().length; i++) {
+//                    writer.autoSizeColumn(i);
+//                }
 
                 ExcelMapping excelMappingMain = ExcelMappingFactory.get(YbReconsiderResetUnknownMainExport.class);
+                sheetColumnCountMap.put(sheetName2,excelMappingMain.getPropertyList().size());
+                rowHead.clear();
 
-                writer.setSheet("主单扣款");
+                writer.setSheet(sheetName2);
                 Map<String, String> headerAliasMain = new LinkedHashMap<>();
                 for(ExcelProperty item : excelMappingMain.getPropertyList()){
+                    rowHead.add(item.getColumn());
                     headerAliasMain.put(item.getName(), item.getColumn());
                 }
-                writer.setHeaderAlias(headerAliasMain);
-                writer.write(mainList, true);
+                if(mainList.size()==0) {
+                    writer.writeHeadRow(rowHead);
+                }else {
+                    writer.setHeaderAlias(headerAliasMain);
+                    writer.write(mainList, true);
+                }
+
                 //设置所有列为自动宽度，不考虑合并单元格
                 writer.autoSizeColumnAll();
                 //标题Row高度
@@ -310,9 +329,9 @@ public class YbReconsiderResetDataViewController extends BaseController {
                     writer.setRowHeight(i,20);
                 }
                 //设置遍历单个列为自动宽度
-                for (int i = 0; i < YbReconsiderResetUnknownMainExport.class.getDeclaredFields().length; i++) {
-                    writer.autoSizeColumn(i);
-                }
+//                for (int i = 0; i < YbReconsiderResetUnknownMainExport.class.getDeclaredFields().length; i++) {
+//                    writer.autoSizeColumn(i);
+//                }
 
                 StyleSet style = writer.getStyleSet();
                 CellStyle cellStyle = style.getHeadCellStyle();
@@ -322,6 +341,14 @@ public class YbReconsiderResetDataViewController extends BaseController {
                 short fontHeight = 280;
                 f1.setFontHeight(fontHeight);
                 cellStyle.setFont(f1);
+
+                List<org.apache.poi.ss.usermodel.Sheet> sheetList = writer.getSheets();
+                for(org.apache.poi.ss.usermodel.Sheet sheet : sheetList){
+                    int count = sheetColumnCountMap.get(sheet.getSheetName());
+                    for (int i = 0; i <= count; i++) {
+                        sheet.autoSizeColumn(i);
+                    }
+                }
 
                 //response为HttpServletResponse对象
                 response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8");

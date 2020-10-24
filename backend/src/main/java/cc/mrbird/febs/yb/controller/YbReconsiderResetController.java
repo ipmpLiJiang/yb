@@ -10,6 +10,7 @@ import cc.mrbird.febs.common.exception.FebsException;
 import cc.mrbird.febs.common.domain.QueryRequest;
 
 import cc.mrbird.febs.common.properties.FebsProperties;
+import cc.mrbird.febs.yb.domain.ResponseResult;
 import cc.mrbird.febs.yb.domain.ResponseResultData;
 import cc.mrbird.febs.yb.entity.YbReconsiderResetData;
 import cc.mrbird.febs.yb.service.IYbReconsiderResetService;
@@ -112,6 +113,27 @@ public class YbReconsiderResetController extends BaseController {
             log.error(message, e);
             throw new FebsException(message);
         }
+    }
+
+    @Log("修改")
+    @PutMapping("updateApplyState")
+    @RequiresPermissions("ybReconsiderReset:add")
+    public FebsResponse updateReconsiderResetApplyState(@Valid YbReconsiderReset ybReconsiderReset){
+        int success = 0;
+        try {
+            message = this.iYbReconsiderResetService.updateReconsiderApplyState(ybReconsiderReset);
+            if(message.equals("ok")){
+                success = 1;
+                message = "完成剔除成功";
+            }
+        } catch (Exception e) {
+            message = "完成剔除失败.";
+            log.error(message, e);
+        }
+        ResponseResult rr = new ResponseResult();
+        rr.setMessage(message);
+        rr.setSuccess(success);
+        return new FebsResponse().data(rr);
     }
 
 
@@ -478,5 +500,7 @@ public class YbReconsiderResetController extends BaseController {
         result.put("filename", "file.getOriginalFilename()");
         return new FebsResponse().data(result);
     }
+
+
 
 }

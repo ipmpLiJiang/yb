@@ -30,6 +30,9 @@ CREATE TABLE yb_reconsider_apply (
   uploadFileNameTwo varchar(100) DEFAULT NULL COMMENT '审核二上传名称',
   endDateOne datetime DEFAULT NULL COMMENT '审核一结束时间',
   endDateTwo datetime DEFAULT NULL COMMENT '审核二结束时间',
+  resultState int(4) DEFAULT 0 COMMENT '申诉状态',#0未申诉 1已申诉
+  repayState int(4) DEFAULT 0 COMMENT '还款状态', #0未还款 1已还款
+  resetState int(4) DEFAULT 0 COMMENT '剔除状态', #0未剔除 1已剔除
   COMMENTS varchar(1000) DEFAULT NULL COMMENT '备注',
   STATE int(4) DEFAULT 1 COMMENT '状态',#1待复议 2上传一 3申述一 4上传二 5申述二 6已剔除 7已还款
   IS_DELETEMARK tinyint(4) DEFAULT NULL COMMENT '是否删除',
@@ -639,6 +642,9 @@ select
 	ra.applyDateStr, #复议年月Str
 	ra.operatorId, #操作员代码'
   ra.operatorName, #操作员名称,
+	ra.resetState raResetState,
+	ra.resultState raResultState,
+	ra.repayState raRepayState,
   art.id,
 	art.applyDataId,
   art.verifyId,

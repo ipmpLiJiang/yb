@@ -366,10 +366,10 @@ export default {
       this.selectApplyDateStr = dateString
     },
     look (record) {
+      this.lookVisiable = true
       setTimeout(() => {
         this.$refs.ybReconsiderRepayView.setFormValues(record)
       }, 200)
-      this.lookVisiable = true
     },
     handleCancel () {
       this.lookVisiable = false

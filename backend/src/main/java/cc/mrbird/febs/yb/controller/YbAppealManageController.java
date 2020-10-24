@@ -2,16 +2,12 @@ package cc.mrbird.febs.yb.controller;
 
 import cc.mrbird.febs.common.annotation.Log;
 import cc.mrbird.febs.common.controller.BaseController;
-import cc.mrbird.febs.common.domain.router.VueRouter;
-import cc.mrbird.febs.common.exception.FebsException;
 import cc.mrbird.febs.common.domain.QueryRequest;
-
-import cc.mrbird.febs.yb.entity.YbReconsiderVerify;
-import cc.mrbird.febs.yb.service.IYbAppealManageService;
-import cc.mrbird.febs.yb.entity.YbAppealManage;
-
+import cc.mrbird.febs.common.exception.FebsException;
 import cc.mrbird.febs.common.utils.FebsUtil;
 import cc.mrbird.febs.system.domain.User;
+import cc.mrbird.febs.yb.entity.YbAppealManage;
+import cc.mrbird.febs.yb.service.IYbAppealManageService;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
 import com.baomidou.mybatisplus.core.toolkit.StringPool;
@@ -25,7 +21,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 

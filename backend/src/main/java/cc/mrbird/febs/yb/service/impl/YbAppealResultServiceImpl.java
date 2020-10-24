@@ -150,7 +150,7 @@ public class YbAppealResultServiceImpl extends ServiceImpl<YbAppealResultMapper,
         return  this.baseMapper.findAppealResulDataHandle(applyDateStr);
     }
 
-    //手动剔除业务
+    //申请，查询第一次复议记录
     @Override
     public YbAppealResult findLoadLastAppealResulData(YbAppealResult appealResult) {
         YbAppealResult ybAppealResult = null;

@@ -1,30 +1,27 @@
 package cc.mrbird.febs.yb.service.impl;
 
-import cc.mrbird.febs.com.entity.ComFile;
-import cc.mrbird.febs.com.service.IComFileService;
+import cc.mrbird.febs.com.controller.DataTypeHelpers;
 import cc.mrbird.febs.common.domain.QueryRequest;
 import cc.mrbird.febs.common.utils.SortUtil;
+import cc.mrbird.febs.yb.dao.YbAppealResultViewMapper;
 import cc.mrbird.febs.yb.entity.YbAppealResultDownLoad;
 import cc.mrbird.febs.yb.entity.YbAppealResultView;
-import cc.mrbird.febs.yb.dao.YbAppealResultViewMapper;
-import cc.mrbird.febs.yb.service.IYbAppealManageService;
 import cc.mrbird.febs.yb.service.IYbAppealResultService;
 import cc.mrbird.febs.yb.service.IYbAppealResultViewService;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
-import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
 
 /**
  * <p>
@@ -113,6 +110,203 @@ public class YbAppealResultViewServiceImpl extends ServiceImpl<YbAppealResultVie
         }
     }
 
+    //复议结果
+    @Override
+    public IPage<YbAppealResultView> findYbAppealResultReportViews(QueryRequest request, YbAppealResultView ybAppealResultView) {
+        try {
+            LambdaQueryWrapper<YbAppealResultView> queryWrapper = new LambdaQueryWrapper<>();
+            List<String> listStr = new ArrayList<>();
+            //ApplyDateFrom getApplyDateTo 存储的格式是 2020-09
+            if (ybAppealResultView.getApplyDateFrom().equals(ybAppealResultView.getApplyDateTo())) {
+                listStr.add(ybAppealResultView.getApplyDateFrom());
+            } else {
+                listStr = DataTypeHelpers.stringApplyDateStrToList(ybAppealResultView.getApplyDateFrom(), ybAppealResultView.getApplyDateTo());
+            }
+            if (listStr.size() > 0) {
+                String sql = "(";
+
+                // String sqlApplyDateStr = "";
+                if (listStr.size() == 1) {
+//                    sqlApplyDateStr = listStr.get(0);
+                    sql += " applyDateStr = '" + ybAppealResultView.getApplyDateFrom() + "'";
+                } else {
+                    //sqlApplyDateStr = "'" + DataTypeHelpers.stringListSeparate(listStr, "','") + "'";
+                    String applyDateStrForm =ybAppealResultView.getApplyDateFrom() + "-01";
+                    String applyDateStrTo = ybAppealResultView.getApplyDateTo() + "-" + String.valueOf(DataTypeHelpers.stringDateFormatMaxDay(ybAppealResultView.getApplyDateTo() + "-01", "", false));
+
+                    sql += " applyDate >= '" + applyDateStrForm + "' and applyDate <= '" + applyDateStrTo + "' ";
+                }
+
+                if (ybAppealResultView.getTypeno() != null) {
+                    if (ybAppealResultView.getTypeno() == 1) {
+                        sql = sql + " and typeno = 1";
+                    } else {
+                        sql = sql + " and typeno = 2";
+                    }
+                }
+                if (ybAppealResultView.getDataType() != null) {
+                    if (ybAppealResultView.getDataType() == 0) {
+                        sql = sql + " and dataType = 0";
+                    } else {
+                        sql = sql + " and dataType = 1";
+                    }
+                }
+                if (ybAppealResultView.getSourceType() != null) {
+                    sql = sql + " and sourceType = " + ybAppealResultView.getSourceType();
+                }
+                if (ybAppealResultView.getState() != null) {
+                    if (ybAppealResultView.getState() == 1) {
+                        sql = sql + " and (STATE = 1 or (STATE = 2 and (repayState = 1 or repayState = 3)))";
+                    } else {
+                        sql = sql + " and STATE = 2 and repayState = 2";
+                    }
+                }
+
+                if (ybAppealResultView.getArDoctorCode() != null) {
+                    sql = sql + " and arDoctorCode = '" + ybAppealResultView.getArDoctorCode() + "'";
+                }
+
+                sql = sql + " and raResetState = 1";
+
+                sql = sql + ")";
+                if (ybAppealResultView.getCurrencyField() != null && !"".equals(ybAppealResultView.getCurrencyField())) {
+                    if (ybAppealResultView.getDataType() != null) {
+                        if (ybAppealResultView.getDataType() == 0) {
+                            sql += " and (serialNo like'%" + ybAppealResultView.getCurrencyField() + "%'" +
+                                    " or billNo like'%" + ybAppealResultView.getCurrencyField() + "%'" +
+                                    " or proposalCode like'%" + ybAppealResultView.getCurrencyField() + "%'" +
+                                    " or projectCode like'%" + ybAppealResultView.getCurrencyField() + "%'" +
+                                    " or projectName like'%" + ybAppealResultView.getCurrencyField() + "%'" +
+                                    " or ruleName like'%" + ybAppealResultView.getCurrencyField() + "%'" +
+                                    " or deductReason like'%" + ybAppealResultView.getCurrencyField() + "%')";
+                        } else {
+                            sql += " and (serialNo like'%" + ybAppealResultView.getCurrencyField() + "%'" +
+                                    " or billNo like'%" + ybAppealResultView.getCurrencyField() + "%'" +
+                                    " or ruleName like'%" + ybAppealResultView.getCurrencyField() + "%'" +
+                                    " or personalNo like'%" + ybAppealResultView.getCurrencyField() + "%')";
+                        }
+                    } else {
+                        sql += " and (serialNo like'%" + ybAppealResultView.getCurrencyField() + "%'" +
+                                " or billNo like'%" + ybAppealResultView.getCurrencyField() + "%'" +
+                                " or proposalCode like'%" + ybAppealResultView.getCurrencyField() + "%'" +
+                                " or projectCode like'%" + ybAppealResultView.getCurrencyField() + "%'" +
+                                " or projectName like'%" + ybAppealResultView.getCurrencyField() + "%'" +
+                                " or ruleName like'%" + ybAppealResultView.getCurrencyField() + "%'" +
+                                " or deductReason like'%" + ybAppealResultView.getCurrencyField() + "%')";
+                    }
+                }
+                queryWrapper.apply(sql);
+                Page<YbAppealResultView> page = new Page<>();
+                SortUtil.handlePageSort(request, page, false);//true 是属性  false是数据库字段可两个
+                return this.page(page, queryWrapper);
+            } else {
+                return null;
+            }
+
+        } catch (Exception e) {
+            log.error("获取字典信息失败", e);
+            return null;
+        }
+    }
+
+    @Override
+    public List<YbAppealResultView> findYbAppealResultReportLists(YbAppealResultView ybAppealResultView){
+        try {
+            LambdaQueryWrapper<YbAppealResultView> queryWrapper = new LambdaQueryWrapper<>();
+            List<String> listStr = new ArrayList<>();
+            //ApplyDateFrom getApplyDateTo 存储的格式是 2020-09
+            if (ybAppealResultView.getApplyDateFrom().equals(ybAppealResultView.getApplyDateTo())) {
+                listStr.add(ybAppealResultView.getApplyDateFrom());
+            } else {
+                listStr = DataTypeHelpers.stringApplyDateStrToList(ybAppealResultView.getApplyDateFrom(), ybAppealResultView.getApplyDateTo());
+            }
+            if (listStr.size() > 0) {
+                String sql = "(";
+
+                // String sqlApplyDateStr = "";
+                if (listStr.size() == 1) {
+//                    sqlApplyDateStr = listStr.get(0);
+                    sql += " applyDateStr = '" + ybAppealResultView.getApplyDateFrom() + "'";
+                } else {
+                    //sqlApplyDateStr = "'" + DataTypeHelpers.stringListSeparate(listStr, "','") + "'";
+                    String applyDateStrForm =ybAppealResultView.getApplyDateFrom() + "-01";
+                    String applyDateStrTo = ybAppealResultView.getApplyDateTo() + "-" + String.valueOf(DataTypeHelpers.stringDateFormatMaxDay(ybAppealResultView.getApplyDateTo() + "-01", "", false));
+
+                    sql += " applyDate >= '" + applyDateStrForm + "' and applyDate <= '" + applyDateStrTo + "' ";
+                }
+
+                if (ybAppealResultView.getTypeno() != null) {
+                    if (ybAppealResultView.getTypeno() == 1) {
+                        sql = sql + " and typeno = 1";
+                    } else {
+                        sql = sql + " and typeno = 2";
+                    }
+                }
+                if (ybAppealResultView.getDataType() != null) {
+                    if (ybAppealResultView.getDataType() == 0) {
+                        sql = sql + " and dataType = 0";
+                    } else {
+                        sql = sql + " and dataType = 1";
+                    }
+                }
+                if (ybAppealResultView.getSourceType() != null) {
+                    sql = sql + " and sourceType = " + ybAppealResultView.getSourceType();
+                }
+                if (ybAppealResultView.getState() != null) {
+                    if (ybAppealResultView.getState() == 1) {
+                        sql = sql + " and (STATE = 1 or (STATE = 2 and (repayState = 1 or repayState = 3)))";
+                    } else {
+                        sql = sql + " and STATE = 2 and repayState = 2";
+                    }
+                }
+
+                if (ybAppealResultView.getArDoctorCode() != null) {
+                    sql = sql + " and arDoctorCode = '" + ybAppealResultView.getArDoctorCode() + "'";
+                }
+
+                sql = sql + " and raResetState = 1";
+
+                sql = sql + ")";
+                if (ybAppealResultView.getCurrencyField() != null && !"".equals(ybAppealResultView.getCurrencyField())) {
+                    if (ybAppealResultView.getDataType() != null) {
+                        if (ybAppealResultView.getDataType() == 0) {
+                            sql += " and (serialNo like'%" + ybAppealResultView.getCurrencyField() + "%'" +
+                                    " or billNo like'%" + ybAppealResultView.getCurrencyField() + "%'" +
+                                    " or proposalCode like'%" + ybAppealResultView.getCurrencyField() + "%'" +
+                                    " or projectCode like'%" + ybAppealResultView.getCurrencyField() + "%'" +
+                                    " or projectName like'%" + ybAppealResultView.getCurrencyField() + "%'" +
+                                    " or ruleName like'%" + ybAppealResultView.getCurrencyField() + "%'" +
+                                    " or deductReason like'%" + ybAppealResultView.getCurrencyField() + "%')";
+                        } else {
+                            sql += " and (serialNo like'%" + ybAppealResultView.getCurrencyField() + "%'" +
+                                    " or billNo like'%" + ybAppealResultView.getCurrencyField() + "%'" +
+                                    " or ruleName like'%" + ybAppealResultView.getCurrencyField() + "%'" +
+                                    " or personalNo like'%" + ybAppealResultView.getCurrencyField() + "%')";
+                        }
+                    } else {
+                        sql += " and (serialNo like'%" + ybAppealResultView.getCurrencyField() + "%'" +
+                                " or billNo like'%" + ybAppealResultView.getCurrencyField() + "%'" +
+                                " or proposalCode like'%" + ybAppealResultView.getCurrencyField() + "%'" +
+                                " or projectCode like'%" + ybAppealResultView.getCurrencyField() + "%'" +
+                                " or projectName like'%" + ybAppealResultView.getCurrencyField() + "%'" +
+                                " or ruleName like'%" + ybAppealResultView.getCurrencyField() + "%'" +
+                                " or deductReason like'%" + ybAppealResultView.getCurrencyField() + "%')";
+                    }
+                }
+                queryWrapper.apply(sql);
+
+                //queryWrapper.orderBy()
+
+                return this.list(queryWrapper);
+            } else {
+                return null;
+            }
+
+        } catch (Exception e) {
+            log.error("获取字典信息失败", e);
+            return null;
+        }
+    }
     //数据剔除——>查看剔除明细
     @Override
     public IPage<YbAppealResultView> findAppealResultViewResets(QueryRequest request, YbAppealResultView ybAppealResultView) {
@@ -258,7 +452,7 @@ public class YbAppealResultViewServiceImpl extends ServiceImpl<YbAppealResultVie
         try {
             int typeNo = 0;
 
-            if(ybAppealResultView.getTypeno()!=null){
+            if (ybAppealResultView.getTypeno() != null) {
                 typeNo = ybAppealResultView.getTypeno();
             }
             int dataType = ybAppealResultView.getDataType();
@@ -266,17 +460,17 @@ public class YbAppealResultViewServiceImpl extends ServiceImpl<YbAppealResultVie
             List<String> deptList = this.iYbAppealResultService.findAppealResultGroupDepts(ybAppealResultView);
 
             String f = "";
-            if(dataType==0){
-                f="明细扣款_";
-            }else {
-                f="主单扣款_";
+            if (dataType == 0) {
+                f = "明细扣款_";
+            } else {
+                f = "主单扣款_";
             }
 
             String typeName = "";
             if (typeNo == 1) {
                 typeName = "_审核一_" + f;
             } else if (typeNo == 2) {
-                typeName = "_审核二_"+ f;
+                typeName = "_审核二_" + f;
             } else {
                 typeName = "_手动复议_";
             }

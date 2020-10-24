@@ -11,7 +11,7 @@
             justify="center"
             align="middle"
           >
-            <a-col :span=7>
+            <a-col :span=6>
               复议年月：
               <a-month-picker
                 placeholder="请输入复议年月"
@@ -38,7 +38,7 @@
                 </a-upload>
               </template>
             </a-col>
-            <a-col :span=4>
+            <a-col :span=3>
               <a-popconfirm
                 title="确定数据剔除？"
                 v-show="tableSelectKey==1||tableSelectKey==2?true:false"
@@ -46,24 +46,28 @@
                 okText="确定"
                 cancelText="取消"
               >
-                <a-button type="primary" style="margin-right:20px" >数据剔除</a-button>
+                <a-button type="primary" style="margin-right:10px" >数据剔除</a-button>
               </a-popconfirm>
             </a-col>
-            <a-col :span=4 v-show="tableSelectKey==4?true:false">
+            <a-col :span=3 v-show="tableSelectKey==4?true:false">
               <a-popconfirm
                 title="确定导出数据？"
                 @confirm="exportExcel"
                 okText="确定"
                 cancelText="取消"
               >
-                <a-button type="primary" style="margin-right:20px" >导出数据</a-button>
+                <a-button type="primary" style="margin-right:10px" >导出数据</a-button>
               </a-popconfirm>
             </a-col>
-            <a-col :span=3>
-              <a-button
-                type="primary"
-                @click="searchTable"
-              >刷新</a-button>
+            <a-col :span=3 >
+              <a-popconfirm
+                title="确定完成剔除？"
+                @confirm="updateApplyState"
+                okText="确定"
+                cancelText="取消"
+              >
+                <a-button type="primary" style="margin-right:20px" >完成剔除</a-button>
+              </a-popconfirm>
             </a-col>
           </a-row>
         </div>
@@ -267,6 +271,22 @@ export default {
         return
       }
       return isExcel && isLt2M && this.handleUpload(file)
+    },
+    updateApplyState () {
+      let updateParam = {
+        applyDateStr: this.searchApplyDate
+      }
+      this.$put('ybReconsiderReset/updateApplyState', {
+        ...updateParam
+      }).then((r) => {
+        if (r.data.data.success === 1) {
+          this.$message.success(r.data.data.message)
+        } else {
+          this.$message.error(r.data.data.message)
+        }
+      }).catch(() => {
+        this.$message.error('剔除完成操作失败.')
+      })
     },
     handleUpload (file) {
       // 点击删除文件调用removeUpload后会自动调用本方法handleUpload 待解决

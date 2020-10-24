@@ -93,6 +93,32 @@ public class YbReconsiderRepayDataServiceImpl extends ServiceImpl<YbReconsiderRe
     }
 
     @Override
+    public List<YbReconsiderRepayData> findReconsiderRepayLists(YbReconsiderRepayData ybReconsiderRepayData) {
+            LambdaQueryWrapper<YbReconsiderRepayData> queryWrapper = new LambdaQueryWrapper<>();
+            queryWrapper.eq(YbReconsiderRepayData::getIsDeletemark, 1);//1是未删 0是已删
+
+            if (ybReconsiderRepayData.getBelongDateStr() != null) {
+                queryWrapper.eq(YbReconsiderRepayData::getBelongDateStr, ybReconsiderRepayData.getBelongDateStr());
+            }
+
+            if (ybReconsiderRepayData.getRepayType() != null) {
+                queryWrapper.eq(YbReconsiderRepayData::getRepayType, ybReconsiderRepayData.getRepayType());
+            }
+
+            if (ybReconsiderRepayData.getDataType() != null) {
+                queryWrapper.eq(YbReconsiderRepayData::getDataType, ybReconsiderRepayData.getDataType());
+            }
+            if (ybReconsiderRepayData.getState() != null) {
+                queryWrapper.eq(YbReconsiderRepayData::getState, ybReconsiderRepayData.getState());
+            }
+            if (ybReconsiderRepayData.getSeekState() != null) {
+                queryWrapper.eq(YbReconsiderRepayData::getSeekState, ybReconsiderRepayData.getSeekState());
+            }
+
+            return this.list(queryWrapper);
+    }
+
+    @Override
     @Transactional
     public void createYbReconsiderRepayData(YbReconsiderRepayData ybReconsiderRepayData) {
         if (ybReconsiderRepayData.getId() == null || "".equals(ybReconsiderRepayData.getId())) {

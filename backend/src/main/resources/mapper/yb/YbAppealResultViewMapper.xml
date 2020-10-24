@@ -61,11 +61,14 @@
             <result column="repayState" property="repayState"/>
             <result column="orderNumber" property="orderNumber"/>
                     <result column="resetDataId" property="resetDataId"/>
+            <result column="raResetState" property="raResetState"/>
+            <result column="raResultState" property="raResultState"/>
+            <result column="raRepayState" property="raRepayState"/>
         </resultMap>
 
         <!-- 通用查询结果列 -->
         <sql id="Base_Column_List">
-        serialNo, billNo, proposalCode, projectCode, projectName, num, medicalPrice, ruleName, deductPrice, deductReason, repaymentReason, doctorName, deptCode, deptName, enterHospitalDate, outHospitalDate, costDate,enterHospitalDateStr,outHospitalDateStr,costDateStr, hospitalizedNo, treatmentMode, settlementDate,settlementDateStr, personalNo, insuredName, cardNumber, areaName, versionNumber, backAppeal, typeno, applyDate, applyDateStr, operatorId, operatorName, id, applyDataId, verifyId, ar_doctorCode, ar_doctorName, ar_deptCode, ar_deptName, operateReason, operateDate, COMMENTS, STATE, IS_DELETEMARK, MODIFY_TIME, CREATE_TIME, CREATE_USER_ID, MODIFY_USER_ID, currencyField,sourceType,dataType,orderNumber,resetDataId,repayState
+        serialNo, billNo, proposalCode, projectCode, projectName, num, medicalPrice, ruleName, deductPrice, deductReason, repaymentReason, doctorName, deptCode, deptName, enterHospitalDate, outHospitalDate, costDate,enterHospitalDateStr,outHospitalDateStr,costDateStr, hospitalizedNo, treatmentMode, settlementDate,settlementDateStr, personalNo, insuredName, cardNumber, areaName, versionNumber, backAppeal, typeno, applyDate, applyDateStr, operatorId, operatorName, id, applyDataId, verifyId, ar_doctorCode, ar_doctorName, ar_deptCode, ar_deptName, operateReason, operateDate, COMMENTS, STATE, IS_DELETEMARK, MODIFY_TIME, CREATE_TIME, CREATE_USER_ID, MODIFY_USER_ID, currencyField,sourceType,dataType,orderNumber,resetDataId,repayState,raResetState,raResultState,raRepayState
     </sql>
     <update id="updateYbAppealResultView" parameterType="cc.mrbird.febs.yb.entity.YbAppealResultView">
         update yb_appeal_result_view

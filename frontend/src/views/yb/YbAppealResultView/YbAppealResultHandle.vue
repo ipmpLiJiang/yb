@@ -126,7 +126,11 @@ export default {
         dataIndex: 'costDateStr',
         customRender: (text, row, index) => {
           if (text !== '' && text !== null) {
-            return moment(text).format('YYYY-MM-DD')
+            if (isNaN(text) && !isNaN(Date.parse(text))) {
+              return moment(text).format('YYYY-MM-DD')
+            } else {
+              return text
+            }
           } else {
             return text
           }
@@ -153,7 +157,11 @@ export default {
         dataIndex: 'operateDate',
         customRender: (text, row, index) => {
           if (text !== '' && text !== null) {
-            return moment(text).format('YYYY-MM-DD')
+            if (isNaN(text) && !isNaN(Date.parse(text))) {
+              return moment(text).format('YYYY-MM-DD')
+            } else {
+              return text
+            }
           } else {
             return text
           }

@@ -2,10 +2,12 @@ package cc.mrbird.febs.yb.controller;
 
 import cc.mrbird.febs.common.annotation.Log;
 import cc.mrbird.febs.common.controller.BaseController;
+import cc.mrbird.febs.common.domain.FebsResponse;
 import cc.mrbird.febs.common.domain.router.VueRouter;
 import cc.mrbird.febs.common.exception.FebsException;
 import cc.mrbird.febs.common.domain.QueryRequest;
 
+import cc.mrbird.febs.yb.domain.ResponseResult;
 import cc.mrbird.febs.yb.service.IYbReconsiderApplyService;
 import cc.mrbird.febs.yb.entity.YbReconsiderApply;
 
@@ -82,6 +84,34 @@ public class YbReconsiderApplyController extends BaseController {
         }
     }
 
+    @Log("新增/按钮")
+    @PostMapping("addYbReconsiderApplyCheck")
+    @RequiresPermissions("ybReconsiderApply:add")
+    public FebsResponse addYbReconsiderApplyCheck(@Valid YbReconsiderApply ybReconsiderApply) {
+        int success = 0;
+        try {
+            User currentUser = FebsUtil.getCurrentUser();
+            ybReconsiderApply.setCreateUserId(currentUser.getUserId());
+            ybReconsiderApply.setOperatorId(currentUser.getUserId());
+            ybReconsiderApply.setOperatorName(currentUser.getUsername());
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM");
+            String appDateStr = sdf.format(ybReconsiderApply.getApplyDate());
+            ybReconsiderApply.setApplyDateStr(appDateStr);
+            message = this.iYbReconsiderApplyService.createReconsiderApplyCheck(ybReconsiderApply);
+            if(message.equals("ok")){
+                success = 1;
+                message = "新增成功.";
+            }
+        } catch (Exception e) {
+            message = "新增/按钮失败";
+            log.error(message, e);
+        }
+        ResponseResult rr =new ResponseResult();
+        rr.setSuccess(success);
+        rr.setMessage(message);
+        return new FebsResponse().data(rr);
+    }
+
     /**
      * 修改
      *
@@ -140,5 +170,30 @@ public class YbReconsiderApplyController extends BaseController {
     public YbReconsiderApply detail(@NotBlank(message = "{required}") @PathVariable String id) {
         YbReconsiderApply ybReconsiderApply = this.iYbReconsiderApplyService.getById(id);
         return ybReconsiderApply;
+    }
+
+    @Log("修改")
+    @PutMapping("updateReconsiderApplyState")
+    @RequiresPermissions("ybReconsiderApply:update")
+    public FebsResponse updateReconsiderApplyStates(@Valid YbReconsiderApply ybReconsiderApply){
+        int success = 0;
+        try {
+            String applyDateStr = ybReconsiderApply.getApplyDateStr();
+            Integer state = ybReconsiderApply.getState();
+            boolean bl = this.iYbReconsiderApplyService.updateYbReconsiderApplyState(applyDateStr,state);
+            if(bl){
+                message = "状态修改成功.";
+                success = 1;
+            }else{
+                message = "状态修改失败.";
+            }
+        } catch (Exception e) {
+            message = "状态修改失败";
+            log.error(message, e);
+        }
+        ResponseResult rr = new ResponseResult();
+        rr.setSuccess(success);
+        rr.setMessage(message);
+        return  new FebsResponse().data(rr);
     }
 }

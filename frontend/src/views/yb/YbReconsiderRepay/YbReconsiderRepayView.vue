@@ -78,6 +78,7 @@
             <a-button
               type="primary"
               style="margin-left: 12px"
+              @click="exportExcel"
             >未知数据导出</a-button>
           </a-col>
           <a-col :span=3>
@@ -93,6 +94,7 @@
     <template>
       <div id="tab">
         <a-tabs
+          :activeKey="tableSelectKey"
           type="card"
           @change="callback"
         >
@@ -222,6 +224,9 @@ export default {
       this.exceptRepayVisiable = true
       this.$refs.ybReconsiderRepayExceptDetail.setFormValues(record)
     },
+    exportExcel () {
+      this.$refs.ybReconsiderRepayUnknown.exportExcel()
+    },
     update () {
       let updateParam = {
         pid: this.ybReconsiderRepay.id,
@@ -297,7 +302,9 @@ export default {
       this.dataTypeName = ybReconsiderRepay.dataType === 0 ? '明细扣款' : '主单扣款'
       this.searchBelongDateStr = ybReconsiderRepay.applyDateStr
       this.selectBelongDateStrDataSource = []
-      this.$refs.ybReconsiderRepayData.search()
+      setTimeout(() => {
+        this.$refs.ybReconsiderRepayData.search()
+      }, 200)
       // this.findBelongDateStr(ybReconsiderRepay.id)
     },
     searchTable () {

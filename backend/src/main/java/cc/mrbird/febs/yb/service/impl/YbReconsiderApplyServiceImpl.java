@@ -84,8 +84,32 @@ public class YbReconsiderApplyServiceImpl extends ServiceImpl<YbReconsiderApplyM
 
     @Override
     @Transactional
+    public String createReconsiderApplyCheck(YbReconsiderApply ybReconsiderApply) {
+        String message = "";
+        LambdaQueryWrapper<YbReconsiderApply> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(YbReconsiderApply::getApplyDateStr,ybReconsiderApply.getApplyDateStr());
+        List<YbReconsiderApply> list = this.list(wrapper);
+        if(list.size()==0){
+            ybReconsiderApply.setCreateTime(new Date());
+            if(ybReconsiderApply.getId() == null || "".equals(ybReconsiderApply.getId())) {
+                ybReconsiderApply.setId(UUID.randomUUID().toString());
+            }
+            ybReconsiderApply.setIsDeletemark(1);
+            boolean bl = this.save(ybReconsiderApply);
+            if(bl){
+                message = "ok";
+            }
+        }else{
+            message = "该年月 "+ybReconsiderApply.getApplyDateStr()+" 已创建过复议申请记录";
+        }
+        return message;
+    }
+
+    @Override
+    @Transactional
     public void updateYbReconsiderApply(YbReconsiderApply ybReconsiderApply) {
         ybReconsiderApply.setModifyTime(new Date());
+        ybReconsiderApply.setApplyDateStr(null);
         this.baseMapper.updateYbReconsiderApply(ybReconsiderApply);
     }
 
@@ -103,7 +127,26 @@ public class YbReconsiderApplyServiceImpl extends ServiceImpl<YbReconsiderApplyM
         this.baseMapper.deleteBatchStateIdsYbReconsiderApply(listString, state);
     }
 
+    @Override
+    @Transactional
+    public boolean updateYbReconsiderApplyState(String applyDateStr,Integer state) {
+        boolean bl = false;
+        LambdaQueryWrapper<YbReconsiderApply> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(YbReconsiderApply::getApplyDateStr,applyDateStr);
+        List<YbReconsiderApply> list = this.list(wrapper);
+        if(list.size()>0) {
+            YbReconsiderApply update = new YbReconsiderApply();
+            update.setId(list.get(0).getId());
+            update.setModifyTime(new Date());
+            update.setState(state);
+            int count = this.baseMapper.updateById(update);
+            if(count>0){
+                bl = true;
+            }
+        }
 
+        return  bl;
+    }
 
 
 }

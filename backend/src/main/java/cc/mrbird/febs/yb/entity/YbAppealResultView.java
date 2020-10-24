@@ -380,6 +380,27 @@ public class YbAppealResultView implements Comparable<YbAppealResultView> {
     @ExcelField(value = "剔除明细扣款")
     private String resetDataId;
 
+    /**
+     * 剔除状态
+     */
+    @TableField("raResetState")
+    @ExcelField(value = "剔除状态")
+    private Integer raResetState;
+
+    /**
+     * 申诉状态
+     */
+    @TableField("raResultState")
+    @ExcelField(value = "申诉状态")
+    private Integer raResultState;
+
+    /**
+     * 还款状态
+     */
+    @TableField("raRepayState")
+    @ExcelField(value = "还款状态")
+    private Integer raRepayState;
+
 
     /**
      * 备注
@@ -542,6 +563,11 @@ public class YbAppealResultView implements Comparable<YbAppealResultView> {
 
     public static final String RESETDATAID = "resetDataId";
 
+    public static final String RARESETSTATE = "raResetState";
+
+    public static final String RARESULTSTATE = "raResultState";
+
+    public static final String RAREPAYSTATE = "raRepayState ";
 
     public static final String DATATYPE = "dataType";
 

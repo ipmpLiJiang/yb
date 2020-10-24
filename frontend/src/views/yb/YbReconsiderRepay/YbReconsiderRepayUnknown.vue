@@ -138,6 +138,23 @@ export default {
       record.rowNo = this.rowNo(index)
       this.$emit('look', record)
     },
+    exportExcel () {
+      if (this.dataSource.length > 0) {
+        let queryParams = {}
+        queryParams.pid = this.pid
+        queryParams.state = 2
+        queryParams.dataType = 0
+        if (this.belongDateStr !== '') {
+          queryParams.belongDateStr = this.belongDateStr
+        }
+
+        this.$export('ybReconsiderRepayData/excel1', {
+          ...queryParams
+        })
+      } else {
+        this.$message.success('导出Excel,无数据!')
+      }
+    },
     search () {
       let { sortedInfo } = this
       let sortField, sortOrder

@@ -2,58 +2,79 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cc.mrbird.febs.yb.dao.YbReconsiderApplyMapper">
 
-        <!-- 通用查询映射结果 -->
-        <resultMap id="BaseResultMap" type="cc.mrbird.febs.yb.entity.YbReconsiderApply">
-                    <id column="id" property="id"/>
-                    <result column="applyDate" property="applyDate"/>
-                    <result column="operatorId" property="operatorId"/>
-                    <result column="operatorName" property="operatorName"/>
-                    <result column="COMMENTS" property="comments"/>
-                    <result column="STATE" property="state"/>
-                    <result column="IS_DELETEMARK" property="isDeletemark"/>
-                    <result column="MODIFY_TIME" property="modifyTime"/>
-                    <result column="CREATE_TIME" property="createTime"/>
-                    <result column="CREATE_USER_ID" property="createUserId"/>
-                    <result column="MODIFY_USER_ID" property="modifyUserId"/>
-                    <result column="applyDateStr" property="applyDateStr"/>
-        </resultMap>
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="cc.mrbird.febs.yb.entity.YbReconsiderApply">
+        <id column="id" property="id"/>
+        <result column="applyDate" property="applyDate"/>
+        <result column="operatorId" property="operatorId"/>
+        <result column="operatorName" property="operatorName"/>
+        <result column="COMMENTS" property="comments"/>
+        <result column="STATE" property="state"/>
+        <result column="IS_DELETEMARK" property="isDeletemark"/>
+        <result column="MODIFY_TIME" property="modifyTime"/>
+        <result column="CREATE_TIME" property="createTime"/>
+        <result column="CREATE_USER_ID" property="createUserId"/>
+        <result column="MODIFY_USER_ID" property="modifyUserId"/>
+        <result column="applyDateStr" property="applyDateStr"/>
+        <result column="resultState" property="resultState"/>
+        <result column="repayState" property="repayState"/>
+        <result column="resetState" property="resetState"/>
+        <result column="uploadFileNameOne" property="uploadFileNameOne"/>
+        <result column="uploadFileNameTwo" property="uploadFileNameTwo"/>
+        <result column="endDateOne" property="endDateOne"/>
+        <result column="endDateTwo" property="endDateTwo"/>
 
-        <!-- 通用查询结果列 -->
-        <sql id="Base_Column_List">
-        id, applyDate, operatorId, operatorName, COMMENTS, STATE, IS_DELETEMARK, MODIFY_TIME, CREATE_TIME, CREATE_USER_ID, MODIFY_USER_ID, applyDateStr
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, applyDate, operatorId, operatorName, COMMENTS, STATE, IS_DELETEMARK, MODIFY_TIME, CREATE_TIME, CREATE_USER_ID, MODIFY_USER_ID, applyDateStr,resultState,repayState,resetState,uploadFileNameOne,uploadFileNameTwo,endDateOne,endDateTwo
     </sql>
     <update id="updateYbReconsiderApply" parameterType="cc.mrbird.febs.yb.entity.YbReconsiderApply">
         update yb_reconsider_apply
         <trim prefix="set" suffixOverrides=",">
-<if test="applyDate != null">applyDate=#{applyDate},</if>
-<if test="operatorId != null">operatorId=#{operatorId},</if>
-<if test="operatorName != null">operatorName=#{operatorName},</if>
-<if test="comments != null">COMMENTS=#{comments},</if>
-<if test="state != null">STATE=#{state},</if>
-<if test="isDeletemark != null">IS_DELETEMARK=#{isDeletemark},</if>
-<if test="modifyTime != null">MODIFY_TIME=#{modifyTime},</if>
-<if test="createTime != null">CREATE_TIME=#{createTime},</if>
-<if test="createUserId != null">CREATE_USER_ID=#{createUserId},</if>
-<if test="modifyUserId != null">MODIFY_USER_ID=#{modifyUserId},</if>
-<if test="applyDateStr != null">applyDateStr=#{applyDateStr},</if>
+            <if test="applyDate != null">applyDate=#{applyDate},</if>
+            <if test="operatorId != null">operatorId=#{operatorId},</if>
+            <if test="operatorName != null">operatorName=#{operatorName},</if>
+            <if test="comments != null">COMMENTS=#{comments},</if>
+            <if test="state != null">STATE=#{state},</if>
+            <if test="isDeletemark != null">IS_DELETEMARK=#{isDeletemark},</if>
+            <if test="modifyTime != null">MODIFY_TIME=#{modifyTime},</if>
+            <if test="createTime != null">CREATE_TIME=#{createTime},</if>
+            <if test="createUserId != null">CREATE_USER_ID=#{createUserId},</if>
+            <if test="modifyUserId != null">MODIFY_USER_ID=#{modifyUserId},</if>
+            <if test="applyDateStr != null">applyDateStr=#{applyDateStr},</if>
+            <if test="resultState != null">resultState=#{resultState},</if>
+            <if test="repayState != null">repayState=#{repayState},</if>
+            <if test="resetState != null">resetState=#{resetState},</if>
+            <if test="uploadFileNameOne != null">uploadFileNameOne=#{uploadFileNameOne},</if>
+            <if test="uploadFileNameTwo != null">uploadFileNameTwo=#{uploadFileNameTwo},</if>
+            <if test="endDateOne != null">endDateOne=#{endDateOne},</if>
+            <if test="endDateTwo != null">endDateTwo=#{endDateTwo},</if>
+
         </trim>
-                where id=#{id}
+        where id=#{id}
 
     </update>
-    <select id="findYbReconsiderApply" resultType="cc.mrbird.febs.yb.entity.YbReconsiderApply" parameterType="cc.mrbird.febs.yb.entity.YbReconsiderApply">
-        select  *  from yb_reconsider_apply
-        where  1=1
-        <if test="ybReconsiderApply.id != null"> and id =#{ ybReconsiderApply.id} </if>
+    <select id="findYbReconsiderApply" resultType="cc.mrbird.febs.yb.entity.YbReconsiderApply"
+            parameterType="cc.mrbird.febs.yb.entity.YbReconsiderApply">
+        select * from yb_reconsider_apply
+        where 1=1
+        <if test="ybReconsiderApply.id != null">and id =#{ ybReconsiderApply.id}</if>
         <if test="ybReconsiderApply.applyDateFrom!= null">
             AND ybReconsiderApply.applyDate <![CDATA[ >= ]]>  applyDateFrom}
         </if>
         <if test="ybReconsiderApply.applyDateTo!= null">
             AND ybReconsiderApply.applyDate <![CDATA[ <= ]]>  applyDateTo}
         </if>
-            <if test="ybReconsiderApply.operatorName != null and ybReconsiderApply.operatorName != ''"> and operatorName like concat('%', #{ ybReconsiderApply.operatorName} ,'%')</if>
-            <if test="ybReconsiderApply.comments != null and ybReconsiderApply.comments != ''"> and COMMENTS like concat('%', #{ ybReconsiderApply.comments} ,'%')</if>
-        <if test="ybReconsiderApply.state != null"> and STATE =#{ ybReconsiderApply.state} </if>
-        <if test="ybReconsiderApply.isDeletemark != null"> and IS_DELETEMARK =#{ ybReconsiderApply.isDeletemark} </if>
+        <if test="ybReconsiderApply.operatorName != null and ybReconsiderApply.operatorName != ''">and operatorName like
+            concat('%', #{ ybReconsiderApply.operatorName} ,'%')
+        </if>
+        <if test="ybReconsiderApply.comments != null and ybReconsiderApply.comments != ''">and COMMENTS like concat('%',
+            #{ ybReconsiderApply.comments} ,'%')
+        </if>
+        <if test="ybReconsiderApply.state != null">and STATE =#{ ybReconsiderApply.state}</if>
+        <if test="ybReconsiderApply.isDeletemark != null">and IS_DELETEMARK =#{ ybReconsiderApply.isDeletemark}</if>
         <if test="ybReconsiderApply.modifyTimeFrom!= null">
             AND ybReconsiderApply.MODIFY_TIME <![CDATA[ >= ]]>  modifyTimeFrom}
         </if>
@@ -66,9 +87,11 @@
         <if test="ybReconsiderApply.createTimeTo!= null">
             AND ybReconsiderApply.CREATE_TIME <![CDATA[ <= ]]>  createTimeTo}
         </if>
-            <if test="ybReconsiderApply.applyDateStr != null and ybReconsiderApply.applyDateStr != ''"> and applyDateStr like concat('%', #{ ybReconsiderApply.applyDateStr} ,'%')</if>
-</select>
-    <delete id="deleteBatchStateIdsYbReconsiderApply" >
+        <if test="ybReconsiderApply.applyDateStr != null and ybReconsiderApply.applyDateStr != ''">and applyDateStr like
+            concat('%', #{ ybReconsiderApply.applyDateStr} ,'%')
+        </if>
+    </select>
+    <delete id="deleteBatchStateIdsYbReconsiderApply">
         delete from yb_reconsider_apply where id in
         <foreach item="item" index="index" collection="listString" open="(" separator="," close=")">
             #{item}

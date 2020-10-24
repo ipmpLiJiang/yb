@@ -17,6 +17,7 @@
       >
         <a-month-picker
           placeholder="请输入复议年月"
+          disabled="disabled"
           v-decorator="['applyDate', {rules: [{ required: true, message: '复议年月不能为空' }] }]"
           :default-value="moment('2020-08-20', monthFormat)"
           :format="monthFormat"

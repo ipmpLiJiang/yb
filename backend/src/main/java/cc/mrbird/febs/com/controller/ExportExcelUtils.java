@@ -1,7 +1,7 @@
 package cc.mrbird.febs.com.controller;
 
-import cc.mrbird.febs.yb.entity.YbAppealResultDataExport;
-import cc.mrbird.febs.yb.entity.YbAppealResultMainExport;
+import cc.mrbird.febs.common.exception.FebsException;
+import cc.mrbird.febs.yb.entity.*;
 import cn.hutool.core.io.IoUtil;
 import cn.hutool.poi.excel.ExcelUtil;
 import cn.hutool.poi.excel.ExcelWriter;
@@ -22,7 +22,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author lijiang
@@ -30,34 +32,46 @@ import java.util.*;
  */
 public class ExportExcelUtils {
 
-    public static void exportExcel(HttpServletResponse response, Class<?> clazz, List<T> listData, String filePath, String folderName, String sheetName) throws IOException {
+    public static void exportExcel(HttpServletResponse response, Class<?> clazz, List<?> listData, String filePath, String folderName, String sheetName) throws IOException {
         String guid = UUID.randomUUID().toString();
-        filePath = folderName + "/" + guid + ".xlsx";
+        filePath += folderName + "/" + guid + ".xlsx";
 
-        ExcelWriter writer = ExcelUtil.getWriter(filePath,sheetName);
+        ExcelMapping excelMappingData = ExcelMappingFactory.get(clazz);
 
-        ExcelMapping excelMapping = ExcelMappingFactory.get(clazz);
+        int sheetColumnCount = excelMappingData.getPropertyList().size();
 
-        Map<String, String> headerAlias = new LinkedHashMap<>();
-        for(ExcelProperty item : excelMapping.getPropertyList()){
-            headerAlias.put(item.getName(), item.getColumn());
+        ExcelWriter writer = ExcelUtil.getWriter(filePath, sheetName);
+
+        //合并单元格后的标题行，使用默认标题样式
+        //writer.merge(row1.size() - 1, "测试标题1");
+        //writer.passCurrentRow();
+
+        List<String> rowHead = new ArrayList<>();
+        Map<String, String> headerAliasData = new LinkedHashMap<>();
+        for (ExcelProperty item : excelMappingData.getPropertyList()) {
+            rowHead.add(item.getColumn());
+            headerAliasData.put(item.getName(), item.getColumn());
         }
-        writer.setHeaderAlias(headerAlias);
 
-        writer.write(listData, true);
+        int rowCount = listData.size();
+        if (rowCount == 0) {
+            writer.writeHeadRow(rowHead);
+        } else {
+            writer.setHeaderAlias(headerAliasData);
+            writer.write(listData, true);
+        }
 
         //设置所有列为自动宽度，不考虑合并单元格
         writer.autoSizeColumnAll();
+
         //标题Row高度
-        writer.setRowHeight(0,25);
+        writer.setRowHeight(0, 25);
+
         //内容Row高度
-        for (int i = 1; i <= listData.size(); i++) {
-            writer.setRowHeight(i,20);
+        for (int i = 1; i <= rowCount; i++) {
+            writer.setRowHeight(i, 20);
         }
-        //设置遍历单个列为自动宽度
-        for (int i = 0; i < clazz.getDeclaredFields().length; i++) {
-            writer.autoSizeColumn(i);
-        }
+
         StyleSet style = writer.getStyleSet();
         CellStyle cellStyle = style.getHeadCellStyle();
         Font f1 = writer.createFont();
@@ -67,6 +81,12 @@ public class ExportExcelUtils {
         f1.setFontHeight(fontHeight);
         cellStyle.setFont(f1);
 
+        List<org.apache.poi.ss.usermodel.Sheet> sheetList = writer.getSheets();
+        for (org.apache.poi.ss.usermodel.Sheet sheet : sheetList) {
+            for (int i = 0; i <= sheetColumnCount; i++) {
+                sheet.autoSizeColumn(i);
+            }
+        }
         //response为HttpServletResponse对象
         response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8");
         //response.setContentType("application/vnd.ms-excel;charset=utf-8");

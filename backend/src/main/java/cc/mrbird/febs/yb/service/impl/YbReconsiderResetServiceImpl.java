@@ -2,6 +2,7 @@ package cc.mrbird.febs.yb.service.impl;
 
 import cc.mrbird.febs.common.domain.QueryRequest;
 import cc.mrbird.febs.common.utils.SortUtil;
+import cc.mrbird.febs.yb.entity.YbReconsiderApply;
 import cc.mrbird.febs.yb.entity.YbReconsiderReset;
 import cc.mrbird.febs.yb.dao.YbReconsiderResetMapper;
 import cc.mrbird.febs.yb.entity.YbReconsiderResetData;
@@ -21,6 +22,7 @@ import java.util.Date;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -37,6 +39,9 @@ public class YbReconsiderResetServiceImpl extends ServiceImpl<YbReconsiderResetM
 
     @Autowired
     public IYbReconsiderResetDataService iYbReconsiderResetDataService;
+
+    @Autowired
+    IYbReconsiderApplyService iYbReconsiderApplyService;
 
     @Override
     public IPage<YbReconsiderReset> findYbReconsiderResets(QueryRequest request, YbReconsiderReset ybReconsiderReset) {
@@ -104,15 +109,65 @@ public class YbReconsiderResetServiceImpl extends ServiceImpl<YbReconsiderResetM
     }
 
     @Override
-    public YbReconsiderReset findReconsiderResetByApplyDateStr(String applyDateStr){
+    public YbReconsiderReset findReconsiderResetByApplyDateStr(String applyDateStr) {
         LambdaQueryWrapper<YbReconsiderReset> wrapper = new LambdaQueryWrapper<YbReconsiderReset>();
-        wrapper.eq(YbReconsiderReset::getApplyDateStr,applyDateStr);
+        wrapper.eq(YbReconsiderReset::getApplyDateStr, applyDateStr);
         List<YbReconsiderReset> list = this.list(wrapper);
-        if(list.size()>0) {
+        if (list.size() > 0) {
             return list.get(0);
-        }else {
-            return  null ;
+        } else {
+            return null;
         }
+    }
+
+    @Override
+    @Transactional
+    public String updateReconsiderApplyState(YbReconsiderReset ybReconsiderReset) {
+        String message = "";
+        LambdaQueryWrapper<YbReconsiderApply> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(YbReconsiderApply::getApplyDateStr, ybReconsiderReset.getApplyDateStr());
+        wrapper.ne(YbReconsiderApply::getState, 1);
+        List<YbReconsiderApply> list = this.iYbReconsiderApplyService.list(wrapper);
+        if (list.size() > 0) {
+            if (list.get(0).getResetState() == 0) {
+                LambdaQueryWrapper<YbReconsiderReset> wrapperReset = new LambdaQueryWrapper<>();
+                wrapperReset.eq(YbReconsiderReset::getApplyDateStr, ybReconsiderReset.getApplyDateStr());
+                List<YbReconsiderReset> listReset = this.list(wrapperReset);
+                if (listReset.size() > 0) {
+                    YbReconsiderReset searchReconsiderReset = listReset.get(0);
+                    LambdaQueryWrapper<YbReconsiderResetData> wrapperResetData = new LambdaQueryWrapper<>();
+                    wrapperResetData.eq(YbReconsiderResetData::getPid, searchReconsiderReset.getId());
+                    List<YbReconsiderResetData> listResetData = this.iYbReconsiderResetDataService.list(wrapperResetData);
+                    if (listResetData.size() > 0) {
+                        long count = listResetData.stream().filter(s -> (s.getState() == 0 || s.getState() == 1) &&
+                                s.getSeekState() == 0).count();
+                        if (count == 0) {
+                            YbReconsiderApply update = new YbReconsiderApply();
+                            update.setId(list.get(0).getId());
+                            update.setModifyTime(new Date());
+                            update.setState(6);
+                            update.setResetState(1);
+                            boolean bl = this.iYbReconsiderApplyService.updateById(update);
+                            if (bl) {
+                                message = "ok";
+                            }
+                        } else {
+                            message = "该年月 " + ybReconsiderReset.getApplyDateStr() + " 剔除业务还有未处理完的数据.";
+                        }
+                    } else {
+                        message = "该年月 " + ybReconsiderReset.getApplyDateStr() + " 未找到剔除上传明细.";
+                    }
+                } else {
+                    message = "该年月 " + ybReconsiderReset.getApplyDateStr() + " 未上传剔除数据.";
+                }
+            }else{
+                message = "该年月 " + ybReconsiderReset.getApplyDateStr() + " 已完成剔除完成操作.";
+            }
+        } else {
+            message = "该年月 " + ybReconsiderReset.getApplyDateStr() + " 未找到复议审核数据或还未上传复议数据.";
+        }
+
+        return message;
     }
 
 }

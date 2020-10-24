@@ -101,11 +101,15 @@ export default {
       this.form.validateFields((err, values) => {
         if (!err) {
           this.setFields()
-          this.$post('ybReconsiderApply', {
+          this.$post('ybReconsiderApply/addYbReconsiderApplyCheck', {
             ...this.ybReconsiderApply
-          }).then(() => {
-            this.reset()
-            this.$emit('success')
+          }).then((r) => {
+            if (r.data.data.success === 1) {
+              this.reset()
+              this.$emit('success')
+            } else {
+              this.$message.error(r.data.data.message)
+            }
           }).catch(() => {
             this.loading = false
           })

@@ -79,6 +79,27 @@ public class YbReconsiderApply implements Serializable {
     private Integer state;
 
     /**
+     * 剔除状态
+     */
+    @TableField("resetState")
+    @ExcelField(value = "剔除状态")
+    private Integer resetState;
+
+    /**
+     * 申诉状态
+     */
+    @TableField("resultState")
+    @ExcelField(value = "申诉状态")
+    private Integer resultState;
+
+    /**
+     * 还款状态
+     */
+    @TableField("repayState")
+    @ExcelField(value = "还款状态")
+    private Integer repayState;
+
+    /**
      * 是否删除
      */
     @TableField("IS_DELETEMARK")
@@ -167,6 +188,12 @@ public class YbReconsiderApply implements Serializable {
     public static final String COMMENTS = "COMMENTS";
 
     public static final String STATE = "STATE";
+
+    public static final String RESETSTATE = "resetState";
+
+    public static final String RESULTSTATE = "resultState";
+
+    public static final String REPAYSTATE = "repayState ";
 
     public static final String IS_DELETEMARK = "IS_DELETEMARK";
 

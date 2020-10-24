@@ -1,14 +1,5 @@
 <template>
-  <a-drawer
-    title="查看申诉材料"
-    :maskClosable="false"
-    width=50%
-    placement="right"
-    :closable="true"
-    @close="onClose"
-    :visible="lookVisiable"
-    style="height: calc(100% - 55px);overflow: auto;padding-bottom: 53px;"
-  >
+<div>
   <a-row type="flex" justify="start">
     <a-col :span=20>
       <!--科室、医生-->
@@ -18,7 +9,7 @@
             v-bind="formItemLayout"
             label="科室名称"
           >
-            {{ybAppealResult.arDeptname}}
+            {{ybAppealManage.readyDeptName}}
           </a-form-item>
         </a-col>
         <a-col :span=14>
@@ -26,7 +17,7 @@
             v-bind="formItemLayout"
             label="医生姓名"
           >
-            {{ybAppealResult.arDoctorname}}
+            {{ybAppealManage.readyDoctorName}}
           </a-form-item>
         </a-col>
       </a-row>
@@ -40,16 +31,15 @@
             }"
             label="申诉理由"
           >
-          {{ybAppealResult.operateReason}}
+          {{ybAppealManage.operateReason}}
           </a-form-item>
         </a-col>
       </a-row>
     </a-col>
   </a-row>
-  <br>
   <a-row>
     <a-col :span=24>
-      <div style="margin:25px">
+      <div style="margin:15px">
       <a-row type="flex" justify="center">
         <a-col>
           <template>
@@ -72,8 +62,6 @@
       </div>
     </a-col>
   </a-row>
-  <br>
-  <!--按钮-->
   <a-row type="flex" justify="center">
     <a-col :span=3>
     <a-button type="primary" v-show="showDownLoad" @click="downloadFile" style="margin-right: .10rem">下载</a-button>
@@ -87,7 +75,7 @@
       </a-button>
     </a-col>
   </a-row>
-  </a-drawer>
+</div>
 </template>
 
 <script>
@@ -104,7 +92,7 @@ function getBase64 (file) {
   })
 }
 export default {
-  name: 'YbAppealResultLook',
+  name: 'YbAppealManageResultLookModule',
   props: {
     lookVisiable: {
       default: false
@@ -118,7 +106,7 @@ export default {
       previewVisible: false,
       previewImage: '',
       showDownLoad: true,
-      ybAppealResult: {}
+      ybAppealManage: {}
     }
   },
   computed: {
@@ -131,7 +119,7 @@ export default {
       this.loading = false
       this.fileList = []
       this.previewImage = ''
-      this.ybAppealResult = {}
+      this.ybAppealManage = {}
       this.$emit('close')
     },
     handleCancel () {
@@ -144,29 +132,30 @@ export default {
       this.previewImage = file.url || file.preview
       this.previewVisible = true
     },
-    setFormValues ({ ...ybAppealResult }) {
-      this.ybAppealResult = ybAppealResult
-      this.findFileList(ybAppealResult)
+    setFormValues ({ ...ybAppealManage }) {
+      this.fileList = []
+      this.ybAppealManage = ybAppealManage
+      this.findFileList(ybAppealManage)
     },
     downloadFile () {
       let formData = {}
-      formData.id = this.ybAppealResult.id
-      formData.deptName = this.ybAppealResult.arDeptname
-      formData.applyDateStr = this.ybAppealResult.applyDateStr
-      formData.typeNo = this.ybAppealResult.typeno
-      formData.sourceType = this.ybAppealResult.sourceType
-      formData.fileName = formData.applyDateStr + formData.deptName + '-' + this.ybAppealResult.typeno
+      formData.id = this.ybAppealManage.id
+      formData.deptName = this.ybAppealManage.readyDeptName
+      formData.applyDateStr = this.ybAppealManage.applyDateStr
+      formData.typeNo = this.ybAppealManage.typeno
+      formData.sourceType = this.ybAppealManage.sourceType
+      formData.fileName = formData.applyDateStr + formData.deptName + '-' + this.ybAppealManage.typeno
 
       this.$download('comFile/fileImgZip', {
         ...formData
       }, formData.fileName + '.zip')
     },
-    findFileList (ybAppealResult) {
+    findFileList (ybAppealManage) {
       let formData = {}
-      formData.id = ybAppealResult.id
-      formData.deptName = ybAppealResult.arDeptname
-      formData.applyDateStr = ybAppealResult.applyDateStr
-      formData.sourceType = ybAppealResult.sourceType
+      formData.id = ybAppealManage.id
+      formData.deptName = ybAppealManage.readyDeptName
+      formData.applyDateStr = ybAppealManage.applyDateStr
+      formData.sourceType = ybAppealManage.sourceType
       this.$post('comFile/listImgComFile', {
         ...formData
       }).then((r) => {

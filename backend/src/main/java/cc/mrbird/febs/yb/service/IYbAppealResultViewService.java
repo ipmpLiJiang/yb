@@ -28,6 +28,8 @@ public interface IYbAppealResultViewService extends IService<YbAppealResultView>
 
         IPage<YbAppealResultView> findAppealResultViewRepays(QueryRequest request, YbAppealResultView ybAppealResultView);
 
+        IPage<YbAppealResultView> findYbAppealResultReportViews(QueryRequest request, YbAppealResultView ybAppealResultView);
+
         void createYbAppealResultView(YbAppealResultView ybAppealResultView);
 
         void updateYbAppealResultView(YbAppealResultView ybAppealResultView);
@@ -37,4 +39,6 @@ public interface IYbAppealResultViewService extends IService<YbAppealResultView>
         List<YbAppealResultView> findAppealResultViewLists(YbAppealResultView ybAppealResultView);
 
         List<YbAppealResultDownLoad> findYbAppealResultDownLoadList(YbAppealResultView ybAppealResultView);
+
+    List<YbAppealResultView> findYbAppealResultReportLists(YbAppealResultView ybAppealResultView);
         }
