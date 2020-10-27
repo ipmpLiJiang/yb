@@ -349,7 +349,7 @@ export default {
     },
     handleEditSuccess () {
       this.editVisiable = false
-      this.$message.success('修改成功')
+      // this.$message.success('修改成功')
       this.search()
     },
     handleEditClose () {

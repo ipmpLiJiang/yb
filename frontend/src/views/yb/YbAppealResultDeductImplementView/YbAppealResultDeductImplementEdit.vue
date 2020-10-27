@@ -20,7 +20,7 @@
             label="分摊方式"
             v-bind="formItemLayout"
           >
-            <a-radio-group @change="handleChange" v-decorator="['shareState']">
+            <a-radio-group  v-decorator="['shareState']">
               <a-radio value="0">
                 个人分摊
               </a-radio>
@@ -42,7 +42,7 @@
           >
             <a-textarea
               placeholder="请输入分摊方案"
-              v-decorator="['shareProgramme', {rules: [{ required: checkSp, message: '分摊方案不能为空' }] }]"
+              v-decorator="['shareProgramme']"
               :rows="6"
             />
           </a-form-item>
@@ -87,7 +87,7 @@ export default {
       monthFormat: 'YYYY-MM',
       selectImplementDateStr: this.formatDate(),
       form: this.$form.createForm(this),
-      checkSp: false,
+      // checkSp: false,
       ybAppealResult: {
       },
       ybAppealResultDeductImplement: {
@@ -111,14 +111,14 @@ export default {
       this.$emit('close')
     },
     handleChange (e) {
-      if (e.target.value === '0') {
-        this.checkSp = false
-        this.$nextTick(() => {
-          this.form.validateFields(['shareProgramme'], { force: true })
-        })
-      } else {
-        this.checkSp = true
-      }
+      // if (e.target.value === '0') {
+      //   this.checkSp = false
+      //   this.$nextTick(() => {
+      //     this.form.validateFields(['shareProgramme'], { force: true })
+      //   })
+      // } else {
+      //   this.checkSp = true
+      // }
     },
     formatDate () {
       let datemonth = moment().format('YYYY-MM')
@@ -128,6 +128,7 @@ export default {
       this.selectImplementDateStr = dateString
     },
     setFormValues ({ ...ybAppealResult }) {
+      // this.checkSp = false
       this.ybAppealResult = ybAppealResult
       this.selectImplementDateStr = this.formatDate()
 
@@ -147,7 +148,8 @@ export default {
           this.ybAppealResultDeductImplement.resetDataId = this.ybAppealResult.resetDataId
           this.ybAppealResultDeductImplement.resultId = this.ybAppealResult.id
           this.ybAppealResultDeductImplement.implementDateStr = this.selectImplementDateStr
-
+          this.ybAppealResultDeductImplement.applyDateStr = this.ybAppealResult.applyDateStr
+          this.ybAppealResultDeductImplement.applyDate = this.ybAppealResult.applyDate
           this.$post('ybAppealResultDeductimplement', {
             ...this.ybAppealResultDeductImplement
           }).then((r) => {

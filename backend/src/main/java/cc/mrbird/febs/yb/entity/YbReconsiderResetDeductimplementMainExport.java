@@ -1,6 +1,5 @@
 package cc.mrbird.febs.yb.entity;
 
-import com.baomidou.mybatisplus.annotation.TableField;
 import com.wuwenze.poi.annotation.Excel;
 import com.wuwenze.poi.annotation.ExcelField;
 import lombok.Data;
@@ -16,10 +15,10 @@ import java.math.BigDecimal;
  * @since 2020-08-17
  */
 
-@Excel("YbReconsiderResetUnknownDataExport")
+@Excel("YbReconsiderResetDeductimplementMainExport")
 @Data
 //@Accessors(chain = true)
-public class YbReconsiderResetUnknownDataExport {
+public class YbReconsiderResetDeductimplementMainExport {
 
     /**
      * 序号
@@ -40,16 +39,10 @@ public class YbReconsiderResetUnknownDataExport {
     private String billNo;
 
     /**
-     * 项目编码
+     * 规则名称
      */
-    @ExcelField(value = "项目编码")
-    private String projectCode;
-
-    /**
-     * 项目名称
-     */
-    @ExcelField(value = "项目名称")
-    private String projectName;
+    @ExcelField(value = "规则名称")
+    private String ruleName;
 
     /**
      * 医保内金额
@@ -58,52 +51,16 @@ public class YbReconsiderResetUnknownDataExport {
     private BigDecimal medicalPrice;
 
     /**
-     * 规则名称
-     */
-    @ExcelField(value = "规则名称")
-    private String ruleName;
-
-    /**
      * 扣除金额
      */
     @ExcelField(value = "扣除金额")
     private BigDecimal deductPrice;
 
     /**
-     * 扣除原因
+     * 结算日期Str
      */
-    @ExcelField(value = "扣除原因")
-    private String deductReason;
-
-    /**
-     * 还款原因
-     */
-    @ExcelField(value = "还款原因")
-    private String repaymentReason;
-
-    /**
-     * 医生姓名
-     */
-    @ExcelField(value = "医生姓名")
-    private String doctorName;
-
-    /**
-     * 科室编码
-     */
-    @ExcelField(value = "科室编码")
-    private String deptCode;
-
-    /**
-     * 科室名称
-     */
-    @ExcelField(value = "科室名称")
-    private String deptName;
-
-    /**
-     * 费用日期str
-     */
-    @ExcelField(value = "费用日期")
-    private String costDateStr;
+    @ExcelField(value = "结算日期")
+    private String settlementDateStr;
 
     /**
      * 住院号
@@ -117,11 +74,6 @@ public class YbReconsiderResetUnknownDataExport {
     @ExcelField(value = "就医方式")
     private String treatmentMode;
 
-    /**
-     * 结算日期Str
-     */
-    @ExcelField(value = "结算日期")
-    private String settlementDateStr;
 
     /**
      * 个人编号
@@ -136,10 +88,33 @@ public class YbReconsiderResetUnknownDataExport {
     private String insuredName;
 
     /**
+     * 参保类型
+     */
+    @ExcelField(value = "参保类型")
+    private String insuredType;
+
+    /**
      * 统筹区名称
      */
     @ExcelField(value = "统筹区名称")
     private String areaName;
 
+    /**
+     * 绩效年月
+     */
+    @ExcelField(value = "绩效年月")
+    private String implementDateStr;
+
+    /**
+     * '分摊方式'
+     */
+    @ExcelField(value = "分摊方式")
+    private String shareStateStr;
+
+    /**
+     * ''分摊方案''
+     */
+    @ExcelField(value = "分摊方案")
+    private String shareProgramme;
 
 }

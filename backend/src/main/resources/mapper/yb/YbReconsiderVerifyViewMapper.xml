@@ -59,6 +59,7 @@
                     <result column="insuredType" property="insuredType"/>
                     <result column="dataType" property="dataType"/>
             <result column="orderNumber" property="orderNumber"/>
+            <result column="orderNum" property="orderNum"/>
                     <result column="COMMENTS" property="comments"/>
                     <result column="STATE" property="state"/>
                     <result column="IS_DELETEMARK" property="isDeletemark"/>
@@ -70,7 +71,7 @@
 
         <!-- 通用查询结果列 -->
         <sql id="Base_Column_List">
-        serialNo, billNo, proposalCode, projectCode, projectName, num, medicalPrice, ruleName, deductPrice, deductReason, repaymentReason, doctorName, deptCode, deptName, enterHospitalDate, outHospitalDate, costDate,enterHospitalDateStr,outHospitalDateStr,costDateStr, hospitalizedNo, treatmentMode, settlementDate,settlementDateStr, personalNo, insuredName, cardNumber, areaName, versionNumber, backAppeal, typeno, applyDate, applyDateStr, operatorId, operatorName, id, applyDataId, verifyDoctorCode, verifyDoctorName, verifyDeptCode, verifyDeptName, operateReason, operateDate, matchPersonId, matchPersonName, matchDate, reviewerId, reviewerName, reviewerDate, sendPersonId, sendPersonName, sendDate,insuredType,dataType,orderNumber, COMMENTS, STATE, IS_DELETEMARK, MODIFY_TIME, CREATE_TIME, CREATE_USER_ID, MODIFY_USER_ID
+        serialNo, billNo, proposalCode, projectCode, projectName, num, medicalPrice, ruleName, deductPrice, deductReason, repaymentReason, doctorName, deptCode, deptName, enterHospitalDate, outHospitalDate, costDate,enterHospitalDateStr,outHospitalDateStr,costDateStr, hospitalizedNo, treatmentMode, settlementDate,settlementDateStr, personalNo, insuredName, cardNumber, areaName, versionNumber, backAppeal, typeno, applyDate, applyDateStr, operatorId, operatorName, id, applyDataId, verifyDoctorCode, verifyDoctorName, verifyDeptCode, verifyDeptName, operateReason, operateDate, matchPersonId, matchPersonName, matchDate, reviewerId, reviewerName, reviewerDate, sendPersonId, sendPersonName, sendDate,insuredType,dataType,orderNumber,orderNum, COMMENTS, STATE, IS_DELETEMARK, MODIFY_TIME, CREATE_TIME, CREATE_USER_ID, MODIFY_USER_ID
     </sql>
     <update id="updateYbReconsiderVerifyView" parameterType="cc.mrbird.febs.yb.entity.YbReconsiderVerifyView">
         update yb_reconsider_verify_view

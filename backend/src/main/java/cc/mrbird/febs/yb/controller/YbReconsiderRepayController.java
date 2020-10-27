@@ -247,6 +247,7 @@ public class YbReconsiderRepayController extends BaseController {
                                 }
                             }
                             rrd.setOrderNumber(strOrderNumber);
+                            rrd.setOrderNum(i);
 
                             String strbelongDateUpload = DataTypeHelpers.importTernaryOperate(objJb.get(i), 1);//序号',
                             rrd.setBelongDateUpload(strbelongDateUpload);

@@ -27,4 +27,6 @@ public interface IYbReconsiderResetResultViewService extends IService<YbReconsid
         void updateYbReconsiderResetResultView(YbReconsiderResetResultView ybReconsiderResetResultView);
 
         void deleteYbReconsiderResetResultViews(String[]Ids);
+
+        List<YbReconsiderResetResultView> findReconsiderResetResultViewList(YbReconsiderResetResultView ybReconsiderResetResultView);
         }

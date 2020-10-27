@@ -246,6 +246,7 @@ public class YbReconsiderResetController extends BaseController {
                                                 mxIsNull = true;
                                             }
                                             rrData.setOrderNumber(strOrderNumber);
+                                            rrData.setOrderNum(i);
                                             String strSerialNo = DataTypeHelpers.importTernaryOperate(objMx.get(i), 1);//交易流水号',
                                             rrData.setSerialNo(strSerialNo);
                                             String strBillNo = DataTypeHelpers.importTernaryOperate(objMx.get(i), 2);//'单据号',
@@ -312,6 +313,7 @@ public class YbReconsiderResetController extends BaseController {
                                                 rrMain.setIsDeletemark(1);
                                                 rrMain.setId(UUID.randomUUID().toString());
                                                 rrMain.setPid(guid);
+                                                rrMain.setOrderNum(i);
                                                 String strOrderNumber = DataTypeHelpers.importTernaryOperate(objZd.get(i), 0);//序号',
                                                 if (!DataTypeHelpers.isNullOrEmpty(strOrderNumber)) {
                                                     if (!zdOrderNumberList.stream().anyMatch(task -> task.equals(strOrderNumber))) {

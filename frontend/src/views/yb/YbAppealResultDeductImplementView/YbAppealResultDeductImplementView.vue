@@ -5,7 +5,8 @@
     class="card-area"
   >
     <template>
-      <a-form layout="horizontal">
+    <a-spin tip="Loading..." :spinning="spinning" :delay="delayTime">
+      <div>
         <a-row justify="center" type="flex">
           <a-col :span=5>
             <a-form-item
@@ -54,8 +55,22 @@
           <a-col :span=5>
             <a-input-search placeholder="请输入关键字" v-model="searchText" style="width: 200px" enter-button @search="searchTable" />
           </a-col>
+          <a-col :span=3 >
+              <template>
+                <a-upload
+                  name="file"
+                  accept=".xlsx,.xls"
+                  :fileList="fileList"
+                  :beforeUpload="beforeUpload"
+                >
+                  <a-button type="primary">
+                    <a-icon type="upload" /> 上传扣款落实数据 </a-button>
+                </a-upload>
+              </template>
+            </a-col>
         </a-row>
-      </a-form>
+      </div>
+      </a-spin>
     </template>
     <!--表格-->
     <template>
@@ -141,6 +156,9 @@ export default {
         {text: '主单扣款', value: 1}
       ],
       applyDateText: '复议年月',
+      fileList: [],
+      spinning: false,
+      delayTime: 500,
       tableSelectKey: '1'
     }
   },
@@ -159,6 +177,49 @@ export default {
     },
     monthToChange (date, dateString) {
       this.searchToApplyDate = dateString
+    },
+    beforeUpload (file) {
+      var testmsg = file.name.substring(file.name.lastIndexOf('.') + 1)
+      let isExcel = testmsg === 'xlsx'
+      if (!isExcel) {
+        isExcel = testmsg === 'xls'
+      }
+      // const isExcel = file.type === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+      if (!(isExcel)) {
+        this.$error({
+          title: '只能上传.xlsx,.xls格式的Excel文档~'
+        })
+        return
+      }
+      const isLt2M = file.size / 1024 / 1024 < 5
+      if (!isLt2M) {
+        this.$error({
+          title: '超5M限制，不允许上传~'
+        })
+        return
+      }
+      return isExcel && isLt2M && this.handleUpload(file)
+    },
+    handleUpload (file) {
+      // 点击删除文件调用removeUpload后会自动调用本方法handleUpload 待解决
+      const formData = new FormData()
+      formData.append('file', file)
+      formData.append('applyDateStr', this.searchApplyDate)
+      this.spinning = true
+      this.$upload('ybAppealResultDeductimplement/importDeductimplement', formData).then((r) => {
+        // r.data.data.message
+        if (r.data.data.success === 1) {
+          this.$message.success('Excel导入成功.')
+          this.spinning = false
+        } else {
+          this.$message.error(r.data.data.message)
+          this.spinning = false
+        }
+      }).catch(() => {
+        this.spinning = false
+        this.fileList = []
+        this.$message.error('Excel导入失败.')
+      })
     },
     edit (record) {
       this.showModal(record)

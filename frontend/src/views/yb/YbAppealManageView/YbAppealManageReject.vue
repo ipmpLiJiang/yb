@@ -97,11 +97,17 @@
             &nbsp;
           </a-col>
           <a-col :span=8>
-            <a-button
-              @click="handleSubmit"
-              type="primary"
-              :loading="loading"
-            >提交</a-button>
+            <a-popconfirm
+              title="确定提交？"
+              @confirm="batchAccept"
+              okText="确定"
+              cancelText="取消"
+            >
+              <a-button
+                type="primary"
+                :loading="loading"
+              >提交</a-button>
+            </a-popconfirm>
             <a-popconfirm
               title="确定放弃编辑？"
               @confirm="onClose"

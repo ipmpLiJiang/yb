@@ -50,6 +50,7 @@ public class YbReconsiderApply implements Serializable {
     private transient String applyDateFrom;
     private transient String applyDateTo;
 
+
     /**
      * 操作员代码
      */
@@ -180,6 +181,7 @@ public class YbReconsiderApply implements Serializable {
     public static final String ID = "id";
 
     public static final String APPLYDATE = "applyDate";
+
 
     public static final String OPERATORID = "operatorId";
 

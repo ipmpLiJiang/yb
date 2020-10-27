@@ -121,7 +121,8 @@ public class YbReconsiderApplyController extends BaseController {
     @Log("修改")
     @PutMapping
     @RequiresPermissions("ybReconsiderApply:update")
-    public void updateYbReconsiderApply(@Valid YbReconsiderApply ybReconsiderApply) throws FebsException {
+    public FebsResponse updateYbReconsiderApply(@Valid YbReconsiderApply ybReconsiderApply,boolean isUpOverdue) {
+        int success = 0;
         try {
             User currentUser = FebsUtil.getCurrentUser();
             ybReconsiderApply.setModifyUserId(currentUser.getUserId());
@@ -130,12 +131,24 @@ public class YbReconsiderApplyController extends BaseController {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM");
             String appDateStr = sdf.format(ybReconsiderApply.getApplyDate());
             ybReconsiderApply.setApplyDateStr(appDateStr);
-            this.iYbReconsiderApplyService.updateYbReconsiderApply(ybReconsiderApply);
+            message = this.iYbReconsiderApplyService.updateYbReconsiderApply(ybReconsiderApply,isUpOverdue);
+            if(message.equals("") || message.equals("ok")){
+                message = "ok";
+            }else if(message.equals("date")){
+                message = "当前结束日期应大于之前结束日期";
+            }else if(message.equals("nostate")){
+                message = "当前状态无法进行未申诉更新";
+            }
+            success = 1;
         } catch (Exception e) {
             message = "修改失败";
             log.error(message, e);
-            throw new FebsException(message);
+            //throw new FebsException(message);
         }
+        ResponseResult rr= new ResponseResult();
+        rr.setSuccess(success);
+        rr.setMessage(message);
+        return new FebsResponse().data(rr);
     }
 
 

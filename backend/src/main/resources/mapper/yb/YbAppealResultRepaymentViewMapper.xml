@@ -15,6 +15,7 @@
                     <result column="hospitalName" property="hospitalName"/>
                     <result column="orderNumber" property="orderNumber"/>
                     <result column="orderNumberNew" property="orderNumberNew"/>
+            <result column="orderNum" property="orderNum"/>
                     <result column="serialNo" property="serialNo"/>
                     <result column="billNo" property="billNo"/>
                     <result column="projectCode" property="projectCode"/>
@@ -53,7 +54,7 @@
 
         <!-- 通用查询结果列 -->
         <sql id="Base_Column_List">
-        id, applyDate, applyDateStr, dataType, repayType, belongDate, belongDateStr, hospitalCode, hospitalName, orderNumber, orderNumberNew, serialNo, billNo, projectCode, projectName, medicalPrice, ruleName, deductPrice, deductReason, repaymentPrice, repaymentReason, doctorName, deptCode, deptName, costDate, costDateStr, hospitalizedNo, treatmentMode, settlementDate, settlementDateStr, personalNo, insuredName, updateType, warnType, arDoctorCode, arDoctorName, arDeptCode, arDeptName, repaymentId, resultId, resetDataId, deductImplementId, repaymentProgramme,shareState,shareProgramme
+        id, applyDate, applyDateStr, dataType, repayType, belongDate, belongDateStr, hospitalCode, hospitalName, orderNumber, orderNumberNew, orderNum, serialNo, billNo, projectCode, projectName, medicalPrice, ruleName, deductPrice, deductReason, repaymentPrice, repaymentReason, doctorName, deptCode, deptName, costDate, costDateStr, hospitalizedNo, treatmentMode, settlementDate, settlementDateStr, personalNo, insuredName, updateType, warnType, arDoctorCode, arDoctorName, arDeptCode, arDeptName, repaymentId, resultId, resetDataId, deductImplementId, repaymentProgramme,shareState,shareProgramme
     </sql>
     <update id="updateYbAppealResultRepaymentView" parameterType="cc.mrbird.febs.yb.entity.YbAppealResultRepaymentView">
         update yb_appeal_result_repayment_view

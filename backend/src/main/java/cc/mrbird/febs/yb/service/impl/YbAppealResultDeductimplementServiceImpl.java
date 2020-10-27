@@ -4,7 +4,10 @@ import cc.mrbird.febs.common.domain.QueryRequest;
 import cc.mrbird.febs.common.utils.SortUtil;
 import cc.mrbird.febs.yb.entity.YbAppealResultDeductimplement;
 import cc.mrbird.febs.yb.dao.YbAppealResultDeductimplementMapper;
+import cc.mrbird.febs.yb.entity.YbReconsiderResetDeductimplement;
+import cc.mrbird.febs.yb.entity.YbReconsiderResetResultView;
 import cc.mrbird.febs.yb.service.IYbAppealResultDeductimplementService;
+import cc.mrbird.febs.yb.service.IYbReconsiderResetResultViewService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -13,15 +16,14 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.time.LocalDate;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -36,6 +38,8 @@ import java.time.LocalDate;
 @Transactional(propagation = Propagation.SUPPORTS, readOnly = true, rollbackFor = Exception.class)
 public class YbAppealResultDeductimplementServiceImpl extends ServiceImpl<YbAppealResultDeductimplementMapper, YbAppealResultDeductimplement> implements IYbAppealResultDeductimplementService {
 
+    @Autowired
+    private IYbReconsiderResetResultViewService iYbReconsiderResetResultViewService;
 
     @Override
     public IPage<YbAppealResultDeductimplement> findYbAppealResultDeductimplements(QueryRequest request, YbAppealResultDeductimplement ybAppealResultDeductimplement) {
@@ -72,7 +76,6 @@ public class YbAppealResultDeductimplementServiceImpl extends ServiceImpl<YbAppe
         if (ybAppealResultDeductimplement.getId() == null || "".equals(ybAppealResultDeductimplement.getId())) {
             ybAppealResultDeductimplement.setId(UUID.randomUUID().toString());
         }
-        ybAppealResultDeductimplement.setCreateTime(new Date());
         ybAppealResultDeductimplement.setIsDeletemark(1);
         this.save(ybAppealResultDeductimplement);
     }
@@ -81,25 +84,80 @@ public class YbAppealResultDeductimplementServiceImpl extends ServiceImpl<YbAppe
     @Transactional
     public String createAppealResultDeductimplement(YbAppealResultDeductimplement ybAppealResultDeductimplement) {
         LambdaQueryWrapper<YbAppealResultDeductimplement> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(YbAppealResultDeductimplement::getResultId,ybAppealResultDeductimplement.getResultId());
-        wrapper.eq(YbAppealResultDeductimplement::getResetDataId,ybAppealResultDeductimplement.getResetDataId());
+        wrapper.eq(YbAppealResultDeductimplement::getResultId, ybAppealResultDeductimplement.getResultId());
+        wrapper.eq(YbAppealResultDeductimplement::getResetDataId, ybAppealResultDeductimplement.getResetDataId());
         List<YbAppealResultDeductimplement> list = this.list(wrapper);
-        if(list.size()==0) {
+        if (list.size() == 0) {
             ybAppealResultDeductimplement.setCreateTime(new Date());
             if (ybAppealResultDeductimplement.getId() == null || "".equals(ybAppealResultDeductimplement.getId())) {
                 ybAppealResultDeductimplement.setId(UUID.randomUUID().toString());
             }
-            ybAppealResultDeductimplement.setCreateTime(new Date());
             ybAppealResultDeductimplement.setIsDeletemark(1);
             boolean bl = this.save(ybAppealResultDeductimplement);
-            if(bl){
-                return  "ok";
-            }else{
+            if (bl) {
+                return "ok";
+            } else {
                 return "n1";
             }
-        }else{
+        } else {
             return "n2";
         }
+    }
+
+    //    @Override
+//    @Transactional
+    public String ImportCreateAppealResultDeductimplement(Date applyDate,String applyDateStr,Long userId ,List<YbReconsiderResetDeductimplement> listResetDeductimplement) {
+        YbReconsiderResetResultView ybReconsiderResetResultView = new YbReconsiderResetResultView();
+        ybReconsiderResetResultView.setApplyDateStr(applyDateStr);
+        List<YbReconsiderResetResultView> resetResultList = this.iYbReconsiderResetResultViewService.findReconsiderResetResultViewList(ybReconsiderResetResultView);
+        List<YbAppealResultDeductimplement> createList = new ArrayList<>();
+        List<YbReconsiderResetResultView> queryList = new ArrayList<>();
+
+        if (resetResultList.size() > 0) {
+            LambdaQueryWrapper<YbAppealResultDeductimplement> wrapper = new LambdaQueryWrapper<>();
+            wrapper.eq(YbAppealResultDeductimplement::getApplyDateStr,applyDateStr);
+            List<YbAppealResultDeductimplement> ardList = this.list(wrapper);
+            List<YbAppealResultDeductimplement> ardQueryList = new ArrayList<>();
+
+            for (YbReconsiderResetDeductimplement item : listResetDeductimplement) {
+                queryList = resetResultList.stream().filter(
+                        s -> s.getOrderNumber().equals(item.getOrderNumber())
+                ).collect(Collectors.toList());
+                if (queryList.size() > 0) {
+                    YbReconsiderResetResultView rrr = queryList.get(0);
+                    ardQueryList = ardList.stream().filter(
+                            s -> s.getApplyDateStr().equals(applyDateStr) &&
+                                    s.getResultId().equals(rrr.getResultId()) &&
+                                    s.getResetDataId().equals(rrr.getId())
+                    ).collect(Collectors.toList());
+
+                    YbAppealResultDeductimplement ybAppealResultDeductimplement = new YbAppealResultDeductimplement();
+                    if (ybAppealResultDeductimplement.getId() == null || "".equals(ybAppealResultDeductimplement.getId())) {
+                        ybAppealResultDeductimplement.setId(UUID.randomUUID().toString());
+                    }
+                    ybAppealResultDeductimplement.setCreateTime(new Date());
+                    ybAppealResultDeductimplement.setIsDeletemark(1);
+
+                    ybAppealResultDeductimplement.setCreateUserId(userId);
+
+                    ybAppealResultDeductimplement.setApplyDate(applyDate);
+                    ybAppealResultDeductimplement.setApplyDateStr(applyDateStr);
+
+                    ybAppealResultDeductimplement.setResultId(rrr.getResultId());
+                    ybAppealResultDeductimplement.setResetDataId(rrr.getId());
+                    ybAppealResultDeductimplement.setImplementDate(item.getImplementDate());
+                    ybAppealResultDeductimplement.setImplementDateStr(item.getImplementDateStr());
+                    ybAppealResultDeductimplement.setShareProgramme(item.getShareProgramme());
+                    ybAppealResultDeductimplement.setShareState(item.getShareState());
+                    createList.add(ybAppealResultDeductimplement);
+                }
+            }
+        }
+
+        if(createList.size()>0){
+            this.saveBatch(createList);
+        }
+        return "";
     }
 
     @Override

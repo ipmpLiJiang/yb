@@ -104,6 +104,7 @@ CREATE TABLE yb_reconsider_apply_data (
 	versionNumber varchar(50) DEFAULT NULL COMMENT '版本号',
 	backAppeal varchar(1000) DEFAULT NULL COMMENT '反馈申诉',
 	insuredType varchar(50) DEFAULT NULL COMMENT '参保类型',
+	orderNum int(4) NOT NULL COMMENT '排序',
 	typeno int(4) NOT NULL COMMENT '版本类型',
 	dataType int(4) NOT NULL COMMENT '扣款类型', -- 0 明细扣款 1 主单扣款
   COMMENTS varchar(1000) DEFAULT NULL COMMENT '备注',
@@ -231,6 +232,8 @@ CREATE TABLE yb_appeal_result_deductImplement (
   id char(36) NOT NULL COMMENT '扣款落实Id',
 	resultId char(36) NOT NULL COMMENT '申诉上传Id',
 	resetDataId  char(36) NOT NULL COMMENT '剔除明细Id',
+	applyDate datetime NOT NULL COMMENT '复议年月',
+	applyDateStr varchar(10) NOT NULL COMMENT '复议年月Str',
 	implementDate datetime NOT NULL COMMENT '绩效年月',
 	implementDateStr varchar(10) NOT NULL COMMENT '绩效年月Str',
 	shareState int(4) DEFAULT 0 COMMENT '分摊方式', # 0 个人 1科室
@@ -361,6 +364,7 @@ orderNumber varchar(50) DEFAULT NULL COMMENT '序号',
 	insuredName varchar(50) DEFAULT NULL COMMENT '参保人姓名',
 	cardNumber varchar(50) DEFAULT NULL COMMENT '医保卡号',
 	areaName varchar(50) DEFAULT NULL COMMENT '统筹区名称',
+	orderNum int(4) NOT NULL COMMENT '排序',
 	insuredType varchar(50) DEFAULT NULL COMMENT '参保类型',
 	dataType int(4) NOT NULL COMMENT '扣款类型', -- 0 明细扣款 1 主单扣款
   COMMENTS varchar(1000) DEFAULT NULL COMMENT '备注',
@@ -485,11 +489,12 @@ CREATE TABLE yb_reconsider_repay_data (
 	applyDataId char(36) DEFAULT NULL COMMENT '复议申请明细',
 	resetDataId  char(36) DEFAULT NULL COMMENT '剔除明细扣款Id',
 	resultId char(36) DEFAULT NULL COMMENT '申诉上传Id',  
+	orderNum int(4) NOT NULL COMMENT '排序',
 	dataType int(4) NOT NULL COMMENT '扣款类型', -- 0 明细扣款 1 主单扣款
 	seekState int(4) DEFAULT 0 COMMENT '匹配状态',-- 0未匹配 1已匹配
 	updateType int(4) DEFAULT 0 COMMENT '更新类型',-- 0序号更新 1规则更新
 	repayType int(4)  DEFAULT NULL COMMENT '保险类型',-- 0 居保 1职保  主单扣款不区分职保 居保 默认值为NULL
-	warnType int(4) DEFAULT 0 COMMENT '提醒状态',-- 1序号正常(一个 用序号匹配) 2新序号(一个 无序号匹配) 3新序号(多个 序号错误，无序号匹配) 4全无匹配 5异常匹配
+	warnType int(4) DEFAULT 0 COMMENT '提醒状态',-- 1序号正常(一个 用序号匹配) 2新序号(一个 无序号匹配) 3新序号(多个 序号错误，无序号匹配) 4全无匹配 5异常匹配(字段匹配多个，选择一个匹配，在异常数据中匹配)
   COMMENTS varchar(1000) DEFAULT NULL COMMENT '备注',  
   STATE int(4) DEFAULT 0 COMMENT '状态',-- 0上传 1一对多 2未知
   IS_DELETEMARK tinyint(4) DEFAULT NULL COMMENT '是否删除',
@@ -499,6 +504,13 @@ CREATE TABLE yb_reconsider_repay_data (
   MODIFY_USER_ID bigint(11) DEFAULT NULL COMMENT '修改人',
   PRIMARY KEY (id)
 ) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
+
+
+#alter table yb_reconsider_apply_data add orderNum int(4) not null;
+
+#alter table yb_reconsider_reset_data add orderNum int(4) not null;
+
+#alter table yb_reconsider_repay_data  add orderNum int(4) not null;
 
 
 DROP VIEW IF EXISTS yb_reconsider_verify_view;
@@ -539,6 +551,7 @@ select
 	ad.insuredType,
 	ad.dataType,
 	ad.orderNumber,
+	ad.orderNum,
 	ra.applyDate, #复议年月
 	ra.applyDateStr, #复议年月Str
 	ra.operatorId, #操作员代码'
@@ -617,6 +630,7 @@ select
 	ad.insuredType,
 	ad.dataType,
 	ad.orderNumber,
+	ad.orderNum,
 	ra.applyDate, #复议年月
 	ra.applyDateStr, #复议年月Str
 	ra.operatorId, #操作员代码'
@@ -706,6 +720,7 @@ select
 	ad.insuredType,
 	ad.dataType,
 	ad.orderNumber,
+	ad.orderNum,
 	ra.applyDate, #复议年月
 	ra.applyDateStr, #复议年月Str
 	ra.operatorId, #操作员代码'
@@ -776,6 +791,7 @@ SELECT
 	yb_reconsider_reset_data.insuredType,-- 参保类型
 	yb_reconsider_reset_data.dataType,-- 数据类型
 	yb_reconsider_reset_data.orderNumber,-- 序号
+	yb_reconsider_reset_data.orderNum,-- 排序
 	yb_reconsider_reset_data.repaymentPrice,-- 还款金额
 	yb_reconsider_reset_data.STATE, -- 状态
 	yb_reconsider_reset_data.seekState,-- 查找状态
@@ -829,6 +845,7 @@ select
 	ad.insuredType,
 	ad.dataType,
 	ad.orderNumber,
+	ad.orderNum,
 	hv.applyDate, #复议年月
 	hv.applyDateStr, #复议年月Str
   hvd.id,
@@ -888,6 +905,7 @@ SELECT
 	yb_reconsider_reset_data.insuredType,-- 参保类型
 	yb_reconsider_reset_data.dataType,-- 数据类型
 	yb_reconsider_reset_data.orderNumber,-- 序号
+	yb_reconsider_reset_data.orderNum,-- 排序
 	yb_reconsider_reset_data.repaymentPrice ,-- 还款金额
 	yb_reconsider_reset_data.STATE, -- 状态
 	yb_reconsider_reset_data.seekState,-- 查找状态
@@ -957,6 +975,7 @@ select
 	ad.insuredType,
 	ad.dataType,
 	ad.orderNumber,
+	ad.orderNum,
 	ra.applyDate, #复议年月
 	ra.applyDateStr, #复议年月Str
 	ra.operatorId, #操作员代码'
@@ -988,8 +1007,8 @@ select
 	resetDate.repaymentPrice,
 	CASE WHEN art.state = 1 or (art.state = 2 and (art.repayState = 1 or art.repayState = 3)) THEN 1 
 	WHEN art.state = 2 and art.repayState = 2 THEN 0 ELSE 2 END isSuccess,
-	CASE WHEN art.state = 1 THEN ad.deductPrice WHEN ad.deductPrice = resetDate.deductPrice 
-	THEN 0 ELSE ad.deductPrice - resetDate.deductPrice  END adjustPrice
+	CASE WHEN art.state = 1 THEN -ad.deductPrice WHEN ad.deductPrice = resetDate.deductPrice 
+	THEN 0 ELSE resetDate.deductPrice - ad.deductPrice  END adjustPrice
 from 
 	yb_reconsider_apply_data ad 		
 	INNER JOIN yb_reconsider_apply ra ON
@@ -1011,40 +1030,41 @@ DROP VIEW IF EXISTS yb_appeal_result_deductImplement_view;
 create view yb_appeal_result_deductImplement_view
 as
 select	
-	ad.serialNo,#交易流水号
-	ad.billNo,#单据号
+	rrd.serialNo,#交易流水号
+	rrd.billNo,#单据号
 	ad.proposalCode,#意见书编码
-	ad.projectCode,#项目编码
-	ad.projectName,#项目名称
+	rrd.projectCode,#项目编码
+	rrd.projectName,#项目名称
 	ad.num,#数量
-	ad.medicalPrice,#医保内金额
-	ad.ruleName,#规则名称
-	ad.deductPrice,#扣除金额
-	ad.deductReason,#扣除原因
-	ad.repaymentReason,#还款原因
-	ad.doctorName,#医生姓名
-	ad.deptCode,#科室编码
-	ad.deptName,#科室名称
+	rrd.medicalPrice,#医保内金额
+	rrd.ruleName,#规则名称
+	rrd.deductPrice,#扣除金额
+	rrd.deductReason,#扣除原因
+	rrd.repaymentReason,#还款原因
+	rrd.doctorName,#医生姓名
+	rrd.deptCode,#科室编码
+	rrd.deptName,#科室名称
 	ad.enterHospitalDate,#入院日期
 	ad.outHospitalDate,#出院日期
-	ad.costDate,#费用日期
+	rrd.costDate,#费用日期
 	ad.enterHospitalDateStr,#入院日期Str
 	ad.outHospitalDateStr,#出院日期Str
-	ad.costDateStr,#费用日期Str
-	ad.hospitalizedNo,#住院号
-	ad.treatmentMode,#就医方式
-	ad.settlementDate,#结算日期
-	ad.settlementDateStr,#结算日期Str
-	ad.personalNo,#个人编号
-	ad.insuredName,#参保人姓名
-	ad.cardNumber,#医保卡号
-	ad.areaName,#统筹区名称
+	rrd.costDateStr,#费用日期Str
+	rrd.hospitalizedNo,#住院号
+	rrd.treatmentMode,#就医方式
+	rrd.settlementDate,#结算日期
+	rrd.settlementDateStr,#结算日期Str
+	rrd.personalNo,#个人编号
+	rrd.insuredName,#参保人姓名
+	rrd.cardNumber,#医保卡号
+	rrd.areaName,#统筹区名称
 	ad.versionNumber,#版本号
 	ad.backAppeal,#反馈申诉
 	ad.typeno,	#版本类型
-	ad.insuredType,
-	ad.dataType,
-	ad.orderNumber,
+	rrd.insuredType,
+	rrd.dataType,
+	rrd.orderNumber,
+	rrd.orderNum,
 	ra.applyDate, #复议年月
 	ra.applyDateStr, #复议年月Str
 	ra.operatorId, #操作员代码'
@@ -1089,6 +1109,9 @@ from
 		art.state = 2 AND
 		art.sourceType = 0 AND
 		art.IS_DELETEMARK = 1
+	INNER JOIN yb_reconsider_reset_data rrd ON
+		rrd.id = art.resetDataId AND
+		rrd.IS_DELETEMARK = 1
 	LEFT JOIN yb_appeal_result_deductImplement ardi ON
 		ardi.resultId = art.id
 where
@@ -1110,6 +1133,7 @@ select
 	CASE WHEN yb_reconsider_repay_data.updateType = 0 THEN yb_reconsider_repay_data.orderNumber
 	ELSE yb_reconsider_repay_data.orderNumberNew END orderNumber,#序号
 	yb_reconsider_repay_data.orderNumberNew,#序号new
+	yb_reconsider_repay_data.orderNum,#排序
   yb_reconsider_repay_data.serialNo,#交易流水号
 	yb_reconsider_repay_data.billNo,#单据号
 	yb_reconsider_repay_data.projectCode,#项目编码
@@ -1173,14 +1197,17 @@ where
 
 
 DROP PROCEDURE IF EXISTS p_appeal_manage_enableOverdue;
-CREATE PROCEDURE p_appeal_manage_enableOverdue()
+CREATE PROCEDURE p_appeal_manage_enableOverdue(in applyDateStr VARCHAR(50),out message VARCHAR(50))
 begin
     declare m_id char(36);
+		declare w_applyDateStr VARCHAR(50) DEFAULT CASE WHEN applyDateStr = '' THEN DATE_FORMAT(now(), '%Y-%m') ELSE applyDateStr end;
 		declare t_update INTEGER DEFAULT 0; 
-		declare t_error INTEGER DEFAULT 0;    
+		declare t_error INTEGER DEFAULT 0;
 		declare done int default 0;
+
     -- 声明游标
     declare mc cursor for 
+		
 		SELECT
 			yb_appeal_manage.id
 		FROM
@@ -1190,7 +1217,7 @@ begin
 				yb_reconsider_apply_data.IS_DELETEMARK = 1
 			INNER JOIN yb_reconsider_apply ON
 				yb_reconsider_apply.id = yb_reconsider_apply_data.pid AND
-				yb_reconsider_apply.applyDateStr = DATE_FORMAT(now(), '%Y-%m')  AND
+				yb_reconsider_apply.applyDateStr =  w_applyDateStr AND
 				yb_reconsider_apply.IS_DELETEMARK = 1
 		WHERE
 			yb_appeal_manage.IS_DELETEMARK = 1 AND 
@@ -1229,23 +1256,29 @@ begin
     close mc;
 		
 		IF t_error = 1 THEN    
+				set message = '异常';
 				ROLLBACK;    
 		ELSE    
 				if t_update = 1 then
+					set message = 'ok';
 					COMMIT;
 				else
-					select '无更新条数'; 
+					set message = '无更新条数';
+					-- select '无更新条数'; 
 				end if;
 		END IF;
-   select t_error; 
+
+   -- select t_error; 
 end;
 
 DROP PROCEDURE IF EXISTS p_appeal_manage_applyEndDateOne;
 
-CREATE PROCEDURE p_appeal_manage_applyEndDateOne()
+CREATE PROCEDURE p_appeal_manage_applyEndDateOne(in applyDateStr VARCHAR(50),out message VARCHAR(50))
 begin
     declare m_id char(36);
 		declare m_acceptState int;
+		declare w_applyDateStr VARCHAR(50) DEFAULT CASE WHEN applyDateStr = '' THEN DATE_FORMAT(now(), '%Y-%m') ELSE applyDateStr end;
+		declare c_count int;
 		declare t_update INTEGER DEFAULT 0; 
 		declare t_error INTEGER DEFAULT 0;    
 		declare done int default 0;
@@ -1262,7 +1295,7 @@ begin
 				yb_reconsider_apply_data.IS_DELETEMARK = 1
 			INNER JOIN yb_reconsider_apply ON
 				yb_reconsider_apply.id = yb_reconsider_apply_data.pid and
-				yb_reconsider_apply.applyDateStr = DATE_FORMAT(now(), '%Y-%m')  AND
+				yb_reconsider_apply.applyDateStr = w_applyDateStr  AND
 				yb_reconsider_apply.endDateOne <= now() AND 
 				yb_reconsider_apply.IS_DELETEMARK = 1
 		WHERE
@@ -1288,12 +1321,14 @@ begin
 			update yb_appeal_manage 
 			set 
 				acceptState= 7,
-				operateReason='未申诉',
+				operateReason='',
 				operateDate=now(),
 				operateProcess= case when m_acceptState=0 then '接受申请-未申诉' else '待申诉-未申诉' end		
 			where 
 				id = m_id;
-				
+			
+			select count(1) into c_count from yb_appeal_result where id = m_id;
+			if c_count = 0 then
 			insert into yb_appeal_result
 			(
 				id,applyDataId,verifyId,manageId,doctorCode,doctorName,deptCode,deptName,
@@ -1321,7 +1356,7 @@ begin
 				yb_appeal_manage 
 			WHERE
 				id = m_id;
-			
+			end if;
 			
 			set t_update = 1;
 
@@ -1330,23 +1365,28 @@ begin
     close mc;
 		
 		IF t_error = 1 THEN    
-				ROLLBACK;    
+			set message = '执行异常';
+			ROLLBACK;    
 		ELSE    
 				if t_update = 1 then
+					set message = 'ok';
 					COMMIT;
 				else
-					select '无更新条数'; 
+					set message = '无更新条数';
+					-- select '无更新条数'; 
 				end if;
 		END IF;
-   select t_error; 
+   -- select t_error; 
 end;
 
 DROP PROCEDURE IF EXISTS p_appeal_manage_applyEndDateTwo;
 
-CREATE PROCEDURE p_appeal_manage_applyEndDateTwo()
+CREATE PROCEDURE p_appeal_manage_applyEndDateTwo(in applyDateStr VARCHAR(50),out message VARCHAR(50))
 begin
     declare m_id char(36);
 		declare m_acceptState int;
+		declare w_applyDateStr VARCHAR(50) DEFAULT CASE WHEN applyDateStr = '' THEN DATE_FORMAT(now(), '%Y-%m') ELSE applyDateStr end;
+		declare c_count int;	
 		declare t_update INTEGER DEFAULT 0; 
 		declare t_error INTEGER DEFAULT 0;    
 		declare done int default 0;
@@ -1363,7 +1403,7 @@ begin
 				yb_reconsider_apply_data.IS_DELETEMARK = 1
 			INNER JOIN yb_reconsider_apply ON
 				yb_reconsider_apply.id = yb_reconsider_apply_data.pid and
-				yb_reconsider_apply.applyDateStr = DATE_FORMAT(now(), '%Y-%m')  AND
+				yb_reconsider_apply.applyDateStr = w_applyDateStr  AND
 				yb_reconsider_apply.endDateTwo <= now() AND 
 				yb_reconsider_apply.IS_DELETEMARK = 1
 		WHERE
@@ -1389,12 +1429,14 @@ begin
 			update yb_appeal_manage 
 			set 
 				acceptState= 7,
-				operateReason='未申诉',
+				operateReason='',
 				operateDate=now(),
 				operateProcess= case when m_acceptState=0 then '接受申请-未申诉' else '待申诉-未申诉' end		
 			where 
 				id = m_id;
-				
+			
+			select count(1) into c_count from yb_appeal_result where id = m_id;
+			if c_count = 0 then	
 			insert into yb_appeal_result
 			(
 				id,applyDataId,verifyId,manageId,doctorCode,doctorName,deptCode,deptName,
@@ -1422,7 +1464,7 @@ begin
 				yb_appeal_manage 
 			WHERE
 				id = m_id;
-			
+			end if;
 			
 			set t_update = 1;
 
@@ -1431,15 +1473,18 @@ begin
     close mc;
 		
 		IF t_error = 1 THEN    
+				set message = '执行异常';
 				ROLLBACK;    
 		ELSE    
 				if t_update = 1 then
+					set message = 'ok';
 					COMMIT;
 				else
-					select '无更新条数'; 
+					set message = '无更新条数';
+					-- select '无更新条数'; 
 				end if;
 		END IF;
-   select t_error; 
+   -- select t_error; 
 end;
 
 

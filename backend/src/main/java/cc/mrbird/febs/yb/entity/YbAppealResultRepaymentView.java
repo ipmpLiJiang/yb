@@ -109,6 +109,13 @@ private static final long serialVersionUID=1L;
     private String orderNumberNew;
 
     /**
+     * 排序
+     */
+    @TableField("orderNum")
+    @ExcelField(value = "排序")
+    private Integer orderNum;
+
+    /**
      * 交易流水号
      */
     @TableField("serialNo")
@@ -379,6 +386,8 @@ private static final long serialVersionUID=1L;
     public static final String ORDERNUMBER ="orderNumber" ;
 
     public static final String ORDERNUMBERNEW ="orderNumberNew" ;
+
+    public static final String ORDERNUM ="orderNum";
 
     public static final String SERIALNO ="serialNo" ;
 

@@ -482,6 +482,13 @@ public class YbAppealManageView implements Serializable {
     private String orderNumber;
 
     /**
+     * 排序
+     */
+    @TableField("orderNum")
+    @ExcelField(value = "排序")
+    private Integer orderNum;
+
+    /**
      * 操作过程
      */
     @TableField("operateProcess")
@@ -688,6 +695,8 @@ public class YbAppealManageView implements Serializable {
     public static final String DATATYPE ="dataType" ;
 
     public static final String ORDERNUMBER ="orderNumber";
+
+    public static final String ORDERNUM ="orderNum";
 
     public static final String COMMENTS = "COMMENTS";
 

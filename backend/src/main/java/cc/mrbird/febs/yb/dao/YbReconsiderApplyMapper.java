@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -24,4 +25,12 @@ public interface YbReconsiderApplyMapper extends BaseMapper<YbReconsiderApply> {
     void deleteBatchStateIdsYbReconsiderApply(@Param("listString") List<String> listString, @Param("state") Integer state);
 
     YbReconsiderApply findReconsiderApplyByApplyDateStr(@Param("applyDateStr") String applyDateStr);
+
+    void getAdd(Map<String,Object> map);
+
+    void updateAppealManageEnableOverdue(Map<String,Object> map);
+
+    void  updateAppealManageApplyEndDateOne(Map<String,Object> map);
+
+    void updateAppealManageApplyEndDateTwo(Map<String,Object> map);
 }

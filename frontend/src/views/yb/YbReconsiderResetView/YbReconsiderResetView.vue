@@ -9,11 +9,7 @@
         <div style="text-align:center;margin-bottom:20px">
           <a-row
             justify="center"
-            align="middle"
           >
-            <a-col :span=1>
-              &nbsp;
-            </a-col>
             <a-col :span=6>
               复议年月：
               <a-month-picker
@@ -23,7 +19,7 @@
                 :format="monthFormat"
               />
             </a-col>
-            <a-col :span=6>
+            <a-col :span=5>
               <a-input-search placeholder="请输入关键字" v-model="searchText" style="width: 200px" enter-button @search="searchTable" />
             </a-col>
             <a-col :span=3 v-show="tableSelectKey==1||tableSelectKey==2?true:false">
@@ -32,7 +28,6 @@
                   name="file"
                   accept=".xlsx,.xls"
                   :fileList="fileList"
-                  :remove="removeUpload"
                   :beforeUpload="beforeUpload"
                   :disabled="fileDisabled"
                 >
@@ -41,7 +36,7 @@
                 </a-upload>
               </template>
             </a-col>
-            <a-col :span=3>
+            <a-col :span=2>
               <a-popconfirm
                 title="确定数据剔除？"
                 v-show="tableSelectKey==1||tableSelectKey==2?true:false"
@@ -52,17 +47,28 @@
                 <a-button type="primary" style="margin-right:10px" >数据剔除</a-button>
               </a-popconfirm>
             </a-col>
+            <a-col :span=3>
+              <a-popconfirm
+                title="确定导出扣款数据？"
+                v-show="tableSelectKey==1?true:false"
+                @confirm="exportDeductimplementExcel"
+                okText="确定"
+                cancelText="取消"
+              >
+                <a-button type="primary" style="margin-right:10px" >导出扣款数据</a-button>
+              </a-popconfirm>
+            </a-col>
             <a-col :span=3 v-show="tableSelectKey==4?true:false">
               <a-popconfirm
-                title="确定导出数据？"
+                title="确定导出未知数据？"
                 @confirm="exportExcel"
                 okText="确定"
                 cancelText="取消"
               >
-                <a-button type="primary" style="margin-right:10px" >导出数据</a-button>
+                <a-button type="primary" style="margin-right:10px" >导出未知数据</a-button>
               </a-popconfirm>
             </a-col>
-            <a-col :span=3 >
+            <a-col :span=2 >
               <a-popconfirm
                 title="确定完成剔除？"
                 @confirm="updateApplyState"
@@ -231,12 +237,6 @@ export default {
         this.$message.error('剔除数据操作失败.')
       })
     },
-    removeUpload (file) {
-      const index = this.fileList.indexOf(file)
-      const newFileList = this.fileList.slice()
-      newFileList.splice(index, 1)
-      this.fileList = newFileList
-    },
     exportExcel () {
       // if (this.tableSelectKey === '1') {
       //   this.$refs.ybReconsiderResetData.exportExcel()
@@ -250,6 +250,9 @@ export default {
       //   console.log('exportExcel')
       // }
       this.$refs.ybReconsiderResetUnknown.exportExcel()
+    },
+    exportDeductimplementExcel () {
+      this.$refs.ybReconsiderResetData.exportDeductimplementExcel()
     },
     updateSearch () {
       if (this.tableSelectKey === '1') {
@@ -280,22 +283,6 @@ export default {
       }
       return isExcel && isLt2M && this.handleUpload(file)
     },
-    updateApplyState () {
-      let updateParam = {
-        applyDateStr: this.searchApplyDate
-      }
-      this.$put('ybReconsiderReset/updateApplyState', {
-        ...updateParam
-      }).then((r) => {
-        if (r.data.data.success === 1) {
-          this.$message.success(r.data.data.message)
-        } else {
-          this.$message.error(r.data.data.message)
-        }
-      }).catch(() => {
-        this.$message.error('剔除完成操作失败.')
-      })
-    },
     handleUpload (file) {
       // 点击删除文件调用removeUpload后会自动调用本方法handleUpload 待解决
       const formData = new FormData()
@@ -316,6 +303,22 @@ export default {
         this.spinning = false
         this.fileList = []
         this.$message.error('Excel导入失败.')
+      })
+    },
+    updateApplyState () {
+      let updateParam = {
+        applyDateStr: this.searchApplyDate
+      }
+      this.$put('ybReconsiderReset/updateApplyState', {
+        ...updateParam
+      }).then((r) => {
+        if (r.data.data.success === 1) {
+          this.$message.success(r.data.data.message)
+        } else {
+          this.$message.error(r.data.data.message)
+        }
+      }).catch(() => {
+        this.$message.error('剔除完成操作失败.')
       })
     },
     handleExceptResetClose (isUpdate) {

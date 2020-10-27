@@ -218,6 +218,13 @@ public class YbReconsiderResetResultView implements Serializable {
     private String orderNumber;
 
     /**
+     * 排序
+     */
+    @TableField("orderNum")
+    @ExcelField(value = "排序")
+    private Integer orderNum;
+
+    /**
      * 状态
      */
     @TableField("STATE")
@@ -384,6 +391,8 @@ public class YbReconsiderResetResultView implements Serializable {
     public static final String DATATYPE = "dataType";
 
     public static final String ORDERNUMBER = "orderNumber";
+
+    public static final String ORDERNUM = "orderNum";
 
     public static final String REPAYMENTPRICE = "repaymentPrice";
 

@@ -262,6 +262,7 @@ public class YbReconsiderApplyDataController extends BaseController {
                             List<YbReconsiderApplyData> ListData = new ArrayList<YbReconsiderApplyData>();
                             List<YbReconsiderApplyData> ListMain = new ArrayList<YbReconsiderApplyData>();
                             String guid = pid;
+
                             if (objMx.size() > 1) {
                                 if (objMx.get(0).length == 27) {
                                     for (int i = 1; i < objMx.size(); i++) {
@@ -274,6 +275,7 @@ public class YbReconsiderApplyDataController extends BaseController {
                                             rrData.setIsDeletemark(1);
                                             String strOrderNumber = DataTypeHelpers.importTernaryOperate(objMx.get(i), 0);//序号',
                                             rrData.setOrderNumber(strOrderNumber);
+                                            rrData.setOrderNum(i);
                                             String strSerialNo = DataTypeHelpers.importTernaryOperate(objMx.get(i), 1);//交易流水号',
                                             rrData.setSerialNo(strSerialNo);
                                             String strBillNo = DataTypeHelpers.importTernaryOperate(objMx.get(i), 2);//'单据号',
@@ -360,6 +362,7 @@ public class YbReconsiderApplyDataController extends BaseController {
                                                 rrMain.setPid(guid);
                                                 String strOrderNumber = DataTypeHelpers.importTernaryOperate(objZd.get(i), 0);//序号',
                                                 rrMain.setOrderNumber(strOrderNumber);
+                                                rrMain.setOrderNum(i);
                                                 String strSerialNo = DataTypeHelpers.importTernaryOperate(objZd.get(i), 1);//交易流水号',
                                                 rrMain.setSerialNo(strSerialNo);
                                                 String strProposalCode = DataTypeHelpers.importTernaryOperate(objZd.get(i), 2);//意见书编码',

@@ -372,6 +372,12 @@ public class YbAppealResultView implements Comparable<YbAppealResultView> {
     @ExcelField(value = "序号")
     private String orderNumber;
 
+    /**
+     * 排序
+     */
+    @TableField("orderNum")
+    @ExcelField(value = "排序")
+    private Integer orderNum;
 
     /**
      * 剔除明细扣款
@@ -573,6 +579,8 @@ public class YbAppealResultView implements Comparable<YbAppealResultView> {
 
     public static final String ORDERNUMBER = "orderNumber";
 
+    public static final String ORDERNUM ="orderNum";
+
     public static final String COMMENTS = "COMMENTS";
 
     public static final String STATE = "STATE";
@@ -591,9 +599,9 @@ public class YbAppealResultView implements Comparable<YbAppealResultView> {
 
     @Override
     public int compareTo(YbAppealResultView o) {
-        if (this.getOrderNumber() != null && o.getOrderNumber() != null) {
-            return this.getOrderNumber().compareTo(o.getOrderNumber());
-        } else if (this.getOrderNumber() != null) {
+        if (this.getOrderNum() != null && o.getOrderNum() != null) {
+            return this.getOrderNum().compareTo(o.getOrderNum());
+        } else if (this.getOrderNum() != null) {
             return 1;
         } else {
             return 0;

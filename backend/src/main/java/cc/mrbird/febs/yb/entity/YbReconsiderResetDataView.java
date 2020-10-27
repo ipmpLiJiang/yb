@@ -219,10 +219,17 @@ public class YbReconsiderResetDataView implements Serializable, Comparable<YbRec
     private String orderNumber;
 
     /**
+     * 排序
+     */
+    @TableField("orderNum")
+    @ExcelField(value = "排序")
+    private Integer orderNum;
+
+    /**
      * 状态
      */
     @TableField("STATE")
-    @ExcelField(value ="状态")
+    @ExcelField(value = "状态")
     private Integer state;
 
     /**
@@ -324,6 +331,8 @@ public class YbReconsiderResetDataView implements Serializable, Comparable<YbRec
 
     public static final String ORDERNUMBER = "orderNumber";
 
+    public static final String ORDERNUM = "orderNum";
+
     public static final String STATE = "STATE";
 
     public static final String RESETID = "resetId";
@@ -338,9 +347,9 @@ public class YbReconsiderResetDataView implements Serializable, Comparable<YbRec
 
     @Override
     public int compareTo(YbReconsiderResetDataView o) {
-        if (this.getOrderNumber() != null && o.getOrderNumber() != null) {
-            return this.getOrderNumber().compareTo(o.getOrderNumber());
-        } else if (this.getOrderNumber() != null) {
+        if (this.getOrderNum() != null && o.getOrderNum() != null) {
+            return this.getOrderNum().compareTo(o.getOrderNum());
+        } else if (this.getOrderNum() != null) {
             return 1;
         } else {
             return 0;

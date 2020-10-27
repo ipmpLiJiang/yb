@@ -273,6 +273,13 @@ private static final long serialVersionUID=1L;
     private String orderNumber;
 
     /**
+     * 排序
+     */
+    @TableField("orderNum")
+    @ExcelField(value = "排序")
+    private Integer orderNum;
+
+    /**
      * 复议年月
      */
     @TableField("applyDate")
@@ -560,6 +567,8 @@ private static final long serialVersionUID=1L;
     public static final String DATATYPE ="dataType" ;
 
     public static final String ORDERNUMBER ="orderNumber" ;
+
+    public static final String ORDERNUM ="orderNum";
 
     public static final String APPLYDATE ="applyDate" ;
 

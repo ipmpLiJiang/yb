@@ -200,6 +200,19 @@ export default {
       record.rowNo = this.rowNo(index)
       this.$emit('look', record)
     },
+    exportDeductimplementExcel () {
+      if (this.dataSource.length > 0) {
+        let queryParams = {}
+        queryParams.applyDateStr = this.applyDate
+        queryParams.state = 0
+        queryParams.seekState = 1
+        this.$export('ybReconsiderResetDataView/excelResetDeductimplement', {
+          ...queryParams
+        })
+      } else {
+        this.$message.success('导出Excel,无数据!')
+      }
+    },
     search () {
       let { sortedInfo } = this
       let sortField, sortOrder
@@ -257,7 +270,7 @@ export default {
         params.pageSize = this.pagination.defaultPageSize
         params.pageNum = this.pagination.defaultCurrent
       }
-      params.sortField = 'orderNumber'
+      params.sortField = 'orderNum'
       params.sortOrder = 'ascend'
       this.$get('ybReconsiderResetDataView', {
         ...params

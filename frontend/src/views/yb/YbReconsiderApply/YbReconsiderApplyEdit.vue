@@ -46,6 +46,16 @@
           :format="dayFormat"/>
         </a-form-item>
       </a-row>
+      <a-row>
+        <a-form-item
+          v-bind="formItemLayout"
+          label="未申诉更新"
+        >
+        <a-checkbox :checked="checked" @change="onChange">
+          是否更新
+        </a-checkbox>
+        </a-form-item>
+      </a-row>
     </a-form>
     <div class="drawer-bootom-button">
       <a-popconfirm
@@ -83,6 +93,7 @@ export default {
       formItemLayout,
       form: this.$form.createForm(this),
       ybReconsiderApply: {},
+      checked: false,
       monthFormat: 'YYYY-MM',
       dayFormat: 'YYYY-MM-DD'
     }
@@ -97,7 +108,11 @@ export default {
       this.reset()
       this.$emit('close')
     },
+    onChange () {
+      this.checked = !this.checked
+    },
     setFormValues ({ ...ybReconsiderApply }) {
+      this.checked = false
       let fields = ['applyDate', 'endDateOne', 'endDateTwo']
       let fieldDates = ['applyDate', 'endDateOne', 'endDateTwo']
       Object.keys(ybReconsiderApply).forEach((key) => {
@@ -124,11 +139,29 @@ export default {
           this.setFields()
           let ybReconsiderApply = this.form.getFieldsValue()
           ybReconsiderApply.id = this.ybReconsiderApply.id
+          ybReconsiderApply.isUpOverdue = this.checked
           this.$put('ybReconsiderApply', {
             ...ybReconsiderApply
-          }).then(() => {
-            this.reset()
-            this.$emit('success')
+          }).then((r) => {
+            if (r.data.data.success === 1) {
+              if (!this.checked) {
+                this.reset()
+                this.$emit('success')
+                if (r.data.data.message === 'ok') {
+                  this.$message.success('修改成功')
+                } else {
+                  this.$message.warning(r.data.data.message)
+                }
+              } else {
+                if (r.data.data.message === 'ok') {
+                  this.$message.success('修改成功')
+                } else {
+                  this.$message.warning(r.data.data.message)
+                }
+              }
+            } else {
+              this.$message.warning(r.data.data.message)
+            }
           }).catch(() => {
             this.loading = false
           })

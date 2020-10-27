@@ -40,6 +40,7 @@
                     <result column="insuredType" property="insuredType"/>
                     <result column="dataType" property="dataType"/>
             <result column="orderNumber" property="orderNumber"/>
+            <result column="orderNum" property="orderNum"/>
                     <result column="COMMENTS" property="comments"/>
                     <result column="STATE" property="state"/>
                     <result column="IS_DELETEMARK" property="isDeletemark"/>
@@ -51,7 +52,7 @@
 
         <!-- 通用查询结果列 -->
         <sql id="Base_Column_List">
-        id, pid, serialNo, billNo, proposalCode, projectCode, projectName, num, medicalPrice, ruleName, deductPrice, deductReason, repaymentReason, doctorName, deptCode, deptName, enterHospitalDate,enterHospitalDateStr, outHospitalDate,outHospitalDateStr, costDate,costDateStr, hospitalizedNo, treatmentMode, settlementDate,settlementDateStr, personalNo, insuredName, cardNumber, areaName, versionNumber, backAppeal, typeno,insuredType,dataType,orderNumber, COMMENTS, STATE, IS_DELETEMARK, MODIFY_TIME, CREATE_TIME, CREATE_USER_ID, MODIFY_USER_ID
+        id, pid, serialNo, billNo, proposalCode, projectCode, projectName, num, medicalPrice, ruleName, deductPrice, deductReason, repaymentReason, doctorName, deptCode, deptName, enterHospitalDate,enterHospitalDateStr, outHospitalDate,outHospitalDateStr, costDate,costDateStr, hospitalizedNo, treatmentMode, settlementDate,settlementDateStr, personalNo, insuredName, cardNumber, areaName, versionNumber, backAppeal, typeno,insuredType,dataType,orderNumber,orderNum, COMMENTS, STATE, IS_DELETEMARK, MODIFY_TIME, CREATE_TIME, CREATE_USER_ID, MODIFY_USER_ID
     </sql>
     <update id="updateYbReconsiderApplyData" parameterType="cc.mrbird.febs.yb.entity.YbReconsiderApplyData">
         update yb_reconsider_apply_data
@@ -86,6 +87,7 @@
 <if test="typeno != null">typeno=#{typeno},</if>
 <if test="dataType != null">dataType=#{dataType},</if>
 <if test="orderNumber != null">orderNumber=#{orderNumber},</if>
+<if test="orderNum != null">orderNum=#{orderNum},</if>
 <if test="comments != null">COMMENTS=#{comments},</if>
 <if test="state != null">STATE=#{state},</if>
 <if test="isDeletemark != null">IS_DELETEMARK=#{isDeletemark},</if>

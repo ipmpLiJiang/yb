@@ -64,6 +64,22 @@ private static final long serialVersionUID=1L;
     private String implementDateStr;
 
     /**
+     * 复议年月
+     */
+    @TableField("applyDate")
+    @ExcelField(value = "复议年月")
+    private Date applyDate;
+    private transient String applyDateFrom;
+    private transient String applyDateTo;
+
+    /**
+     * 复议年月Str
+     */
+    @TableField("applyDateStr")
+    @ExcelField(value = "复议年月Str")
+    private String applyDateStr;
+
+    /**
      * 分摊方式
      */
     @TableField("shareState")
@@ -145,6 +161,10 @@ private static final long serialVersionUID=1L;
     public static final String SHARESTATE ="shareState" ;
 
     public static final String SHAREPROGRAMME ="shareProgramme" ;
+
+    public static final String APPLYDATE = "applyDate";
+
+    public static final String APPLYDATESTR = "applyDateStr";
 
     public static final String COMMENTS ="COMMENTS" ;
 

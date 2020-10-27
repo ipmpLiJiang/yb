@@ -41,6 +41,7 @@
             <result column="updateType" property="updateType"/>
             <result column="belongDateUpload" property="belongDateUpload"/>
             <result column="orderNumberNew" property="orderNumberNew"/>
+            <result column="orderNum" property="orderNum"/>
             <result column="warnType" property="warnType"/>
                     <result column="COMMENTS" property="comments"/>
                     <result column="STATE" property="state"/>
@@ -53,7 +54,7 @@
 
         <!-- 通用查询结果列 -->
         <sql id="Base_Column_List">
-        id, pid, belongDate, belongDateStr, hospitalCode, hospitalName, orderNumber, serialNo, billNo, projectCode, projectName, medicalPrice, ruleName, deductPrice, deductReason, repaymentPrice, repaymentReason, doctorName, deptCode, deptName, costDate, costDateStr, hospitalizedNo, treatmentMode, settlementDate, settlementDateStr, personalNo, insuredName,resetDataId,resultId,applyDataId, dataType,repayType, seekState,updateType,belongDateUpload,orderNumberNew,warnType, COMMENTS, STATE, IS_DELETEMARK, MODIFY_TIME, CREATE_TIME, CREATE_USER_ID, MODIFY_USER_ID
+        id, pid, belongDate, belongDateStr, hospitalCode, hospitalName, orderNumber, serialNo, billNo, projectCode, projectName, medicalPrice, ruleName, deductPrice, deductReason, repaymentPrice, repaymentReason, doctorName, deptCode, deptName, costDate, costDateStr, hospitalizedNo, treatmentMode, settlementDate, settlementDateStr, personalNo, insuredName,resetDataId,resultId,applyDataId, dataType,repayType, seekState,updateType,belongDateUpload,orderNumberNew,orderNum,warnType, COMMENTS, STATE, IS_DELETEMARK, MODIFY_TIME, CREATE_TIME, CREATE_USER_ID, MODIFY_USER_ID
     </sql>
     <update id="updateYbReconsiderRepayData" parameterType="cc.mrbird.febs.yb.entity.YbReconsiderRepayData">
         update yb_reconsider_repay_data
@@ -94,6 +95,7 @@
 <if test="updateType != null">updateType=#{updateType},</if>
 <if test="belongDateUpload != null">belongDateUpload=#{belongDateUpload},</if>
 <if test="orderNumberNew != null">orderNumberNew=#{orderNumberNew},</if>
+<if test="orderNum != null">orderNum=#{orderNum},</if>
 <if test="warnType != null">warnType=#{warnType},</if>
 <if test="comments != null">COMMENTS=#{comments},</if>
 <if test="state != null">STATE=#{state},</if>

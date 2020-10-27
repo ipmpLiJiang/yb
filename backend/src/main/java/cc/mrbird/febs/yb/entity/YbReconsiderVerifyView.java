@@ -2,13 +2,17 @@ package cc.mrbird.febs.yb.entity;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+
 import com.baomidou.mybatisplus.annotation.TableField;
+
 import java.io.Serializable;
 
 
 import lombok.Data;
 import lombok.experimental.Accessors;
+
 import java.util.Date;
+
 import com.wuwenze.poi.annotation.Excel;
 import com.wuwenze.poi.annotation.ExcelField;
 
@@ -24,112 +28,112 @@ import com.wuwenze.poi.annotation.ExcelField;
 @Excel("yb_reconsider_verify_view")
 @Data
 @Accessors(chain = true)
-public class YbReconsiderVerifyView implements Serializable{
+public class YbReconsiderVerifyView implements Serializable {
 
-private static final long serialVersionUID=1L;
+    private static final long serialVersionUID = 1L;
 
     /**
      * 交易流水号
      */
     @TableField("serialNo")
-            @ExcelField(value ="交易流水号")
+    @ExcelField(value = "交易流水号")
     private String serialNo;
 
     /**
      * 单据号
      */
     @TableField("billNo")
-            @ExcelField(value ="单据号")
+    @ExcelField(value = "单据号")
     private String billNo;
 
     /**
      * 意见书编码
      */
     @TableField("proposalCode")
-            @ExcelField(value ="意见书编码")
+    @ExcelField(value = "意见书编码")
     private String proposalCode;
 
     /**
      * 项目编码
      */
     @TableField("projectCode")
-            @ExcelField(value ="项目编码")
+    @ExcelField(value = "项目编码")
     private String projectCode;
 
     /**
      * 项目名称
      */
     @TableField("projectName")
-            @ExcelField(value ="项目名称")
+    @ExcelField(value = "项目名称")
     private String projectName;
 
     /**
      * 数量
      */
-            @ExcelField(value ="数量")
+    @ExcelField(value = "数量")
     private BigDecimal num;
 
     /**
      * 医保内金额
      */
     @TableField("medicalPrice")
-            @ExcelField(value ="医保内金额")
+    @ExcelField(value = "医保内金额")
     private BigDecimal medicalPrice;
 
     /**
      * 规则名称
      */
     @TableField("ruleName")
-            @ExcelField(value ="规则名称")
+    @ExcelField(value = "规则名称")
     private String ruleName;
 
     /**
      * 扣除金额
      */
     @TableField("deductPrice")
-            @ExcelField(value ="扣除金额")
+    @ExcelField(value = "扣除金额")
     private BigDecimal deductPrice;
 
     /**
      * 扣除原因
      */
     @TableField("deductReason")
-            @ExcelField(value ="扣除原因")
+    @ExcelField(value = "扣除原因")
     private String deductReason;
 
     /**
      * 还款原因
      */
     @TableField("repaymentReason")
-            @ExcelField(value ="还款原因")
+    @ExcelField(value = "还款原因")
     private String repaymentReason;
 
     /**
      * 医生姓名
      */
     @TableField("doctorName")
-            @ExcelField(value ="医生姓名")
+    @ExcelField(value = "医生姓名")
     private String doctorName;
 
     /**
      * 科室编码
      */
     @TableField("deptCode")
-            @ExcelField(value ="科室编码")
+    @ExcelField(value = "科室编码")
     private String deptCode;
 
     /**
      * 科室名称
      */
     @TableField("deptName")
-            @ExcelField(value ="科室名称")
+    @ExcelField(value = "科室名称")
     private String deptName;
 
     /**
      * 入院日期
      */
     @TableField("enterHospitalDate")
-            @ExcelField(value ="入院日期")
+    @ExcelField(value = "入院日期")
     private Date enterHospitalDate;
     private transient String enterHospitalDateFrom;
     private transient String enterHospitalDateTo;
@@ -138,7 +142,7 @@ private static final long serialVersionUID=1L;
      * 出院日期
      */
     @TableField("outHospitalDate")
-            @ExcelField(value ="出院日期")
+    @ExcelField(value = "出院日期")
     private Date outHospitalDate;
     private transient String outHospitalDateFrom;
     private transient String outHospitalDateTo;
@@ -147,7 +151,7 @@ private static final long serialVersionUID=1L;
      * 费用日期
      */
     @TableField("costDate")
-            @ExcelField(value ="费用日期")
+    @ExcelField(value = "费用日期")
     private Date costDate;
     private transient String costDateFrom;
     private transient String costDateTo;
@@ -177,21 +181,21 @@ private static final long serialVersionUID=1L;
      * 住院号
      */
     @TableField("hospitalizedNo")
-            @ExcelField(value ="住院号")
+    @ExcelField(value = "住院号")
     private String hospitalizedNo;
 
     /**
      * 就医方式
      */
     @TableField("treatmentMode")
-            @ExcelField(value ="就医方式")
+    @ExcelField(value = "就医方式")
     private String treatmentMode;
 
     /**
      * 结算日期
      */
     @TableField("settlementDate")
-            @ExcelField(value ="结算日期")
+    @ExcelField(value = "结算日期")
     private Date settlementDate;
     private transient String settlementDateFrom;
     private transient String settlementDateTo;
@@ -207,55 +211,55 @@ private static final long serialVersionUID=1L;
      * 个人编号
      */
     @TableField("personalNo")
-            @ExcelField(value ="个人编号")
+    @ExcelField(value = "个人编号")
     private String personalNo;
 
     /**
      * 参保人姓名
      */
     @TableField("insuredName")
-            @ExcelField(value ="参保人姓名")
+    @ExcelField(value = "参保人姓名")
     private String insuredName;
 
     /**
      * 医保卡号
      */
     @TableField("cardNumber")
-            @ExcelField(value ="医保卡号")
+    @ExcelField(value = "医保卡号")
     private String cardNumber;
 
     /**
      * 统筹区名称
      */
     @TableField("areaName")
-            @ExcelField(value ="统筹区名称")
+    @ExcelField(value = "统筹区名称")
     private String areaName;
 
     /**
      * 版本号
      */
     @TableField("versionNumber")
-            @ExcelField(value ="版本号")
+    @ExcelField(value = "版本号")
     private String versionNumber;
 
     /**
      * 反馈申诉
      */
     @TableField("backAppeal")
-            @ExcelField(value ="反馈申诉")
+    @ExcelField(value = "反馈申诉")
     private String backAppeal;
 
     /**
      * 版本类型
      */
-            @ExcelField(value ="版本类型")
+    @ExcelField(value = "版本类型")
     private Integer typeno;
 
     /**
      * 复议年月
      */
     @TableField("applyDate")
-            @ExcelField(value ="复议年月")
+    @ExcelField(value = "复议年月")
     private Date applyDate;
     private transient String applyDateFrom;
     private transient String applyDateTo;
@@ -264,72 +268,72 @@ private static final long serialVersionUID=1L;
      * 复议年月Str
      */
     @TableField("applyDateStr")
-            @ExcelField(value ="复议年月Str")
+    @ExcelField(value = "复议年月Str")
     private String applyDateStr;
 
     /**
      * 操作员代码
      */
     @TableField("operatorId")
-            @ExcelField(value ="操作员代码")
+    @ExcelField(value = "操作员代码")
     private Long operatorId;
 
     /**
      * 操作员名称
      */
     @TableField("operatorName")
-            @ExcelField(value ="操作员名称")
+    @ExcelField(value = "操作员名称")
     private String operatorName;
 
-            private String id;
+    private String id;
 
     /**
      * 申请数据明细
      */
     @TableField("applyDataId")
-            @ExcelField(value ="申请数据明细")
+    @ExcelField(value = "申请数据明细")
     private String applyDataId;
 
     /**
      * 参考复议医生编码
      */
     @TableField("verifyDoctorCode")
-            @ExcelField(value ="参考复议医生编码")
+    @ExcelField(value = "参考复议医生编码")
     private String verifyDoctorCode;
 
     /**
      * 参考复议医生
      */
     @TableField("verifyDoctorName")
-            @ExcelField(value ="参考复议医生")
+    @ExcelField(value = "参考复议医生")
     private String verifyDoctorName;
 
     /**
      * 参考复议科室编码
      */
     @TableField("verifyDeptCode")
-            @ExcelField(value ="参考复议科室编码")
+    @ExcelField(value = "参考复议科室编码")
     private String verifyDeptCode;
 
     /**
      * 参考复议科室
      */
     @TableField("verifyDeptName")
-            @ExcelField(value ="参考复议科室")
+    @ExcelField(value = "参考复议科室")
     private String verifyDeptName;
 
     /**
      * 操作理由
      */
     @TableField("operateReason")
-            @ExcelField(value ="操作理由")
+    @ExcelField(value = "操作理由")
     private String operateReason;
 
     /**
      * 操作日期
      */
     @TableField("operateDate")
-            @ExcelField(value ="操作日期")
+    @ExcelField(value = "操作日期")
     private Date operateDate;
     private transient String operateDateFrom;
     private transient String operateDateTo;
@@ -338,21 +342,21 @@ private static final long serialVersionUID=1L;
      * 匹配人代码
      */
     @TableField("matchPersonId")
-            @ExcelField(value ="匹配人代码")
+    @ExcelField(value = "匹配人代码")
     private Long matchPersonId;
 
     /**
      * 匹配人
      */
     @TableField("matchPersonName")
-            @ExcelField(value ="匹配人")
+    @ExcelField(value = "匹配人")
     private String matchPersonName;
 
     /**
      * 匹配日期
      */
     @TableField("matchDate")
-            @ExcelField(value ="匹配日期")
+    @ExcelField(value = "匹配日期")
     private Date matchDate;
     private transient String matchDateFrom;
     private transient String matchDateTo;
@@ -361,21 +365,21 @@ private static final long serialVersionUID=1L;
      * 审核人代码
      */
     @TableField("reviewerId")
-            @ExcelField(value ="审核人代码")
+    @ExcelField(value = "审核人代码")
     private Long reviewerId;
 
     /**
      * 审核人
      */
     @TableField("reviewerName")
-            @ExcelField(value ="审核人")
+    @ExcelField(value = "审核人")
     private String reviewerName;
 
     /**
      * 审核日期
      */
     @TableField("reviewerDate")
-            @ExcelField(value ="审核日期")
+    @ExcelField(value = "审核日期")
     private Date reviewerDate;
     private transient String reviewerDateFrom;
     private transient String reviewerDateTo;
@@ -384,21 +388,21 @@ private static final long serialVersionUID=1L;
      * 发送人代码
      */
     @TableField("sendPersonId")
-            @ExcelField(value ="发送人代码")
+    @ExcelField(value = "发送人代码")
     private Long sendPersonId;
 
     /**
      * 发送人
      */
     @TableField("sendPersonName")
-            @ExcelField(value ="发送人")
+    @ExcelField(value = "发送人")
     private String sendPersonName;
 
     /**
      * 发送日期
      */
     @TableField("sendDate")
-            @ExcelField(value ="发送日期")
+    @ExcelField(value = "发送日期")
     private Date sendDate;
     private transient String sendDateFrom;
     private transient String sendDateTo;
@@ -407,7 +411,7 @@ private static final long serialVersionUID=1L;
      * 参保类型
      */
     @TableField("insuredType")
-    @ExcelField(value ="参保类型")
+    @ExcelField(value = "参保类型")
     private String insuredType;
 
     /**
@@ -425,31 +429,38 @@ private static final long serialVersionUID=1L;
     private String orderNumber;
 
     /**
+     * 排序
+     */
+    @TableField("orderNum")
+    @ExcelField(value = "排序")
+    private Integer orderNum;
+
+    /**
      * 备注
      */
     @TableField("COMMENTS")
-            @ExcelField(value ="备注")
+    @ExcelField(value = "备注")
     private String comments;
 
     /**
      * 状态
      */
     @TableField("STATE")
-            @ExcelField(value ="状态")
+    @ExcelField(value = "状态")
     private Integer state;
 
     /**
      * 是否删除
      */
     @TableField("IS_DELETEMARK")
-            @ExcelField(value ="是否删除")
+    @ExcelField(value = "是否删除")
     private Integer isDeletemark;
 
     /**
      * 修改时间
      */
     @TableField("MODIFY_TIME")
-            @ExcelField(value ="修改时间")
+    @ExcelField(value = "修改时间")
     private Date modifyTime;
     private transient String modifyTimeFrom;
     private transient String modifyTimeTo;
@@ -458,7 +469,7 @@ private static final long serialVersionUID=1L;
      * 创建时间
      */
     @TableField("CREATE_TIME")
-            @ExcelField(value ="创建时间")
+    @ExcelField(value = "创建时间")
     private Date createTime;
     private transient String createTimeFrom;
     private transient String createTimeTo;
@@ -467,140 +478,141 @@ private static final long serialVersionUID=1L;
      * 创建人
      */
     @TableField("CREATE_USER_ID")
-            @ExcelField(value ="创建人")
+    @ExcelField(value = "创建人")
     private Long createUserId;
 
     /**
      * 修改人
      */
     @TableField("MODIFY_USER_ID")
-            @ExcelField(value ="修改人")
+    @ExcelField(value = "修改人")
     private Long modifyUserId;
 
 
+    public static final String SERIALNO = "serialNo";
 
-    public static final String SERIALNO ="serialNo" ;
+    public static final String BILLNO = "billNo";
 
-    public static final String BILLNO ="billNo" ;
+    public static final String PROPOSALCODE = "proposalCode";
 
-    public static final String PROPOSALCODE ="proposalCode" ;
+    public static final String PROJECTCODE = "projectCode";
 
-    public static final String PROJECTCODE ="projectCode" ;
+    public static final String PROJECTNAME = "projectName";
 
-    public static final String PROJECTNAME ="projectName" ;
+    public static final String NUM = "num";
 
-    public static final String NUM ="num" ;
+    public static final String MEDICALPRICE = "medicalPrice";
 
-    public static final String MEDICALPRICE ="medicalPrice" ;
+    public static final String RULENAME = "ruleName";
 
-    public static final String RULENAME ="ruleName" ;
+    public static final String DEDUCTPRICE = "deductPrice";
 
-    public static final String DEDUCTPRICE ="deductPrice" ;
+    public static final String DEDUCTREASON = "deductReason";
 
-    public static final String DEDUCTREASON ="deductReason" ;
+    public static final String REPAYMENTREASON = "repaymentReason";
 
-    public static final String REPAYMENTREASON ="repaymentReason" ;
+    public static final String DOCTORNAME = "doctorName";
 
-    public static final String DOCTORNAME ="doctorName" ;
+    public static final String DEPTCODE = "deptCode";
 
-    public static final String DEPTCODE ="deptCode" ;
+    public static final String DEPTNAME = "deptName";
 
-    public static final String DEPTNAME ="deptName" ;
+    public static final String ENTERHOSPITALDATE = "enterHospitalDate";
 
-    public static final String ENTERHOSPITALDATE ="enterHospitalDate" ;
+    public static final String OUTHOSPITALDATE = "outHospitalDate";
 
-    public static final String OUTHOSPITALDATE ="outHospitalDate" ;
+    public static final String COSTDATE = "costDate";
 
-    public static final String COSTDATE ="costDate" ;
+    public static final String ENTERHOSPITALDATESTR = "enterHospitalDateStr";
 
-    public static final String ENTERHOSPITALDATESTR ="enterHospitalDateStr" ;
+    public static final String OUTHOSPITALDATESTR = "outHospitalDateStr";
 
-    public static final String OUTHOSPITALDATESTR ="outHospitalDateStr" ;
+    public static final String COSTDATESTR = "costDateStr";
 
-    public static final String COSTDATESTR ="costDateStr" ;
+    public static final String HOSPITALIZEDNO = "hospitalizedNo";
 
-    public static final String HOSPITALIZEDNO ="hospitalizedNo" ;
+    public static final String TREATMENTMODE = "treatmentMode";
 
-    public static final String TREATMENTMODE ="treatmentMode" ;
+    public static final String SETTLEMENTDATE = "settlementDate";
 
-    public static final String SETTLEMENTDATE ="settlementDate" ;
+    public static final String SETTLEMENTDATESTR = "settlementDateStr";
 
-    public static final String SETTLEMENTDATESTR ="settlementDateStr" ;
+    public static final String PERSONALNO = "personalNo";
 
-    public static final String PERSONALNO ="personalNo" ;
+    public static final String INSUREDNAME = "insuredName";
 
-    public static final String INSUREDNAME ="insuredName" ;
+    public static final String CARDNUMBER = "cardNumber";
 
-    public static final String CARDNUMBER ="cardNumber" ;
+    public static final String AREANAME = "areaName";
 
-    public static final String AREANAME ="areaName" ;
+    public static final String VERSIONNUMBER = "versionNumber";
 
-    public static final String VERSIONNUMBER ="versionNumber" ;
+    public static final String BACKAPPEAL = "backAppeal";
 
-    public static final String BACKAPPEAL ="backAppeal" ;
+    public static final String TYPENO = "typeno";
 
-    public static final String TYPENO ="typeno" ;
+    public static final String APPLYDATE = "applyDate";
 
-    public static final String APPLYDATE ="applyDate" ;
+    public static final String APPLYDATESTR = "applyDateStr";
 
-    public static final String APPLYDATESTR ="applyDateStr" ;
+    public static final String OPERATORID = "operatorId";
 
-    public static final String OPERATORID ="operatorId" ;
+    public static final String OPERATORNAME = "operatorName";
 
-    public static final String OPERATORNAME ="operatorName" ;
+    public static final String ID = "id";
 
-    public static final String ID ="id" ;
+    public static final String APPLYDATAID = "applyDataId";
 
-    public static final String APPLYDATAID ="applyDataId" ;
+    public static final String VERIFYDOCTORCODE = "verifyDoctorCode";
 
-    public static final String VERIFYDOCTORCODE ="verifyDoctorCode" ;
+    public static final String VERIFYDOCTORNAME = "verifyDoctorName";
 
-    public static final String VERIFYDOCTORNAME ="verifyDoctorName" ;
+    public static final String VERIFYDEPTCODE = "verifyDeptCode";
 
-    public static final String VERIFYDEPTCODE ="verifyDeptCode" ;
+    public static final String VERIFYDEPTNAME = "verifyDeptName";
 
-    public static final String VERIFYDEPTNAME ="verifyDeptName" ;
+    public static final String OPERATEREASON = "operateReason";
 
-    public static final String OPERATEREASON ="operateReason" ;
+    public static final String OPERATEDATE = "operateDate";
 
-    public static final String OPERATEDATE ="operateDate" ;
+    public static final String MATCHPERSONID = "matchPersonId";
 
-    public static final String MATCHPERSONID ="matchPersonId" ;
+    public static final String MATCHPERSONNAME = "matchPersonName";
 
-    public static final String MATCHPERSONNAME ="matchPersonName" ;
+    public static final String MATCHDATE = "matchDate";
 
-    public static final String MATCHDATE ="matchDate" ;
+    public static final String REVIEWERID = "reviewerId";
 
-    public static final String REVIEWERID ="reviewerId" ;
+    public static final String REVIEWERNAME = "reviewerName";
 
-    public static final String REVIEWERNAME ="reviewerName" ;
+    public static final String REVIEWERDATE = "reviewerDate";
 
-    public static final String REVIEWERDATE ="reviewerDate" ;
+    public static final String SENDPERSONID = "sendPersonId";
 
-    public static final String SENDPERSONID ="sendPersonId" ;
+    public static final String SENDPERSONNAME = "sendPersonName";
 
-    public static final String SENDPERSONNAME ="sendPersonName" ;
+    public static final String SENDDATE = "sendDate";
 
-    public static final String SENDDATE ="sendDate" ;
+    public static final String INSUREDTYPE = "insuredType";
 
-    public static final String INSUREDTYPE ="insuredType" ;
+    public static final String DATATYPE = "dataType";
 
-    public static final String DATATYPE ="dataType" ;
+    public static final String ORDERNUMBER = "orderNumber";
 
-    public static final String ORDERNUMBER ="orderNumber";
+    public static final String ORDERNUM = "orderNum";
 
-    public static final String COMMENTS ="COMMENTS" ;
+    public static final String COMMENTS = "COMMENTS";
 
-    public static final String STATE ="STATE" ;
+    public static final String STATE = "STATE";
 
-    public static final String IS_DELETEMARK ="IS_DELETEMARK" ;
+    public static final String IS_DELETEMARK = "IS_DELETEMARK";
 
-    public static final String MODIFY_TIME ="MODIFY_TIME" ;
+    public static final String MODIFY_TIME = "MODIFY_TIME";
 
-    public static final String CREATE_TIME ="CREATE_TIME" ;
+    public static final String CREATE_TIME = "CREATE_TIME";
 
-    public static final String CREATE_USER_ID ="CREATE_USER_ID" ;
+    public static final String CREATE_USER_ID = "CREATE_USER_ID";
 
-    public static final String MODIFY_USER_ID ="MODIFY_USER_ID" ;
+    public static final String MODIFY_USER_ID = "MODIFY_USER_ID";
 
-        }
+}

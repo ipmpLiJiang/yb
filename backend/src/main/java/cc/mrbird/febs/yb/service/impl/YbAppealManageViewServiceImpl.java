@@ -116,6 +116,26 @@ public class YbAppealManageViewServiceImpl extends ServiceImpl<YbAppealManageVie
         }
     }
 
+    public List<YbAppealManageView> findAppealManageViewList(YbAppealManageView ybAppealManageView) {
+        LambdaQueryWrapper<YbAppealManageView> wrapper = new LambdaQueryWrapper<>();
+        if (ybAppealManageView.getTypeno() != null) {
+            wrapper.eq(YbAppealManageView::getTypeno, ybAppealManageView.getTypeno());
+        }
+        if (ybAppealManageView.getAcceptState() != null) {
+            wrapper.eq(YbAppealManageView::getAcceptState, ybAppealManageView.getAcceptState());
+        }
+        if (ybAppealManageView.getApplyDateStr() != null) {
+            wrapper.eq(YbAppealManageView::getApplyDateStr, ybAppealManageView.getApplyDateStr());
+        }
+        if (ybAppealManageView.getSourceType() != null) {
+            wrapper.eq(YbAppealManageView::getSourceType, ybAppealManageView.getSourceType());//
+        }
+        if (ybAppealManageView.getDataType() != null) {
+            wrapper.eq(YbAppealManageView::getDataType, ybAppealManageView.getDataType());
+        }
+        return this.list(wrapper);
+    }
+
     @Override
     @Transactional
     public void createYbAppealManageView(YbAppealManageView ybAppealManageView) {

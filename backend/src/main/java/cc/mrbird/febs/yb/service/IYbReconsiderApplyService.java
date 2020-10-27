@@ -4,6 +4,7 @@ import cc.mrbird.febs.yb.entity.YbReconsiderApply;
 import cc.mrbird.febs.yb.entity.YbReconsiderApplyData;
 import com.baomidou.mybatisplus.extension.service.IService;
 
+import java.text.ParseException;
 import java.util.List;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -27,7 +28,7 @@ public interface IYbReconsiderApplyService extends IService<YbReconsiderApply> {
 
     void createYbReconsiderApply(YbReconsiderApply ybReconsiderApply);
 
-    void updateYbReconsiderApply(YbReconsiderApply ybReconsiderApply);
+    String updateYbReconsiderApply(YbReconsiderApply ybReconsiderApply,boolean isUpOverdue) throws ParseException;
 
     void deleteYbReconsiderApplys(String[] Ids);
 
@@ -38,4 +39,10 @@ public interface IYbReconsiderApplyService extends IService<YbReconsiderApply> {
     String createReconsiderApplyCheck(YbReconsiderApply ybReconsiderApply);
 
     YbReconsiderApply findReconsiderApplyByApplyDateStrs(String applyDateStr);
+
+    void updateEnableOverdue(String applyDateStr);
+
+    void updateApplyEndDateOne(String applyDateStr);
+
+    void updateApplyEndDateTwo(String applyDateStr);
 }

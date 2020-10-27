@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -100,6 +101,38 @@ public class YbReconsiderResetResultViewServiceImpl extends ServiceImpl<YbRecons
     }
 
     @Override
+    public List<YbReconsiderResetResultView> findReconsiderResetResultViewList(YbReconsiderResetResultView ybReconsiderResetResultView){
+        List<YbReconsiderResetResultView> list = new ArrayList<>();
+        LambdaQueryWrapper<YbReconsiderResetResultView> queryWrapper = new LambdaQueryWrapper<>();
+        if(ybReconsiderResetResultView.getApplyDateStr() !=null){
+            queryWrapper.eq(YbReconsiderResetResultView::getApplyDateStr,ybReconsiderResetResultView.getApplyDateStr());
+        }
+        if(ybReconsiderResetResultView.getDataType() !=null){
+            queryWrapper.eq(YbReconsiderResetResultView::getDataType,ybReconsiderResetResultView.getDataType());
+        }
+        if(ybReconsiderResetResultView.getDataType() !=null){
+            queryWrapper.eq(YbReconsiderResetResultView::getDataType,ybReconsiderResetResultView.getDataType());
+        }
+        if(ybReconsiderResetResultView.getResetId() !=null){
+            queryWrapper.eq(YbReconsiderResetResultView::getResetId,ybReconsiderResetResultView.getResetId());
+        }
+        if(ybReconsiderResetResultView.getId() !=null){
+            queryWrapper.eq(YbReconsiderResetResultView::getId,ybReconsiderResetResultView.getId());
+        }
+        if(ybReconsiderResetResultView.getApplyDataId() !=null){
+            queryWrapper.eq(YbReconsiderResetResultView::getApplyDataId,ybReconsiderResetResultView.getApplyDataId());
+        }
+        if(ybReconsiderResetResultView.getArDeptCode() !=null){
+            queryWrapper.eq(YbReconsiderResetResultView::getArDeptCode,ybReconsiderResetResultView.getArDeptCode());
+        }
+        if(ybReconsiderResetResultView.getArDoctorCode() !=null){
+            queryWrapper.eq(YbReconsiderResetResultView::getArDoctorCode,ybReconsiderResetResultView.getArDoctorCode());
+        }
+        list= this.list(queryWrapper);
+        return  list;
+    }
+
+    @Override
     @Transactional
     public void createYbReconsiderResetResultView(YbReconsiderResetResultView ybReconsiderResetResultView) {
 //        ybReconsiderResetResultView.setCreateTime(new Date());
@@ -120,6 +153,8 @@ public class YbReconsiderResetResultViewServiceImpl extends ServiceImpl<YbRecons
         List<String> list = Arrays.asList(Ids);
         this.baseMapper.deleteBatchIds(list);
     }
+
+
 
 
 }

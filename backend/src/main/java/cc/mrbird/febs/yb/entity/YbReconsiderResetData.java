@@ -206,7 +206,7 @@ public class YbReconsiderResetData implements Comparable<YbReconsiderResetData> 
      * 参保类型
      */
     @TableField("insuredType")
-    @ExcelField(value ="参保类型")
+    @ExcelField(value = "参保类型")
     private String insuredType;
 
     /**
@@ -222,6 +222,13 @@ public class YbReconsiderResetData implements Comparable<YbReconsiderResetData> 
     @TableField("orderNumber")
     @ExcelField(value = "序号")
     private String orderNumber;
+
+    /**
+     * 排序
+     */
+    @TableField("orderNum")
+    @ExcelField(value = "排序")
+    private Integer orderNum;
 
     /**
      * 查找状态
@@ -339,11 +346,13 @@ public class YbReconsiderResetData implements Comparable<YbReconsiderResetData> 
 
     public static final String AREANAME = "areaName";
 
-    public static final String INSUREDTYPE ="insuredType" ;
+    public static final String INSUREDTYPE = "insuredType";
 
-    public static final String DATATYPE ="dataType" ;
+    public static final String DATATYPE = "dataType";
 
-    public static final String ORDERNUMBER ="orderNumber";
+    public static final String ORDERNUMBER = "orderNumber";
+
+    public static final String ORDERNUM = "orderNum";
 
     public static final String COMMENTS = "COMMENTS";
 
@@ -365,9 +374,9 @@ public class YbReconsiderResetData implements Comparable<YbReconsiderResetData> 
 
     @Override
     public int compareTo(YbReconsiderResetData o) {
-        if (this.getOrderNumber() != null && o.getOrderNumber() != null) {
-            return this.getOrderNumber().compareTo(o.getOrderNumber());
-        } else if (this.getOrderNumber() != null) {
+        if (this.getOrderNum() != null && o.getOrderNum() != null) {
+            return this.getOrderNum().compareTo(o.getOrderNum());
+        } else if (this.getOrderNum() != null) {
             return 1;
         } else {
             return 0;

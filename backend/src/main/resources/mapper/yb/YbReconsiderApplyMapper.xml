@@ -103,4 +103,20 @@
         select *  from yb_reconsider_apply where applyDateStr = #{applyDateStr}  limit 1
     </select>
 
+    <select id="getAdd" parameterType="java.util.Map" statementType="CALLABLE">
+     {call sp_add(#{a_num,mode=IN,jdbcType=INTEGER},#{b_num,mode=IN,jdbcType=INTEGER},#{c_num,mode=OUT,jdbcType=INTEGER})}
+    </select>
+
+    <update id="updateAppealManageEnableOverdue" parameterType="java.util.Map" statementType="CALLABLE">
+     {call p_appeal_manage_enableOverdue(#{applyDateStr,mode=IN,jdbcType=VARCHAR},#{message,mode=OUT,jdbcType=VARCHAR})}
+    </update>
+
+    <update id="updateAppealManageApplyEndDateOne" parameterType="java.util.Map" statementType="CALLABLE">
+     {call p_appeal_manage_applyEndDateOne(#{applyDateStr,mode=IN,jdbcType=VARCHAR},#{message,mode=OUT,jdbcType=VARCHAR})}
+    </update>
+
+    <update id="updateAppealManageApplyEndDateTwo" parameterType="java.util.Map" statementType="CALLABLE">
+     {call p_appeal_manage_applyEndDateTwo(#{applyDateStr,mode=IN,jdbcType=VARCHAR},#{message,mode=OUT,jdbcType=VARCHAR})}
+    </update>
+
 </mapper>

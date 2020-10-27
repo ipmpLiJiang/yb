@@ -24,7 +24,7 @@ const updateTheme = primaryColor => {
           message.error('Failed to update theme')
           hideMessage()
         })
-    }, 200)
+    }, 100)
   }
   if (!lessNodesAppended) {
     // insert less.js and color.less

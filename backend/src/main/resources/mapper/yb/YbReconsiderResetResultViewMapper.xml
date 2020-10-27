@@ -30,6 +30,7 @@
                     <result column="insuredType" property="insuredType"/>
                     <result column="dataType" property="dataType"/>
                     <result column="orderNumber" property="orderNumber"/>
+            <result column="orderNum" property="orderNum"/>
                     <result column="STATE" property="state"/>
                     <result column="seekState" property="seekState"/>
                     <result column="resetId" property="resetId"/>
@@ -51,7 +52,7 @@
 
         <!-- 通用查询结果列 -->
         <sql id="Base_Column_List">
-        id, serialNo, billNo, projectCode, projectName, medicalPrice, ruleName, deductPrice, deductReason, repaymentReason, doctorName, deptCode, deptName, costDate, costDateStr, hospitalizedNo, treatmentMode, settlementDate, settlementDateStr, personalNo, insuredName, cardNumber, areaName, insuredType, dataType, orderNumber, STATE, seekState, resetId, applyDate, applyDateStr, currencyField, arDoctorCode, arDoctorName, arDeptCode, arDeptName, applyDataId, resultId, resetDate, resetPersonId, resetPersonName,repayState,repaymentPrice
+        id, serialNo, billNo, projectCode, projectName, medicalPrice, ruleName, deductPrice, deductReason, repaymentReason, doctorName, deptCode, deptName, costDate, costDateStr, hospitalizedNo, treatmentMode, settlementDate, settlementDateStr, personalNo, insuredName, cardNumber, areaName, insuredType, dataType, orderNumber,orderNum, STATE, seekState, resetId, applyDate, applyDateStr, currencyField, arDoctorCode, arDoctorName, arDeptCode, arDeptName, applyDataId, resultId, resetDate, resetPersonId, resetPersonName,repayState,repaymentPrice
     </sql>
     <update id="updateYbReconsiderResetResultView" parameterType="cc.mrbird.febs.yb.entity.YbReconsiderResetResultView">
         update yb_reconsider_reset_result_view

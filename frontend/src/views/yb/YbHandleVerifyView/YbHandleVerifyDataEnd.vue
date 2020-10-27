@@ -230,7 +230,7 @@ export default {
         params.pageSize = this.pagination.defaultPageSize
         params.pageNum = this.pagination.defaultCurrent
       }
-      params.sortField = 'orderNumber'
+      params.sortField = 'orderNum'
       params.sortOrder = 'ascend'
       this.$get('ybHandleVerifyDataView', {
         ...params

@@ -83,6 +83,28 @@ public class DataTypeHelpers {
         return str;
     }
 
+    public static String stringDate6Chang7(String strDate, String sep) {
+        if(strDate.length()==6) {
+            if (sep.equals("")) {
+                sep = "-";
+            }
+            String str1 = strDate.substring(4);
+            String str2 = strDate.substring(5, strDate.length());
+            return str1 + sep + str2;
+        }else{
+            return "";
+        }
+    }
+
+    public static String stringDate7Chang6(String strDate) {
+        if(strDate.length()==7) {
+            strDate = strDate.replace("-", "").replace("/", "");
+            return strDate;
+        }else{
+            return "";
+        }
+    }
+
     public static String stringArraySeparate(String[] arrStr, String sep) {
         String str = "";
         for (String val : arrStr) {
@@ -120,6 +142,40 @@ public class DataTypeHelpers {
 
         return date;
     }
+
+    public static boolean isValidDate(String strDate, String format, boolean isFormat) {
+        if (isNullOrEmpty(format)) {
+            format = "yyyyMMdd";
+            isFormat = false;
+        }
+        if (!isFormat) {
+            strDate = strDate.replace("-", "").replace("/", "");
+        }
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(format);
+        try {
+            // 设置lenient为false. 否则SimpleDateFormat会比较宽松地验证日期，比如2018-02-29会被接受，并转换成2018-03-01
+
+            simpleDateFormat.setLenient(false);
+            Date date = simpleDateFormat.parse(strDate);
+
+            //判断传入的yyyy年-MM月-dd日 字符串是否为数字
+            String[] sArray = strDate.split("-");
+            for (String s : sArray) {
+                boolean isNum = s.matches("[0-9]+");
+                //+表示1个或多个（如"3"或"225"），*表示0个或多个（[0-9]*）（如""或"1"或"22"），?表示0个或1个([0-9]?)(如""或"7")
+                if (!isNum) {
+                    return false;
+                }
+            }
+        } catch (Exception e) {
+            // e.printStackTrace();
+            // 如果throw java.text.ParseException或者NullPointerException，就说明格式不对
+            return false;
+        }
+
+        return true;
+    }
+
 
     public static int stringDateFormatMaxDay(String strDate, String format, boolean isFormat) {
         if (isNullOrEmpty(format)) {

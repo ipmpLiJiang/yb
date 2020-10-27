@@ -341,6 +341,8 @@ export default {
           this.ybAppealResultRepayment.resetDataId = this.ybAppealResultRepaymentView.resetDataId
           this.ybAppealResultRepayment.resultId = this.ybAppealResultRepaymentView.resultId
           this.ybAppealResultRepayment.deductImplementId = this.ybAppealResultRepaymentView.deductImplementId
+          this.ybAppealResultRepayment.applyDateStr = this.ybAppealResultRepaymentView.applyDateStr
+          this.ybAppealResultRepayment.applyDate = this.ybAppealResultRepaymentView.applyDate
           this.$post('ybAppealResultRepayment', {
             ...this.ybAppealResultRepayment
           }).then((r) => {

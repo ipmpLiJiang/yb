@@ -1,6 +1,5 @@
 package cc.mrbird.febs.yb.entity;
 
-import com.baomidou.mybatisplus.annotation.TableField;
 import com.wuwenze.poi.annotation.Excel;
 import com.wuwenze.poi.annotation.ExcelField;
 import lombok.Data;
@@ -16,10 +15,10 @@ import java.math.BigDecimal;
  * @since 2020-08-17
  */
 
-@Excel("YbReconsiderResetUnknownDataExport")
+@Excel("YbReconsiderResetDeductimplementDataExport")
 @Data
 //@Accessors(chain = true)
-public class YbReconsiderResetUnknownDataExport {
+public class YbReconsiderResetDeductimplementDataExport {
 
     /**
      * 序号
@@ -140,6 +139,24 @@ public class YbReconsiderResetUnknownDataExport {
      */
     @ExcelField(value = "统筹区名称")
     private String areaName;
+
+    /**
+     * 绩效年月
+     */
+    @ExcelField(value = "绩效年月")
+    private String implementDateStr;
+
+    /**
+     * '分摊方式'
+     */
+    @ExcelField(value = "分摊方式")
+    private String shareStateStr;
+
+    /**
+     * ''分摊方案''
+     */
+    @ExcelField(value = "分摊方案")
+    private String shareProgramme;
 
 
 }

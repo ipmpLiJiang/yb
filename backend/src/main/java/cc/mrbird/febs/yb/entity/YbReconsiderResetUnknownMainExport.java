@@ -91,7 +91,7 @@ public class YbReconsiderResetUnknownMainExport {
     /**
      * 参保类型
      */
-    @ExcelField(value ="参保类型")
+    @ExcelField(value = "参保类型")
     private String insuredType;
 
     /**
