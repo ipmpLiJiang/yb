@@ -132,7 +132,7 @@ export default {
         title: '意见书编码',
         dataIndex: 'proposalCode',
         fixed: 'left',
-        width: 120
+        width: 140
       },
       {
         title: '项目名称',
@@ -343,6 +343,7 @@ export default {
           this.ybAppealResultRepayment.deductImplementId = this.ybAppealResultRepaymentView.deductImplementId
           this.ybAppealResultRepayment.applyDateStr = this.ybAppealResultRepaymentView.applyDateStr
           this.ybAppealResultRepayment.applyDate = this.ybAppealResultRepaymentView.applyDate
+          this.ybAppealResultRepayment.dataType = this.ybAppealResultRepaymentView.dataType
           this.$post('ybAppealResultRepayment', {
             ...this.ybAppealResultRepayment
           }).then((r) => {

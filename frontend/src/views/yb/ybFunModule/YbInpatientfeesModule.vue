@@ -116,7 +116,7 @@ export default {
       {
         title: '交易流水号',
         dataIndex: 'transNo',
-        width: 120
+        width: 135
       },
       {
         title: '项目代码',
@@ -158,7 +158,7 @@ export default {
             return text
           }
         },
-        width: 100
+        width: 110
       },
       {
         title: '住院科室名称',

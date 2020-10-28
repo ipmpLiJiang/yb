@@ -1,5 +1,6 @@
 package cc.mrbird.febs.yb.controller;
 
+import cc.mrbird.febs.com.controller.DataTypeHelpers;
 import cc.mrbird.febs.common.annotation.Log;
 import cc.mrbird.febs.common.controller.BaseController;
 import cc.mrbird.febs.common.domain.router.VueRouter;
@@ -165,11 +166,11 @@ public class YbAppealResultReportViewController extends BaseController {
             if (appealResultReportList.size() > 0) {
                 List<YbAppealResultReportView> appealResultReportDataList = new ArrayList<>();
                 List<YbAppealResultReportView> appealResultReportMainList = new ArrayList<>();
-                appealResultReportDataList = appealResultReportList.stream().filter(s -> s.getDataType().equals(0)).collect(Collectors.toList());
+                appealResultReportDataList = appealResultReportList.stream().filter(s -> s.getDataType().equals(0)).sorted(Comparator.comparing(YbAppealResultReportView::getOrderNum)).collect(Collectors.toList());
 //                if (appealResultReportDataList.size() > 0) {
 //                    Collections.sort(appealResultReportDataList);
 //                }
-                appealResultReportMainList = appealResultReportList.stream().filter(s -> s.getDataType().equals(1)).collect(Collectors.toList());
+                appealResultReportMainList = appealResultReportList.stream().filter(s -> s.getDataType().equals(1)).sorted(Comparator.comparing(YbAppealResultReportView::getOrderNum)).collect(Collectors.toList());
 //                if (appealResultReportMainList.size() > 0) {
 //                    Collections.sort(appealResultReportMainList);
 //                }
@@ -187,9 +188,15 @@ public class YbAppealResultReportViewController extends BaseController {
                 //明细扣款
                 for (YbAppealResultReportView item : appealResultReportDataList) {
                     YbAppealResultDataReportExport are = new YbAppealResultDataReportExport();
+
+                    String appDateStr = item.getApplyDateStr();
+                    appDateStr = DataTypeHelpers.stringDate7Chang6(appDateStr);
+                    item.setApplyDateStr(appDateStr);
+
                     if(!mxApplyDateStrList.stream().anyMatch(task -> task.equals(item.getApplyDateStr()))){
                         mxApplyDateStrList.add(item.getApplyDateStr());
                     }
+
                     are.setApplyDateStr(item.getApplyDateStr());
                     //序号
                     are.setOrderNumber(item.getOrderNumber());
@@ -267,9 +274,15 @@ public class YbAppealResultReportViewController extends BaseController {
                 //主单扣款
                 for (YbAppealResultReportView item : appealResultReportMainList) {
                     YbAppealResultMainReportExport are = new YbAppealResultMainReportExport();
+
+                    String appDateStr = item.getApplyDateStr();
+                    appDateStr = DataTypeHelpers.stringDate7Chang6(appDateStr);
+                    item.setApplyDateStr(appDateStr);
+
                     if(!zdApplyDateStrList.stream().anyMatch(task -> task.equals(item.getApplyDateStr()))){
                         zdApplyDateStrList.add(item.getApplyDateStr());
                     }
+
                     are.setApplyDateStr(item.getApplyDateStr());
                     //序号
                     are.setOrderNumber(item.getOrderNumber());
@@ -363,7 +376,7 @@ public class YbAppealResultReportViewController extends BaseController {
                 }else {
                     writer.setHeaderAlias(headerAliasData);
                     for (String applyDateStr : mxApplyDateStrList) {
-                        dataSearchList = dataList.stream().filter(s -> s.getApplyDateStr().equals(applyDateStr)).sorted(Comparator.comparing(YbAppealResultDataReportExport::getOrderNumber)).collect(Collectors.toList());
+                        dataSearchList = dataList.stream().filter(s -> s.getApplyDateStr().equals(applyDateStr)).collect(Collectors.toList());
                         writer.write(dataSearchList, isHead);
                         //writer.passCurrentRow();
                         writer.merge(headerAliasData.size() - 1, "", false);
@@ -402,7 +415,7 @@ public class YbAppealResultReportViewController extends BaseController {
                     isHead = true;
                     writer.setHeaderAlias(headerAliasMain);
                     for (String applyDateStr : zdApplyDateStrList) {
-                        mainSearchList = mainList.stream().filter(s -> s.getApplyDateStr().equals(applyDateStr)).sorted(Comparator.comparing(YbAppealResultMainReportExport::getOrderNumber)).collect(Collectors.toList());
+                        mainSearchList = mainList.stream().filter(s -> s.getApplyDateStr().equals(applyDateStr)).collect(Collectors.toList());
                         writer.write(mainSearchList, isHead);
                         writer.merge(headerAliasMain.size() - 1, "", false);
                         //writer.passCurrentRow();
@@ -470,11 +483,11 @@ public class YbAppealResultReportViewController extends BaseController {
             if (appealResultReportList.size() > 0) {
                 List<YbAppealResultReportView> appealResultReportDataList = new ArrayList<>();
                 List<YbAppealResultReportView> appealResultReportMainList = new ArrayList<>();
-                appealResultReportDataList = appealResultReportList.stream().filter(s -> s.getDataType().equals(0)).collect(Collectors.toList());
+                appealResultReportDataList = appealResultReportList.stream().filter(s -> s.getDataType().equals(0)).sorted(Comparator.comparing(YbAppealResultReportView::getOrderNum)).collect(Collectors.toList());
 //                if (appealResultReportDataList.size() > 0) {
 //                    Collections.sort(appealResultReportDataList);
 //                }
-                appealResultReportMainList = appealResultReportList.stream().filter(s -> s.getDataType().equals(1)).collect(Collectors.toList());
+                appealResultReportMainList = appealResultReportList.stream().filter(s -> s.getDataType().equals(1)).sorted(Comparator.comparing(YbAppealResultReportView::getOrderNum)).collect(Collectors.toList());
 //                if (appealResultReportMainList.size() > 0) {
 //                    Collections.sort(appealResultReportMainList);
 //                }
@@ -492,9 +505,15 @@ public class YbAppealResultReportViewController extends BaseController {
                 //明细扣款
                 for (YbAppealResultReportView item : appealResultReportDataList) {
                     YbAppealResultDataReportExport are = new YbAppealResultDataReportExport();
+
+                    String appDateStr = item.getApplyDateStr();
+                    appDateStr = DataTypeHelpers.stringDate7Chang6(appDateStr);
+                    item.setApplyDateStr(appDateStr);
+
                     if(!mxApplyDateStrList.stream().anyMatch(task -> task.equals(item.getApplyDateStr()))){
                         mxApplyDateStrList.add(item.getApplyDateStr());
                     }
+
                     are.setApplyDateStr(item.getApplyDateStr());
                     //序号
                     are.setOrderNumber(item.getOrderNumber());
@@ -572,6 +591,11 @@ public class YbAppealResultReportViewController extends BaseController {
                 //主单扣款
                 for (YbAppealResultReportView item : appealResultReportMainList) {
                     YbAppealResultMainReportExport are = new YbAppealResultMainReportExport();
+
+                    String appDateStr = item.getApplyDateStr();
+                    appDateStr = DataTypeHelpers.stringDate7Chang6(appDateStr);
+                    item.setApplyDateStr(appDateStr);
+
                     if(!zdApplyDateStrList.stream().anyMatch(task -> task.equals(item.getApplyDateStr()))){
                         zdApplyDateStrList.add(item.getApplyDateStr());
                     }
@@ -668,7 +692,7 @@ public class YbAppealResultReportViewController extends BaseController {
                 }else {
                     writer.setHeaderAlias(headerAliasData);
                     for (String applyDateStr : mxApplyDateStrList) {
-                        dataSearchList = dataList.stream().filter(s -> s.getApplyDateStr().equals(applyDateStr)).sorted(Comparator.comparing(YbAppealResultDataReportExport::getOrderNumber)).collect(Collectors.toList());
+                        dataSearchList = dataList.stream().filter(s -> s.getApplyDateStr().equals(applyDateStr)).collect(Collectors.toList());
                         writer.write(dataSearchList, isHead);
                         //writer.passCurrentRow();
                         writer.merge(headerAliasData.size() - 1, "", false);
@@ -707,7 +731,7 @@ public class YbAppealResultReportViewController extends BaseController {
                     isHead = true;
                     writer.setHeaderAlias(headerAliasMain);
                     for (String applyDateStr : zdApplyDateStrList) {
-                        mainSearchList = mainList.stream().filter(s -> s.getApplyDateStr().equals(applyDateStr)).sorted(Comparator.comparing(YbAppealResultMainReportExport::getOrderNumber)).collect(Collectors.toList());
+                        mainSearchList = mainList.stream().filter(s -> s.getApplyDateStr().equals(applyDateStr)).collect(Collectors.toList());
                         writer.write(mainSearchList, isHead);
                         writer.merge(headerAliasMain.size() - 1, "", false);
                         //writer.passCurrentRow();

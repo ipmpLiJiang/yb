@@ -188,14 +188,14 @@ export default {
         width: 100
       },
       {
-        title: '医生名称',
-        dataIndex: 'personName',
-        width: 100
-      },
-      {
         title: '科室名称',
         dataIndex: 'deptName',
         width: 150
+      },
+      {
+        title: '医生名称',
+        dataIndex: 'personName',
+        width: 100
       },
       {
         title: '性别',

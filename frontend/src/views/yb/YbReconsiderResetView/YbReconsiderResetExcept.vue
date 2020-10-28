@@ -84,7 +84,7 @@ export default {
         title: '交易流水号',
         dataIndex: 'serialNo',
         fixed: 'left',
-        width: 120
+        width: 135
       },
       {
         title: '单据号',
@@ -126,11 +126,6 @@ export default {
         width: 200
       },
       {
-        title: '医生姓名',
-        dataIndex: 'doctorName',
-        width: 120
-      },
-      {
         title: '科室编码',
         dataIndex: 'deptCode',
         width: 120
@@ -138,6 +133,11 @@ export default {
       {
         title: '科室名称',
         dataIndex: 'deptName',
+        width: 120
+      },
+      {
+        title: '医生姓名',
+        dataIndex: 'doctorName',
         width: 120
       },
       {

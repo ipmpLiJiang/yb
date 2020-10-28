@@ -94,13 +94,13 @@ export default {
         title: '交易流水号',
         dataIndex: 'serialNo',
         fixed: 'left',
-        width: 120
+        width: 135
       },
       {
         title: '单据号',
         dataIndex: 'billNo',
         fixed: 'left',
-        width: 120
+        width: 110
       },
       {
         title: '项目编码',
@@ -137,7 +137,7 @@ export default {
       {
         title: '费用日期',
         dataIndex: 'costDateStr',
-        width: 110
+        width: 135
       },
       {
         title: '住院号',

@@ -73,6 +73,15 @@ public class YbAppealResultRepaymentViewServiceImpl extends ServiceImpl<YbAppeal
                     sql += " and repaymentId IS NULL";
                 }
 
+                if (ybAppealResultRepaymentView.getShareProgramme() != null) {
+                    if (ybAppealResultRepaymentView.getShareProgramme().equals("not")) {
+                        sql += " and shareProgramme IS NOT NULL";
+                    }
+                    if (ybAppealResultRepaymentView.getShareProgramme().equals("null")) {
+                        sql += " and shareProgramme IS NULL";
+                    }
+                }
+
                 if (ybAppealResultRepaymentView.getArDoctorCode() != null) {
                     sql += " and arDoctorCode = '" + ybAppealResultRepaymentView.getArDoctorCode() + "'";
                 }
@@ -108,6 +117,27 @@ public class YbAppealResultRepaymentViewServiceImpl extends ServiceImpl<YbAppeal
             log.error("获取VIEW失败", e);
             return null;
         }
+    }
+
+    @Override
+    public List<YbAppealResultRepaymentView> findAppealResultRepaymentViewList(YbAppealResultRepaymentView ybAppealResultRepaymentView) {
+        LambdaQueryWrapper<YbAppealResultRepaymentView> queryWrapper = new LambdaQueryWrapper<>();
+        String sql = "repaymentId IS NULL";
+        if(ybAppealResultRepaymentView.getShareProgramme() !=null){
+            if(ybAppealResultRepaymentView.getShareProgramme().equals("not")) {
+                sql += " and shareProgramme is not null";
+            } else if(ybAppealResultRepaymentView.getShareProgramme().equals("null")) {
+                sql += " and shareProgramme is null";
+            }
+        }
+        if(ybAppealResultRepaymentView.getApplyDateStr() !=null){
+            sql+=" and applyDateStr = " + ybAppealResultRepaymentView.getApplyDateStr();
+        }
+        if(ybAppealResultRepaymentView.getShareState() !=null){
+            sql+=" and shareState = " + ybAppealResultRepaymentView.getShareState();
+        }
+        queryWrapper.apply(sql);
+        return this.list(queryWrapper);
     }
 
     @Override

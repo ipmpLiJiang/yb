@@ -634,9 +634,9 @@ private static final long serialVersionUID=1L;
 
 @Override
 public int compareTo(YbAppealResultReportView o) {
-        if (this.getId() != null && o.getId() != null) {
-        return this.getId().compareTo(o.getId());
-        } else if (this.getId() != null) {
+        if (this.getOrderNum() != null && o.getOrderNum() != null) {
+        return this.getOrderNum().compareTo(o.getOrderNum());
+        } else if (this.getOrderNum() != null) {
         return 1;
         } else {
         return 0;

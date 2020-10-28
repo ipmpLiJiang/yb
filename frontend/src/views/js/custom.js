@@ -58,5 +58,12 @@ const custom = {
     }
   }
 }
+const data = {
+  seachDataTypeSource: [
+    {text: '全部', value: 2},
+    {text: '明细扣款', value: 0},
+    {text: '主单扣款', value: 1}
+  ]
 
-export { custom }
+}
+export { custom, data }

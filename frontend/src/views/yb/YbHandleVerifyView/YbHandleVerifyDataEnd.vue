@@ -76,7 +76,7 @@ export default {
         title: '意见书编码',
         dataIndex: 'proposalCode',
         fixed: 'left',
-        width: 120
+        width: 140
       },
       {
         title: '项目编码',
@@ -118,19 +118,7 @@ export default {
       {
         title: '费用日期',
         dataIndex: 'costDateStr',
-        customRender: (text, row, index) => {
-          if (text !== '' && text !== null) {
-            return moment(text).format('YYYY-MM-DD')
-          } else {
-            return text
-          }
-        },
-        width: 110
-      },
-      {
-        title: '医生姓名',
-        dataIndex: 'doctorName',
-        width: 100
+        width: 135
       },
       {
         title: '科室名称',
@@ -138,14 +126,19 @@ export default {
         width: 100
       },
       {
-        title: '复议医生',
-        dataIndex: 'hvDoctorName',
-        fixed: 'right',
-        width: 120
+        title: '医生姓名',
+        dataIndex: 'doctorName',
+        width: 100
       },
       {
         title: '复议科室',
         dataIndex: 'hvDeptName',
+        fixed: 'right',
+        width: 120
+      },
+      {
+        title: '复议医生',
+        dataIndex: 'hvDoctorName',
         fixed: 'right',
         width: 120
       },

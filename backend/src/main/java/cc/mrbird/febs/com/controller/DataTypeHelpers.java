@@ -88,8 +88,8 @@ public class DataTypeHelpers {
             if (sep.equals("")) {
                 sep = "-";
             }
-            String str1 = strDate.substring(4);
-            String str2 = strDate.substring(5, strDate.length());
+            String str1 = strDate.substring(0,4);
+            String str2 = strDate.substring(4,strDate.length());
             return str1 + sep + str2;
         }else{
             return "";

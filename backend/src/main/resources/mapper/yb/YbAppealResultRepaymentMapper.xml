@@ -9,8 +9,9 @@
                     <result column="resetDataId" property="resetDataId"/>
                     <result column="deductImplementId" property="deductImplementId"/>
                     <result column="repaymentProgramme" property="repaymentProgramme"/>
-            <result column="applyDate" property="applyDate"/>
-            <result column="applyDateStr" property="applyDateStr"/>
+                    <result column="applyDate" property="applyDate"/>
+                    <result column="applyDateStr" property="applyDateStr"/>
+                    <result column="dataType" property="dataType"/>
                     <result column="COMMENTS" property="comments"/>
                     <result column="STATE" property="state"/>
                     <result column="IS_DELETEMARK" property="isDeletemark"/>
@@ -22,7 +23,7 @@
 
         <!-- 通用查询结果列 -->
         <sql id="Base_Column_List">
-        id, resultId, resetDataId, deductImplementId, repaymentProgramme,applyDate,applyDateStr, COMMENTS, STATE, IS_DELETEMARK, MODIFY_TIME, CREATE_TIME, CREATE_USER_ID, MODIFY_USER_ID
+        id, resultId, resetDataId, deductImplementId, repaymentProgramme,applyDate,applyDateStr,dataType, COMMENTS, STATE, IS_DELETEMARK, MODIFY_TIME, CREATE_TIME, CREATE_USER_ID, MODIFY_USER_ID
     </sql>
     <update id="updateYbAppealResultRepayment" parameterType="cc.mrbird.febs.yb.entity.YbAppealResultRepayment">
         update yb_appeal_result_repayment
@@ -31,8 +32,9 @@
 <if test="resetDataId != null">resetDataId=#{resetDataId},</if>
 <if test="deductImplementId != null">deductImplementId=#{deductImplementId},</if>
 <if test="repaymentProgramme != null">repaymentProgramme=#{repaymentProgramme},</if>
-            <if test="applyDate != null">applyDate=#{applyDate},</if>
-            <if test="applyDateStr != null">applyDateStr=#{applyDateStr},</if>
+<if test="applyDate != null">applyDate=#{applyDate},</if>
+<if test="applyDateStr != null">applyDateStr=#{applyDateStr},</if>
+<if test="dataType != null">dataType=#{dataType},</if>
 <if test="comments != null">COMMENTS=#{comments},</if>
 <if test="state != null">STATE=#{state},</if>
 <if test="isDeletemark != null">IS_DELETEMARK=#{isDeletemark},</if>
@@ -62,6 +64,7 @@
             concat('%', #{ ybAppealResultRepayment.applyDateStr} ,'%')
         </if>
             <if test="ybAppealResultRepayment.comments != null and ybAppealResultRepayment.comments != ''"> and COMMENTS like concat('%', #{ ybAppealResultRepayment.comments} ,'%')</if>
+        <if test="ybAppealResultRepayment.dataType != null"> and dataType =#{ ybAppealResultRepayment.dataType} </if>
         <if test="ybAppealResultRepayment.state != null"> and STATE =#{ ybAppealResultRepayment.state} </if>
         <if test="ybAppealResultRepayment.isDeletemark != null"> and IS_DELETEMARK =#{ ybAppealResultRepayment.isDeletemark} </if>
         <if test="ybAppealResultRepayment.modifyTimeFrom!= null">

@@ -104,60 +104,59 @@ public class YbAppealResultDeductimplementServiceImpl extends ServiceImpl<YbAppe
         }
     }
 
-    //    @Override
-//    @Transactional
-    public String ImportCreateAppealResultDeductimplement(Date applyDate,String applyDateStr,Long userId ,List<YbReconsiderResetDeductimplement> listResetDeductimplement) {
+    @Override
+    @Transactional
+    public void importCreateAppealResultDeductimplement(YbAppealResultDeductimplement ybAppealResultDeductimplement, List<YbReconsiderResetDeductimplement> listResetDeductimplement) {
+        String applyDateStr = ybAppealResultDeductimplement.getApplyDateStr();
         YbReconsiderResetResultView ybReconsiderResetResultView = new YbReconsiderResetResultView();
         ybReconsiderResetResultView.setApplyDateStr(applyDateStr);
         List<YbReconsiderResetResultView> resetResultList = this.iYbReconsiderResetResultViewService.findReconsiderResetResultViewList(ybReconsiderResetResultView);
         List<YbAppealResultDeductimplement> createList = new ArrayList<>();
         List<YbReconsiderResetResultView> queryList = new ArrayList<>();
 
-        if (resetResultList.size() > 0) {
-            LambdaQueryWrapper<YbAppealResultDeductimplement> wrapper = new LambdaQueryWrapper<>();
-            wrapper.eq(YbAppealResultDeductimplement::getApplyDateStr,applyDateStr);
-            List<YbAppealResultDeductimplement> ardList = this.list(wrapper);
-            List<YbAppealResultDeductimplement> ardQueryList = new ArrayList<>();
+        LambdaQueryWrapper<YbAppealResultDeductimplement> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(YbAppealResultDeductimplement::getApplyDateStr, applyDateStr);
+        List<YbAppealResultDeductimplement> ardList = this.list(wrapper);
 
-            for (YbReconsiderResetDeductimplement item : listResetDeductimplement) {
-                queryList = resetResultList.stream().filter(
-                        s -> s.getOrderNumber().equals(item.getOrderNumber())
-                ).collect(Collectors.toList());
-                if (queryList.size() > 0) {
-                    YbReconsiderResetResultView rrr = queryList.get(0);
-                    ardQueryList = ardList.stream().filter(
-                            s -> s.getApplyDateStr().equals(applyDateStr) &&
-                                    s.getResultId().equals(rrr.getResultId()) &&
-                                    s.getResetDataId().equals(rrr.getId())
-                    ).collect(Collectors.toList());
+        Date applyDate = ybAppealResultDeductimplement.getApplyDate();
+        Long userId = ybAppealResultDeductimplement.getCreateUserId();
 
-                    YbAppealResultDeductimplement ybAppealResultDeductimplement = new YbAppealResultDeductimplement();
-                    if (ybAppealResultDeductimplement.getId() == null || "".equals(ybAppealResultDeductimplement.getId())) {
-                        ybAppealResultDeductimplement.setId(UUID.randomUUID().toString());
-                    }
-                    ybAppealResultDeductimplement.setCreateTime(new Date());
-                    ybAppealResultDeductimplement.setIsDeletemark(1);
+        for (YbReconsiderResetDeductimplement item : listResetDeductimplement) {
+            queryList = resetResultList.stream().filter(
+                    s -> s.getOrderNumber().equals(item.getOrderNumber()) &&
+                            s.getDataType().equals(item.getDataType())
+            ).collect(Collectors.toList());
+            if (queryList.size() > 0) {
+                YbReconsiderResetResultView rrr = queryList.get(0);
+                if (ardList.stream().filter(
+                        s -> s.getApplyDateStr().equals(applyDateStr) &&
+                                s.getResultId().equals(rrr.getResultId()) &&
+                                s.getResetDataId().equals(rrr.getId()) &&
+                                s.getDataType().equals(rrr.getDataType())
+                ).count() == 0) {
+                    YbAppealResultDeductimplement createDeductimplement = new YbAppealResultDeductimplement();
+                    createDeductimplement.setId(UUID.randomUUID().toString());
+                    createDeductimplement.setApplyDate(applyDate);
+                    createDeductimplement.setApplyDateStr(applyDateStr);
+                    createDeductimplement.setResultId(rrr.getResultId());
+                    createDeductimplement.setResetDataId(rrr.getId());
+                    createDeductimplement.setImplementDate(item.getImplementDate());
+                    createDeductimplement.setImplementDateStr(item.getImplementDateStr());
+                    createDeductimplement.setShareProgramme(item.getShareProgramme());
+                    createDeductimplement.setShareState(item.getShareState());
+                    createDeductimplement.setDataType(item.getDataType());
 
-                    ybAppealResultDeductimplement.setCreateUserId(userId);
-
-                    ybAppealResultDeductimplement.setApplyDate(applyDate);
-                    ybAppealResultDeductimplement.setApplyDateStr(applyDateStr);
-
-                    ybAppealResultDeductimplement.setResultId(rrr.getResultId());
-                    ybAppealResultDeductimplement.setResetDataId(rrr.getId());
-                    ybAppealResultDeductimplement.setImplementDate(item.getImplementDate());
-                    ybAppealResultDeductimplement.setImplementDateStr(item.getImplementDateStr());
-                    ybAppealResultDeductimplement.setShareProgramme(item.getShareProgramme());
-                    ybAppealResultDeductimplement.setShareState(item.getShareState());
-                    createList.add(ybAppealResultDeductimplement);
+                    createDeductimplement.setCreateUserId(userId);
+                    createDeductimplement.setCreateTime(new Date());
+                    createDeductimplement.setIsDeletemark(1);
+                    createList.add(createDeductimplement);
                 }
             }
         }
 
-        if(createList.size()>0){
+        if (createList.size() > 0) {
             this.saveBatch(createList);
         }
-        return "";
     }
 
     @Override

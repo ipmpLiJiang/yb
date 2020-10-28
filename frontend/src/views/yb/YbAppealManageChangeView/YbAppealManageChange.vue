@@ -80,7 +80,7 @@ export default {
         title: '意见书编码',
         dataIndex: 'proposalCode',
         fixed: 'left',
-        width: 120
+        width: 140
       },
       {
         title: '项目编码',

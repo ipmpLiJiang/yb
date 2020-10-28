@@ -82,6 +82,13 @@ public class YbAppealResultRepayment implements Serializable, Comparable<YbAppea
     private String repaymentProgramme;
 
     /**
+     * 数据类型
+     */
+    @TableField("dataType")
+    //@ExcelField(value ="数据类型")
+    private Integer dataType;
+
+    /**
      * 备注
      */
     @TableField("COMMENTS")
@@ -148,6 +155,8 @@ public class YbAppealResultRepayment implements Serializable, Comparable<YbAppea
     public static final String APPLYDATE = "applyDate";
 
     public static final String APPLYDATESTR = "applyDateStr";
+
+    public static final String DATATYPE ="dataType" ;
 
     public static final String COMMENTS = "COMMENTS";
 

@@ -11,7 +11,7 @@
               复议年月：
               <a-month-picker
                 placeholder="请输入复议年月"
-                :default-value="formatDate()"
+                :default-value="defaultApplyDate"
                 :format="monthFormat"
               />
           </a-col>
@@ -45,7 +45,7 @@
               <!-- 变更申请单 -->
             <ybAppealManage-change
               ref="ybAppealManageChange"
-              :applyDate='formatDate()'
+              :applyDate='defaultApplyDate'
               :searchText = 'searchText'
               @examine="examine"
               @onHistoryLook="onHistoryLook"
@@ -61,7 +61,7 @@
             <ybAppealManageChange-end
               ref="ybAppealManageChangeEnd"
               :searchText = 'searchText'
-              :applyDate='formatDate()'
+              :applyDate='defaultApplyDate'
               @detail="detail"
               @onHistoryLook="onHistoryLook"
             >
@@ -76,7 +76,7 @@
           <ybAppealManageChange-admin
               ref="ybAppealManageChangeAdmin"
               :searchText = 'searchText'
-              :applyDate='formatDate()'
+              :applyDate='defaultApplyDate'
               @detail="detail"
               @adminChange="adminChange"
               @onHistoryLook="onHistoryLook"
@@ -137,6 +137,7 @@ export default {
     return {
       monthFormat: 'YYYY-MM',
       searchApplyDate: this.formatDate(),
+      defaultApplyDate: this.formatDate(),
       detailVisiable: false,
       handleVisiable: false,
       historyVisiable: false,

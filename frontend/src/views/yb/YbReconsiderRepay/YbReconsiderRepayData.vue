@@ -107,12 +107,12 @@ export default {
       {
         title: '扣除金额',
         dataIndex: 'deductPrice',
-        width: 150
+        width: 120
       },
       {
         title: '还款金额',
         dataIndex: 'repaymentPrice',
-        width: 150
+        width: 120
       },
       {
         title: '费用日期',
@@ -131,7 +131,7 @@ export default {
               return text
           }
         },
-        width: 120
+        width: 100
       },
       {
         title: '操作',

@@ -16,7 +16,7 @@
               <a-month-picker
                 placeholder="请输入复议年月"
                 @change="monthChange"
-                :default-value="formatDate()"
+                :default-value="defaultApplyDate"
                 :format="monthFormat"
               />
             </a-col>
@@ -102,6 +102,7 @@ export default {
       monthFormat: 'YYYY-MM',
       searchText: '',
       searchApplyDate: this.formatDate(),
+      defaultApplyDate: this.formatDate(),
       spinning: false,
       delayTime: 500,
       tableSelectKey: '1'

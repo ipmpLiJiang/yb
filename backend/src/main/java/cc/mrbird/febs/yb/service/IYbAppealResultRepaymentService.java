@@ -29,4 +29,8 @@ public interface IYbAppealResultRepaymentService extends IService<YbAppealResult
         String createAppealResultRepayment(YbAppealResultRepayment ybAppealResultRepayment);
 
         void deleteYbAppealResultRepayments(String[]Ids);
+
+        void batchCreateAppealResultRepaymentNull(List<YbAppealResultRepayment> appealResultRepaymentList,String applyDateStr, Long uid);
+
+        void batchCreateAppealResultRepaymentNull(String applyDateStr, Long uid);
         }

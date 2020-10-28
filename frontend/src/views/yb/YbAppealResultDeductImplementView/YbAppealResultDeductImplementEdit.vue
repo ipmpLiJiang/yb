@@ -150,6 +150,7 @@ export default {
           this.ybAppealResultDeductImplement.implementDateStr = this.selectImplementDateStr
           this.ybAppealResultDeductImplement.applyDateStr = this.ybAppealResult.applyDateStr
           this.ybAppealResultDeductImplement.applyDate = this.ybAppealResult.applyDate
+          this.ybAppealResultDeductImplement.dataType = this.ybAppealResult.dataType
           this.$post('ybAppealResultDeductimplement', {
             ...this.ybAppealResultDeductImplement
           }).then((r) => {

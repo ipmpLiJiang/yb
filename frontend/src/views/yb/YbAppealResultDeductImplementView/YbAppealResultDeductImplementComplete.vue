@@ -75,7 +75,7 @@ export default {
         title: '意见书编码',
         dataIndex: 'proposalCode',
         fixed: 'left',
-        width: 130
+        width: 140
       },
       {
         title: '项目名称',
@@ -111,7 +111,7 @@ export default {
       {
         title: '费用日期',
         dataIndex: 'costDateStr',
-        width: 110
+        width: 130
       },
       {
         title: '科室名称',

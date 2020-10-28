@@ -200,7 +200,7 @@ export default {
       {
         title: '操作日期',
         dataIndex: 'operateDate',
-        width: 100
+        width: 110
       },
       {
         title: '通用',

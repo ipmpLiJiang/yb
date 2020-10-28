@@ -10,11 +10,11 @@
           <a-col :span=5>
             <a-form-item
               :label="applyDateText"
-              v-bind="formItemLayout"
+              v-bind="formItemLayout1"
             >
               <a-month-picker
                 @change="monthChange"
-                :default-value="formatDate()"
+                :default-value="defaultApplyDate"
                 :format="monthFormat"
               />
             </a-form-item>
@@ -27,7 +27,7 @@
               <a-month-picker
                 placeholder="请选择复议年月"
                 @change="monthToChange"
-                :default-value="formatDate()"
+                :default-value="defaultApplyDate"
                 :format="monthFormat"
               />
             </a-form-item>
@@ -72,7 +72,7 @@
               ref="ybAppealResultDeductImplementStayed"
               :applyDateStr="searchApplyDate"
               :applyDateToStr="searchToApplyDate"
-              :defaultFormatDate="formatDate()"
+              :defaultFormatDate="defaultApplyDate"
               :searchDataType="searchDataType"
               :searchText="searchText"
             >
@@ -87,7 +87,7 @@
               ref="ybAppealResultDeductImplementComplete"
               :applyDateStr="searchApplyDate"
               :applyDateToStr="searchToApplyDate"
-              :defaultFormatDate="formatDate()"
+              :defaultFormatDate="defaultApplyDate"
               :searchText="searchText"
               :searchDataType="searchDataType"
             >
@@ -107,6 +107,10 @@ const formItemLayout = {
   labelCol: { span: 8 },
   wrapperCol: { span: 15, offset: 1 }
 }
+const formItemLayout1 = {
+  labelCol: { span: 10 },
+  wrapperCol: { span: 13, offset: 1 }
+}
 export default {
   name: 'YbAppealResultDeductImplementView',
   components: {
@@ -114,12 +118,14 @@ export default {
   data () {
     return {
       formItemLayout,
+      formItemLayout1,
       loading: false,
       monthFormat: 'YYYY-MM',
       searchText: '',
       searchDataType: 0,
       searchApplyDate: this.formatDate(),
       searchToApplyDate: this.formatDate(),
+      defaultApplyDate: this.formatDate(),
       selectDataTypeDataSource: [
         {text: '全部', value: 2},
         {text: '明细扣款', value: 0},

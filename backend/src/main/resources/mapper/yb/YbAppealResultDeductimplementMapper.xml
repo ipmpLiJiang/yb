@@ -11,8 +11,9 @@
                     <result column="implementDateStr" property="implementDateStr"/>
                     <result column="shareState" property="shareState"/>
                     <result column="shareProgramme" property="shareProgramme"/>
-            <result column="applyDate" property="applyDate"/>
-            <result column="applyDateStr" property="applyDateStr"/>
+                    <result column="applyDate" property="applyDate"/>
+                    <result column="applyDateStr" property="applyDateStr"/>
+                    <result column="dataType" property="dataType"/>
                     <result column="COMMENTS" property="comments"/>
                     <result column="STATE" property="state"/>
                     <result column="IS_DELETEMARK" property="isDeletemark"/>
@@ -24,7 +25,7 @@
 
         <!-- 通用查询结果列 -->
         <sql id="Base_Column_List">
-        id, resultId, resetDataId, implementDate, implementDateStr, shareState, shareProgramme,applyDate,applyDateStr, COMMENTS, STATE, IS_DELETEMARK, MODIFY_TIME, CREATE_TIME, CREATE_USER_ID, MODIFY_USER_ID
+        id, resultId, resetDataId, implementDate, implementDateStr, shareState, shareProgramme,applyDate,applyDateStr,dataType, COMMENTS, STATE, IS_DELETEMARK, MODIFY_TIME, CREATE_TIME, CREATE_USER_ID, MODIFY_USER_ID
     </sql>
     <update id="updateYbAppealResultDeductimplement" parameterType="cc.mrbird.febs.yb.entity.YbAppealResultDeductimplement">
         update yb_appeal_result_deductimplement
@@ -35,8 +36,9 @@
 <if test="implementDateStr != null">implementDateStr=#{implementDateStr},</if>
 <if test="shareState != null">shareState=#{shareState},</if>
 <if test="shareProgramme != null">shareProgramme=#{shareProgramme},</if>
-            <if test="applyDate != null">applyDate=#{applyDate},</if>
-            <if test="applyDateStr != null">applyDateStr=#{applyDateStr},</if>
+<if test="applyDate != null">applyDate=#{applyDate},</if>
+<if test="applyDateStr != null">applyDateStr=#{applyDateStr},</if>
+<if test="dataType != null">dataType=#{dataType},</if>
 <if test="comments != null">COMMENTS=#{comments},</if>
 <if test="state != null">STATE=#{state},</if>
 <if test="isDeletemark != null">IS_DELETEMARK=#{isDeletemark},</if>
@@ -72,6 +74,7 @@
         <if test="ybAppealResultRepayment.applyDateStr != null and ybAppealResultRepayment.applyDateStr != ''">and applyDateStr like
             concat('%', #{ ybAppealResultRepayment.applyDateStr} ,'%')
         </if>
+        <if test="ybAppealResultDeductimplement.dataType != null"> and dataType =#{ ybAppealResultDeductimplement.dataType} </if>
             <if test="ybAppealResultDeductimplement.comments != null and ybAppealResultDeductimplement.comments != ''"> and COMMENTS like concat('%', #{ ybAppealResultDeductimplement.comments} ,'%')</if>
         <if test="ybAppealResultDeductimplement.state != null"> and STATE =#{ ybAppealResultDeductimplement.state} </if>
         <if test="ybAppealResultDeductimplement.isDeletemark != null"> and IS_DELETEMARK =#{ ybAppealResultDeductimplement.isDeletemark} </if>

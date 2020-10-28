@@ -122,7 +122,7 @@
                   placeholder="请选择复议年月"
                   style="width: 120px"
                   @change="monthChange"
-                  :default-value="formatDate()"
+                  :default-value="defaultApplyDate"
                   :format="monthFormat"
                 />
               </a-form-item>
@@ -282,6 +282,7 @@ export default {
       lookVisiable: false,
       bordered: true,
       selectApplyDateStr: this.formatDate(),
+      defaultApplyDate: this.formatDate(),
       monthFormat: 'YYYY-MM',
       tableFormat: 'YYYY-MM-DD'
     }

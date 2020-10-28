@@ -8,7 +8,6 @@
     :dataSource="dataSource"
     :pagination="pagination"
     :loading="loading"
-    :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
     @change="handleTableChange"
     :bordered="bordered"
     :scroll="{ x: 900 }"
@@ -74,7 +73,7 @@ export default {
         title: '意见书编码',
         dataIndex: 'proposalCode',
         fixed: 'left',
-        width: 120
+        width: 140
       },
       {
         title: '项目编码',
@@ -185,9 +184,9 @@ export default {
       return (this.pagination.defaultCurrent - 1) *
             this.pagination.defaultPageSize + index + 1
     },
-    onSelectChange (selectedRowKeys) {
-      this.selectedRowKeys = selectedRowKeys
-    },
+    // onSelectChange (selectedRowKeys) {
+    //   this.selectedRowKeys = selectedRowKeys
+    // },
     search () {
       let { sortedInfo } = this
       let sortField, sortOrder

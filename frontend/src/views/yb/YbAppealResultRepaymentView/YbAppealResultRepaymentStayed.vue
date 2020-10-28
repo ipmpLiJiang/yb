@@ -103,7 +103,7 @@ export default {
       {
         title: '费用日期',
         dataIndex: 'costDateStr',
-        width: 110
+        width: 130
       },
       {
         title: '还款金额',
@@ -162,7 +162,6 @@ export default {
     }
   },
   mounted () {
-    // this.fetch()
   },
   methods: {
     moment,
@@ -226,6 +225,7 @@ export default {
         params.applyDateFrom = dateStr
         params.applyDateTo = dateToStr
         params.currencyField = this.searchText
+        params.shareProgramme = 'not'
         if (this.searchDataType !== 2) {
           params.dataType = this.searchDataType
         }

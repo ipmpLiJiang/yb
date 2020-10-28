@@ -14,7 +14,7 @@
             >
               <a-month-picker
                 @change="monthChange"
-                :default-value="formatDate()"
+                :default-value="defaultApplyDate"
                 :format="monthFormat"
               />
             </a-form-item>
@@ -27,7 +27,7 @@
               <a-month-picker
                 placeholder="请选择复议年月"
                 @change="monthToChange"
-                :default-value="formatDate()"
+                :default-value="defaultApplyDate"
                 :format="monthFormat"
               />
             </a-form-item>
@@ -66,18 +66,32 @@
         >
           <a-tab-pane
             key="1"
-            tab="待还款"
+            tab="待还款[需录入]"
           >
             <ybAppealResultRepayment-stayed
               ref="ybAppealResultRepaymentStayed"
               :applyDateStr="searchApplyDate"
               :applyDateToStr="searchToApplyDate"
-              :defaultFormatDate="formatDate()"
+              :defaultFormatDate="defaultApplyDate"
               :searchDataType="searchDataType"
               :searchText="searchText"
               @edit="edit"
             >
             </ybAppealResultRepayment-stayed>
+          </a-tab-pane>
+          <a-tab-pane
+            key="3"
+            tab="待还款[不录入]"
+          >
+            <ybAppealResultRepaymentStayed-emp
+              ref="ybAppealResultRepaymentStayedEmp"
+              :applyDateStr="searchApplyDate"
+              :applyDateToStr="searchToApplyDate"
+              :defaultFormatDate="defaultApplyDate"
+              :searchDataType="searchDataType"
+              :searchText="searchText"
+            >
+            </ybAppealResultRepaymentStayed-emp>
           </a-tab-pane>
           <a-tab-pane
             key="2"
@@ -88,7 +102,7 @@
               ref="ybAppealResultRepaymentComplete"
               :applyDateStr="searchApplyDate"
               :applyDateToStr="searchToApplyDate"
-              :defaultFormatDate="formatDate()"
+              :defaultFormatDate="defaultApplyDate"
               :searchText="searchText"
               :searchDataType="searchDataType"
               @edit="edit"
@@ -117,7 +131,10 @@
 import moment from 'moment'
 import YbAppealResultRepaymentComplete from './YbAppealResultRepaymentComplete'
 import YbAppealResultRepaymentStayed from './YbAppealResultRepaymentStayed'
+import YbAppealResultRepaymentStayedEmp from './YbAppealResultRepaymentStayedEmp'
 import YbAppealResultRepaymentEdit from './YbAppealResultRepaymentEdit'
+import { data } from '../../js/custom'
+
 const formItemLayout = {
   labelCol: { span: 8 },
   wrapperCol: { span: 15, offset: 1 }
@@ -125,7 +142,7 @@ const formItemLayout = {
 export default {
   name: 'YbAppealResultRepaymentView',
   components: {
-    YbAppealResultRepaymentStayed, YbAppealResultRepaymentComplete, YbAppealResultRepaymentEdit},
+    YbAppealResultRepaymentStayed, YbAppealResultRepaymentStayedEmp, YbAppealResultRepaymentComplete, YbAppealResultRepaymentEdit},
   data () {
     return {
       formItemLayout,
@@ -136,10 +153,8 @@ export default {
       editVisible: false,
       searchApplyDate: this.formatDate(),
       searchToApplyDate: this.formatDate(),
+      defaultApplyDate: this.formatDate(),
       selectDataTypeDataSource: [
-        {text: '全部', value: 2},
-        {text: '明细扣款', value: 0},
-        {text: '主单扣款', value: 1}
       ],
       tableSelectKey: '1'
     }
@@ -147,6 +162,7 @@ export default {
   computed: {
   },
   mounted () {
+    this.selectDataTypeDataSource = data.seachDataTypeSource
   },
   methods: {
     moment,
@@ -189,7 +205,10 @@ export default {
         this.$refs.ybAppealResultRepaymentStayed.search()
       } else if (key === '2') {
         this.$refs.ybAppealResultRepaymentComplete.search()
-      } else {
+      } else if (key === '3') {
+        this.$refs.ybAppealResultRepaymentStayedEmp.search()
+      }
+      else {
         console.log('ok')
       }
     },

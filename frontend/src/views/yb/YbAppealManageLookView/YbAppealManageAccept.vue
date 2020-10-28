@@ -80,7 +80,7 @@ export default {
         title: '意见书编码',
         dataIndex: 'proposalCode',
         fixed: 'left',
-        width: 120
+        width: 140
       },
       {
         title: '项目编码',
@@ -97,7 +97,7 @@ export default {
       {
         title: '数量',
         dataIndex: 'num',
-        width: 100
+        width: 70
       },
       {
         title: '医保内金额',
@@ -133,16 +133,16 @@ export default {
             return text
           }
         },
-        width: 115
-      },
-      {
-        title: '医生姓名',
-        dataIndex: 'doctorName',
-        width: 100
+        width: 110
       },
       {
         title: '科室名称',
         dataIndex: 'deptName',
+        width: 100
+      },
+      {
+        title: '医生姓名',
+        dataIndex: 'doctorName',
         width: 100
       },
       {

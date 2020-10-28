@@ -165,7 +165,7 @@ export default {
       {
         title: '交易流水号',
         dataIndex: 'serialNo',
-        width: 100
+        width: 135
       },
       {
         title: '单据号',
@@ -175,7 +175,7 @@ export default {
       {
         title: '意见书编码',
         dataIndex: 'proposalCode',
-        width: 100
+        width: 140
       },
       {
         title: '项目编码',
@@ -190,7 +190,7 @@ export default {
       {
         title: '数量',
         dataIndex: 'num',
-        width: 100
+        width: 70
       },
       {
         title: '医保内金额',
@@ -218,11 +218,6 @@ export default {
         width: 100
       },
       {
-        title: '医生姓名',
-        dataIndex: 'doctorName',
-        width: 100
-      },
-      {
         title: '科室编码',
         dataIndex: 'deptCode',
         width: 100
@@ -233,9 +228,14 @@ export default {
         width: 100
       },
       {
+        title: '医生姓名',
+        dataIndex: 'doctorName',
+        width: 100
+      },
+      {
         title: '入院日期',
         dataIndex: 'enterHospitalDate',
-        width: 100
+        width: 110
       },
       {
         title: '出院日期',

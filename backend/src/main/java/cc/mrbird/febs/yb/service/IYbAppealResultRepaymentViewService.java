@@ -27,4 +27,6 @@ public interface IYbAppealResultRepaymentViewService extends IService<YbAppealRe
         void updateYbAppealResultRepaymentView(YbAppealResultRepaymentView ybAppealResultRepaymentView);
 
         void deleteYbAppealResultRepaymentViews(String[]Ids);
+
+        List<YbAppealResultRepaymentView> findAppealResultRepaymentViewList(YbAppealResultRepaymentView ybAppealResultRepaymentView);
         }

@@ -309,12 +309,12 @@ export default {
       {
         title: '拒绝日期',
         dataIndex: 'refuseDate',
-        width: 100
+        width: 110
       },
       {
         title: '发送日期',
         dataIndex: 'sendDate',
-        width: 100
+        width: 110
       },
       {
         title: '操作',
@@ -388,12 +388,12 @@ export default {
       {
         title: '拒绝日期',
         dataIndex: 'refuseDate',
-        width: 100
+        width: 110
       },
       {
         title: '发送日期',
         dataIndex: 'sendDate',
-        width: 100
+        width: 110
       },
       {
         title: '操作',

@@ -115,13 +115,13 @@ export default {
         title: '意见书编码',
         dataIndex: 'proposalCode',
         fixed: 'left',
-        width: 120
+        width: 140
       },
       {
         title: '交易流水号',
         dataIndex: 'serialNo',
         fixed: 'left',
-        width: 120
+        width: 135
       },
       {
         title: '单据号',

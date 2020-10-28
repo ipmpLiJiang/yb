@@ -215,7 +215,7 @@ export default {
       {
         title: '费用日期',
         dataIndex: 'feeDate',
-        width: 100
+        width: 110
       },
       {
         title: '住院科室代码',

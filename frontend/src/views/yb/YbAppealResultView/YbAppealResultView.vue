@@ -15,7 +15,7 @@
             <a-month-picker
               placeholder="请选择复议年月"
               @change="monthChange"
-              :default-value="formatDate()"
+              :default-value="defaultApplyDate"
               :format="monthFormat"
             />
             <a-select :value="searchDataType" style="width: 100px" @change="handleDataTypeChange">
@@ -164,6 +164,7 @@ export default {
       lookVisiable: false,
       downLoadVisible: false,
       searchApplyDate: this.formatDate(),
+      defaultApplyDate: this.formatDate(),
       selectDataTypeDataSource: [
         {text: '明细扣款', value: 0},
         {text: '主单扣款', value: 1}

@@ -1,7 +1,10 @@
 package cc.mrbird.febs.yb.service;
 
 import cc.mrbird.febs.yb.entity.YbAppealResultDeductimplement;
+import cc.mrbird.febs.yb.entity.YbReconsiderResetDeductimplement;
 import com.baomidou.mybatisplus.extension.service.IService;
+
+import java.util.Date;
 import java.util.List;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -29,4 +32,6 @@ public interface IYbAppealResultDeductimplementService extends IService<YbAppeal
         void deleteYbAppealResultDeductimplements(String[]Ids);
 
         String createAppealResultDeductimplement(YbAppealResultDeductimplement ybAppealResultDeductimplement);
+
+        void importCreateAppealResultDeductimplement(YbAppealResultDeductimplement ybAppealResultDeductimplement, List<YbReconsiderResetDeductimplement> listResetDeductimplement);
         }

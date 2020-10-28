@@ -220,7 +220,7 @@ export default {
       {
         title: '操作日期',
         dataIndex: 'operateDate',
-        width: 100
+        width: 110
       },
       {
         title: '医保人代码',
@@ -240,7 +240,7 @@ export default {
       {
         title: '拒绝日期',
         dataIndex: 'refuseDate',
-        width: 100
+        width: 110
       },
       {
         title: '管理员代码',
@@ -255,7 +255,7 @@ export default {
       {
         title: '更改日期',
         dataIndex: 'adminChangeDate',
-        width: 100
+        width: 110
       },
       {
         title: '管理员理由',

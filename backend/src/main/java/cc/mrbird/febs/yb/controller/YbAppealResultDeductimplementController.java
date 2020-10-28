@@ -209,7 +209,7 @@ public class YbAppealResultDeductimplementController extends BaseController {
                                 if (objMx.size() > 1 || objZd.size() > 1) {
                                     int listDataCount = 0;
                                     int listMainCount = 0;
-                                    List<YbReconsiderResetDeductimplement> listResetDeductimplement = new ArrayList<>();
+                                    List<YbReconsiderResetDeductimplement> resetDeductimplementList = new ArrayList<>();
 
                                     List<String> mxOrderNumberList = new ArrayList<>();
                                     String mxCongfu = "";
@@ -279,7 +279,7 @@ public class YbAppealResultDeductimplementController extends BaseController {
 
                                                 rrd.setDataType(0);
                                                 listDataCount =1;
-                                                listResetDeductimplement.add(rrd);
+                                                resetDeductimplementList.add(rrd);
                                             }
                                         } else {
                                             blError = true;
@@ -347,7 +347,7 @@ public class YbAppealResultDeductimplementController extends BaseController {
 
                                                     rrd.setDataType(1);
                                                     listMainCount = 1;
-                                                    listResetDeductimplement.add(rrd);
+                                                    resetDeductimplementList.add(rrd);
                                                 }
                                             } else {
                                                 blError = true;
@@ -391,7 +391,11 @@ public class YbAppealResultDeductimplementController extends BaseController {
                                             User currentUser = FebsUtil.getCurrentUser();
                                             String newApplyDateStr = applyDateStr + "15";
                                             Date applyDate = DataTypeHelpers.stringDateFormat(newApplyDateStr, null, false);
-                                            //String mm = this.iYbAppealResultDeductimplementService.ImportCreateAppealResultDeductimplement(applyDateStr, ListData, ListMain);
+                                            YbAppealResultDeductimplement ybAppealResultDeductimplement = new YbAppealResultDeductimplement();
+                                            ybAppealResultDeductimplement.setApplyDateStr(applyDateStr);
+                                            ybAppealResultDeductimplement.setApplyDate(applyDate);
+                                            ybAppealResultDeductimplement.setCreateUserId(currentUser.getUserId());
+                                            this.iYbAppealResultDeductimplementService.importCreateAppealResultDeductimplement(ybAppealResultDeductimplement, resetDeductimplementList);
                                             success = 1;
                                             message = "Excel数据获取成功.";
                                         }

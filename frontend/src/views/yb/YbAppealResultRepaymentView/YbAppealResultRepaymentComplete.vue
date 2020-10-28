@@ -103,7 +103,7 @@ export default {
       {
         title: '费用日期',
         dataIndex: 'costDateStr',
-        width: 110
+        width: 130
       },
       {
         title: '还款金额',

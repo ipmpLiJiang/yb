@@ -14,7 +14,7 @@
             >
               <a-month-picker
                 @change="monthChange"
-                :default-value="formatDate()"
+                :default-value="defaultApplyDate"
                 :format="monthFormat"
               />
             </a-form-item>
@@ -27,7 +27,7 @@
               <a-month-picker
                 placeholder="请选择复议年月"
                 @change="monthToChange"
-                :default-value="formatDate()"
+                :default-value="defaultApplyDate"
                 :format="monthFormat"
               />
             </a-form-item>
@@ -72,7 +72,7 @@
               ref="ybAppealResultRepaymentStayed"
               :applyDateStr="searchApplyDate"
               :applyDateToStr="searchToApplyDate"
-              :defaultFormatDate="formatDate()"
+              :defaultFormatDate="defaultApplyDate"
               :searchDataType="searchDataType"
               :searchText="searchText"
             >
@@ -87,7 +87,7 @@
               ref="ybAppealResultRepaymentComplete"
               :applyDateStr="searchApplyDate"
               :applyDateToStr="searchToApplyDate"
-              :defaultFormatDate="formatDate()"
+              :defaultFormatDate="defaultApplyDate"
               :searchText="searchText"
               :searchDataType="searchDataType"
             >
@@ -120,6 +120,7 @@ export default {
       searchDataType: 0,
       searchApplyDate: this.formatDate(),
       searchToApplyDate: this.formatDate(),
+      defaultApplyDate: this.formatDate(),
       selectDataTypeDataSource: [
         {text: '全部', value: 2},
         {text: '明细扣款', value: 0},

@@ -17,7 +17,7 @@
             <a-month-picker
               placeholder="请输入复议年月"
               disabled
-              :default-value="formatDate()"
+              :default-value="defaultApplyDate"
               :format="monthFormat"
             />
           </a-col>
@@ -90,7 +90,7 @@
           >
             <ybReconsiderVerify-stayed
               ref="ybReconsiderVerifyStayed"
-              :applyDate='formatDate()'
+              :applyDate='defaultApplyDate'
               :searchItem='searchItem'
               @selectChangeKeyVerify="selectChangeKeyVerify"
               @detail="detail"
@@ -107,7 +107,7 @@
           >
             <ybReconsiderSendStayed-main
               ref="ybReconsiderSendStayedMain"
-              :applyDate='formatDate()'
+              :applyDate='defaultApplyDate'
               :searchItem='searchItem'
               @showImport="showImport"
               @handImport="handImport"
@@ -121,7 +121,7 @@
           >
             <ybReconsiderSend-stayed
               ref="ybReconsiderSendStayed"
-              :applyDate='formatDate()'
+              :applyDate='defaultApplyDate'
             >
             </ybReconsiderSend-stayed>
           </a-tab-pane>
@@ -132,7 +132,7 @@
           >
             <ybReconsiderSend-end
               ref="ybReconsiderSendEnd"
-              :applyDate='formatDate()'
+              :applyDate='defaultApplyDate'
             >
             </ybReconsiderSend-end>
           </a-tab-pane>
@@ -300,6 +300,7 @@ export default {
       spinning: false,
       delayTime: 500,
       selectDate: {},
+      defaultApplyDate: this.formatDate(),
       handleQuerySymbol: [
         {text: '等于', value: 'EQ'},
         {text: '包含', value: 'LIKE'},
@@ -315,7 +316,6 @@ export default {
   computed: {
   },
   mounted () {
-    this.searchApplyDate = this.formatDate()
   },
   methods: {
     moment,
@@ -411,7 +411,7 @@ export default {
       }
 
       this.$post('ybReconsiderVerify/' + url, {
-        applyDate: this.searchApplyDate
+        applyDate: this.defaultApplyDate
       }).then(() => {
         this.spinning = false
         this.$message.success('匹配完成')

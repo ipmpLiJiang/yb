@@ -14,7 +14,7 @@
               <a-month-picker
                 placeholder="请选择复议年月"
                 @change="monthChange"
-                :default-value="formatDate()"
+                :default-value="defaultApplyDate"
                 :format="monthFormat"
               />
             </a-form-item>
@@ -27,7 +27,7 @@
               <a-month-picker
                 placeholder="请选择复议年月"
                 @change="monthToChange"
-                :default-value="formatDate()"
+                :default-value="defaultApplyDate"
                 :format="monthFormat"
               />
             </a-form-item>
@@ -192,6 +192,7 @@ export default {
       bordered: true,
       selectApplyDateStr: this.formatDate(),
       selectToApplyDateStr: this.formatDate(),
+      defaultApplyDate: this.formatDate(),
       searchText: '',
       historyVisiable: false,
       lookVisiable: false,
@@ -211,7 +212,7 @@ export default {
         title: '意见书编码',
         dataIndex: 'proposalCode',
         fixed: 'left',
-        width: 120
+        width: 140
       },
       {
         title: '项目名称',
@@ -393,7 +394,7 @@ export default {
       })
     },
     fetch (params = {}) {
-      let arrDateStr = custom.resetApplyDateStr(this.selectApplyDateStr, this.selectToApplyDateStr, this.formatDate())
+      let arrDateStr = custom.resetApplyDateStr(this.selectApplyDateStr, this.selectToApplyDateStr, this.defaultApplyDate)
       this.selectApplyDateStr = arrDateStr[0]
       this.selectToApplyDateStr = arrDateStr[1]
 
