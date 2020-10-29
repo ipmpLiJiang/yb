@@ -1,10 +1,12 @@
 package cc.mrbird.febs.yb.service.impl;
 
 import cc.mrbird.febs.com.entity.ComConfiguremanage;
+import cc.mrbird.febs.com.service.IComConfiguremanageService;
 import cc.mrbird.febs.com.service.impl.ComConfiguremanageServiceImpl;
 import cc.mrbird.febs.common.domain.QueryRequest;
 import cc.mrbird.febs.common.utils.SortUtil;
 import cc.mrbird.febs.system.domain.UserRolesImport;
+import cc.mrbird.febs.system.service.UserService;
 import cc.mrbird.febs.system.service.impl.UserServiceImpl;
 import cc.mrbird.febs.yb.dao.YbPersonMapper;
 import cc.mrbird.febs.yb.entity.YbDept;
@@ -41,9 +43,9 @@ import java.util.stream.Collectors;
 public class YbPersonServiceImpl extends ServiceImpl<YbPersonMapper, YbPerson> implements IYbPersonService {
 
     @Autowired
-    private UserServiceImpl userService;
+    private UserService userService;
     @Autowired
-    private ComConfiguremanageServiceImpl configuremanageService;
+    private IComConfiguremanageService iComConfiguremanageService;
 
     @Override
     public IPage<YbPerson> findYbPersons(QueryRequest request, YbPerson ybPerson) {
@@ -90,7 +92,7 @@ public class YbPersonServiceImpl extends ServiceImpl<YbPersonMapper, YbPerson> i
             List<Integer> intList = new ArrayList<>();
             intList.add(2);//部门
             intList.add(3);//角色
-            List<ComConfiguremanage> configList = configuremanageService.getConfigLists(intList);
+            List<ComConfiguremanage> configList = iComConfiguremanageService.getConfigLists(intList);
             if (configList.size() > 0) {
                 List<ComConfiguremanage> configDeptList = configList.stream().filter(
                         s -> s.getConfigureType().equals(2)

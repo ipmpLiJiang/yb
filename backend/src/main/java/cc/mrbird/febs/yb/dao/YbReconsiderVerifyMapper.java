@@ -6,6 +6,8 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.List;
+
 /**
  * <p>
  * Mapper 接口
@@ -24,5 +26,5 @@ public interface YbReconsiderVerifyMapper extends BaseMapper<YbReconsiderVerify>
     void insertMainReconsiderVerifyImport(@Param("applyDate") String applyDate, @Param("matchPersonId") long matchPersonId, @Param("matchPersonName") String matchPersonName);
 
 
-
+    List<YbReconsiderVerify> findReconsiderVerifyList(@Param("applyDateStr") String applyDateStr,@Param("dataType") Integer dataType,@Param("state") Integer state);
 }

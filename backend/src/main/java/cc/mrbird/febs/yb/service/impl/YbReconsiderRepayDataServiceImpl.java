@@ -152,6 +152,8 @@ public class YbReconsiderRepayDataServiceImpl extends ServiceImpl<YbReconsiderRe
         return this.baseMapper.findGroupBelongDateStr(pid);
     }
 
+    @Override
+    @Transactional
     public String updateOrderNumberRepayDatas(YbReconsiderRepayData ybReconsiderRepayData, Long uid, String uname) {
         String message = "";
         String sql = "";
@@ -277,6 +279,8 @@ public class YbReconsiderRepayDataServiceImpl extends ServiceImpl<YbReconsiderRe
         return message;
     }
 
+    @Override
+    @Transactional
     public String updateFieldRepayDatas(YbReconsiderRepayData ybReconsiderRepayData, Long uid, String uname) {
         String message = "";
 

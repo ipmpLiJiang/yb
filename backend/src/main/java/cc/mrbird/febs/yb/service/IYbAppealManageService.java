@@ -4,6 +4,7 @@ import cc.mrbird.febs.yb.entity.YbAppealManage;
 import cc.mrbird.febs.yb.entity.YbAppealManageView;
 import com.baomidou.mybatisplus.extension.service.IService;
 
+import java.util.Date;
 import java.util.List;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -39,4 +40,6 @@ public interface IYbAppealManageService extends IService<YbAppealManage> {
     String updateUploadStates(YbAppealManage ybAppealManage, Long uId, String Uname);
 
     void updateExamineStates(YbAppealManage ybAppealManage);
+
+    List<YbAppealManage> getUpdateAppealManageList(List<YbAppealManageView> appealManageList, Date endDateOne);
 }

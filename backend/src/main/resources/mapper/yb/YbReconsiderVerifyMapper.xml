@@ -188,6 +188,25 @@
 
     </update>
 
+    <select id="findReconsiderVerifyList" resultType="cc.mrbird.febs.yb.entity.YbReconsiderVerify" >
+        SELECT
+            *
+        FROM
+            yb_reconsider_verify
+            INNER JOIN yb_reconsider_apply_data ON
+                yb_reconsider_apply_data.id = yb_reconsider_verify.applyDataId AND
+                yb_reconsider_apply_data.IS_DELETEMARK = 1
+            INNER JOIN yb_reconsider_apply ON
+                yb_reconsider_apply.id = yb_reconsider_apply_data.pid AND
+                yb_reconsider_apply.IS_DELETEMARK = 1
+        WHERE
+            yb_reconsider_verify.IS_DELETEMARK = 1
+            <if test="state != null"> and yb_reconsider_verify.state =#{ state } </if>
+            <if test="dataType != null"> and yb_reconsider_verify.dataType =#{ dataType } </if>
+            <if test="applyDateStr != null and applyDateStr != ''"> and yb_reconsider_apply.applyDateStr = #{ applyDateStr }</if>
+
+    </select>
+
     <insert id="insertReconsiderVerifyImport">
 insert into yb_reconsider_verify(
     id,

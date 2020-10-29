@@ -3,7 +3,6 @@ package cc.mrbird.febs.yb.service.impl;
 import cc.mrbird.febs.common.domain.QueryRequest;
 import cc.mrbird.febs.common.utils.SortUtil;
 import cc.mrbird.febs.yb.dao.YbReconsiderApplyDataMapper;
-import cc.mrbird.febs.yb.dao.YbReconsiderApplyMapper;
 import cc.mrbird.febs.yb.entity.YbReconsiderApply;
 import cc.mrbird.febs.yb.entity.YbReconsiderApplyData;
 import cc.mrbird.febs.yb.service.IYbReconsiderApplyDataService;
@@ -37,8 +36,6 @@ import java.util.UUID;
 @Transactional(propagation = Propagation.SUPPORTS, readOnly = true, rollbackFor = Exception.class)
 public class YbReconsiderApplyDataServiceImpl extends ServiceImpl<YbReconsiderApplyDataMapper, YbReconsiderApplyData> implements IYbReconsiderApplyDataService {
 
-    @Autowired
-    private YbReconsiderApplyMapper ybReconsiderApplyMapper;
     @Autowired
     private IYbReconsiderApplyService iYbReconsiderApplyService;
 
@@ -92,7 +89,8 @@ public class YbReconsiderApplyDataServiceImpl extends ServiceImpl<YbReconsiderAp
 //            this.save(item);
 //        }
 //        this.baseMapper.createBatchData(list);
-        ybReconsiderApplyMapper.updateYbReconsiderApply(ybReconsiderApply);
+
+        iYbReconsiderApplyService.updateYbReconsiderApply(ybReconsiderApply);
     }
 
     @Override
@@ -123,11 +121,12 @@ public class YbReconsiderApplyDataServiceImpl extends ServiceImpl<YbReconsiderAp
                 wrapper.eq(YbReconsiderApplyData::getTypeno, ybReconsiderApplyData.getTypeno());
                 this.baseMapper.delete(wrapper);
 
+
                 int state = applyList.get(0).getState() == 2 ? 1 : 3;
                 YbReconsiderApply updateApply = new YbReconsiderApply();
                 updateApply.setId(applyList.get(0).getId());
                 updateApply.setState(state);
-                ybReconsiderApplyMapper.updateYbReconsiderApply(updateApply);
+                iYbReconsiderApplyService.updateYbReconsiderApply(updateApply);
                 count = 1;
             }
         }
@@ -148,7 +147,7 @@ public class YbReconsiderApplyDataServiceImpl extends ServiceImpl<YbReconsiderAp
     @Override
     @Transactional
     public void importReconsiderApply(YbReconsiderApply ybReconsiderApply, List<YbReconsiderApplyData> listData, List<YbReconsiderApplyData> listMain) {
-        this.ybReconsiderApplyMapper.updateYbReconsiderApply(ybReconsiderApply);
+        this.iYbReconsiderApplyService.updateYbReconsiderApply(ybReconsiderApply);
         if (listData.size() > 0) {
             this.saveBatch(listData);
         }

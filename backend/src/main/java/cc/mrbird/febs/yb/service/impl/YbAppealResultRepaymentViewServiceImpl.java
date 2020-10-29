@@ -35,7 +35,6 @@ import java.time.LocalDate;
 @Transactional(propagation = Propagation.SUPPORTS, readOnly = true, rollbackFor = Exception.class)
 public class YbAppealResultRepaymentViewServiceImpl extends ServiceImpl<YbAppealResultRepaymentViewMapper, YbAppealResultRepaymentView> implements IYbAppealResultRepaymentViewService {
 
-
     @Override
     public IPage<YbAppealResultRepaymentView> findYbAppealResultRepaymentViews(QueryRequest request, YbAppealResultRepaymentView ybAppealResultRepaymentView) {
         try {
@@ -125,9 +124,9 @@ public class YbAppealResultRepaymentViewServiceImpl extends ServiceImpl<YbAppeal
         String sql = "repaymentId IS NULL";
         if(ybAppealResultRepaymentView.getShareProgramme() !=null){
             if(ybAppealResultRepaymentView.getShareProgramme().equals("not")) {
-                sql += " and shareProgramme is not null";
+                sql += " and shareProgramme is not null and shareProgramme !=''";
             } else if(ybAppealResultRepaymentView.getShareProgramme().equals("null")) {
-                sql += " and shareProgramme is null";
+                sql += " and (shareProgramme is null or shareProgramme ='')";
             }
         }
         if(ybAppealResultRepaymentView.getApplyDateStr() !=null){

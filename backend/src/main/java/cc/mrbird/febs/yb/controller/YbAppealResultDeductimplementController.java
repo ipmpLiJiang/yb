@@ -84,6 +84,10 @@ public class YbAppealResultDeductimplementController extends BaseController {
         try {
             User currentUser = FebsUtil.getCurrentUser();
             ybAppealResultDeductimplement.setCreateUserId(currentUser.getUserId());
+            if (ybAppealResultDeductimplement.getApplyDateStr() != null) {
+                Date applyDate = DataTypeHelpers.stringDateFormat(ybAppealResultDeductimplement.getApplyDateStr() + "-15", "yyyy-MM-dd", true);
+                ybAppealResultDeductimplement.setApplyDate(applyDate);
+            }
             if (ybAppealResultDeductimplement.getImplementDateStr() != null) {
                 Date implementDate = DataTypeHelpers.stringDateFormat(ybAppealResultDeductimplement.getImplementDateStr() + "-15", "yyyy-MM-dd", true);
                 ybAppealResultDeductimplement.setImplementDate(implementDate);

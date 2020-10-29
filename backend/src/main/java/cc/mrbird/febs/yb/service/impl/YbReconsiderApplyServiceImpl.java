@@ -5,11 +5,10 @@ import cc.mrbird.febs.com.entity.ComConfiguremanage;
 import cc.mrbird.febs.com.service.IComConfiguremanageService;
 import cc.mrbird.febs.common.domain.QueryRequest;
 import cc.mrbird.febs.common.utils.SortUtil;
-import cc.mrbird.febs.yb.entity.YbAppealManage;
-import cc.mrbird.febs.yb.entity.YbAppealManageView;
-import cc.mrbird.febs.yb.entity.YbReconsiderApply;
+import cc.mrbird.febs.yb.entity.*;
 import cc.mrbird.febs.yb.dao.YbReconsiderApplyMapper;
-import cc.mrbird.febs.yb.entity.YbReconsiderApplyData;
+import cc.mrbird.febs.yb.service.IYbAppealManageService;
+import cc.mrbird.febs.yb.service.IYbAppealManageViewService;
 import cc.mrbird.febs.yb.service.IYbReconsiderApplyService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
@@ -43,12 +42,12 @@ import java.time.LocalDate;
 public class YbReconsiderApplyServiceImpl extends ServiceImpl<YbReconsiderApplyMapper, YbReconsiderApply> implements IYbReconsiderApplyService {
 
     @Autowired
-    private  YbAppealManageViewServiceImpl ybAppealManageViewService;
+    private IYbAppealManageViewService iYbAppealManageViewService;
     @Autowired
     private IComConfiguremanageService iComConfiguremanageService;
 
     @Autowired
-    private  YbAppealManageServiceImpl ybAppealManageService;
+    private IYbAppealManageService iYbAppealManageService;
 
     @Override
     public IPage<YbReconsiderApply> findYbReconsiderApplys(QueryRequest request, YbReconsiderApply ybReconsiderApply) {
@@ -134,6 +133,13 @@ public class YbReconsiderApplyServiceImpl extends ServiceImpl<YbReconsiderApplyM
         }
 
         return msg;
+    }
+
+    @Override
+    @Transactional
+    public void updateYbReconsiderApply(YbReconsiderApply ybReconsiderApply) {
+        ybReconsiderApply.setModifyTime(new Date());
+        this.baseMapper.updateYbReconsiderApply(ybReconsiderApply);
     }
 
     @Override
@@ -224,6 +230,7 @@ public class YbReconsiderApplyServiceImpl extends ServiceImpl<YbReconsiderApplyM
         return this.baseMapper.findReconsiderApplyByApplyDateStr(appltDateStr);
     }
 
+    @Transactional
     public String updateAppealManage(YbReconsiderApply ybReconsiderApply) throws ParseException {
         String msg = "";
         YbReconsiderApply yra = this.getById(ybReconsiderApply.getId());
@@ -254,10 +261,10 @@ public class YbReconsiderApplyServiceImpl extends ServiceImpl<YbReconsiderApplyM
             List<YbAppealManageView> appealManageList = new ArrayList<>();
             List<YbAppealManage> updateAppealManageList = new ArrayList<>();
             if (aEndDateOne.before(bEndDateOne)) {
-                appealManageList = ybAppealManageViewService.findAppealManageViewList(queryAppealManage);
-                updateAppealManageList = this.getUpdateAppealManageList(appealManageList, bEndDateOne);
+                appealManageList = iYbAppealManageViewService.findAppealManageViewList(queryAppealManage);
+                updateAppealManageList = iYbAppealManageService.getUpdateAppealManageList(appealManageList, bEndDateOne);
                 if (updateAppealManageList.size() > 0) {
-                    isTrue = ybAppealManageService.updateBatchById(updateAppealManageList);
+                    isTrue = iYbAppealManageService.updateBatchById(updateAppealManageList);
                     if(isTrue){
                         msg = "ok";
                     }
@@ -271,26 +278,5 @@ public class YbReconsiderApplyServiceImpl extends ServiceImpl<YbReconsiderApplyM
         return msg;
     }
 
-    private  int getDay(){
-        List<Integer> intList = new ArrayList<>();
-        intList.add(1);//日期增加天数
-        List<ComConfiguremanage> configList = iComConfiguremanageService.getConfigLists(intList);
-        return configList.size() > 0 ? configList.get(0).getIntField() : 2;
-    }
 
-    private List<YbAppealManage> getUpdateAppealManageList(List<YbAppealManageView> appealManageList,Date endDateOne){
-        List<YbAppealManage> updateAppealManageList = new ArrayList<>();
-        Date thisDate = new java.sql.Timestamp(new Date().getTime());
-        int day = getDay();
-        Date addDate = DataTypeHelpers.addDateMethod(thisDate, day);
-        for(YbAppealManageView item : appealManageList){
-            YbAppealManage updateAppealManage = new YbAppealManage();
-            updateAppealManage.setId(item.getId());
-            updateAppealManage.setAcceptState(1);
-            updateAppealManage.setEnableDate(addDate);
-            updateAppealManageList.add(updateAppealManage);
-        }
-
-        return  updateAppealManageList;
-    }
 }

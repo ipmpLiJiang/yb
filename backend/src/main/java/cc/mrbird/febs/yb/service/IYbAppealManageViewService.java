@@ -33,5 +33,5 @@ public interface IYbAppealManageViewService extends IService<YbAppealManageView>
 
     void deleteYbAppealManageViews(String[] Ids);
 
-
+    List<YbAppealManageView> findAppealManageViewList(YbAppealManageView ybAppealManageView);
 }

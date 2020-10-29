@@ -1,5 +1,6 @@
 package cc.mrbird.febs.yb.service.impl;
 
+import cc.mrbird.febs.com.controller.DataTypeHelpers;
 import cc.mrbird.febs.common.domain.QueryRequest;
 import cc.mrbird.febs.common.utils.SortUtil;
 import cc.mrbird.febs.yb.entity.YbAppealResultDeductimplement;
@@ -38,8 +39,8 @@ import java.util.stream.Collectors;
 @Transactional(propagation = Propagation.SUPPORTS, readOnly = true, rollbackFor = Exception.class)
 public class YbAppealResultRepaymentServiceImpl extends ServiceImpl<YbAppealResultRepaymentMapper, YbAppealResultRepayment> implements IYbAppealResultRepaymentService {
 
-@Autowired
-private IYbAppealResultRepaymentViewService iYbAppealResultRepaymentViewService;
+    @Autowired
+    private IYbAppealResultRepaymentViewService iYbAppealResultRepaymentViewService;
 
     @Override
     public IPage<YbAppealResultRepayment> findYbAppealResultRepayments(QueryRequest request, YbAppealResultRepayment ybAppealResultRepayment) {
@@ -102,6 +103,7 @@ private IYbAppealResultRepaymentViewService iYbAppealResultRepaymentViewService;
             return "n2";
         }
     }
+
     @Override
     @Transactional
     public void batchCreateAppealResultRepaymentNull(String applyDateStr, Long uid) {
@@ -109,25 +111,23 @@ private IYbAppealResultRepaymentViewService iYbAppealResultRepaymentViewService;
         ybAppealResultRepaymentView.setApplyDateStr(applyDateStr);
         ybAppealResultRepaymentView.setShareProgramme("null");
         List<YbAppealResultRepaymentView> queryRepaymentList = iYbAppealResultRepaymentViewService.findAppealResultRepaymentViewList(ybAppealResultRepaymentView);
-        if(queryRepaymentList.size()>0){
+        if (queryRepaymentList.size() > 0) {
             LambdaQueryWrapper<YbAppealResultRepayment> wrapper = new LambdaQueryWrapper<>();
             wrapper.eq(YbAppealResultRepayment::getApplyDateStr, applyDateStr);
             List<YbAppealResultRepayment> queryList = this.list(wrapper);
 
             List<YbAppealResultRepayment> createList = new ArrayList<>();
-            for (YbAppealResultRepaymentView item : queryRepaymentList){
+            for (YbAppealResultRepaymentView item : queryRepaymentList) {
                 if (queryList.stream().filter(s -> s.getResultId().equals(item.getResultId()) &&
                         s.getResetDataId().equals(item.getResetDataId())
-                ).count()==0) {
+                ).count() == 0) {
                     YbAppealResultRepayment ybAppealResultRepayment = new YbAppealResultRepayment();
                     ybAppealResultRepayment.setId(UUID.randomUUID().toString());
-
                     ybAppealResultRepayment.setApplyDate(item.getApplyDate());
                     ybAppealResultRepayment.setApplyDateStr(item.getApplyDateStr());
                     ybAppealResultRepayment.setResultId(item.getResultId());
                     ybAppealResultRepayment.setResetDataId(item.getResetDataId());
                     ybAppealResultRepayment.setDeductImplementId(item.getDeductImplementId());
-                    ybAppealResultRepayment.setRepaymentProgramme("");
                     ybAppealResultRepayment.setDataType(item.getDataType());
 
                     ybAppealResultRepayment.setCreateUserId(uid);
@@ -144,38 +144,41 @@ private IYbAppealResultRepaymentViewService iYbAppealResultRepaymentViewService;
         }
 
     }
+
     @Override
     @Transactional
-    public void batchCreateAppealResultRepaymentNull(List<YbAppealResultRepayment> appealResultRepaymentList,String applyDateStr, Long uid) {
-        LambdaQueryWrapper<YbAppealResultRepayment> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(YbAppealResultRepayment::getApplyDateStr, applyDateStr);
-        List<YbAppealResultRepayment> queryList = this.list(wrapper);
-        List<YbAppealResultRepayment> createList = new ArrayList<>();
+    public void batchCreateAppealResultRepaymentNull(List<YbAppealResultRepayment> appealResultRepaymentList, Long uid) {
+        if (appealResultRepaymentList.size() > 0) {
+            String applyDateStr = appealResultRepaymentList.get(0).getApplyDateStr();
+            LambdaQueryWrapper<YbAppealResultRepayment> wrapper = new LambdaQueryWrapper<>();
+            wrapper.eq(YbAppealResultRepayment::getApplyDateStr, applyDateStr);
+            List<YbAppealResultRepayment> queryList = this.list(wrapper);
+            List<YbAppealResultRepayment> createList = new ArrayList<>();
 
-        for (YbAppealResultRepayment item : appealResultRepaymentList) {
-            if (queryList.stream().filter(s -> s.getResultId().equals(item.getResultId()) &&
-                    s.getResetDataId().equals(item.getResetDataId())
-            ).count()==0) {
-                YbAppealResultRepayment ybAppealResultRepayment = new YbAppealResultRepayment();
-                ybAppealResultRepayment.setId(UUID.randomUUID().toString());
+            for (YbAppealResultRepayment item : appealResultRepaymentList) {
+                if (queryList.stream().filter(s -> s.getResultId().equals(item.getResultId()) &&
+                        s.getResetDataId().equals(item.getResetDataId())
+                ).count() == 0) {
+                    YbAppealResultRepayment ybAppealResultRepayment = new YbAppealResultRepayment();
+                    ybAppealResultRepayment.setId(UUID.randomUUID().toString());
+                    Date appDate = DataTypeHelpers.stringDateFormat(item.getApplyDateStr() + "-15", "", false);
+                    ybAppealResultRepayment.setApplyDate(appDate);
+                    ybAppealResultRepayment.setApplyDateStr(item.getApplyDateStr());
+                    ybAppealResultRepayment.setResultId(item.getResultId());
+                    ybAppealResultRepayment.setResetDataId(item.getResetDataId());
+                    ybAppealResultRepayment.setDeductImplementId(item.getDeductImplementId());
+                    ybAppealResultRepayment.setDataType(item.getDataType());
 
-                ybAppealResultRepayment.setApplyDate(item.getApplyDate());
-                ybAppealResultRepayment.setApplyDateStr(item.getApplyDateStr());
-                ybAppealResultRepayment.setResultId(item.getResultId());
-                ybAppealResultRepayment.setResetDataId(item.getResetDataId());
-                ybAppealResultRepayment.setDeductImplementId(item.getDeductImplementId());
-                ybAppealResultRepayment.setRepaymentProgramme("");
-                ybAppealResultRepayment.setDataType(item.getDataType());
+                    ybAppealResultRepayment.setCreateUserId(uid);
+                    ybAppealResultRepayment.setCreateTime(new Date());
+                    ybAppealResultRepayment.setIsDeletemark(1);
 
-                ybAppealResultRepayment.setCreateUserId(uid);
-                ybAppealResultRepayment.setCreateTime(new Date());
-                ybAppealResultRepayment.setIsDeletemark(1);
-
-                createList.add(ybAppealResultRepayment);
+                    createList.add(ybAppealResultRepayment);
+                }
             }
-        }
-        if (createList.size() > 0) {
-            this.saveBatch(createList);
+            if (createList.size() > 0) {
+                this.saveBatch(createList);
+            }
         }
     }
 

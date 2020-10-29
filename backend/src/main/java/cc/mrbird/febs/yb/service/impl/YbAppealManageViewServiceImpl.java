@@ -39,7 +39,6 @@ import java.time.LocalDate;
 @Transactional(propagation = Propagation.SUPPORTS, readOnly = true, rollbackFor = Exception.class)
 public class YbAppealManageViewServiceImpl extends ServiceImpl<YbAppealManageViewMapper, YbAppealManageView> implements IYbAppealManageViewService {
 
-
     @Override
     public IPage<YbAppealManageView> findYbAppealManageViews(QueryRequest request, YbAppealManageView ybAppealManageView) {
         try {
@@ -116,6 +115,7 @@ public class YbAppealManageViewServiceImpl extends ServiceImpl<YbAppealManageVie
         }
     }
 
+    @Override
     public List<YbAppealManageView> findAppealManageViewList(YbAppealManageView ybAppealManageView) {
         LambdaQueryWrapper<YbAppealManageView> wrapper = new LambdaQueryWrapper<>();
         if (ybAppealManageView.getTypeno() != null) {

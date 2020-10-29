@@ -30,6 +30,8 @@ public interface IYbReconsiderApplyService extends IService<YbReconsiderApply> {
 
     String updateYbReconsiderApply(YbReconsiderApply ybReconsiderApply,boolean isUpOverdue) throws ParseException;
 
+    void updateYbReconsiderApply(YbReconsiderApply ybReconsiderApply);
+
     void deleteYbReconsiderApplys(String[] Ids);
 
     void deleteBatchStateIdsYbReconsiderApplys(String[] Ids, Integer state);

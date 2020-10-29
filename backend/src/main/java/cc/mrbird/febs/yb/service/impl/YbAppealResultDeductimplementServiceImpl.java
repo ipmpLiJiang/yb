@@ -142,7 +142,9 @@ public class YbAppealResultDeductimplementServiceImpl extends ServiceImpl<YbAppe
                     createDeductimplement.setResetDataId(rrr.getId());
                     createDeductimplement.setImplementDate(item.getImplementDate());
                     createDeductimplement.setImplementDateStr(item.getImplementDateStr());
-                    createDeductimplement.setShareProgramme(item.getShareProgramme());
+                    if(item.getShareProgramme()!=null && !item.getShareProgramme().equals("")) {
+                        createDeductimplement.setShareProgramme(item.getShareProgramme());
+                    }
                     createDeductimplement.setShareState(item.getShareState());
                     createDeductimplement.setDataType(item.getDataType());
 

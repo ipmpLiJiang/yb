@@ -35,7 +35,6 @@ import java.time.LocalDate;
 @Transactional(propagation = Propagation.SUPPORTS, readOnly = true, rollbackFor = Exception.class)
 public class YbAppealResultReportViewServiceImpl extends ServiceImpl<YbAppealResultReportViewMapper, YbAppealResultReportView> implements IYbAppealResultReportViewService {
 
-
     @Override
     public IPage<YbAppealResultReportView> findYbAppealResultReportViews(QueryRequest request, YbAppealResultReportView ybAppealResultReportView) {
         try {

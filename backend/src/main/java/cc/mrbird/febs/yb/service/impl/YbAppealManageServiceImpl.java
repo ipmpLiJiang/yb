@@ -1,11 +1,13 @@
 package cc.mrbird.febs.yb.service.impl;
 
+import cc.mrbird.febs.com.controller.DataTypeHelpers;
 import cc.mrbird.febs.com.entity.ComConfiguremanage;
 import cc.mrbird.febs.com.service.IComConfiguremanageService;
 import cc.mrbird.febs.common.domain.QueryRequest;
 import cc.mrbird.febs.common.utils.SortUtil;
 import cc.mrbird.febs.yb.dao.YbAppealManageMapper;
 import cc.mrbird.febs.yb.entity.YbAppealManage;
+import cc.mrbird.febs.yb.entity.YbAppealManageView;
 import cc.mrbird.febs.yb.entity.YbAppealResult;
 import cc.mrbird.febs.yb.service.IYbAppealManageService;
 import cc.mrbird.febs.yb.service.IYbAppealResultService;
@@ -190,36 +192,6 @@ public class YbAppealManageServiceImpl extends ServiceImpl<YbAppealManageMapper,
         return  message;
     }
 
-    /*
-        @Override
-        @Transactional
-        public void updateUploadStates(YbAppealManage ybAppealManage, Long uId, String Uname) {
-            Date thisDate = new Date();
-            YbAppealResult newAppealResult = new YbAppealResult();
-            newAppealResult.setId(ybAppealManage.getId());
-    //        newAppealResult.setApplyDataId(ybAppealManage.getApplyDataId());
-    //        newAppealResult.setVerifyId(ybAppealManage.getVerifyId());
-    //        newAppealResult.setManageId(ybAppealManage.getId());
-    //        newAppealResult.setDeptCode(ybAppealManage.getReadyDeptCode());
-    //        newAppealResult.setDeptName(ybAppealManage.getReadyDeptName());
-    //        newAppealResult.setDoctorCode(ybAppealManage.getReadyDoctorCode());
-    //        newAppealResult.setDoctorName(ybAppealManage.getReadyDoctorName());
-            newAppealResult.setOperateDate(thisDate);
-            newAppealResult.setOperateReason(ybAppealManage.getOperateReason());
-            newAppealResult.setModifyUserId(uId);
-            newAppealResult.setModifyTime(thisDate);
-            if (ybAppealManage.getAcceptState() == 6) {
-                newAppealResult.setState(1);
-            }
-            iYbAppealResultService.updateYbAppealResult(newAppealResult);
-    //        ybAppealManage.setOperateReason("");
-            ybAppealManage.setModifyUserId(uId);
-            ybAppealManage.setModifyTime(thisDate);
-            ybAppealManage.setOperateDate(thisDate);
-            ybAppealManage.setOperateProcess("待申诉-已申诉");
-            this.baseMapper.updateAcceptEndState(ybAppealManage);
-        }
-    */
     @Override
     @Transactional
     public void updateCreateYbAppealManage(YbAppealManage ybAppealManage, Long uId, String Uname, Integer type) {
@@ -362,4 +334,20 @@ public class YbAppealManageServiceImpl extends ServiceImpl<YbAppealManageMapper,
         this.baseMapper.update(ybAppealManage, queryWrapper);
     }
 
+    @Override
+    public List<YbAppealManage> getUpdateAppealManageList(List<YbAppealManageView> appealManageList, Date endDateOne){
+        List<YbAppealManage> updateAppealManageList = new ArrayList<>();
+        Date thisDate = new java.sql.Timestamp(new Date().getTime());
+        int day = getDay();
+        Date addDate = DataTypeHelpers.addDateMethod(thisDate, day);
+        for(YbAppealManageView item : appealManageList){
+            YbAppealManage updateAppealManage = new YbAppealManage();
+            updateAppealManage.setId(item.getId());
+            updateAppealManage.setAcceptState(1);
+            updateAppealManage.setEnableDate(addDate);
+            updateAppealManageList.add(updateAppealManage);
+        }
+
+        return  updateAppealManageList;
+    }
 }

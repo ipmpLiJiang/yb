@@ -69,7 +69,7 @@ public class YbReconsiderRuleServiceImpl extends ServiceImpl<YbReconsiderRuleMap
     @Transactional
     public void createYbReconsiderRule(YbReconsiderRule ybReconsiderRule) {
         Date thisDate = new java.sql.Timestamp(new Date().getTime());
-        if(ybReconsiderRule.getId() == null || "".equals(ybReconsiderRule.getId())) {
+        if (ybReconsiderRule.getId() == null || "".equals(ybReconsiderRule.getId())) {
             ybReconsiderRule.setId(UUID.randomUUID().toString());
         }
         ybReconsiderRule.setCreateTime(thisDate);

@@ -40,4 +40,8 @@ public interface IYbReconsiderVerifyService extends IService<YbReconsiderVerify>
     void updateSendStates(List<YbReconsiderVerify> list, Long uId, String Uname);
 
     void updateMainSendStates(List<YbReconsiderVerify> list, Long uId, String Uname);
+
+    void updateAllSendStates(String applyDateStr,Integer state,Integer dataType, Long uId, String Uname);
+
+    void updateAllMainSendStates(String applyDateStr,Integer state,Integer dataType, Long uId, String Uname);
 }
