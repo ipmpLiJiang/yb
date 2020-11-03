@@ -6,6 +6,7 @@ import cc.mrbird.febs.common.utils.SortUtil;
 import cc.mrbird.febs.yb.entity.YbAppealResultReportView;
 import cc.mrbird.febs.yb.dao.YbAppealResultReportViewMapper;
 import cc.mrbird.febs.yb.entity.YbAppealResultView;
+import cc.mrbird.febs.yb.entity.YbDefaultValue;
 import cc.mrbird.febs.yb.service.IYbAppealResultReportViewService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
@@ -62,37 +63,37 @@ public class YbAppealResultReportViewServiceImpl extends ServiceImpl<YbAppealRes
                 }
 
                 if (ybAppealResultReportView.getTypeno() != null) {
-                    if (ybAppealResultReportView.getTypeno() == 1) {
-                        sql +=  " and typeno = 1";
+                    if (ybAppealResultReportView.getTypeno() == YbDefaultValue.TYPENO_1) {
+                        sql += " and typeno = "+YbDefaultValue.TYPENO_1;
                     } else {
-                        sql +=  " and typeno = 2";
+                        sql += " and typeno = "+YbDefaultValue.TYPENO_2;
                     }
                 }
                 if (ybAppealResultReportView.getDataType() != null) {
-                    if (ybAppealResultReportView.getDataType() == 0) {
-                        sql +=  " and dataType = 0";
+                    if (ybAppealResultReportView.getDataType() == YbDefaultValue.DATATYPE_0) {
+                        sql += " and dataType = "+YbDefaultValue.DATATYPE_0;
                     } else {
-                        sql +=  " and dataType = 1";
+                        sql += " and dataType = "+YbDefaultValue.DATATYPE_1;
                     }
                 }
                 if (ybAppealResultReportView.getSourceType() != null) {
-                    sql +=  " and sourceType = " + ybAppealResultReportView.getSourceType();
+                    sql += " and sourceType = " + ybAppealResultReportView.getSourceType();
                 }
                 if (ybAppealResultReportView.getState() != null) {
                     if (ybAppealResultReportView.getState() == 1) {
-                        sql +=  " and (STATE = 1 or (STATE = 2 and (repayState = 1 or repayState = 3)))";
+                        sql += " and (STATE = 1 or (STATE = 2 and (repayState = 1 or repayState = 3)))";
                     } else {
-                        sql +=  " and STATE = 2 and repayState = 2";
+                        sql += " and STATE = 2 and repayState = 2";
                     }
                 }
 
                 if (ybAppealResultReportView.getArDoctorCode() != null) {
-                    sql +=  " and arDoctorCode = '" + ybAppealResultReportView.getArDoctorCode() + "'";
+                    sql += " and arDoctorCode = '" + ybAppealResultReportView.getArDoctorCode() + "'";
                 }
 
-                sql +=  " and raResetState = 1";
+                sql += " and raResetState = 1";
 
-                sql +=  ")";
+                sql += ")";
                 if (ybAppealResultReportView.getCurrencyField() != null && !"".equals(ybAppealResultReportView.getCurrencyField())) {
                     if (ybAppealResultReportView.getDataType() != null) {
                         if (ybAppealResultReportView.getDataType() == 0) {
@@ -194,37 +195,37 @@ public class YbAppealResultReportViewServiceImpl extends ServiceImpl<YbAppealRes
                 }
 
                 if (ybAppealResultReportView.getTypeno() != null) {
-                    if (ybAppealResultReportView.getTypeno() == 1) {
-                        sql +=  " and typeno = 1";
+                    if (ybAppealResultReportView.getTypeno() == YbDefaultValue.TYPENO_1) {
+                        sql += " and typeno = " + YbDefaultValue.TYPENO_1;
                     } else {
-                        sql +=  " and typeno = 2";
+                        sql += " and typeno = " + YbDefaultValue.TYPENO_2;
                     }
                 }
                 if (ybAppealResultReportView.getDataType() != null) {
-                    if (ybAppealResultReportView.getDataType() == 0) {
-                        sql +=  " and dataType = 0";
+                    if (ybAppealResultReportView.getDataType() == YbDefaultValue.DATATYPE_0) {
+                        sql += " and dataType = " + YbDefaultValue.DATATYPE_0;
                     } else {
-                        sql +=  " and dataType = 1";
+                        sql += " and dataType = " + YbDefaultValue.DATATYPE_1;
                     }
                 }
                 if (ybAppealResultReportView.getSourceType() != null) {
-                    sql +=  " and sourceType = " + ybAppealResultReportView.getSourceType();
+                    sql += " and sourceType = " + ybAppealResultReportView.getSourceType();
                 }
                 if (ybAppealResultReportView.getState() != null) {
                     if (ybAppealResultReportView.getState() == 1) {
-                        sql +=  " and (STATE = 1 or (STATE = 2 and (repayState = 1 or repayState = 3)))";
+                        sql += " and (STATE = 1 or (STATE = 2 and (repayState = 1 or repayState = 3)))";
                     } else {
-                        sql +=  " and STATE = 2 and repayState = 2";
+                        sql += " and STATE = 2 and repayState = 2";
                     }
                 }
 
                 if (ybAppealResultReportView.getArDoctorCode() != null) {
-                    sql +=  " and arDoctorCode = '" + ybAppealResultReportView.getArDoctorCode() + "'";
+                    sql += " and arDoctorCode = '" + ybAppealResultReportView.getArDoctorCode() + "'";
                 }
 
-                sql +=  " and raResetState = 1";
+                sql += " and raResetState = 1";
 
-                sql +=  ")";
+                sql += ")";
                 if (ybAppealResultReportView.getCurrencyField() != null && !"".equals(ybAppealResultReportView.getCurrencyField())) {
                     if (ybAppealResultReportView.getDataType() != null) {
                         if (ybAppealResultReportView.getDataType() == 0) {

@@ -175,7 +175,7 @@ export default {
   methods: {
     moment,
     formatDate () {
-      let datemonth = moment().format('YYYY-MM')
+      let datemonth = moment().subtract(1, 'months').format('YYYY-MM')
       return datemonth
     },
     monthChange (date, dateString) {

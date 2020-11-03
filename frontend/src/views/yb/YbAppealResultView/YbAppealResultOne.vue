@@ -187,7 +187,7 @@ export default {
           ...queryParams
         })
       } else {
-        this.$message.success('导出Excel,无数据!')
+        this.$message.warning('导出Excel，无数据!')
       }
     },
     onSelectChange (selectedRowKeys) {
@@ -205,9 +205,9 @@ export default {
         target.rowNo = this.rowNo(indOf)
         this.$emit('onHistoryLook', target)
       } else if (selectedRowKeys.length === 0) {
-        this.$message.success('未选择行')
+        this.$message.warning('未选择行')
       } else {
-        this.$message.success('请选择单行')
+        this.$message.warning('请选择单行')
       }
     },
     search () {

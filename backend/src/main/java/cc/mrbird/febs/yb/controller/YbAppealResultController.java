@@ -179,14 +179,14 @@ public class YbAppealResultController extends BaseController {
                 //获得之前申诉记录
                 ybAppealResult = this.iYbAppealResultService.findLoadLastAppealResulData(ybAppealResult);
                 if (ybAppealResult != null) {
-
+                    User currentUser = FebsUtil.getCurrentUser();
                     comFileList = this.iComFileService.findListComFile(ybAppealResult.getId());
                     if (comFileList.size() > 0) {
                         List<ComFile> loadLastList = new ArrayList<ComFile>();
 
                         String filePath = febsProperties.getUploadPath(); // 上传后的路径
-                        String oldDept = filePath + applyDateStr + "/" + ybAppealResult.getId() + "In";
-                        String newDept = filePath + applyDateStr + "/" + loadId + "Out";
+                        String oldDept = filePath + applyDateStr + "/" + currentUser.getUsername() + "/In";
+                        String newDept = filePath + applyDateStr + "/" + currentUser.getUsername() + "/Out";
 
                         File f = new File(newDept);
                         if (!f.exists()) {

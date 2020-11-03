@@ -109,18 +109,24 @@
       </template>
       <a-row>
         <a-col :span=4 :offset=8>
-          <a-button
-              @click="handleSubmit"
-              type="primary"
-              :loading="loading"
-            >同意</a-button>
+          <a-popconfirm
+            title="确定同意？"
+            @confirm="handleSubmit"
+            okText="确定"
+            cancelText="取消"
+          >
+            <a-button type="primary" style="margin-right: .8rem">同意</a-button>
+          </a-popconfirm>
         </a-col>
         <a-col :span=2>
-          <a-button
-              @click="handleRejectSubmit"
-              type="primary"
-              :loading="loading"
-            >拒绝</a-button>
+          <a-popconfirm
+            title="确定拒绝？"
+            @confirm="handleRejectSubmit"
+            okText="确定"
+            cancelText="取消"
+          >
+            <a-button type="primary" style="margin-right: .8rem">拒绝</a-button>
+          </a-popconfirm>
         </a-col>
         <a-col :span=10>
           <a-popconfirm

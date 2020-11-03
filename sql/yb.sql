@@ -238,6 +238,7 @@ CREATE TABLE yb_appeal_result_deductImplement (
 	implementDateStr varchar(10) NOT NULL COMMENT '绩效年月Str',
 	shareState int(4) DEFAULT 0 COMMENT '分摊方式', # 0 个人 1科室
 	shareProgramme varchar(1000) DEFAULT NULL COMMENT '分摊方案',
+	dataType int(4) NOT NULL COMMENT '扣款类型', -- 0 明细扣款 1 主单扣款
   COMMENTS varchar(1000) DEFAULT NULL COMMENT '备注',
   STATE int(4) DEFAULT 1 COMMENT '状态',
   IS_DELETEMARK tinyint(4) DEFAULT NULL COMMENT '是否删除',
@@ -252,10 +253,13 @@ CREATE TABLE yb_appeal_result_deductImplement (
 #DROP TABLE IF EXISTS yb_appeal_result_repayment;
 CREATE TABLE yb_appeal_result_repayment (
   id char(36) NOT NULL COMMENT '还款落实Id',
+  applyDate datetime NOT NULL COMMENT '复议年月',
+  applyDateStr varchar(10) NOT NULL COMMENT '复议年月Str',
   resultId char(36) NOT NULL COMMENT '申诉上传Id',
   resetDataId  char(36) NOT NULL COMMENT '剔除明细Id',
   deductImplementId char(36) NOT NULL COMMENT '扣除落实Id',
   repaymentProgramme varchar(1000) DEFAULT NULL COMMENT '还款方案',
+  dataType int(4) NOT NULL COMMENT '扣款类型', -- 0 明细扣款 1 主单扣款
   COMMENTS varchar(1000) DEFAULT NULL COMMENT '备注',
   STATE int(4) DEFAULT 1 COMMENT '状态',
   IS_DELETEMARK tinyint(4) DEFAULT NULL COMMENT '是否删除',
@@ -423,7 +427,7 @@ CREATE TABLE yb_handle_verify_data (
 	currencyField varchar(100) DEFAULT NULL COMMENT '通用',
   dataType int(4) NOT NULL COMMENT '扣款类型', -- 0 明细扣款 1 主单扣款
   COMMENTS varchar(1000) DEFAULT NULL COMMENT '备注',
-  STATE int(4) DEFAULT 0 COMMENT '状态',#0待发送、1已发送
+  STATE int(4) DEFAULT 1 COMMENT '状态',#1待审核、2已审核、3已发送
   IS_DELETEMARK tinyint(4) DEFAULT NULL COMMENT '是否删除',
   MODIFY_TIME datetime DEFAULT NULL  COMMENT '修改时间',
   CREATE_TIME datetime DEFAULT NULL  COMMENT '创建时间',
@@ -506,11 +510,11 @@ CREATE TABLE yb_reconsider_repay_data (
 ) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
 
 
-#alter table yb_reconsider_apply_data add orderNum int(4) not null;
+#ALTER TABLE yb_reconsider_verify ADD INDEX applyDataId ( applyDataId ) 
 
-#alter table yb_reconsider_reset_data add orderNum int(4) not null;
+#ALTER TABLE yb_appeal_manage ADD INDEX applyDataId ( applyDataId ) 
 
-#alter table yb_reconsider_repay_data  add orderNum int(4) not null;
+#ALTER TABLE yb_appeal_result ADD INDEX applyDataId ( applyDataId ) 
 
 
 DROP VIEW IF EXISTS yb_reconsider_verify_view;
@@ -556,7 +560,7 @@ select
 	ra.applyDateStr, #复议年月Str
 	ra.operatorId, #操作员代码'
   	ra.operatorName, #操作员名称,
-  	case when rv.id is null then '00000000-0000-0000-0000-000000000000' else rv.id end id,
+  	case when rv.id is null then UUID() else rv.id end id,
 	ad.id applyDataId,
 	rv.verifyDoctorCode,
 	rv.verifyDoctorName,
@@ -580,7 +584,8 @@ select
 	rv.CREATE_TIME,
 	rv.CREATE_USER_ID,
 	rv.MODIFY_USER_ID,
-	rv.currencyField
+	rv.currencyField,
+	case when rv.id is null then 0 else 1 end isVerify
 from 
 	yb_reconsider_apply_data ad 		
 	INNER JOIN yb_reconsider_apply ra ON
@@ -811,41 +816,41 @@ DROP VIEW IF EXISTS yb_handle_verify_data_view;
 create view yb_handle_verify_data_view
 as
 select	
-	ad.serialNo,#交易流水号
-	ad.billNo,#单据号
+	rrd.serialNo,#交易流水号
+	rrd.billNo,#单据号
 	ad.proposalCode,#意见书编码
-	ad.projectCode,#项目编码
-	ad.projectName,#项目名称
+	rrd.projectCode,#项目编码
+	rrd.projectName,#项目名称
 	ad.num,#数量
-	ad.medicalPrice,#医保内金额
-	ad.ruleName,#规则名称
-	ad.deductPrice,#扣除金额
-	ad.deductReason,#扣除原因
-	ad.repaymentReason,#还款原因
-	ad.doctorName,#医生姓名
-	ad.deptCode,#科室编码
-	ad.deptName,#科室名称
+	rrd.medicalPrice,#医保内金额
+	rrd.ruleName,#规则名称
+	rrd.deductPrice,#扣除金额
+	rrd.deductReason,#扣除原因
+	rrd.repaymentReason,#还款原因
+	rrd.doctorName,#医生姓名
+	rrd.deptCode,#科室编码
+	rrd.deptName,#科室名称
 	ad.enterHospitalDate,#入院日期
 	ad.outHospitalDate,#出院日期
-	ad.costDate,#费用日期
+	rrd.costDate,#费用日期
 	ad.enterHospitalDateStr,#入院日期Str
 	ad.outHospitalDateStr,#出院日期Str
-	ad.costDateStr,#费用日期Str
-	ad.hospitalizedNo,#住院号
-	ad.treatmentMode,#就医方式
-	ad.settlementDate,#结算日期
-	ad.settlementDateStr,#结算日期Str
-	ad.personalNo,#个人编号
-	ad.insuredName,#参保人姓名
-	ad.cardNumber,#医保卡号
-	ad.areaName,#统筹区名称
+	rrd.costDateStr,#费用日期Str
+	rrd.hospitalizedNo,#住院号
+	rrd.treatmentMode,#就医方式
+	rrd.settlementDate,#结算日期
+	rrd.settlementDateStr,#结算日期Str
+	rrd.personalNo,#个人编号
+	rrd.insuredName,#参保人姓名
+	rrd.cardNumber,#医保卡号
+	rrd.areaName,#统筹区名称
 	ad.versionNumber,#版本号
 	ad.backAppeal,#反馈申诉
 	ad.typeno,	#版本类型
-	ad.insuredType,
-	ad.dataType,
-	ad.orderNumber,
-	ad.orderNum,
+	rrd.insuredType,
+	rrd.dataType,
+	rrd.orderNumber,
+	rrd.orderNum,
 	hv.applyDate, #复议年月
 	hv.applyDateStr, #复议年月Str
   hvd.id,
@@ -869,6 +874,9 @@ from
 	INNER JOIN yb_handle_verify hv ON
 		hv.id = hvd.pid AND
 		hv.IS_DELETEMARK = 1
+	INNER JOIN yb_reconsider_reset_data rrd ON
+		rrd.id = hvd.resetId AND
+		rrd.IS_DELETEMARK = 1
 	INNER JOIN yb_reconsider_apply_data ad ON
 		ad.id = hvd.applyDataId AND
 		ad.IS_DELETEMARK = 1

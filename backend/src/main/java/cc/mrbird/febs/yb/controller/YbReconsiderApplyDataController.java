@@ -267,7 +267,7 @@ public class YbReconsiderApplyDataController extends BaseController {
                                 if (objMx.get(0).length == 27) {
                                     for (int i = 1; i < objMx.size(); i++) {
                                         String strVersionNumber = DataTypeHelpers.importTernaryOperate(objMx.get(i), 25);//'版本号',
-                                        if (typeno == 1 || (typeno == 2 && strVersionNumber.equals("2"))) {
+                                        if (typeno == YbDefaultValue.TYPENO_1 || (typeno == YbDefaultValue.TYPENO_2 && strVersionNumber.equals("2"))) {
                                             message = "明细扣款数据读取失败，请确保Excel列表数据正确无误.";
                                             YbReconsiderApplyData rrData = new YbReconsiderApplyData();
                                             rrData.setId(UUID.randomUUID().toString());
@@ -340,7 +340,7 @@ public class YbReconsiderApplyDataController extends BaseController {
                                             String strBackAppeal = DataTypeHelpers.importTernaryOperate(objMx.get(i), 26);//'反馈申诉',
                                             rrData.setBackAppeal(strBackAppeal);
                                             rrData.setTypeno(typeno);
-                                            rrData.setDataType(0);
+                                            rrData.setDataType(YbDefaultValue.DATATYPE_0);
                                             ListData.add(rrData);
                                         }
                                     }
@@ -354,7 +354,7 @@ public class YbReconsiderApplyDataController extends BaseController {
                                     if (objZd.get(0).length == 18) {
                                         for (int i = 1; i < objZd.size(); i++) {
                                             String strVersionNumber = DataTypeHelpers.importTernaryOperate(objZd.get(i), 16);//'版本号',
-                                            if (typeno == 1 || (typeno == 2 && strVersionNumber.equals("2"))) {
+                                            if (typeno == YbDefaultValue.TYPENO_1 || (typeno == YbDefaultValue.TYPENO_2 && strVersionNumber.equals("2"))) {
                                                 message = "主单扣款数据读取失败，请确保Excel列表数据正确无误.";
                                                 YbReconsiderApplyData rrMain = new YbReconsiderApplyData();
                                                 rrMain.setIsDeletemark(1);
@@ -405,7 +405,7 @@ public class YbReconsiderApplyDataController extends BaseController {
                                                 String strBackAppeal = DataTypeHelpers.importTernaryOperate(objZd.get(i), 17);//'反馈申诉',
                                                 rrMain.setBackAppeal(strBackAppeal);
                                                 rrMain.setTypeno(typeno);
-                                                rrMain.setDataType(1);
+                                                rrMain.setDataType(YbDefaultValue.DATATYPE_1);
                                                 ListMain.add(rrMain);
                                             }
                                         }
@@ -419,11 +419,11 @@ public class YbReconsiderApplyDataController extends BaseController {
                                 //1待复议 2上传一 3申述一 4上传二 5申述二 6已剔除 7已还款
                                 YbReconsiderApply ybReconsiderApply = new YbReconsiderApply();
                                 if (typeno == 1) {
-                                    ybReconsiderApply.setState(2);//State=2 审核一
+                                    ybReconsiderApply.setState(YbDefaultValue.APPLYSTATE_2);//State=2 审核一
                                     ybReconsiderApply.setUploadFileNameOne(uploadFileName);
                                 }
                                 if (typeno == 2) {
-                                    ybReconsiderApply.setState(4);
+                                    ybReconsiderApply.setState(YbDefaultValue.APPLYSTATE_4);
                                     ybReconsiderApply.setUploadFileNameTwo(uploadFileName);
                                 }
                                 ybReconsiderApply.setId(pid);

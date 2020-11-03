@@ -17,10 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.time.LocalDate;
 
 /**
@@ -35,7 +32,6 @@ import java.time.LocalDate;
 @Service("IComConfiguremanageService")
 @Transactional(propagation = Propagation.SUPPORTS, readOnly = true, rollbackFor = Exception.class)
 public class ComConfiguremanageServiceImpl extends ServiceImpl<ComConfiguremanageMapper, ComConfiguremanage> implements IComConfiguremanageService {
-
 
     @Override
     public IPage<ComConfiguremanage> findComConfiguremanages(QueryRequest request, ComConfiguremanage comConfiguremanage) {
@@ -101,6 +97,14 @@ public class ComConfiguremanageServiceImpl extends ServiceImpl<ComConfiguremanag
         queryWrapper.apply(sql);
         List<ComConfiguremanage> configList = this.list(queryWrapper);
         return configList;
+    }
+
+    @Override
+    public int getConfigDay() {
+        List<Integer> intList = new ArrayList<>();
+        intList.add(1);//日期增加天数
+        List<ComConfiguremanage> configList = this.getConfigLists(intList);
+        return configList.size() > 0 ? configList.get(0).getIntField() : 2;
     }
 
 

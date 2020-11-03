@@ -12,6 +12,7 @@ import cc.mrbird.febs.common.domain.QueryRequest;
 import cc.mrbird.febs.common.properties.FebsProperties;
 import cc.mrbird.febs.yb.domain.ResponseResult;
 import cc.mrbird.febs.yb.domain.ResponseResultData;
+import cc.mrbird.febs.yb.entity.YbDefaultValue;
 import cc.mrbird.febs.yb.entity.YbReconsiderResetData;
 import cc.mrbird.febs.yb.service.IYbReconsiderResetService;
 import cc.mrbird.febs.yb.entity.YbReconsiderReset;
@@ -296,7 +297,7 @@ public class YbReconsiderResetController extends BaseController {
 //                    rrData.setCardNumber(strCardNumber);
                                             String strAreaName = DataTypeHelpers.importTernaryOperate(objMx.get(i), 19);//'统筹区名称',
                                             rrData.setAreaName(strAreaName);
-                                            rrData.setDataType(0);
+                                            rrData.setDataType(YbDefaultValue.DATATYPE_0);
                                             ListData.add(rrData);
                                         }
                                     } else {
@@ -356,7 +357,7 @@ public class YbReconsiderResetController extends BaseController {
                                                 rrMain.setInsuredType(strInsuredType);
                                                 String strAreaName = DataTypeHelpers.importTernaryOperate(objZd.get(i), 12);//'统筹区名称',
                                                 rrMain.setAreaName(strAreaName);
-                                                rrMain.setDataType(1);
+                                                rrMain.setDataType(YbDefaultValue.DATATYPE_1);
                                                 ListMain.add(rrMain);
                                             }
                                         } else {

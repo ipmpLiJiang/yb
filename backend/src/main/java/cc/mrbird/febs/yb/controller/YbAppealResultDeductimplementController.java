@@ -270,7 +270,7 @@ public class YbAppealResultDeductimplementController extends BaseController {
                                                     break;
                                                 } else {
                                                     if (shareStateStr.equals("个人分摊") || shareStateStr.equals("科室分摊")) {
-                                                        rrd.setShareState(shareStateStr.equals("个人分摊") ? 0 : 1);
+                                                        rrd.setShareState(shareStateStr.equals("个人分摊") ? YbDefaultValue.SHARESTATE_0 : YbDefaultValue.SHARESTATE_1);
                                                     } else {
                                                         blError = true;
                                                         message = "明细扣款数据存在分摊方式填写错误，应填写【个人分摊/科室分摊】 ,请填写完整后再上传...";
@@ -281,7 +281,7 @@ public class YbAppealResultDeductimplementController extends BaseController {
                                                 String shareProgramme = DataTypeHelpers.importTernaryOperate(objMx.get(i), 22);
                                                 rrd.setShareProgramme(shareProgramme);
 
-                                                rrd.setDataType(0);
+                                                rrd.setDataType(YbDefaultValue.DATATYPE_0);
                                                 listDataCount =1;
                                                 resetDeductimplementList.add(rrd);
                                             }
@@ -338,7 +338,7 @@ public class YbAppealResultDeductimplementController extends BaseController {
                                                         break;
                                                     } else {
                                                         if (shareStateStr.equals("个人分摊") || shareStateStr.equals("科室分摊")) {
-                                                            rrd.setShareState(shareStateStr.equals("个人分摊") ? 0 : 1);
+                                                            rrd.setShareState(shareStateStr.equals("个人分摊") ? YbDefaultValue.SHARESTATE_0 : YbDefaultValue.SHARESTATE_1);
                                                         } else {
                                                             blError = true;
                                                             message = "主单扣款数据存在分摊方式填写错误，应填写【个人分摊或科室分摊】 ,请填写完整后再上传...";
@@ -349,7 +349,7 @@ public class YbAppealResultDeductimplementController extends BaseController {
                                                     String shareProgramme = DataTypeHelpers.importTernaryOperate(objZd.get(i), 15);
                                                     rrd.setShareProgramme(shareProgramme);
 
-                                                    rrd.setDataType(1);
+                                                    rrd.setDataType(YbDefaultValue.DATATYPE_1);
                                                     listMainCount = 1;
                                                     resetDeductimplementList.add(rrd);
                                                 }

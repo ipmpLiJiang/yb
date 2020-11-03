@@ -8,10 +8,24 @@
           :dataSource="dataSource"
           :pagination="pagination"
           :loading="loading"
+          :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
           @change="handleTableChange"
+          :customRow="handleClickRow"
           :bordered="bordered"
           :scroll="{ x: 900 }"
         >
+          <template
+            slot="operation"
+            slot-scope="text, record, index"
+          >
+            <div class="editable-row-operations">
+              <span>
+                <a
+                  @click.stop="() => edit(record)"
+                >录入还款方案</a>
+              </span>
+            </div>
+          </template>
         </a-table>
   </div>
 </template>
@@ -75,13 +89,13 @@ export default {
         title: '单据号',
         dataIndex: 'billNo',
         fixed: 'left',
-        width: 120
+        width: 110
       },
       {
         title: '项目名称',
         dataIndex: 'projectName',
         fixed: 'left',
-        width: 140
+        width: 210
       },
       {
         title: '扣除金额',
@@ -101,7 +115,7 @@ export default {
       {
         title: '科室名称',
         dataIndex: 'arDeptName',
-        width: 120
+        width: 130
       },
       {
         title: '医生姓名',
@@ -139,6 +153,13 @@ export default {
         },
         fixed: 'right',
         width: 90
+      },
+      {
+        title: '操作',
+        dataIndex: 'operation',
+        scopedSlots: { customRender: 'operation' },
+        fixed: 'right',
+        width: 120
       }]
     }
   },
@@ -148,6 +169,65 @@ export default {
     moment,
     onSelectChange (selectedRowKeys) {
       this.selectedRowKeys = selectedRowKeys
+    },
+    handleClickRow (record, index) {
+      return {
+        on: {
+          click: () => {
+            let target = this.selectedRowKeys.filter(key => key === record.id)[0]
+            if (target === undefined) {
+              this.selectedRowKeys.push(record.id)
+            } else {
+              this.selectedRowKeys.splice(this.selectedRowKeys.indexOf(record.id), 1)
+            }
+          }
+        }
+      }
+    },
+    edit (record) {
+      record.edit = 0
+      this.$emit('edit', record)
+    },
+    batchRepayment () {
+      this.loading = true
+      let selectedRowKeys = this.selectedRowKeys
+      if (selectedRowKeys.length > 0) {
+        let data = []
+        for (let key of selectedRowKeys) {
+          let target = this.dataSource.filter(item => key === item.id)[0]
+          if (target !== undefined) {
+            let arrData = {
+              resetDataId: target.resetDataId,
+              resultId: target.resultId,
+              deductImplementId: target.deductImplementId,
+              applyDateStr: target.applyDateStr,
+              dataType: target.dataType
+            }
+
+            data.push(arrData)
+          }
+        }
+        if (data.length > 0) {
+          this.repaymentService(data)
+        } else {
+          this.$message.warning('未找到对象')
+        }
+      } else {
+        this.$message.warning('未选择行')
+      }
+      this.selectedRowKeys = []
+      this.loading = false
+    },
+    repaymentService (data) {
+      let jsonString = JSON.stringify(data)
+      this.$put('ybAppealResultRepayment/createRepayment', {
+        dataJson: jsonString
+      }).then(() => {
+        this.$message.success('还款成功')
+        this.search()
+      }).catch(() => {
+        this.loading = false
+      })
     },
     search () {
       let { sortedInfo } = this

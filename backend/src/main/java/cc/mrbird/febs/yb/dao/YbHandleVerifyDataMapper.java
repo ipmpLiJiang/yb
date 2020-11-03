@@ -6,6 +6,8 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.List;
+
 /**
  * <p>
  * Mapper 接口
@@ -19,4 +21,5 @@ public interface YbHandleVerifyDataMapper extends BaseMapper<YbHandleVerifyData>
 
     IPage<YbHandleVerifyData> findYbHandleVerifyData(Page page, @Param("ybHandleVerifyData") YbHandleVerifyData ybHandleVerifyData);
 
+    List<YbHandleVerifyData> findHandleVerifyDataList (@Param("applyDateStr") String applyDateStr,@Param("dataType") Integer dataType,@Param("state") Integer state);
 }

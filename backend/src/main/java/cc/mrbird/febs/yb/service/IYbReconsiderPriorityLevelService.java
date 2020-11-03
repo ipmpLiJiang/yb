@@ -27,4 +27,6 @@ public interface IYbReconsiderPriorityLevelService extends IService<YbReconsider
         void updateYbReconsiderPriorityLevel(YbReconsiderPriorityLevel ybReconsiderPriorityLevel);
 
         void deleteYbReconsiderPriorityLevels(String[]Ids);
+
+        List<YbReconsiderPriorityLevel> findReconsiderPriorityLevelList();
         }

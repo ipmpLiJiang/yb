@@ -8,11 +8,8 @@ import cc.mrbird.febs.common.exception.FebsException;
 import cc.mrbird.febs.common.domain.QueryRequest;
 
 import cc.mrbird.febs.common.properties.FebsProperties;
-import cc.mrbird.febs.yb.entity.YbAppealResultDataReportExport;
-import cc.mrbird.febs.yb.entity.YbAppealResultMainReportExport;
-import cc.mrbird.febs.yb.entity.YbAppealResultView;
+import cc.mrbird.febs.yb.entity.*;
 import cc.mrbird.febs.yb.service.IYbAppealResultReportViewService;
-import cc.mrbird.febs.yb.entity.YbAppealResultReportView;
 
 import cc.mrbird.febs.common.utils.FebsUtil;
 import cc.mrbird.febs.system.domain.User;
@@ -166,11 +163,15 @@ public class YbAppealResultReportViewController extends BaseController {
             if (appealResultReportList.size() > 0) {
                 List<YbAppealResultReportView> appealResultReportDataList = new ArrayList<>();
                 List<YbAppealResultReportView> appealResultReportMainList = new ArrayList<>();
-                appealResultReportDataList = appealResultReportList.stream().filter(s -> s.getDataType().equals(0)).sorted(Comparator.comparing(YbAppealResultReportView::getOrderNum)).collect(Collectors.toList());
+                appealResultReportDataList = appealResultReportList.stream().filter(
+                        s -> s.getDataType().equals(YbDefaultValue.DATATYPE_0)).sorted(Comparator.comparing(YbAppealResultReportView::getOrderNum)
+                ).collect(Collectors.toList());
 //                if (appealResultReportDataList.size() > 0) {
 //                    Collections.sort(appealResultReportDataList);
 //                }
-                appealResultReportMainList = appealResultReportList.stream().filter(s -> s.getDataType().equals(1)).sorted(Comparator.comparing(YbAppealResultReportView::getOrderNum)).collect(Collectors.toList());
+                appealResultReportMainList = appealResultReportList.stream().filter(
+                        s -> s.getDataType().equals(YbDefaultValue.DATATYPE_1)).sorted(Comparator.comparing(YbAppealResultReportView::getOrderNum)
+                ).collect(Collectors.toList());
 //                if (appealResultReportMainList.size() > 0) {
 //                    Collections.sort(appealResultReportMainList);
 //                }
@@ -483,11 +484,15 @@ public class YbAppealResultReportViewController extends BaseController {
             if (appealResultReportList.size() > 0) {
                 List<YbAppealResultReportView> appealResultReportDataList = new ArrayList<>();
                 List<YbAppealResultReportView> appealResultReportMainList = new ArrayList<>();
-                appealResultReportDataList = appealResultReportList.stream().filter(s -> s.getDataType().equals(0)).sorted(Comparator.comparing(YbAppealResultReportView::getOrderNum)).collect(Collectors.toList());
+                appealResultReportDataList = appealResultReportList.stream().filter(
+                        s -> s.getDataType().equals(YbDefaultValue.DATATYPE_0)).sorted(Comparator.comparing(YbAppealResultReportView::getOrderNum)
+                ).collect(Collectors.toList());
 //                if (appealResultReportDataList.size() > 0) {
 //                    Collections.sort(appealResultReportDataList);
 //                }
-                appealResultReportMainList = appealResultReportList.stream().filter(s -> s.getDataType().equals(1)).sorted(Comparator.comparing(YbAppealResultReportView::getOrderNum)).collect(Collectors.toList());
+                appealResultReportMainList = appealResultReportList.stream().filter(
+                        s -> s.getDataType().equals(YbDefaultValue.DATATYPE_1)).sorted(Comparator.comparing(YbAppealResultReportView::getOrderNum)
+                ).collect(Collectors.toList());
 //                if (appealResultReportMainList.size() > 0) {
 //                    Collections.sort(appealResultReportMainList);
 //                }

@@ -3,6 +3,7 @@ package cc.mrbird.febs.yb.service.impl;
 import cc.mrbird.febs.common.domain.QueryRequest;
 import cc.mrbird.febs.common.utils.SortUtil;
 import cc.mrbird.febs.yb.dao.YbReconsiderApplyDataMapper;
+import cc.mrbird.febs.yb.entity.YbDefaultValue;
 import cc.mrbird.febs.yb.entity.YbReconsiderApply;
 import cc.mrbird.febs.yb.entity.YbReconsiderApplyData;
 import cc.mrbird.febs.yb.service.IYbReconsiderApplyDataService;
@@ -115,14 +116,14 @@ public class YbReconsiderApplyDataServiceImpl extends ServiceImpl<YbReconsiderAp
         wrapperApply.eq(YbReconsiderApply::getId, ybReconsiderApplyData.getPid());
         List<YbReconsiderApply> applyList = iYbReconsiderApplyService.list(wrapperApply);
         if (applyList.size() > 0) {
-            if (applyList.get(0).getState() == 4 || applyList.get(0).getState() == 2) {
+            if (applyList.get(0).getState() == YbDefaultValue.APPLYSTATE_4 || applyList.get(0).getState() == YbDefaultValue.APPLYSTATE_2) {
                 LambdaQueryWrapper<YbReconsiderApplyData> wrapper = new LambdaQueryWrapper<>();
                 wrapper.eq(YbReconsiderApplyData::getPid, applyList.get(0).getId());
                 wrapper.eq(YbReconsiderApplyData::getTypeno, ybReconsiderApplyData.getTypeno());
                 this.baseMapper.delete(wrapper);
 
 
-                int state = applyList.get(0).getState() == 2 ? 1 : 3;
+                int state = applyList.get(0).getState() == YbDefaultValue.APPLYSTATE_2 ? YbDefaultValue.APPLYSTATE_1 : YbDefaultValue.APPLYSTATE_3;
                 YbReconsiderApply updateApply = new YbReconsiderApply();
                 updateApply.setId(applyList.get(0).getId());
                 updateApply.setState(state);
@@ -136,6 +137,11 @@ public class YbReconsiderApplyDataServiceImpl extends ServiceImpl<YbReconsiderAp
     @Override
     public List<YbReconsiderApplyData> findReconsiderApplyDataByApplyDates(String applyDateStr, Integer dataType) {
         return this.baseMapper.findReconsiderApplyDataByApplyDate(applyDateStr, dataType);
+    }
+
+    @Override
+    public List<YbReconsiderApplyData> findReconsiderApplyDataByNotVerifys(String applyDateStr, Integer dataType,Integer typeno) {
+        return this.baseMapper.findReconsiderApplyDataByNotVerify(applyDateStr, dataType,typeno);
     }
 
     @Override

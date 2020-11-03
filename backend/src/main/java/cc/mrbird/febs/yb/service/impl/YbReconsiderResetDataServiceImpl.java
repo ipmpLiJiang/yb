@@ -3,10 +3,7 @@ package cc.mrbird.febs.yb.service.impl;
 import cc.mrbird.febs.common.domain.QueryRequest;
 import cc.mrbird.febs.common.utils.SortUtil;
 import cc.mrbird.febs.yb.dao.YbReconsiderResetDataMapper;
-import cc.mrbird.febs.yb.entity.YbAppealResult;
-import cc.mrbird.febs.yb.entity.YbReconsiderApplyData;
-import cc.mrbird.febs.yb.entity.YbReconsiderResetData;
-import cc.mrbird.febs.yb.entity.YbReconsiderResetDataView;
+import cc.mrbird.febs.yb.entity.*;
 import cc.mrbird.febs.yb.service.IYbAppealResultService;
 import cc.mrbird.febs.yb.service.IYbReconsiderApplyDataService;
 import cc.mrbird.febs.yb.service.IYbReconsiderResetDataService;
@@ -101,28 +98,28 @@ public class YbReconsiderResetDataServiceImpl extends ServiceImpl<YbReconsiderRe
 
     @Override
     public List<YbReconsiderResetData> findReconsiderResetByApplyDates(String applyDateStr, Integer dataType) {
-        return  this.baseMapper.findReconsiderResetByApplyDate(applyDateStr,dataType);
+        return this.baseMapper.findReconsiderResetByApplyDate(applyDateStr, dataType);
     }
 
     @Override
     public List<YbReconsiderResetData> findResetNotExistsRepayByApplyDates(String applyDateStr, Integer dataType) {
-        return  this.baseMapper.findResetNotExistsRepayByApplyDate(applyDateStr,dataType);
+        return this.baseMapper.findResetNotExistsRepayByApplyDate(applyDateStr, dataType);
     }
 
     @Override
     @Transactional
-    public String updateHandleResetDatas(String resultId,String resetId, Long uid, String uname) {
+    public String updateHandleResetDatas(String resultId, String resetId, Long uid, String uname) {
         String message = "";
-        YbReconsiderResetData resetData =  this.baseMapper.selectById(resetId);
-        if(resetData!=null){
-            if(resetData.getSeekState() == 0){
+        YbReconsiderResetData resetData = this.baseMapper.selectById(resetId);
+        if (resetData != null) {
+            if (resetData.getSeekState() == YbDefaultValue.SEEKSTATE_0) {
                 YbAppealResult appealResult = this.iYbAppealResultService.getById(resultId);
-                if(appealResult!=null){
-                    if(appealResult.getResetDataId()==null){
+                if (appealResult != null) {
+                    if (appealResult.getResetDataId() == null) {
                         YbReconsiderResetData updateResetData = new YbReconsiderResetData();
                         updateResetData.setId(resetData.getId());
-                        updateResetData.setSeekState(1);
-                        updateResetData.setState(0);
+                        updateResetData.setSeekState(YbDefaultValue.SEEKSTATE_1);
+                        updateResetData.setState(YbDefaultValue.RESETDATA_STATE_0);
 
                         YbAppealResult updateResult = new YbAppealResult();
                         updateResult.setId(appealResult.getId());
@@ -130,35 +127,35 @@ public class YbReconsiderResetDataServiceImpl extends ServiceImpl<YbReconsiderRe
                         updateResult.setResetDate(new Date());
                         updateResult.setResetPersonId(uid);
                         updateResult.setResetPersonName(uname);
-                        updateResult.setRepayState(2);
-                        updateResult.setState(2);
+                        updateResult.setRepayState(YbDefaultValue.RESULTREPAYSTATE_2);
+                        updateResult.setState(YbDefaultValue.RESULTSTATE_2);
 
                         int count = this.baseMapper.updateById(updateResetData);
-                        if(count>0) {
+                        if (count > 0) {
                             Boolean isTrue = this.iYbAppealResultService.updateById(updateResult);
-                            if(isTrue){
+                            if (isTrue) {
                                 message = "ok";
-                            }else{
+                            } else {
                                 message = "该申诉上传数据剔除数据更新失败";
                             }
-                        }else{
+                        } else {
                             message = "该剔除数据剔除状态更新失败";
                         }
 
-                    }else{
+                    } else {
                         message = "该申诉上传数据已完成剔除更新";
                     }
-                }else{
+                } else {
                     message = "未查询到申诉上传数据";
                 }
-            }else{
+            } else {
                 message = "该剔除数据已完成剔除状态";
             }
-        }else {
+        } else {
             message = "未查询到该剔除数据";
         }
 
-        return  message;
+        return message;
     }
 
     @Override
@@ -168,7 +165,7 @@ public class YbReconsiderResetDataServiceImpl extends ServiceImpl<YbReconsiderRe
         LambdaQueryWrapper<YbReconsiderResetDataView> queryWrapperRdv = new LambdaQueryWrapper<>();
         queryWrapperRdv.eq(YbReconsiderResetDataView::getApplyDateStr, applyDateStr);
         queryWrapperRdv.eq(YbReconsiderResetDataView::getDataType, dataType);
-        queryWrapperRdv.eq(YbReconsiderResetDataView::getSeekState, 0);
+        queryWrapperRdv.eq(YbReconsiderResetDataView::getSeekState, YbDefaultValue.SEEKSTATE_0);
         List<YbReconsiderResetDataView> resetDataList = this.iYbReconsiderResetDataViewService.list(queryWrapperRdv);
         if (resetDataList.size() > 0) {
             List<YbReconsiderApplyData> applyDataList = this.iYbReconsiderApplyDataService.findReconsiderApplyDataByApplyDates(applyDateStr, dataType);
@@ -214,25 +211,25 @@ public class YbReconsiderResetDataServiceImpl extends ServiceImpl<YbReconsiderRe
                                 if (searchResultList.size() == 1) {
                                     YbAppealResult updateResult = new YbAppealResult();
                                     updateResult.setId(searchResultList.get(0).getId());
-                                    updateResult.setState(2);
+                                    updateResult.setState(YbDefaultValue.RESULTSTATE_2);
                                     updateResult.setResetDataId(rdv.getId());
                                     updateResult.setResetDate(new Date());
                                     updateResult.setResetPersonId(uid);
                                     updateResult.setResetPersonName(uname);
-                                    updateResult.setRepayState(2);
+                                    updateResult.setRepayState(YbDefaultValue.RESULTREPAYSTATE_2);
 
-                                    updateResetData.setSeekState(1);
+                                    updateResetData.setSeekState(YbDefaultValue.SEEKSTATE_1);
 
                                     updateResetDataList.add(updateResetData);
                                     updateResultList.add(updateResult);
                                 }
                             }
                         } else {
-                            updateResetData.setState(1);
+                            updateResetData.setState(YbDefaultValue.RESETDATA_STATE_1);
                             updateResetDataList.add(updateResetData);
                         }
                     } else {
-                        updateResetData.setState(2);
+                        updateResetData.setState(YbDefaultValue.RESETDATA_STATE_2);
                         updateResetDataList.add(updateResetData);
                     }
                 }
@@ -244,7 +241,7 @@ public class YbReconsiderResetDataServiceImpl extends ServiceImpl<YbReconsiderRe
                     this.updateBatchById(updateResetDataList);
                 }
                 if (updateResultList.size() == 0 && updateResetDataList.size() == 0) {
-                    if("".equals(message)) {
+                    if ("".equals(message)) {
                         message = "update0";
                     }
                 }

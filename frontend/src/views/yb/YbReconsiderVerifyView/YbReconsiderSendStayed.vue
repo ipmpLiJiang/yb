@@ -184,6 +184,23 @@ export default {
         }
       }
     },
+    send (key) {
+      this.loading = true
+      let target = this.dataSource.filter(item => key === item.id)[0]
+      if (target !== undefined) {
+        let data = [{
+          id: target.id,
+          applyDataId: target.applyDataId,
+          verifyDoctorCode: target.verifyDoctorCode,
+          verifyDoctorName: target.verifyDoctorName,
+          verifyDeptCode: target.verifyDeptCode,
+          verifyDeptName: target.verifyDeptName
+        }]
+        this.sendService(data)
+      } else {
+        this.$message.error('未找到对象')
+      }
+    },
     batchSend () {
       this.loading = true
       let selectedRowKeys = this.selectedRowKeys
@@ -206,41 +223,38 @@ export default {
         if (data.length > 0) {
           this.sendService(data)
         } else {
-          this.$message.success('未找到对象')
+          this.$message.warning('未找到对象')
         }
       } else {
-        this.$message.success('未选择行')
+        this.$message.warning('未选择行')
       }
       this.selectedRowKeys = []
       this.loading = false
     },
-    send (key) {
-      this.loading = true
-      let target = this.dataSource.filter(item => key === item.id)[0]
-      if (target !== undefined) {
-        let data = [{
-          id: target.id,
-          applyDataId: target.applyDataId,
-          verifyDoctorCode: target.verifyDoctorCode,
-          verifyDoctorName: target.verifyDoctorName,
-          verifyDeptCode: target.verifyDeptCode,
-          verifyDeptName: target.verifyDeptName
-        }]
-        this.sendService(data)
-      } else {
-        this.$message.success('未找到对象')
-      }
-    },
     sendService (data) {
       let jsonString = JSON.stringify(data)
       this.$put('ybReconsiderVerify/updateSendState', {
-        dataJson: jsonString
+        dataJson: jsonString, dataType: 0
       }).then(() => {
         this.$message.success('发送成功')
         this.search()
       }).catch(() => {
         this.loading = false
       })
+    },
+    batchSendA () {
+      if (this.dataSource.length > 0) {
+        this.$put('ybReconsiderVerify/updateASendState', {
+          applyDateStr: this.applyDate, state: 2, dataType: 0
+        }).then(() => {
+          this.$message.success('发送成功')
+          this.search()
+        }).catch(() => {
+          this.loading = false
+        })
+      } else {
+        this.$message.warning('无数据，无法全部发送!')
+      }
     },
     onSelectChange (selectedRowKeys) {
       this.selectedRowKeys = selectedRowKeys

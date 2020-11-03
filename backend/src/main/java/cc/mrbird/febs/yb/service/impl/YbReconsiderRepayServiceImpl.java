@@ -40,6 +40,7 @@ public class YbReconsiderRepayServiceImpl extends ServiceImpl<YbReconsiderRepayM
 
     @Autowired
     IYbReconsiderApplyService iYbReconsiderApplyService;
+
     @Override
     public IPage<YbReconsiderRepay> findYbReconsiderRepays(QueryRequest request, YbReconsiderRepay ybReconsiderRepay) {
         try {
@@ -157,6 +158,7 @@ public class YbReconsiderRepayServiceImpl extends ServiceImpl<YbReconsiderRepayM
 
         return isTrue;
     }
+
     @Override
     @Transactional
     public String updateReconsiderApplyState(YbReconsiderRepay ybReconsiderRepay) {
@@ -165,7 +167,9 @@ public class YbReconsiderRepayServiceImpl extends ServiceImpl<YbReconsiderRepayM
         wrapper.eq(YbReconsiderApply::getApplyDateStr, ybReconsiderRepay.getApplyDateStr());
         List<YbReconsiderApply> list = this.iYbReconsiderApplyService.list(wrapper);
         if (list.size() > 0) {
+            //剔除完成
             if (list.get(0).getResetState() == 1) {
+                //还款完成
                 if (list.get(0).getRepayState() == 0) {
                     LambdaQueryWrapper<YbReconsiderRepay> wrapperRepay = new LambdaQueryWrapper<>();
                     wrapperRepay.eq(YbReconsiderRepay::getId, ybReconsiderRepay.getId());
@@ -177,12 +181,12 @@ public class YbReconsiderRepayServiceImpl extends ServiceImpl<YbReconsiderRepayM
                         List<YbReconsiderRepayData> listRepayData = this.iYbReconsiderRepayDataService.list(wrapperRepayData);
                         if (listRepayData.size() > 0) {
                             long count = listRepayData.stream().filter(s -> (s.getState() == 0 || s.getState() == 1) &&
-                                    s.getSeekState() == 0).count();
+                                    s.getSeekState() == YbDefaultValue.SEEKSTATE_0).count();
                             if (count == 0) {
                                 YbReconsiderApply update = new YbReconsiderApply();
                                 update.setId(list.get(0).getId());
                                 update.setModifyTime(new Date());
-                                update.setState(7);
+                                update.setState(YbDefaultValue.APPLYSTATE_7);
                                 update.setRepayState(1);
                                 boolean bl = this.iYbReconsiderApplyService.updateById(update);
                                 if (bl) {

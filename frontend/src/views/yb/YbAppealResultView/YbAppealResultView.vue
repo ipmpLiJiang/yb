@@ -5,19 +5,21 @@
     class="card-area"
   >
     <template>
-      <div style="margin-bottom:20px">
         <a-row justify="center" type="flex">
-          <a-col :span=1>
-            &nbsp;
-          </a-col>
-          <a-col :span=8>
-            复议年月：
+          <a-col :span=6>
+            <a-form-item
+              v-bind="formItemLayout"
+              label="复议年月"
+            >
             <a-month-picker
-              placeholder="请选择复议年月"
+              placeholder="请输入复议年月"
               @change="monthChange"
               :default-value="defaultApplyDate"
               :format="monthFormat"
             />
+            </a-form-item>
+          </a-col>
+          <a-col :span=3>
             <a-select :value="searchDataType" style="width: 100px" @change="handleDataTypeChange">
               <a-select-option
               v-for="d in selectDataTypeDataSource"
@@ -30,20 +32,20 @@
           <a-col :span=5>
             <a-input-search placeholder="请输入关键字" v-model="searchText" style="width: 200px" enter-button @search="searchTable" />
           </a-col>
-          <a-col :span=10>
+          <a-col :span=9>
             <a-button
             type="primary"
-            style="margin-right:20px"
+            style="margin-right:15px"
             @click="exportExcel"
             >导出表格</a-button>
             <a-button
             type="primary"
-            style="margin-right:20px"
+            style="margin-right:15px"
             @click="showModal"
             >导出图片</a-button>
             <a-button
             type="primary"
-            style="margin-right:20px"
+            style="margin-right:15px"
             @click="onHistory"
             >历史操作记录</a-button>
             <a-button
@@ -52,7 +54,6 @@
             >刷新</a-button>
           </a-col>
         </a-row>
-      </div>
     </template>
     <!--表格-->
     <template>
@@ -146,8 +147,8 @@ import YbAppealResultHandle from './YbAppealResultHandle'
 import YbAppealResultLook from './YbAppealResultLook'
 import YbAppealResultDownLoad from './YbAppealResultDownLoad'
 const formItemLayout = {
-  labelCol: { span: 5 },
-  wrapperCol: { span: 15, offset: 1 }
+  labelCol: { span: 8 },
+  wrapperCol: { span: 12, offset: 1 }
 }
 export default {
   name: 'YbAppealResultView',
@@ -179,7 +180,7 @@ export default {
   methods: {
     moment,
     formatDate () {
-      let datemonth = moment().format('YYYY-MM')
+      let datemonth = moment().subtract(1, 'months').format('YYYY-MM')
       return datemonth
     },
     monthChange (date, dateString) {
@@ -279,3 +280,4 @@ export default {
 .editable-row-operations a {
   margin-right: 8px;
 }
+</style>

@@ -99,13 +99,13 @@
           <a-col :span=8>
             <a-popconfirm
               title="确定提交？"
-              @confirm="batchAccept"
+              @confirm="handleSubmit"
               okText="确定"
               cancelText="取消"
             >
               <a-button
                 type="primary"
-                :loading="loading"
+                style="margin-right: .8rem"
               >提交</a-button>
             </a-popconfirm>
             <a-popconfirm

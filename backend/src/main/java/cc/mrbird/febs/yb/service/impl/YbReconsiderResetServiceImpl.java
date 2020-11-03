@@ -2,6 +2,7 @@ package cc.mrbird.febs.yb.service.impl;
 
 import cc.mrbird.febs.common.domain.QueryRequest;
 import cc.mrbird.febs.common.utils.SortUtil;
+import cc.mrbird.febs.yb.entity.YbDefaultValue;
 import cc.mrbird.febs.yb.entity.YbReconsiderApply;
 import cc.mrbird.febs.yb.entity.YbReconsiderReset;
 import cc.mrbird.febs.yb.dao.YbReconsiderResetMapper;
@@ -126,7 +127,7 @@ public class YbReconsiderResetServiceImpl extends ServiceImpl<YbReconsiderResetM
         String message = "";
         LambdaQueryWrapper<YbReconsiderApply> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(YbReconsiderApply::getApplyDateStr, ybReconsiderReset.getApplyDateStr());
-        wrapper.ne(YbReconsiderApply::getState, 1);
+        wrapper.ne(YbReconsiderApply::getState, YbDefaultValue.APPLYSTATE_1);
         List<YbReconsiderApply> list = this.iYbReconsiderApplyService.list(wrapper);
         if (list.size() > 0) {
             if (list.get(0).getResetState() == 0) {
@@ -139,13 +140,16 @@ public class YbReconsiderResetServiceImpl extends ServiceImpl<YbReconsiderResetM
                     wrapperResetData.eq(YbReconsiderResetData::getPid, searchReconsiderReset.getId());
                     List<YbReconsiderResetData> listResetData = this.iYbReconsiderResetDataService.list(wrapperResetData);
                     if (listResetData.size() > 0) {
-                        long count = listResetData.stream().filter(s -> (s.getState() == 0 || s.getState() == 1) &&
-                                s.getSeekState() == 0).count();
+                        long count = listResetData.stream().filter(s ->
+                                (s.getState() == YbDefaultValue.RESETDATA_STATE_0 ||
+                                s.getState() == YbDefaultValue.RESETDATA_STATE_1) &&
+                                s.getSeekState() == YbDefaultValue.SEEKSTATE_0).count();
+
                         if (count == 0) {
                             YbReconsiderApply update = new YbReconsiderApply();
                             update.setId(list.get(0).getId());
                             update.setModifyTime(new Date());
-                            update.setState(6);
+                            update.setState(YbDefaultValue.APPLYSTATE_6);
                             update.setResetState(1);
                             boolean bl = this.iYbReconsiderApplyService.updateById(update);
                             if (bl) {

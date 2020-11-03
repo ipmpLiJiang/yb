@@ -118,17 +118,17 @@ public class YbReconsiderApplyServiceImpl extends ServiceImpl<YbReconsiderApplyM
 
     @Override
     @Transactional
-    public String updateYbReconsiderApply(YbReconsiderApply ybReconsiderApply,boolean isUpOverdue) throws ParseException {
+    public String updateYbReconsiderApply(YbReconsiderApply ybReconsiderApply, boolean isUpOverdue) throws ParseException {
         String msg = "ok";
-                ybReconsiderApply.setModifyTime(new Date());
+        ybReconsiderApply.setModifyTime(new Date());
         ybReconsiderApply.setApplyDateStr(null);
 
-        if(isUpOverdue){
+        if (isUpOverdue) {
             msg = this.updateAppealManage(ybReconsiderApply);
-            if(msg.equals("ok")){
+            if (msg.equals("ok")) {
                 this.baseMapper.updateYbReconsiderApply(ybReconsiderApply);
             }
-        }else{
+        } else {
             this.baseMapper.updateYbReconsiderApply(ybReconsiderApply);
         }
 
@@ -143,43 +143,43 @@ public class YbReconsiderApplyServiceImpl extends ServiceImpl<YbReconsiderApplyM
     }
 
     @Override
-    public void updateEnableOverdue(String applyDateStr){
-        if(applyDateStr== null || "".equals(applyDateStr)){
+    public void updateEnableOverdue(String applyDateStr) {
+        if (applyDateStr == null || "".equals(applyDateStr)) {
             applyDateStr = this.getNianYue();
         }
-        Map<String,Object> map = new HashMap<>() ;
-        map.put("applyDateStr",applyDateStr);
+        Map<String, Object> map = new HashMap<>();
+        map.put("applyDateStr", applyDateStr);
         this.baseMapper.updateAppealManageEnableOverdue(map);
-        String message =  (String) map.get("message");
+        String message = (String) map.get("message");
         log.info(message);
     }
 
     @Override
-    public void updateApplyEndDateOne(String applyDateStr){
-        if(applyDateStr== null || "".equals(applyDateStr)){
+    public void updateApplyEndDateOne(String applyDateStr) {
+        if (applyDateStr == null || "".equals(applyDateStr)) {
             applyDateStr = this.getNianYue();
         }
-        Map<String,Object> map = new HashMap<>() ;
-        map.put("applyDateStr",applyDateStr);
+        Map<String, Object> map = new HashMap<>();
+        map.put("applyDateStr", applyDateStr);
         this.baseMapper.updateAppealManageApplyEndDateOne(map);
-        String message =  (String) map.get("message");
+        String message = (String) map.get("message");
         log.info(message);
     }
 
     @Override
     public void updateApplyEndDateTwo(String applyDateStr) {
-        if(applyDateStr== null || "".equals(applyDateStr)){
+        if (applyDateStr == null || "".equals(applyDateStr)) {
             applyDateStr = this.getNianYue();
         }
-        Map<String,Object> map = new HashMap<>() ;
-        map.put("applyDateStr",applyDateStr);
+        Map<String, Object> map = new HashMap<>();
+        map.put("applyDateStr", applyDateStr);
         this.baseMapper.updateAppealManageApplyEndDateTwo(map);
         String message = (String) map.get("message");
         log.info(message);
     }
 
 
-    private String getNianYue(){
+    private String getNianYue() {
         Date date = new Date();//获取当前时间
         Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.MONTH, 0);
@@ -237,27 +237,27 @@ public class YbReconsiderApplyServiceImpl extends ServiceImpl<YbReconsiderApplyM
         int state = yra.getState();
 
         YbAppealManageView queryAppealManage = new YbAppealManageView();
-        queryAppealManage.setAcceptState(7);
+        queryAppealManage.setAcceptState(YbDefaultValue.ACCEPTSTATE_7);
         queryAppealManage.setApplyDateStr(yra.getApplyDateStr());
 
         SimpleDateFormat f = new SimpleDateFormat("yyyy-MM-dd");
         Date aEndDateOne = null;
         Date bEndDateOne = null;
-        boolean isTrue =  false;
-        if (state == 3) {
+        boolean isTrue = false;
+        if (state == YbDefaultValue.APPLYSTATE_3) {
             aEndDateOne = f.parse(f.format(yra.getEndDateOne()));
             bEndDateOne = f.parse(f.format(ybReconsiderApply.getEndDateOne()));
-            queryAppealManage.setTypeno(1);
+            queryAppealManage.setTypeno(YbDefaultValue.TYPENO_1);
             isTrue = true;
         }
-        if(state == 5){
+        if (state == YbDefaultValue.APPLYSTATE_5) {
             aEndDateOne = f.parse(f.format(yra.getEndDateTwo()));
             bEndDateOne = f.parse(f.format(ybReconsiderApply.getEndDateTwo()));
-            queryAppealManage.setTypeno(2);
+            queryAppealManage.setTypeno(YbDefaultValue.TYPENO_2);
             isTrue = true;
         }
 
-        if(isTrue) {
+        if (isTrue) {
             List<YbAppealManageView> appealManageList = new ArrayList<>();
             List<YbAppealManage> updateAppealManageList = new ArrayList<>();
             if (aEndDateOne.before(bEndDateOne)) {
@@ -265,14 +265,14 @@ public class YbReconsiderApplyServiceImpl extends ServiceImpl<YbReconsiderApplyM
                 updateAppealManageList = iYbAppealManageService.getUpdateAppealManageList(appealManageList, bEndDateOne);
                 if (updateAppealManageList.size() > 0) {
                     isTrue = iYbAppealManageService.updateBatchById(updateAppealManageList);
-                    if(isTrue){
+                    if (isTrue) {
                         msg = "ok";
                     }
                 }
             } else {
                 msg = "date";
             }
-        }else {
+        } else {
             msg = "nostate";
         }
         return msg;

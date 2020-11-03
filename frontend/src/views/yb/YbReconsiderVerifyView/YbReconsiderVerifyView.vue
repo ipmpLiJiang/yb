@@ -7,19 +7,25 @@
     <template>
       <a-spin tip="Loading..." :spinning="spinning" :delay="delayTime">
       <div>
-      <div style="text-align:center;margin-bottom:20px">
         <a-row
           justify="center"
           align="middle"
         >
-          <a-col :span=10>
-            复议年月：
-            <a-month-picker
-              placeholder="请输入复议年月"
-              disabled
-              :default-value="defaultApplyDate"
-              :format="monthFormat"
-            />
+        <a-col :span=2>
+          &nbsp;
+        </a-col>
+          <a-col :span=6>
+            <a-form-item
+              v-bind="formItemLayout"
+              label="复议年月"
+            >
+              <a-month-picker
+                placeholder="请输入复议年月"
+                disabled
+                :default-value="defaultApplyDate"
+                :format="monthFormat"
+              />
+            </a-form-item>
           </a-col>
           <a-col :span=2 v-show="tableSelectKey==1||tableSelectKey==4?true:false">
             <a-button
@@ -27,7 +33,7 @@
               @click="showSearchModal"
             >筛选</a-button>
           </a-col>
-          <a-col :span=10>
+          <a-col :span=12>
             <a-popconfirm
               title="确定自动匹配？"
               @confirm="addImport"
@@ -67,13 +73,22 @@
             >
               <a-button type="primary">批量发送</a-button>
             </a-popconfirm>
+            <a-popconfirm
+              title="确定全部发送？"
+              style="margin-right: 15px"
+              v-show="tableSelectKey==2||tableSelectKey==4?true:false"
+              @confirm="batchSendA"
+              okText="确定"
+              cancelText="取消"
+            >
+              <a-button type="primary">全部发送</a-button>
+            </a-popconfirm>
             <a-button
               type="primary"
               @click="searchTable"
             >刷新</a-button>
           </a-col>
         </a-row>
-      </div>
       </div>
       </a-spin>
     </template>
@@ -279,7 +294,7 @@ import YbReconsiderSendEnd from './YbReconsiderSendEnd'
 import YbReconsiderVerifyViewDetail from './YbReconsiderVerifyViewDetail'
 import InputSelect from '../../common/InputSelect'
 const formItemLayout = {
-  labelCol: { span: 5 },
+  labelCol: { span: 6 },
   wrapperCol: { span: 15, offset: 1 }
 }
 export default {
@@ -320,7 +335,7 @@ export default {
   methods: {
     moment,
     formatDate () {
-      let datemonth = moment().format('YYYY-MM')
+      let datemonth = moment().subtract(1, 'months').format('YYYY-MM')
       return datemonth
     },
     showImport (data) {
@@ -434,6 +449,13 @@ export default {
         this.$refs.ybReconsiderSendStayedMain.batchSend()
       } else {
         this.$refs.ybReconsiderSendStayed.batchSend()
+      }
+    },
+    batchSendA () {
+      if (this.tableSelectKey === '4') {
+        this.$refs.ybReconsiderSendStayedMain.batchSendA()
+      } else {
+        this.$refs.ybReconsiderSendStayed.batchSendA()
       }
     },
     confirmCancel () {

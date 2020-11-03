@@ -190,7 +190,7 @@
 
     <select id="findReconsiderVerifyList" resultType="cc.mrbird.febs.yb.entity.YbReconsiderVerify" >
         SELECT
-            *
+            yb_reconsider_verify.*
         FROM
             yb_reconsider_verify
             INNER JOIN yb_reconsider_apply_data ON
@@ -204,7 +204,6 @@
             <if test="state != null"> and yb_reconsider_verify.state =#{ state } </if>
             <if test="dataType != null"> and yb_reconsider_verify.dataType =#{ dataType } </if>
             <if test="applyDateStr != null and applyDateStr != ''"> and yb_reconsider_apply.applyDateStr = #{ applyDateStr }</if>
-
     </select>
 
     <insert id="insertReconsiderVerifyImport">

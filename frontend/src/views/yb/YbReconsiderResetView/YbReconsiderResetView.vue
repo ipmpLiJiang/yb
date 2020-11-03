@@ -5,81 +5,85 @@
   >
     <template>
       <a-spin tip="Loading..." :spinning="spinning" :delay="delayTime">
-      <div>
-        <div style="text-align:center;margin-bottom:20px">
-          <a-row
-            justify="center"
-          >
-            <a-col :span=6>
-              复议年月：
-              <a-month-picker
-                placeholder="请输入复议年月"
-                @change="monthChange"
-                :default-value="formatDate()"
-                :format="monthFormat"
-              />
-            </a-col>
-            <a-col :span=5>
-              <a-input-search placeholder="请输入关键字" v-model="searchText" style="width: 200px" enter-button @search="searchTable" />
-            </a-col>
-            <a-col :span=3 v-show="tableSelectKey==1||tableSelectKey==2?true:false">
-              <template>
-                <a-upload
-                  name="file"
-                  accept=".xlsx,.xls"
-                  :fileList="fileList"
-                  :beforeUpload="beforeUpload"
-                  :disabled="fileDisabled"
-                >
-                  <a-button type="primary" :disabled="fileDisabled">
-                    <a-icon type="upload" /> 上传剔除数据 </a-button>
-                </a-upload>
-              </template>
-            </a-col>
-            <a-col :span=2>
-              <a-popconfirm
-                title="确定数据剔除？"
-                v-show="tableSelectKey==1||tableSelectKey==2?true:false"
-                @confirm="update"
-                okText="确定"
-                cancelText="取消"
+      <div style="text-align:center;margin-bottom:20px">
+        <a-row >
+          <a-col :span=5>
+            复议年月：
+            <a-month-picker
+              placeholder="请输入复议年月"
+              @change="monthChange"
+              :default-value="formatDate()"
+              :format="monthFormat"
+            />
+          </a-col>
+          <a-col :span=5>
+            <a-input-search placeholder="请输入关键字" v-model="searchText" style="width: 200px" enter-button @search="searchTable" />
+          </a-col>
+          <a-col :span=3 v-show="tableSelectKey==1||tableSelectKey==2?true:false">
+            <template>
+              <a-upload
+                name="file"
+                accept=".xlsx,.xls"
+                :fileList="fileList"
+                :beforeUpload="beforeUpload"
+                :disabled="fileDisabled"
               >
-                <a-button type="primary" style="margin-right:10px" >数据剔除</a-button>
-              </a-popconfirm>
-            </a-col>
-            <a-col :span=3>
-              <a-popconfirm
-                title="确定导出扣款数据？"
-                v-show="tableSelectKey==1?true:false"
-                @confirm="exportDeductimplementExcel"
-                okText="确定"
-                cancelText="取消"
-              >
-                <a-button type="primary" style="margin-right:10px" >导出扣款数据</a-button>
-              </a-popconfirm>
-            </a-col>
-            <a-col :span=3 v-show="tableSelectKey==4?true:false">
-              <a-popconfirm
-                title="确定导出未知数据？"
-                @confirm="exportExcel"
-                okText="确定"
-                cancelText="取消"
-              >
-                <a-button type="primary" style="margin-right:10px" >导出未知数据</a-button>
-              </a-popconfirm>
-            </a-col>
-            <a-col :span=2 >
-              <a-popconfirm
-                title="确定完成剔除？"
-                @confirm="updateApplyState"
-                okText="确定"
-                cancelText="取消"
-              >
-                <a-button type="primary" style="margin-right:20px" >完成剔除</a-button>
-              </a-popconfirm>
-            </a-col>
-          </a-row>
-        </div>
+                <a-button type="primary" :disabled="fileDisabled">
+                  上传剔除数据 </a-button>
+              </a-upload>
+            </template>
+          </a-col>
+          <a-col :span=3 v-show="tableSelectKey==1||tableSelectKey==2?true:false">
+            <a-popconfirm
+              title="确定下载剔除模板？"
+              @confirm="downloadFile"
+              okText="确定"
+              cancelText="取消"
+            >
+              <a-button type="primary">下载剔除模板</a-button>
+            </a-popconfirm>
+          </a-col>
+          <a-col :span=2 v-show="tableSelectKey==1||tableSelectKey==2?true:false">
+            <a-popconfirm
+              title="确定数据剔除？"
+              @confirm="update"
+              okText="确定"
+              cancelText="取消"
+            >
+              <a-button type="primary">数据剔除</a-button>
+            </a-popconfirm>
+          </a-col>
+          <a-col :span=3 v-show="tableSelectKey==1?true:false">
+            <a-popconfirm
+              title="确定导出扣款数据？"
+              @confirm="exportDeductimplementExcel"
+              okText="确定"
+              cancelText="取消"
+            >
+              <a-button type="primary" >导出扣款数据</a-button>
+            </a-popconfirm>
+          </a-col>
+          <a-col :span=3 v-show="tableSelectKey==4?true:false">
+            <a-popconfirm
+              title="确定导出未知数据？"
+              @confirm="exportExcel"
+              okText="确定"
+              cancelText="取消"
+            >
+              <a-button type="primary" >导出未知数据</a-button>
+            </a-popconfirm>
+          </a-col>
+          <a-col :span=2 >
+            <a-popconfirm
+              title="确定完成剔除？"
+              @confirm="updateApplyState"
+              okText="确定"
+              cancelText="取消"
+            >
+              <a-button type="primary" >完成剔除</a-button>
+            </a-popconfirm>
+          </a-col>
+        </a-row>
       </div>
       </a-spin>
     </template>
@@ -173,8 +177,8 @@ import YbReconsiderResetUnknown from './YbReconsiderResetUnknown'
 import YbReconsiderResetExceptDetail from './YbReconsiderResetExceptDetail'
 
 const formItemLayout = {
-  labelCol: { span: 5 },
-  wrapperCol: { span: 15, offset: 1 }
+  labelCol: { span: 9 },
+  wrapperCol: { span: 13, offset: 1 }
 }
 export default {
   name: 'YbReconsiderResetView',
@@ -203,11 +207,15 @@ export default {
   methods: {
     moment,
     formatDate () {
-      let datemonth = moment().format('YYYY-MM')
+      let datemonth = moment().subtract(1, 'months').format('YYYY-MM')
       return datemonth
     },
     monthChange (date, dateString) {
       this.searchApplyDate = dateString
+    },
+    downloadFile () {
+      this.$download('ybReconsiderResetData/downFile', {
+      }, '剔除数据模板.xlsx')
     },
     uploadDisabled (isDisabled) {
       this.fileDisabled = isDisabled
@@ -367,5 +375,8 @@ export default {
   border: 1px solid #91d5ff;
   background-color: #e6f7ff;
   padding: 30px;
+}
+.editable-row-operations a {
+  margin-right: 8px;
 }
 </style>

@@ -169,11 +169,13 @@ public class YbAppealResultViewController extends BaseController {
                 List<YbAppealResultView> appealResultViewDataList = new ArrayList<YbAppealResultView>();
                 List<YbAppealResultView> appealResultViewMainList = new ArrayList<YbAppealResultView>();
 
-                appealResultViewDataList = appealResultViewList.stream().filter(s -> s.getDataType().equals(0)).collect(Collectors.toList());
+                appealResultViewDataList = appealResultViewList.stream().filter(
+                        s -> s.getDataType().equals(YbDefaultValue.DATATYPE_0)).collect(Collectors.toList());
                 if (appealResultViewDataList.size() > 0) {
                     Collections.sort(appealResultViewDataList);
                 }
-                appealResultViewMainList = appealResultViewList.stream().filter(s -> s.getDataType().equals(1)).collect(Collectors.toList());
+                appealResultViewMainList = appealResultViewList.stream().filter(
+                        s -> s.getDataType().equals(YbDefaultValue.DATATYPE_1)).collect(Collectors.toList());
                 if (appealResultViewMainList.size() > 0) {
                     Collections.sort(appealResultViewMainList);
                 }

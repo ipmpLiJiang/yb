@@ -122,12 +122,13 @@ export default {
     handleSubmit () {
       this.loading = true
       let arrData = [{
-        id: this.ybReconsiderVerify.id,
-        applyDataId: this.ybReconsiderVerify.applyDataId,
+        id: this.ybReconsiderVerifyView.isVerify === 0 ? '' : this.ybReconsiderVerify.id,
+        applyDataId: this.ybReconsiderVerifyView.applyDataId,
         verifyDoctorCode: this.ybReconsiderVerify.verifyDoctorCode,
         verifyDoctorName: this.ybReconsiderVerify.verifyDoctorName,
         verifyDeptCode: this.ybReconsiderVerify.verifyDeptCode,
-        verifyDeptName: this.ybReconsiderVerify.verifyDeptName}]
+        verifyDeptName: this.ybReconsiderVerify.verifyDeptName,
+        dataType: this.ybReconsiderVerifyView.dataType}]
 
       let jsonString = JSON.stringify(arrData)
       this.ybReconsiderVerify = {}
@@ -150,6 +151,7 @@ export default {
     },
     setFormValues ({ ...ybReconsiderVerifyView }) {
       this.ybReconsiderVerifyView = ybReconsiderVerifyView
+      this.ybReconsiderVerify.applyDataId = ybReconsiderVerifyView.applyDataId
       setTimeout(() => {
         this.setForms(ybReconsiderVerifyView)
       }, 200)

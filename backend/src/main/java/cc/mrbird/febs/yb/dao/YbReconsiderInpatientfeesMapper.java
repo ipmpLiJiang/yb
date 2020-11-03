@@ -6,6 +6,8 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.List;
+
 /**
  * <p>
  *  Mapper 接口
@@ -18,4 +20,6 @@ public interface YbReconsiderInpatientfeesMapper extends BaseMapper<YbReconsider
         void updateYbReconsiderInpatientfees(YbReconsiderInpatientfees ybReconsiderInpatientfees);
         IPage<YbReconsiderInpatientfees> findYbReconsiderInpatientfees(Page page, @Param("ybReconsiderInpatientfees") YbReconsiderInpatientfees ybReconsiderInpatientfees);
         IPage<YbReconsiderInpatientfees> findYbReconsiderInpatientfeesEq(Page page, @Param("ybReconsiderInpatientfees") YbReconsiderInpatientfees ybReconsiderInpatientfees);
+
+        List<YbReconsiderInpatientfees> findReconsiderInpatientfeesList(@Param("applyDateStr") String applyDateStr);
 }

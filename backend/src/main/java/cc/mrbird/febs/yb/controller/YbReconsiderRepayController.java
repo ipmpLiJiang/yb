@@ -31,8 +31,9 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
-import java.io.File;
+import java.io.*;
 import java.math.BigDecimal;
+import java.net.URLEncoder;
 import java.util.*;
 
 /**
@@ -272,13 +273,12 @@ public class YbReconsiderRepayController extends BaseController {
                                 rrd.setRepaymentPrice(bd);
                             }
 
-
-                            rrd.setUpdateType(0);
-                            rrd.setWarnType(0);
+                            rrd.setUpdateType(YbDefaultValue.UPDATETYPE_0);
+                            rrd.setWarnType(YbDefaultValue.WARNTYPE_0);
                             rrd.setRepayType(repayType);
                             rrd.setDataType(dataType);
-                            rrd.setSeekState(0);
-                            rrd.setState(0);
+                            rrd.setSeekState(YbDefaultValue.SEEKSTATE_0);
+                            rrd.setState(YbDefaultValue.REPAYDATA_STATE_0);
                             listRrd.add(rrd);
                         }
                     } else {
@@ -435,12 +435,13 @@ public class YbReconsiderRepayController extends BaseController {
                                         rrd.setPersonalNo(strPersonalNo);
                                         String strInsuredName = DataTypeHelpers.importTernaryOperate(objJb.get(i), 18);//'参保人姓名',
                                         rrd.setInsuredName(strInsuredName);
-                                        rrd.setUpdateType(0);
-                                        rrd.setWarnType(0);
+
+                                        rrd.setUpdateType(YbDefaultValue.UPDATETYPE_0);
+                                        rrd.setWarnType(YbDefaultValue.WARNTYPE_0);
                                         rrd.setRepayType(repayType);
                                         rrd.setDataType(dataType);
-                                        rrd.setSeekState(0);
-                                        rrd.setState(0);
+                                        rrd.setSeekState(YbDefaultValue.SEEKSTATE_0);
+                                        rrd.setState(YbDefaultValue.REPAYDATA_STATE_0);
                                         listRrd.add(rrd);
                                     }
                                 } else {
@@ -504,12 +505,12 @@ public class YbReconsiderRepayController extends BaseController {
                                         bd = new BigDecimal(strRepaymentPrice);
                                         rrd.setRepaymentPrice(bd);
                                     }
-                                    rrd.setUpdateType(0);
-                                    rrd.setWarnType(0);
+                                    rrd.setUpdateType(YbDefaultValue.UPDATETYPE_0);
+                                    rrd.setWarnType(YbDefaultValue.WARNTYPE_0);
                                     rrd.setRepayType(repayType);
                                     rrd.setDataType(dataType);
-                                    rrd.setSeekState(0);
-                                    rrd.setState(0);
+                                    rrd.setSeekState(YbDefaultValue.SEEKSTATE_0);
+                                    rrd.setState(YbDefaultValue.REPAYDATA_STATE_0);
                                     listRrd.add(rrd);
                                 }
                             } else {
@@ -556,5 +557,39 @@ public class YbReconsiderRepayController extends BaseController {
 
         rrd.setFileName(uploadFileName);
         return new FebsResponse().data(rrd);
+    }
+
+    @PostMapping("downFile")
+    public void downFile(HttpServletResponse response) {
+        try {
+            String path = febsProperties.getUploadPath();
+            String fileName = "还款管理模板.xlsx";
+            String filePath = path + fileName;
+            File file = new File(filePath);
+            if (file.exists()) {
+                InputStream ins = new FileInputStream(filePath);
+                BufferedInputStream bins = new BufferedInputStream(ins);// 放到缓冲流里面
+                OutputStream outs = response.getOutputStream();// 获取文件输出IO流
+                BufferedOutputStream bouts = new BufferedOutputStream(outs);
+                response.setHeader("Content-Disposition",
+                        "attachment;filename=" + URLEncoder.encode(fileName, "utf-8"));
+
+                int bytesRead = 0;
+                byte[] buffer = new byte[512];
+                //开始向网络传输文件流
+                while ((bytesRead = bins.read(buffer, 0, 512)) != -1) {
+                    bouts.write(buffer, 0, bytesRead);
+                }
+                bouts.flush();// 这里一定要调用flush()方法
+                ins.close();
+                bins.close();
+                outs.close();
+                bouts.close();
+            } else {
+//                response.sendRedirect("../error.jsp");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

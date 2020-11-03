@@ -292,8 +292,6 @@ export default {
         for (let key of selectedRowKeys) {
           let target = this.dataSource.filter(item => key === item.id)[0]
           let arrData = {
-            id: target.id,
-            applyDataId: target.applyDataId,
             verifyDoctorCode: target.verifyDoctorCode,
             verifyDoctorName: target.verifyDoctorName,
             verifyDeptCode: target.verifyDeptCode,
@@ -304,10 +302,10 @@ export default {
         if (data.length > 0) {
           this.$emit('showImport', data)
         } else {
-          this.$message.success('未找到对象')
+          this.$message.warning('未找到对象')
         }
       } else {
-        this.$message.success('未选择行')
+        this.$message.warning('未选择行')
       }
     },
     handImport (selectDate) {
@@ -317,12 +315,13 @@ export default {
         for (let key of selectedRowKeys) {
           let target = this.dataSource.filter(item => key === item.id)[0]
           let arrData = {
-            id: target.id,
+            id: target.isVerify === 0 ? '' : target.id,
             applyDataId: target.applyDataId,
             verifyDoctorCode: selectDate.doctorCode,
             verifyDoctorName: selectDate.doctorName,
             verifyDeptCode: selectDate.deptCode,
-            verifyDeptName: selectDate.deptName
+            verifyDeptName: selectDate.deptName,
+            dataType: target.dataType
           }
           data.push(arrData)
         }
@@ -339,10 +338,10 @@ export default {
             this.loading = false
           })
         } else {
-          this.$message.success('未找到对象')
+          this.$message.warning('未找到对象')
         }
       } else {
-        this.$message.success('未选择行')
+        this.$message.warning('未选择行')
       }
     },
     batchVerify () {
@@ -353,22 +352,23 @@ export default {
         for (let key of selectedRowKeys) {
           let target = this.dataSource.filter(item => key === item.id)[0]
           let arrData = {
-            id: target.id,
+            id: target.isVerify === 0 ? '' : target.id,
             applyDataId: target.applyDataId,
             verifyDoctorCode: target.verifyDoctorCode,
             verifyDoctorName: target.verifyDoctorName,
             verifyDeptCode: target.verifyDeptCode,
-            verifyDeptName: target.verifyDeptName
+            verifyDeptName: target.verifyDeptName,
+            dataType: target.dataType
           }
           data.push(arrData)
         }
         if (data.length > 0) {
           this.verifyService(data)
         } else {
-          this.$message.success('未找到对象')
+          this.$message.warning('未找到对象')
         }
       } else {
-        this.$message.success('未选择行')
+        this.$message.warning('未选择行')
       }
       this.selectedRowKeys = []
       this.loading = false
@@ -476,6 +476,7 @@ export default {
         this.ybReconsiderVerify.verifyDoctorName = target.verifyDoctorName
         this.ybReconsiderVerify.verifyDeptCode = target.verifyDeptCode
         this.ybReconsiderVerify.verifyDeptName = target.verifyDeptName
+        this.ybReconsiderVerify.dataType = target.dataType
 
         this.editingKey = key
         if (target) {
@@ -483,7 +484,7 @@ export default {
           this.dataSource = newData
         }
       } else {
-        this.$message.success('未找到对象')
+        this.$message.warning('未找到对象')
       }
     },
     save (key) {
@@ -505,15 +506,16 @@ export default {
         this.selectDeptValue = undefined
 
         let arrData = [{
-          id: this.ybReconsiderVerify.id,
+          id: target.isVerify === 0 ? '' : this.ybReconsiderVerify.id,
           applyDataId: this.ybReconsiderVerify.applyDataId,
           verifyDoctorCode: this.ybReconsiderVerify.verifyDoctorCode,
           verifyDoctorName: this.ybReconsiderVerify.verifyDoctorName,
           verifyDeptCode: this.ybReconsiderVerify.verifyDeptCode,
-          verifyDeptName: this.ybReconsiderVerify.verifyDeptName}]
+          verifyDeptName: this.ybReconsiderVerify.verifyDeptName,
+          dataType: this.ybReconsiderVerify.dataType}]
         this.verifyService(arrData)
       } else {
-        this.$message.success('未找到对象')
+        this.$message.warning('未找到对象')
       }
       this.ybReconsiderVerify = {}
     },

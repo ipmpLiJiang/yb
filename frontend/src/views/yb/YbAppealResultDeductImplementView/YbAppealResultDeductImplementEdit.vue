@@ -121,7 +121,7 @@ export default {
       // }
     },
     formatDate () {
-      let datemonth = moment().format('YYYY-MM')
+      let datemonth = moment().subtract(1, 'months').format('YYYY-MM')
       return datemonth
     },
     monthChange (date, dateString) {
@@ -149,7 +149,6 @@ export default {
           this.ybAppealResultDeductImplement.resultId = this.ybAppealResult.id
           this.ybAppealResultDeductImplement.implementDateStr = this.selectImplementDateStr
           this.ybAppealResultDeductImplement.applyDateStr = this.ybAppealResult.applyDateStr
-          this.ybAppealResultDeductImplement.applyDate = this.ybAppealResult.applyDate
           this.ybAppealResultDeductImplement.dataType = this.ybAppealResult.dataType
           this.$post('ybAppealResultDeductimplement', {
             ...this.ybAppealResultDeductImplement

@@ -296,7 +296,7 @@ export default {
   methods: {
     moment,
     formatDate () {
-      let datemonth = moment().format('YYYY-MM')
+      let datemonth = moment().subtract(1, 'months').format('YYYY-MM')
       return datemonth
     },
     monthChange (date, dateString) {
@@ -336,7 +336,7 @@ export default {
           ...queryParams
         })
       } else {
-        this.$message.success('导出Excel,无数据!')
+        this.$message.warning('导出Excel，无数据!')
       }
     },
     // onSelectChange (selectedRowKeys) {

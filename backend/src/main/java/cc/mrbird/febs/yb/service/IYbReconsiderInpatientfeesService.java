@@ -7,6 +7,7 @@ import java.util.List;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import cc.mrbird.febs.common.domain.QueryRequest;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * <p>
@@ -29,4 +30,6 @@ public interface IYbReconsiderInpatientfeesService extends IService<YbReconsider
         void updateYbReconsiderInpatientfees(YbReconsiderInpatientfees ybReconsiderInpatientfees);
 
         void deleteYbReconsiderInpatientfeess(String[]Ids);
+
+        List<YbReconsiderInpatientfees> findReconsiderInpatientfeesLists(String applyDateStr);
         }

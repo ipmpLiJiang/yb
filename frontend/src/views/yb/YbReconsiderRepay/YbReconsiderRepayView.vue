@@ -319,7 +319,7 @@ export default {
           this.$refs.ybReconsiderRepayData.search()
         }, 200)
       }).catch(() => {
-        this.$message.success('获取还款日期列表失败!')
+        this.$message.error('获取还款日期列表失败!')
       })
     },
     setFormValues ({ ...ybReconsiderRepay }) {

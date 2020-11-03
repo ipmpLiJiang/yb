@@ -222,12 +222,12 @@ export default {
             this.pagination.defaultPageSize +
             index +
             1}`,
-        width: 80
+        width: 70
       },
       {
         title: '复议年月',
         dataIndex: 'applyDateStr',
-        width: 100
+        width: 90
       },
       {
         title: '操作员',
@@ -279,7 +279,8 @@ export default {
           } else {
             return text
           }
-        }
+        },
+        width: 110
       },
       {
         title: '状态',
@@ -304,14 +305,12 @@ export default {
               return text
           }
         },
-        width: 100
+        width: 90
       },
       {
         title: '操作',
         dataIndex: 'operation',
-        scopedSlots: { customRender: 'operation' },
-        fixed: 'right',
-        width: 300
+        scopedSlots: { customRender: 'operation' }
       }]
     }
   },
@@ -344,7 +343,7 @@ export default {
       this.addVisiable = false
     },
     add () {
-      this.$refs.ybReconsiderApplyAdd.setFormValues(new Date())
+      this.$refs.ybReconsiderApplyAdd.setFormValues()
       this.addVisiable = true
     },
     handleEditSuccess () {

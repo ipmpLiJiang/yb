@@ -140,7 +140,6 @@
                       :file-list="fileList"
                       :remove="handleImageRemove"
                       :beforeUpload="beforeUpload"
-                      @change="handleChange"
                       @preview="handlePreview"
                     >
                       <div v-if="fileList.length < 8">
@@ -372,11 +371,6 @@ export default {
       }
       return (isJPG || isJPEG || isGIF || isPNG) && isLt2M && this.customRequest(file)
     },
-    handleChange (info) {
-      if (info.file.status === 'done') {
-        console.log(info)
-      }
-    },
     customRequest (file) {
       const formData = new FormData()
       formData.append('file', file)
@@ -415,7 +409,7 @@ export default {
           newFileList.splice(index, 1)
           this.fileList = newFileList
         } else {
-          this.$message.success('删除失败')
+          this.$message.error('删除失败')
         }
       })
     },

@@ -111,7 +111,7 @@ export default {
         this.dataSource = r.data.data.data
       }).catch(() => {
         this.loading = false
-        this.$message.success('获取导出图片列表失败!')
+        this.$message.error('获取导出图片列表失败!')
       })
     }
   }

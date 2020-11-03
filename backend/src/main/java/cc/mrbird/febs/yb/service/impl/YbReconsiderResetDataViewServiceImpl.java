@@ -42,7 +42,7 @@ public class YbReconsiderResetDataViewServiceImpl extends ServiceImpl<YbReconsid
             sql += " applyDateStr='" + ybReconsiderResetDataView.getApplyDateStr() + "' ";
 
             if (ybReconsiderResetDataView.getDataType() != null) {
-                sql += " AND dataType = " + ybReconsiderResetDataView.getDataType() ;
+                sql += " AND dataType = " + ybReconsiderResetDataView.getDataType();
             }
             if (ybReconsiderResetDataView.getState() != null) {
                 sql += " AND STATE = " + ybReconsiderResetDataView.getState();

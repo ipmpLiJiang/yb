@@ -54,6 +54,17 @@
           <a-col :span=5>
             <a-input-search placeholder="请输入关键字" v-model="searchText" style="width: 200px" enter-button @search="searchTable" />
           </a-col>
+          <a-col :span=3>
+            <a-popconfirm
+              title="确定批量还款？"
+              v-show="tableSelectKey==='3'?true:false"
+              @confirm="batchRepayment"
+              okText="确定"
+              cancelText="取消"
+            >
+              <a-button type="primary" style="margin-right: 15px">批量还款</a-button>
+            </a-popconfirm>
+          </a-col>
         </a-row>
       </a-form>
     </template>
@@ -81,6 +92,7 @@
           </a-tab-pane>
           <a-tab-pane
             key="3"
+            :forceRender="true"
             tab="待还款[不录入]"
           >
             <ybAppealResultRepaymentStayed-emp
@@ -90,6 +102,7 @@
               :defaultFormatDate="defaultApplyDate"
               :searchDataType="searchDataType"
               :searchText="searchText"
+              @edit="edit"
             >
             </ybAppealResultRepaymentStayed-emp>
           </a-tab-pane>
@@ -167,7 +180,7 @@ export default {
   methods: {
     moment,
     formatDate () {
-      let datemonth = moment().format('YYYY-MM')
+      let datemonth = moment().subtract(1, 'months').format('YYYY-MM')
       return datemonth
     },
     monthChange (date, dateString) {
@@ -176,8 +189,10 @@ export default {
     monthToChange (date, dateString) {
       this.searchToApplyDate = dateString
     },
+    batchRepayment () {
+      this.$refs.ybAppealResultRepaymentStayedEmp.batchRepayment()
+    },
     edit (record) {
-      console.log(record)
       this.showModal(record)
     },
     showModal (record) {
@@ -207,8 +222,7 @@ export default {
         this.$refs.ybAppealResultRepaymentComplete.search()
       } else if (key === '3') {
         this.$refs.ybAppealResultRepaymentStayedEmp.search()
-      }
-      else {
+      } else {
         console.log('ok')
       }
     },

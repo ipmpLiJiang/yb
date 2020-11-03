@@ -181,7 +181,7 @@ public class YbReconsiderVerifyController extends BaseController {
     @Log("修改")
     @PutMapping("updateSendState")
     @RequiresPermissions("ybReconsiderVerify:stateUpdate")
-    public void updateSendState(String dataJson) throws FebsException {
+    public void updateSendState(String dataJson,Integer dataType) throws FebsException {
         try {
             User currentUser = FebsUtil.getCurrentUser();
             Long uid = currentUser.getUserId();
@@ -190,7 +190,7 @@ public class YbReconsiderVerifyController extends BaseController {
             List<YbReconsiderVerify> list = JSON.parseObject(dataJson, new TypeReference<List<YbReconsiderVerify>>() {
             });
 
-            this.iYbReconsiderVerifyService.updateSendStates(list,uid ,uname);
+            this.iYbReconsiderVerifyService.updateSendStates(list,dataType,uid ,uname);
         } catch (Exception e) {
             message = "发送失败";
             log.error(message, e);
@@ -199,18 +199,15 @@ public class YbReconsiderVerifyController extends BaseController {
     }
 
     @Log("修改")
-    @PutMapping("updateMainSendState")
+    @PutMapping("updateASendState")
     @RequiresPermissions("ybReconsiderVerify:stateUpdate")
-    public void updateMainSendState(String dataJson) throws FebsException {
+    public void updateASendState(String applyDateStr,Integer state,Integer dataType) throws FebsException {
         try {
             User currentUser = FebsUtil.getCurrentUser();
             Long uid = currentUser.getUserId();
             String uname = currentUser.getUsername();
 
-            List<YbReconsiderVerify> list = JSON.parseObject(dataJson, new TypeReference<List<YbReconsiderVerify>>() {
-            });
-
-            this.iYbReconsiderVerifyService.updateMainSendStates(list,uid ,uname);
+            this.iYbReconsiderVerifyService.updateAllSendStates(applyDateStr,state,dataType,uid ,uname);
         } catch (Exception e) {
             message = "发送失败";
             log.error(message, e);

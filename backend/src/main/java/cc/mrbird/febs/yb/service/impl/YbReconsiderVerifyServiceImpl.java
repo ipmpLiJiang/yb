@@ -6,12 +6,8 @@ import cc.mrbird.febs.com.service.IComConfiguremanageService;
 import cc.mrbird.febs.common.domain.QueryRequest;
 import cc.mrbird.febs.common.utils.SortUtil;
 import cc.mrbird.febs.yb.dao.YbReconsiderVerifyMapper;
-import cc.mrbird.febs.yb.entity.YbAppealManage;
-import cc.mrbird.febs.yb.entity.YbReconsiderApply;
-import cc.mrbird.febs.yb.entity.YbReconsiderVerify;
-import cc.mrbird.febs.yb.service.IYbAppealManageService;
-import cc.mrbird.febs.yb.service.IYbReconsiderApplyService;
-import cc.mrbird.febs.yb.service.IYbReconsiderVerifyService;
+import cc.mrbird.febs.yb.entity.*;
+import cc.mrbird.febs.yb.service.*;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -23,6 +19,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -39,11 +36,21 @@ public class YbReconsiderVerifyServiceImpl extends ServiceImpl<YbReconsiderVerif
 
     @Autowired
     private IYbAppealManageService iYbAppealManageService;
+
     @Autowired
     private IComConfiguremanageService iComConfiguremanageService;
 
     @Autowired
     private IYbReconsiderApplyService iYbReconsiderApplyService;
+
+    @Autowired
+    private IYbReconsiderApplyDataService iYbReconsiderApplyDataService;
+
+    @Autowired
+    private IYbReconsiderInpatientfeesService iYbReconsiderInpatientfeesService;
+
+    @Autowired
+    private IYbReconsiderPriorityLevelService iYbReconsiderPriorityLevelService;
 
     @Override
     public IPage<YbReconsiderVerify> findYbReconsiderVerifys(QueryRequest request, YbReconsiderVerify ybReconsiderVerify) {
@@ -102,22 +109,113 @@ public class YbReconsiderVerifyServiceImpl extends ServiceImpl<YbReconsiderVerif
     @Override
     @Transactional
     public void insertReconsiderVerifyImports(String applyDate, Long matchPersonId, String matchPersonName) {
-        this.baseMapper.insertReconsiderVerifyImport(applyDate, matchPersonId, matchPersonName);
+        //this.baseMapper.insertReconsiderVerifyImport(applyDate, matchPersonId, matchPersonName);
 
         LambdaQueryWrapper<YbReconsiderApply> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(YbReconsiderApply::getIsDeletemark, 1);//1是未删 0是已删
         queryWrapper.eq(YbReconsiderApply::getApplyDateStr, applyDate);
         List<YbReconsiderApply> applyList = this.iYbReconsiderApplyService.list(queryWrapper);
+
         if (applyList.size() > 0) {
             YbReconsiderApply ybReconsiderApply = applyList.get(0);
-            if (ybReconsiderApply.getState() == 2 || ybReconsiderApply.getState() == 4) {
+            boolean isCreate = false;
+            int state = ybReconsiderApply.getState();
+            if (state == YbDefaultValue.APPLYSTATE_2 || state == YbDefaultValue.APPLYSTATE_3 || state == YbDefaultValue.APPLYSTATE_4 || state == YbDefaultValue.APPLYSTATE_5) {
+                int typeno = state == YbDefaultValue.APPLYSTATE_2 || state == YbDefaultValue.APPLYSTATE_3 ? YbDefaultValue.TYPENO_1 : YbDefaultValue.TYPENO_2;
+                List<YbReconsiderApplyData> radList = iYbReconsiderApplyDataService.findReconsiderApplyDataByNotVerifys(ybReconsiderApply.getApplyDateStr(), YbDefaultValue.DATATYPE_0, typeno);
+                if (radList.size() > 0) {
+                    List<YbReconsiderPriorityLevel> rplList = iYbReconsiderPriorityLevelService.findReconsiderPriorityLevelList();
+                    List<YbReconsiderInpatientfees> rifList = iYbReconsiderInpatientfeesService.findReconsiderInpatientfeesLists(applyDate);
+
+                    List<YbReconsiderPriorityLevel> rlProjectList = rplList.stream().filter(s -> s.getState() == YbReconsiderPriorityLevel.PL_STATE_2).collect(Collectors.toList());
+                    List<YbReconsiderPriorityLevel> rlRuleList = rplList.stream().filter(s -> s.getState() == YbReconsiderPriorityLevel.PL_STATE_1).collect(Collectors.toList());
+                    List<YbReconsiderPriorityLevel> rlDeptList = rplList.stream().filter(s -> s.getState() == YbReconsiderPriorityLevel.PL_STATE_3).collect(Collectors.toList());
+
+                    List<YbReconsiderInpatientfees> queryRifList = new ArrayList<>();
+                    List<YbReconsiderPriorityLevel> queryRlList = new ArrayList<>();
+                    List<YbReconsiderVerify> createList = new ArrayList<>();
+                    Date thisDate = new Date();
+                    for (YbReconsiderApplyData item : radList) {
+                        YbReconsiderVerify ybReconsiderVerify = new YbReconsiderVerify();
+                        ybReconsiderVerify.setApplyDataId(item.getId());
+
+                        //规则
+                        queryRlList = rlRuleList.stream().filter(
+                                s -> s.getRplName().equals(item.getRuleName())
+                        ).collect(Collectors.toList());
+                        //项目
+                        if (queryRlList.size() == 0) {
+                            queryRlList = rlProjectList.stream().filter(
+                                    s -> s.getRplName().equals(item.getProjectName())
+                            ).collect(Collectors.toList());
+                        }
+                        if (queryRlList.size() > 0) {
+                            ybReconsiderVerify.setVerifyDeptCode(queryRlList.get(0).getDeptCode());
+                            ybReconsiderVerify.setVerifyDeptName(queryRlList.get(0).getDeptName());
+                            ybReconsiderVerify.setVerifyDoctorCode(queryRlList.get(0).getDoctorCode());
+                            ybReconsiderVerify.setVerifyDoctorName(queryRlList.get(0).getDoctorName());
+                            isCreate = true;
+                        } else {
+                            queryRifList = rifList.stream().filter(s ->
+                                    s.getBillNo().equals(item.getBillNo()) &&
+                                            s.getTransNo().equals(item.getSerialNo()) &&
+                                            s.getItemCode().equals(item.getProjectCode()) &&
+                                            s.getItemName().equals(item.getProjectName()) &&
+                                            s.getItemCount().equals(item.getNum())
+                            ).collect(Collectors.toList());
+
+                            if (queryRifList.size() > 0) {
+                                String deptName = queryRifList.get(0).getExcuteDeptName();
+                                //科室
+                                queryRlList = rlDeptList.stream().filter(
+                                        s -> s.getDeptName().equals(deptName)
+                                ).collect(Collectors.toList());
+
+                                if (queryRlList.size() > 0) {
+                                    ybReconsiderVerify.setVerifyDeptCode(queryRifList.get(0).getExcuteDeptId());
+                                    ybReconsiderVerify.setVerifyDeptName(queryRifList.get(0).getExcuteDeptName());
+                                    ybReconsiderVerify.setVerifyDoctorCode(queryRifList.get(0).getExcuteDocId());
+                                    ybReconsiderVerify.setVerifyDoctorName(queryRifList.get(0).getExcuteDocName());
+                                } else {
+                                    ybReconsiderVerify.setVerifyDeptCode(queryRifList.get(0).getDeptId());
+                                    ybReconsiderVerify.setVerifyDeptName(queryRifList.get(0).getDeptName());
+                                    ybReconsiderVerify.setVerifyDoctorCode(queryRifList.get(0).getOrderDocId());
+                                    ybReconsiderVerify.setVerifyDoctorName(queryRifList.get(0).getOrderDocName());
+                                }
+
+                                isCreate = true;
+                            }
+                        }
+                        if (ybReconsiderVerify.getId() == null || "".equals(ybReconsiderVerify.getId())) {
+                            ybReconsiderVerify.setId(UUID.randomUUID().toString());
+                        }
+                        ybReconsiderVerify.setOperateDate(thisDate);//'操作日期'
+                        ybReconsiderVerify.setMatchDate(thisDate);//'匹配日期'
+                        ybReconsiderVerify.setMatchPersonId(matchPersonId);//'匹配人代码'
+                        ybReconsiderVerify.setMatchPersonName(matchPersonName);//'匹配人'
+                        ybReconsiderVerify.setDataType(YbDefaultValue.DATATYPE_0);//扣款类型  0 明细扣款 1 主单扣款
+                        ybReconsiderVerify.setState(YbDefaultValue.VERIFYSTATE_1);//1 待审核、2已审核、3已发送
+                        ybReconsiderVerify.setIsDeletemark(1);
+                        ybReconsiderVerify.setCreateUserId(matchPersonId);
+                        ybReconsiderVerify.setCreateTime(thisDate);
+
+                        if (isCreate) createList.add(ybReconsiderVerify);
+
+                        isCreate = false;
+                    }
+
+                    isCreate = true;//判断状态是否更新
+                    this.saveBatch(createList);
+                }
+            }
+            if ((ybReconsiderApply.getState() == YbDefaultValue.APPLYSTATE_2 || ybReconsiderApply.getState() == YbDefaultValue.APPLYSTATE_4) && isCreate) {
                 YbReconsiderApply updateEntity = new YbReconsiderApply();
                 updateEntity.setId(ybReconsiderApply.getId());
-                if (ybReconsiderApply.getState() == 2) { //上传一
-                    updateEntity.setState(3);//申诉一/核对一
+                if (ybReconsiderApply.getState() == YbDefaultValue.APPLYSTATE_2) { //上传一
+                    updateEntity.setState(YbDefaultValue.APPLYSTATE_3);//申诉一/核对一
                     this.iYbReconsiderApplyService.updateById(updateEntity);
-                } else if (ybReconsiderApply.getState() == 4) {
-                    updateEntity.setState(5);//申诉二/核对二
+                } else if (ybReconsiderApply.getState() == YbDefaultValue.APPLYSTATE_4) {
+                    updateEntity.setState(YbDefaultValue.APPLYSTATE_5);//申诉二/核对二
                     this.iYbReconsiderApplyService.updateById(updateEntity);
                 }
             }
@@ -135,37 +233,31 @@ public class YbReconsiderVerifyServiceImpl extends ServiceImpl<YbReconsiderVerif
         List<YbReconsiderApply> applyList = this.iYbReconsiderApplyService.list(queryWrapper);
         if (applyList.size() > 0) {
             YbReconsiderApply ybReconsiderApply = applyList.get(0);
-            if (ybReconsiderApply.getState() == 2 || ybReconsiderApply.getState() == 4) {
+            if (ybReconsiderApply.getState() == YbDefaultValue.APPLYSTATE_2 || ybReconsiderApply.getState() == YbDefaultValue.APPLYSTATE_4) {
                 YbReconsiderApply updateEntity = new YbReconsiderApply();
                 updateEntity.setId(ybReconsiderApply.getId());
-                if (ybReconsiderApply.getState() == 2) { //上传一
-                    updateEntity.setState(3);//申诉一/核对一
+                if (ybReconsiderApply.getState() == YbDefaultValue.APPLYSTATE_2) { //上传一
+                    updateEntity.setState(YbDefaultValue.APPLYSTATE_3);//申诉一/核对一
                     this.iYbReconsiderApplyService.updateById(updateEntity);
-                } else if (ybReconsiderApply.getState() == 4) {
-                    updateEntity.setState(5);//申诉二/核对二
+                } else if (ybReconsiderApply.getState() == YbDefaultValue.APPLYSTATE_4) {
+                    updateEntity.setState(YbDefaultValue.APPLYSTATE_5);//申诉二/核对二
                     this.iYbReconsiderApplyService.updateById(updateEntity);
                 }
             }
         }
     }
 
-    private  int getDay(){
-        List<Integer> intList = new ArrayList<>();
-        intList.add(1);//日期增加天数
-        List<ComConfiguremanage> configList = iComConfiguremanageService.getConfigLists(intList);
-        return configList.size() > 0 ? configList.get(0).getIntField() : 2;
-    }
 
     @Override
     @Transactional
-    public void updateSendStates(List<YbReconsiderVerify> list, Long uId, String Uname) {
+    public void updateSendStates(List<YbReconsiderVerify> list, Integer dataType, Long uId, String Uname) {
         Date thisDate = new java.sql.Timestamp(new Date().getTime());
-        int day = getDay();
+        int day = iComConfiguremanageService.getConfigDay();
 
         Date addDate = DataTypeHelpers.addDateMethod(thisDate, day);
         for (YbReconsiderVerify ybReconsiderVerify : list) {
             //更新
-            ybReconsiderVerify.setState(3);
+            ybReconsiderVerify.setState(YbDefaultValue.VERIFYSTATE_3);
             ybReconsiderVerify.setModifyUserId(uId);
             ybReconsiderVerify.setModifyTime(thisDate);
             ybReconsiderVerify.setSendPersonId(uId);
@@ -174,7 +266,7 @@ public class YbReconsiderVerifyServiceImpl extends ServiceImpl<YbReconsiderVerif
             ybReconsiderVerify.setOperateDate(thisDate);
             //插入申诉管理
             YbAppealManage ybAppealManage = new YbAppealManage();
-            ybAppealManage.setSourceType(0);
+            ybAppealManage.setSourceType(YbDefaultValue.SOURCETYPE_0);
             ybAppealManage.setVerifyId(ybReconsiderVerify.getId());
             ybAppealManage.setVerifySendId(ybReconsiderVerify.getId());
             ybAppealManage.setApplyDataId(ybReconsiderVerify.getApplyDataId());
@@ -183,162 +275,90 @@ public class YbReconsiderVerifyServiceImpl extends ServiceImpl<YbReconsiderVerif
             ybAppealManage.setReadyDoctorCode(ybReconsiderVerify.getVerifyDoctorCode());
             ybAppealManage.setReadyDoctorName(ybReconsiderVerify.getVerifyDoctorName());
             ybAppealManage.setOperateDate(thisDate);
-            ybAppealManage.setOperateProcess("发送操作-接受申请");
+            if (dataType == 0) {
+                ybAppealManage.setOperateProcess("发送操作-接受申请");
+                ybAppealManage.setAcceptState(YbDefaultValue.ACCEPTSTATE_0);
+            } else {
+                ybAppealManage.setOperateProcess("发送操作-待申诉");
+                ybAppealManage.setAcceptState(YbDefaultValue.ACCEPTSTATE_1);
+            }
             ybAppealManage.setEnableDate(addDate);
-            ybAppealManage.setAcceptState(0);
             ybAppealManage.setIsDeletemark(1);
             ybAppealManage.setCreateUserId(uId);
             ybAppealManage.setCreateTime(thisDate);
-            ybAppealManage.setDataType(0);
+            ybAppealManage.setDataType(dataType);
 
             iYbAppealManageService.createYbAppealManage(ybAppealManage);
             LambdaQueryWrapper<YbReconsiderVerify> queryWrapper = new LambdaQueryWrapper<>();
             queryWrapper.eq(YbReconsiderVerify::getId, ybReconsiderVerify.getId());
-            queryWrapper.eq(YbReconsiderVerify::getDataType, 0);
-            queryWrapper.eq(YbReconsiderVerify::getState, 2);
-            this.baseMapper.update(ybReconsiderVerify, queryWrapper);
-        }
-    }
+            queryWrapper.eq(YbReconsiderVerify::getDataType, dataType);
 
-    //主单扣款更新
-    @Override
-    @Transactional
-    public void updateMainSendStates(List<YbReconsiderVerify> list, Long uId, String Uname) {
-        Date thisDate = new java.sql.Timestamp(new Date().getTime());
-        int day = getDay();
+            if (dataType == 0) {
+                queryWrapper.eq(YbReconsiderVerify::getState, YbDefaultValue.VERIFYSTATE_2);
+            } else {
+                queryWrapper.eq(YbReconsiderVerify::getState, YbDefaultValue.VERIFYSTATE_1);
+            }
 
-        Date addDate = DataTypeHelpers.addDateMethod(thisDate, day);
-        for (YbReconsiderVerify ybReconsiderVerify : list) {
-            //更新
-            ybReconsiderVerify.setState(3);
-            ybReconsiderVerify.setModifyUserId(uId);
-            ybReconsiderVerify.setModifyTime(thisDate);
-            ybReconsiderVerify.setSendPersonId(uId);
-            ybReconsiderVerify.setSendPersonName(Uname);
-            ybReconsiderVerify.setSendDate(thisDate);
-            ybReconsiderVerify.setOperateDate(thisDate);
-            //插入申诉管理
-            YbAppealManage ybAppealManage = new YbAppealManage();
-            ybAppealManage.setSourceType(0);
-            ybAppealManage.setVerifyId(ybReconsiderVerify.getId());
-            ybAppealManage.setVerifySendId(ybReconsiderVerify.getId());
-            ybAppealManage.setApplyDataId(ybReconsiderVerify.getApplyDataId());
-            ybAppealManage.setReadyDeptCode(ybReconsiderVerify.getVerifyDeptCode());
-            ybAppealManage.setReadyDeptName(ybReconsiderVerify.getVerifyDeptName());
-            ybAppealManage.setReadyDoctorCode(ybReconsiderVerify.getVerifyDoctorCode());
-            ybAppealManage.setReadyDoctorName(ybReconsiderVerify.getVerifyDoctorName());
-            ybAppealManage.setOperateDate(thisDate);
-            ybAppealManage.setOperateProcess("发送操作-待申诉");
-            ybAppealManage.setEnableDate(addDate);
-            ybAppealManage.setAcceptState(1);
-            ybAppealManage.setIsDeletemark(1);
-            ybAppealManage.setCreateUserId(uId);
-            ybAppealManage.setCreateTime(thisDate);
-            ybAppealManage.setDataType(1);
-
-            iYbAppealManageService.createYbAppealManage(ybAppealManage);
-            LambdaQueryWrapper<YbReconsiderVerify> queryWrapper = new LambdaQueryWrapper<>();
-            queryWrapper.eq(YbReconsiderVerify::getId, ybReconsiderVerify.getId());
-            queryWrapper.eq(YbReconsiderVerify::getDataType, 1);
-            queryWrapper.eq(YbReconsiderVerify::getState, 1);
             this.baseMapper.update(ybReconsiderVerify, queryWrapper);
         }
     }
 
     @Override
     @Transactional
-    public void updateAllSendStates(String applyDateStr,Integer state,Integer dataType, Long uId, String Uname) {
+    public void updateAllSendStates(String applyDateStr, Integer state, Integer dataType, Long uId, String Uname) {
         Date thisDate = new java.sql.Timestamp(new Date().getTime());
-        int day = getDay();
+        int day = iComConfiguremanageService.getConfigDay();
 
         Date addDate = DataTypeHelpers.addDateMethod(thisDate, day);
 
-        List<YbReconsiderVerify> list = this.baseMapper.findReconsiderVerifyList(applyDateStr,dataType,state);
+        List<YbReconsiderVerify> list = this.baseMapper.findReconsiderVerifyList(applyDateStr, dataType, state);
         for (YbReconsiderVerify ybReconsiderVerify : list) {
-            //更新
-            ybReconsiderVerify.setState(3);
-            ybReconsiderVerify.setModifyUserId(uId);
-            ybReconsiderVerify.setModifyTime(thisDate);
-            ybReconsiderVerify.setSendPersonId(uId);
-            ybReconsiderVerify.setSendPersonName(Uname);
-            ybReconsiderVerify.setSendDate(thisDate);
-            ybReconsiderVerify.setOperateDate(thisDate);
-            //插入申诉管理
-            YbAppealManage ybAppealManage = new YbAppealManage();
-            ybAppealManage.setSourceType(0);
-            ybAppealManage.setVerifyId(ybReconsiderVerify.getId());
-            ybAppealManage.setVerifySendId(ybReconsiderVerify.getId());
-            ybAppealManage.setApplyDataId(ybReconsiderVerify.getApplyDataId());
-            ybAppealManage.setReadyDeptCode(ybReconsiderVerify.getVerifyDeptCode());
-            ybAppealManage.setReadyDeptName(ybReconsiderVerify.getVerifyDeptName());
-            ybAppealManage.setReadyDoctorCode(ybReconsiderVerify.getVerifyDoctorCode());
-            ybAppealManage.setReadyDoctorName(ybReconsiderVerify.getVerifyDoctorName());
-            ybAppealManage.setOperateDate(thisDate);
-            ybAppealManage.setOperateProcess("发送操作-接受申请");
-            ybAppealManage.setEnableDate(addDate);
-            ybAppealManage.setAcceptState(0);
-            ybAppealManage.setIsDeletemark(1);
-            ybAppealManage.setCreateUserId(uId);
-            ybAppealManage.setCreateTime(thisDate);
-            ybAppealManage.setDataType(0);
+            if (ybReconsiderVerify.getState() != 3) {
+                //更新
+                ybReconsiderVerify.setState(YbDefaultValue.VERIFYSTATE_3);
+                ybReconsiderVerify.setModifyUserId(uId);
+                ybReconsiderVerify.setModifyTime(thisDate);
+                ybReconsiderVerify.setSendPersonId(uId);
+                ybReconsiderVerify.setSendPersonName(Uname);
+                ybReconsiderVerify.setSendDate(thisDate);
+                ybReconsiderVerify.setOperateDate(thisDate);
+                //插入申诉管理
+                YbAppealManage ybAppealManage = new YbAppealManage();
+                ybAppealManage.setSourceType(YbDefaultValue.SOURCETYPE_0);
+                ybAppealManage.setVerifyId(ybReconsiderVerify.getId());
+                ybAppealManage.setVerifySendId(ybReconsiderVerify.getId());
+                ybAppealManage.setApplyDataId(ybReconsiderVerify.getApplyDataId());
+                ybAppealManage.setReadyDeptCode(ybReconsiderVerify.getVerifyDeptCode());
+                ybAppealManage.setReadyDeptName(ybReconsiderVerify.getVerifyDeptName());
+                ybAppealManage.setReadyDoctorCode(ybReconsiderVerify.getVerifyDoctorCode());
+                ybAppealManage.setReadyDoctorName(ybReconsiderVerify.getVerifyDoctorName());
+                ybAppealManage.setOperateDate(thisDate);
+                if (dataType == 0) {
+                    ybAppealManage.setOperateProcess("发送操作-接受申请");
+                    ybAppealManage.setAcceptState(YbDefaultValue.ACCEPTSTATE_0);
+                } else {
+                    ybAppealManage.setOperateProcess("发送操作-待申诉");
+                    ybAppealManage.setAcceptState(YbDefaultValue.ACCEPTSTATE_1);
+                }
+                ybAppealManage.setEnableDate(addDate);
+                ybAppealManage.setIsDeletemark(1);
+                ybAppealManage.setCreateUserId(uId);
+                ybAppealManage.setCreateTime(thisDate);
+                ybAppealManage.setDataType(dataType);
 
-            iYbAppealManageService.createYbAppealManage(ybAppealManage);
-            LambdaQueryWrapper<YbReconsiderVerify> queryWrapper = new LambdaQueryWrapper<>();
-            queryWrapper.eq(YbReconsiderVerify::getId, ybReconsiderVerify.getId());
-            queryWrapper.eq(YbReconsiderVerify::getDataType, 0);
-            queryWrapper.eq(YbReconsiderVerify::getState, 2);
-            this.baseMapper.update(ybReconsiderVerify, queryWrapper);
+                iYbAppealManageService.createYbAppealManage(ybAppealManage);
+                LambdaQueryWrapper<YbReconsiderVerify> queryWrapper = new LambdaQueryWrapper<>();
+                queryWrapper.eq(YbReconsiderVerify::getId, ybReconsiderVerify.getId());
+                queryWrapper.eq(YbReconsiderVerify::getDataType, dataType);
+                if (dataType == 0) {
+                    queryWrapper.eq(YbReconsiderVerify::getState, YbDefaultValue.VERIFYSTATE_2);
+                } else {
+                    queryWrapper.eq(YbReconsiderVerify::getState, YbDefaultValue.VERIFYSTATE_1);
+                }
+                this.baseMapper.update(ybReconsiderVerify, queryWrapper);
+            }
         }
     }
-
-    //主单扣款全部更新
-    @Override
-    @Transactional
-    public void updateAllMainSendStates(String applyDateStr,Integer state,Integer dataType, Long uId, String Uname) {
-        Date thisDate = new java.sql.Timestamp(new Date().getTime());
-        int day = getDay();
-
-        Date addDate = DataTypeHelpers.addDateMethod(thisDate, day);
-
-        List<YbReconsiderVerify> list = this.baseMapper.findReconsiderVerifyList(applyDateStr,dataType,state);
-        for (YbReconsiderVerify ybReconsiderVerify : list) {
-            //更新
-            ybReconsiderVerify.setState(3);
-            ybReconsiderVerify.setModifyUserId(uId);
-            ybReconsiderVerify.setModifyTime(thisDate);
-            ybReconsiderVerify.setSendPersonId(uId);
-            ybReconsiderVerify.setSendPersonName(Uname);
-            ybReconsiderVerify.setSendDate(thisDate);
-            ybReconsiderVerify.setOperateDate(thisDate);
-            //插入申诉管理
-            YbAppealManage ybAppealManage = new YbAppealManage();
-            ybAppealManage.setSourceType(0);
-            ybAppealManage.setVerifyId(ybReconsiderVerify.getId());
-            ybAppealManage.setVerifySendId(ybReconsiderVerify.getId());
-            ybAppealManage.setApplyDataId(ybReconsiderVerify.getApplyDataId());
-            ybAppealManage.setReadyDeptCode(ybReconsiderVerify.getVerifyDeptCode());
-            ybAppealManage.setReadyDeptName(ybReconsiderVerify.getVerifyDeptName());
-            ybAppealManage.setReadyDoctorCode(ybReconsiderVerify.getVerifyDoctorCode());
-            ybAppealManage.setReadyDoctorName(ybReconsiderVerify.getVerifyDoctorName());
-            ybAppealManage.setOperateDate(thisDate);
-            ybAppealManage.setOperateProcess("发送操作-待申诉");
-            ybAppealManage.setEnableDate(addDate);
-            ybAppealManage.setAcceptState(1);
-            ybAppealManage.setIsDeletemark(1);
-            ybAppealManage.setCreateUserId(uId);
-            ybAppealManage.setCreateTime(thisDate);
-            ybAppealManage.setDataType(1);
-
-            iYbAppealManageService.createYbAppealManage(ybAppealManage);
-            LambdaQueryWrapper<YbReconsiderVerify> queryWrapper = new LambdaQueryWrapper<>();
-            queryWrapper.eq(YbReconsiderVerify::getId, ybReconsiderVerify.getId());
-            queryWrapper.eq(YbReconsiderVerify::getDataType, 1);
-            queryWrapper.eq(YbReconsiderVerify::getState, 1);
-            this.baseMapper.update(ybReconsiderVerify, queryWrapper);
-        }
-    }
-
-
 
     //单个，多个核对
     @Override
@@ -350,13 +370,15 @@ public class YbReconsiderVerifyServiceImpl extends ServiceImpl<YbReconsiderVerif
                     item.getVerifyDeptName() != "" && item.getVerifyDeptName() != null &&
                     item.getVerifyDoctorCode() != "" && item.getVerifyDoctorCode() != null &&
                     item.getVerifyDoctorName() != "" && item.getVerifyDoctorName() != null) {
-                item.setState(2);
+                item.setState(YbDefaultValue.VERIFYSTATE_2);
                 item.setModifyTime(thisDate);
                 item.setModifyUserId(uId);
                 item.setReviewerId(uId);
                 item.setReviewerName(Uname);
                 item.setReviewerDate(thisDate);
-                if (item.getId() == null || item.getId() == "00000000-0000-0000-0000-000000000000") {
+                item.setOperateDate(thisDate);
+                if (item.getId() == null || item.getId().equals("")) {
+                    item.setId(UUID.randomUUID().toString());
                     item.setIsDeletemark(1);
                     item.setMatchPersonId(uId);
                     item.setMatchPersonName(Uname);
@@ -367,8 +389,8 @@ public class YbReconsiderVerifyServiceImpl extends ServiceImpl<YbReconsiderVerif
                 } else {
                     LambdaQueryWrapper<YbReconsiderVerify> queryWrapper = new LambdaQueryWrapper<>();
                     queryWrapper.eq(YbReconsiderVerify::getId, item.getId());
-                    queryWrapper.eq(YbReconsiderVerify::getDataType, 0);
-                    queryWrapper.eq(YbReconsiderVerify::getState, 1);
+                    queryWrapper.eq(YbReconsiderVerify::getDataType, YbDefaultValue.DATATYPE_0);
+                    queryWrapper.eq(YbReconsiderVerify::getState, YbDefaultValue.VERIFYSTATE_1);
                     this.baseMapper.update(item, queryWrapper);
                 }
             }
@@ -384,11 +406,13 @@ public class YbReconsiderVerifyServiceImpl extends ServiceImpl<YbReconsiderVerif
                     item.getVerifyDeptName() != "" && item.getVerifyDeptName() != null &&
                     item.getVerifyDoctorCode() != "" && item.getVerifyDoctorCode() != null &&
                     item.getVerifyDoctorName() != "" && item.getVerifyDoctorName() != null) {
-                item.setState(1);
+                item.setState(YbDefaultValue.VERIFYSTATE_1);
                 item.setModifyTime(thisDate);
                 item.setModifyUserId(uId);
+                item.setOperateDate(thisDate);
 
-                if (item.getId() == null || item.getId() == "00000000-0000-0000-0000-000000000000") {
+                if (item.getId() == null || item.getId().equals("")) {
+                    item.setId(UUID.randomUUID().toString());
                     item.setIsDeletemark(1);
                     item.setMatchPersonId(uId);
                     item.setMatchPersonName(Uname);
@@ -399,7 +423,7 @@ public class YbReconsiderVerifyServiceImpl extends ServiceImpl<YbReconsiderVerif
                 } else {
                     LambdaQueryWrapper<YbReconsiderVerify> queryWrapper = new LambdaQueryWrapper<>();
                     queryWrapper.eq(YbReconsiderVerify::getId, item.getId());
-                    queryWrapper.eq(YbReconsiderVerify::getState, 1);
+                    queryWrapper.eq(YbReconsiderVerify::getState, YbDefaultValue.VERIFYSTATE_1);
                     this.baseMapper.update(item, queryWrapper);
                 }
             }

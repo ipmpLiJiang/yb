@@ -113,10 +113,10 @@ public class YbHandleVerifyDataServiceImpl extends ServiceImpl<YbHandleVerifyDat
                 Date thisDate = new java.sql.Timestamp(new Date().getTime());
                 List<YbAppealResult> appealResultList = this.iYbAppealResultService.findAppealResulDataHandles(applyDateStr);
                 if (appealResultList.size() > 0) {
-                    LambdaQueryWrapper<YbHandleVerify> wrapper = new LambdaQueryWrapper<YbHandleVerify>();
+                    LambdaQueryWrapper<YbHandleVerify> wrapper = new LambdaQueryWrapper<>();
                     wrapper.eq(YbHandleVerify::getApplyDateStr, applyDateStr);
                     List<YbHandleVerify> handleVerifyList = this.iYbHandleVerifyService.list(wrapper);
-                    List<YbHandleVerifyData> insertHandleDataList = new ArrayList<YbHandleVerifyData>();
+                    List<YbHandleVerifyData> insertHandleDataList = new ArrayList<>();
                     String guid = UUID.randomUUID().toString();
 
                     if (handleVerifyList.size() == 0) {
@@ -135,7 +135,7 @@ public class YbHandleVerifyDataServiceImpl extends ServiceImpl<YbHandleVerifyDat
                         YbHandleVerifyData insertData = new YbHandleVerifyData();
                         insertData.setId(UUID.randomUUID().toString());
                         insertData.setPid(guid);
-                        insertData.setState(0);
+                        insertData.setState(YbDefaultValue.VERIFYDATASTATE_1);
                         insertData.setIsDeletemark(1);
                         insertData.setApplyDataId(item.getApplyDataId());
                         insertData.setVerifyId(item.getVerifyId());
@@ -159,18 +159,12 @@ public class YbHandleVerifyDataServiceImpl extends ServiceImpl<YbHandleVerifyDat
 
     }
 
-    private  int getDay(){
-        List<Integer> intList = new ArrayList<>();
-        intList.add(1);//日期增加天数
-        List<ComConfiguremanage> configList = iComConfiguremanageService.getConfigLists(intList);
-        return configList.size() > 0 ? configList.get(0).getIntField() : 2;
-    }
 
     @Override
     @Transactional
     public void updateSendStates(List<YbHandleVerifyData> list, Long uId, String Uname) {
         Date thisDate = new java.sql.Timestamp(new Date().getTime());
-        int day = getDay();
+        int day = iComConfiguremanageService.getConfigDay();
         List<YbHandleVerifyData> updateHandleVerifyList = new ArrayList<YbHandleVerifyData>();
         List<YbAppealManage> appealManageList = new ArrayList<YbAppealManage>();
         Date addDate = DataTypeHelpers.addDateMethod(thisDate, day);
@@ -178,7 +172,7 @@ public class YbHandleVerifyDataServiceImpl extends ServiceImpl<YbHandleVerifyDat
             //更新
             YbHandleVerifyData updateHandleVerify = new YbHandleVerifyData();
             updateHandleVerify.setId(ybHandleVerifyData.getId());
-            updateHandleVerify.setState(3);
+            updateHandleVerify.setState(YbDefaultValue.VERIFYDATASTATE_3);
             updateHandleVerify.setModifyUserId(uId);
             updateHandleVerify.setModifyTime(thisDate);
             updateHandleVerify.setSendPersonId(uId);
@@ -203,12 +197,68 @@ public class YbHandleVerifyDataServiceImpl extends ServiceImpl<YbHandleVerifyDat
             ybAppealManage.setCreateUserId(uId);
             ybAppealManage.setCreateTime(thisDate);
 
-            ybAppealManage.setSourceType(1);
-            ybAppealManage.setAcceptState(1);
+            ybAppealManage.setSourceType(YbDefaultValue.SOURCETYPE_1);
+            ybAppealManage.setAcceptState(YbDefaultValue.ACCEPTSTATE_1);
             ybAppealManage.setDataType(ybHandleVerifyData.getDataType());
 
             updateHandleVerifyList.add(updateHandleVerify);
             appealManageList.add(ybAppealManage);
+        }
+
+        if (appealManageList.size() > 0) {
+            this.updateBatchById(updateHandleVerifyList);
+            this.iYbAppealManageService.saveBatch(appealManageList);
+        }
+    }
+
+    @Override
+    @Transactional
+    public void updateAllSendStates(String applyDateStr,Integer dataType,Integer state, Long uId, String Uname) {
+        Date thisDate = new java.sql.Timestamp(new Date().getTime());
+        int day = iComConfiguremanageService.getConfigDay();
+        List<YbHandleVerifyData> updateHandleVerifyList = new ArrayList<>();
+        List<YbAppealManage> appealManageList = new ArrayList<>();
+        Date addDate = DataTypeHelpers.addDateMethod(thisDate, day);
+
+        List<YbHandleVerifyData>  list = this.baseMapper.findHandleVerifyDataList(applyDateStr, dataType, state);
+
+        for (YbHandleVerifyData ybHandleVerifyData : list) {
+            if(ybHandleVerifyData.getState() != YbDefaultValue.VERIFYDATASTATE_3) {
+                //更新
+                YbHandleVerifyData updateHandleVerify = new YbHandleVerifyData();
+                updateHandleVerify.setId(ybHandleVerifyData.getId());
+                updateHandleVerify.setState(YbDefaultValue.VERIFYDATASTATE_3);
+                updateHandleVerify.setModifyUserId(uId);
+                updateHandleVerify.setModifyTime(thisDate);
+                updateHandleVerify.setSendPersonId(uId);
+                updateHandleVerify.setSendPersonName(Uname);
+                updateHandleVerify.setSendDate(thisDate);
+                updateHandleVerify.setOperateDate(thisDate);
+                //插入申诉管理
+                YbAppealManage ybAppealManage = new YbAppealManage();
+                ybAppealManage.setId(UUID.randomUUID().toString());
+                ybAppealManage.setVerifyId(ybHandleVerifyData.getId());
+                ybAppealManage.setVerifySendId(ybHandleVerifyData.getVerifyId());
+                ybAppealManage.setApplyDataId(ybHandleVerifyData.getApplyDataId());
+                ybAppealManage.setReadyDeptCode(ybHandleVerifyData.getDeptCode());
+                ybAppealManage.setReadyDeptName(ybHandleVerifyData.getDeptName());
+                ybAppealManage.setReadyDoctorCode(ybHandleVerifyData.getDoctorCode());
+                ybAppealManage.setReadyDoctorName(ybHandleVerifyData.getDoctorName());
+                ybAppealManage.setOperateDate(thisDate);
+                ybAppealManage.setOperateProcess("发送操作-待申诉");
+                ybAppealManage.setEnableDate(addDate);
+
+                ybAppealManage.setIsDeletemark(1);
+                ybAppealManage.setCreateUserId(uId);
+                ybAppealManage.setCreateTime(thisDate);
+
+                ybAppealManage.setSourceType(YbDefaultValue.SOURCETYPE_1);
+                ybAppealManage.setAcceptState(YbDefaultValue.ACCEPTSTATE_1);
+                ybAppealManage.setDataType(ybHandleVerifyData.getDataType());
+
+                updateHandleVerifyList.add(updateHandleVerify);
+                appealManageList.add(ybAppealManage);
+            }
         }
 
         if (appealManageList.size() > 0) {

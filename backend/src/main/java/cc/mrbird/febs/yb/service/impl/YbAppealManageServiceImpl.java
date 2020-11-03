@@ -1,7 +1,6 @@
 package cc.mrbird.febs.yb.service.impl;
 
 import cc.mrbird.febs.com.controller.DataTypeHelpers;
-import cc.mrbird.febs.com.entity.ComConfiguremanage;
 import cc.mrbird.febs.com.service.IComConfiguremanageService;
 import cc.mrbird.febs.common.domain.QueryRequest;
 import cc.mrbird.febs.common.utils.SortUtil;
@@ -9,6 +8,7 @@ import cc.mrbird.febs.yb.dao.YbAppealManageMapper;
 import cc.mrbird.febs.yb.entity.YbAppealManage;
 import cc.mrbird.febs.yb.entity.YbAppealManageView;
 import cc.mrbird.febs.yb.entity.YbAppealResult;
+import cc.mrbird.febs.yb.entity.YbDefaultValue;
 import cc.mrbird.febs.yb.service.IYbAppealManageService;
 import cc.mrbird.febs.yb.service.IYbAppealResultService;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -110,15 +110,15 @@ public class YbAppealManageServiceImpl extends ServiceImpl<YbAppealManageMapper,
             Date thisDate = new Date();
             item.setModifyUserId(uId);
             item.setModifyTime(thisDate);
-            if (item.getAcceptState() == 2) {
+            if (item.getAcceptState() == YbDefaultValue.ACCEPTSTATE_2) {
                 item.setOperateDate(thisDate);
                 item.setOperateProcess("接受申请-已拒绝");
-            } else if (item.getAcceptState() == 1) {
+            } else if (item.getAcceptState() == YbDefaultValue.ACCEPTSTATE_1) {
                 item.setOperateDate(thisDate);
                 item.setOperateProcess("接受申请-待申诉");
             }
             LambdaQueryWrapper<YbAppealManage> queryWrapper = new LambdaQueryWrapper<>();
-            queryWrapper.eq(YbAppealManage::getAcceptState, 0);
+            queryWrapper.eq(YbAppealManage::getAcceptState, YbDefaultValue.ACCEPTSTATE_0);
             queryWrapper.eq(YbAppealManage::getId, item.getId());
             this.baseMapper.update(item, queryWrapper);
         }
@@ -142,7 +142,8 @@ public class YbAppealManageServiceImpl extends ServiceImpl<YbAppealManageMapper,
         newAppealResult.setCreateUserId(uId);
         newAppealResult.setCreateTime(thisDate);
         newAppealResult.setState(1);
-        newAppealResult.setRepayState(1);
+        newAppealResult.setRepayState(YbDefaultValue.RESULTREPAYSTATE_1);
+
         newAppealResult.setIsDeletemark(1);
         return this.iYbAppealResultService.saveOrUpdate(newAppealResult);
     }
@@ -156,11 +157,11 @@ public class YbAppealManageServiceImpl extends ServiceImpl<YbAppealManageMapper,
         List<YbAppealManage> manageList = this.list(queryWrapper);
         if (manageList.size() > 0) {
             YbAppealManage am = manageList.get(0);
-            if (am.getAcceptState() == 1) {
+            if (am.getAcceptState() == YbDefaultValue.ACCEPTSTATE_1) {
                 Date thisDate = new Date();
                 boolean isTrue = true;
                 YbAppealManage updateAppealManage = new YbAppealManage();
-                if (ybAppealManage.getAcceptState() == 6) {
+                if (ybAppealManage.getAcceptState() == YbDefaultValue.ACCEPTSTATE_6) {
                     isTrue = this.createUpdateAcceptAppealResult(ybAppealManage, thisDate, uId, Uname);
 
                     updateAppealManage.setOperateProcess("待申诉-已申诉");
@@ -172,7 +173,7 @@ public class YbAppealManageServiceImpl extends ServiceImpl<YbAppealManageMapper,
                 updateAppealManage.setOperateReason(ybAppealManage.getOperateReason());
                 updateAppealManage.setAcceptState(ybAppealManage.getAcceptState());
                 if (isTrue) {
-                    queryWrapper.eq(YbAppealManage::getAcceptState, 1);
+                    queryWrapper.eq(YbAppealManage::getAcceptState, YbDefaultValue.ACCEPTSTATE_1);
                     int count = this.baseMapper.update(updateAppealManage, queryWrapper);
                     if (count == 0) {
                         message = "复议申诉状态更新失败.";
@@ -199,7 +200,7 @@ public class YbAppealManageServiceImpl extends ServiceImpl<YbAppealManageMapper,
         Date thisDate = new Date();
         newAppealManage.setApplyDataId(ybAppealManage.getApplyDataId());
         newAppealManage.setVerifyId(ybAppealManage.getVerifyId());
-        newAppealManage.setAcceptState(0);
+        newAppealManage.setAcceptState(YbDefaultValue.ACCEPTSTATE_0);
         newAppealManage.setIsDeletemark(1);
         newAppealManage.setCreateUserId(uId);
         newAppealManage.setCreateTime(thisDate);
@@ -207,12 +208,12 @@ public class YbAppealManageServiceImpl extends ServiceImpl<YbAppealManageMapper,
         newAppealManage.setSourceType(ybAppealManage.getSourceType());
         newAppealManage.setVerifySendId(ybAppealManage.getVerifyId());
         newAppealManage.setDataType(ybAppealManage.getDataType());
-        int day = getDay();
+        int day = iComConfiguremanageService.getConfigDay();
         Date enableDate = this.addDateMethod(thisDate, day);
         newAppealManage.setEnableDate(enableDate);
         newAppealManage.setOperateProcess("变更申请-创建");
         //状态改为4  医保已审核
-        ybAppealManage.setAcceptState(4);
+        ybAppealManage.setAcceptState(YbDefaultValue.ACCEPTSTATE_4);
         ybAppealManage.setModifyUserId(uId);
         ybAppealManage.setModifyTime(thisDate);
         ybAppealManage.setOperateDate(thisDate);
@@ -222,7 +223,7 @@ public class YbAppealManageServiceImpl extends ServiceImpl<YbAppealManageMapper,
             ybAppealManage.setRefuseName(Uname);
             ybAppealManage.setRefuseDate(thisDate);
             ybAppealManage.setOperateProcess("变更申请-拒绝");
-            ybAppealManage.setApprovalState(type);
+            ybAppealManage.setApprovalState(YbDefaultValue.APPROVALSTATE_2);
 
             newAppealManage.setReadyDeptCode(ybAppealManage.getReadyDeptCode());
             newAppealManage.setReadyDeptName(ybAppealManage.getReadyDeptName());
@@ -238,28 +239,14 @@ public class YbAppealManageServiceImpl extends ServiceImpl<YbAppealManageMapper,
             newAppealManage.setReadyDoctorName(ybAppealManage.getChangeDoctorName());
             ybAppealManage.setRefuseReason("");
             ybAppealManage.setOperateProcess("变更申请-同意");
-            ybAppealManage.setApprovalState(type);
+            ybAppealManage.setApprovalState(YbDefaultValue.APPROVALSTATE_1);
 
             LambdaQueryWrapper<YbAppealManage> queryWrapper = new LambdaQueryWrapper<>();
-            queryWrapper.eq(YbAppealManage::getAcceptState, 2);
+            queryWrapper.eq(YbAppealManage::getAcceptState, YbDefaultValue.ACCEPTSTATE_2);
             queryWrapper.eq(YbAppealManage::getId, ybAppealManage.getId());
             this.baseMapper.update(ybAppealManage, queryWrapper);
         }
         this.createYbAppealManage(newAppealManage);
-    }
-
-    private int getDay() {
-        LambdaQueryWrapper<ComConfiguremanage> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(ComConfiguremanage::getConfigureType, 1);
-        List<ComConfiguremanage> listFile = iComConfiguremanageService.list(queryWrapper);
-        int day = 2;
-        if (listFile.size() > 0) {
-            int intField = listFile.get(0).getIntField();
-            if (intField > 0) {
-                day = intField;
-            }
-        }
-        return day;
     }
 
     private Date addDateMethod(Date date, int day) {
@@ -281,7 +268,7 @@ public class YbAppealManageServiceImpl extends ServiceImpl<YbAppealManageMapper,
         Date thisDate = new Date();
         YbAppealManage updateAppealManage = new YbAppealManage();
         updateAppealManage.setId(ybAppealManage.getId());
-        updateAppealManage.setAcceptState(3);
+        updateAppealManage.setAcceptState(YbDefaultValue.ACCEPTSTATE_3);
         //updateAppealManage.setOperateReason("管理员更改");
         ybAppealManage.setOperateProcess("管理员更改");
         updateAppealManage.setOperateDate(thisDate);
@@ -292,7 +279,7 @@ public class YbAppealManageServiceImpl extends ServiceImpl<YbAppealManageMapper,
         //方法 更改状态为0的数据 业务更改 管理员更改状态为1的数据 所有不调用该方法
         //方法 更改状态为1的数据
         LambdaQueryWrapper<YbAppealManage> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(YbAppealManage::getAcceptState, 1);
+        queryWrapper.eq(YbAppealManage::getAcceptState, YbDefaultValue.ACCEPTSTATE_1);
         queryWrapper.eq(YbAppealManage::getId, ybAppealManage.getId());
         this.baseMapper.update(updateAppealManage, queryWrapper);
 
@@ -303,13 +290,13 @@ public class YbAppealManageServiceImpl extends ServiceImpl<YbAppealManageMapper,
         newAppealManage.setApplyDataId(ybAppealManage.getApplyDataId());
         newAppealManage.setVerifyId(ybAppealManage.getVerifyId());
 
-        int day = getDay();
+        int day = iComConfiguremanageService.getConfigDay();
         Date enableDate = this.addDateMethod(thisDate, day);
         newAppealManage.setEnableDate(enableDate);
         //赋值 新增状态为0的数据 业务更改 管理员更改状态为1的数据 所有不赋值为0
         //newAppealManage.setAcceptState(0);
         //因业务需求管理员更改状态为1(接受)的数据
-        newAppealManage.setAcceptState(1);
+        newAppealManage.setAcceptState(YbDefaultValue.ACCEPTSTATE_1);
         newAppealManage.setIsDeletemark(1);
         newAppealManage.setCreateUserId(uId);
         newAppealManage.setCreateTime(thisDate);
@@ -329,7 +316,7 @@ public class YbAppealManageServiceImpl extends ServiceImpl<YbAppealManageMapper,
     @Transactional
     public void updateExamineStates(YbAppealManage ybAppealManage) {
         LambdaQueryWrapper<YbAppealManage> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(YbAppealManage::getAcceptState, 2);
+        queryWrapper.eq(YbAppealManage::getAcceptState, YbDefaultValue.ACCEPTSTATE_2);
         queryWrapper.eq(YbAppealManage::getId, ybAppealManage.getId());
         this.baseMapper.update(ybAppealManage, queryWrapper);
     }
@@ -338,12 +325,12 @@ public class YbAppealManageServiceImpl extends ServiceImpl<YbAppealManageMapper,
     public List<YbAppealManage> getUpdateAppealManageList(List<YbAppealManageView> appealManageList, Date endDateOne){
         List<YbAppealManage> updateAppealManageList = new ArrayList<>();
         Date thisDate = new java.sql.Timestamp(new Date().getTime());
-        int day = getDay();
+        int day = iComConfiguremanageService.getConfigDay();
         Date addDate = DataTypeHelpers.addDateMethod(thisDate, day);
         for(YbAppealManageView item : appealManageList){
             YbAppealManage updateAppealManage = new YbAppealManage();
             updateAppealManage.setId(item.getId());
-            updateAppealManage.setAcceptState(1);
+            updateAppealManage.setAcceptState(YbDefaultValue.ACCEPTSTATE_1);
             updateAppealManage.setEnableDate(addDate);
             updateAppealManageList.add(updateAppealManage);
         }

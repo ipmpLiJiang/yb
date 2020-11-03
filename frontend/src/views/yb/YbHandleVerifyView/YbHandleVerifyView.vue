@@ -20,7 +20,7 @@
                 :format="monthFormat"
               />
             </a-col>
-            <a-col :span=7>
+            <a-col :span=5>
               <a-input-search placeholder="请输入关键字" v-model="searchText" style="width: 200px" enter-button @search="searchTable" />
             </a-col>
             <a-col :span=3 v-show="tableSelectKey==1?true:false">
@@ -35,6 +35,16 @@
                 cancelText="取消"
               >
                 <a-button type="primary">批量发送</a-button>
+              </a-popconfirm>
+            </a-col>
+            <a-col :span=3 v-show="tableSelectKey==1?true:false">
+              <a-popconfirm
+                title="确定全部发送？"
+                @confirm="batchSendA"
+                okText="确定"
+                cancelText="取消"
+              >
+                <a-button type="primary">全部发送</a-button>
               </a-popconfirm>
             </a-col>
             <a-col :span=2>
@@ -115,7 +125,7 @@ export default {
   methods: {
     moment,
     formatDate () {
-      let datemonth = moment().format('YYYY-MM')
+      let datemonth = moment().subtract(1, 'months').format('YYYY-MM')
       return datemonth
     },
     monthChange (date, dateString) {
@@ -141,6 +151,9 @@ export default {
     },
     batchSend () {
       this.$refs.ybHandleVerifyDataSend.batchSend()
+    },
+    batchSendA () {
+      this.$refs.ybHandleVerifyDataSend.batchSendA()
     },
     callback (key) {
       this.tableSelectKey = key

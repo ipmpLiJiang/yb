@@ -200,8 +200,8 @@ public class ComFileController extends BaseController {
                 File[] fileUtils = new File[list.size()];
                 for (int i = 0; i < list.size(); i++) {
                     ComFile comFile = list.get(i);
-                    String strId = comFile.getRefTabId();
-                    File file = new File(address + strId + strSourceType + "/" + comFile.getServerName());
+                    String t = comFile.getRefTabTable();
+                    File file = new File(address + t + "/" + strSourceType + "/" + comFile.getServerName());
                     fileUtils[i] = file;
                 }
                 ZipUtil.zip(FileUtil.file(filePath), false, fileUtils);
@@ -257,10 +257,9 @@ public class ComFileController extends BaseController {
             int sourceType = inUploadFile.getSourceType();
             String strSourceType = sourceType == 0 ? "In" : "Out";
             //String deptName = inUploadFile.getDeptName() + strId + strSourceType;
-            String deptName = strId + strSourceType;
             if (list.size() > 0) {
                 for (ComFile item : list) {
-                    String fileUrl = febsProperties.getBaseUrl() + "/uploadFile/" + inUploadFile.getApplyDateStr() + "/" + deptName + "/" + item.getServerName();
+                    String fileUrl = febsProperties.getBaseUrl() + "/uploadFile/" + inUploadFile.getApplyDateStr() + "/" + item.getRefTabTable() + "/" + strSourceType + "/" + item.getServerName();
                     OutComFile outComFile = new OutComFile();
                     outComFile.setUid(item.getId());
                     outComFile.setName(item.getServerName());
@@ -300,10 +299,11 @@ public class ComFileController extends BaseController {
             newFileName += "-" + String.valueOf(num);
         }
         String strId = inUploadFile.getId();
+        User currentUser = FebsUtil.getCurrentUser();
         int sourceType = inUploadFile.getSourceType();
         String strSourceType = sourceType == 0 ? "In" : "Out";
         // String deptName = inUploadFile.getDeptName() + strId + strSourceType;
-        String deptName = strId + strSourceType;
+        String deptName = currentUser.getUsername() + "/" + strSourceType;
         String fileName2 = file.getOriginalFilename();  // 文件名
         String suffixName = fileName2.substring(fileName2.lastIndexOf("."));  // 后缀名
         String filePath = febsProperties.getUploadPath(); // 上传后的路径
@@ -325,7 +325,7 @@ public class ComFileController extends BaseController {
         cf.setClientName(fileName2);//客户端的名称
         cf.setServerName(fileName);
         cf.setRefTabId(strId);
-        cf.setRefTabTable(inUploadFile.getRefTab());
+        cf.setRefTabTable(currentUser.getUsername());
         iComFileService.createComFile(cf);
         String fileUrl = febsProperties.getBaseUrl() + "/uploadFile/" + inUploadFile.getApplyDateStr() + "/" + deptName + "/" + fileName;
 
@@ -350,8 +350,9 @@ public class ComFileController extends BaseController {
                 String strRefId = comFile.getRefTabId();
                 int sourceType = inUploadFile.getSourceType();
                 String strSourceType = sourceType == 0 ? "In" : "Out";
+                User currentUser = FebsUtil.getCurrentUser();
                 //String deptName = inUploadFile.getDeptName() + strRefId + strSourceType;
-                String deptName = strRefId + strSourceType;
+                String deptName = currentUser.getUsername() + "/" + strSourceType;
                 String filePath = febsProperties.getUploadPath(); // 上传后的路径
                 String fileUrl = filePath + inUploadFile.getApplyDateStr() + "/" + deptName + "/" + inUploadFile.getSerName();
                 boolean blFile = deleteFile(fileUrl);
@@ -383,7 +384,7 @@ public class ComFileController extends BaseController {
                 file.delete();
                 flag = true;
             }
-        }else{
+        } else {
             flag = true;
         }
         return flag;

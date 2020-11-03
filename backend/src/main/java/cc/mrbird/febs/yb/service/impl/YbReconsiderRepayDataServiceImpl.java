@@ -224,9 +224,9 @@ public class YbReconsiderRepayDataServiceImpl extends ServiceImpl<YbReconsiderRe
                                 }
 
                                 if (repaymentPrice.compareTo(rAd.getDeductPrice()) >= 0) {
-                                    updateResult.setRepayState(1);
+                                    updateResult.setRepayState(YbDefaultValue.RESULTREPAYSTATE_1);
                                 } else {
-                                    updateResult.setRepayState(3);
+                                    updateResult.setRepayState(YbDefaultValue.RESULTREPAYSTATE_3);
                                 }
 
                                 updateResetData.setRepaymentPrice(repaymentPrice);
@@ -235,8 +235,8 @@ public class YbReconsiderRepayDataServiceImpl extends ServiceImpl<YbReconsiderRe
                                 updateRepayData.setResultId(searchResultList.get(0).getId());
 
                                 updateRepayData.setApplyDataId(searchResultList.get(0).getApplyDataId());
-                                updateRepayData.setWarnType(1);
-                                updateRepayData.setSeekState(1);
+                                updateRepayData.setWarnType(YbDefaultValue.WARNTYPE_1);
+                                updateRepayData.setSeekState(YbDefaultValue.SEEKSTATE_1);
 
                                 updateResetDataList.add(updateResetData);
                                 updateRepayDataList.add(updateRepayData);
@@ -291,7 +291,7 @@ public class YbReconsiderRepayDataServiceImpl extends ServiceImpl<YbReconsiderRe
         queryWrapperRay.eq(YbReconsiderRepayData::getSeekState, ybReconsiderRepayData.getSeekState());
         queryWrapperRay.eq(YbReconsiderRepayData::getState, ybReconsiderRepayData.getState());
         queryWrapperRay.eq(YbReconsiderRepayData::getBelongDateStr, ybReconsiderRepayData.getBelongDateStr());
-        int warnType = 0;
+
         List<YbReconsiderRepayData> repayDataList = this.list(queryWrapperRay);
         if (repayDataList.size() > 0) {
             List<YbReconsiderResetData> resetDataList = this.iYbReconsiderResetDataService.findResetNotExistsRepayByApplyDates(ybReconsiderRepayData.getBelongDateStr(), ybReconsiderRepayData.getDataType());
@@ -359,9 +359,9 @@ public class YbReconsiderRepayDataServiceImpl extends ServiceImpl<YbReconsiderRe
                                 }
 
                                 if (repaymentPrice.compareTo(rAd.getDeductPrice()) >= 0) {
-                                    updateResult.setRepayState(1);
+                                    updateResult.setRepayState(YbDefaultValue.RESULTREPAYSTATE_1);
                                 } else {
-                                    updateResult.setRepayState(3);
+                                    updateResult.setRepayState(YbDefaultValue.RESULTREPAYSTATE_3);
                                 }
 
                                 updateResetData.setRepaymentPrice(repaymentPrice);
@@ -370,9 +370,9 @@ public class YbReconsiderRepayDataServiceImpl extends ServiceImpl<YbReconsiderRe
                                 updateRepayData.setResetDataId(rAd.getId());
                                 updateRepayData.setResultId(searchResultList.get(0).getId());
                                 updateRepayData.setApplyDataId(searchResultList.get(0).getApplyDataId());
-                                updateRepayData.setWarnType(2);//字段匹配
-                                updateRepayData.setUpdateType(1);
-                                updateRepayData.setSeekState(1);
+                                updateRepayData.setWarnType(YbDefaultValue.WARNTYPE_2);//字段匹配
+                                updateRepayData.setUpdateType(YbDefaultValue.UPDATETYPE_1);
+                                updateRepayData.setSeekState(YbDefaultValue.SEEKSTATE_1);
 
                                 updateResetDataList.add(updateResetData);
                                 updateRepayDataList.add(updateRepayData);
@@ -380,8 +380,8 @@ public class YbReconsiderRepayDataServiceImpl extends ServiceImpl<YbReconsiderRe
                             }
                         }
                     } else if (searchResetDataList.size() == 0) {
-                        updateRepayData.setState(2);
-                        updateRepayData.setWarnType(4);//无匹配
+                        updateRepayData.setState(YbDefaultValue.REPAYDATA_STATE_2);
+                        updateRepayData.setWarnType(YbDefaultValue.WARNTYPE_4);//无匹配
                         updateRepayDataList.add(updateRepayData);
                     } else {
                         String orderNumberNews = "";
@@ -393,8 +393,8 @@ public class YbReconsiderRepayDataServiceImpl extends ServiceImpl<YbReconsiderRe
                             }
                         }
                         updateRepayData.setOrderNumberNew(orderNumberNews);
-                        updateRepayData.setState(1);
-                        updateRepayData.setWarnType(3);//字段匹配多个
+                        updateRepayData.setState(YbDefaultValue.REPAYDATA_STATE_1);
+                        updateRepayData.setWarnType(YbDefaultValue.WARNTYPE_3);//字段匹配多个
                         updateRepayDataList.add(updateRepayData);
                     }
                 }
@@ -437,9 +437,9 @@ public class YbReconsiderRepayDataServiceImpl extends ServiceImpl<YbReconsiderRe
         String message = "";
         YbReconsiderRepayData repayData = this.baseMapper.selectById(repayId);
         if (repayData != null) {
-            if (repayData.getSeekState() == 0) {
+            if (repayData.getSeekState() == YbDefaultValue.SEEKSTATE_0) {
                 List<YbReconsiderRepayData> dataList = new ArrayList<>();
-                if (repayData.getWarnType() == 3) {
+                if (repayData.getWarnType() == YbDefaultValue.WARNTYPE_3) {
                     LambdaQueryWrapper<YbReconsiderRepayData> queryWrapper = new LambdaQueryWrapper<>();
                     queryWrapper.eq(YbReconsiderRepayData::getIsDeletemark, 1);//1是未删 0是已删
                     queryWrapper.eq(YbReconsiderRepayData::getPid, repayData.getPid());
@@ -447,24 +447,24 @@ public class YbReconsiderRepayDataServiceImpl extends ServiceImpl<YbReconsiderRe
                     queryWrapper.eq(YbReconsiderRepayData::getDataType, repayData.getDataType());
                     queryWrapper.eq(YbReconsiderRepayData::getOrderNumberNew, repayData.getOrderNumberNew());
                     queryWrapper.ne(YbReconsiderRepayData::getId, repayData.getId());
-                    queryWrapper.eq(YbReconsiderRepayData::getWarnType, 3);
-                    queryWrapper.eq(YbReconsiderRepayData::getState, 1);
-                    queryWrapper.eq(YbReconsiderRepayData::getSeekState, 0);
+                    queryWrapper.eq(YbReconsiderRepayData::getWarnType, YbDefaultValue.WARNTYPE_3);
+                    queryWrapper.eq(YbReconsiderRepayData::getState, YbDefaultValue.REPAYDATA_STATE_1);
+                    queryWrapper.eq(YbReconsiderRepayData::getSeekState, YbDefaultValue.SEEKSTATE_0);
                     dataList = this.list(queryWrapper);
                 }
                 YbAppealResult appealResult = this.iYbAppealResultService.getById(resultId);
                 if (appealResult != null) {
                     YbReconsiderResetData reconsiderResetData = this.iYbReconsiderResetDataService.getById(appealResult.getResetDataId());
-                    if (appealResult.getRepayState() == 2 || appealResult.getRepayState() == 3) {
+                    if (appealResult.getRepayState() == YbDefaultValue.RESULTREPAYSTATE_2 || appealResult.getRepayState() == YbDefaultValue.RESULTREPAYSTATE_3) {
                         YbReconsiderRepayData updateRepayData = new YbReconsiderRepayData();
                         updateRepayData.setId(repayData.getId());
-                        updateRepayData.setSeekState(1);
-                        updateRepayData.setWarnType(5);//异常匹配(字段匹配多个，选择一个匹配，在异常数据中匹配)
+                        updateRepayData.setSeekState(YbDefaultValue.SEEKSTATE_1);
+                        updateRepayData.setWarnType(YbDefaultValue.WARNTYPE_5);//异常匹配(字段匹配多个，选择一个匹配，在异常数据中匹配)
                         updateRepayData.setResetDataId(reconsiderResetData.getId());
                         updateRepayData.setResultId(appealResult.getId());
                         updateRepayData.setApplyDataId(appealResult.getApplyDataId());
-                        updateRepayData.setUpdateType(1);
-                        updateRepayData.setState(0);
+                        updateRepayData.setUpdateType(YbDefaultValue.UPDATETYPE_1);
+                        updateRepayData.setState(YbDefaultValue.REPAYDATA_STATE_0);
                         updateRepayData.setOrderNumberNew(reconsiderResetData.getOrderNumber());
 
                         YbAppealResult updateResult = new YbAppealResult();
@@ -488,12 +488,12 @@ public class YbReconsiderRepayDataServiceImpl extends ServiceImpl<YbReconsiderRe
                         udpateResetData.setRepaymentPrice(repaymentPrice);
 
                         if (repaymentPrice.compareTo(reconsiderResetData.getDeductPrice()) >= 0) {
-                            updateResult.setRepayState(1);
+                            updateResult.setRepayState(YbDefaultValue.RESULTREPAYSTATE_1);
                         } else {
-                            updateResult.setRepayState(3);
+                            updateResult.setRepayState(YbDefaultValue.RESULTREPAYSTATE_3);
                         }
                         List<YbReconsiderRepayData> updateRepayDataList = new ArrayList<>();
-                        if (repayData.getWarnType() == 3 && dataList != null) {
+                        if (repayData.getWarnType() == YbDefaultValue.WARNTYPE_3 && dataList != null) {
                             if (dataList.size() > 0) {
                                 for (YbReconsiderRepayData rrd : dataList) {
                                     if (rrd.getOrderNumberNew() != null) {

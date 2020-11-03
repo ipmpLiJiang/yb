@@ -99,5 +99,8 @@ public class YbReconsiderPriorityLevelServiceImpl extends ServiceImpl<YbReconsid
         this.baseMapper.deleteBatchIds(list);
     }
 
-
+    @Override
+    public List<YbReconsiderPriorityLevel> findReconsiderPriorityLevelList(){
+        return  this.list();
+    }
 }

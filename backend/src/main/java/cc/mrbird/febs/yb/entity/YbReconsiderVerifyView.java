@@ -436,6 +436,14 @@ public class YbReconsiderVerifyView implements Serializable {
     private Integer orderNum;
 
     /**
+     * 是否核对
+     */
+    @TableField("isVerify")
+    @ExcelField(value = "是否核对")
+    private Integer isVerify;
+
+
+    /**
      * 备注
      */
     @TableField("COMMENTS")
@@ -600,6 +608,8 @@ public class YbReconsiderVerifyView implements Serializable {
     public static final String ORDERNUMBER = "orderNumber";
 
     public static final String ORDERNUM = "orderNum";
+
+    public static final String ISVERIFY = "isVerify";
 
     public static final String COMMENTS = "COMMENTS";
 

@@ -6,6 +6,7 @@ import cc.mrbird.febs.common.utils.SortUtil;
 import cc.mrbird.febs.yb.dao.YbAppealResultViewMapper;
 import cc.mrbird.febs.yb.entity.YbAppealResultDownLoad;
 import cc.mrbird.febs.yb.entity.YbAppealResultView;
+import cc.mrbird.febs.yb.entity.YbDefaultValue;
 import cc.mrbird.febs.yb.service.IYbAppealResultService;
 import cc.mrbird.febs.yb.service.IYbAppealResultViewService;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -47,32 +48,32 @@ public class YbAppealResultViewServiceImpl extends ServiceImpl<YbAppealResultVie
             String sql = "(";
             sql += " applyDateStr ='" + ybAppealResultView.getApplyDateStr() + "' ";
             if (ybAppealResultView.getTypeno() != null) {
-                if (ybAppealResultView.getTypeno() == 1) {
-                    sql +=  " and typeno = 1";
+                if (ybAppealResultView.getTypeno() == YbDefaultValue.TYPENO_1) {
+                    sql += " and typeno = " + YbDefaultValue.TYPENO_1;
                 } else {
-                    sql +=  " and typeno = 2";
+                    sql += " and typeno = "+ YbDefaultValue.TYPENO_2;
                 }
             }
             if (ybAppealResultView.getDataType() != null) {
-                if (ybAppealResultView.getDataType() == 0) {
-                    sql +=  " and dataType = 0";
+                if (ybAppealResultView.getDataType() == YbDefaultValue.DATATYPE_0) {
+                    sql += " and dataType = "+ YbDefaultValue.DATATYPE_0;
                 } else {
-                    sql +=  " and dataType = 1";
+                    sql += " and dataType = "+ YbDefaultValue.DATATYPE_1;
                 }
             }
             if (ybAppealResultView.getSourceType() != null) {
-                sql +=  " and sourceType = " + ybAppealResultView.getSourceType();
+                sql += " and sourceType = " + ybAppealResultView.getSourceType();
             }
             if (ybAppealResultView.getState() != null) {
                 if (ybAppealResultView.getState() == 12) {
-                    sql +=  " and STATE IN (1,2)";
+                    sql += " and STATE IN (1,2)";
                 }
-                if (ybAppealResultView.getState() == 1) {
-                    sql +=  " and STATE = 1";
+                if (ybAppealResultView.getState() == YbDefaultValue.RESULTSTATE_1) {
+                    sql += " and STATE = "+ YbDefaultValue.RESULTSTATE_1;
                 }
             }
 
-            sql +=  ")";
+            sql += ")";
             if (ybAppealResultView.getCurrencyField() != null && !"".equals(ybAppealResultView.getCurrencyField())) {
                 if (ybAppealResultView.getDataType() != null) {
                     if (ybAppealResultView.getDataType() == 0) {
@@ -122,7 +123,7 @@ public class YbAppealResultViewServiceImpl extends ServiceImpl<YbAppealResultVie
             queryWrapper.eq(YbAppealResultView::getDataType, ybAppealResultView.getDataType());
             queryWrapper.eq(YbAppealResultView::getSourceType, ybAppealResultView.getSourceType());
             queryWrapper.eq(YbAppealResultView::getState, ybAppealResultView.getState());
-            if (ybAppealResultView.getDataType() == 0) {
+            if (ybAppealResultView.getDataType() == YbDefaultValue.DATATYPE_0) {
                 queryWrapper.eq(YbAppealResultView::getProjectCode, ybAppealResultView.getProjectCode());
                 queryWrapper.eq(YbAppealResultView::getProjectName, ybAppealResultView.getProjectName());
             } else {
@@ -147,13 +148,13 @@ public class YbAppealResultViewServiceImpl extends ServiceImpl<YbAppealResultVie
             String sql = "(";
             sql += " applyDateStr ='" + ybAppealResultView.getApplyDateStr() + "' ";
             if (ybAppealResultView.getSourceType() != null) {
-                sql +=  " and sourceType = " + ybAppealResultView.getSourceType();
+                sql += " and sourceType = " + ybAppealResultView.getSourceType();
             }
             if (ybAppealResultView.getState() != null) {
-                sql +=  " and STATE = " + ybAppealResultView.getState();
+                sql += " and STATE = " + ybAppealResultView.getState();
             }
 
-            sql +=  ")";
+            sql += ")";
             if (ybAppealResultView.getOrderNumber() != null && !"".equals(ybAppealResultView.getOrderNumber())) {
 
             }
@@ -211,10 +212,10 @@ public class YbAppealResultViewServiceImpl extends ServiceImpl<YbAppealResultVie
             String sql = "";
             sql += " applyDateStr ='" + ybAppealResultView.getApplyDateStr() + "'";
             if (ybAppealResultView.getTypeno() != null) {
-                if (ybAppealResultView.getTypeno() == 1) {
-                    sql += " and typeno = 1";
-                } else if (ybAppealResultView.getTypeno() == 2) {
-                    sql += " and typeno = 2";
+                if (ybAppealResultView.getTypeno() == YbDefaultValue.TYPENO_1) {
+                    sql += " and typeno = " + YbDefaultValue.TYPENO_1;
+                } else if (ybAppealResultView.getTypeno() == YbDefaultValue.TYPENO_2) {
+                    sql += " and typeno = " + YbDefaultValue.TYPENO_2;
                 }
             }
             if (ybAppealResultView.getState() != null) {
@@ -231,7 +232,7 @@ public class YbAppealResultViewServiceImpl extends ServiceImpl<YbAppealResultVie
             }
 
             if (ybAppealResultView.getSourceType() != null) {
-                sql +=  " and sourceType = " + ybAppealResultView.getSourceType();
+                sql += " and sourceType = " + ybAppealResultView.getSourceType();
             }
 
             if (ybAppealResultView.getArDeptName() != null) {
@@ -263,16 +264,16 @@ public class YbAppealResultViewServiceImpl extends ServiceImpl<YbAppealResultVie
             List<String> deptList = this.iYbAppealResultService.findAppealResultGroupDepts(ybAppealResultView);
 
             String f = "";
-            if (dataType == 0) {
+            if (dataType == YbDefaultValue.DATATYPE_0) {
                 f = "明细扣款_";
             } else {
                 f = "主单扣款_";
             }
 
             String typeName = "";
-            if (typeNo == 1) {
+            if (typeNo == YbDefaultValue.TYPENO_1) {
                 typeName = "_审核一_" + f;
-            } else if (typeNo == 2) {
+            } else if (typeNo == YbDefaultValue.TYPENO_2) {
                 typeName = "_审核二_" + f;
             } else {
                 typeName = "_手动复议_";

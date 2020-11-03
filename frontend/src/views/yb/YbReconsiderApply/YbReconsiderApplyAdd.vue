@@ -116,10 +116,10 @@ export default {
         }
       })
     },
-    setFormValues (toDate) {
+    setFormValues () {
       this.form.getFieldDecorator('applyDate')
       this.form.setFieldsValue({
-        applyDate: moment(toDate)
+        applyDate: moment(new Date()).subtract(1, 'months')
       })
     },
     setFields () {

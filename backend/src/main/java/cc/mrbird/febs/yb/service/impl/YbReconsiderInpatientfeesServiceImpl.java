@@ -77,7 +77,7 @@ public class YbReconsiderInpatientfeesServiceImpl extends ServiceImpl<YbReconsid
     @Transactional
     public void createYbReconsiderInpatientfees(YbReconsiderInpatientfees ybReconsiderInpatientfees) {
         ybReconsiderInpatientfees.setCreateTime(new Date());
-        if(ybReconsiderInpatientfees.getId() == null || "".equals(ybReconsiderInpatientfees.getId())) {
+        if (ybReconsiderInpatientfees.getId() == null || "".equals(ybReconsiderInpatientfees.getId())) {
             ybReconsiderInpatientfees.setId(UUID.randomUUID().toString());
         }
         ybReconsiderInpatientfees.setIsDeletemark(1);
@@ -96,6 +96,11 @@ public class YbReconsiderInpatientfeesServiceImpl extends ServiceImpl<YbReconsid
     public void deleteYbReconsiderInpatientfeess(String[] Ids) {
         List<String> list = Arrays.asList(Ids);
         this.baseMapper.deleteBatchIds(list);
+    }
+
+    @Override
+    public List<YbReconsiderInpatientfees> findReconsiderInpatientfeesLists(String applyDateStr){
+        return this.baseMapper.findReconsiderInpatientfeesList(applyDateStr);
     }
 
 

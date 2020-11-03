@@ -47,7 +47,7 @@ public class YbReconsiderResetResultViewServiceImpl extends ServiceImpl<YbRecons
             sql += ")";
 
             if (ybReconsiderResetResultView.getDataType() != null) {
-                if(ybReconsiderResetResultView.getDataType()==0) {
+                if (ybReconsiderResetResultView.getDataType() == 0) {
                     if (ybReconsiderResetResultView.getProjectName() != null) {
                         sql += " and projectName = '" + ybReconsiderResetResultView.getProjectName() + "'";
                     }
@@ -101,35 +101,35 @@ public class YbReconsiderResetResultViewServiceImpl extends ServiceImpl<YbRecons
     }
 
     @Override
-    public List<YbReconsiderResetResultView> findReconsiderResetResultViewList(YbReconsiderResetResultView ybReconsiderResetResultView){
+    public List<YbReconsiderResetResultView> findReconsiderResetResultViewList(YbReconsiderResetResultView ybReconsiderResetResultView) {
         List<YbReconsiderResetResultView> list = new ArrayList<>();
         LambdaQueryWrapper<YbReconsiderResetResultView> queryWrapper = new LambdaQueryWrapper<>();
-        if(ybReconsiderResetResultView.getApplyDateStr() !=null){
-            queryWrapper.eq(YbReconsiderResetResultView::getApplyDateStr,ybReconsiderResetResultView.getApplyDateStr());
+        if (ybReconsiderResetResultView.getApplyDateStr() != null) {
+            queryWrapper.eq(YbReconsiderResetResultView::getApplyDateStr, ybReconsiderResetResultView.getApplyDateStr());
         }
-        if(ybReconsiderResetResultView.getDataType() !=null){
-            queryWrapper.eq(YbReconsiderResetResultView::getDataType,ybReconsiderResetResultView.getDataType());
+        if (ybReconsiderResetResultView.getDataType() != null) {
+            queryWrapper.eq(YbReconsiderResetResultView::getDataType, ybReconsiderResetResultView.getDataType());
         }
-        if(ybReconsiderResetResultView.getDataType() !=null){
-            queryWrapper.eq(YbReconsiderResetResultView::getDataType,ybReconsiderResetResultView.getDataType());
+        if (ybReconsiderResetResultView.getDataType() != null) {
+            queryWrapper.eq(YbReconsiderResetResultView::getDataType, ybReconsiderResetResultView.getDataType());
         }
-        if(ybReconsiderResetResultView.getResetId() !=null){
-            queryWrapper.eq(YbReconsiderResetResultView::getResetId,ybReconsiderResetResultView.getResetId());
+        if (ybReconsiderResetResultView.getResetId() != null) {
+            queryWrapper.eq(YbReconsiderResetResultView::getResetId, ybReconsiderResetResultView.getResetId());
         }
-        if(ybReconsiderResetResultView.getId() !=null){
-            queryWrapper.eq(YbReconsiderResetResultView::getId,ybReconsiderResetResultView.getId());
+        if (ybReconsiderResetResultView.getId() != null) {
+            queryWrapper.eq(YbReconsiderResetResultView::getId, ybReconsiderResetResultView.getId());
         }
-        if(ybReconsiderResetResultView.getApplyDataId() !=null){
-            queryWrapper.eq(YbReconsiderResetResultView::getApplyDataId,ybReconsiderResetResultView.getApplyDataId());
+        if (ybReconsiderResetResultView.getApplyDataId() != null) {
+            queryWrapper.eq(YbReconsiderResetResultView::getApplyDataId, ybReconsiderResetResultView.getApplyDataId());
         }
-        if(ybReconsiderResetResultView.getArDeptCode() !=null){
-            queryWrapper.eq(YbReconsiderResetResultView::getArDeptCode,ybReconsiderResetResultView.getArDeptCode());
+        if (ybReconsiderResetResultView.getArDeptCode() != null) {
+            queryWrapper.eq(YbReconsiderResetResultView::getArDeptCode, ybReconsiderResetResultView.getArDeptCode());
         }
-        if(ybReconsiderResetResultView.getArDoctorCode() !=null){
-            queryWrapper.eq(YbReconsiderResetResultView::getArDoctorCode,ybReconsiderResetResultView.getArDoctorCode());
+        if (ybReconsiderResetResultView.getArDoctorCode() != null) {
+            queryWrapper.eq(YbReconsiderResetResultView::getArDoctorCode, ybReconsiderResetResultView.getArDoctorCode());
         }
-        list= this.list(queryWrapper);
-        return  list;
+        list = this.list(queryWrapper);
+        return list;
     }
 
     @Override
@@ -153,8 +153,6 @@ public class YbReconsiderResetResultViewServiceImpl extends ServiceImpl<YbRecons
         List<String> list = Arrays.asList(Ids);
         this.baseMapper.deleteBatchIds(list);
     }
-
-
 
 
 }

@@ -72,11 +72,14 @@
       </template>
       <a-row>
         <a-col :span=4 :offset=8>
-          <a-button
-              @click="handleSubmit"
-              type="primary"
-              :loading="loading"
-            >确定</a-button>
+          <a-popconfirm
+            title="确定提交？"
+            @confirm="handleSubmit"
+            okText="确定"
+            cancelText="取消"
+          >
+            <a-button type="primary" style="margin-right: .8rem">提交</a-button>
+          </a-popconfirm>
         </a-col>
         <a-col :span=12>
           <a-popconfirm

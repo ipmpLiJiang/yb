@@ -87,13 +87,13 @@ export default {
         title: '单据号',
         dataIndex: 'billNo',
         fixed: 'left',
-        width: 120
+        width: 110
       },
       {
         title: '项目名称',
         dataIndex: 'projectName',
         fixed: 'left',
-        width: 140
+        width: 210
       },
       {
         title: '扣除金额',
@@ -113,7 +113,7 @@ export default {
       {
         title: '科室名称',
         dataIndex: 'arDeptName',
-        width: 120
+        width: 130
       },
       {
         title: '医生姓名',

@@ -28,6 +28,21 @@ public class YbReconsiderPriorityLevel implements Serializable , Comparable<YbRe
 private static final long serialVersionUID=1L;
 
     /**
+     * 规则
+     */
+    public static final Integer PL_STATE_1 = 1;
+
+    /**
+     * 项目
+     */
+    public static final Integer PL_STATE_2 = 2;
+
+    /**
+     * 科室
+     */
+    public static final Integer PL_STATE_3 = 3;
+
+    /**
      * 复议规则id
      */
                                 @ExcelField(value ="复议规则id")

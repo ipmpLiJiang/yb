@@ -196,7 +196,7 @@
             justify="center"
             type="flex"
           >
-            <a-col>
+            <a-col :span=5>
               <a-upload
                 name="file"
                 accept=".xlsx,.xls"
@@ -207,6 +207,16 @@
                   <a-icon type="upload" /> 上传
                 </a-button>
               </a-upload>
+            </a-col>
+            <a-col :span=7>
+              <a-popconfirm
+                title="确定下载还款模板？"
+                @confirm="downloadFile"
+                okText="确定"
+                cancelText="取消"
+              >
+                <a-button type="primary">下载还款模板</a-button>
+              </a-popconfirm>
             </a-col>
           </a-row>
         </div>
@@ -367,7 +377,7 @@ export default {
   methods: {
     moment,
     formatDate () {
-      let datemonth = moment().format('YYYY-MM')
+      let datemonth = moment().subtract(1, 'months').format('YYYY-MM')
       return datemonth
     },
     monthChange (date, dateString) {
@@ -421,6 +431,10 @@ export default {
     },
     oncreateTimeToChange (date, dateString) {
       this.queryParams.createTimeTo = dateString
+    },
+    downloadFile () {
+      this.$download('ybReconsiderRepay/downFile', {
+      }, '还款管理模板.xlsx')
     },
     beforeUpload (file) {
       var testmsg = file.name.substring(file.name.lastIndexOf('.') + 1)

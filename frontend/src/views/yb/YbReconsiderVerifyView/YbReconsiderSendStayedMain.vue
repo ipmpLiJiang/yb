@@ -220,10 +220,10 @@ export default {
         if (data.length > 0) {
           this.sendService(data)
         } else {
-          this.$message.success('未找到对象')
+          this.$message.warning('未找到对象')
         }
       } else {
-        this.$message.success('未选择行')
+        this.$message.warning('未选择行')
       }
       this.selectedRowKeys = []
       this.loading = false
@@ -247,10 +247,10 @@ export default {
         if (data.length > 0) {
           this.$emit('showImport', data)
         } else {
-          this.$message.success('未找到对象')
+          this.$message.warning('未找到对象')
         }
       } else {
-        this.$message.success('未选择行')
+        this.$message.warning('未选择行')
       }
     },
     handImport (selectDate) {
@@ -282,10 +282,10 @@ export default {
             this.loading = false
           })
         } else {
-          this.$message.success('未找到对象')
+          this.$message.warning('未找到对象')
         }
       } else {
-        this.$message.success('未选择行')
+        this.$message.warning('未选择行')
       }
     },
     send (key) {
@@ -302,19 +302,33 @@ export default {
         }]
         this.sendService(data)
       } else {
-        this.$message.success('未找到对象')
+        this.$message.warning('未找到对象')
       }
     },
     sendService (data) {
       let jsonString = JSON.stringify(data)
-      this.$put('ybReconsiderVerify/updateMainSendState', {
-        dataJson: jsonString
+      this.$put('ybReconsiderVerify/updateSendState', {
+        dataJson: jsonString, dataType: 1
       }).then(() => {
         this.$message.success('发送成功')
         this.search()
       }).catch(() => {
         this.loading = false
       })
+    },
+    batchSendA () {
+      if (this.dataSource.length > 0) {
+        this.$put('ybReconsiderVerify/updateASendState', {
+          applyDateStr: this.applyDate, state: 1, dataType: 1
+        }).then(() => {
+          this.$message.success('发送成功')
+          this.search()
+        }).catch(() => {
+          this.loading = false
+        })
+      } else {
+        this.$message.warning('无数据，无法全部发送!')
+      }
     },
     onSelectChange (selectedRowKeys) {
       this.selectedRowKeys = selectedRowKeys

@@ -106,6 +106,7 @@ export default {
       loading: false,
       bordered: true,
       isUpdate: false,
+      state: 1,
       ybReconsiderResetExceptDetail: {}
     }
   },
@@ -272,6 +273,7 @@ export default {
         }).then((r) => {
           if (r.data.data.success === 1) {
             this.isUpdate = true
+            this.state = 2
             this.search()
             this.$message.success(r.data.data.message)
           } else {
@@ -326,7 +328,7 @@ export default {
       params.personalNo = this.ybReconsiderResetExceptDetail.personalNo
       params.dataType = this.ybReconsiderResetExceptDetail.dataType
       params.sourceType = 0
-      params.state = 1
+      params.state = this.state
       this.loading = true
       if (this.paginationInfo) {
         // 如果分页信息不为空，则设置表格当前第几页，每页条数，并设置查询分页参数

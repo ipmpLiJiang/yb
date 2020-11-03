@@ -196,13 +196,27 @@ export default {
         if (data.length > 0) {
           this.sendService(data)
         } else {
-          this.$message.success('未找到对象')
+          this.$message.warning('未找到对象')
         }
       } else {
-        this.$message.success('未选择行')
+        this.$message.warning('未选择行')
       }
       this.selectedRowKeys = []
       this.loading = false
+    },
+    batchSendA () {
+      if (this.dataSource.length > 0) {
+        this.$put('ybHandleVerifyData/updateASendState', {
+          applyDateStr: this.applyDate, state: 1
+        }).then(() => {
+          this.$message.success('发送成功')
+          this.search()
+        }).catch(() => {
+          this.loading = false
+        })
+      } else {
+        this.$message.warning('无数据，无法全部发送!')
+      }
     },
     send (key) {
       this.loading = true
@@ -221,7 +235,7 @@ export default {
         }]
         this.sendService(data)
       } else {
-        this.$message.success('未找到对象')
+        this.$message.warning('未找到对象')
       }
     },
     sendService (data) {
@@ -280,7 +294,7 @@ export default {
     fetch (params = {}) {
       this.loading = true
       params.applyDateStr = this.applyDate
-      params.state = 0
+      params.state = 1
       params.currencyField = this.searchText
       if (this.paginationInfo) {
         // 如果分页信息不为空，则设置表格当前第几页，每页条数，并设置查询分页参数

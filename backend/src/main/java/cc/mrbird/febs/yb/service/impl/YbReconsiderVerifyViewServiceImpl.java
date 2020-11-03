@@ -89,18 +89,18 @@ public class YbReconsiderVerifyViewServiceImpl extends ServiceImpl<YbReconsiderV
     }
 
     @Override
-    public int findReconsiderVerifyApplyDateCounts(String applyDate,Integer dataType) {
-        return this.baseMapper.findReconsiderVerifyApplyDateCount(applyDate,dataType);
+    public int findReconsiderVerifyApplyDateCounts(String applyDate, Integer dataType) {
+        return this.baseMapper.findReconsiderVerifyApplyDateCount(applyDate, dataType);
     }
 
     @Override
-    public IPage<YbReconsiderVerifyView> findYbReconsiderVerifyViewNulls(QueryRequest request, YbReconsiderVerifyView ybReconsiderVerifyView,String[] searchType) {
+    public IPage<YbReconsiderVerifyView> findYbReconsiderVerifyViewNulls(QueryRequest request, YbReconsiderVerifyView ybReconsiderVerifyView, String[] searchType) {
         try {
             Page<YbReconsiderVerifyView> page = new Page<>();
-            int count = this.findReconsiderVerifyApplyDateCounts(ybReconsiderVerifyView.getApplyDateStr(),ybReconsiderVerifyView.getDataType());
+            int count = this.findReconsiderVerifyApplyDateCounts(ybReconsiderVerifyView.getApplyDateStr(), ybReconsiderVerifyView.getDataType());
             if (count > 0) {
                 SortUtil.handlePageSort(request, page, false);//true 是属性  false是数据库字段可两个
-                return this.baseMapper.findYbReconsiderVerifyViewNull(page, ybReconsiderVerifyView,searchType);
+                return this.baseMapper.findYbReconsiderVerifyViewNull(page, ybReconsiderVerifyView, searchType);
             } else {
                 return page;
             }

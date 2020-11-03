@@ -155,6 +155,23 @@ public class YbHandleVerifyDataController extends BaseController {
         }
     }
 
+    @Log("修改")
+    @PutMapping("updateASendState")
+    @RequiresPermissions("ybHandleVerifyData:update")
+    public void updateASendState(String applyDateStr,Integer state,Integer dataType) throws FebsException {
+        try {
+            User currentUser = FebsUtil.getCurrentUser();
+            Long uid = currentUser.getUserId();
+            String uname = currentUser.getUsername();
+
+            this.iYbHandleVerifyDataService.updateAllSendStates(applyDateStr,dataType,state,uid ,uname);
+        } catch (Exception e) {
+            message = "发送失败";
+            log.error(message, e);
+            throw new FebsException(message);
+        }
+    }
+
     @PostMapping("importCreateHandleVerifyData")
     public FebsResponse importCreateHandleVerifyDatas(String applyDateStr) {
         int success = 0;

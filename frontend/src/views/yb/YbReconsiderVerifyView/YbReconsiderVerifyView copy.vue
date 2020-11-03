@@ -731,7 +731,7 @@ export default {
           this.dataSource = newData
         }
       } else {
-        this.$message.success('未找到对象')
+        this.$message.warning('未找到对象')
       }
     },
     save (key) {
@@ -761,7 +761,7 @@ export default {
           verifyDeptName: this.ybReconsiderVerify.verifyDeptName}]
         this.verifyService(arrData)
       } else {
-        this.$message.success('未找到对象')
+        this.$message.warning('未找到对象')
       }
       this.ybReconsiderVerify = {}
     },
@@ -848,10 +848,10 @@ export default {
         if (data.length > 0) {
           this.verifyService(data)
         } else {
-          this.$message.success('未找到对象')
+          this.$message.warning('未找到对象')
         }
       } else {
-        this.$message.success('未选择行')
+        this.$message.warning('未选择行')
       }
       this.selectedRowKeys = []
       this.loading = false
@@ -889,10 +889,10 @@ export default {
         if (data.length > 0) {
           this.sendService(data)
         } else {
-          this.$message.success('未找到对象')
+          this.$message.warning('未找到对象')
         }
       } else {
-        this.$message.success('未选择行')
+        this.$message.warning('未选择行')
       }
       this.selectedRowKeysTwo = []
       this.loading = false
@@ -911,7 +911,7 @@ export default {
         }]
         this.sendService(data)
       } else {
-        this.$message.success('未找到对象')
+        this.$message.warning('未找到对象')
       }
     },
     sendService (data) {
