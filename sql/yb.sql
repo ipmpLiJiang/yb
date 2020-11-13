@@ -19,6 +19,28 @@ CREATE TABLE yb_reconsider_rule (
   PRIMARY KEY (ID)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 
+#发送信息
+DROP TABLE IF EXISTS com_sms;
+CREATE TABLE com_sms (
+  id char(36) NOT NULL COMMENT '信息ID',
+	sendcode varchar(50) NOT NULL COMMENT '发送账户', 
+	sendname varchar(100) NOT NULL COMMENT '发送人', 
+	mobile varchar(11) NOT NULL COMMENT '电话号码', 
+	sendType int(4) NOT NULL COMMENT '发送类型', #1 核对发送 2人工复议发送 3复议变更 4管理员变更
+  operatorId bigint(11) NOT NULL COMMENT '操作员代码',
+  operatorName varchar(50) NOT NULL COMMENT '操作员名称',
+	sendcontent varchar(100) NOT NULL COMMENT '发送内容', 
+  COMMENTS varchar(1000) DEFAULT NULL COMMENT '备注',
+  STATE int(4) DEFAULT 0 COMMENT '状态',#0 未发生 1已发送
+  IS_DELETEMARK tinyint(4) DEFAULT NULL COMMENT '是否删除',
+  MODIFY_TIME datetime DEFAULT NULL  COMMENT '修改时间',
+  CREATE_TIME datetime DEFAULT NULL  COMMENT '创建时间',
+  CREATE_USER_ID bigint(11) DEFAULT NULL COMMENT '创建人',
+  MODIFY_USER_ID bigint(11) DEFAULT NULL COMMENT '修改人',
+  PRIMARY KEY (id)
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
+
+
 #复议优先级
 DROP TABLE IF EXISTS yb_reconsider_priority_level;
 CREATE TABLE yb_reconsider_priority_level (
@@ -56,6 +78,7 @@ CREATE TABLE yb_reconsider_apply (
   resultState int(4) DEFAULT 0 COMMENT '申诉状态',#0未申诉 1已申诉
   repayState int(4) DEFAULT 0 COMMENT '还款状态', #0未还款 1已还款
   resetState int(4) DEFAULT 0 COMMENT '剔除状态', #0未剔除 1已剔除
+  taskState int(4) DEFAULT 0 COMMENT '任务状态', #0没有任务 1审核一任务 2审核二任务	
   COMMENTS varchar(1000) DEFAULT NULL COMMENT '备注',
   STATE int(4) DEFAULT 1 COMMENT '状态',#1待复议 2上传一 3申述一 4上传二 5申述二 6已剔除 7还款中
   IS_DELETEMARK tinyint(4) DEFAULT NULL COMMENT '是否删除',

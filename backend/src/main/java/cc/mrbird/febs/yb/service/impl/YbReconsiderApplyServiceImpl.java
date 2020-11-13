@@ -1,17 +1,18 @@
 package cc.mrbird.febs.yb.service.impl;
 
-import cc.mrbird.febs.com.controller.DataTypeHelpers;
-import cc.mrbird.febs.com.entity.ComConfiguremanage;
 import cc.mrbird.febs.com.service.IComConfiguremanageService;
 import cc.mrbird.febs.common.domain.QueryRequest;
 import cc.mrbird.febs.common.utils.SortUtil;
-import cc.mrbird.febs.yb.entity.*;
+import cc.mrbird.febs.job.domain.Job;
+import cc.mrbird.febs.job.service.JobService;
 import cc.mrbird.febs.yb.dao.YbReconsiderApplyMapper;
+import cc.mrbird.febs.yb.entity.YbAppealManage;
+import cc.mrbird.febs.yb.entity.YbAppealManageView;
+import cc.mrbird.febs.yb.entity.YbDefaultValue;
+import cc.mrbird.febs.yb.entity.YbReconsiderApply;
 import cc.mrbird.febs.yb.service.IYbAppealManageService;
 import cc.mrbird.febs.yb.service.IYbAppealManageViewService;
 import cc.mrbird.febs.yb.service.IYbReconsiderApplyService;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -26,7 +27,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.time.LocalDate;
 
 /**
  * <p>
@@ -43,11 +43,12 @@ public class YbReconsiderApplyServiceImpl extends ServiceImpl<YbReconsiderApplyM
 
     @Autowired
     private IYbAppealManageViewService iYbAppealManageViewService;
-    @Autowired
-    private IComConfiguremanageService iComConfiguremanageService;
 
     @Autowired
     private IYbAppealManageService iYbAppealManageService;
+
+    @Autowired
+    private JobService jobService;
 
     @Override
     public IPage<YbReconsiderApply> findYbReconsiderApplys(QueryRequest request, YbReconsiderApply ybReconsiderApply) {
@@ -274,6 +275,58 @@ public class YbReconsiderApplyServiceImpl extends ServiceImpl<YbReconsiderApplyM
             }
         } else {
             msg = "nostate";
+        }
+        return msg;
+    }
+
+    @Override
+    public String createJobState(String applyDateStr) {
+        String msg ="";
+        YbReconsiderApply ybReconsiderApply = this.findReconsiderApplyByApplyDateStrs(applyDateStr);
+        boolean isTrue = false;
+        if (ybReconsiderApply.getTaskState() == YbReconsiderApply.TASK_STATE_0 && ybReconsiderApply.getState() == YbDefaultValue.APPLYSTATE_2) {
+            isTrue = true;
+        }
+        if(ybReconsiderApply.getTaskState() == YbReconsiderApply.TASK_STATE_1 && ybReconsiderApply.getState() == YbDefaultValue.APPLYSTATE_5){
+            isTrue = true;
+        }
+        if (isTrue) {
+            Date date = new Date();
+            Calendar now = Calendar.getInstance();
+            now.add(now.DATE, 1);
+            String fen = "" + now.get(Calendar.MINUTE);
+            String shi = "" + now.get(Calendar.HOUR_OF_DAY);
+            String ri = "" + now.get(Calendar.DAY_OF_MONTH);
+            String yue = "" + (now.get(Calendar.MONTH) + 1);
+            String nian = "" + now.get(Calendar.YEAR);
+            String miao = "" + now.get(Calendar.SECOND);
+            String haomiao = "" + now.getTimeInMillis();
+
+            String cron = "0 0 0 " + ri + " " + yue + " ? " + nian + "-" + nian;
+//        String cron = "0" + " " + fen + " " + shi + " " + ri + " " + yue + " ? " + nian + "-" + nian;
+            String remark = nian + "年" + yue + "月" + ri + "日" + shi + "时" + fen + "分" + miao + "秒" + haomiao;
+
+            Job job = new Job();
+            job.setBeanName("smsTask");
+            job.setMethodName("smsTestTask");
+            job.setCronExpression(cron);
+            job.setStatus("1");
+            job.setCreateTime(date);
+            job.setRemark(remark);
+
+            jobService.createJob(job);
+
+            List<Job> jobList = jobService.jobList(job);
+
+            jobService.resume(jobList.get(0).getJobId().toString());
+
+            YbReconsiderApply update = new YbReconsiderApply();
+            update.setId(ybReconsiderApply.getId());
+            update.setTaskState(ybReconsiderApply.getTaskState() == YbReconsiderApply.TASK_STATE_0 ? YbReconsiderApply.TASK_STATE_1 : YbReconsiderApply.TASK_STATE_2);
+
+            this.updateById(update);
+        }else {
+            msg = "当前状态无法创建定时任务 或 任务已创建.";
         }
         return msg;
     }

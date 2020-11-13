@@ -127,7 +127,6 @@ public class YbReconsiderApplyDataController extends BaseController {
         }
     }
 
-
     @Log("删除")
     @DeleteMapping("deleteData")
     @RequiresPermissions("ybReconsiderApplyData:delete")

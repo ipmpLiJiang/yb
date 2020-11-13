@@ -19,6 +19,7 @@
         <result column="resultState" property="resultState"/>
         <result column="repayState" property="repayState"/>
         <result column="resetState" property="resetState"/>
+        <result column="taskState" property="taskState"/>
         <result column="uploadFileNameOne" property="uploadFileNameOne"/>
         <result column="uploadFileNameTwo" property="uploadFileNameTwo"/>
         <result column="endDateOne" property="endDateOne"/>
@@ -28,7 +29,7 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, applyDate, operatorId, operatorName, COMMENTS, STATE, IS_DELETEMARK, MODIFY_TIME, CREATE_TIME, CREATE_USER_ID, MODIFY_USER_ID, applyDateStr,resultState,repayState,resetState,uploadFileNameOne,uploadFileNameTwo,endDateOne,endDateTwo
+        id, applyDate, operatorId, operatorName, COMMENTS, STATE, IS_DELETEMARK, MODIFY_TIME, CREATE_TIME, CREATE_USER_ID, MODIFY_USER_ID, applyDateStr,resultState,repayState,resetState,taskState,uploadFileNameOne,uploadFileNameTwo,endDateOne,endDateTwo
     </sql>
     <update id="updateYbReconsiderApply" parameterType="cc.mrbird.febs.yb.entity.YbReconsiderApply">
         update yb_reconsider_apply
@@ -47,6 +48,7 @@
             <if test="resultState != null">resultState=#{resultState},</if>
             <if test="repayState != null">repayState=#{repayState},</if>
             <if test="resetState != null">resetState=#{resetState},</if>
+            <if test="taskState != null">taskState=#{taskState},</if>
             <if test="uploadFileNameOne != null">uploadFileNameOne=#{uploadFileNameOne},</if>
             <if test="uploadFileNameTwo != null">uploadFileNameTwo=#{uploadFileNameTwo},</if>
             <if test="endDateOne != null">endDateOne=#{endDateOne},</if>
@@ -100,7 +102,7 @@
     </delete>
 
     <select id="findReconsiderApplyByApplyDateStr" resultType="cc.mrbird.febs.yb.entity.YbReconsiderApply">
-        select *  from yb_reconsider_apply where applyDateStr = #{applyDateStr}  limit 1
+        select *  from yb_reconsider_apply where applyDateStr = #{applyDateStr}  order by CREATE_TIME asc  limit 1
     </select>
 
     <select id="getAdd" parameterType="java.util.Map" statementType="CALLABLE">

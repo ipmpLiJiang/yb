@@ -22,6 +22,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.PostConstruct;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -146,5 +147,25 @@ public class JobServiceImpl extends ServiceImpl<JobMapper, Job> implements JobSe
         String[] list = jobIds.split(StringPool.COMMA);
         Arrays.stream(list).forEach(jobId -> ScheduleUtils.resumeJob(scheduler, Long.valueOf(jobId)));
         this.updateBatch(jobIds, Job.ScheduleStatus.NORMAL.getValue());
+    }
+
+    @Override
+    public List<Job> jobList(Job job){
+        List<Job> list = new ArrayList<>();
+        LambdaQueryWrapper<Job> wrapper = new LambdaQueryWrapper<>();
+        if(job.getBeanName()!=null){
+            wrapper.eq(Job::getBeanName,job.getBeanName());
+        }
+        if(job.getMethodName()!=null){
+            wrapper.eq(Job::getMethodName,job.getMethodName());
+        }
+        if(job.getStatus()!=null){
+            wrapper.eq(Job::getStatus,job.getStatus());
+        }
+        if(job.getRemark()!=null){
+            wrapper.eq(Job::getRemark,job.getRemark());
+        }
+        list = this.list(wrapper);
+        return list;
     }
 }

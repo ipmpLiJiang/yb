@@ -65,6 +65,7 @@ export default {
       loading: false,
       bordered: true,
       ybAppealManage: {},
+      className: '',
       tableFormat: 'YYYY-MM-DD'
     }
   },
@@ -291,3 +292,4 @@ export default {
 .editable-row-operations a {
   margin-right: 8px;
 }
+</style>

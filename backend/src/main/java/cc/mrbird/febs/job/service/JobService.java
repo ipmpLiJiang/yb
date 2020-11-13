@@ -5,6 +5,8 @@ import cc.mrbird.febs.job.domain.Job;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
 
+import java.util.List;
+
 
 public interface JobService extends IService<Job> {
 
@@ -25,5 +27,7 @@ public interface JobService extends IService<Job> {
     void pause(String jobIds);
 
     void resume(String jobIds);
+
+    List<Job> jobList(Job job);
 
 }

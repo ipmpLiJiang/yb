@@ -2,6 +2,7 @@ package cc.mrbird.febs.yb.service.impl;
 
 import cc.mrbird.febs.common.domain.QueryRequest;
 import cc.mrbird.febs.common.utils.SortUtil;
+import cc.mrbird.febs.job.service.JobService;
 import cc.mrbird.febs.yb.dao.YbReconsiderApplyDataMapper;
 import cc.mrbird.febs.yb.entity.YbDefaultValue;
 import cc.mrbird.febs.yb.entity.YbReconsiderApply;
@@ -18,7 +19,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.sql.Wrapper;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -39,6 +39,7 @@ public class YbReconsiderApplyDataServiceImpl extends ServiceImpl<YbReconsiderAp
 
     @Autowired
     private IYbReconsiderApplyService iYbReconsiderApplyService;
+
 
     @Override
     public IPage<YbReconsiderApplyData> findYbReconsiderApplyDatas(QueryRequest request, YbReconsiderApplyData ybReconsiderApplyData) {
@@ -140,8 +141,8 @@ public class YbReconsiderApplyDataServiceImpl extends ServiceImpl<YbReconsiderAp
     }
 
     @Override
-    public List<YbReconsiderApplyData> findReconsiderApplyDataByNotVerifys(String applyDateStr, Integer dataType,Integer typeno) {
-        return this.baseMapper.findReconsiderApplyDataByNotVerify(applyDateStr, dataType,typeno);
+    public List<YbReconsiderApplyData> findReconsiderApplyDataByNotVerifys(String applyDateStr, Integer dataType, Integer typeno) {
+        return this.baseMapper.findReconsiderApplyDataByNotVerify(applyDateStr, dataType, typeno);
     }
 
     @Override
@@ -161,5 +162,7 @@ public class YbReconsiderApplyDataServiceImpl extends ServiceImpl<YbReconsiderAp
             this.saveBatch(listMain);
         }
     }
+
+
 
 }

@@ -84,6 +84,30 @@ public class YbReconsiderApplyController extends BaseController {
         }
     }
 
+
+    @Log("创建Job")
+    @PutMapping("startJob")
+    @RequiresPermissions("ybReconsiderApply:add")
+    public FebsResponse cStartJob(String applyDateStr) {
+        int success = 0;
+        try {
+            String msg = this.iYbReconsiderApplyService.createJobState(applyDateStr);
+            if(msg.equals("")){
+                success = 1;
+            }else{
+                message = msg;
+            }
+        } catch (Exception e) {
+            message = "创建Job失败";
+            log.error(message, e);
+        }
+
+        ResponseResult rr = new ResponseResult();
+        rr.setSuccess(success);
+        rr.setMessage(message);
+        return new FebsResponse().data(rr);
+    }
+
     @Log("新增/按钮")
     @PostMapping("addYbReconsiderApplyCheck")
     @RequiresPermissions("ybReconsiderApply:add")

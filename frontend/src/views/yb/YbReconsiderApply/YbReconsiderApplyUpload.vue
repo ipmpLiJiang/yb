@@ -59,6 +59,14 @@
             >
               <a-button type="primary" style="margin-right: .8rem">删除明细</a-button>
             </a-popconfirm>
+            <a-popconfirm
+              title="确定开启服务？"
+              @confirm="startUp"
+              okText="确定"
+              cancelText="取消"
+            >
+              <a-button type="primary" style="margin-right: .8rem">开启服务</a-button>
+            </a-popconfirm>
           </a-col>
           <a-col :span=2 v-show="showBtn">
             <a-button
@@ -157,6 +165,19 @@ export default {
     downloadFile () {
       this.$download('ybReconsiderApplyData/downFile', {
       }, '复议审核模板.xlsx')
+    },
+    startUp () {
+      this.$put('ybReconsiderApply/startJob', {
+        applyDateStr: this.ybReconsiderApply.applyDateStr
+      }).then((r) => {
+        if (r.data.data.success === 1) {
+          this.$message.success('启动Job成功')
+        } else {
+          this.$message.warning(r.data.data.message)
+        }
+      }).catch(() => {
+        this.$message.success('启动Job失败')
+      })
     },
     deleteData () {
       if (this.ybReconsiderApply.state === 2 || this.ybReconsiderApply.state === 4) {

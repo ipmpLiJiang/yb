@@ -35,6 +35,21 @@ public class YbReconsiderApply implements Serializable {
     private static final long serialVersionUID = 1L;
 
     /**
+     * 0 没任务
+     */
+    public static final int TASK_STATE_0 = 0;
+
+    /**
+     * 1 审核一任务
+     */
+    public static final int TASK_STATE_1 = 1;
+
+    /**
+     * 2 审核二任务
+     */
+    public static final int TASK_STATE_2 = 2;
+
+    /**
      * 规则编号
      */
     @TableId(value = "id")
@@ -99,6 +114,14 @@ public class YbReconsiderApply implements Serializable {
     @TableField("repayState")
     @ExcelField(value = "还款状态")
     private Integer repayState;
+
+    /**
+     * 任务状态
+     */
+    @TableField("taskState")
+    @ExcelField(value = "任务状态")
+    private Integer taskState;
+
 
     /**
      * 是否删除
@@ -195,7 +218,9 @@ public class YbReconsiderApply implements Serializable {
 
     public static final String RESULTSTATE = "resultState";
 
-    public static final String REPAYSTATE = "repayState ";
+    public static final String REPAYSTATE = "repayState";
+
+    public static final String TASKSTATE = "taskState";
 
     public static final String IS_DELETEMARK = "IS_DELETEMARK";
 

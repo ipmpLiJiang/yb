@@ -44,7 +44,7 @@ export default {
 
 ::-webkit-scrollbar {
   width: 0.5rem;
-  height: 0.5rem;
+  height: 0.8rem;
 }
 
 ::-webkit-scrollbar-track {

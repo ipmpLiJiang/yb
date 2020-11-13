@@ -41,4 +41,6 @@ public interface IYbReconsiderApplyDataService extends IService<YbReconsiderAppl
         void createBatchDatas(List<YbReconsiderApplyData> listReconsiderApplyData);
 
         void  importReconsiderApply(YbReconsiderApply ybReconsiderApply, List<YbReconsiderApplyData> listData, List<YbReconsiderApplyData> listMain);
-        }
+
+
+}

@@ -47,4 +47,6 @@ public interface IYbReconsiderApplyService extends IService<YbReconsiderApply> {
     void updateApplyEndDateOne(String applyDateStr);
 
     void updateApplyEndDateTwo(String applyDateStr);
+
+    String createJobState(String applyDateStr);
 }

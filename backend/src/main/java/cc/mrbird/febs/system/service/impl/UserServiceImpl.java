@@ -330,4 +330,25 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             this.userRoleMapper.insert(ur);
         });
     }
+
+    @Override
+    public List<User> findUserList(User user){
+        List<User> list = new ArrayList<>();
+        LambdaQueryWrapper<User> wrapper = new LambdaQueryWrapper<>();
+        if(user.getUsername()!=null){
+            wrapper.eq(User::getUsername,user.getUsername());
+        }
+        if(user.getUserId()!=null){
+            wrapper.eq(User::getUserId,user.getUserId());
+        }
+        if(user.getXmname()!=null){
+            wrapper.eq(User::getXmname,user.getXmname());
+        }
+        if(user.getMobile()!=null){
+            wrapper.eq(User::getMobile,user.getMobile());
+        }
+        wrapper.eq(User::getStatus,User.STATUS_VALID);
+        list = this.list(wrapper);
+        return list;
+    }
 }

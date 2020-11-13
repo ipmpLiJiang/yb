@@ -2,9 +2,14 @@ package cc.mrbird.febs.yb.service.impl;
 
 import cc.mrbird.febs.com.controller.DataTypeHelpers;
 import cc.mrbird.febs.com.entity.ComConfiguremanage;
+import cc.mrbird.febs.com.entity.ComSms;
 import cc.mrbird.febs.com.service.IComConfiguremanageService;
+import cc.mrbird.febs.com.service.IComSmsService;
 import cc.mrbird.febs.common.domain.QueryRequest;
+import cc.mrbird.febs.common.properties.FebsProperties;
 import cc.mrbird.febs.common.utils.SortUtil;
+import cc.mrbird.febs.system.domain.User;
+import cc.mrbird.febs.system.service.UserService;
 import cc.mrbird.febs.yb.dao.YbReconsiderVerifyMapper;
 import cc.mrbird.febs.yb.entity.*;
 import cc.mrbird.febs.yb.service.*;
@@ -51,6 +56,15 @@ public class YbReconsiderVerifyServiceImpl extends ServiceImpl<YbReconsiderVerif
 
     @Autowired
     private IYbReconsiderPriorityLevelService iYbReconsiderPriorityLevelService;
+
+    @Autowired
+    IComSmsService iComSmsService;
+
+    @Autowired
+    FebsProperties febsProperties;
+
+    @Autowired
+    UserService userService;
 
     @Override
     public IPage<YbReconsiderVerify> findYbReconsiderVerifys(QueryRequest request, YbReconsiderVerify ybReconsiderVerify) {
@@ -255,6 +269,20 @@ public class YbReconsiderVerifyServiceImpl extends ServiceImpl<YbReconsiderVerif
         int day = iComConfiguremanageService.getConfigDay();
 
         Date addDate = DataTypeHelpers.addDateMethod(thisDate, day);
+
+        List<User> userList = new ArrayList<>();
+        List<User> queryUserList = new ArrayList<>();
+        List<ComSms> smsList = new ArrayList<>();
+        List<String> userCodeList = new ArrayList<>();
+        boolean isOpenSms = febsProperties.isOpenSms();
+        if (isOpenSms) {
+            userList = userService.findUserList(new User());
+            ComSms qu = new ComSms();
+            qu.setState(ComSms.STATE_0);
+            qu.setSendType(ComSms.SENDTYPE_1);
+            smsList = iComSmsService.findLmdSmsList(qu);
+        }
+
         for (YbReconsiderVerify ybReconsiderVerify : list) {
             //更新
             ybReconsiderVerify.setState(YbDefaultValue.VERIFYSTATE_3);
@@ -299,6 +327,34 @@ public class YbReconsiderVerifyServiceImpl extends ServiceImpl<YbReconsiderVerif
                 queryWrapper.eq(YbReconsiderVerify::getState, YbDefaultValue.VERIFYSTATE_1);
             }
 
+            if (isOpenSms) {
+                if (userCodeList.stream().filter(s -> s.equals(ybReconsiderVerify.getVerifyDoctorCode())).count() == 0) {
+                    if (smsList.stream().filter(s -> s.getSendcode().equals(ybReconsiderVerify.getVerifyDoctorCode())).count() == 0) {
+                        userCodeList.add(ybReconsiderVerify.getVerifyDoctorCode());
+                        queryUserList = userList.stream().filter(
+                                s -> s.getUsername().equals(ybReconsiderVerify.getVerifyDoctorCode())
+                        ).collect(Collectors.toList());
+                        if (queryUserList.size() > 0) {
+                            ComSms comSms = new ComSms();
+                            comSms.setId(UUID.randomUUID().toString());
+                            comSms.setSendcode(queryUserList.get(0).getUsername());
+                            comSms.setSendname(queryUserList.get(0).getXmname());
+                            comSms.setMobile(queryUserList.get(0).getMobile());
+                            comSms.setSendType(ComSms.SENDTYPE_1);
+                            comSms.setState(ComSms.STATE_0);
+                            ;
+                            comSms.setSendcontent("医保管理平台提醒您，您的医保复议任务已发布，请尽快处理。");
+                            comSms.setOperatorId(uId);
+                            comSms.setOperatorName(Uname);
+                            comSms.setIsDeletemark(1);
+                            comSms.setCreateUserId(uId);
+                            comSms.setCreateTime(thisDate);
+                            iComSmsService.save(comSms);
+                        }
+                    }
+                }
+            }
+
             this.baseMapper.update(ybReconsiderVerify, queryWrapper);
         }
     }
@@ -311,9 +367,22 @@ public class YbReconsiderVerifyServiceImpl extends ServiceImpl<YbReconsiderVerif
 
         Date addDate = DataTypeHelpers.addDateMethod(thisDate, day);
 
+        List<User> userList = new ArrayList<>();
+        List<User> queryUserList = new ArrayList<>();
+        List<ComSms> smsList = new ArrayList<>();
+        List<String> userCodeList = new ArrayList<>();
+        boolean isOpenSms = febsProperties.isOpenSms();
+        if (isOpenSms) {
+            userList = userService.findUserList(new User());
+            ComSms qu = new ComSms();
+            qu.setState(ComSms.STATE_0);
+            qu.setSendType(ComSms.SENDTYPE_1);
+            smsList = iComSmsService.findLmdSmsList(qu);
+        }
+
         List<YbReconsiderVerify> list = this.baseMapper.findReconsiderVerifyList(applyDateStr, dataType, state);
         for (YbReconsiderVerify ybReconsiderVerify : list) {
-            if (ybReconsiderVerify.getState() != 3) {
+            if (ybReconsiderVerify.getState() != YbDefaultValue.VERIFYSTATE_3) {
                 //更新
                 ybReconsiderVerify.setState(YbDefaultValue.VERIFYSTATE_3);
                 ybReconsiderVerify.setModifyUserId(uId);
@@ -347,6 +416,7 @@ public class YbReconsiderVerifyServiceImpl extends ServiceImpl<YbReconsiderVerif
                 ybAppealManage.setDataType(dataType);
 
                 iYbAppealManageService.createYbAppealManage(ybAppealManage);
+
                 LambdaQueryWrapper<YbReconsiderVerify> queryWrapper = new LambdaQueryWrapper<>();
                 queryWrapper.eq(YbReconsiderVerify::getId, ybReconsiderVerify.getId());
                 queryWrapper.eq(YbReconsiderVerify::getDataType, dataType);
@@ -354,6 +424,33 @@ public class YbReconsiderVerifyServiceImpl extends ServiceImpl<YbReconsiderVerif
                     queryWrapper.eq(YbReconsiderVerify::getState, YbDefaultValue.VERIFYSTATE_2);
                 } else {
                     queryWrapper.eq(YbReconsiderVerify::getState, YbDefaultValue.VERIFYSTATE_1);
+                }
+                if (isOpenSms) {
+                    if (userCodeList.stream().filter(s -> s.equals(ybReconsiderVerify.getVerifyDoctorCode())).count() == 0) {
+                        if (smsList.stream().filter(s -> s.getSendcode().equals(ybReconsiderVerify.getVerifyDoctorCode())).count() == 0) {
+                            userCodeList.add(ybReconsiderVerify.getVerifyDoctorCode());
+                            queryUserList = userList.stream().filter(
+                                    s -> s.getUsername().equals(ybReconsiderVerify.getVerifyDoctorCode())
+                            ).collect(Collectors.toList());
+                            if (queryUserList.size() > 0) {
+                                ComSms comSms = new ComSms();
+                                comSms.setId(UUID.randomUUID().toString());
+                                comSms.setSendcode(queryUserList.get(0).getUsername());
+                                comSms.setSendname(queryUserList.get(0).getXmname());
+                                comSms.setMobile(queryUserList.get(0).getMobile());
+                                comSms.setSendType(ComSms.SENDTYPE_1);
+                                comSms.setState(ComSms.STATE_0);
+                                ;
+                                comSms.setSendcontent("医保管理平台提醒您，您的医保复议任务已发布，请尽快处理。");
+                                comSms.setOperatorId(uId);
+                                comSms.setOperatorName(Uname);
+                                comSms.setIsDeletemark(1);
+                                comSms.setCreateUserId(uId);
+                                comSms.setCreateTime(thisDate);
+                                iComSmsService.save(comSms);
+                            }
+                        }
+                    }
                 }
                 this.baseMapper.update(ybReconsiderVerify, queryWrapper);
             }

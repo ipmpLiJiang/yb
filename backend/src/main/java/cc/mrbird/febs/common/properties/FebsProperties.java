@@ -20,4 +20,14 @@ public class FebsProperties {
     private String uploadPath;
 
     private String baseUrl;
+
+    private boolean openSms = false;
+
+    private String in0;
+
+    private String in1;
+
+    private String in2;
+
+    private String in3;
 }

@@ -1,6 +1,7 @@
 package cc.mrbird.febs.yb.controller;
 
 import cc.mrbird.febs.com.controller.DataTypeHelpers;
+import cc.mrbird.febs.com.controller.ExportExcelUtils;
 import cc.mrbird.febs.com.controller.ImportExcelUtils;
 import cc.mrbird.febs.common.annotation.Log;
 import cc.mrbird.febs.common.controller.BaseController;
@@ -12,6 +13,7 @@ import cc.mrbird.febs.common.domain.QueryRequest;
 import cc.mrbird.febs.system.domain.UserRolesImport;
 import cc.mrbird.febs.yb.domain.ResponseResultData;
 import cc.mrbird.febs.yb.entity.YbDept;
+import cc.mrbird.febs.yb.entity.YbReconsiderRepayDataExport;
 import cc.mrbird.febs.yb.service.IYbPersonService;
 import cc.mrbird.febs.yb.entity.YbPerson;
 
@@ -165,6 +167,19 @@ public class YbPersonController extends BaseController {
         try {
             List<YbPerson> ybPersons = this.iYbPersonService.findYbPersons(request, ybPerson).getRecords();
             ExcelKit.$Export(YbPerson.class, response).downXlsx(ybPersons, false);
+        } catch (Exception e) {
+            message = "导出Excel失败";
+            log.error(message, e);
+            throw new FebsException(message);
+        }
+    }
+
+    @PostMapping("excel1")
+    //@RequiresPermissions("ybPerson:export")
+    public void export1(QueryRequest request, YbPerson ybPerson,String dataJson, HttpServletResponse response) throws FebsException {
+        try {
+            List<YbPerson> ybPersons = this.iYbPersonService.findYbPersons(request, ybPerson).getRecords();
+            ExportExcelUtils.exportCustomExcel(response, ybPersons,dataJson,"人员信息");
         } catch (Exception e) {
             message = "导出Excel失败";
             log.error(message, e);
