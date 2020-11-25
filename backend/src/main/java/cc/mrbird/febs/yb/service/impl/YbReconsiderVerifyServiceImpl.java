@@ -13,6 +13,7 @@ import cc.mrbird.febs.system.service.UserService;
 import cc.mrbird.febs.yb.dao.YbReconsiderVerifyMapper;
 import cc.mrbird.febs.yb.entity.*;
 import cc.mrbird.febs.yb.service.*;
+import cn.hutool.core.lang.Validator;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -139,7 +140,9 @@ public class YbReconsiderVerifyServiceImpl extends ServiceImpl<YbReconsiderVerif
                 List<YbReconsiderApplyData> radList = iYbReconsiderApplyDataService.findReconsiderApplyDataByNotVerifys(ybReconsiderApply.getApplyDateStr(), YbDefaultValue.DATATYPE_0, typeno);
                 if (radList.size() > 0) {
                     List<YbReconsiderPriorityLevel> rplList = iYbReconsiderPriorityLevelService.findReconsiderPriorityLevelList();
-                    List<YbReconsiderInpatientfees> rifList = iYbReconsiderInpatientfeesService.findReconsiderInpatientfeesLists(applyDate);
+                    YbReconsiderInpatientfees waquery = new YbReconsiderInpatientfees();
+                    waquery.setApplyDateStr(applyDate);
+                    List<YbReconsiderInpatientfees> rifList = iYbReconsiderInpatientfeesService.findReconsiderInpatientfeesList(waquery);
 
                     List<YbReconsiderPriorityLevel> rlProjectList = rplList.stream().filter(s -> s.getState() == YbReconsiderPriorityLevel.PL_STATE_2).collect(Collectors.toList());
                     List<YbReconsiderPriorityLevel> rlRuleList = rplList.stream().filter(s -> s.getState() == YbReconsiderPriorityLevel.PL_STATE_1).collect(Collectors.toList());
@@ -335,21 +338,23 @@ public class YbReconsiderVerifyServiceImpl extends ServiceImpl<YbReconsiderVerif
                                 s -> s.getUsername().equals(ybReconsiderVerify.getVerifyDoctorCode())
                         ).collect(Collectors.toList());
                         if (queryUserList.size() > 0) {
-                            ComSms comSms = new ComSms();
-                            comSms.setId(UUID.randomUUID().toString());
-                            comSms.setSendcode(queryUserList.get(0).getUsername());
-                            comSms.setSendname(queryUserList.get(0).getXmname());
-                            comSms.setMobile(queryUserList.get(0).getMobile());
-                            comSms.setSendType(ComSms.SENDTYPE_1);
-                            comSms.setState(ComSms.STATE_0);
-                            ;
-                            comSms.setSendcontent("医保管理平台提醒您，您的医保复议任务已发布，请尽快处理。");
-                            comSms.setOperatorId(uId);
-                            comSms.setOperatorName(Uname);
-                            comSms.setIsDeletemark(1);
-                            comSms.setCreateUserId(uId);
-                            comSms.setCreateTime(thisDate);
-                            iComSmsService.save(comSms);
+                            if (Validator.isMobile(queryUserList.get(0).getMobile())) {
+                                ComSms comSms = new ComSms();
+                                comSms.setId(UUID.randomUUID().toString());
+                                comSms.setSendcode(queryUserList.get(0).getUsername());
+                                comSms.setSendname(queryUserList.get(0).getXmname());
+                                comSms.setMobile(queryUserList.get(0).getMobile());
+                                comSms.setSendType(ComSms.SENDTYPE_1);
+                                comSms.setState(ComSms.STATE_0);
+                                ;
+                                comSms.setSendcontent("医保管理平台提醒您，您的医保复议任务已发布，请尽快处理。");
+                                comSms.setOperatorId(uId);
+                                comSms.setOperatorName(Uname);
+                                comSms.setIsDeletemark(1);
+                                comSms.setCreateUserId(uId);
+                                comSms.setCreateTime(thisDate);
+                                iComSmsService.save(comSms);
+                            }
                         }
                     }
                 }
@@ -433,21 +438,23 @@ public class YbReconsiderVerifyServiceImpl extends ServiceImpl<YbReconsiderVerif
                                     s -> s.getUsername().equals(ybReconsiderVerify.getVerifyDoctorCode())
                             ).collect(Collectors.toList());
                             if (queryUserList.size() > 0) {
-                                ComSms comSms = new ComSms();
-                                comSms.setId(UUID.randomUUID().toString());
-                                comSms.setSendcode(queryUserList.get(0).getUsername());
-                                comSms.setSendname(queryUserList.get(0).getXmname());
-                                comSms.setMobile(queryUserList.get(0).getMobile());
-                                comSms.setSendType(ComSms.SENDTYPE_1);
-                                comSms.setState(ComSms.STATE_0);
-                                ;
-                                comSms.setSendcontent("医保管理平台提醒您，您的医保复议任务已发布，请尽快处理。");
-                                comSms.setOperatorId(uId);
-                                comSms.setOperatorName(Uname);
-                                comSms.setIsDeletemark(1);
-                                comSms.setCreateUserId(uId);
-                                comSms.setCreateTime(thisDate);
-                                iComSmsService.save(comSms);
+                                if (Validator.isMobile(queryUserList.get(0).getMobile())) {
+                                    ComSms comSms = new ComSms();
+                                    comSms.setId(UUID.randomUUID().toString());
+                                    comSms.setSendcode(queryUserList.get(0).getUsername());
+                                    comSms.setSendname(queryUserList.get(0).getXmname());
+                                    comSms.setMobile(queryUserList.get(0).getMobile());
+                                    comSms.setSendType(ComSms.SENDTYPE_1);
+                                    comSms.setState(ComSms.STATE_0);
+                                    ;
+                                    comSms.setSendcontent("医保管理平台提醒您，您的医保复议任务已发布，请尽快处理。");
+                                    comSms.setOperatorId(uId);
+                                    comSms.setOperatorName(Uname);
+                                    comSms.setIsDeletemark(1);
+                                    comSms.setCreateUserId(uId);
+                                    comSms.setCreateTime(thisDate);
+                                    iComSmsService.save(comSms);
+                                }
                             }
                         }
                     }

@@ -46,6 +46,7 @@ import java.net.URLEncoder;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author viki
@@ -279,7 +280,7 @@ public class YbReconsiderApplyDataController extends BaseController {
                                             rrData.setSerialNo(strSerialNo);
                                             String strBillNo = DataTypeHelpers.importTernaryOperate(objMx.get(i), 2);//'单据号',
                                             rrData.setBillNo(strBillNo);
-                                            String strProposalCode = DataTypeHelpers.importTernaryOperate(objMx.get(i), 3);//交易流水号',
+                                            String strProposalCode = DataTypeHelpers.importTernaryOperate(objMx.get(i), 3);//意见书编码',
                                             rrData.setProposalCode(strProposalCode);
                                             String strProjectCode = DataTypeHelpers.importTernaryOperate(objMx.get(i), 4);//'项目编码',
                                             rrData.setProjectCode(strProjectCode);
@@ -320,12 +321,29 @@ public class YbReconsiderApplyDataController extends BaseController {
                                             rrData.setOutHospitalDateStr(strOutHospitalDate);
                                             String strCostDateStr = DataTypeHelpers.importTernaryOperate(objMx.get(i), 17);//'费用日期str',
                                             rrData.setCostDateStr(strCostDateStr);
+                                            Date CostDate = DataTypeHelpers.stringToDate(strCostDateStr);
+                                            if (CostDate != null) {
+                                                rrData.setCostDate(CostDate);
+                                            } else {
+                                                message = "Excel导入失败，Sheet明细扣款 费用日期存在错误格式或为空，序号：" + strOrderNumber + ".";
+                                                blError = true;
+                                                break;
+                                            }
                                             String strHospitalizedNo = DataTypeHelpers.importTernaryOperate(objMx.get(i), 18);//'住院号',
                                             rrData.setHospitalizedNo(strHospitalizedNo);
                                             String strTreatmentMode = DataTypeHelpers.importTernaryOperate(objMx.get(i), 19);//'就医方式',
                                             rrData.setTreatmentMode(strTreatmentMode);
                                             String strSettlementDateStr = DataTypeHelpers.importTernaryOperate(objMx.get(i), 20);//'结算日期Str',
                                             rrData.setSettlementDateStr(strSettlementDateStr);
+                                            Date SettlementDate = DataTypeHelpers.stringToDate(strSettlementDateStr);
+                                            if (SettlementDate != null) {
+                                                rrData.setSettlementDate(SettlementDate);
+                                            } else {
+                                                message = "Excel导入失败，Sheet明细扣款 结算日期存在错误格式或为空，序号：" + strOrderNumber + ".";
+                                                blError = true;
+                                                break;
+                                            }
+
                                             String strPersonalNo = DataTypeHelpers.importTernaryOperate(objMx.get(i), 21);//'个人编号',
                                             rrData.setPersonalNo(strPersonalNo);
                                             String strInsuredName = DataTypeHelpers.importTernaryOperate(objMx.get(i), 22);//'参保人姓名',
@@ -383,6 +401,15 @@ public class YbReconsiderApplyDataController extends BaseController {
                                                 }
                                                 String strSettlementDateStr = DataTypeHelpers.importTernaryOperate(objZd.get(i), 7);//'结算日期Str',
                                                 rrMain.setSettlementDateStr(strSettlementDateStr);
+                                                Date SettlementDate = DataTypeHelpers.stringToDate(strSettlementDateStr);
+                                                if (SettlementDate != null) {
+                                                    rrMain.setSettlementDate(SettlementDate);
+                                                } else {
+                                                    message = "Excel导入失败，Sheet主单扣款 结算日期存在错误格式或为空，序号：" + strOrderNumber + ".";
+                                                    blError = true;
+                                                    break;
+                                                }
+
                                                 String strHospitalizedNo = DataTypeHelpers.importTernaryOperate(objZd.get(i), 8);//'住院号',
                                                 rrMain.setHospitalizedNo(strHospitalizedNo);
                                                 String strEnterHospitalDate = DataTypeHelpers.importTernaryOperate(objZd.get(i), 9);//'入院日期str',
@@ -426,6 +453,7 @@ public class YbReconsiderApplyDataController extends BaseController {
                                     ybReconsiderApply.setUploadFileNameTwo(uploadFileName);
                                 }
                                 ybReconsiderApply.setId(pid);
+
                                 this.iYbReconsiderApplyDataService.importReconsiderApply(ybReconsiderApply, ListData, ListMain);
                                 success = 1;
                                 message = "Excel导入成功.";

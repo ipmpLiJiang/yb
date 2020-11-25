@@ -189,6 +189,20 @@ private static final long serialVersionUID=1L;
     private transient String settlementDateTo;
 
     /**
+     * 复议年月Str
+     */
+    @TableField("applyDateStr")
+    @ExcelField(value = "复议年月Str")
+    private String applyDateStr;
+
+    /**
+     * 数据类型
+     */
+    @TableField("dataType")
+    @ExcelField(value ="数据类型")
+    private Integer dataType;
+
+    /**
      * 备注
      */
     @TableField("COMMENTS")
@@ -286,6 +300,10 @@ private static final long serialVersionUID=1L;
     public static final String EXCUTEDOCNAME ="excuteDocName" ;
 
     public static final String SETTLEMENTDATE ="settlementDate" ;
+
+    public static final String APPLYDATESTR = "applyDateStr";
+
+    public static final String DATATYPE ="dataType" ;
 
     public static final String COMMENTS ="COMMENTS" ;
 

@@ -333,6 +333,21 @@ export default {
         }
       })
     },
+    exportExcel1 () {
+      let { sortedInfo } = this
+      let sortField, sortOrder
+      // 获取当前列的排序和列的过滤规则
+      if (sortedInfo) {
+        sortField = sortedInfo.field
+        sortOrder = sortedInfo.order
+      }
+      this.queryParams.dataJson = '[{title: "医生编码", dataIndex: "personCode"},{title: "科室名称",dataIndex: "deptName"},{title: "医生名称",dataIndex: "personName"}]'
+      this.$export('ybPerson/excel1', {
+        sortField: sortField,
+        sortOrder: sortOrder,
+        ...this.queryParams
+      })
+    },
     exportExcel () {
       let { sortedInfo } = this
       let sortField, sortOrder

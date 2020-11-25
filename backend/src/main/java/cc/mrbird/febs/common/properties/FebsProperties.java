@@ -30,4 +30,6 @@ public class FebsProperties {
     private String in2;
 
     private String in3;
+
+    private Integer taskInpatientCount;
 }

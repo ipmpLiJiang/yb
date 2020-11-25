@@ -41,6 +41,7 @@
                     <result column="dataType" property="dataType"/>
             <result column="orderNumber" property="orderNumber"/>
             <result column="orderNum" property="orderNum"/>
+            <result column="orderSettlementNum" property="orderSettlementNum"/>
                     <result column="COMMENTS" property="comments"/>
                     <result column="STATE" property="state"/>
                     <result column="IS_DELETEMARK" property="isDeletemark"/>
@@ -52,7 +53,7 @@
 
         <!-- 通用查询结果列 -->
         <sql id="Base_Column_List">
-        id, pid, serialNo, billNo, proposalCode, projectCode, projectName, num, medicalPrice, ruleName, deductPrice, deductReason, repaymentReason, doctorName, deptCode, deptName, enterHospitalDate,enterHospitalDateStr, outHospitalDate,outHospitalDateStr, costDate,costDateStr, hospitalizedNo, treatmentMode, settlementDate,settlementDateStr, personalNo, insuredName, cardNumber, areaName, versionNumber, backAppeal, typeno,insuredType,dataType,orderNumber,orderNum, COMMENTS, STATE, IS_DELETEMARK, MODIFY_TIME, CREATE_TIME, CREATE_USER_ID, MODIFY_USER_ID
+        id, pid, serialNo, billNo, proposalCode, projectCode, projectName, num, medicalPrice, ruleName, deductPrice, deductReason, repaymentReason, doctorName, deptCode, deptName, enterHospitalDate,enterHospitalDateStr, outHospitalDate,outHospitalDateStr, costDate,costDateStr, hospitalizedNo, treatmentMode, settlementDate,settlementDateStr, personalNo, insuredName, cardNumber, areaName, versionNumber, backAppeal, typeno,insuredType,dataType,orderNumber,orderNum,orderSettlementNum, COMMENTS, STATE, IS_DELETEMARK, MODIFY_TIME, CREATE_TIME, CREATE_USER_ID, MODIFY_USER_ID
     </sql>
     <update id="updateYbReconsiderApplyData" parameterType="cc.mrbird.febs.yb.entity.YbReconsiderApplyData">
         update yb_reconsider_apply_data
@@ -88,6 +89,7 @@
 <if test="dataType != null">dataType=#{dataType},</if>
 <if test="orderNumber != null">orderNumber=#{orderNumber},</if>
 <if test="orderNum != null">orderNum=#{orderNum},</if>
+<if test="orderSettlementNum != null">orderSettlementNum=#{orderSettlementNum},</if>
 <if test="comments != null">COMMENTS=#{comments},</if>
 <if test="state != null">STATE=#{state},</if>
 <if test="isDeletemark != null">IS_DELETEMARK=#{isDeletemark},</if>
@@ -201,5 +203,33 @@
                 and pp.IS_DELETEMARK = 1 where vv.IS_DELETEMARK = 1 and pp.applyDateStr=ra.applyDateStr and vv.applyDataId= rda.id
                 and vv.dataType = #{dataType}
             )
+    </select>
+    <select id="findReconsiderApplyDataBetween" resultType="cc.mrbird.febs.yb.entity.YbReconsiderApplyData">
+        SELECT
+            yb_reconsider_apply_data.*
+        FROM
+            yb_reconsider_apply_data
+        INNER JOIN yb_reconsider_apply on
+            yb_reconsider_apply_data.pid = yb_reconsider_apply.id and
+            yb_reconsider_apply.IS_DELETEMARK = 1
+        where
+            yb_reconsider_apply_data.IS_DELETEMARK = 1 and
+            yb_reconsider_apply.applyDateStr = #{applyDateStr} and dataType = #{dataType} and
+            orderSettlementNum between #{startNum} and #{endNum}
+        ORDER BY
+            dataType,orderNum
+    </select>
+    <select id="findReconsiderApplyDataCount"  resultType="Integer">
+        SELECT
+            count(1)
+        FROM
+            yb_reconsider_apply_data
+        INNER JOIN yb_reconsider_apply on
+            yb_reconsider_apply_data.pid = yb_reconsider_apply.id and
+            yb_reconsider_apply.IS_DELETEMARK = 1
+        where
+            yb_reconsider_apply_data.IS_DELETEMARK = 1 and
+            yb_reconsider_apply.applyDateStr = #{applyDateStr}
+            <if test="dataType != null"> and yb_reconsider_apply_data.dataType =#{ dataType} </if>
     </select>
 </mapper>

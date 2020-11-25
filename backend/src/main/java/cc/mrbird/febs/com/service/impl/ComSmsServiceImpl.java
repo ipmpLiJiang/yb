@@ -8,6 +8,7 @@ import cc.mrbird.febs.common.utils.SortUtil;
 import cc.mrbird.febs.com.entity.ComSms;
 import cc.mrbird.febs.com.dao.ComSmsMapper;
 import cc.mrbird.febs.com.service.IComSmsService;
+import cn.hutool.core.lang.Validator;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -160,20 +161,23 @@ public class ComSmsServiceImpl extends ServiceImpl<ComSmsMapper, ComSms> impleme
                     updateSms.setState(ComSms.STATE_1);
                     updateList.add(updateSms);
 
-                    if(mobList.stream().filter(s -> s.equals(item.getMobile())).count() == 0) {
-                        if (mobiles.equals("")) {
-                            mobiles = item.getMobile();
-                        } else {
-                            mobiles += "," + item.getMobile();
+                    if (mobList.stream().filter(s -> s.equals(item.getMobile())).count() == 0) {
+                        if (Validator.isMobile(item.getMobile())) {
+                            if (mobiles.equals("")) {
+                                mobiles = item.getMobile();
+                            } else {
+                                mobiles += "," + item.getMobile();
+                            }
                         }
                     }
                 }
                 msg = sendMsg(mobiles, t1.getSendcontent());
-                if(msg.equals("0")){
+
+                if (msg.equals("0")) {
                     this.updateBatchById(updateList);
-                }else{
-                    //0 0/3 21-23 1/1 * ?
-                    log.error("发短信Error",msg);
+                } else {
+                    //0 0/3 21-23 1/1 * ? //0 0/3 * * * ?
+                    log.error("发短信Error", msg);
                 }
             }
         }

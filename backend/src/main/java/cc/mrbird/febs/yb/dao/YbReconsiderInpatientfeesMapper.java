@@ -21,5 +21,5 @@ public interface YbReconsiderInpatientfeesMapper extends BaseMapper<YbReconsider
         IPage<YbReconsiderInpatientfees> findYbReconsiderInpatientfees(Page page, @Param("ybReconsiderInpatientfees") YbReconsiderInpatientfees ybReconsiderInpatientfees);
         IPage<YbReconsiderInpatientfees> findYbReconsiderInpatientfeesEq(Page page, @Param("ybReconsiderInpatientfees") YbReconsiderInpatientfees ybReconsiderInpatientfees);
 
-        List<YbReconsiderInpatientfees> findReconsiderInpatientfeesList(@Param("applyDateStr") String applyDateStr);
+        //List<YbReconsiderInpatientfees> findReconsiderInpatientfeesList(@Param("applyDateStr") String applyDateStr,@Param("dataType") Integer dataType);
 }

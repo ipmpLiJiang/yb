@@ -10,6 +10,7 @@ import cc.mrbird.febs.common.domain.router.VueRouter;
 import cc.mrbird.febs.common.exception.FebsException;
 import cc.mrbird.febs.common.domain.QueryRequest;
 
+import cc.mrbird.febs.common.properties.FebsProperties;
 import cc.mrbird.febs.system.domain.UserRolesImport;
 import cc.mrbird.febs.yb.domain.ResponseResultData;
 import cc.mrbird.febs.yb.entity.YbDept;
@@ -50,6 +51,9 @@ public class YbPersonController extends BaseController {
     private String message;
     @Autowired
     public IYbPersonService iYbPersonService;
+
+    @Autowired
+    FebsProperties febsProperties;
 
 
     /**
@@ -179,7 +183,9 @@ public class YbPersonController extends BaseController {
     public void export1(QueryRequest request, YbPerson ybPerson,String dataJson, HttpServletResponse response) throws FebsException {
         try {
             List<YbPerson> ybPersons = this.iYbPersonService.findYbPersons(request, ybPerson).getRecords();
-            ExportExcelUtils.exportCustomExcel(response, ybPersons,dataJson,"人员信息");
+//            ExportExcelUtils.exportCustomExcel(response, ybPersons,dataJson,"人员信息");
+            String tempUrl = febsProperties.getUploadPath() + "person.xlsx";
+            ExportExcelUtils.exportTemplateExcel(response, ybPersons,dataJson,tempUrl,2);
         } catch (Exception e) {
             message = "导出Excel失败";
             log.error(message, e);

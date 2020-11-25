@@ -1,5 +1,6 @@
-package cc.mrbird.febs.com.entity;
+package cc.mrbird.febs.yb.entity;
 
+import java.time.LocalDateTime;
 import com.baomidou.mybatisplus.annotation.TableField;
 import java.io.Serializable;
 
@@ -16,95 +17,77 @@ import com.wuwenze.poi.annotation.ExcelField;
  * </p>
  *
  * @author viki
- * @since 2020-11-13
+ * @since 2020-11-23
  */
 
-@Excel("com_sms")
+@Excel("yb_reconsider_apply_task")
 @Data
 @Accessors(chain = true)
-public class ComSms implements Serializable , Comparable<ComSms>{
+public class YbReconsiderApplyTask implements Serializable , Comparable<YbReconsiderApplyTask>{
 
 private static final long serialVersionUID=1L;
 
     /**
-     * 1 核对发送
+     * 复议申请任务记录
      */
-    public static final int SENDTYPE_1 = 1 ;
-    /**
-     * 2 人工复议发送
-     */
-
-    public static final int SENDTYPE_2 = 2 ;
-    /**
-     * 3 医保办变更
-     */
-    public static final int SENDTYPE_3 = 3 ;
-
-    /**
-     * 4 管理员变更
-     */
-    public static final int SENDTYPE_4 = 4 ;
-
-    /**
-     * 0 未发送
-     */
-    public static final int STATE_0 = 0 ;
-    /**
-     * 1 已发送
-     */
-
-    public static final int STATE_1 = 1 ;
-
-    /**
-     * 信息ID
-     */
-                                @ExcelField(value ="信息ID")
+                                @ExcelField(value ="复议申请任务记录")
     private String id;
 
     /**
-     * 发送账户
+     * 复议年月Str
      */
-            @ExcelField(value ="发送账户")
-    private String sendcode;
+    @TableField("applyDateStr")
+            @ExcelField(value ="复议年月Str")
+    private String applyDateStr;
 
     /**
-     * 发送人
+     * 数据类型
      */
-            @ExcelField(value ="发送人")
-    private String sendname;
+    @TableField("dataType")
+            @ExcelField(value ="数据类型")
+    private Integer dataType;
 
     /**
-     * 电话号码
+     * 开始数
      */
-            @ExcelField(value ="手机号码")
-    private String mobile;
+    @TableField("startNum")
+            @ExcelField(value ="开始数")
+    private Integer startNum;
 
     /**
-     * 发送类型
+     * 结束数
      */
-    @TableField("sendType")
-            @ExcelField(value ="发送类型")
-    private Integer sendType;
+    @TableField("endNum")
+            @ExcelField(value ="结束数")
+    private Integer endNum;
 
     /**
-     * 操作员代码
+     * 总数
      */
-    @TableField("operatorId")
-            @ExcelField(value ="操作员代码")
-    private Long operatorId;
+    @TableField("totalRow")
+            @ExcelField(value ="总数")
+    private Integer totalRow;
 
     /**
-     * 操作员名称
+     * 当前页
      */
-    @TableField("operatorName")
-            @ExcelField(value ="操作员名称")
-    private String operatorName;
+    @TableField("currentPage")
+            @ExcelField(value ="当前页")
+    private Integer currentPage;
 
     /**
-     * 发送内容
+     * 页数
      */
-            @ExcelField(value ="发送内容")
-    private String sendcontent;
+    @TableField("pageSize")
+            @ExcelField(value ="页数")
+    private Integer pageSize;
+
+    /**
+     * 总页数
+     */
+    @TableField("totalPage")
+            @ExcelField(value ="总页数")
+    private Integer totalPage;
 
     /**
      * 备注
@@ -163,19 +146,21 @@ private static final long serialVersionUID=1L;
 
     public static final String ID ="id" ;
 
-    public static final String SENDCODE ="sendcode" ;
+    public static final String APPLYDATESTR ="applyDateStr" ;
 
-    public static final String SENDNAME ="sendname" ;
+    public static final String DATATYPE ="dataType" ;
 
-    public static final String MOBILE ="mobile" ;
+    public static final String STARTNUM ="startNum" ;
 
-    public static final String SENDTYPE ="sendType" ;
+    public static final String ENDNUM ="endNum" ;
 
-    public static final String OPERATORID ="operatorId" ;
+    public static final String TOTALROW ="totalRow" ;
 
-    public static final String OPERATORNAME ="operatorName" ;
+    public static final String CURRENTPAGE ="currentPage" ;
 
-    public static final String SENDCONTENT ="sendcontent" ;
+    public static final String PAGESIZE ="pageSize" ;
+
+    public static final String TOTALPAGE ="totalPage" ;
 
     public static final String COMMENTS ="COMMENTS" ;
 
@@ -192,7 +177,7 @@ private static final long serialVersionUID=1L;
     public static final String MODIFY_USER_ID ="MODIFY_USER_ID" ;
 
 @Override
-public int compareTo(ComSms o) {
+public int compareTo(YbReconsiderApplyTask o) {
         if (this.getId() != null && o.getId() != null) {
         return this.getId().compareTo(o.getId());
         } else if (this.getId() != null) {

@@ -43,4 +43,9 @@ public interface IYbReconsiderApplyDataService extends IService<YbReconsiderAppl
         void  importReconsiderApply(YbReconsiderApply ybReconsiderApply, List<YbReconsiderApplyData> listData, List<YbReconsiderApplyData> listMain);
 
 
+//        List<YbReconsiderApplyData> findReconsiderApplyDataBetween(String applyDateStr,Integer dataType,Integer startNum,Integer endNum);
+
+//        int findReconsiderApplyDataCount(String applyDateStr,Integer dataType);
+
+        void findReconsiderApplyDataTask();
 }

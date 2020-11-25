@@ -1,5 +1,6 @@
 package cc.mrbird.febs.com.controller;
 
+import cn.hutool.core.date.DateUtil;
 import lombok.val;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -177,6 +178,7 @@ public class DataTypeHelpers {
     }
 
 
+
     public static int stringDateFormatMaxDay(String strDate, String format, boolean isFormat) {
         if (isNullOrEmpty(format)) {
             format = "yyyyMMdd";
@@ -197,6 +199,27 @@ public class DataTypeHelpers {
         return maxDay;
     }
 
+    public static String stringDateFormatAddMonth(int addMonth,String strDate, String format, boolean isFormat) {
+        if (isNullOrEmpty(format)) {
+            format = "yyyyMMdd";
+            isFormat = false;
+        }
+        if (!isFormat) {
+            strDate = strDate.replace("-", "").replace("/", "");
+        }
+        SimpleDateFormat sdf = new SimpleDateFormat(format);
+        Date date = sdf.parse(strDate, new ParsePosition(0));
+
+        Calendar a = Calendar.getInstance();
+        a.setTime(date);
+        a.add(Calendar.MONTH, addMonth);
+        Date dt1 = a.getTime();
+        SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd");
+        String reStr = sdf1.format(dt1);
+        return reStr;
+    }
+
+
     public static int dateFormatMaxDay(Date date) {
         Calendar a = Calendar.getInstance();
         a.setTime(date);
@@ -205,6 +228,15 @@ public class DataTypeHelpers {
         int maxDay = a.get(Calendar.DATE);
 
         return maxDay;
+    }
+
+    public static Date stringToDate(String strDate) {
+        Date date = null;
+        try {
+            date = DateUtil.parse(strDate);
+        }catch(Exception e){
+        }
+        return date;
     }
 
     public static List<String> stringApplyDateStrToList(String applyDateStr, String applyDateStrTo) {

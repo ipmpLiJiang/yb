@@ -99,8 +99,15 @@ public class YbReconsiderInpatientfeesServiceImpl extends ServiceImpl<YbReconsid
     }
 
     @Override
-    public List<YbReconsiderInpatientfees> findReconsiderInpatientfeesLists(String applyDateStr){
-        return this.baseMapper.findReconsiderInpatientfeesList(applyDateStr);
+    public List<YbReconsiderInpatientfees> findReconsiderInpatientfeesList(YbReconsiderInpatientfees ybReconsiderInpatientfees) {
+        LambdaQueryWrapper<YbReconsiderInpatientfees> wrapper = new LambdaQueryWrapper<>();
+        if (ybReconsiderInpatientfees.getApplyDateStr() != null) {
+            wrapper.eq(YbReconsiderInpatientfees::getApplyDateStr, ybReconsiderInpatientfees.getApplyDateStr());
+        }
+        if (ybReconsiderInpatientfees.getDataType() != null) {
+            wrapper.eq(YbReconsiderInpatientfees::getDataType, ybReconsiderInpatientfees.getDataType());
+        }
+        return this.list(wrapper);
     }
 
 

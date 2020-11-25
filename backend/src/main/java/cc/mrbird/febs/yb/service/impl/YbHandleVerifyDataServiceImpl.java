@@ -13,6 +13,7 @@ import cc.mrbird.febs.system.service.UserService;
 import cc.mrbird.febs.yb.entity.*;
 import cc.mrbird.febs.yb.dao.YbHandleVerifyDataMapper;
 import cc.mrbird.febs.yb.service.*;
+import cn.hutool.core.lang.Validator;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
@@ -241,21 +242,23 @@ public class YbHandleVerifyDataServiceImpl extends ServiceImpl<YbHandleVerifyDat
                                 s -> s.getUsername().equals(ybHandleVerifyData.getDoctorCode())
                         ).collect(Collectors.toList());
                         if (queryUserList.size() > 0) {
-                            ComSms comSms = new ComSms();
-                            comSms.setId(UUID.randomUUID().toString());
-                            comSms.setSendcode(queryUserList.get(0).getUsername());
-                            comSms.setSendname(queryUserList.get(0).getXmname());
-                            comSms.setMobile(queryUserList.get(0).getMobile());
-                            comSms.setSendType(ComSms.SENDTYPE_1);
-                            comSms.setState(ComSms.STATE_0);
-                            ;
-                            comSms.setSendcontent("医保管理平台提醒您，您的医保复议任务已发布，请尽快处理。");
-                            comSms.setOperatorId(uId);
-                            comSms.setOperatorName(Uname);
-                            comSms.setIsDeletemark(1);
-                            comSms.setCreateUserId(uId);
-                            comSms.setCreateTime(thisDate);
-                            saveSmsList.add(comSms);
+                            if (Validator.isMobile(queryUserList.get(0).getMobile())) {
+                                ComSms comSms = new ComSms();
+                                comSms.setId(UUID.randomUUID().toString());
+                                comSms.setSendcode(queryUserList.get(0).getUsername());
+                                comSms.setSendname(queryUserList.get(0).getXmname());
+                                comSms.setMobile(queryUserList.get(0).getMobile());
+                                comSms.setSendType(ComSms.SENDTYPE_1);
+                                comSms.setState(ComSms.STATE_0);
+                                ;
+                                comSms.setSendcontent("医保管理平台提醒您，您的医保人工复议任务已发布，请尽快处理。");
+                                comSms.setOperatorId(uId);
+                                comSms.setOperatorName(Uname);
+                                comSms.setIsDeletemark(1);
+                                comSms.setCreateUserId(uId);
+                                comSms.setCreateTime(thisDate);
+                                saveSmsList.add(comSms);
+                            }
                         }
                     }
                 }
@@ -266,7 +269,7 @@ public class YbHandleVerifyDataServiceImpl extends ServiceImpl<YbHandleVerifyDat
         if (appealManageList.size() > 0) {
             this.updateBatchById(updateHandleVerifyList);
             this.iYbAppealManageService.saveBatch(appealManageList);
-            if(isOpenSms && saveSmsList.size() > 0){
+            if (isOpenSms && saveSmsList.size() > 0) {
                 this.iComSmsService.saveBatch(saveSmsList);
             }
         }
@@ -274,14 +277,14 @@ public class YbHandleVerifyDataServiceImpl extends ServiceImpl<YbHandleVerifyDat
 
     @Override
     @Transactional
-    public void updateAllSendStates(String applyDateStr,Integer dataType,Integer state, Long uId, String Uname) {
+    public void updateAllSendStates(String applyDateStr, Integer dataType, Integer state, Long uId, String Uname) {
         Date thisDate = new java.sql.Timestamp(new Date().getTime());
         int day = iComConfiguremanageService.getConfigDay();
         List<YbHandleVerifyData> updateHandleVerifyList = new ArrayList<>();
         List<YbAppealManage> appealManageList = new ArrayList<>();
         Date addDate = DataTypeHelpers.addDateMethod(thisDate, day);
 
-        List<YbHandleVerifyData>  list = this.baseMapper.findHandleVerifyDataList(applyDateStr, dataType, state);
+        List<YbHandleVerifyData> list = this.baseMapper.findHandleVerifyDataList(applyDateStr, dataType, state);
 
         List<User> userList = new ArrayList<>();
         List<User> queryUserList = new ArrayList<>();
@@ -297,7 +300,7 @@ public class YbHandleVerifyDataServiceImpl extends ServiceImpl<YbHandleVerifyDat
             smsList = iComSmsService.findLmdSmsList(qu);
         }
         for (YbHandleVerifyData ybHandleVerifyData : list) {
-            if(ybHandleVerifyData.getState() != YbDefaultValue.VERIFYDATASTATE_3) {
+            if (ybHandleVerifyData.getState() != YbDefaultValue.VERIFYDATASTATE_3) {
                 //更新
                 YbHandleVerifyData updateHandleVerify = new YbHandleVerifyData();
                 updateHandleVerify.setId(ybHandleVerifyData.getId());
@@ -341,21 +344,23 @@ public class YbHandleVerifyDataServiceImpl extends ServiceImpl<YbHandleVerifyDat
                                     s -> s.getUsername().equals(ybHandleVerifyData.getDoctorCode())
                             ).collect(Collectors.toList());
                             if (queryUserList.size() > 0) {
-                                ComSms comSms = new ComSms();
-                                comSms.setId(UUID.randomUUID().toString());
-                                comSms.setSendcode(queryUserList.get(0).getUsername());
-                                comSms.setSendname(queryUserList.get(0).getXmname());
-                                comSms.setMobile(queryUserList.get(0).getMobile());
-                                comSms.setSendType(ComSms.SENDTYPE_1);
-                                comSms.setState(ComSms.STATE_0);
-                                ;
-                                comSms.setSendcontent("医保管理平台提醒您，您的医保复议任务已发布，请尽快处理。");
-                                comSms.setOperatorId(uId);
-                                comSms.setOperatorName(Uname);
-                                comSms.setIsDeletemark(1);
-                                comSms.setCreateUserId(uId);
-                                comSms.setCreateTime(thisDate);
-                                saveSmsList.add(comSms);
+                                if (Validator.isMobile(queryUserList.get(0).getMobile())) {
+                                    ComSms comSms = new ComSms();
+                                    comSms.setId(UUID.randomUUID().toString());
+                                    comSms.setSendcode(queryUserList.get(0).getUsername());
+                                    comSms.setSendname(queryUserList.get(0).getXmname());
+                                    comSms.setMobile(queryUserList.get(0).getMobile());
+                                    comSms.setSendType(ComSms.SENDTYPE_1);
+                                    comSms.setState(ComSms.STATE_0);
+                                    ;
+                                    comSms.setSendcontent("医保管理平台提醒您，您的医保人工复议任务已发布，请尽快处理。");
+                                    comSms.setOperatorId(uId);
+                                    comSms.setOperatorName(Uname);
+                                    comSms.setIsDeletemark(1);
+                                    comSms.setCreateUserId(uId);
+                                    comSms.setCreateTime(thisDate);
+                                    saveSmsList.add(comSms);
+                                }
                             }
                         }
                     }
@@ -366,7 +371,7 @@ public class YbHandleVerifyDataServiceImpl extends ServiceImpl<YbHandleVerifyDat
         if (appealManageList.size() > 0) {
             this.updateBatchById(updateHandleVerifyList);
             this.iYbAppealManageService.saveBatch(appealManageList);
-            if(isOpenSms && saveSmsList.size() > 0){
+            if (isOpenSms && saveSmsList.size() > 0) {
                 this.iComSmsService.saveBatch(saveSmsList);
             }
         }

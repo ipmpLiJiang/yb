@@ -31,5 +31,5 @@ public interface IYbReconsiderInpatientfeesService extends IService<YbReconsider
 
         void deleteYbReconsiderInpatientfeess(String[]Ids);
 
-        List<YbReconsiderInpatientfees> findReconsiderInpatientfeesLists(String applyDateStr);
+        List<YbReconsiderInpatientfees> findReconsiderInpatientfeesList(YbReconsiderInpatientfees ybReconsiderInpatientfees);
         }

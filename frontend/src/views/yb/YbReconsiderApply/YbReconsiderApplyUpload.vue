@@ -59,6 +59,8 @@
             >
               <a-button type="primary" style="margin-right: .8rem">删除明细</a-button>
             </a-popconfirm>
+          </a-col>
+          <a-col :span=2 v-show="showDelBtn">
             <a-popconfirm
               title="确定开启服务？"
               @confirm="startUp"

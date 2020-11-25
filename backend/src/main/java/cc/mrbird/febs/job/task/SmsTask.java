@@ -3,6 +3,7 @@ package cc.mrbird.febs.job.task;
 import cc.mrbird.febs.cn.webxml.sms.SmsService;
 import cc.mrbird.febs.cn.webxml.sms.SmsServicePortType;
 import cc.mrbird.febs.com.service.IComSmsService;
+import cc.mrbird.febs.yb.service.IYbReconsiderApplyDataService;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +20,10 @@ import java.util.Date;
 public class SmsTask {
     @Autowired
     IComSmsService iComSmsService;
+    @Autowired
+    IYbReconsiderApplyDataService iYbReconsiderApplyService;
     public SmsTask() {
+//        iComSmsService.sendSms();
     }
 
     public void smsTestTask() {
@@ -39,9 +43,11 @@ public class SmsTask {
 //        } catch (Exception e) {
 //            System.out.print(e.getMessage());
 //        }
-        Date date = new Date();
-        System.out.print("sms" + date.toString());
+//        Date date = new Date();
+//        System.out.print("sms" + date.toString());
+//
+//        iComSmsService.sendSms();
 
-        iComSmsService.sendSms();
+        iYbReconsiderApplyService.findReconsiderApplyDataTask();
     }
 }

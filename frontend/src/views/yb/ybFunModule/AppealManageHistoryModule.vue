@@ -93,14 +93,14 @@ export default {
         width: 120
       },
       {
-        title: '流程类型',
+        title: '复议类型',
         dataIndex: 'sourceType',
         customRender: (text, row, index) => {
           switch (text) {
             case 0:
-              return '正常流程'
+              return '网上复议'
             case 1:
-              return '剔除流程'
+              return '人工复议'
             default:
               return text
           }
