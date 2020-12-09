@@ -42,66 +42,6 @@ public class PDFDemo {
         return document;
     }
 
-    public void writePdf(String filename, String imgPath) throws Exception {
-        Document document = createDoc(filename); // 打开文档
-        document.open(); // 文档里写入
-        String str = "萨达所所所所所所所所所所所所所所所所所所所所所所所" +
-                "所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所" +
-                "咔咔咔咔咔咔扩扩扩扩扩扩扩扩扩扩扩扩扩扩扩扩扩扩扩扩扩扩扩扩扩扩扩扩扩扩扩扩扩扩扩扩扩扩所所所所所所";
-        String blogURL = "http://www.micmiu.com/os/linux/shell-dev-null/";
-        org.jsoup.nodes.Document doc = Jsoup.connect(blogURL).get();
-        document.add(convertParToChinese(doc.toString(), 20, bold, black));
-        /*
-        document.add(convertParToChinese("红色字体", 20, bold, red));
-        document.add(new Paragraph("\n"));
-        document.add(convertParToChinese("黑色", 18, boldItalic, black));
-        document.add(new Paragraph("\n"));
-        document.add(convertParToChinese("蓝色", 14, normal, blue));
-        document.add(new Paragraph("\n"));
-        // 文档写入图片
-        if (checkFile(imgPath)) {
-            Image image = writeImg(imgPath);
-            document.add(image);
-            document.add(new Paragraph("\n"));
-        }
-        document.add(new Paragraph("\n"));
-        document.add(new Paragraph("\n")); // 生成三列表格
-        PdfPTable table = new PdfPTable(3); // 设置表格具体宽度
-        table.setTotalWidth(90); // 设置每一列所占的长度
-        table.setWidths(new float[] { 50f, 15f, 25f });
-        PdfPCell cell1 = new PdfPCell();
-        Paragraph para = new Paragraph("aaaaa");
-        cell1.setPhrase(para);
-        table.addCell(cell1);
-        table.addCell(new PdfPCell(new Phrase("IText")));
-        table.addCell(new PdfPCell(new Phrase("IText")));
-        document.add(table);
-        document.add(new Paragraph("\n"));
-        document.add(new Paragraph("\n")); // PDF同行显示
-        Paragraph par = new Paragraph();
-        Chunk chunk1 = new Chunk(convertChunkByChinese("考试分数：", 20, bold, black));
-        Chunk chunk2 = new Chunk(convertChunkByChinese("93", 20, bold, red));
-        par.add(chunk1);
-        par.add(chunk2); // 设置整体缩进
-        par.setFirstLineIndent(setting); // 居中
-        Paragraph centerPar = convertParToChinese("剧中测试", 16, italic, black);
-        centerPar.setAlignment(Element.ALIGN_CENTER);
-        document.add(par); // 新建章节
-        // //节标题
-        Paragraph chapterTitle = new Paragraph(convertParToChinese("章节标题", 18, boldItalic, blue));
-        Chapter chapter1 = new Chapter(chapterTitle, 1);
-        chapter1.setNumberDepth(0);
-        for (int i = 0; i < 20; i++)
-        {
-            Paragraph p = new Paragraph((i + 1) + "test!!!!!");
-            chapter1.add(p);
-        }
-        document.add(chapter1); // 5.关闭文档
-
-         */
-        document.close();
-    }
-
     public Image writeImg(String imgPath) throws Exception {
         Image img = Image.getInstance(imgPath); // 控制图片大小
         img.scaleAbsolute(100, 100);
@@ -131,6 +71,8 @@ public class PDFDemo {
         return chunk;
     }
 
+    private final String fontPath = "D:\\simsun.ttc,1";
+
     public void writePdf(String fileName, String outWatermarkFileName, ArrayList<String> mergeAddPdfList, String watermarkName) throws Exception {
         Document document = new Document(PageSize.A4, 50, 50, 50, 50);
         FileOutputStream out = new FileOutputStream(fileName);
@@ -138,6 +80,9 @@ public class PDFDemo {
 
         document.open(); // 文档里写入
         BaseFont baseFontChinese = BaseFont.createFont("STSong-Light", "UniGB-UCS2-H", BaseFont.NOT_EMBEDDED);
+
+//        BaseFont baseFontChinese = BaseFont.createFont(fontPath,BaseFont.IDENTITY_H,BaseFont.EMBEDDED);
+
         Font font = new Font(baseFontChinese, 11, normal, black);
 
         Font fontBold = new Font(baseFontChinese, 11, bold, black);
@@ -5630,8 +5575,8 @@ public class PDFDemo {
         mergeAddPdfList.add("D:\\work\\java\\html\\demo-URL.pdf");
         mergeAddPdfList.add("D:\\work\\java\\html\\tempcreatePDF.pdf");
 
-//        pdfDemo.writePdf("D:\\work\\java\\html\\demo-111111.pdf","D:\\work\\java\\html\\demo-222222.pdf", mergeAddPdfList, "2020");
-        pdfDemo.writePdf1("D:\\work\\java\\html\\demo-333333.pdf");
+        pdfDemo.writePdf("D:\\work\\java\\html\\demo-111111.pdf","D:\\work\\java\\html\\demo-222222.pdf", mergeAddPdfList, "2020");
+        //pdfDemo.writePdf1("D:\\work\\java\\html\\demo-333333.pdf");
     }
 
     @Data

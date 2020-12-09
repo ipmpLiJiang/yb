@@ -22,6 +22,18 @@
         >
         </input-select>
       </a-form-item>
+      <a-form-item
+        v-bind="formItemLayout"
+        label="医生名称"
+      >
+        <input-select
+            ref="inputSelectDoctor"
+            v-decorator="['doctorCode', {rules: [{ required: true, message: '医生名称不能为空' }] }]"
+            :type=2
+            @selectChange=selectDoctorChange
+        >
+        </input-select>
+      </a-form-item>
     </a-form>
     <div class="drawer-bootom-button">
       <a-popconfirm
@@ -78,6 +90,10 @@ export default {
       this.reset()
       this.$emit('close')
     },
+    selectDoctorChange (item) {
+      this.ybPriorityLevel.doctorCode = item.value
+      this.ybPriorityLevel.doctorName = item.text
+    },
     selectDeptChange (item) {
       this.ybPriorityLevel.deptCode = item.value
       this.ybPriorityLevel.deptName = item.text
@@ -93,11 +109,30 @@ export default {
         }]
         this.$refs.inputSelectDept.value = ybReconsiderPriorityLevel.deptCode
 
+        this.$refs.inputSelectDoctor.dataSource = [{
+          text: ybReconsiderPriorityLevel.doctorName,
+          value: ybReconsiderPriorityLevel.doctorCode
+        }]
+        this.$refs.inputSelectDoctor.value = ybReconsiderPriorityLevel.doctorCode
+
+        this.ybPriorityLevel.doctorCode = ybReconsiderPriorityLevel.doctorCode
+        this.ybPriorityLevel.doctorName = ybReconsiderPriorityLevel.doctorName
         this.ybPriorityLevel.deptCode = ybReconsiderPriorityLevel.deptCode
         this.ybPriorityLevel.deptName = ybReconsiderPriorityLevel.deptName
       }, 200)
     },
     handleSubmit () {
+      if (this.ybPriorityLevel.doctorCode !== '' && this.ybPriorityLevel.doctorCode !== undefined) {
+        this.form.getFieldDecorator('doctorCode')
+        this.form.setFieldsValue({
+          doctorCode: this.ybPriorityLevel.doctorCode
+        })
+        this.form.getFieldDecorator('doctorName')
+        this.form.setFieldsValue({
+          doctorName: this.ybPriorityLevel.doctorName
+        })
+      }
+
       if (this.ybPriorityLevel.deptCode !== '' && this.ybPriorityLevel.deptCode !== undefined) {
         this.form.getFieldDecorator('deptCode')
         this.form.setFieldsValue({

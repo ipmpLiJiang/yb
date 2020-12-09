@@ -18,10 +18,13 @@ let FEBS_REQUEST = axios.create({
 
 // 拦截请求
 FEBS_REQUEST.interceptors.request.use((config) => {
-  let expireTime = store.state.account.expireTime
-  let now = moment().format('YYYYMMDDHHmmss')
+  // let expireTime = store.state.account.expireTime
+  // let now = moment().format('YYYYMMDDHHmmss')
   // 让token早10秒种过期，提升“请重新登录”弹窗体验
-  if (now - expireTime >= -10) {
+  let a = 1
+  let b = 2
+  if (a >= b) {
+  // if (now - expireTime >= -10) {
     Modal.error({
       title: '登录已过期',
       content: '很抱歉，登录已过期，请重新登录',

@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import cc.mrbird.febs.common.domain.QueryRequest;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -33,4 +34,6 @@ public interface IComSmsService extends IService<ComSms> {
         List<ComSms> findSmsTopLists(ComSms comSms);
 
         void sendSms();
+
+        void sendSmsService(ArrayList<String> personCodeList, int sendType, String sendContent, Long uId, String Uname);
         }

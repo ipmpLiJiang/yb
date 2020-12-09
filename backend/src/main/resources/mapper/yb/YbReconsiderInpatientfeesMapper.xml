@@ -28,6 +28,9 @@
                     <result column="settlementDate" property="settlementDate"/>
             <result column="applyDateStr" property="applyDateStr"/>
             <result column="dataType" property="dataType"/>
+            <result column="typeno" property="typeno"/>
+            <result column="orderNumber" property="orderNumber"/>
+            <result column="applyDataId" property="applyDataId"/>
                     <result column="COMMENTS" property="comments"/>
                     <result column="STATE" property="state"/>
                     <result column="IS_DELETEMARK" property="isDeletemark"/>
@@ -39,7 +42,7 @@
 
         <!-- 通用查询结果列 -->
         <sql id="Base_Column_List">
-        id, inpatientId, patientName, settlementId, billNo, transNo, itemId, itemCode, itemName, itemCount, itemPrice, itemAmount, feeDate, deptId, deptName, orderDocId, orderDocName, excuteDeptId, excuteDeptName, excuteDocId, excuteDocName, settlementDate,applyDateStr,dataType, COMMENTS, STATE, IS_DELETEMARK, MODIFY_TIME, CREATE_TIME, CREATE_USER_ID, MODIFY_USER_ID
+        id, inpatientId, patientName, settlementId, billNo, transNo, itemId, itemCode, itemName, itemCount, itemPrice, itemAmount, feeDate, deptId, deptName, orderDocId, orderDocName, excuteDeptId, excuteDeptName, excuteDocId, excuteDocName, settlementDate,applyDateStr,dataType,typeno,orderNumber,applyDataId, COMMENTS, STATE, IS_DELETEMARK, MODIFY_TIME, CREATE_TIME, CREATE_USER_ID, MODIFY_USER_ID
     </sql>
     <update id="updateYbReconsiderInpatientfees" parameterType="cc.mrbird.febs.yb.entity.YbReconsiderInpatientfees">
         update yb_reconsider_inpatientfees
@@ -67,6 +70,9 @@
 <if test="settlementDate != null">settlementDate=#{settlementDate},</if>
 <if test="applyDateStr != null">applyDateStr=#{applyDateStr},</if>
 <if test="dataType != null">dataType=#{dataType},</if>
+            <if test="typeno != null">typeno=#{typeno},</if>
+<if test="orderNumber != null">orderNumber=#{orderNumber},</if>
+            <if test="applyDataId != null">applyDataId=#{applyDataId},</if>
 <if test="comments != null">COMMENTS=#{comments},</if>
 <if test="state != null">STATE=#{state},</if>
 <if test="isDeletemark != null">IS_DELETEMARK=#{isDeletemark},</if>
@@ -105,6 +111,9 @@
             <if test="ybReconsiderInpatientfees.excuteDocId != null and ybReconsiderInpatientfees.excuteDocId != ''"> and excuteDocId like concat('%', #{ ybReconsiderInpatientfees.excuteDocId} ,'%')</if>
             <if test="ybReconsiderInpatientfees.excuteDocName != null and ybReconsiderInpatientfees.excuteDocName != ''"> and excuteDocName like concat('%', #{ ybReconsiderInpatientfees.excuteDocName} ,'%')</if>
             <if test="ybReconsiderInpatientfees.applyDateStr != null and ybReconsiderInpatientfees.applyDateStr != ''"> and applyDateStr = #{ ybReconsiderInpatientfees.applyDateStr} </if>
+        <if test="ybReconsiderInpatientfees.dataType != null"> and dataType =#{ ybReconsiderInpatientfees.dataType} </if>
+        <if test="ybReconsiderInpatientfees.typeno != null"> and typeno =#{ ybReconsiderInpatientfees.typeno} </if>
+        <if test="ybReconsiderInpatientfees.applyDataId != null and ybReconsiderInpatientfees.applyDataId != ''"> and applyDataId =#{ ybReconsiderInpatientfees.applyDataId} </if>
         <if test="ybReconsiderInpatientfees.settlementDateFrom!= null">
             AND ybReconsiderInpatientfees.settlementDate <![CDATA[ >= ]]>  settlementDateFrom}
         </if>
@@ -155,6 +164,9 @@
         <if test="ybReconsiderInpatientfees.excuteDocId != null and ybReconsiderInpatientfees.excuteDocId != ''"> and excuteDocId = #{ ybReconsiderInpatientfees.excuteDocId} </if>
         <if test="ybReconsiderInpatientfees.excuteDocName != null and ybReconsiderInpatientfees.excuteDocName != ''"> and excuteDocName = #{ ybReconsiderInpatientfees.excuteDocName} </if>
         <if test="ybReconsiderInpatientfees.applyDateStr != null and ybReconsiderInpatientfees.applyDateStr != ''"> and applyDateStr = #{ ybReconsiderInpatientfees.applyDateStr} </if>
+        <if test="ybReconsiderInpatientfees.applyDataId != null and ybReconsiderInpatientfees.applyDataId != ''"> and applyDataId =#{ ybReconsiderInpatientfees.applyDataId} </if>
+        <if test="ybReconsiderInpatientfees.dataType != null"> and dataType =#{ ybReconsiderInpatientfees.dataType} </if>
+        <if test="ybReconsiderInpatientfees.typeno != null"> and typeno =#{ ybReconsiderInpatientfees.typeno} </if>
         <if test="ybReconsiderInpatientfees.settlementDateFrom!= null">
             AND ybReconsiderInpatientfees.settlementDate <![CDATA[ >= ]]>  settlementDateFrom}
         </if>

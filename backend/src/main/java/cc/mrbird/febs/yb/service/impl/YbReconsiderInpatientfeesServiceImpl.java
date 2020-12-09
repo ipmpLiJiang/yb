@@ -49,12 +49,28 @@ public class YbReconsiderInpatientfeesServiceImpl extends ServiceImpl<YbReconsid
         }
     }
 
+    //    @Override
+//    public IPage<YbReconsiderInpatientfees> findYbReconsiderInpatientfeesList(QueryRequest request, YbReconsiderInpatientfees ybReconsiderInpatientfees) {
+//        try {
+//            Page<YbReconsiderInpatientfees> page = new Page<>();
+//            SortUtil.handlePageSort(request, page, false);//true 是属性  false是数据库字段可两个
+//            return this.baseMapper.findYbReconsiderInpatientfees(page, ybReconsiderInpatientfees);
+//        } catch (Exception e) {
+//            log.error("获取失败", e);
+//            return null;
+//        }
+//    }
     @Override
     public IPage<YbReconsiderInpatientfees> findYbReconsiderInpatientfeesList(QueryRequest request, YbReconsiderInpatientfees ybReconsiderInpatientfees) {
         try {
+            LambdaQueryWrapper<YbReconsiderInpatientfees> queryWrapper = new LambdaQueryWrapper<>();
+            queryWrapper.eq(YbReconsiderInpatientfees::getIsDeletemark, 1);//1是未删 0是已删
+            queryWrapper.eq(YbReconsiderInpatientfees::getApplyDateStr, ybReconsiderInpatientfees.getApplyDateStr());
+            queryWrapper.eq(YbReconsiderInpatientfees::getDataType, ybReconsiderInpatientfees.getDataType());
+
             Page<YbReconsiderInpatientfees> page = new Page<>();
             SortUtil.handlePageSort(request, page, false);//true 是属性  false是数据库字段可两个
-            return this.baseMapper.findYbReconsiderInpatientfees(page, ybReconsiderInpatientfees);
+            return this.page(page, queryWrapper);
         } catch (Exception e) {
             log.error("获取失败", e);
             return null;
@@ -106,6 +122,9 @@ public class YbReconsiderInpatientfeesServiceImpl extends ServiceImpl<YbReconsid
         }
         if (ybReconsiderInpatientfees.getDataType() != null) {
             wrapper.eq(YbReconsiderInpatientfees::getDataType, ybReconsiderInpatientfees.getDataType());
+        }
+        if (ybReconsiderInpatientfees.getTypeno() != null) {
+            wrapper.eq(YbReconsiderInpatientfees::getTypeno, ybReconsiderInpatientfees.getTypeno());
         }
         return this.list(wrapper);
     }

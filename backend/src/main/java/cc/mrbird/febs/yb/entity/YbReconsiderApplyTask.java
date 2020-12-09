@@ -48,6 +48,13 @@ private static final long serialVersionUID=1L;
     private Integer dataType;
 
     /**
+     * 版本类型
+     */
+    @TableField("typeno")
+    //@ExcelField(value ="版本类型")
+    private Integer typeno;
+
+    /**
      * 开始数
      */
     @TableField("startNum")
@@ -149,6 +156,8 @@ private static final long serialVersionUID=1L;
     public static final String APPLYDATESTR ="applyDateStr" ;
 
     public static final String DATATYPE ="dataType" ;
+
+    public static final String TYPENO = "typeno";
 
     public static final String STARTNUM ="startNum" ;
 

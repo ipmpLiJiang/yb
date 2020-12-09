@@ -18,36 +18,14 @@ import java.util.Date;
 @Slf4j
 @Component
 public class SmsTask {
+    public SmsTask() {
+    }
+
     @Autowired
     IComSmsService iComSmsService;
-    @Autowired
-    IYbReconsiderApplyDataService iYbReconsiderApplyService;
-    public SmsTask() {
-//        iComSmsService.sendSms();
+
+    public void sendSmsTask(){
+        iComSmsService.sendSms();
     }
 
-    public void smsTestTask() {
-//        try {
-//            Date date = new Date();
-//            SmsService smsService = new SmsService();
-//            SmsServicePortType ssp = smsService.getSmsServiceHttpPort();
-//            String in0 = "hrp_hr";
-//            String in1 = "hrp_hr";
-//            String in2 = "MAC";
-//            String in3 = "FC";
-//            String in4 = "13971658339";
-//            String in5 = "test lijiang" + date.toString();
-//            String sms = ssp.service(in0, in1, in2, in3, in4, in5);
-//            System.out.print(sms);
-//
-//        } catch (Exception e) {
-//            System.out.print(e.getMessage());
-//        }
-//        Date date = new Date();
-//        System.out.print("sms" + date.toString());
-//
-//        iComSmsService.sendSms();
-
-        iYbReconsiderApplyService.findReconsiderApplyDataTask();
-    }
 }

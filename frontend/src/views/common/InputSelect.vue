@@ -59,7 +59,7 @@ export default {
         }).then((r) => {
           r.data.data.forEach((item, i) => {
             body.push({
-              value: item.deptCode,
+              value: item.deptId,
               text: item.deptName
             })
           })

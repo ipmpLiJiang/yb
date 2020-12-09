@@ -19,7 +19,7 @@
           <a-col :span=7>
             <a-input-search placeholder="请输入关键字" v-model="searchText" style="width: 200px" enter-button @search="searchTable" />
           </a-col>
-          <a-col :span=3>
+          <a-col :span=3 v-show="tableSelectKey!=1?true:false">
             <a-button
             type="primary"
             @click="onHistory"

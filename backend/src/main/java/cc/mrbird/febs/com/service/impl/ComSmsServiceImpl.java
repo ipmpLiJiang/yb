@@ -8,6 +8,8 @@ import cc.mrbird.febs.common.utils.SortUtil;
 import cc.mrbird.febs.com.entity.ComSms;
 import cc.mrbird.febs.com.dao.ComSmsMapper;
 import cc.mrbird.febs.com.service.IComSmsService;
+import cc.mrbird.febs.yb.entity.YbPerson;
+import cc.mrbird.febs.yb.service.IYbPersonService;
 import cn.hutool.core.lang.Validator;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
@@ -38,6 +40,9 @@ public class ComSmsServiceImpl extends ServiceImpl<ComSmsMapper, ComSms> impleme
 
     @Autowired
     FebsProperties febsProperties;
+
+    @Autowired
+    IYbPersonService iYbPersonService;
 
     @Override
     public IPage<ComSms> findComSmss(QueryRequest request, ComSms comSms) {
@@ -118,6 +123,58 @@ public class ComSmsServiceImpl extends ServiceImpl<ComSmsMapper, ComSms> impleme
         this.baseMapper.deleteBatchIds(list);
 
     }
+    @Override
+    @Transactional
+    public void sendSmsService(ArrayList<String> personCodeList, int sendType, String sendContent, Long uId, String Uname) {
+        if (personCodeList.size() > 0) {
+            List<YbPerson> personList = iYbPersonService.findPersonList(personCodeList);
+            if (personList.size() > 0) {
+                String mobiles = "";
+                List<String> mobList = new ArrayList<>();
+                List<ComSms> createList = new ArrayList<>();
+                for (YbPerson item : personList) {
+                    ComSms comSms = new ComSms();
+                    comSms.setId(UUID.randomUUID().toString());
+                    comSms.setSendcode(item.getPersonCode());
+                    comSms.setSendname(item.getPersonName());
+                    comSms.setMobile(item.getTel());
+                    if (item.getTel() != null) {
+                        if (mobList.stream().filter(s -> s.equals(item.getTel())).count() == 0) {
+                            if (Validator.isMobile(item.getTel())) {
+                                if (mobiles.equals("")) {
+                                    mobiles = item.getTel();
+                                } else {
+                                    mobiles += "," + item.getTel();
+                                }
+                                mobList.add(item.getTel());
+                            }
+                        }
+                    }
+                    comSms.setSendType(sendType);
+                    comSms.setState(ComSms.STATE_1);
+                    comSms.setSendcontent(sendContent);
+                    comSms.setOperatorId(uId);
+                    comSms.setOperatorName(Uname);
+                    comSms.setIsDeletemark(1);
+                    comSms.setCreateUserId(uId);
+                    comSms.setCreateTime(new Date());
+                    if (item.getTel() != null) {
+                        createList.add(comSms);
+                    }
+                }
+
+                if(createList.size()>0) {
+                    String msg = sendMsg(mobiles, sendContent);
+                    if (msg.equals("0")) {
+                        this.saveBatch(createList);
+                    } else {
+                        //0 0/3 21-23 1/1 * ? //0 0/3 * * * ?
+                        log.error("发短信Error Service", msg);
+                    }
+                }
+            }
+        }
+    }
 
     private String sendMsg(String mobiles, String sendContent) {
         String sms = "";
@@ -168,6 +225,7 @@ public class ComSmsServiceImpl extends ServiceImpl<ComSmsMapper, ComSms> impleme
                             } else {
                                 mobiles += "," + item.getMobile();
                             }
+                            mobList.add(item.getMobile());
                         }
                     }
                 }

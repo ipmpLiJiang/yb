@@ -60,6 +60,15 @@ public class DeptServiceImpl extends ServiceImpl<DeptMapper, Dept> implements De
     }
 
     @Override
+    public List<Dept> findDepts(Dept dept) {
+        LambdaQueryWrapper<Dept> wrapper = new LambdaQueryWrapper<>();
+        if(dept.getDeptName()!=null){
+            wrapper.eq(Dept::getDeptName,dept.getDeptName());
+        }
+        return this.list(wrapper);
+    }
+
+    @Override
     @Transactional
     public void createDept(Dept dept) {
         Long parentId = dept.getParentId();

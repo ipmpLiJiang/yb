@@ -22,6 +22,18 @@
         >
         </input-select>
       </a-form-item>
+      <a-form-item
+        v-bind="formItemLayout"
+        label="医生名称"
+      >
+        <input-select
+            ref="inputSelectDoctor"
+            v-decorator="['doctorCode', {rules: [{ required: true, message: '医生名称不能为空' }] }]"
+            :type=2
+            @selectChange=selectDoctorChange
+        >
+        </input-select>
+      </a-form-item>
     </a-form>
     <div class="drawer-bootom-button">
       <a-popconfirm
@@ -79,6 +91,10 @@ export default {
       this.reset()
       this.$emit('close')
     },
+    selectDoctorChange (item) {
+      this.ybPriorityLevel.doctorCode = item.value
+      this.ybPriorityLevel.doctorName = item.text
+    },
     selectDeptChange (item) {
       this.ybPriorityLevel.deptCode = item.value
       this.ybPriorityLevel.deptName = item.text
@@ -87,6 +103,16 @@ export default {
       this.$refs.inputSelectDept.dataSource = []
     },
     handleSubmit () {
+      if (this.ybPriorityLevel.doctorCode !== '' && this.ybPriorityLevel.doctorCode !== undefined) {
+        this.form.getFieldDecorator('doctorCode')
+        this.form.setFieldsValue({
+          doctorCode: this.ybPriorityLevel.doctorCode
+        })
+        this.form.getFieldDecorator('doctorName')
+        this.form.setFieldsValue({
+          doctorName: this.ybPriorityLevel.doctorName
+        })
+      }
       if (this.ybPriorityLevel.deptCode !== '' && this.ybPriorityLevel.deptCode !== undefined) {
         this.form.getFieldDecorator('deptCode')
         this.form.setFieldsValue({
@@ -114,7 +140,7 @@ export default {
     },
     setFields () {
       // let values = this.form.getFieldsValue(['rplName', 'doctorCode', 'doctorName', 'deptCode', 'deptName'])
-      let values = this.form.getFieldsValue(['deptCode', 'deptName'])
+      let values = this.form.getFieldsValue(['doctorCode', 'doctorName', 'deptCode', 'deptName'])
       if (typeof values !== 'undefined') {
         Object.keys(values).forEach(_key => {
           this.ybReconsiderPriorityLevel[_key] = values[_key]

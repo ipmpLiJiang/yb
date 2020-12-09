@@ -16,7 +16,7 @@
       >
         <a-input
           placeholder="请输入部门编码"
-          v-decorator="['deptCode', {rules: [{ required: true, message: '部门编码不能为空' }] }]"
+          v-decorator="['deptId', {rules: [{ required: true, message: '部门编码不能为空' }] }]"
         />
       </a-form-item>
       <a-form-item
@@ -26,6 +26,15 @@
         <a-input
           placeholder="请输入部门名称"
           v-decorator="['deptName', {rules: [{ required: true, message: '部门名称不能为空' }] }]"
+        />
+      </a-form-item>
+      <a-form-item
+        v-bind="formItemLayout"
+        label="拼音编码"
+      >
+        <a-input
+          placeholder="请输入拼音编码"
+          v-decorator="['spellCode', {rules: [{ required: true, message: '拼音编码不能为空' }] }]"
         />
       </a-form-item>
     </a-form>
@@ -92,7 +101,7 @@ export default {
       })
     },
     setFields () {
-      let values = this.form.getFieldsValue(['deptCode', 'deptName'])
+      let values = this.form.getFieldsValue(['deptId', 'deptName', 'spellCode'])
       if (typeof values !== 'undefined') {
         Object.keys(values).forEach(_key => { this.ybDept[_key] = values[_key] })
       }

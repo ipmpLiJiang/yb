@@ -185,7 +185,7 @@ export default {
       {
         title: '项目代码',
         dataIndex: 'itemId',
-        width: 100
+        width: 120
       },
       {
         title: '项目医保编码',
@@ -195,7 +195,7 @@ export default {
       {
         title: '项目名称',
         dataIndex: 'itemName',
-        width: 100
+        width: 140
       },
       {
         title: '项目数量',

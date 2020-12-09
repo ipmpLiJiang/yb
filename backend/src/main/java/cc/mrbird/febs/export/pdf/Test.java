@@ -24,7 +24,7 @@ public class Test {
         for (int i = 1; i < 5; i++) {
             YbDept dept = new YbDept();
             dept.setId(i);
-            dept.setDeptCode("dept" + i);
+            dept.setDeptId("dept" + i);
             dept.setDeptName("科室" + i);
             dept.setIsDeletemark(1);
             if (i < 3) {

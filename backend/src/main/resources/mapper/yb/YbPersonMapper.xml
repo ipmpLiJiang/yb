@@ -105,7 +105,7 @@
             t_user.USERNAME = yb_person.personCode
         where  1=1
         <if test="ybPerson.id != null"> and yb_person.id =#{ ybPerson.id} </if>
-        <if test="ybPerson.personCode != null and ybPerson.personCode != ''"> and yb_person.personCode like concat('%', #{ ybPerson.personCode} ,'%')</if>
+        <if test="ybPerson.personCode != null and ybPerson.personCode != ''"> and (yb_person.personCode like concat('%', #{ ybPerson.personCode} ,'%') or yb_person.personName like concat('%', #{ ybPerson.personCode} ,'%'))</if>
         <if test="ybPerson.personName != null and ybPerson.personName != ''"> and yb_person.personName like concat('%', #{ ybPerson.personName} ,'%')</if>
         <if test="ybPerson.comments != null and ybPerson.comments != ''"> and yb_person.COMMENTS like concat('%', #{ ybPerson.comments} ,'%')</if>
         <if test="ybPerson.deptCode != null and ybPerson.deptCode != ''"> and yb_person.deptCode like concat('%', #{ ybPerson.deptCode} ,'%')</if>

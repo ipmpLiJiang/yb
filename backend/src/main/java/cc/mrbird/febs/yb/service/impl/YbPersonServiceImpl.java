@@ -5,7 +5,10 @@ import cc.mrbird.febs.com.service.IComConfiguremanageService;
 import cc.mrbird.febs.com.service.impl.ComConfiguremanageServiceImpl;
 import cc.mrbird.febs.common.domain.QueryRequest;
 import cc.mrbird.febs.common.utils.SortUtil;
+import cc.mrbird.febs.system.domain.Dept;
+import cc.mrbird.febs.system.domain.User;
 import cc.mrbird.febs.system.domain.UserRolesImport;
+import cc.mrbird.febs.system.service.DeptService;
 import cc.mrbird.febs.system.service.UserService;
 import cc.mrbird.febs.system.service.impl.UserServiceImpl;
 import cc.mrbird.febs.yb.dao.YbPersonMapper;
@@ -45,6 +48,8 @@ public class YbPersonServiceImpl extends ServiceImpl<YbPersonMapper, YbPerson> i
     @Autowired
     private UserService userService;
     @Autowired
+    private DeptService deptService;
+    @Autowired
     private IComConfiguremanageService iComConfiguremanageService;
 
     @Override
@@ -76,8 +81,10 @@ public class YbPersonServiceImpl extends ServiceImpl<YbPersonMapper, YbPerson> i
     }
 
     @Override
+    @Transactional
     public String importUserRoles(Integer type) throws Exception {
         String msg = "";
+        //type 0 user_id is null
         List<YbPerson> userList = this.baseMapper.findPersonList(0);
 
         if (userList.size() > 0) {
@@ -88,23 +95,25 @@ public class YbPersonServiceImpl extends ServiceImpl<YbPersonMapper, YbPerson> i
             List<String> strDeptList = new ArrayList<>();
             List<String> strRoleList = new ArrayList<>();
             List<UserRolesImport> userRoleList = new ArrayList<>();
+            if (type.equals(1)) {
+                List<Integer> intList = new ArrayList<>();
+                intList.add(2);//部门
+                intList.add(3);//角色
+                List<ComConfiguremanage> configList = iComConfiguremanageService.getConfigLists(intList);
+                if (configList.size() > 0) {
+                    List<ComConfiguremanage> configDeptList = configList.stream().filter(
+                            s -> s.getConfigureType().equals(2)
+                    ).collect(Collectors.toList());
+                    strDept = configDeptList.size() > 0 ? configDeptList.get(0).getStringField() : str;
 
-            List<Integer> intList = new ArrayList<>();
-            intList.add(2);//部门
-            intList.add(3);//角色
-            List<ComConfiguremanage> configList = iComConfiguremanageService.getConfigLists(intList);
-            if (configList.size() > 0) {
-                List<ComConfiguremanage> configDeptList = configList.stream().filter(
-                        s -> s.getConfigureType().equals(2)
-                ).collect(Collectors.toList());
-                strDept = configDeptList.size() > 0 ? configDeptList.get(0).getStringField() : str;
-
-                List<ComConfiguremanage> configRoleList = configList.stream().filter(
-                        s -> s.getConfigureType().equals(3)
-                ).collect(Collectors.toList());
-                strRole = configRoleList.size() > 0 ? configRoleList.get(0).getStringField() : str;
+                    List<ComConfiguremanage> configRoleList = configList.stream().filter(
+                            s -> s.getConfigureType().equals(3)
+                    ).collect(Collectors.toList());
+                    strRole = configRoleList.size() > 0 ? configRoleList.get(0).getStringField() : str;
+                }
             }
             strRoleList.add(strRole);
+            //导入类型 type 1 按配置文件导入角色和部门，type 0 角色和部门 都为医生
             if (type.equals(1)) {
                 strDeptList.add(strDept);
                 for (YbPerson person : userList) {
@@ -140,18 +149,116 @@ public class YbPersonServiceImpl extends ServiceImpl<YbPersonMapper, YbPerson> i
         return msg;
     }
 
+    @Override
+    @Transactional
+    public boolean importPerson(User logUser) {
+        boolean isTrue = false;
+        List<User> userList = userService.findUserList(new User());
+        List<YbPerson> personList = this.findPersonList(new YbPerson(), 0);
+        List<Dept> deptList = this.deptService.findDepts(new Dept());
+        List<Dept> queryDeptList = new ArrayList<>();
+        List<YbPerson> queryPersonList = new ArrayList<>();
+        List<YbPerson> createList = new ArrayList<>();
+        List<YbPerson> updateList = new ArrayList<>();
+        boolean isUpdate = false;
+        for (User user : userList) {
+            queryPersonList = personList.stream().filter(s -> s.getPersonCode().equals(user.getUsername())).collect(Collectors.toList());
+            if (queryPersonList.size() == 0) {
+                YbPerson ybPerson = new YbPerson();
+                ybPerson.setPersonCode(user.getUsername());
+                ybPerson.setPersonName(user.getXmname());
+                //0=男,1=女,2=保密
+                ybPerson.setSex(user.getSsex());
+                queryDeptList = deptList.stream().filter(s -> s.getDeptId().equals(user.getDeptId())).collect(Collectors.toList());
+                if (queryDeptList.size() > 0) {
+                    ybPerson.setDeptName(queryDeptList.get(0).getDeptName());
+                }
+                ybPerson.setEmail(user.getEmail());
+                ybPerson.setTel(user.getMobile());
+                ybPerson.setSpellCode("");
+                ybPerson.setCreateUserId(logUser.getUserId());
+                ybPerson.setCreateTime(new Date());
+                ybPerson.setIsDeletemark(1);
+                createList.add(ybPerson);
+            } else {
+                YbPerson person = queryPersonList.get(0);
+                if (person.getTel() !=null && !person.getTel().equals(user.getMobile())) {
+                    isUpdate = true;
+                }
+                if (person.getEmail() !=null && !person.getEmail().equals(user.getEmail())) {
+                    isUpdate = true;
+                }
+                if (isUpdate) {
+                    YbPerson updatePerson = new YbPerson();
+                    updatePerson.setId(person.getId());
+                    updatePerson.setTel(user.getMobile());
+                    updatePerson.setEmail(user.getEmail());
+                    updateList.add(updatePerson);
+                }
+                isUpdate = false;
+            }
+        }
+        if (createList.size() > 0) {
+            isTrue = this.saveBatch(createList);
+        }
+        if (updateList.size() > 0) {
+            isTrue = this.updateBatchById(updateList);
+        }
+        return isTrue;
+    }
 
     @Override
-    public List<YbPerson> findPersonList(YbPerson ybPerson) {
+    public YbPerson findByName(String personCode) {
+        LambdaQueryWrapper<YbPerson> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(YbPerson::getPersonCode, personCode);
+        return baseMapper.selectOne(wrapper);
+    }
+    @Override
+    public List<YbPerson> findPersonList(ArrayList<String> personCodeList) {
         LambdaQueryWrapper<YbPerson> queryWrapper = new LambdaQueryWrapper<>();
-        String sql = " IS_DELETEMARK = 1 ";
-        if (ybPerson.getComments() != null) {
-            sql += " and (personName like '%" + ybPerson.getComments() + "%' or personCode like '%" + ybPerson.getComments() + "%')";
-        } else {
-            sql += " and 1=2";
-        }
-        queryWrapper.apply(sql);
+        queryWrapper.eq(YbPerson::getIsDeletemark, 1);
+        queryWrapper.in(YbPerson::getPersonCode,personCodeList);
         List<YbPerson> list = this.list(queryWrapper);
+        return list;
+    }
+
+    /**
+     * type 0 查询集合 type 1 like
+     */
+    @Override
+    public List<YbPerson> findPersonList(YbPerson ybPerson, int type) {
+        LambdaQueryWrapper<YbPerson> queryWrapper = new LambdaQueryWrapper<>();
+        List<YbPerson> list = new ArrayList<>();
+        if (type == 1) {
+            String sql = " IS_DELETEMARK = 1 ";
+            if (ybPerson.getComments() != null) {
+                sql += " and (personName like '%" + ybPerson.getComments() + "%' or personCode like '%" + ybPerson.getComments() + "%')";
+            } else {
+                sql += " and 1=2";
+            }
+            queryWrapper.apply(sql);
+
+            list = this.list(queryWrapper);
+            int count = 15;
+            if (list.size() >= count) {
+                list = list.subList(0, count);
+            }
+        } else {
+            queryWrapper.eq(YbPerson::getIsDeletemark, 1);
+            if (ybPerson.getPersonCode() != null) {
+                queryWrapper.eq(YbPerson::getPersonCode, ybPerson.getPersonCode());
+            }
+            if (ybPerson.getPersonName() != null) {
+                queryWrapper.eq(YbPerson::getPersonName, ybPerson.getPersonName());
+            }
+            if (ybPerson.getDeptName() != null) {
+                queryWrapper.eq(YbPerson::getDeptName, ybPerson.getDeptName());
+            }
+            if (ybPerson.getTel() != null) {
+                queryWrapper.eq(YbPerson::getTel, ybPerson.getTel());
+            }
+
+        }
         return list;
     }
 

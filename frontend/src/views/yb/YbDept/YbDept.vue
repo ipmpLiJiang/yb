@@ -167,12 +167,16 @@ export default {
       },
       {
         title: '部门编码',
-        dataIndex: 'deptCode',
+        dataIndex: 'deptId',
         width: 120
       },
       {
         title: '部门名称',
         dataIndex: 'deptName'
+      },
+      {
+        title: '拼音编码',
+        dataIndex: 'spellCode'
       },
       {
         title: '操作',

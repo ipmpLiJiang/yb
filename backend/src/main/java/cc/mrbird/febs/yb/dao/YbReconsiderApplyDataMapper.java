@@ -24,11 +24,11 @@ public interface YbReconsiderApplyDataMapper extends BaseMapper<YbReconsiderAppl
 
     void createBatchData(@Param("listReconsiderApplyData") List<YbReconsiderApplyData> listReconsiderApplyData);
 
-    List<YbReconsiderApplyData> findReconsiderApplyDataByApplyDate(@Param("applyDateStr") String applyDateStr,@Param("dataType") Integer dataType);
+    List<YbReconsiderApplyData> findReconsiderApplyDataByApplyDate(@Param("applyDateStr") String applyDateStr, @Param("dataType") Integer dataType);
 
-    List<YbReconsiderApplyData> findReconsiderApplyDataByNotVerify(@Param("applyDateStr") String applyDateStr,@Param("dataType") Integer dataType,@Param("typeno") Integer typeno);
+    List<YbReconsiderApplyData> findReconsiderApplyDataByNotVerify(@Param("applyDateStr") String applyDateStr, @Param("dataType") Integer dataType, @Param("typeno") Integer typeno);
 
-    List<YbReconsiderApplyData> findReconsiderApplyDataBetween(@Param("applyDateStr") String applyDateStr,@Param("dataType") Integer dataType,@Param("startNum") Integer startNum,@Param("endNum") Integer endNum);
+    List<YbReconsiderApplyData> findReconsiderApplyDataBetween(@Param("applyDateStr") String applyDateStr, @Param("dataType") Integer dataType, @Param("typeno") Integer typeno, @Param("startNum") Integer startNum, @Param("endNum") Integer endNum);
 
-    int findReconsiderApplyDataCount(@Param("applyDateStr") String applyDateStr,@Param("dataType") Integer dataType);
+    int findReconsiderApplyDataCount(@Param("applyDateStr") String applyDateStr, @Param("dataType") Integer dataType, @Param("typeno") Integer typeno);
 }

@@ -25,22 +25,9 @@
               </span>
             </div>
           </template>
-          <template
-            slot="operationDeductReason"
-            slot-scope="text, record, index"
-          >
-            <a-popover trigger="hover">
-              <template slot="content">
-                <p>{{record.deductReason}}</p>
-              </template>
-              <p v-if="record.deductReason.length > 12">
-                {{record.deductReason.substring(0,12)}}...
-              </p>
-              <p v-else>
-                {{record.deductReason}}
-              </p>
-            </a-popover>
-          </template>
+          <template slot="operationDeductReason" slot-scope="text, record, index">
+          <span :title="record.deductReason">{{record.deductReason}}</span>
+        </template>
         </a-table>
   </div>
 </template>
@@ -132,7 +119,8 @@ export default {
       {
         title: '扣除原因',
         scopedSlots: { customRender: 'operationDeductReason' },
-        width: 200
+        ellipsis: true,
+        width: 250
       },
       {
         title: '费用日期',

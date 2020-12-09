@@ -14,6 +14,8 @@ public interface DeptService extends IService<Dept> {
 
     List<Dept> findDepts(Dept dept, QueryRequest request);
 
+    List<Dept> findDepts(Dept dept);
+
     void createDept(Dept dept);
 
     void updateDept(Dept dept);

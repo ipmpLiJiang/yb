@@ -29,9 +29,9 @@ public interface IYbReconsiderVerifyService extends IService<YbReconsiderVerify>
 
     void deleteYbReconsiderVerifys(String[] Ids);
 
-    void insertReconsiderVerifyImports(String applyDate, Long matchPersonId, String matchPersonName);
+    void insertReconsiderVerifyImports(String applyDateStr, Long matchPersonId, String matchPersonName);
 
-    void insertMainReconsiderVerifyImports(String applyDate, Long matchPersonId, String matchPersonName);
+    void insertMainReconsiderVerifyImports(String applyDateStr, Long matchPersonId, String matchPersonName);
 
     void updateReviewerStates(List<YbReconsiderVerify> list, Long uId, String Uname);
 

@@ -56,7 +56,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         return baseMapper.selectOne(new LambdaQueryWrapper<User>().eq(User::getUsername, username));
     }
 
-
     @Override
     public IPage<User> findUserDetail(User user, QueryRequest request) {
         try {
@@ -291,9 +290,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
                     user.setCreateTime(new Date());
                     user.setStatus(User.STATUS_VALID);
                     if (userRole.getSex() != null) {
-                        if (userRole.getSex().equals("男")) {
+                        if (userRole.getSex().equals("男") || userRole.getSex().equals("0")) {
                             user.setSsex(User.SEX_MALE);
-                        } else if (userRole.getSex().equals("女")) {
+                        } else if (userRole.getSex().equals("女") || userRole.getSex().equals("1")) {
                             user.setSsex(User.SEX_FEMALE);
                         } else {
                             user.setSsex(User.SEX_UNKNOW);
@@ -335,6 +334,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     public List<User> findUserList(User user){
         List<User> list = new ArrayList<>();
         LambdaQueryWrapper<User> wrapper = new LambdaQueryWrapper<>();
+
         if(user.getUsername()!=null){
             wrapper.eq(User::getUsername,user.getUsername());
         }

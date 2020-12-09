@@ -178,6 +178,18 @@ public class DataTypeHelpers {
     }
 
 
+    public static String getUpNianYue() {
+        Date date = new Date();//获取当前时间
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.MONTH, -1);
+        calendar.set(Calendar.DAY_OF_MONTH, 1);
+        Date getDate = calendar.getTime();
+        SimpleDateFormat f = new SimpleDateFormat("yyyy-MM");
+        String ny = f.format(getDate);
+        return ny;
+    }
+
+
 
     public static int stringDateFormatMaxDay(String strDate, String format, boolean isFormat) {
         if (isNullOrEmpty(format)) {

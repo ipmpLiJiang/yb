@@ -1,5 +1,6 @@
 package cc.mrbird.febs.yb.service.impl;
 
+import cc.mrbird.febs.com.controller.DataTypeHelpers;
 import cc.mrbird.febs.com.service.IComConfiguremanageService;
 import cc.mrbird.febs.common.domain.QueryRequest;
 import cc.mrbird.febs.common.utils.SortUtil;
@@ -146,7 +147,7 @@ public class YbReconsiderApplyServiceImpl extends ServiceImpl<YbReconsiderApplyM
     @Override
     public void updateEnableOverdue(String applyDateStr) {
         if (applyDateStr == null || "".equals(applyDateStr)) {
-            applyDateStr = this.getNianYue();
+            applyDateStr = DataTypeHelpers.getUpNianYue();
         }
         Map<String, Object> map = new HashMap<>();
         map.put("applyDateStr", applyDateStr);
@@ -158,7 +159,7 @@ public class YbReconsiderApplyServiceImpl extends ServiceImpl<YbReconsiderApplyM
     @Override
     public void updateApplyEndDateOne(String applyDateStr) {
         if (applyDateStr == null || "".equals(applyDateStr)) {
-            applyDateStr = this.getNianYue();
+            applyDateStr = DataTypeHelpers.getUpNianYue();
         }
         Map<String, Object> map = new HashMap<>();
         map.put("applyDateStr", applyDateStr);
@@ -170,7 +171,7 @@ public class YbReconsiderApplyServiceImpl extends ServiceImpl<YbReconsiderApplyM
     @Override
     public void updateApplyEndDateTwo(String applyDateStr) {
         if (applyDateStr == null || "".equals(applyDateStr)) {
-            applyDateStr = this.getNianYue();
+            applyDateStr = DataTypeHelpers.getUpNianYue();
         }
         Map<String, Object> map = new HashMap<>();
         map.put("applyDateStr", applyDateStr);
@@ -179,17 +180,6 @@ public class YbReconsiderApplyServiceImpl extends ServiceImpl<YbReconsiderApplyM
         log.info(message);
     }
 
-
-    private String getNianYue() {
-        Date date = new Date();//获取当前时间
-        Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.MONTH, 0);
-        calendar.set(Calendar.DAY_OF_MONTH, 1);
-        Date getDate = calendar.getTime();
-        SimpleDateFormat f = new SimpleDateFormat("yyyy-MM");
-        String ny = f.format(getDate);
-        return ny;
-    }
 
     @Override
     @Transactional
@@ -281,13 +271,15 @@ public class YbReconsiderApplyServiceImpl extends ServiceImpl<YbReconsiderApplyM
 
     @Override
     public String createJobState(String applyDateStr) {
-        String msg ="";
+        String msg = "";
         YbReconsiderApply ybReconsiderApply = this.findReconsiderApplyByApplyDateStrs(applyDateStr);
         boolean isTrue = false;
+        //无任务并且状态是上传一
         if (ybReconsiderApply.getTaskState() == YbReconsiderApply.TASK_STATE_0 && ybReconsiderApply.getState() == YbDefaultValue.APPLYSTATE_2) {
             isTrue = true;
         }
-        if(ybReconsiderApply.getTaskState() == YbReconsiderApply.TASK_STATE_1 && ybReconsiderApply.getState() == YbDefaultValue.APPLYSTATE_5){
+        //任务一并且状态是上传二
+        if (ybReconsiderApply.getTaskState() == YbReconsiderApply.TASK_STATE_1 && ybReconsiderApply.getState() == YbDefaultValue.APPLYSTATE_4) {
             isTrue = true;
         }
         if (isTrue) {
@@ -302,20 +294,41 @@ public class YbReconsiderApplyServiceImpl extends ServiceImpl<YbReconsiderApplyM
             String miao = "" + now.get(Calendar.SECOND);
             String haomiao = "" + now.getTimeInMillis();
 
-            String cron = "0 0 0 " + ri + " " + yue + " ? " + nian + "-" + nian;
+            String cron = "0 0/3 0 " + ri + " " + yue + " ? " + nian + "-" + nian;
 //        String cron = "0" + " " + fen + " " + shi + " " + ri + " " + yue + " ? " + nian + "-" + nian;
             String remark = nian + "年" + yue + "月" + ri + "日" + shi + "时" + fen + "分" + miao + "秒" + haomiao;
 
+            // Job state 0.正常    1.暂停
             Job job = new Job();
-            job.setBeanName("smsTask");
-            job.setMethodName("smsTestTask");
-            job.setCronExpression(cron);
-            job.setStatus("1");
-            job.setCreateTime(date);
-            job.setRemark(remark);
+            job.setBeanName("reconsiderApplyTask");
+            job.setMethodName("applyTask");
+            job.setParams(applyDateStr);
+            //查询当前正在运行的任务
+            List<Job> findList = jobService.jobList(job);
 
+            job.setCronExpression(cron);
+            job.setStatus("0");
+            job.setCreateTime(date);
+            job.setRemark("His:"+remark);
+            //将正在运行的任务关闭
+            String jobs = "";
+            for (Job item : findList) {
+                if (item.getStatus().equals("0")) {
+                    if (jobs.equals("")) {
+                        jobs = item.getJobId().toString();
+                    } else {
+                        jobs += "," + item.getJobId().toString();
+                    }
+                }
+            }
+            //将正在运行的任务关闭
+            if (!jobs.equals("")) {
+                jobService.pause(jobs);
+            }
+            //创建任务
             jobService.createJob(job);
 
+            //启用当前任务
             List<Job> jobList = jobService.jobList(job);
 
             jobService.resume(jobList.get(0).getJobId().toString());
@@ -325,7 +338,7 @@ public class YbReconsiderApplyServiceImpl extends ServiceImpl<YbReconsiderApplyM
             update.setTaskState(ybReconsiderApply.getTaskState() == YbReconsiderApply.TASK_STATE_0 ? YbReconsiderApply.TASK_STATE_1 : YbReconsiderApply.TASK_STATE_2);
 
             this.updateById(update);
-        }else {
+        } else {
             msg = "当前状态无法创建定时任务 或 任务已创建.";
         }
         return msg;

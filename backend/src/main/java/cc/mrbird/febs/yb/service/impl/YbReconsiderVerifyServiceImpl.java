@@ -1,15 +1,12 @@
 package cc.mrbird.febs.yb.service.impl;
 
 import cc.mrbird.febs.com.controller.DataTypeHelpers;
-import cc.mrbird.febs.com.entity.ComConfiguremanage;
 import cc.mrbird.febs.com.entity.ComSms;
 import cc.mrbird.febs.com.service.IComConfiguremanageService;
 import cc.mrbird.febs.com.service.IComSmsService;
 import cc.mrbird.febs.common.domain.QueryRequest;
 import cc.mrbird.febs.common.properties.FebsProperties;
 import cc.mrbird.febs.common.utils.SortUtil;
-import cc.mrbird.febs.system.domain.User;
-import cc.mrbird.febs.system.service.UserService;
 import cc.mrbird.febs.yb.dao.YbReconsiderVerifyMapper;
 import cc.mrbird.febs.yb.entity.*;
 import cc.mrbird.febs.yb.service.*;
@@ -65,14 +62,13 @@ public class YbReconsiderVerifyServiceImpl extends ServiceImpl<YbReconsiderVerif
     FebsProperties febsProperties;
 
     @Autowired
-    UserService userService;
+    IYbPersonService iYbPersonService;
 
     @Override
     public IPage<YbReconsiderVerify> findYbReconsiderVerifys(QueryRequest request, YbReconsiderVerify ybReconsiderVerify) {
         try {
             LambdaQueryWrapper<YbReconsiderVerify> queryWrapper = new LambdaQueryWrapper<>();
             queryWrapper.eq(YbReconsiderVerify::getIsDeletemark, 1);//1是未删 0是已删
-
 
             Page<YbReconsiderVerify> page = new Page<>();
             SortUtil.handlePageSort(request, page, false);//true 是属性  false是数据库字段可两个
@@ -120,15 +116,14 @@ public class YbReconsiderVerifyServiceImpl extends ServiceImpl<YbReconsiderVerif
         this.baseMapper.deleteBatchIds(list);
     }
 
-
     @Override
     @Transactional
-    public void insertReconsiderVerifyImports(String applyDate, Long matchPersonId, String matchPersonName) {
+    public void insertReconsiderVerifyImports(String applyDateStr, Long matchPersonId, String matchPersonName) {
         //this.baseMapper.insertReconsiderVerifyImport(applyDate, matchPersonId, matchPersonName);
 
         LambdaQueryWrapper<YbReconsiderApply> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(YbReconsiderApply::getIsDeletemark, 1);//1是未删 0是已删
-        queryWrapper.eq(YbReconsiderApply::getApplyDateStr, applyDate);
+        queryWrapper.eq(YbReconsiderApply::getApplyDateStr, applyDateStr);
         List<YbReconsiderApply> applyList = this.iYbReconsiderApplyService.list(queryWrapper);
 
         if (applyList.size() > 0) {
@@ -141,7 +136,8 @@ public class YbReconsiderVerifyServiceImpl extends ServiceImpl<YbReconsiderVerif
                 if (radList.size() > 0) {
                     List<YbReconsiderPriorityLevel> rplList = iYbReconsiderPriorityLevelService.findReconsiderPriorityLevelList();
                     YbReconsiderInpatientfees waquery = new YbReconsiderInpatientfees();
-                    waquery.setApplyDateStr(applyDate);
+                    waquery.setApplyDateStr(applyDateStr);
+                    waquery.setTypeno(typeno);
                     List<YbReconsiderInpatientfees> rifList = iYbReconsiderInpatientfeesService.findReconsiderInpatientfeesList(waquery);
 
                     List<YbReconsiderPriorityLevel> rlProjectList = rplList.stream().filter(s -> s.getState() == YbReconsiderPriorityLevel.PL_STATE_2).collect(Collectors.toList());
@@ -157,14 +153,18 @@ public class YbReconsiderVerifyServiceImpl extends ServiceImpl<YbReconsiderVerif
                         ybReconsiderVerify.setApplyDataId(item.getId());
 
                         //规则
-                        queryRlList = rlRuleList.stream().filter(
-                                s -> s.getRplName().equals(item.getRuleName())
-                        ).collect(Collectors.toList());
+                        if (item.getRuleName() != null) {
+                            queryRlList = rlRuleList.stream().filter(
+                                    s -> s.getRplName().trim().equals(item.getRuleName().trim())
+                            ).collect(Collectors.toList());
+                        }
                         //项目
                         if (queryRlList.size() == 0) {
-                            queryRlList = rlProjectList.stream().filter(
-                                    s -> s.getRplName().equals(item.getProjectName())
-                            ).collect(Collectors.toList());
+                            if (item.getProjectName() != null) {
+                                queryRlList = rlProjectList.stream().filter(
+                                        s -> s.getRplName().trim().equals(item.getProjectName().trim())
+                                ).collect(Collectors.toList());
+                            }
                         }
                         if (queryRlList.size() > 0) {
                             ybReconsiderVerify.setVerifyDeptCode(queryRlList.get(0).getDeptCode());
@@ -174,58 +174,60 @@ public class YbReconsiderVerifyServiceImpl extends ServiceImpl<YbReconsiderVerif
                             isCreate = true;
                         } else {
                             queryRifList = rifList.stream().filter(s ->
-                                    s.getBillNo().equals(item.getBillNo()) &&
-                                            s.getTransNo().equals(item.getSerialNo()) &&
-                                            s.getItemCode().equals(item.getProjectCode()) &&
-                                            s.getItemName().equals(item.getProjectName()) &&
-                                            s.getItemCount().equals(item.getNum())
+                                    s.getApplyDateStr().equals(applyDateStr) &&
+                                            s.getOrderNumber().equals(item.getOrderNumber())
                             ).collect(Collectors.toList());
 
                             if (queryRifList.size() > 0) {
                                 String deptName = queryRifList.get(0).getExcuteDeptName();
                                 //科室
-                                queryRlList = rlDeptList.stream().filter(
-                                        s -> s.getDeptName().equals(deptName)
-                                ).collect(Collectors.toList());
-
+                                if (deptName != null) {
+                                    queryRlList = rlDeptList.stream().filter(
+                                            s -> s.getDeptName().equals(deptName)
+                                    ).collect(Collectors.toList());
+                                }
                                 if (queryRlList.size() > 0) {
                                     ybReconsiderVerify.setVerifyDeptCode(queryRifList.get(0).getExcuteDeptId());
                                     ybReconsiderVerify.setVerifyDeptName(queryRifList.get(0).getExcuteDeptName());
-                                    ybReconsiderVerify.setVerifyDoctorCode(queryRifList.get(0).getExcuteDocId());
-                                    ybReconsiderVerify.setVerifyDoctorName(queryRifList.get(0).getExcuteDocName());
+                                    ybReconsiderVerify.setVerifyDoctorCode(queryRlList.get(0).getDoctorCode());
+                                    ybReconsiderVerify.setVerifyDoctorName(queryRlList.get(0).getDoctorName());
+                                    isCreate = true;
                                 } else {
-                                    ybReconsiderVerify.setVerifyDeptCode(queryRifList.get(0).getDeptId());
-                                    ybReconsiderVerify.setVerifyDeptName(queryRifList.get(0).getDeptName());
-                                    ybReconsiderVerify.setVerifyDoctorCode(queryRifList.get(0).getOrderDocId());
-                                    ybReconsiderVerify.setVerifyDoctorName(queryRifList.get(0).getOrderDocName());
+                                    if (queryRifList.get(0).getDeptId() != null && queryRifList.get(0).getDeptName() != null && queryRifList.get(0).getOrderDocId() != null && queryRifList.get(0).getOrderDocName() != null) {
+                                        ybReconsiderVerify.setVerifyDeptCode(queryRifList.get(0).getDeptId());
+                                        ybReconsiderVerify.setVerifyDeptName(queryRifList.get(0).getDeptName());
+                                        ybReconsiderVerify.setVerifyDoctorCode(queryRifList.get(0).getOrderDocId());
+                                        ybReconsiderVerify.setVerifyDoctorName(queryRifList.get(0).getOrderDocName());
+                                        isCreate = true;
+                                    }
                                 }
-
-                                isCreate = true;
                             }
                         }
-                        if (ybReconsiderVerify.getId() == null || "".equals(ybReconsiderVerify.getId())) {
-                            ybReconsiderVerify.setId(UUID.randomUUID().toString());
+                        if (isCreate) {
+                            if (ybReconsiderVerify.getId() == null || "".equals(ybReconsiderVerify.getId())) {
+                                ybReconsiderVerify.setId(UUID.randomUUID().toString());
+                            }
+                            ybReconsiderVerify.setOperateDate(thisDate);//'操作日期'
+                            ybReconsiderVerify.setMatchDate(thisDate);//'匹配日期'
+                            ybReconsiderVerify.setMatchPersonId(matchPersonId);//'匹配人代码'
+                            ybReconsiderVerify.setMatchPersonName(matchPersonName);//'匹配人'
+                            ybReconsiderVerify.setDataType(YbDefaultValue.DATATYPE_0);//扣款类型  0 明细扣款 1 主单扣款
+                            ybReconsiderVerify.setState(YbDefaultValue.VERIFYSTATE_1);//1 待审核、2已审核、3已发送
+                            ybReconsiderVerify.setIsDeletemark(1);
+                            ybReconsiderVerify.setCreateUserId(matchPersonId);
+                            ybReconsiderVerify.setCreateTime(thisDate);
+                            createList.add(ybReconsiderVerify);
                         }
-                        ybReconsiderVerify.setOperateDate(thisDate);//'操作日期'
-                        ybReconsiderVerify.setMatchDate(thisDate);//'匹配日期'
-                        ybReconsiderVerify.setMatchPersonId(matchPersonId);//'匹配人代码'
-                        ybReconsiderVerify.setMatchPersonName(matchPersonName);//'匹配人'
-                        ybReconsiderVerify.setDataType(YbDefaultValue.DATATYPE_0);//扣款类型  0 明细扣款 1 主单扣款
-                        ybReconsiderVerify.setState(YbDefaultValue.VERIFYSTATE_1);//1 待审核、2已审核、3已发送
-                        ybReconsiderVerify.setIsDeletemark(1);
-                        ybReconsiderVerify.setCreateUserId(matchPersonId);
-                        ybReconsiderVerify.setCreateTime(thisDate);
-
-                        if (isCreate) createList.add(ybReconsiderVerify);
-
                         isCreate = false;
                     }
 
                     isCreate = true;//判断状态是否更新
-                    this.saveBatch(createList);
+                    if (createList.size() > 0) {
+                        this.saveBatch(createList);
+                    }
                 }
             }
-            if ((ybReconsiderApply.getState() == YbDefaultValue.APPLYSTATE_2 || ybReconsiderApply.getState() == YbDefaultValue.APPLYSTATE_4) && isCreate) {
+            if ((state == YbDefaultValue.APPLYSTATE_2 || state == YbDefaultValue.APPLYSTATE_4) && isCreate) {
                 YbReconsiderApply updateEntity = new YbReconsiderApply();
                 updateEntity.setId(ybReconsiderApply.getId());
                 if (ybReconsiderApply.getState() == YbDefaultValue.APPLYSTATE_2) { //上传一
@@ -241,12 +243,12 @@ public class YbReconsiderVerifyServiceImpl extends ServiceImpl<YbReconsiderVerif
 
     @Override
     @Transactional
-    public void insertMainReconsiderVerifyImports(String applyDate, Long matchPersonId, String matchPersonName) {
-        this.baseMapper.insertMainReconsiderVerifyImport(applyDate, matchPersonId, matchPersonName);
+    public void insertMainReconsiderVerifyImports(String applyDateStr, Long matchPersonId, String matchPersonName) {
+//        this.baseMapper.insertMainReconsiderVerifyImport(applyDateStr, matchPersonId, matchPersonName);
 
         LambdaQueryWrapper<YbReconsiderApply> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(YbReconsiderApply::getIsDeletemark, 1);//1是未删 0是已删
-        queryWrapper.eq(YbReconsiderApply::getApplyDateStr, applyDate);
+        queryWrapper.eq(YbReconsiderApply::getApplyDateStr, applyDateStr);
         List<YbReconsiderApply> applyList = this.iYbReconsiderApplyService.list(queryWrapper);
         if (applyList.size() > 0) {
             YbReconsiderApply ybReconsiderApply = applyList.get(0);
@@ -273,13 +275,13 @@ public class YbReconsiderVerifyServiceImpl extends ServiceImpl<YbReconsiderVerif
 
         Date addDate = DataTypeHelpers.addDateMethod(thisDate, day);
 
-        List<User> userList = new ArrayList<>();
-        List<User> queryUserList = new ArrayList<>();
+        List<YbPerson> personList = new ArrayList<>();
+        List<YbPerson> queryPersonList = new ArrayList<>();
         List<ComSms> smsList = new ArrayList<>();
         List<String> userCodeList = new ArrayList<>();
         boolean isOpenSms = febsProperties.isOpenSms();
         if (isOpenSms) {
-            userList = userService.findUserList(new User());
+            personList = iYbPersonService.findPersonList(new YbPerson(), 0);
             ComSms qu = new ComSms();
             qu.setState(ComSms.STATE_0);
             qu.setSendType(ComSms.SENDTYPE_1);
@@ -334,16 +336,16 @@ public class YbReconsiderVerifyServiceImpl extends ServiceImpl<YbReconsiderVerif
                 if (userCodeList.stream().filter(s -> s.equals(ybReconsiderVerify.getVerifyDoctorCode())).count() == 0) {
                     if (smsList.stream().filter(s -> s.getSendcode().equals(ybReconsiderVerify.getVerifyDoctorCode())).count() == 0) {
                         userCodeList.add(ybReconsiderVerify.getVerifyDoctorCode());
-                        queryUserList = userList.stream().filter(
-                                s -> s.getUsername().equals(ybReconsiderVerify.getVerifyDoctorCode())
+                        queryPersonList = personList.stream().filter(
+                                s -> s.getPersonCode().equals(ybReconsiderVerify.getVerifyDoctorCode())
                         ).collect(Collectors.toList());
-                        if (queryUserList.size() > 0) {
-                            if (Validator.isMobile(queryUserList.get(0).getMobile())) {
+                        if (queryPersonList.size() > 0) {
+                            if (Validator.isMobile(queryPersonList.get(0).getTel())) {
                                 ComSms comSms = new ComSms();
                                 comSms.setId(UUID.randomUUID().toString());
-                                comSms.setSendcode(queryUserList.get(0).getUsername());
-                                comSms.setSendname(queryUserList.get(0).getXmname());
-                                comSms.setMobile(queryUserList.get(0).getMobile());
+                                comSms.setSendcode(queryPersonList.get(0).getPersonCode());
+                                comSms.setSendname(queryPersonList.get(0).getPersonName());
+                                comSms.setMobile(queryPersonList.get(0).getTel());
                                 comSms.setSendType(ComSms.SENDTYPE_1);
                                 comSms.setState(ComSms.STATE_0);
                                 ;
@@ -372,13 +374,13 @@ public class YbReconsiderVerifyServiceImpl extends ServiceImpl<YbReconsiderVerif
 
         Date addDate = DataTypeHelpers.addDateMethod(thisDate, day);
 
-        List<User> userList = new ArrayList<>();
-        List<User> queryUserList = new ArrayList<>();
+        List<YbPerson> personList = new ArrayList<>();
+        List<YbPerson> queryPersonList = new ArrayList<>();
         List<ComSms> smsList = new ArrayList<>();
         List<String> userCodeList = new ArrayList<>();
         boolean isOpenSms = febsProperties.isOpenSms();
         if (isOpenSms) {
-            userList = userService.findUserList(new User());
+            personList = iYbPersonService.findPersonList(new YbPerson(), 0);
             ComSms qu = new ComSms();
             qu.setState(ComSms.STATE_0);
             qu.setSendType(ComSms.SENDTYPE_1);
@@ -434,16 +436,18 @@ public class YbReconsiderVerifyServiceImpl extends ServiceImpl<YbReconsiderVerif
                     if (userCodeList.stream().filter(s -> s.equals(ybReconsiderVerify.getVerifyDoctorCode())).count() == 0) {
                         if (smsList.stream().filter(s -> s.getSendcode().equals(ybReconsiderVerify.getVerifyDoctorCode())).count() == 0) {
                             userCodeList.add(ybReconsiderVerify.getVerifyDoctorCode());
-                            queryUserList = userList.stream().filter(
-                                    s -> s.getUsername().equals(ybReconsiderVerify.getVerifyDoctorCode())
+
+                            queryPersonList = personList.stream().filter(
+                                    s -> s.getPersonCode().equals(ybReconsiderVerify.getVerifyDoctorCode())
                             ).collect(Collectors.toList());
-                            if (queryUserList.size() > 0) {
-                                if (Validator.isMobile(queryUserList.get(0).getMobile())) {
+
+                            if (queryPersonList.size() > 0) {
+                                if (Validator.isMobile(queryPersonList.get(0).getTel())) {
                                     ComSms comSms = new ComSms();
                                     comSms.setId(UUID.randomUUID().toString());
-                                    comSms.setSendcode(queryUserList.get(0).getUsername());
-                                    comSms.setSendname(queryUserList.get(0).getXmname());
-                                    comSms.setMobile(queryUserList.get(0).getMobile());
+                                    comSms.setSendcode(queryPersonList.get(0).getPersonCode());
+                                    comSms.setSendname(queryPersonList.get(0).getPersonName());
+                                    comSms.setMobile(queryPersonList.get(0).getTel());
                                     comSms.setSendType(ComSms.SENDTYPE_1);
                                     comSms.setState(ComSms.STATE_0);
                                     ;

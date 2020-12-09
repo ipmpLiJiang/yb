@@ -11,7 +11,8 @@
               复议年月：
               <a-month-picker
                 placeholder="请输入复议年月"
-                :default-value="defaultApplyDate"
+                @change="monthChange"
+                :default-value="searchApplyDate"
                 :format="monthFormat"
               />
           </a-col>
@@ -45,7 +46,7 @@
               <!-- 变更申请单 -->
             <ybAppealManage-change
               ref="ybAppealManageChange"
-              :applyDate='defaultApplyDate'
+              :applyDate='searchApplyDate'
               :searchText = 'searchText'
               @examine="examine"
               @onHistoryLook="onHistoryLook"
@@ -61,7 +62,7 @@
             <ybAppealManageChange-end
               ref="ybAppealManageChangeEnd"
               :searchText = 'searchText'
-              :applyDate='defaultApplyDate'
+              :applyDate='searchApplyDate'
               @detail="detail"
               @onHistoryLook="onHistoryLook"
             >
@@ -76,7 +77,7 @@
           <ybAppealManageChange-admin
               ref="ybAppealManageChangeAdmin"
               :searchText = 'searchText'
-              :applyDate='defaultApplyDate'
+              :applyDate='searchApplyDate'
               @detail="detail"
               @adminChange="adminChange"
               @onHistoryLook="onHistoryLook"
@@ -137,7 +138,6 @@ export default {
     return {
       monthFormat: 'YYYY-MM',
       searchApplyDate: this.formatDate(),
-      defaultApplyDate: this.formatDate(),
       detailVisiable: false,
       handleVisiable: false,
       historyVisiable: false,
@@ -155,6 +155,9 @@ export default {
     formatDate () {
       let datemonth = moment().subtract(1, 'months').format('YYYY-MM')
       return datemonth
+    },
+    monthChange (date, dateString) {
+      this.searchApplyDate = dateString
     },
     callback (key) {
       this.tableSelectKey = key

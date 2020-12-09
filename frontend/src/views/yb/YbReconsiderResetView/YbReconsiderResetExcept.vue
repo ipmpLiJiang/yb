@@ -123,7 +123,7 @@ export default {
         title: '扣除原因',
         scopedSlots: {customRender: 'operationDeductReason'},
         ellipsis: true,
-        width: 200
+        width: 250
       },
       {
         title: '科室编码',

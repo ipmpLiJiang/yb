@@ -7,19 +7,52 @@
       <a-form layout="horizontal">
         <a-row>
           <div :class="advanced ? null: 'fold'">
+            <a-col
+              :md="6"
+              :sm="24"
+            >
+              <a-form-item
+                label="医生"
+                v-bind="formItemLayout"
+              >
+                <a-input v-model="queryParams.personCode" />
+              </a-form-item>
+            </a-col>
+            <a-col
+              :md="6"
+              :sm="24"
+            >
+              <a-form-item
+                label="联系电话"
+                v-bind="formItemLayout"
+              >
+                <a-input v-model="queryParams.tel" />
+              </a-form-item>
+            </a-col>
           <a-row justify="end" type="flex">
-          <span style="margin-top: 3px;margin-right: 15px;">
+          <span style="margin-right: 10px;padding: 2px;border:1px solid #DCDCDC">
           <a-checkbox :checked="checked"  @change="onChange">
             配置文件
           </a-checkbox>
           <a-popconfirm
-              title="确定同步？"
+              title="确定同步到用户？"
               @confirm="userImport"
               okText="确定"
               style="margin-left: 15px"
               cancelText="取消"
             >
-              <a-button type="primary">同步</a-button>
+              <a-button type="primary">同步到用户</a-button>
+            </a-popconfirm>
+            </span>
+            <span style="margin-top: 3px;margin-right: 10px;">
+              <a-popconfirm
+              title="确定同步到医生？"
+              @confirm="personImport"
+              okText="确定"
+              style="margin-left: 15px"
+              cancelText="取消"
+            >
+              <a-button type="primary">同步到医生</a-button>
             </a-popconfirm>
             </span>
           </a-row>
@@ -185,29 +218,29 @@ export default {
       {
         title: '医生编码',
         dataIndex: 'personCode',
-        width: 100
-      },
-      {
-        title: '科室名称',
-        dataIndex: 'deptName',
-        width: 150
+        width: 120
       },
       {
         title: '医生名称',
         dataIndex: 'personName',
-        width: 100
+        width: 150
+      },
+      {
+        title: '科室名称',
+        dataIndex: 'deptName',
+        width: 180
       },
       {
         title: '性别',
         dataIndex: 'sex',
         customRender: (text, row, index) => {
           switch (text) {
-            case '1':
+            case '0':
               return '男'
-            case '2':
+            case '1':
               return '女'
-            case '3':
-              return '未知'
+            case '2':
+              return '保密'
             default:
               return text
           }
@@ -216,7 +249,8 @@ export default {
       },
       {
         title: '邮箱',
-        dataIndex: 'email'
+        dataIndex: 'email',
+        width: 200
       },
       {
         title: '联系电话',
@@ -246,6 +280,7 @@ export default {
               return text
           }
         },
+        fixed: 'right',
         width: 90
       },
       {
@@ -275,6 +310,19 @@ export default {
         }
       }).catch(() => {
         this.$message.error('用户同步失败.')
+      })
+    },
+    personImport () {
+      let params = { }
+      this.$post('ybPerson/importPerson', params).then((r) => {
+        if (r.data.data.success === 1) {
+          this.search()
+          this.$message.success('医生同步成功.')
+        } else {
+          this.$message.error(r.data.data.message)
+        }
+      }).catch(() => {
+        this.$message.error('医生同步失败.')
       })
     },
     onSelectChange (selectedRowKeys) {

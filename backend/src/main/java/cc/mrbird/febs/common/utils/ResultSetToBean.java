@@ -68,7 +68,7 @@ public class ResultSetToBean {
 						}
 					}
 				}
-				
+
 				//System.out.println(obj.toString());
 				 arrayList.add(obj);
 			}

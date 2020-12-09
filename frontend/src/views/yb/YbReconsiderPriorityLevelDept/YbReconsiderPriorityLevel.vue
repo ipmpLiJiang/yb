@@ -188,6 +188,11 @@ export default {
         dataIndex: 'deptName'
       },
       {
+        title: '医生名称',
+        dataIndex: 'doctorName',
+        width: 200
+      },
+      {
         title: '操作员',
         dataIndex: 'operatorName',
         width: 100

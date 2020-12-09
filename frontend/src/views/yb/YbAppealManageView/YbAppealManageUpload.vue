@@ -2,7 +2,7 @@
   <a-drawer
     title="申诉填报"
     :maskClosable="false"
-    width=70%
+    width=75%
     placement="right"
     :closable="true"
     @close="onClose"
@@ -14,36 +14,11 @@
   :ybAppealDataModule="ybAppealManageUpload"
   >
   </appealData-module>
-    <template>
-      <!-- 表格区域 -->
-      <a-table
-        ref="TableInfo"
-        :columns="columns"
-        :rowKey="record => record.id"
-        :dataSource="dataSource"
-        :pagination="pagination"
-        :loading="loading"
-        :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
-        @change="handleTableChange"
-        :bordered="bordered"
-        :scroll="{ x: 900 }"
-      >
-      <a slot="action" slot-scope="text">action</a>
-        <template
-          slot="remark"
-          slot-scope="text, record"
-        >
-          <a-popover placement="topLeft">
-            <template slot="content">
-              <div style="max-width: 200px">{{text}}</div>
-            </template>
-            <p style="width: 200px;margin-bottom: 0">{{text}}</p>
-          </a-popover>
-        </template>
-      </a-table>
-    </template>
-    <template>
-    </template>
+    <inpatientfees-module
+    ref="inpatientfeesModule"
+    :inpatientfeesModule="ybAppealManageUpload"
+    >
+    </inpatientfees-module>
     <div style="margin-top:20px;">
       <a-popconfirm
         title="确定获取上次复议数据！"
@@ -127,8 +102,8 @@
             </a-row>
           </a-col>
           <a-col :span=12>
-            <div style="color:red">*复议上传图片：</div>
-            <div style="margin-left:20px;height:100%">
+            <div style="color:red">*复议上传图片：最多上传8张，图片大小不得大于300KB</div>
+            <div style="margin-top:10px;margin-left:20px;height:100%">
             <a-row type="flex" justify="center">
               <a-col>
                 <template>
@@ -169,6 +144,7 @@
 <script>
 import moment from 'moment'
 import AppealDataModule from '../ybFunModule/AppealDataModule'
+import InpatientfeesModule from '../ybFunModule/InpatientfeesModule'
 const formItemLayout = {
   labelCol: { span: 10 },
   wrapperCol: { span: 13, offset: 1 }
@@ -184,7 +160,7 @@ function getBase64 (file) {
 export default {
   name: 'YbAppealManageUpload',
   components: {
-    AppealDataModule},
+    AppealDataModule, InpatientfeesModule},
   props: {
     appealVisiable: {
       default: false
@@ -256,7 +232,7 @@ export default {
       {
         title: '项目代码',
         dataIndex: 'itemId',
-        width: 100
+        width: 120
       },
       {
         title: '项目医保编码',
@@ -266,7 +242,7 @@ export default {
       {
         title: '项目名称',
         dataIndex: 'itemName',
-        width: 100
+        width: 140
       },
       {
         title: '项目数量',
@@ -431,7 +407,7 @@ export default {
       this.previewVisible = false
       this.isShow = false
       this.previewImage = ''
-      this.reset()
+      // this.reset()
       this.$emit('close')
     },
     loadLastData () {
@@ -526,7 +502,11 @@ export default {
       })
 
       this.findFileList(ybAppealManageUpload.id)
-      this.search()
+
+      setTimeout(() => {
+        this.$refs.inpatientfeesModule.search()
+      }, 200)
+      // this.search()
     },
     findCreate (ybAppealResult) {
       // 列表点击申诉时创建复议审核上传数据，业务需求变更不调用此方法,更改为提交时创建复议审核上传数据
@@ -592,7 +572,7 @@ export default {
     fetch (params = {}) {
       params.billNo = this.ybAppealManageUpload.billNo
       params.transNo = this.ybAppealManageUpload.serialNo
-      params.itemCode = this.ybAppealManageUpload.projectCode
+      params.itemName = this.ybAppealManageUpload.projectName
       this.loading = true
       if (this.paginationInfo) {
         // 如果分页信息不为空，则设置表格当前第几页，每页条数，并设置查询分页参数

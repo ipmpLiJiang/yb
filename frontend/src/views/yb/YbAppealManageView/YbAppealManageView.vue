@@ -29,7 +29,7 @@
               <a-button type="primary" style="margin-right: 15px">批量接受</a-button>
             </a-popconfirm>
           </a-col>
-          <a-col :span=3>
+          <a-col :span=3 v-show="tableSelectKey!=1?true:false">
             <a-button
             type="primary"
             @click="onHistory"

@@ -14,6 +14,9 @@
           :customRow="handleClickRow"
           :scroll="{ x: 900 }"
         >
+        <template slot="operationDeductReason" slot-scope="text, record, index">
+          <span :title="record.deductReason">{{record.deductReason}}</span>
+        </template>
           <template
             slot="operation"
             slot-scope="text, record, index"
@@ -120,7 +123,8 @@ export default {
       },
       {
         title: '扣除原因',
-        dataIndex: 'deductReason',
+        scopedSlots: { customRender: 'operationDeductReason' },
+        ellipsis: true,
         width: 250
       },
       {

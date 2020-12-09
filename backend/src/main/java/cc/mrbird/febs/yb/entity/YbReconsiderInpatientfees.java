@@ -203,6 +203,27 @@ private static final long serialVersionUID=1L;
     private Integer dataType;
 
     /**
+     * 版本类型
+     */
+    @TableField("typeno")
+    //@ExcelField(value ="版本类型")
+    private Integer typeno;
+
+    /**
+     * 序号
+     */
+    @TableField("orderNumber")
+    @ExcelField(value = "序号")
+    private String orderNumber;
+
+    /**
+     * 复议申请明细
+     */
+    @TableField("applyDataId")
+    @ExcelField(value = "复议申请明细")
+    private String applyDataId;
+
+    /**
      * 备注
      */
     @TableField("COMMENTS")
@@ -304,6 +325,10 @@ private static final long serialVersionUID=1L;
     public static final String APPLYDATESTR = "applyDateStr";
 
     public static final String DATATYPE ="dataType" ;
+
+    public static final String TYPENO = "typeno";
+
+    public static final String ORDERNUMBER = "orderNumber";
 
     public static final String COMMENTS ="COMMENTS" ;
 

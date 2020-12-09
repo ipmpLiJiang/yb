@@ -103,6 +103,10 @@ public class YbReconsiderApplyTaskServiceImpl extends ServiceImpl<YbReconsiderAp
             queryWrapper.eq(YbReconsiderApplyTask::getDataType, ybReconsiderApplyTask.getDataType());
         }
 
+        if (ybReconsiderApplyTask.getTypeno() != null) {
+            queryWrapper.eq(YbReconsiderApplyTask::getTypeno, ybReconsiderApplyTask.getTypeno());
+        }
+
         return this.list(queryWrapper);
     }
 

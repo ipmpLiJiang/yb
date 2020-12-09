@@ -1,11 +1,8 @@
 package cc.mrbird.febs.yb.entity;
 
 import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.wuwenze.poi.annotation.Excel;
 import com.wuwenze.poi.annotation.ExcelField;
 import lombok.Data;
-import lombok.experimental.Accessors;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -13,7 +10,7 @@ import java.util.Date;
 
 
 @Data
-public class YbReconsiderInpatientfeesHis implements Serializable {
+public class YbReconsiderInpatientfeesData implements Serializable {
 
     /**
      * 住院号
@@ -184,38 +181,4 @@ public class YbReconsiderInpatientfeesHis implements Serializable {
     @ExcelField(value = "itemYbCode")
     private String itemYbCode;
 
-    /**
-     * 入院责任医生代码
-     */
-    @TableField("inHospDocId")
-    @ExcelField(value = "入院责任医生代码")
-    private String inHospDocId;
-
-    /**
-     * 入院责任医生名称
-     */
-    @TableField("inHospDocName")
-    @ExcelField(value = "入院责任医生名称")
-    private String inHospDocName;
-
-    /**
-     * 办入院操作员代码
-     */
-    @TableField("inHospOpterId")
-    @ExcelField(value = "办入院操作员代码")
-    private String inHospOpterId;
-
-    /**
-     * 办入院操作员名称
-     */
-    @TableField("inHospOpterName")
-    @ExcelField(value = "办入院操作员名称")
-    private String inHospOpterName;
-
-    /**
-     * 主单结算时间
-     */
-    @TableField("settleDate")
-    @ExcelField(value = "主单结算时间")
-    private Date settleDate;
 }

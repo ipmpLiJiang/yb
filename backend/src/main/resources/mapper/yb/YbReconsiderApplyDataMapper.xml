@@ -213,9 +213,11 @@
             yb_reconsider_apply_data.pid = yb_reconsider_apply.id and
             yb_reconsider_apply.IS_DELETEMARK = 1
         where
+            yb_reconsider_apply.applyDateStr = #{applyDateStr} and
             yb_reconsider_apply_data.IS_DELETEMARK = 1 and
-            yb_reconsider_apply.applyDateStr = #{applyDateStr} and dataType = #{dataType} and
-            orderSettlementNum between #{startNum} and #{endNum}
+            yb_reconsider_apply_data.dataType = #{dataType} and
+            yb_reconsider_apply_data.typeno = #{typeno} and
+            yb_reconsider_apply_data.orderSettlementNum between #{startNum} and #{endNum}
         ORDER BY
             dataType,orderNum
     </select>
@@ -230,6 +232,7 @@
         where
             yb_reconsider_apply_data.IS_DELETEMARK = 1 and
             yb_reconsider_apply.applyDateStr = #{applyDateStr}
+            <if test="typeno != null"> and yb_reconsider_apply_data.typeno =#{ typeno} </if>
             <if test="dataType != null"> and yb_reconsider_apply_data.dataType =#{ dataType} </if>
     </select>
 </mapper>

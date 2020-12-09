@@ -1,122 +1,62 @@
 
 <template>
-    <div style="margin:5px 10px 5px 30px">
-        <a-row
-            justify="center"
-            align="middle"
-        >
-            <a-col :span=6>
-            <div style="height:40px">
-                序号：{{ybResetDataModule.orderNumber}}</div>
-            </a-col>
-            <a-col :span=6>
-            <div style="height:40px">
-                交易流水号：{{ybResetDataModule.serialNo}}</div>
-            </a-col>
-            <a-col :span=1>
-            &nbsp;
-            </a-col>
-            <a-col :span=5>
-            <div style="height:40px">
-                单据号：{{ybResetDataModule.billNo}}</div>
-            </a-col>
-            <a-col :span=6>
-            <div style="height:40px">
-            费用日期：{{ybResetDataModule.costDateStr}}
-            </div>
-            </a-col>
-        </a-row>
-        <a-row justify='center'>
-            <a-col :span=6>
-            <div style="height:40px">
-                项目编码：{{ybResetDataModule.projectCode}}</div>
-            </a-col>
-            <a-col :span=6>
-            <div style="height:40px">
-                项目名称：{{ybResetDataModule.projectName}}</div>
-            </a-col>
-            <a-col :span=1>
-            &nbsp;
-            </a-col>
-            <a-col :span=5>
-            <div style="height:40px">
-            住院号：{{ybResetDataModule.hospitalizedNo}}
-            </div>
-            </a-col>
-            <a-col :span=6>
-            <div style="height:40px">
-                医保内金额：{{ybResetDataModule.medicalPrice}}</div>
-            </a-col>
-        </a-row>
-        <a-row justify='center'>
-            <a-col :span=6>
-            <div style="height:40px">
-                规则名称：{{ybResetDataModule.ruleName}}</div>
-            </a-col>
-            <a-col :span=6>
-            <div style="height:40px">
-                扣除金额：{{ybResetDataModule.deductPrice}}</div>
-            </a-col>
-            <a-col :span=1>
-            &nbsp;
-            </a-col>
-            <a-col :span=11>
-            <div style="height:40px">
-                扣除原因：{{ybResetDataModule.deductReason}}</div>
-            </a-col>
-        </a-row>
-        <a-row justify='center'>
-            <a-col :span=6>
-            <div style="height:40px">
-                还款原因：{{ybResetDataModule.repaymentReason}}</div>
-            </a-col>
-            <a-col :span=6>
-            <div style="height:40px">
-                医生姓名：{{ybResetDataModule.doctorName}}</div>
-            </a-col>
-            <a-col :span=1>
-            &nbsp;
-            </a-col>
-            <a-col :span=5>
-            <div style="height:40px">
-                科室编码：{{ybResetDataModule.deptCode}}</div>
-            </a-col>
-            <a-col :span=6>
-            <div style="height:40px">
-                科室名称：{{ybResetDataModule.deptName}}</div>
-            </a-col>
-        </a-row>
-        <a-row justify='center'>
-            <a-col :span=6>
-            <div style="height:40px">
-                就医方式：{{ybResetDataModule.treatmentMode}}</div>
-            </a-col>
-            <a-col :span=6>
-            <div style="height:40px">
-                结算日期：{{ybResetDataModule.settlementDateStr}}</div>
-            </a-col>
-            <a-col :span=1>
-            &nbsp;
-            </a-col>
-            <a-col :span=5>
-            <div style="height:40px">
-                个人编号：{{ybResetDataModule.personalNo}}</div>
-            </a-col>
-            <a-col :span=6>
-            <div style="height:40px">
-                参保人姓名：{{ybResetDataModule.insuredName}}</div>
-            </a-col>
-        </a-row>
-        <a-row justify='center'>
-            <a-col :span=6>
-            <div style="height:40px">
-                参保类型：{{ybResetDataModule.insuredType}}</div>
-            </a-col>
-            <a-col :span=6>
-            <div style="height:40px">
-                统筹区：{{ybResetDataModule.areaName}}</div>
-            </a-col>
-        </a-row>
+    <div style="margin:0px 10px 15px 30px">
+        <table width="100%">
+            <tr style="height:45px">
+                <td width="8%">序&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;号：</td>
+                <td width="17%">{{ybResetDataModule.orderNumber}}</td>
+                <td width="10%">交易流水号：</td>
+                <td width="15%">{{ybResetDataModule.serialNo}}</td>
+                <td width="8%">单&nbsp;&nbsp;据&nbsp;&nbsp;号：</td>
+                <td width="17%">{{ybResetDataModule.billNo}}</td>
+                <td width="10%">费用日期：</td>
+                <td width="15%">{{ybResetDataModule.costDateStr}}</td>
+            </tr>
+            <tr style="height:45px">
+                <td width="8%">项目编码：</td>
+                <td width="17%">{{ybResetDataModule.projectCode}}</td>
+                <td width="10%">项目名称：</td>
+                <td width="15%">{{ybResetDataModule.projectName}}</td>
+                <td width="8%">住&nbsp;&nbsp;院&nbsp;&nbsp;号：</td>
+                <td width="17%">{{ybResetDataModule.hospitalizedNo}}</td>
+                <td width="10%">医保内金额：</td>
+                <td width="15%">{{ybResetDataModule.medicalPrice}}</td>
+            </tr>
+            <tr style="height:45px">
+                <td width="8%">规则名称：</td>
+                <td width="17%">{{ybResetDataModule.ruleName}}</td>
+                <td width="10%">扣除金额：</td>
+                <td width="15%">{{ybResetDataModule.deductPrice}}</td>
+                <td width="8%">扣除原因：</td>
+                <td width="42%" colspan="3">{{ybResetDataModule.deductReason}}</td>
+            </tr>
+            <tr style="height:45px">
+                <td width="8%">还款原因：</td>
+                <td width="17%">{{ybResetDataModule.repaymentReason}}</td>
+                <td width="10%">医生姓名：</td>
+                <td width="15%">{{ybResetDataModule.doctorName}}</td>
+                <td width="8%">科室编码：</td>
+                <td width="17%">{{ybResetDataModule.deptCode}}</td>
+                <td width="10%">科室名称：</td>
+                <td width="15%">{{ybResetDataModule.deptName}}</td>
+            </tr>
+            <tr style="height:45px">
+                <td width="8%">就医方式：</td>
+                <td width="17%">{{ybResetDataModule.treatmentMode}}</td>
+                <td width="10%">结算日期：</td>
+                <td width="15%">{{ybResetDataModule.settlementDateStr}}</td>
+                <td width="8%">个人编号：</td>
+                <td width="17%">{{ybResetDataModule.personalNo}}</td>
+                <td width="10%">参保人姓名：</td>
+                <td width="15%">{{ybResetDataModule.insuredName}}</td>
+            </tr>
+            <tr style="height:45px">
+                <td width="8%">参保类型：</td>
+                <td width="17%">{{ybResetDataModule.insuredType}}</td>
+                <td width="10%">统&nbsp;&nbsp;筹&nbsp;&nbsp;区：</td>
+                <td width="65%">{{ybResetDataModule.areaName}}</td>
+            </tr>
+        </table>
     </div>
 </template>
 

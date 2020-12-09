@@ -95,6 +95,14 @@ export default {
       this.ybReconsiderPriorityLevel = {}
       this.ybPriorityLevel = {}
       this.form.resetFields()
+      this.$refs.inputSelectDept.dataSource = []
+      this.$refs.inputSelectDeptvalue = ''
+      this.$refs.inputSelectDoctor.dataSource = []
+      this.$refs.inputSelectDoctor.inputSelectDeptvalue = ''
+      this.ybPriorityLevel.doctorCode = ''
+      this.ybPriorityLevel.doctorName = ''
+      this.ybPriorityLevel.deptCode = ''
+      this.ybPriorityLevel.deptName = ''
     },
     onClose () {
       this.reset()
@@ -109,8 +117,6 @@ export default {
       this.ybPriorityLevel.deptName = item.text
     },
     setFormValues () {
-      this.$refs.inputSelectDept.dataSource = []
-      this.$refs.inputSelectDoctor.dataSource = []
     },
     handleSubmit () {
       if (this.ybPriorityLevel.doctorCode !== '' && this.ybPriorityLevel.doctorCode !== undefined) {

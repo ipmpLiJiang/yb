@@ -1,7 +1,10 @@
 package cc.mrbird.febs.yb.service;
 
+import cc.mrbird.febs.system.domain.User;
 import cc.mrbird.febs.yb.entity.YbPerson;
 import com.baomidou.mybatisplus.extension.service.IService;
+
+import java.util.ArrayList;
 import java.util.List;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -10,7 +13,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 
 /**
  * <p>
- *  服务类
+ * 服务类
  * </p>
  *
  * @author viki
@@ -18,17 +21,23 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
  */
 public interface IYbPersonService extends IService<YbPerson> {
 
-        IPage<YbPerson> findYbPersons(QueryRequest request, YbPerson ybPerson);
+    IPage<YbPerson> findYbPersons(QueryRequest request, YbPerson ybPerson);
 
-        IPage<YbPerson> findYbPersonList(QueryRequest request, YbPerson ybPerson);
+    IPage<YbPerson> findYbPersonList(QueryRequest request, YbPerson ybPerson);
 
-        void createYbPerson(YbPerson ybPerson);
+    void createYbPerson(YbPerson ybPerson);
 
-        void updateYbPerson(YbPerson ybPerson);
+    void updateYbPerson(YbPerson ybPerson);
 
-        List<YbPerson> findPersonList(YbPerson ybPerson);
+    List<YbPerson> findPersonList(YbPerson ybPerson,int type);
 
-        void deleteYbPersons(String[]Ids);
+    List<YbPerson> findPersonList(ArrayList<String> personCodeList);
 
-        String importUserRoles(Integer type) throws Exception;
-        }
+    void deleteYbPersons(String[] Ids);
+
+    String importUserRoles(Integer type) throws Exception;
+
+    boolean importPerson(User logUser);
+
+    YbPerson findByName(String personCode);
+}

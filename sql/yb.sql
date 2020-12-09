@@ -25,7 +25,7 @@ CREATE TABLE com_sms (
   id char(36) NOT NULL COMMENT '信息ID',
 	sendcode varchar(50) NOT NULL COMMENT '发送账户', 
 	sendname varchar(100) NOT NULL COMMENT '发送人', 
-	mobile varchar(11) NOT NULL COMMENT '电话号码', 
+	mobile varchar(11) NOT NULL COMMENT '手机号码', 
 	sendType int(4) NOT NULL COMMENT '发送类型', #1 核对发送 2人工复议发送 3复议变更 4管理员变更
   operatorId bigint(11) NOT NULL COMMENT '操作员代码',
   operatorName varchar(50) NOT NULL COMMENT '操作员名称',
@@ -62,6 +62,29 @@ currencyField varchar(50) DEFAULT NULL COMMENT '通用字段',
   MODIFY_USER_ID bigint(11) DEFAULT NULL COMMENT '修改人',
   PRIMARY KEY (ID)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+
+#复议申请任务记录
+DROP TABLE IF EXISTS yb_reconsider_apply_task;
+CREATE TABLE yb_reconsider_apply_task (
+  id char(36) NOT NULL COMMENT '复议申请任务记录',
+  applyDateStr varchar(10) NOT NULL COMMENT '复议年月Str',  
+  dataType int(4) DEFAULT 0 COMMENT '数据类型',	
+  typeno int(4) NOT NULL COMMENT '版本类型',
+  startNum int(5) DEFAULT 0 COMMENT '开始数', 
+  endNum int(5) DEFAULT 0 COMMENT '结束数', 	
+	totalRow int(5) DEFAULT 0 COMMENT '总数', 
+	currentPage int(5) DEFAULT 0 COMMENT '当前页', 	
+	pageSize int(5) DEFAULT 0 COMMENT '页数', 	
+	totalPage int(5) DEFAULT 0 COMMENT '总页数', 	
+  COMMENTS varchar(1000) DEFAULT NULL COMMENT '备注',
+  STATE int(4) DEFAULT 0 COMMENT '状态',
+  IS_DELETEMARK tinyint(4) DEFAULT NULL COMMENT '是否删除',
+  MODIFY_TIME datetime DEFAULT NULL  COMMENT '修改时间',
+  CREATE_TIME datetime DEFAULT NULL  COMMENT '创建时间',
+  CREATE_USER_ID bigint(11) DEFAULT NULL COMMENT '创建人',
+  MODIFY_USER_ID bigint(11) DEFAULT NULL COMMENT '修改人',
+  PRIMARY KEY (id)
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
 
 #复议申请
 DROP TABLE IF EXISTS yb_reconsider_apply;
@@ -128,6 +151,7 @@ CREATE TABLE yb_reconsider_apply_data (
 	backAppeal varchar(1000) DEFAULT NULL COMMENT '反馈申诉',
 	insuredType varchar(50) DEFAULT NULL COMMENT '参保类型',
 	orderNum int(4) NOT NULL COMMENT '排序',
+	orderSettlementNum int(4) NOT NULL COMMENT '结算排序',
 	typeno int(4) NOT NULL COMMENT '版本类型',
 	dataType int(4) NOT NULL COMMENT '扣款类型', -- 0 明细扣款 1 主单扣款
   COMMENTS varchar(1000) DEFAULT NULL COMMENT '备注',
@@ -318,6 +342,10 @@ excuteDeptName varchar(100) DEFAULT NULL COMMENT '执行科室名称',
 excuteDocId varchar(100) DEFAULT NULL COMMENT '执行医生代码',
 excuteDocName varchar(100) DEFAULT NULL COMMENT '执行医生名称',
 settlementDate datetime DEFAULT NULL COMMENT '结算时间',
+applyDateStr varchar(10) NOT NULL COMMENT '复议年月Str',
+dataType int(4) NOT NULL COMMENT '扣款类型', -- 0 明细扣款 1 主单扣款
+typeno int(4) NOT NULL COMMENT '版本类型',
+orderNumber varchar(50) NOT NULLL COMMENT '序号',
   COMMENTS varchar(1000) DEFAULT NULL COMMENT '备注',
   STATE int(4) DEFAULT NULL COMMENT '状态',
   IS_DELETEMARK tinyint(4) DEFAULT NULL COMMENT '是否删除',
@@ -327,6 +355,7 @@ settlementDate datetime DEFAULT NULL COMMENT '结算时间',
   MODIFY_USER_ID bigint(11) DEFAULT NULL COMMENT '修改人',
   PRIMARY KEY (id)
 ) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
+
 
 DROP TABLE IF EXISTS com_configureManage;
 CREATE TABLE com_configureManage (
@@ -539,6 +568,9 @@ CREATE TABLE yb_reconsider_repay_data (
 
 #ALTER TABLE yb_appeal_result ADD INDEX applyDataId ( applyDataId ) 
 
+ALTER TABLE yb_reconsider_inpatientfees ADD INDEX applyDateStr ( applyDateStr ) ;
+		
+ALTER TABLE yb_reconsider_inpatientfees ADD INDEX orderNumber ( orderNumber ) ;
 
 DROP VIEW IF EXISTS yb_reconsider_verify_view;
 create view yb_reconsider_verify_view
@@ -1549,8 +1581,9 @@ DO call p_appeal_manage_enableOverdue();
 #DROP TABLE IF EXISTS yb_dept;
 CREATE TABLE yb_dept (
   id int(11) NOT NULL AUTO_INCREMENT COMMENT '科室Id',
-  deptCode varchar(255) NOT NULL COMMENT '科室编码',
-  deptName varchar(255) NOT NULL COMMENT '科室名称',  
+  deptId varchar(50) NOT NULL COMMENT '科室编码',
+  deptName varchar(200) NOT NULL COMMENT '科室名称',  
+  spellCode varchar(50) DEFAULT NULL COMMENT '拼音码',
   COMMENTS varchar(1000) DEFAULT NULL COMMENT '备注',
   STATE int(4) DEFAULT NULL COMMENT '状态',
   IS_DELETEMARK tinyint(4) DEFAULT NULL COMMENT '是否删除',
@@ -1566,13 +1599,13 @@ CREATE TABLE yb_person (
   id int(11) NOT NULL AUTO_INCREMENT COMMENT '医生Id',
   personCode varchar(255) NOT NULL COMMENT '医生编码',
   personName varchar(255) NOT NULL COMMENT '医生名称',  
-  deptCode varchar(255) NOT NULL COMMENT '科室编码',
-  deptName varchar(255) NOT NULL COMMENT '科室名称', 
+  deptCode varchar(255) DEFAULT NULL COMMENT '科室编码',
+  deptName varchar(255) DEFAULT NULL COMMENT '科室名称', 
   sex varchar(50) NOT NULL COMMENT '性别', 
-  email varchar(50) NOT NULL COMMENT '邮箱', 
+  email varchar(50) DEFAULT NULL COMMENT '邮箱', 
   tel varchar(50) NOT NULL COMMENT '联系电话', 
-  spellCode varchar(50) NOT NULL COMMENT '拼音码', 
-  strokeCode varchar(50) NOT NULL COMMENT '五笔码', 
+  spellCode varchar(50) DEFAULT NULL COMMENT '拼音码', 
+  strokeCode varchar(50) DEFAULT NULL COMMENT '五笔码', 
   COMMENTS varchar(1000) DEFAULT NULL COMMENT '备注',
   STATE int(4) DEFAULT NULL COMMENT '状态',
   IS_DELETEMARK tinyint(4) DEFAULT NULL COMMENT '是否删除',
@@ -1584,32 +1617,6 @@ CREATE TABLE yb_person (
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 
 
-DROP TABLE IF EXISTS yb_reconsider_reset_main;
-CREATE TABLE yb_reconsider_reset_main (
-  id char(36) NOT NULL COMMENT '剔除表主单扣款',
-	pid char(36) NOT NULL COMMENT '关联',
-  serialNo varchar(100) NOT NULL COMMENT '交易流水号',
-	billNo varchar(50) NOT NULL COMMENT '单据号',
-	medicalPrice decimal(17,4) DEFAULT NULL COMMENT '医保内金额',
-	ruleName varchar(50) DEFAULT NULL COMMENT '规则名称',
-	deductPrice decimal(17,4) DEFAULT NULL COMMENT '扣除金额',
-	hospitalizedNo varchar(50) DEFAULT NULL COMMENT '住院号',
-	treatmentMode varchar(50) DEFAULT NULL COMMENT '就医方式',
-	settlementDate datetime DEFAULT NULL COMMENT '结算日期',
-  settlementDateStr varchar(50) DEFAULT NULL COMMENT '结算日期Str',
-	personalNo varchar(50) DEFAULT NULL COMMENT '个人编号',
-	insuredName varchar(50) DEFAULT NULL COMMENT '参保人姓名',
-	insuredType varchar(50) DEFAULT NULL COMMENT '参保类型',
-	areaName varchar(50) DEFAULT NULL COMMENT '统筹区名称',
-  COMMENTS varchar(1000) DEFAULT NULL COMMENT '备注',
-  STATE int(4) DEFAULT NULL COMMENT '状态',
-  IS_DELETEMARK tinyint(4) DEFAULT NULL COMMENT '是否删除',
-  MODIFY_TIME datetime DEFAULT NULL  COMMENT '修改时间',
-  CREATE_TIME datetime DEFAULT NULL  COMMENT '创建时间',
-  CREATE_USER_ID bigint(11) DEFAULT NULL COMMENT '创建人',
-  MODIFY_USER_ID bigint(11) DEFAULT NULL COMMENT '修改人',
-  PRIMARY KEY (id)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
 
 
 交易流水号	

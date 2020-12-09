@@ -7,11 +7,13 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author lijiang
  * @createDate 2020/11/20
  */
+@Slf4j
 public class OracleDB<T extends Serializable> {
 
     public List<T> excuteSqlRS(T t, String sql) {
@@ -37,6 +39,7 @@ public class OracleDB<T extends Serializable> {
             }
         } catch (Exception e) {
             e.printStackTrace();
+            log.error("His连接、读取数据异常",e);
         } finally {
             try {
                 // 逐一将上面的几个对象关闭，因为不关闭的话会影响性能、并且占用资源

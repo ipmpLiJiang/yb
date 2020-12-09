@@ -121,7 +121,7 @@ export default {
       {
         title: '项目代码',
         dataIndex: 'itemId',
-        width: 100
+        width: 120
       },
       {
         title: '项目医保编码',
@@ -131,7 +131,7 @@ export default {
       {
         title: '项目名称',
         dataIndex: 'itemName',
-        width: 100
+        width: 140
       },
       {
         title: '项目数量',
@@ -247,9 +247,8 @@ export default {
     },
     fetch (params = {}) {
       this.dataSource = []
-      params.billNo = this.ybInpatientfeesModule.billNo
-      params.transNo = this.ybInpatientfeesModule.serialNo
-      params.itemCode = this.ybInpatientfeesModule.projectCode
+      params.applyDateStr = this.ybInpatientfeesModule.applyDateStr
+      params.applyDataId = this.ybInpatientfeesModule.applyDataId
       this.loading = true
       if (this.paginationInfo) {
         // 如果分页信息不为空，则设置表格当前第几页，每页条数，并设置查询分页参数

@@ -5,23 +5,10 @@ package cc.mrbird.febs.common.utils;
  * @createDate 2020/11/19
  */
 
-import javax.naming.Context;
-import javax.naming.Name;
-import javax.naming.spi.ObjectFactory;
-import javax.sql.DataSource;
-import java.io.IOException;
-import java.io.InputStream;
 import java.io.Serializable;
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.Hashtable;
 import java.util.List;
-import java.util.Properties;
-
-import cc.mrbird.febs.yb.entity.YbReconsiderInpatientfeesHis;
-import lombok.Data;
-import org.apache.commons.dbcp2.BasicDataSourceFactory;
-import org.apache.poi.ss.formula.functions.T;
 
 /**
  * * 引入jar包ojdbc5.jar
@@ -30,6 +17,7 @@ public class OracleTest<T extends Serializable> {
 
 
     public static void main(String args[]) {
+        /*
         OracleTest<YbReconsiderInpatientfeesHis> oracleTest = new OracleTest<YbReconsiderInpatientfeesHis>();
         //String sql = "SELECT * FROM his.V_SAP_INPFEES where INPATIENTID = '2199966' and rownum < 2";
         //String sql = "select DISTINCT TransNo,BillNo,ItemCode,ItemName from his.V_SAP_INPFEES where settlementdate >= TO_DATE('2020-10-01', 'yyyy-mm-dd') and settlementdate <= TO_DATE('2020-10-31', 'yyyy-mm-dd') and  ROWNUM <10";
@@ -69,6 +57,7 @@ public class OracleTest<T extends Serializable> {
         }
         System.out.println(whereSql);
         System.out.println(whereSql1);
+        */
     }
 
     public List<T> excuteSqlRS(T t,String sql) {

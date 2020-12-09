@@ -4,21 +4,20 @@ import cc.mrbird.febs.common.domain.QueryRequest;
 import cc.mrbird.febs.common.utils.SortUtil;
 import cc.mrbird.febs.yb.entity.YbDept;
 import cc.mrbird.febs.yb.dao.YbDeptMapper;
+import cc.mrbird.febs.yb.entity.YbDeptHis;
+import cc.mrbird.febs.yb.entity.YbPerson;
 import cc.mrbird.febs.yb.service.IYbDeptService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
-import java.time.LocalDate;
 
 /**
  * <p>
@@ -62,18 +61,70 @@ public class YbDeptServiceImpl extends ServiceImpl<YbDeptMapper, YbDept> impleme
         }
     }
 
+    /**
+     * type 0 查询集合 type 1 like
+     */
     @Override
-    public List<YbDept> findDeptList(YbDept ybDept){
-            LambdaQueryWrapper<YbDept> queryWrapper = new LambdaQueryWrapper<>();
+    public List<YbDept> findDeptList(YbDept ybDept, int type) {
+        LambdaQueryWrapper<YbDept> queryWrapper = new LambdaQueryWrapper<>();
+        List<YbDept> list = new ArrayList<>();
+        if (type == 1) {
             String sql = " IS_DELETEMARK = 1 ";
-            if(ybDept.getComments()!=null){
-                sql += " and (deptName like '%"+ybDept.getComments()+"%' or deptCode like '%"+ybDept.getComments()+"%')";
-            }else{
+            if (ybDept.getComments() != null) {
+                sql += " and (deptName like '%" + ybDept.getComments() + "%' or spellCode like '%" + ybDept.getComments() + "%')";
+            } else {
                 sql += " and 1=2";
             }
             queryWrapper.apply(sql);
-            List<YbDept> list = this.list(queryWrapper);
-            return list;
+            list = this.list(queryWrapper);
+            int count = 15;
+            if (list.size() >= count) {
+                list = list.subList(0, count);
+            }
+        } else {
+            queryWrapper.eq(YbDept::getIsDeletemark, 1);
+            if (ybDept.getDeptName() != null) {
+                queryWrapper.eq(YbDept::getDeptName, ybDept.getDeptName());
+            }
+            if (ybDept.getDeptId() != null) {
+                queryWrapper.eq(YbDept::getDeptId, ybDept.getDeptId());
+            }
+            if (ybDept.getSpellCode() != null) {
+                queryWrapper.eq(YbDept::getSpellCode, ybDept.getSpellCode());
+            }
+            list = this.list(queryWrapper);
+        }
+        return list;
+    }
+
+    @Override
+    @Transactional
+    public void deleteBatchDepts() {
+        LambdaQueryWrapper<YbDept> wrapper = new LambdaQueryWrapper<>();
+        this.baseMapper.delete(wrapper);
+    }
+
+    @Override
+    @Transactional
+    public boolean createBatchDepts(List<YbDeptHis> list) {
+        List<YbDept> createList = new ArrayList<>();
+        List<YbDept> findList = this.findDeptList(new YbDept(), 0);
+        for (YbDeptHis item : list) {
+            if (findList.stream().filter(s -> s.getDeptName().equals(item.getDeptName())).count() == 0) {
+                YbDept dept = new YbDept();
+                dept.setDeptId(item.getDeptId());
+                dept.setDeptName(item.getDeptName());
+                dept.setSpellCode(item.getSpellCode());
+                dept.setCreateTime(new Date());
+                dept.setIsDeletemark(1);
+                createList.add(dept);
+            }
+        }
+        if (createList.size() > 0) {
+            return this.saveBatch(createList);
+        } else {
+            return false;
+        }
     }
 
     @Override

@@ -13,6 +13,9 @@
     :bordered="bordered"
     :scroll="{ x: 900 }"
     >
+    <template slot="operationDeductReason" slot-scope="text, record, index">
+      <span :title="record.deductReason">{{record.deductReason}}</span>
+    </template>
     <template
         slot='verifyDoctorName'
         slot-scope="text, record, index"
@@ -206,6 +209,8 @@ export default {
       {
         title: '扣除原因',
         dataIndex: 'deductReason',
+        scopedSlots: { customRender: 'operationDeductReason' },
+        ellipsis: true,
         width: 250
       },
       {
@@ -393,7 +398,7 @@ export default {
       }).then((r) => {
         r.data.data.forEach((item, i) => {
           dataSource.push({
-            value: item.deptCode,
+            value: item.deptId,
             text: item.deptName
           })
         })
@@ -488,6 +493,7 @@ export default {
       }
     },
     save (key) {
+      debugger
       const newData = [...this.dataSource]
       const newCacheData = [...this.cacheData]
       const target = newData.filter(item => key === item.id)[0]
@@ -504,16 +510,21 @@ export default {
         this.selectDoctorValue = undefined
         this.selectDeptDataSource = []
         this.selectDeptValue = undefined
-
-        let arrData = [{
-          id: target.isVerify === 0 ? '' : this.ybReconsiderVerify.id,
-          applyDataId: this.ybReconsiderVerify.applyDataId,
-          verifyDoctorCode: this.ybReconsiderVerify.verifyDoctorCode,
-          verifyDoctorName: this.ybReconsiderVerify.verifyDoctorName,
-          verifyDeptCode: this.ybReconsiderVerify.verifyDeptCode,
-          verifyDeptName: this.ybReconsiderVerify.verifyDeptName,
-          dataType: this.ybReconsiderVerify.dataType}]
-        this.verifyService(arrData)
+        let dtc = this.ybReconsiderVerify.verifyDoctorCode
+        let dec = this.ybReconsiderVerify.verifyDeptCode
+        if (dtc !== undefined && dec !== undefined && dtc !== null && dec !== null && dtc !== '' && dec !== '') {
+          let arrData = [{
+            id: target.isVerify === 0 ? '' : this.ybReconsiderVerify.id,
+            applyDataId: this.ybReconsiderVerify.applyDataId,
+            verifyDoctorCode: this.ybReconsiderVerify.verifyDoctorCode,
+            verifyDoctorName: this.ybReconsiderVerify.verifyDoctorName,
+            verifyDeptCode: this.ybReconsiderVerify.verifyDeptCode,
+            verifyDeptName: this.ybReconsiderVerify.verifyDeptName,
+            dataType: this.ybReconsiderVerify.dataType}]
+          this.verifyService(arrData)
+        } else {
+          this.$message.warning('未选择，参考复议科室 或 参考复议医生.')
+        }
       } else {
         this.$message.warning('未找到对象')
       }
@@ -603,7 +614,7 @@ export default {
         params.pageSize = this.pagination.defaultPageSize
         params.pageNum = this.pagination.defaultCurrent
       }
-
+      // applyDateStr asc,orderNum
       params.sortField = 'orderNum'
       params.sortOrder = 'ascend'
 

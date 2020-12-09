@@ -62,7 +62,7 @@ public class YbDeptController extends BaseController {
     public FebsResponse findDeptLists(YbDept ybDept) {
         List<YbDept> list = new ArrayList<>();
         try{
-        list = this.iYbDeptService.findDeptList(ybDept);
+        list = this.iYbDeptService.findDeptList(ybDept,1);
 
         } catch (Exception e) {
             log.error("获取科室失败", e);

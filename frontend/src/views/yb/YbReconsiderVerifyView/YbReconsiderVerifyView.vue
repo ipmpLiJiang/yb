@@ -21,8 +21,8 @@
             >
               <a-month-picker
                 placeholder="请输入复议年月"
-                disabled
-                :default-value="defaultApplyDate"
+                @change="monthChange"
+                :default-value="searchApplyDate"
                 :format="monthFormat"
               />
             </a-form-item>
@@ -105,7 +105,7 @@
           >
             <ybReconsiderVerify-stayed
               ref="ybReconsiderVerifyStayed"
-              :applyDate='defaultApplyDate'
+              :applyDate='searchApplyDate'
               :searchItem='searchItem'
               @selectChangeKeyVerify="selectChangeKeyVerify"
               @detail="detail"
@@ -122,7 +122,7 @@
           >
             <ybReconsiderSendStayed-main
               ref="ybReconsiderSendStayedMain"
-              :applyDate='defaultApplyDate'
+              :applyDate='searchApplyDate'
               :searchItem='searchItem'
               @showImport="showImport"
               @handImport="handImport"
@@ -136,7 +136,7 @@
           >
             <ybReconsiderSend-stayed
               ref="ybReconsiderSendStayed"
-              :applyDate='defaultApplyDate'
+              :applyDate='searchApplyDate'
             >
             </ybReconsiderSend-stayed>
           </a-tab-pane>
@@ -147,7 +147,7 @@
           >
             <ybReconsiderSend-end
               ref="ybReconsiderSendEnd"
-              :applyDate='defaultApplyDate'
+              :applyDate='searchApplyDate'
             >
             </ybReconsiderSend-end>
           </a-tab-pane>
@@ -308,6 +308,7 @@ export default {
       detailVisiable: false,
       ybReconsiderVerify: {},
       tableSelectKey: '1',
+      searchApplyDate: this.formatDate(),
       visibleSearch: false,
       visibleUpdate: false,
       pcmVisible: false,
@@ -315,7 +316,6 @@ export default {
       spinning: false,
       delayTime: 500,
       selectDate: {},
-      defaultApplyDate: this.formatDate(),
       handleQuerySymbol: [
         {text: '等于', value: 'EQ'},
         {text: '包含', value: 'LIKE'},
@@ -337,6 +337,10 @@ export default {
     formatDate () {
       let datemonth = moment().subtract(1, 'months').format('YYYY-MM')
       return datemonth
+    },
+    monthChange (date, dateString) {
+      this.searchApplyDate = dateString
+      console.log(this.searchApplyDate)
     },
     showImport (data) {
       this.visibleUpdate = true
@@ -398,9 +402,9 @@ export default {
     },
     handleSearchOk (e) {
       if (this.tableSelectKey === '1') {
-        this.$refs.ybReconsiderVerifyStayed.search()
+        this.$refs.ybReconsiderVerifyStayed.reset()
       } else {
-        this.$refs.ybReconsiderSendStayedMain.search()
+        this.$refs.ybReconsiderSendStayedMain.reset()
       }
       this.visibleSearch = false
     },
@@ -426,7 +430,7 @@ export default {
       }
 
       this.$post('ybReconsiderVerify/' + url, {
-        applyDate: this.defaultApplyDate
+        applyDate: this.searchApplyDate
       }).then(() => {
         this.spinning = false
         this.$message.success('匹配完成')
@@ -480,13 +484,13 @@ export default {
       this.tableSelectKey = key
       if (key === '1') {
         this.clearValue()
-        this.$refs.ybReconsiderVerifyStayed.search()
+        this.$refs.ybReconsiderVerifyStayed.reset()
       } else if (key === '2') {
-        this.$refs.ybReconsiderSendStayed.search()
+        this.$refs.ybReconsiderSendStayed.reset()
       } else if (key === '3') {
-        this.$refs.ybReconsiderSendEnd.search()
+        this.$refs.ybReconsiderSendEnd.reset()
       } else if (key === '4') {
-        this.$refs.ybReconsiderSendStayedMain.search()
+        this.$refs.ybReconsiderSendStayedMain.reset()
       } else {
         console.log('ok')
       }

@@ -65,7 +65,7 @@ public class YbHandleVerifyDataServiceImpl extends ServiceImpl<YbHandleVerifyDat
     FebsProperties febsProperties;
 
     @Autowired
-    UserService userService;
+    IYbPersonService iYbPersonService;
 
     @Override
     public IPage<YbHandleVerifyData> findYbHandleVerifyDatas(QueryRequest request, YbHandleVerifyData ybHandleVerifyData) {
@@ -184,14 +184,14 @@ public class YbHandleVerifyDataServiceImpl extends ServiceImpl<YbHandleVerifyDat
         List<YbAppealManage> appealManageList = new ArrayList<YbAppealManage>();
         Date addDate = DataTypeHelpers.addDateMethod(thisDate, day);
 
-        List<User> userList = new ArrayList<>();
-        List<User> queryUserList = new ArrayList<>();
+        List<YbPerson> personList = new ArrayList<>();
+        List<YbPerson> queryPersonList = new ArrayList<>();
         List<ComSms> smsList = new ArrayList<>();
         List<ComSms> saveSmsList = new ArrayList<>();
         List<String> userCodeList = new ArrayList<>();
         boolean isOpenSms = febsProperties.isOpenSms();
         if (isOpenSms) {
-            userList = userService.findUserList(new User());
+            personList = iYbPersonService.findPersonList(new YbPerson(),0);
             ComSms qu = new ComSms();
             qu.setState(ComSms.STATE_0);
             qu.setSendType(ComSms.SENDTYPE_1);
@@ -238,19 +238,19 @@ public class YbHandleVerifyDataServiceImpl extends ServiceImpl<YbHandleVerifyDat
                 if (userCodeList.stream().filter(s -> s.equals(ybHandleVerifyData.getDoctorCode())).count() == 0) {
                     if (smsList.stream().filter(s -> s.getSendcode().equals(ybHandleVerifyData.getDoctorCode())).count() == 0) {
                         userCodeList.add(ybHandleVerifyData.getDoctorCode());
-                        queryUserList = userList.stream().filter(
-                                s -> s.getUsername().equals(ybHandleVerifyData.getDoctorCode())
+                        queryPersonList = personList.stream().filter(
+                                s -> s.getPersonCode().equals(ybHandleVerifyData.getDoctorCode())
                         ).collect(Collectors.toList());
-                        if (queryUserList.size() > 0) {
-                            if (Validator.isMobile(queryUserList.get(0).getMobile())) {
+                        if (queryPersonList.size() > 0) {
+                            if (Validator.isMobile(queryPersonList.get(0).getTel())) {
                                 ComSms comSms = new ComSms();
                                 comSms.setId(UUID.randomUUID().toString());
-                                comSms.setSendcode(queryUserList.get(0).getUsername());
-                                comSms.setSendname(queryUserList.get(0).getXmname());
-                                comSms.setMobile(queryUserList.get(0).getMobile());
+                                comSms.setSendcode(queryPersonList.get(0).getPersonCode());
+                                comSms.setSendname(queryPersonList.get(0).getPersonName());
+                                comSms.setMobile(queryPersonList.get(0).getTel());
                                 comSms.setSendType(ComSms.SENDTYPE_1);
                                 comSms.setState(ComSms.STATE_0);
-                                ;
+
                                 comSms.setSendcontent("医保管理平台提醒您，您的医保人工复议任务已发布，请尽快处理。");
                                 comSms.setOperatorId(uId);
                                 comSms.setOperatorName(Uname);
@@ -286,14 +286,14 @@ public class YbHandleVerifyDataServiceImpl extends ServiceImpl<YbHandleVerifyDat
 
         List<YbHandleVerifyData> list = this.baseMapper.findHandleVerifyDataList(applyDateStr, dataType, state);
 
-        List<User> userList = new ArrayList<>();
-        List<User> queryUserList = new ArrayList<>();
+        List<YbPerson> personList = new ArrayList<>();
+        List<YbPerson> queryPersonList = new ArrayList<>();
         List<ComSms> smsList = new ArrayList<>();
         List<ComSms> saveSmsList = new ArrayList<>();
         List<String> userCodeList = new ArrayList<>();
         boolean isOpenSms = febsProperties.isOpenSms();
         if (isOpenSms) {
-            userList = userService.findUserList(new User());
+            personList = iYbPersonService.findPersonList(new YbPerson(),0);
             ComSms qu = new ComSms();
             qu.setState(ComSms.STATE_0);
             qu.setSendType(ComSms.SENDTYPE_1);
@@ -340,16 +340,16 @@ public class YbHandleVerifyDataServiceImpl extends ServiceImpl<YbHandleVerifyDat
                     if (userCodeList.stream().filter(s -> s.equals(ybHandleVerifyData.getDoctorCode())).count() == 0) {
                         if (smsList.stream().filter(s -> s.getSendcode().equals(ybHandleVerifyData.getDoctorCode())).count() == 0) {
                             userCodeList.add(ybHandleVerifyData.getDoctorCode());
-                            queryUserList = userList.stream().filter(
-                                    s -> s.getUsername().equals(ybHandleVerifyData.getDoctorCode())
+                            queryPersonList = personList.stream().filter(
+                                    s -> s.getPersonCode().equals(ybHandleVerifyData.getDoctorCode())
                             ).collect(Collectors.toList());
-                            if (queryUserList.size() > 0) {
-                                if (Validator.isMobile(queryUserList.get(0).getMobile())) {
+                            if (queryPersonList.size() > 0) {
+                                if (Validator.isMobile(queryPersonList.get(0).getTel())) {
                                     ComSms comSms = new ComSms();
                                     comSms.setId(UUID.randomUUID().toString());
-                                    comSms.setSendcode(queryUserList.get(0).getUsername());
-                                    comSms.setSendname(queryUserList.get(0).getXmname());
-                                    comSms.setMobile(queryUserList.get(0).getMobile());
+                                    comSms.setSendcode(queryPersonList.get(0).getPersonCode());
+                                    comSms.setSendname(queryPersonList.get(0).getPersonName());
+                                    comSms.setMobile(queryPersonList.get(0).getTel());
                                     comSms.setSendType(ComSms.SENDTYPE_1);
                                     comSms.setState(ComSms.STATE_0);
                                     ;

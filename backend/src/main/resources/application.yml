@@ -85,7 +85,7 @@ febs:
   in1: hrp_hr
   in2: MAC
   in3: FC
-  taskInpatientCount: 1000
+  taskInpatientCount: 500
 
   #baseUrl: http://192.168.78.136:9527
   # 单次最大批量入库数量

@@ -39,9 +39,9 @@ private static final long serialVersionUID=1L;
     /**
      * 部门编码
      */
-    @TableField("deptCode")
+    @TableField("deptId")
             @ExcelField(value ="科室编码")
-    private String deptCode;
+    private String deptId;
 
     /**
      * 部门名称
@@ -49,6 +49,13 @@ private static final long serialVersionUID=1L;
     @TableField("deptName")
             @ExcelField(value ="科室名称")
     private String deptName;
+
+    /**
+     * 拼写代码
+     */
+    @TableField("spellCode")
+    @ExcelField(value ="拼写代码")
+    private String spellCode;
 
     /**
      * 备注
@@ -107,7 +114,7 @@ private static final long serialVersionUID=1L;
 
     public static final String ID ="id" ;
 
-    public static final String DEPTCODE ="deptCode" ;
+    public static final String DEPTID ="deptId" ;
 
     public static final String DEPTNAME ="deptName" ;
 

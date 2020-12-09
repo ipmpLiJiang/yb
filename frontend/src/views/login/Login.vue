@@ -17,7 +17,7 @@
             </a-input>
           </a-form-item>
         </a-tab-pane>
-        <a-tab-pane tab="手机号登录" key="2">
+        <!-- <a-tab-pane tab="手机号登录" key="2">
           <a-form-item>
             <a-input size="large">
               <a-icon slot="prefix" type="mobile"></a-icon>
@@ -35,16 +35,16 @@
               </a-col>
             </a-row>
           </a-form-item>
-        </a-tab-pane>
+        </a-tab-pane> -->
       </a-tabs>
       <a-form-item>
         <a-button :loading="loading" style="width: 100%; margin-top: 4px" size="large" htmlType="submit" type="primary">
           登录
         </a-button>
       </a-form-item>
-      <div>
+      <!-- <div>
         <a style="float: right" @click="regist">注册账户</a>
-      </div>
+      </div> -->
     </a-form>
   </div>
 </template>
