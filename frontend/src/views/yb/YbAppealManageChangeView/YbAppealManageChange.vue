@@ -89,13 +89,13 @@ export default {
         title: '项目编码',
         dataIndex: 'projectCode',
         fixed: 'left',
-        width: 100
+        width: 120
       },
       {
         title: '项目名称',
         dataIndex: 'projectName',
         fixed: 'left',
-        width: 140
+        width: 160
       },
       {
         title: '数量',
@@ -142,17 +142,27 @@ export default {
       {
         title: '复议科室',
         dataIndex: 'readyDeptName',
-        width: 120
+        customRender: (text, row, index) => {
+          if (text !== '' && text !== null) {
+            return row.readyDeptCode + '-' + row.readyDeptName
+          }
+        },
+        width: 200
       },
       {
         title: '申请人',
         dataIndex: 'readyDoctorName',
-        width: 120
+        customRender: (text, row, index) => {
+          if (text !== '' && text !== null) {
+            return row.readyDoctorCode + '-' + row.readyDoctorName
+          }
+        },
+        width: 130
       },
       {
         title: '申请理由',
         dataIndex: 'operateReason',
-        width: 120
+        width: 300
       },
       {
         title: '申请日期',
@@ -223,6 +233,13 @@ export default {
         this.$message.warning('请选择单行')
       }
     },
+    searchPage () {
+      this.pagination.defaultCurrent = 1
+      if (this.paginationInfo) {
+        this.paginationInfo.current = this.pagination.defaultCurrent
+      }
+      this.search()
+    },
     search () {
       let { sortedInfo } = this
       let sortField, sortOrder
@@ -241,6 +258,7 @@ export default {
       // 取消选中
       this.selectedRowKeys = []
       // 重置分页
+      this.pagination.defaultCurrent = 1
       this.$refs.TableInfo.pagination.current = this.pagination.defaultCurrent
       if (this.paginationInfo) {
         this.paginationInfo.current = this.pagination.defaultCurrent

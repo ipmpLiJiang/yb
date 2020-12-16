@@ -153,11 +153,11 @@ public class YbReconsiderResetController extends BaseController {
     @Log("修改")
     @PutMapping("updateApplyState")
     @RequiresPermissions("ybReconsiderReset:updateResetState")
-    public FebsResponse updateReconsiderResetApplyState(@Valid YbReconsiderReset ybReconsiderReset){
+    public FebsResponse updateReconsiderResetApplyState(@Valid YbReconsiderReset ybReconsiderReset) {
         int success = 0;
         try {
             message = this.iYbReconsiderResetService.updateReconsiderApplyState(ybReconsiderReset);
-            if(message.equals("ok")){
+            if (message.equals("ok")) {
                 success = 1;
                 message = "完成剔除成功";
             }
@@ -186,7 +186,7 @@ public class YbReconsiderResetController extends BaseController {
                     String filePath = febsProperties.getUploadPath(); // 上传后的路径
                     File getFile = FileHelpers.fileUpLoad(file, filePath, guid, "ReconsiderResetTemp");
                     Map<Integer, String> sheetMap = ImportExcelUtils.getSheelNames(getFile);
-                    if (sheetMap.size() == 2) {
+                    if (sheetMap.size() > 0) {
                         int nZd = 0;
                         int nMx = 0;
                         for (Integer key : sheetMap.keySet()) {
@@ -198,12 +198,11 @@ public class YbReconsiderResetController extends BaseController {
                                 nZd = 1;
                             }
                         }
-                        if (nZd == 1 && nMx == 1) {
+                        if (nZd == 1 || nMx == 1) {
                             List<Object[]> objMx = new ArrayList<Object[]>();
                             List<Object[]> objZd = new ArrayList<Object[]>();
                             for (Integer key : sheetMap.keySet()) {
                                 String value = sheetMap.get(key);
-                                int sheetIndex = key;
                                 if (value.equals("明细扣款")) {
                                     objMx = ImportExcelUtils.importExcelBySheetIndex(getFile, key, 0, 0);
                                 }
@@ -229,7 +228,7 @@ public class YbReconsiderResetController extends BaseController {
                                 String zdCongfu = "";
                                 boolean zdIsNull = false;
                                 if (objMx.size() > 1) {
-                                    if (objMx.get(0).length == 20) {
+                                    if (objMx.get(0).length >= 20) {
                                         for (int i = 1; i < objMx.size(); i++) {
                                             message = "明细扣款数据读取失败，请确保Excel列表数据正确无误.";
                                             YbReconsiderResetData rrData = new YbReconsiderResetData();
@@ -307,7 +306,7 @@ public class YbReconsiderResetController extends BaseController {
                                 }
                                 if (!blError) {
                                     if (objZd.size() > 1) {
-                                        if (objZd.get(0).length == 13) {
+                                        if (objZd.get(0).length >= 13) {
                                             for (int i = 1; i < objZd.size(); i++) {
                                                 message = "主单扣款数据读取失败，请确保Excel列表数据正确无误.";
                                                 YbReconsiderResetData rrMain = new YbReconsiderResetData();
@@ -375,7 +374,7 @@ public class YbReconsiderResetController extends BaseController {
                                         if (!DataTypeHelpers.isNullOrEmpty(mxCongfu)) {
                                             if (!DataTypeHelpers.isNullOrEmpty(message)) {
                                                 message += " , 序号： " + mxCongfu + " 重复";
-                                            }else{
+                                            } else {
                                                 message = "明细扣款 序号： " + mxCongfu + " 重复";
                                             }
                                         }
@@ -390,7 +389,7 @@ public class YbReconsiderResetController extends BaseController {
                                         if (!DataTypeHelpers.isNullOrEmpty(zdCongfu)) {
                                             if (!DataTypeHelpers.isNullOrEmpty(message)) {
                                                 message += " , 序号： " + zdCongfu + " 重复";
-                                            }else{
+                                            } else {
                                                 message += "主单扣款 序号： " + zdCongfu + " 重复";
                                             }
                                         }
@@ -399,23 +398,23 @@ public class YbReconsiderResetController extends BaseController {
                                         message = "上传的剔除Excel  " + message + "。 请检查后重新上传.";
                                     }
                                     if (DataTypeHelpers.isNullOrEmpty(message)) {
-                                        this.iYbReconsiderResetService.importReconsiderResets(reconsiderReset, ListData, ListMain);
-                                        success = 1;
-                                        message = "Excel导入成功.";
+                                        if (ListData.size() > 0 || ListMain.size() > 0) {
+                                            this.iYbReconsiderResetService.importReconsiderResets(reconsiderReset, ListData, ListMain);
+                                            success = 1;
+                                            message = "Excel导入成功.";
+                                        } else {
+                                            message = "Excel导入失败，导入数据为空.";
+                                        }
                                     }
                                 }
                             } else {
-                                message = "Excel导入失败,需确保存在两个Sheet 明细扣款、主单扣款,并确认列表数据是否正确.";
+                                message = "Excel导入失败,需确保存在1个Sheet 明细扣款、主单扣款,并确认列表数据是否正确.";
                             }
-                        } else if (nZd == 0 && nMx == 0) {
-                            message = "Excel导入失败，需确保存在两个Sheet 明细扣款、主单扣款.";
-                        } else if (nZd == 0 && nMx == 1) {
-                            message = "Excel导入失败，Sheet 主单扣款不存在.";
-                        } else if (nZd == 1 && nMx == 0) {
-                            message = "Excel导入失败，Sheet 明细扣款不存在.";
+                        } else {
+                            message = "Excel导入失败，需确保存在1个Sheet 明细扣款、主单扣款.";
                         }
                     } else {
-                        message = "Excel导入失败，Sheet个数不正确,需确保存在两个Sheet 明细扣款、主单扣款.";
+                        message = "Excel导入失败，Sheet个数不正确,需确保存1个Sheet 明细扣款、主单扣款.";
                     }
                 } catch (Exception ex) {
                     //message = ex.getMessage();
@@ -503,7 +502,6 @@ public class YbReconsiderResetController extends BaseController {
         result.put("filename", "file.getOriginalFilename()");
         return new FebsResponse().data(result);
     }
-
 
 
 }

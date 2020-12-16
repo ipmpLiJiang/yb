@@ -156,6 +156,6 @@ export default {
 
 <style scoped>
   >>>.ant-tabs-tab{
-    margin-right: 1px !important;
+    margin-right: 1.5px !important;
   }
 </style>

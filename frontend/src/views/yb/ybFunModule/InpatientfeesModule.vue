@@ -102,12 +102,12 @@ export default {
       {
         title: '项目医保编码',
         dataIndex: 'itemCode',
-        width: 130
+        width: 120
       },
       {
         title: '项目名称',
         dataIndex: 'itemName',
-        width: 140
+        width: 160
       },
       {
         title: '项目数量',
@@ -183,6 +183,7 @@ export default {
       // 取消选中
       this.selectedRowKeys = []
       // 重置分页
+      this.pagination.defaultCurrent = 1
       this.$refs.TableInfo.pagination.current = this.pagination.defaultCurrent
       if (this.paginationInfo) {
         this.paginationInfo.current = this.pagination.defaultCurrent

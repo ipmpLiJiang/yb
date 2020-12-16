@@ -98,15 +98,15 @@ public class YbAppealManageController extends BaseController {
     }
 
     @Log("修改")
-    @PutMapping("updateCreateYbAppealManage")
+    @PutMapping("updateCreateAppealManage")
     @RequiresPermissions("ybAppealManage:amCreateUpdate")
-    public void updateCreateYbAppealManage(@Valid YbAppealManage ybAppealManage,Integer type) throws FebsException {
+    public void updateCreateAppealManage(@Valid YbAppealManage ybAppealManage,Integer type) throws FebsException {
         try {
             User currentUser = FebsUtil.getCurrentUser();
             Long uid = currentUser.getUserId();
             String uname = currentUser.getUsername();
 
-            this.iYbAppealManageService.updateCreateYbAppealManage(ybAppealManage,uid,uname,type);
+            this.iYbAppealManageService.updateCreateAppealManage(ybAppealManage,uid,uname,type);
         } catch (Exception e) {
             message = "修改失败";
             log.error(message, e);
@@ -115,15 +115,15 @@ public class YbAppealManageController extends BaseController {
     }
 
     @Log("修改")
-    @PutMapping("updateCreateAdminYbAppealManage")
+    @PutMapping("updateCreateAdminAppealManage")
     @RequiresPermissions("ybAppealManage:adminCreateUpdate")
-    public void updateCreateAdminYbAppealManage(@Valid YbAppealManage ybAppealManage) throws FebsException {
+    public void updateCreateAdminAppealManage(@Valid YbAppealManage ybAppealManage) throws FebsException {
         try {
             User currentUser = FebsUtil.getCurrentUser();
             Long uid = currentUser.getUserId();
             String uname = currentUser.getUsername();
 
-            this.iYbAppealManageService.updateCreateAdminYbAppealManage(ybAppealManage,uid,uname);
+            this.iYbAppealManageService.updateCreateAdminAppealManage(ybAppealManage,uid,uname);
         } catch (Exception e) {
             message = "更改失败";
             log.error(message, e);

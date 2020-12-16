@@ -7,7 +7,7 @@
     :closable="true"
     @close="onClose"
     :visible="appealVisiable"
-    style="height: calc(100% - 55px);overflow: auto;padding-bottom: 53px;"
+    style="height: calc(100% - 15px);overflow: auto;padding-bottom: 53px;"
   >
   <appealData-module
   ref="appealDataModule"
@@ -41,7 +41,7 @@
                   v-bind="formItemLayout"
                   label="复议科室"
                 >
-                  {{ybAppealManageUpload.readyDeptName}}
+                  {{ybAppealManageUpload.readyDeptCode}}-{{ybAppealManageUpload.readyDeptName}}
                 </a-form-item>
               </a-col>
               <a-col :span=14>
@@ -49,7 +49,7 @@
                   v-bind="formItemLayout"
                   label="复议医生"
                 >
-                  {{ybAppealManageUpload.readyDoctorName}}
+                  {{ybAppealManageUpload.readyDoctorCode}}-{{ybAppealManageUpload.readyDoctorName}}
                 </a-form-item>
               </a-col>
             </a-row>
@@ -66,7 +66,7 @@
                 <a-textarea
                   placeholder="请输入申诉理由"
                   style="width:100%;"
-                  :rows="5"
+                  :rows="6"
                   v-decorator="['operateReason', {rules: [{ required: true, message: '申诉理由不能为空' }] }]"
                 />
                 </a-form-item>
@@ -102,7 +102,7 @@
             </a-row>
           </a-col>
           <a-col :span=12>
-            <div style="color:red">*复议上传图片：最多上传8张，图片大小不得大于300KB</div>
+            <div style="color:red">*复议上传图片：最多上传8张，图片大小不得大于300KB，图片格式为.jpg</div>
             <div style="margin-top:10px;margin-left:20px;height:100%">
             <a-row type="flex" justify="center">
               <a-col>
@@ -111,7 +111,7 @@
                   <div class="clearfix">
                     <a-upload
                       list-type="picture-card"
-                      accept=".gif,.jpg, .jpeg,.png"
+                      accept=".jpg, .jpeg"
                       :file-list="fileList"
                       :remove="handleImageRemove"
                       :beforeUpload="beforeUpload"
@@ -237,12 +237,12 @@ export default {
       {
         title: '项目医保编码',
         dataIndex: 'itemCode',
-        width: 130
+        width: 120
       },
       {
         title: '项目名称',
         dataIndex: 'itemName',
-        width: 140
+        width: 160
       },
       {
         title: '项目数量',
@@ -313,6 +313,7 @@ export default {
       // 取消选中
       this.selectedRowKeys = []
       // 重置分页
+      this.pagination.defaultCurrent = 1
       this.$refs.TableInfo.pagination.current = this.pagination.defaultCurrent
       if (this.paginationInfo) {
         this.paginationInfo.current = this.pagination.defaultCurrent
@@ -330,11 +331,11 @@ export default {
       // 限制图片 格式、size、分辨率
       const isJPG = file.type === 'image/jpg'
       const isJPEG = file.type === 'image/jpeg'
-      const isGIF = file.type === 'image/gif'
-      const isPNG = file.type === 'image/png'
-      if (!(isJPG || isJPEG || isGIF || isPNG)) {
+      // const isGIF = file.type === 'image/gif'
+      // const isPNG = file.type === 'image/png'
+      if (!(isJPG || isJPEG)) {
         this.$error({
-          title: '只能上传JPG 、JPEG 、GIF、 PNG格式的图片~'
+          title: '只能上传JPG 、JPEG 格式的图片~'
         })
         return
       }
@@ -345,7 +346,7 @@ export default {
         })
         return
       }
-      return (isJPG || isJPEG || isGIF || isPNG) && isLt2M && this.customRequest(file)
+      return (isJPG || isJPEG) && isLt2M && this.customRequest(file)
     },
     customRequest (file) {
       const formData = new FormData()

@@ -1,6 +1,5 @@
 package cc.mrbird.febs.yb.controller;
 
-import cc.mrbird.febs.com.controller.ExportExcelUtils;
 import cc.mrbird.febs.common.annotation.Log;
 import cc.mrbird.febs.common.controller.BaseController;
 import cc.mrbird.febs.common.domain.FebsResponse;
@@ -13,20 +12,16 @@ import cc.mrbird.febs.yb.service.IYbAppealResultViewService;
 
 import cc.mrbird.febs.common.utils.FebsUtil;
 import cc.mrbird.febs.system.domain.User;
-import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.io.IoUtil;
 import cn.hutool.poi.excel.ExcelUtil;
 import cn.hutool.poi.excel.ExcelWriter;
 import cn.hutool.poi.excel.StyleSet;
 import com.baomidou.mybatisplus.core.toolkit.StringPool;
 import com.wuwenze.poi.ExcelKit;
-import com.wuwenze.poi.annotation.Excel;
 import com.wuwenze.poi.factory.ExcelMappingFactory;
 import com.wuwenze.poi.pojo.ExcelMapping;
 import com.wuwenze.poi.pojo.ExcelProperty;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.poi.ss.formula.functions.Rows;
-import org.apache.poi.ss.formula.functions.T;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Font;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -38,8 +33,6 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
-import java.awt.*;
-import java.lang.reflect.Field;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.List;
@@ -166,8 +159,8 @@ public class YbAppealResultViewController extends BaseController {
             List<YbAppealResultView> appealResultViewList = this.iYbAppealResultViewService.findAppealResultViewLists(ybAppealResultView);
 
             if (appealResultViewList.size() > 0) {
-                List<YbAppealResultView> appealResultViewDataList = new ArrayList<YbAppealResultView>();
-                List<YbAppealResultView> appealResultViewMainList = new ArrayList<YbAppealResultView>();
+                List<YbAppealResultView> appealResultViewDataList = new ArrayList<>();
+                List<YbAppealResultView> appealResultViewMainList = new ArrayList<>();
 
                 appealResultViewDataList = appealResultViewList.stream().filter(
                         s -> s.getDataType().equals(YbDefaultValue.DATATYPE_0)).collect(Collectors.toList());
@@ -180,8 +173,8 @@ public class YbAppealResultViewController extends BaseController {
                     Collections.sort(appealResultViewMainList);
                 }
 
-                List<YbAppealResultDataExport> dataList = new ArrayList<YbAppealResultDataExport>();
-                List<YbAppealResultMainExport> mainList = new ArrayList<YbAppealResultMainExport>();
+                List<YbAppealResultDataExport> dataList = new ArrayList<>();
+                List<YbAppealResultMainExport> mainList = new ArrayList<>();
 
                 SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
                 String dateString = "";
@@ -321,10 +314,6 @@ public class YbAppealResultViewController extends BaseController {
 
                 }
 
-                String guid = UUID.randomUUID().toString();
-                String filePath = febsProperties.getUploadPath(); // 上传后的路径
-                filePath += "AppealResultTemp/" + guid + ".xlsx";
-
                 String sheetName1 = "明细扣款";
                 String sheetName2 = "主单扣款";
 
@@ -333,7 +322,7 @@ public class YbAppealResultViewController extends BaseController {
                 Map<String,Integer> sheetColumnCountMap =  new LinkedHashMap<>();
                 sheetColumnCountMap.put(sheetName1,excelMappingData.getPropertyList().size());
 
-                ExcelWriter writer = ExcelUtil.getWriter(filePath,sheetName1);
+                ExcelWriter writer = ExcelUtil.getWriterWithSheet(sheetName1);
 
                 List<String> rowHead = new ArrayList<>();
                 Map<String, String> headerAliasData = new LinkedHashMap<>();

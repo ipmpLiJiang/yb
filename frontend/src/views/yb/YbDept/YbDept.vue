@@ -7,11 +7,22 @@
       <a-form layout="horizontal">
         <a-row>
           <div :class="advanced ? null: 'fold'">
+            <a-col
+              :md="8"
+              :sm="24"
+            >
+              <a-form-item
+                label="关键字"
+                v-bind="formItemLayout"
+              >
+                <a-input v-model="queryParams.deptName" />
+              </a-form-item>
+            </a-col>
           </div>
           <span style="float: right; margin-top: 3px;">
             <a-button
               type="primary"
-              @click="search"
+              @click="searchPage"
             >查询</a-button>
             <a-button
               style="margin-left: 8px"
@@ -261,6 +272,13 @@ export default {
         ...this.queryParams
       })
     },
+    searchPage () {
+      this.pagination.defaultCurrent = 1
+      if (this.paginationInfo) {
+        this.paginationInfo.current = this.pagination.defaultCurrent
+      }
+      this.search()
+    },
     search () {
       let { sortedInfo } = this
       let sortField, sortOrder
@@ -279,6 +297,7 @@ export default {
       // 取消选中
       this.selectedRowKeys = []
       // 重置分页
+      this.pagination.defaultCurrent = 1
       this.$refs.TableInfo.pagination.current = this.pagination.defaultCurrent
       if (this.paginationInfo) {
         this.paginationInfo.current = this.pagination.defaultCurrent

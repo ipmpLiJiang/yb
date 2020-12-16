@@ -22,7 +22,7 @@
           <span style="float: right; margin-top: 3px;">
             <a-button
               type="primary"
-              @click="search"
+              @click="searchPage"
             >查询</a-button>
             <a-button
               style="margin-left: 8px"
@@ -184,21 +184,16 @@ export default {
       {
         title: '规则解释',
         dataIndex: 'rxplain',
-        width: 150
+        width: 350
       },
       {
         title: '复议重点',
         dataIndex: 'rkeypoints',
-        width: 200
+        width: 150
       },
       {
         title: '复议资料',
         dataIndex: 'rmaterials'
-      },
-      {
-        title: '操作员',
-        dataIndex: 'operatorname',
-        width: 80
       },
       {
         title: '操作',
@@ -283,6 +278,13 @@ export default {
         ...this.queryParams
       })
     },
+    searchPage () {
+      this.pagination.defaultCurrent = 1
+      if (this.paginationInfo) {
+        this.paginationInfo.current = this.pagination.defaultCurrent
+      }
+      this.search()
+    },
     search () {
       let { sortedInfo } = this
       let sortField, sortOrder
@@ -301,6 +303,7 @@ export default {
       // 取消选中
       this.selectedRowKeys = []
       // 重置分页
+      this.pagination.defaultCurrent = 1
       this.$refs.TableInfo.pagination.current = this.pagination.defaultCurrent
       if (this.paginationInfo) {
         this.paginationInfo.current = this.pagination.defaultCurrent

@@ -7,7 +7,7 @@
     :closable="true"
     @close="onClose"
     :visible="handleVisiable"
-    style="height: calc(100% - 55px);overflow: auto;padding-bottom: 53px;"
+    style="height: calc(100% - 15px);overflow: auto;padding-bottom: 53px;"
   >
     <appealData-module
     ref="appealDataModule"
@@ -31,7 +31,7 @@
                   v-bind="formItemLayout0"
                   label="申请科室"
                 >
-                  {{ybAppealManageChangeHandle.readyDeptName}}
+                  {{ybAppealManageChangeHandle.readyDeptCode}}-{{ybAppealManageChangeHandle.readyDeptName}}
                 </a-form-item>
               </a-col>
               <a-col :span=14>
@@ -54,7 +54,7 @@
                   v-bind="formItemLayout0"
                   label="申请人"
                 >
-                  {{ybAppealManageChangeHandle.readyDoctorName}}
+                  {{ybAppealManageChangeHandle.readyDoctorCode}}-{{ybAppealManageChangeHandle.readyDoctorName}}
                 </a-form-item>
               </a-col>
               <a-col :span=14>
@@ -99,7 +99,7 @@
               >
                 <a-textarea
                   placeholder="请输入拒绝理由"
-                  :rows="4"
+                  :rows="7"
                   v-decorator="['refuseReason', {rules: [{ required: true, message: '拒绝理由不能为空' }] }]"
                 />
               </a-form-item>
@@ -213,13 +213,13 @@ export default {
       let doctorCode = amch.changeDoctorCode !== '' && amch.changeDoctorCode !== undefined ? amch.changeDoctorCode : amch.readyDoctorCode
 
       this.$refs.inputSelectChangeDept.dataSource = [{
-        text: deptName,
+        text: deptCode + '-' + deptName,
         value: deptCode
       }]
       this.$refs.inputSelectChangeDept.value = deptCode
 
       this.$refs.inputSelectChangeDoctor.dataSource = [{
-        text: doctorName,
+        text: doctorCode + '-' + doctorName,
         value: doctorCode
       }]
       this.$refs.inputSelectChangeDoctor.value = doctorCode
@@ -257,7 +257,7 @@ export default {
           ybAppealManage.readyDoctorCode = this.ybAppealManageChangeHandle.readyDoctorCode
           ybAppealManage.readyDoctorName = this.ybAppealManageChangeHandle.readyDoctorName
 
-          this.$put('ybAppealManage/updateCreateYbAppealManage', {
+          this.$put('ybAppealManage/updateCreateAppealManage', {
             ...ybAppealManage, type: 2
           }).then(() => {
             this.reset()
@@ -288,7 +288,7 @@ export default {
           ybAppealManage.readyDoctorCode = this.ybAppealManageChangeHandle.readyDoctorCode
           ybAppealManage.readyDoctorName = this.ybAppealManageChangeHandle.readyDoctorName
 
-          this.$put('ybAppealManage/updateCreateYbAppealManage', {
+          this.$put('ybAppealManage/updateCreateAppealManage', {
             ...ybAppealManage, type: 1
           }).then(() => {
             this.reset()

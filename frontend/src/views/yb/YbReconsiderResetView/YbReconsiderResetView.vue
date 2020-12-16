@@ -30,21 +30,21 @@
                 :disabled="fileDisabled"
               >
                 <a-button type="primary" :disabled="fileDisabled">
-                  上传剔除数据 </a-button>
+                  上传数据 </a-button>
               </a-upload>
             </template>
           </a-col>
-          <a-col :span=3 v-show="tableSelectKey==1||tableSelectKey==2?true:false">
+          <a-col :span=2 v-show="tableSelectKey==1||tableSelectKey==2?true:false">
             <a-popconfirm
               title="确定下载剔除模板？"
               @confirm="downloadFile"
               okText="确定"
               cancelText="取消"
             >
-              <a-button type="primary">下载剔除模板</a-button>
+              <a-button type="primary">下载模板</a-button>
             </a-popconfirm>
           </a-col>
-          <a-col :span=2 v-show="tableSelectKey==1||tableSelectKey==2?true:false">
+          <a-col :span=3 v-show="tableSelectKey==1||tableSelectKey==2?true:false">
             <a-popconfirm
               title="确定数据剔除？"
               @confirm="update"
@@ -54,14 +54,14 @@
               <a-button type="primary">数据剔除</a-button>
             </a-popconfirm>
           </a-col>
-          <a-col :span=3 v-show="tableSelectKey==1?true:false">
+          <a-col :span=2 v-show="tableSelectKey==1?true:false">
             <a-popconfirm
               title="确定导出扣款数据？"
               @confirm="exportDeductimplementExcel"
               okText="确定"
               cancelText="取消"
             >
-              <a-button type="primary" >导出扣款数据</a-button>
+              <a-button type="primary" >导出数据</a-button>
             </a-popconfirm>
           </a-col>
           <a-col :span=3 v-show="tableSelectKey==4?true:false">
@@ -74,7 +74,7 @@
               <a-button type="primary" >导出未知数据</a-button>
             </a-popconfirm>
           </a-col>
-          <a-col :span=2 >
+          <a-col :span=3 >
             <a-popconfirm
               title="确定完成剔除？"
               @confirm="updateApplyState"
@@ -350,13 +350,13 @@ export default {
     callback (key) {
       this.tableSelectKey = key
       if (key === '1') {
-        this.$refs.ybReconsiderResetData.search()
+        this.$refs.ybReconsiderResetData.searchPage()
       } else if (key === '2') {
-        this.$refs.ybReconsiderResetMain.search()
+        this.$refs.ybReconsiderResetMain.searchPage()
       } else if (key === '3') {
-        this.$refs.ybReconsiderResetExcept.search()
+        this.$refs.ybReconsiderResetExcept.searchPage()
       } else if (key === '4') {
-        this.$refs.ybReconsiderResetUnknown.search()
+        this.$refs.ybReconsiderResetUnknown.searchPage()
       } else {
         console.log('ok')
       }

@@ -7,7 +7,7 @@
     :closable="true"
     @close="onClose"
     :visible="lookVisiable"
-    style="height: calc(100% - 55px);overflow: auto;padding-bottom: 53px;"
+    style="height: calc(100% - 15px);overflow: auto;padding-bottom: 53px;"
   >
   <a-row type="flex" justify="start">
     <a-col :span=20>

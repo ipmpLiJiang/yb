@@ -60,7 +60,7 @@ export default {
           r.data.data.forEach((item, i) => {
             body.push({
               value: item.deptId,
-              text: item.deptName
+              text: item.deptId + '-' + item.deptName
             })
           })
         })
@@ -72,7 +72,7 @@ export default {
           r.data.data.forEach((item, i) => {
             body.push({
               value: item.personCode,
-              text: item.personName
+              text: item.personCode + '-' + item.personName
             })
           })
         })

@@ -453,6 +453,9 @@ public class YbReconsiderApplyDataServiceImpl extends ServiceImpl<YbReconsiderAp
                                                     s.getItemName().equals(item.getProjectName()) &&
                                                     sdf.format(s.getFeeDate()).equals(sdf.format(item.getCostDate()))
                                     ).collect(Collectors.toList());
+//HIS数据是否匹配 医生编码
+//                                    (s.getOrderDocId().equals(item.getDoctorName()) ||
+//                                            s.getExcuteDocId().equals(item.getDoctorName()))
 
                                     if (queryRifDataList.size() > 0) {
                                         YbReconsiderInpatientfeesData obj = queryRifDataList.get(0);

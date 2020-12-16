@@ -7,7 +7,7 @@
     :closable="true"
     @close="onClose"
     :visible="historyVisiable"
-    style="height: calc(100% - 55px);overflow: auto;padding-bottom: 53px;"
+    style="height: calc(100% - 15px);overflow: auto;padding-bottom: 53px;"
   >
     <appealData-module
     ref="appealDataModule"
@@ -111,12 +111,12 @@ export default {
       {
         title: '复议科室',
         dataIndex: 'readyDeptName',
-        width: 180
+        width: 200
       },
       {
         title: '复议医生',
         dataIndex: 'readyDoctorName',
-        width: 120
+        width: 130
       },
       {
         title: '复议类型',
@@ -195,6 +195,7 @@ export default {
       // 取消选中
       this.selectedRowKeys = []
       // 重置分页
+      this.pagination.defaultCurrent = 1
       this.$refs.TableInfo.pagination.current = this.pagination.defaultCurrent
       if (this.paginationInfo) {
         this.paginationInfo.current = this.pagination.defaultCurrent

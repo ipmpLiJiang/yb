@@ -177,15 +177,15 @@ export default {
     callback (key) {
       this.tableSelectKey = key
       if (key === '1') {
-        this.$refs.ybAppealManageAccept.search()
+        this.$refs.ybAppealManageAccept.searchPage()
       } else if (key === '2') {
-        this.$refs.ybAppealManageRefused.search()
+        this.$refs.ybAppealManageRefused.searchPage()
       } else if (key === '3') {
-        this.$refs.ybAppealManageStayed.search()
+        this.$refs.ybAppealManageStayed.searchPage()
       } else if (key === '4') {
-        this.$refs.ybAppealManageCompleted.search()
+        this.$refs.ybAppealManageCompleted.searchPage()
       } else {
-        this.$refs.ybAppealManageOverdue.search()
+        this.$refs.ybAppealManageOverdue.searchPage()
       }
     },
     handleLookSuccess () {
@@ -226,7 +226,6 @@ export default {
       }
     },
     reset () {
-      console.log('reset')
     }
   }
 }

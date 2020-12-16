@@ -158,13 +158,13 @@ export default {
         title: '复议科室',
         dataIndex: 'verifyDeptName',
         fixed: 'right',
-        width: 120
+        width: 200
       },
       {
         title: '复议医生',
         dataIndex: 'verifyDoctorName',
         fixed: 'right',
-        width: 100
+        width: 130
       },
       {
         title: '操作',
@@ -333,6 +333,13 @@ export default {
     onSelectChange (selectedRowKeys) {
       this.selectedRowKeys = selectedRowKeys
     },
+    searchPage () {
+      this.pagination.defaultCurrent = 1
+      if (this.paginationInfo) {
+        this.paginationInfo.current = this.pagination.defaultCurrent
+      }
+      this.search()
+    },
     search () {
       let { sortedInfo } = this
       let sortField, sortOrder
@@ -351,6 +358,7 @@ export default {
       // 取消选中
       this.selectedRowKeys = []
       // 重置分页
+      this.pagination.defaultCurrent = 1
       this.$refs.TableInfo.pagination.current = this.pagination.defaultCurrent
       if (this.paginationInfo) {
         this.paginationInfo.current = this.pagination.defaultCurrent

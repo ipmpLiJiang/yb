@@ -164,6 +164,7 @@ CREATE TABLE yb_reconsider_apply_data (
   PRIMARY KEY (id)
 ) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
 
+
 #核对申请
 #DROP TABLE IF EXISTS yb_reconsider_verify;
 CREATE TABLE yb_reconsider_verify (
@@ -326,8 +327,8 @@ patientName varchar(100) NOT NULL COMMENT '患者姓名',
 settlementId varchar(100) NOT NULL COMMENT 'HIS结算序号',
 billNo varchar(100) NOT NULL COMMENT '单据号',
 transNo varchar(100) NOT NULL COMMENT '交易流水号',
-itemId varchar(100) NOT NULL COMMENT '项目代码',
-itemCode varchar(100) NOT NULL COMMENT '项目医保编码',
+itemId varchar(100) DEFAULT NULL COMMENT '项目代码',
+itemCode varchar(100) DEFAULT NULL COMMENT '项目医保编码',
 itemName varchar(100) NOT NULL COMMENT '项目名称',
 itemCount decimal(17,4) DEFAULT NULL COMMENT '项目数量',
 itemPrice decimal(17,4) DEFAULT NULL COMMENT '项目单价',
@@ -346,6 +347,7 @@ applyDateStr varchar(10) NOT NULL COMMENT '复议年月Str',
 dataType int(4) NOT NULL COMMENT '扣款类型', -- 0 明细扣款 1 主单扣款
 typeno int(4) NOT NULL COMMENT '版本类型',
 orderNumber varchar(50) NOT NULLL COMMENT '序号',
+applyDataId char(36) NOT NULL COMMENT '复议申请明细',  
   COMMENTS varchar(1000) DEFAULT NULL COMMENT '备注',
   STATE int(4) DEFAULT NULL COMMENT '状态',
   IS_DELETEMARK tinyint(4) DEFAULT NULL COMMENT '是否删除',
@@ -562,15 +564,23 @@ CREATE TABLE yb_reconsider_repay_data (
 ) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
 
 
-#ALTER TABLE yb_reconsider_verify ADD INDEX applyDataId ( applyDataId ) 
+ALTER TABLE yb_reconsider_verify ADD INDEX applyDataId ( applyDataId ) 
 
-#ALTER TABLE yb_appeal_manage ADD INDEX applyDataId ( applyDataId ) 
+ALTER TABLE yb_appeal_manage ADD INDEX applyDataId ( applyDataId ) 
 
-#ALTER TABLE yb_appeal_result ADD INDEX applyDataId ( applyDataId ) 
+ALTER TABLE yb_appeal_result ADD INDEX applyDataId ( applyDataId ) 
 
 ALTER TABLE yb_reconsider_inpatientfees ADD INDEX applyDateStr ( applyDateStr ) ;
 		
 ALTER TABLE yb_reconsider_inpatientfees ADD INDEX orderNumber ( orderNumber ) ;
+
+ALTER TABLE yb_reconsider_inpatientfees ADD INDEX applyDataId ( applyDataId ) ;
+
+ALTER TABLE t_user_role ADD INDEX user_id ( user_id ) ;
+
+ALTER TABLE t_user ADD INDEX USERNAME ( USERNAME ) ;
+
+ALTER TABLE yb_person ADD INDEX personCode ( personCode ) 
 
 DROP VIEW IF EXISTS yb_reconsider_verify_view;
 create view yb_reconsider_verify_view
@@ -640,7 +650,8 @@ select
 	rv.CREATE_USER_ID,
 	rv.MODIFY_USER_ID,
 	rv.currencyField,
-	case when rv.id is null then 0 else 1 end isVerify
+	case when rv.id is null then 0 else 1 end isVerify,
+	case when yp.id is null then 0 else 1 end isPerson
 from 
 	yb_reconsider_apply_data ad 		
 	INNER JOIN yb_reconsider_apply ra ON
@@ -649,6 +660,9 @@ from
   LEFT JOIN yb_reconsider_verify rv ON
     ad.id = rv.applyDataId AND
 	rv.IS_DELETEMARK = 1
+  LEFT join yb_person yp on
+	rv.verifyDoctorCode = yp.personCode and
+	yp.IS_DELETEMARK = 1
 where
 	ad.IS_DELETEMARK = 1;
 
@@ -1597,10 +1611,10 @@ CREATE TABLE yb_dept (
 #DROP TABLE IF EXISTS yb_person;
 CREATE TABLE yb_person (
   id int(11) NOT NULL AUTO_INCREMENT COMMENT '医生Id',
-  personCode varchar(255) NOT NULL COMMENT '医生编码',
-  personName varchar(255) NOT NULL COMMENT '医生名称',  
-  deptCode varchar(255) DEFAULT NULL COMMENT '科室编码',
-  deptName varchar(255) DEFAULT NULL COMMENT '科室名称', 
+  personCode varchar(50) NOT NULL COMMENT '医生编码',
+  personName varchar(200) NOT NULL COMMENT '医生名称',  
+  deptCode varchar(50) DEFAULT NULL COMMENT '科室编码',
+  deptName varchar(200) DEFAULT NULL COMMENT '科室名称', 
   sex varchar(50) NOT NULL COMMENT '性别', 
   email varchar(50) DEFAULT NULL COMMENT '邮箱', 
   tel varchar(50) NOT NULL COMMENT '联系电话', 
@@ -1617,6 +1631,19 @@ CREATE TABLE yb_person (
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 
 
+DROP TABLE IF EXISTS yb_reconsider_verify_import;
+CREATE TABLE yb_reconsider_verify_import (
+  id bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'ID',
+	orderNumber varchar(50) NOT NULLL COMMENT '序号',
+  serialNo varchar(100) NOT NULL COMMENT '交易流水号',
+	proposalCode varchar(50) NOT NULL COMMENT '意见书编码',
+	projectName varchar(200) DEFAULT NULL COMMENT '项目名称',
+	verifyDoctorCode varchar(50) NOT NULL COMMENT '参考复议医生编码',
+	verifyDoctorName varchar(50) NOT NULL COMMENT '参考复议医生',
+  verifyDeptCode varchar(100) NOT NULL COMMENT '参考复议科室编码',
+	verifyDeptName varchar(100) NOT NULL COMMENT '参考复议科室',
+  PRIMARY KEY (id)
+) ENGINE=InnoDB AUTO_INCREMENT=1839 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
 
 
 交易流水号	

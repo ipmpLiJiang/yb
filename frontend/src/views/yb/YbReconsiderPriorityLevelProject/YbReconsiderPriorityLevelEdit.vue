@@ -7,7 +7,7 @@
     :closable="false"
     @close="onClose"
     :visible="editVisiable"
-    style="height: calc(100% - 55px);overflow: auto;padding-bottom: 53px;"
+    style="height: calc(100% - 15px);overflow: auto;padding-bottom: 53px;"
   >
     <a-form :form="form">
       <a-form-item
@@ -132,13 +132,13 @@ export default {
       this.ybReconsiderPriorityLevel.id = ybReconsiderPriorityLevel.id
       setTimeout(() => {
         this.$refs.inputSelectDept.dataSource = [{
-          text: ybReconsiderPriorityLevel.deptName,
+          text: ybReconsiderPriorityLevel.deptCode + '-' + ybReconsiderPriorityLevel.deptName,
           value: ybReconsiderPriorityLevel.deptCode
         }]
         this.$refs.inputSelectDept.value = ybReconsiderPriorityLevel.deptCode
 
         this.$refs.inputSelectDoctor.dataSource = [{
-          text: ybReconsiderPriorityLevel.doctorName,
+          text: ybReconsiderPriorityLevel.doctorCode + '-' + ybReconsiderPriorityLevel.doctorName,
           value: ybReconsiderPriorityLevel.doctorCode
         }]
         this.$refs.inputSelectDoctor.value = ybReconsiderPriorityLevel.doctorCode

@@ -11,7 +11,7 @@
           <span style="float: right; margin-top: 3px;">
             <a-button
               type="primary"
-              @click="search"
+              @click="searchPage"
             >查询</a-button>
             <a-button
               style="margin-left: 8px"
@@ -183,12 +183,12 @@ export default {
       {
         title: '项目编码',
         dataIndex: 'projectCode',
-        width: 100
+        width: 120
       },
       {
         title: '项目名称',
         dataIndex: 'projectName',
-        width: 140
+        width: 160
       },
       {
         title: '数量',
@@ -384,6 +384,13 @@ export default {
         ...this.queryParams
       })
     },
+    searchPage () {
+      this.pagination.defaultCurrent = 1
+      if (this.paginationInfo) {
+        this.paginationInfo.current = this.pagination.defaultCurrent
+      }
+      this.search()
+    },
     search () {
       let { sortedInfo } = this
       let sortField, sortOrder
@@ -402,6 +409,7 @@ export default {
       // 取消选中
       this.selectedRowKeys = []
       // 重置分页
+      this.pagination.defaultCurrent = 1
       this.$refs.TableInfo.pagination.current = this.pagination.defaultCurrent
       if (this.paginationInfo) {
         this.paginationInfo.current = this.pagination.defaultCurrent

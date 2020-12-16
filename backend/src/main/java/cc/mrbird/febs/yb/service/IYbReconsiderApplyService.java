@@ -42,6 +42,8 @@ public interface IYbReconsiderApplyService extends IService<YbReconsiderApply> {
 
     YbReconsiderApply findReconsiderApplyByApplyDateStrs(String applyDateStr);
 
+    List<YbReconsiderApply> findReconsiderApplyList(YbReconsiderApply ybReconsiderApply);
+
     void updateEnableOverdue(String applyDateStr);
 
     void updateApplyEndDateOne(String applyDateStr);

@@ -101,13 +101,13 @@ export default {
         title: '项目编码',
         dataIndex: 'projectCode',
         fixed: 'left',
-        width: 100
+        width: 120
       },
       {
         title: '项目名称',
         dataIndex: 'projectName',
         fixed: 'left',
-        width: 140
+        width: 160
       },
       {
         title: '数量',
@@ -238,7 +238,6 @@ export default {
       this.acceptService(data)
     },
     batchAccept () {
-      console.log('batchAccept')
       this.loading = true
       let selectedRowKeys = this.selectedRowKeys
       if (selectedRowKeys.length > 0) {
@@ -287,6 +286,13 @@ export default {
         this.warning()
       }
     },
+    searchPage () {
+      this.pagination.defaultCurrent = 1
+      if (this.paginationInfo) {
+        this.paginationInfo.current = this.pagination.defaultCurrent
+      }
+      this.search()
+    },
     search () {
       let { sortedInfo } = this
       let sortField, sortOrder
@@ -305,6 +311,7 @@ export default {
       // 取消选中
       this.selectedRowKeys = []
       // 重置分页
+      this.pagination.defaultCurrent = 1
       this.$refs.TableInfo.pagination.current = this.pagination.defaultCurrent
       if (this.paginationInfo) {
         this.paginationInfo.current = this.pagination.defaultCurrent

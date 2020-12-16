@@ -2,12 +2,12 @@
   <a-drawer
     title="修改"
     :maskClosable="false"
-    width=650
+    width=45%
     placement="right"
     :closable="false"
     @close="onClose"
     :visible="editVisiable"
-    style="height: calc(100% - 55px);overflow: auto;padding-bottom: 53px;"
+    style="height: calc(100% - 15px);overflow: auto;padding-bottom: 53px;"
   >
     <a-form :form="form">
       <a-form-item
@@ -16,6 +16,7 @@
       >
         <a-input
           placeholder="请输入部门编码"
+          readonly
           v-decorator="['deptId', {rules: [{ required: true, message: '部门编码不能为空' }] }]"
         />
       </a-form-item>

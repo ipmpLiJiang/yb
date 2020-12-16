@@ -27,9 +27,9 @@ public interface IYbAppealManageService extends IService<YbAppealManage> {
 
     void createYbAppealManage(YbAppealManage ybAppealManage);
 
-    void updateCreateYbAppealManage(YbAppealManage ybAppealManage, Long uId, String Uname, Integer type);
+    void updateCreateAppealManage(YbAppealManage ybAppealManage, Long uId, String Uname, Integer type);
 
-    void updateCreateAdminYbAppealManage(YbAppealManage ybAppealManage, Long uId, String Uname);
+    void updateCreateAdminAppealManage(YbAppealManage ybAppealManage, Long uId, String Uname);
 
     void updateYbAppealManage(YbAppealManage ybAppealManage);
 
@@ -42,4 +42,6 @@ public interface IYbAppealManageService extends IService<YbAppealManage> {
     void updateExamineStates(YbAppealManage ybAppealManage);
 
     List<YbAppealManage> getUpdateAppealManageList(List<YbAppealManageView> appealManageList, Date endDateOne);
+
+    int findAppealManageResetCheckCounts(String applyDateStr);
 }

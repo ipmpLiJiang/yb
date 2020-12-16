@@ -154,9 +154,9 @@ export default {
     callback (key) {
       this.tableSelectKey = key
       if (key === '1') {
-        this.$refs.ybAppealResultRepaymentStayed.search()
+        this.$refs.ybAppealResultRepaymentStayed.searchPage()
       } else if (key === '2') {
-        this.$refs.ybAppealResultRepaymentComplete.search()
+        this.$refs.ybAppealResultRepaymentComplete.searchPage()
       } else {
         console.log('ok')
       }

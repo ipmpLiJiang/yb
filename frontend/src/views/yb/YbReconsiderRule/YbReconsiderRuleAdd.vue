@@ -2,12 +2,12 @@
   <a-drawer
     title="新增"
     :maskClosable="false"
-    width=650
+    width=50%
     placement="right"
     :closable="false"
     @close="onClose"
     :visible="addVisiable"
-    style="height: calc(100% - 55px);overflow: auto;padding-bottom: 53px;"
+    style="height: calc(100% - 15px);overflow: auto;padding-bottom: 53px;"
   >
     <a-form :form="form">
       <a-form-item
@@ -23,9 +23,10 @@
         v-bind="formItemLayout"
         label="规则解释"
       >
-        <a-input
-          placeholder="请输入规则解释"
-          v-decorator="['rxplain', {rules: [{ required: true, message: '规则解释不能为空' }] }]"
+        <a-textarea
+        placeholder="请输入规则解释"
+        v-decorator="['rxplain', {rules: [{ required: true, message: '规则解释不能为空' }] }]"
+        :rows="6"
         />
       </a-form-item>
       <a-form-item

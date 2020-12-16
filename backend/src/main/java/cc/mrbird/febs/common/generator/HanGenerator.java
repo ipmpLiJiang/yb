@@ -128,7 +128,7 @@ public class HanGenerator {
             }
         };
         // 自定义 xxListIndex.html 生成
-        List<FileOutConfig> focList = new ArrayList<FileOutConfig>();
+        List<FileOutConfig> focList = new ArrayList<>();
         /**
         focList.add(new FileOutConfig("/templates/templatesMybatis/list.vue.vm") {
             @Override

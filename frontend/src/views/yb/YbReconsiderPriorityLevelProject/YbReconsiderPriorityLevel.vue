@@ -22,7 +22,7 @@
           <span style="float: right; margin-top: 3px;">
             <a-button
               type="primary"
-              @click="search"
+              @click="searchPage"
             >查询</a-button>
             <a-button
               style="margin-left: 8px"
@@ -190,17 +190,27 @@ export default {
       {
         title: '科室名称',
         dataIndex: 'deptName',
-        width: 150
+        customRender: (text, row, index) => {
+          if (text !== '' && text !== null) {
+            return row.deptCode + '-' + row.deptName
+          }
+        },
+        width: 250
       },
       {
         title: '医生名称',
         dataIndex: 'doctorName',
-        width: 120
+        customRender: (text, row, index) => {
+          if (text !== '' && text !== null) {
+            return row.doctorCode + '-' + row.doctorName
+          }
+        },
+        width: 150
       },
       {
         title: '操作员',
         dataIndex: 'operatorName',
-        width: 100
+        width: 150
       },
       {
         title: '操作',
@@ -290,6 +300,13 @@ export default {
         ...this.queryParams
       })
     },
+    searchPage () {
+      this.pagination.defaultCurrent = 1
+      if (this.paginationInfo) {
+        this.paginationInfo.current = this.pagination.defaultCurrent
+      }
+      this.search()
+    },
     search () {
       let {
         sortedInfo
@@ -310,6 +327,7 @@ export default {
       // 取消选中
       this.selectedRowKeys = []
       // 重置分页
+      this.pagination.defaultCurrent = 1
       this.$refs.TableInfo.pagination.current = this.pagination.defaultCurrent
       if (this.paginationInfo) {
         this.paginationInfo.current = this.pagination.defaultCurrent

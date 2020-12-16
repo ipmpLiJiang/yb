@@ -161,10 +161,10 @@ export default {
       this.tableSelectKey = key
       if (key === '1') {
         this.applyDateText = '复议年月'
-        this.$refs.ybAppealResultDeductImplementStayed.search()
+        this.$refs.ybAppealResultDeductImplementStayed.searchPage()
       } else if (key === '2') {
         this.applyDateText = '绩效落实年月'
-        this.$refs.ybAppealResultDeductImplementComplete.search()
+        this.$refs.ybAppealResultDeductImplementComplete.searchPage()
       } else {
         console.log('ok')
       }

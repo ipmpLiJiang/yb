@@ -1,28 +1,40 @@
 package cc.mrbird.febs.cn.webxml.sms;
 
+import cc.mrbird.febs.common.utils.OracleDB;
+import cc.mrbird.febs.yb.entity.YbDeptHis;
 import cn.hutool.core.date.DateUtil;
 import lombok.ToString;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author lijiang
  * @createDate 2020/11/3
  */
 public class TestSend {
-    public static void main(String[] args) {
-        String dateStr = "2010-03-11";
-        Date date = DateUtil.parse(dateStr);
+    public static void main(String[] args) throws IOException {
+//        String dateStr = "2010-03-11";
+//        Date date = DateUtil.parse(dateStr);
+//
+//        if (date != null) {
+//            System.out.println(date);
+//        } else {
+//            System.out.println("日期错误");
+//        }
 
-        if (date != null) {
-            System.out.println(date);
-        } else {
-            System.out.println("日期错误");
-        }
+        List<String> strList = new ArrayList<>();
+        strList.add("aaa");
+        strList.add("bbb");
+        strList.add("aaabbb");
+        strList.add("abab");
 
+        strList = strList.stream().filter(s -> s.contains("ab")).collect(Collectors.toList());
 
+        System.out.println(strList);
 //        try {
 //            SmsService smsService = new SmsService();
 //            SmsServicePortType ssp = smsService.getSmsServiceHttpPort();

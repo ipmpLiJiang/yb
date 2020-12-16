@@ -151,8 +151,8 @@ public class YbReconsiderResetDataViewController extends BaseController {
             List<YbReconsiderResetDataView> resetDataList = this.iYbReconsiderResetDataViewService.findYbReconsiderResetDataList(resetDataView);
 
             if (resetDataList.size() > 0) {
-                List<YbReconsiderResetDataView> resetDataDataList = new ArrayList<YbReconsiderResetDataView>();
-                List<YbReconsiderResetDataView> resetDataMainList = new ArrayList<YbReconsiderResetDataView>();
+                List<YbReconsiderResetDataView> resetDataDataList = new ArrayList<>();
+                List<YbReconsiderResetDataView> resetDataMainList = new ArrayList<>();
 
                 resetDataDataList = resetDataList.stream().filter(s -> s.getDataType().equals(0)).collect(Collectors.toList());
                 if (resetDataDataList.size() > 0) {
@@ -163,15 +163,15 @@ public class YbReconsiderResetDataViewController extends BaseController {
                     Collections.sort(resetDataMainList);
                 }
 
-                List<YbReconsiderResetUnknownDataExport> dataList = new ArrayList<YbReconsiderResetUnknownDataExport>();
-                List<YbReconsiderResetUnknownMainExport> mainList = new ArrayList<YbReconsiderResetUnknownMainExport>();
+                List<YbReconsiderResetDataExport> dataList = new ArrayList<>();
+                List<YbReconsiderResetMainExport> mainList = new ArrayList<>();
 
                 SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
                 String dateString = "";
 
                 //明细扣款
                 for (YbReconsiderResetDataView item : resetDataDataList) {
-                    YbReconsiderResetUnknownDataExport are = new YbReconsiderResetUnknownDataExport();
+                    YbReconsiderResetDataExport are = new YbReconsiderResetDataExport();
                     //序号
                     are.setOrderNumber(item.getOrderNumber());
                     //交易流水号
@@ -225,7 +225,7 @@ public class YbReconsiderResetDataViewController extends BaseController {
                 }
                 //主单扣款
                 for (YbReconsiderResetDataView item : resetDataMainList) {
-                    YbReconsiderResetUnknownMainExport are = new YbReconsiderResetUnknownMainExport();
+                    YbReconsiderResetMainExport are = new YbReconsiderResetMainExport();
                     //序号
                     are.setOrderNumber(item.getOrderNumber());
                     //交易流水号
@@ -262,16 +262,13 @@ public class YbReconsiderResetDataViewController extends BaseController {
                     are.setAreaName(item.getAreaName());
                     mainList.add(are);
                 }
-                String guid = UUID.randomUUID().toString();
-                String filePath = febsProperties.getUploadPath(); // 上传后的路径
-                filePath += "ReconsiderResetTemp/" + guid + ".xlsx";
 
                 String sheetName1 = "明细扣款";
                 String sheetName2 = "主单扣款";
 
-                ExcelWriter writer = ExcelUtil.getWriter(filePath,sheetName1);
+                ExcelWriter writer = ExcelUtil.getWriterWithSheet(sheetName1);
 
-                ExcelMapping excelMappingData = ExcelMappingFactory.get(YbReconsiderResetUnknownDataExport.class);
+                ExcelMapping excelMappingData = ExcelMappingFactory.get(YbReconsiderResetDataExport.class);
                 Map<String,Integer> sheetColumnCountMap =  new LinkedHashMap<>();
                 sheetColumnCountMap.put(sheetName1,excelMappingData.getPropertyList().size());
 
@@ -302,7 +299,7 @@ public class YbReconsiderResetDataViewController extends BaseController {
 //                    writer.autoSizeColumn(i);
 //                }
 
-                ExcelMapping excelMappingMain = ExcelMappingFactory.get(YbReconsiderResetUnknownMainExport.class);
+                ExcelMapping excelMappingMain = ExcelMappingFactory.get(YbReconsiderResetMainExport.class);
                 sheetColumnCountMap.put(sheetName2,excelMappingMain.getPropertyList().size());
                 rowHead.clear();
 
@@ -328,7 +325,7 @@ public class YbReconsiderResetDataViewController extends BaseController {
                     writer.setRowHeight(i,20);
                 }
                 //设置遍历单个列为自动宽度
-//                for (int i = 0; i < YbReconsiderResetUnknownMainExport.class.getDeclaredFields().length; i++) {
+//                for (int i = 0; i < YbReconsiderResetMainExport.class.getDeclaredFields().length; i++) {
 //                    writer.autoSizeColumn(i);
 //                }
 
@@ -377,8 +374,8 @@ public class YbReconsiderResetDataViewController extends BaseController {
             List<YbReconsiderResetDataView> resetDataList = this.iYbReconsiderResetDataViewService.findYbReconsiderResetDataList(resetDataView);
 
             if (resetDataList.size() > 0) {
-                List<YbReconsiderResetDataView> resetDataDataList = new ArrayList<YbReconsiderResetDataView>();
-                List<YbReconsiderResetDataView> resetDataMainList = new ArrayList<YbReconsiderResetDataView>();
+                List<YbReconsiderResetDataView> resetDataDataList = new ArrayList<>();
+                List<YbReconsiderResetDataView> resetDataMainList = new ArrayList<>();
 
                 resetDataDataList = resetDataList.stream().filter(s -> s.getDataType().equals(0)).collect(Collectors.toList());
                 if (resetDataDataList.size() > 0) {
@@ -455,7 +452,6 @@ public class YbReconsiderResetDataViewController extends BaseController {
                     dataList.add(are);
                 }
 
-
                 isOne = true;
                 //主单扣款
                 for (YbReconsiderResetDataView item : resetDataMainList) {
@@ -501,14 +497,11 @@ public class YbReconsiderResetDataViewController extends BaseController {
                     are.setAreaName(item.getAreaName());
                     mainList.add(are);
                 }
-                String guid = UUID.randomUUID().toString();
-                String filePath = febsProperties.getUploadPath(); // 上传后的路径
-                filePath += "ReconsiderResetTemp/" + guid + ".xlsx";
 
                 String sheetName1 = "明细扣款";
                 String sheetName2 = "主单扣款";
 
-                ExcelWriter writer = ExcelUtil.getWriter(filePath,sheetName1);
+                ExcelWriter writer = ExcelUtil.getWriterWithSheet(sheetName1);
 
                 ExcelMapping excelMappingData = ExcelMappingFactory.get(YbReconsiderResetDeductimplementDataExport.class);
                 Map<String,Integer> sheetColumnCountMap =  new LinkedHashMap<>();

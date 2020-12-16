@@ -19,6 +19,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -112,6 +113,11 @@ public class YbAppealManageServiceImpl extends ServiceImpl<YbAppealManageMapper,
         this.baseMapper.deleteBatchIds(list);
     }
 
+    @Override
+    public int findAppealManageResetCheckCounts(String applyDateStr){
+        return this.baseMapper.findAppealManageResetCheckCount(applyDateStr);
+    }
+
     //批量接收或单个拒绝
     @Override
     @Transactional
@@ -130,6 +136,12 @@ public class YbAppealManageServiceImpl extends ServiceImpl<YbAppealManageMapper,
             LambdaQueryWrapper<YbAppealManage> queryWrapper = new LambdaQueryWrapper<>();
             queryWrapper.eq(YbAppealManage::getAcceptState, YbDefaultValue.ACCEPTSTATE_0);
             queryWrapper.eq(YbAppealManage::getId, item.getId());
+
+            String strChangeDeptName = DataTypeHelpers.stringReplaceSetString(item.getChangeDeptName(),item.getChangeDeptCode() + "-");
+            item.setChangeDeptName(strChangeDeptName);
+            String strChangeDoctorName = DataTypeHelpers.stringReplaceSetString(item.getChangeDoctorName(),item.getChangeDoctorCode() + "-");
+            item.setChangeDoctorName(strChangeDoctorName);
+
             this.baseMapper.update(item, queryWrapper);
         }
 
@@ -143,6 +155,12 @@ public class YbAppealManageServiceImpl extends ServiceImpl<YbAppealManageMapper,
         newAppealResult.setApplyDataId(ybAppealManage.getApplyDataId());
         newAppealResult.setVerifyId(ybAppealManage.getVerifyId());
         newAppealResult.setManageId(ybAppealManage.getId());
+
+        String strReadyDeptName = DataTypeHelpers.stringReplaceSetString(ybAppealManage.getReadyDeptName(),ybAppealManage.getReadyDeptCode() + "-");
+        ybAppealManage.setReadyDeptName(strReadyDeptName);
+        String strReadyDoctorName = DataTypeHelpers.stringReplaceSetString(ybAppealManage.getReadyDoctorName(),ybAppealManage.getReadyDoctorCode() + "-");
+        ybAppealManage.setReadyDoctorName(strReadyDoctorName);
+
         newAppealResult.setDeptCode(ybAppealManage.getReadyDeptCode());
         newAppealResult.setDeptName(ybAppealManage.getReadyDeptName());
         newAppealResult.setDoctorCode(ybAppealManage.getReadyDoctorCode());
@@ -182,6 +200,7 @@ public class YbAppealManageServiceImpl extends ServiceImpl<YbAppealManageMapper,
                 updateAppealManage.setOperateDate(thisDate);
                 updateAppealManage.setOperateReason(ybAppealManage.getOperateReason());
                 updateAppealManage.setAcceptState(ybAppealManage.getAcceptState());
+
                 if (isTrue) {
                     queryWrapper.eq(YbAppealManage::getAcceptState, YbDefaultValue.ACCEPTSTATE_1);
                     int count = this.baseMapper.update(updateAppealManage, queryWrapper);
@@ -205,7 +224,7 @@ public class YbAppealManageServiceImpl extends ServiceImpl<YbAppealManageMapper,
 
     @Override
     @Transactional
-    public void updateCreateYbAppealManage(YbAppealManage ybAppealManage, Long uId, String Uname, Integer type) {
+    public void updateCreateAppealManage(YbAppealManage ybAppealManage, Long uId, String Uname, Integer type) {
         YbAppealManage newAppealManage = new YbAppealManage();
         ArrayList<String> personCodeList = new ArrayList<String>();
         Date thisDate = new Date();
@@ -229,6 +248,17 @@ public class YbAppealManageServiceImpl extends ServiceImpl<YbAppealManageMapper,
         ybAppealManage.setModifyUserId(uId);
         ybAppealManage.setModifyTime(thisDate);
         ybAppealManage.setOperateDate(thisDate);
+
+        String strReadyDeptName = DataTypeHelpers.stringReplaceSetString(ybAppealManage.getReadyDeptName(),ybAppealManage.getReadyDeptCode() + "-");
+        ybAppealManage.setReadyDeptName(strReadyDeptName);
+        String strReadyDoctorName = DataTypeHelpers.stringReplaceSetString(ybAppealManage.getReadyDoctorName(),ybAppealManage.getReadyDoctorCode() + "-");
+        ybAppealManage.setReadyDoctorName(strReadyDoctorName);
+
+        String strChangeDeptName = DataTypeHelpers.stringReplaceSetString(ybAppealManage.getChangeDeptName(),ybAppealManage.getChangeDeptCode() + "-");
+        ybAppealManage.setChangeDeptName(strChangeDeptName);
+        String strChangeDoctorName = DataTypeHelpers.stringReplaceSetString(ybAppealManage.getChangeDoctorName(),ybAppealManage.getChangeDoctorCode() + "-");
+        ybAppealManage.setChangeDoctorName(strChangeDoctorName);
+
 
         String msg = "";
         if (type == 2) {
@@ -291,7 +321,7 @@ public class YbAppealManageServiceImpl extends ServiceImpl<YbAppealManageMapper,
 
     @Override
     @Transactional
-    public void updateCreateAdminYbAppealManage(YbAppealManage ybAppealManage, Long uId, String Uname) {
+    public void updateCreateAdminAppealManage(YbAppealManage ybAppealManage, Long uId, String Uname) {
         Date thisDate = new Date();
 
         YbAppealManage updateAppealManage = new YbAppealManage();
@@ -329,6 +359,12 @@ public class YbAppealManageServiceImpl extends ServiceImpl<YbAppealManageMapper,
         newAppealManage.setCreateUserId(uId);
         newAppealManage.setCreateTime(thisDate);
         newAppealManage.setOperateDate(thisDate);
+
+        String strReadyDeptName = DataTypeHelpers.stringReplaceSetString(ybAppealManage.getReadyDeptName(),ybAppealManage.getReadyDeptCode() + "-");
+        ybAppealManage.setReadyDeptName(strReadyDeptName);
+        String strReadyDoctorName = DataTypeHelpers.stringReplaceSetString(ybAppealManage.getReadyDoctorName(),ybAppealManage.getReadyDoctorCode() + "-");
+        ybAppealManage.setReadyDoctorName(strReadyDoctorName);
+
         newAppealManage.setReadyDeptCode(ybAppealManage.getReadyDeptCode());
         newAppealManage.setReadyDeptName(ybAppealManage.getReadyDeptName());
         newAppealManage.setReadyDoctorCode(ybAppealManage.getReadyDoctorCode());

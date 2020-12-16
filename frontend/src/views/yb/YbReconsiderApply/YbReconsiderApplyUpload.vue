@@ -210,9 +210,9 @@ export default {
     callback (key) {
       this.tableSelectKey = key
       if (key === '1') {
-        this.$refs.ybReconsiderApplyData.search()
+        this.$refs.ybReconsiderApplyData.searchPage()
       } else if (key === '2') {
-        this.$refs.ybReconsiderApplyMain.search()
+        this.$refs.ybReconsiderApplyMain.searchPage()
       } else {
         console.log('ok')
       }
@@ -225,7 +225,7 @@ export default {
       if (pid !== null && pid !== 0 && pid !== undefined) {
         if (this.typeno !== null && this.typeno !== 0 && this.typeno !== undefined) {
           setTimeout(() => {
-            this.$refs.ybReconsiderApplyData.search()
+            this.$refs.ybReconsiderApplyData.searchPage()
           }, 200)
         }
       }

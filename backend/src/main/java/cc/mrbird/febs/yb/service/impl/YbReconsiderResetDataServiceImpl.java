@@ -4,10 +4,7 @@ import cc.mrbird.febs.common.domain.QueryRequest;
 import cc.mrbird.febs.common.utils.SortUtil;
 import cc.mrbird.febs.yb.dao.YbReconsiderResetDataMapper;
 import cc.mrbird.febs.yb.entity.*;
-import cc.mrbird.febs.yb.service.IYbAppealResultService;
-import cc.mrbird.febs.yb.service.IYbReconsiderApplyDataService;
-import cc.mrbird.febs.yb.service.IYbReconsiderResetDataService;
-import cc.mrbird.febs.yb.service.IYbReconsiderResetDataViewService;
+import cc.mrbird.febs.yb.service.*;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -42,6 +39,12 @@ public class YbReconsiderResetDataServiceImpl extends ServiceImpl<YbReconsiderRe
 
     @Autowired
     public IYbAppealResultService iYbAppealResultService;
+
+    @Autowired
+    public IYbAppealManageService iYbAppealManageService;
+
+    @Autowired
+    public IYbReconsiderVerifyService iYbReconsiderVerifyService;
 
     @Override
     public IPage<YbReconsiderResetData> findYbReconsiderResetDatas(QueryRequest request, YbReconsiderResetData ybReconsiderResetData) {
@@ -162,94 +165,104 @@ public class YbReconsiderResetDataServiceImpl extends ServiceImpl<YbReconsiderRe
     @Transactional
     public String updateResetDatas(String applyDateStr, Long uid, String uname, Integer dataType) {
         String message = "";
-        LambdaQueryWrapper<YbReconsiderResetDataView> queryWrapperRdv = new LambdaQueryWrapper<>();
-        queryWrapperRdv.eq(YbReconsiderResetDataView::getApplyDateStr, applyDateStr);
-        queryWrapperRdv.eq(YbReconsiderResetDataView::getDataType, dataType);
-        queryWrapperRdv.eq(YbReconsiderResetDataView::getSeekState, YbDefaultValue.SEEKSTATE_0);
-        List<YbReconsiderResetDataView> resetDataList = this.iYbReconsiderResetDataViewService.list(queryWrapperRdv);
-        if (resetDataList.size() > 0) {
-            List<YbReconsiderApplyData> applyDataList = this.iYbReconsiderApplyDataService.findReconsiderApplyDataByApplyDates(applyDateStr, dataType);
-            if (applyDataList.size() > 0) {
-                List<YbAppealResult> resultList = this.iYbAppealResultService.findAppealResulDataByResets(applyDateStr, dataType);
-                if (resultList.size() == 0) {
-                    message = "result0";
-                }
-                List<YbAppealResult> updateResultList = new ArrayList<YbAppealResult>();
-                List<YbReconsiderResetData> updateResetDataList = new ArrayList<YbReconsiderResetData>();
-                List<YbReconsiderApplyData> searchApplyDataList = new ArrayList<YbReconsiderApplyData>();
-                List<YbAppealResult> searchResultList = new ArrayList<YbAppealResult>();
-                for (YbReconsiderResetDataView rdv : resetDataList) {
-                    YbReconsiderResetData updateResetData = new YbReconsiderResetData();
-                    updateResetData.setId(rdv.getId());
+        int rvCheckCount = iYbReconsiderVerifyService.findReconsiderVerifyResetCheckCounts(applyDateStr);
+        int amCheckCount = iYbAppealManageService.findAppealManageResetCheckCounts(applyDateStr);
+        if (rvCheckCount == 0) {
+            if (amCheckCount == 0) {
+                LambdaQueryWrapper<YbReconsiderResetDataView> queryWrapperRdv = new LambdaQueryWrapper<>();
+                queryWrapperRdv.eq(YbReconsiderResetDataView::getApplyDateStr, applyDateStr);
+                queryWrapperRdv.eq(YbReconsiderResetDataView::getDataType, dataType);
+                queryWrapperRdv.eq(YbReconsiderResetDataView::getSeekState, YbDefaultValue.SEEKSTATE_0);
+                List<YbReconsiderResetDataView> resetDataList = this.iYbReconsiderResetDataViewService.list(queryWrapperRdv);
+                if (resetDataList.size() > 0) {
+                    List<YbReconsiderApplyData> applyDataList = this.iYbReconsiderApplyDataService.findReconsiderApplyDataByApplyDates(applyDateStr, dataType);
+                    if (applyDataList.size() > 0) {
+                        List<YbAppealResult> resultList = this.iYbAppealResultService.findAppealResulDataByResets(applyDateStr, dataType);
+                        if (resultList.size() == 0) {
+                            message = "result0";
+                        }
+                        List<YbAppealResult> updateResultList = new ArrayList<YbAppealResult>();
+                        List<YbReconsiderResetData> updateResetDataList = new ArrayList<YbReconsiderResetData>();
+                        List<YbReconsiderApplyData> searchApplyDataList = new ArrayList<YbReconsiderApplyData>();
+                        List<YbAppealResult> searchResultList = new ArrayList<YbAppealResult>();
+                        for (YbReconsiderResetDataView rdv : resetDataList) {
+                            YbReconsiderResetData updateResetData = new YbReconsiderResetData();
+                            updateResetData.setId(rdv.getId());
 
-                    //DataType 0 明细扣款 1 主单扣款
-                    if (rdv.getDataType() == 0) {
-                        searchApplyDataList = applyDataList.stream().filter(
-                                s -> s.getSerialNo().equals(rdv.getSerialNo()) &&
-                                        s.getBillNo().equals(rdv.getBillNo()) &&
-                                        s.getProjectCode().equals(rdv.getProjectCode()) &&
-                                        s.getProjectName().equals(rdv.getProjectName()) &&
-                                        s.getRuleName().equals(rdv.getRuleName())
-                        ).collect(Collectors.toList());
-                    } else {
-                        searchApplyDataList = applyDataList.stream().filter(
-                                s -> s.getSerialNo().equals(rdv.getSerialNo()) &&
-                                        s.getBillNo().equals(rdv.getBillNo()) &&
-                                        s.getPersonalNo().equals(rdv.getPersonalNo()) &&
-                                        s.getRuleName().equals(rdv.getRuleName())
-                        ).collect(Collectors.toList());
-                    }
-
-                    if (searchApplyDataList.size() > 0) {
-                        if (searchApplyDataList.size() == 1) {
-                            if (resultList.size() > 0) {
-                                YbReconsiderApplyData rAd = searchApplyDataList.get(0);
-                                searchResultList = resultList.stream().filter(
-                                        s -> s.getApplyDataId().equals(rAd.getId())
+                            //DataType 0 明细扣款 1 主单扣款
+                            if (rdv.getDataType() == 0) {
+                                searchApplyDataList = applyDataList.stream().filter(
+                                        s -> s.getSerialNo().equals(rdv.getSerialNo()) &&
+                                                s.getBillNo().equals(rdv.getBillNo()) &&
+                                                s.getProjectCode().equals(rdv.getProjectCode()) &&
+                                                s.getProjectName().equals(rdv.getProjectName()) &&
+                                                s.getRuleName().equals(rdv.getRuleName())
                                 ).collect(Collectors.toList());
-
-                                if (searchResultList.size() == 1) {
-                                    YbAppealResult updateResult = new YbAppealResult();
-                                    updateResult.setId(searchResultList.get(0).getId());
-                                    updateResult.setState(YbDefaultValue.RESULTSTATE_2);
-                                    updateResult.setResetDataId(rdv.getId());
-                                    updateResult.setResetDate(new Date());
-                                    updateResult.setResetPersonId(uid);
-                                    updateResult.setResetPersonName(uname);
-                                    updateResult.setRepayState(YbDefaultValue.RESULTREPAYSTATE_2);
-
-                                    updateResetData.setSeekState(YbDefaultValue.SEEKSTATE_1);
-
-                                    updateResetDataList.add(updateResetData);
-                                    updateResultList.add(updateResult);
-                                }
+                            } else {
+                                searchApplyDataList = applyDataList.stream().filter(
+                                        s -> s.getSerialNo().equals(rdv.getSerialNo()) &&
+                                                s.getBillNo().equals(rdv.getBillNo()) &&
+                                                s.getPersonalNo().equals(rdv.getPersonalNo()) &&
+                                                s.getRuleName().equals(rdv.getRuleName())
+                                ).collect(Collectors.toList());
                             }
-                        } else {
-                            updateResetData.setState(YbDefaultValue.RESETDATA_STATE_1);
-                            updateResetDataList.add(updateResetData);
+
+                            if (searchApplyDataList.size() > 0) {
+                                if (searchApplyDataList.size() == 1) {
+                                    if (resultList.size() > 0) {
+                                        YbReconsiderApplyData rAd = searchApplyDataList.get(0);
+                                        searchResultList = resultList.stream().filter(
+                                                s -> s.getApplyDataId().equals(rAd.getId())
+                                        ).collect(Collectors.toList());
+
+                                        if (searchResultList.size() == 1) {
+                                            YbAppealResult updateResult = new YbAppealResult();
+                                            updateResult.setId(searchResultList.get(0).getId());
+                                            updateResult.setState(YbDefaultValue.RESULTSTATE_2);
+                                            updateResult.setResetDataId(rdv.getId());
+                                            updateResult.setResetDate(new Date());
+                                            updateResult.setResetPersonId(uid);
+                                            updateResult.setResetPersonName(uname);
+                                            updateResult.setRepayState(YbDefaultValue.RESULTREPAYSTATE_2);
+
+                                            updateResetData.setSeekState(YbDefaultValue.SEEKSTATE_1);
+
+                                            updateResetDataList.add(updateResetData);
+                                            updateResultList.add(updateResult);
+                                        }
+                                    }
+                                } else {
+                                    updateResetData.setState(YbDefaultValue.RESETDATA_STATE_1);
+                                    updateResetDataList.add(updateResetData);
+                                }
+                            } else {
+                                updateResetData.setState(YbDefaultValue.RESETDATA_STATE_2);
+                                updateResetDataList.add(updateResetData);
+                            }
+                        }
+
+                        if (updateResultList.size() > 0) {
+                            this.iYbAppealResultService.updateBatchById(updateResultList);
+                        }
+                        if (updateResetDataList.size() > 0) {
+                            this.updateBatchById(updateResetDataList);
+                        }
+                        if (updateResultList.size() == 0 && updateResetDataList.size() == 0) {
+                            if ("".equals(message)) {
+                                message = "update0";
+                            }
                         }
                     } else {
-                        updateResetData.setState(YbDefaultValue.RESETDATA_STATE_2);
-                        updateResetDataList.add(updateResetData);
+                        message = "未找到复议审核数据";
                     }
-                }
-
-                if (updateResultList.size() > 0) {
-                    this.iYbAppealResultService.updateBatchById(updateResultList);
-                }
-                if (updateResetDataList.size() > 0) {
-                    this.updateBatchById(updateResetDataList);
-                }
-                if (updateResultList.size() == 0 && updateResetDataList.size() == 0) {
-                    if ("".equals(message)) {
-                        message = "update0";
-                    }
+                } else {
+                    message = "未找到剔除数据";
                 }
             } else {
-                message = "未找到复议审核数据";
+                message = "申诉管理" + applyDateStr + "有未处理的复议数据.";
             }
         } else {
-            message = "未找到剔除数据";
+            message = "核对申请" + applyDateStr + "有未完成发送的审核数据.";
         }
 
         return message;

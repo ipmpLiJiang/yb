@@ -117,6 +117,11 @@ public class YbReconsiderVerifyServiceImpl extends ServiceImpl<YbReconsiderVerif
     }
 
     @Override
+    public int findReconsiderVerifyResetCheckCounts(String applyDateStr) {
+        return this.baseMapper.findReconsiderVerifyResetCheckCount(applyDateStr);
+    }
+
+    @Override
     @Transactional
     public void insertReconsiderVerifyImports(String applyDateStr, Long matchPersonId, String matchPersonName) {
         //this.baseMapper.insertReconsiderVerifyImport(applyDate, matchPersonId, matchPersonName);
@@ -152,6 +157,8 @@ public class YbReconsiderVerifyServiceImpl extends ServiceImpl<YbReconsiderVerif
                         YbReconsiderVerify ybReconsiderVerify = new YbReconsiderVerify();
                         ybReconsiderVerify.setApplyDataId(item.getId());
 
+                        queryRlList = new ArrayList<>();
+
                         //规则
                         if (item.getRuleName() != null) {
                             queryRlList = rlRuleList.stream().filter(
@@ -175,7 +182,7 @@ public class YbReconsiderVerifyServiceImpl extends ServiceImpl<YbReconsiderVerif
                         } else {
                             queryRifList = rifList.stream().filter(s ->
                                     s.getApplyDateStr().equals(applyDateStr) &&
-                                            s.getOrderNumber().equals(item.getOrderNumber())
+                                            s.getApplyDataId().equals(item.getId())
                             ).collect(Collectors.toList());
 
                             if (queryRifList.size() > 0) {
@@ -185,7 +192,10 @@ public class YbReconsiderVerifyServiceImpl extends ServiceImpl<YbReconsiderVerif
                                     queryRlList = rlDeptList.stream().filter(
                                             s -> s.getDeptName().equals(deptName)
                                     ).collect(Collectors.toList());
+                                } else {
+                                    queryRlList = new ArrayList<>();
                                 }
+
                                 if (queryRlList.size() > 0) {
                                     ybReconsiderVerify.setVerifyDeptCode(queryRifList.get(0).getExcuteDeptId());
                                     ybReconsiderVerify.setVerifyDeptName(queryRifList.get(0).getExcuteDeptName());
@@ -297,6 +307,12 @@ public class YbReconsiderVerifyServiceImpl extends ServiceImpl<YbReconsiderVerif
             ybReconsiderVerify.setSendPersonName(Uname);
             ybReconsiderVerify.setSendDate(thisDate);
             ybReconsiderVerify.setOperateDate(thisDate);
+
+            String strVerifyDeptName = DataTypeHelpers.stringReplaceSetString(ybReconsiderVerify.getVerifyDeptName(), ybReconsiderVerify.getVerifyDeptCode() + "-");
+            ybReconsiderVerify.setVerifyDeptName(strVerifyDeptName);
+            String strVerifyDoctorName = DataTypeHelpers.stringReplaceSetString(ybReconsiderVerify.getVerifyDoctorName(), ybReconsiderVerify.getVerifyDoctorCode() + "-");
+            ybReconsiderVerify.setVerifyDoctorName(strVerifyDoctorName);
+
             //插入申诉管理
             YbAppealManage ybAppealManage = new YbAppealManage();
             ybAppealManage.setSourceType(YbDefaultValue.SOURCETYPE_0);
@@ -398,6 +414,12 @@ public class YbReconsiderVerifyServiceImpl extends ServiceImpl<YbReconsiderVerif
                 ybReconsiderVerify.setSendPersonName(Uname);
                 ybReconsiderVerify.setSendDate(thisDate);
                 ybReconsiderVerify.setOperateDate(thisDate);
+
+                String strVerifyDeptName = DataTypeHelpers.stringReplaceSetString(ybReconsiderVerify.getVerifyDeptName(), ybReconsiderVerify.getVerifyDeptCode() + "-");
+                ybReconsiderVerify.setVerifyDeptName(strVerifyDeptName);
+                String strVerifyDoctorName = DataTypeHelpers.stringReplaceSetString(ybReconsiderVerify.getVerifyDoctorName(), ybReconsiderVerify.getVerifyDoctorCode() + "-");
+                ybReconsiderVerify.setVerifyDoctorName(strVerifyDoctorName);
+
                 //插入申诉管理
                 YbAppealManage ybAppealManage = new YbAppealManage();
                 ybAppealManage.setSourceType(YbDefaultValue.SOURCETYPE_0);
@@ -478,6 +500,12 @@ public class YbReconsiderVerifyServiceImpl extends ServiceImpl<YbReconsiderVerif
                     item.getVerifyDeptName() != "" && item.getVerifyDeptName() != null &&
                     item.getVerifyDoctorCode() != "" && item.getVerifyDoctorCode() != null &&
                     item.getVerifyDoctorName() != "" && item.getVerifyDoctorName() != null) {
+
+                String strVerifyDeptName = DataTypeHelpers.stringReplaceSetString(item.getVerifyDeptName(), item.getVerifyDeptCode() + "-");
+                item.setVerifyDeptName(strVerifyDeptName);
+                String strVerifyDoctorName = DataTypeHelpers.stringReplaceSetString(item.getVerifyDoctorName(), item.getVerifyDoctorCode() + "-");
+                item.setVerifyDoctorName(strVerifyDoctorName);
+
                 item.setState(YbDefaultValue.VERIFYSTATE_2);
                 item.setModifyTime(thisDate);
                 item.setModifyUserId(uId);
@@ -505,6 +533,34 @@ public class YbReconsiderVerifyServiceImpl extends ServiceImpl<YbReconsiderVerif
         }
     }
 
+    //全部核对
+    @Override
+    @Transactional
+    public void updateAllReviewerStates(String applyDateStr, Long uId, String Uname) {
+        List<YbReconsiderVerify> list = this.baseMapper.findReconsiderVerifyList(applyDateStr, 0, 1);
+        Date thisDate = new Date();
+        List<YbReconsiderVerify> updateList = new ArrayList<>();
+        for (YbReconsiderVerify item : list) {
+            if (item.getVerifyDeptCode() != "" && item.getVerifyDeptCode() != null &&
+                    item.getVerifyDeptName() != "" && item.getVerifyDeptName() != null &&
+                    item.getVerifyDoctorCode() != "" && item.getVerifyDoctorCode() != null &&
+                    item.getVerifyDoctorName() != "" && item.getVerifyDoctorName() != null) {
+
+                YbReconsiderVerify update = new YbReconsiderVerify();
+                update.setId(item.getId());
+                update.setState(YbDefaultValue.VERIFYSTATE_2);
+                update.setReviewerId(uId);
+                update.setReviewerName(Uname);
+                update.setReviewerDate(thisDate);
+                updateList.add(update);
+            }
+        }
+        if(updateList.size()>0) {
+            this.updateBatchById(updateList);
+        }
+    }
+
+
     @Override
     @Transactional
     public void updateReconsiderVerifyImports(List<YbReconsiderVerify> list, Long uId, String Uname) {
@@ -518,6 +574,11 @@ public class YbReconsiderVerifyServiceImpl extends ServiceImpl<YbReconsiderVerif
                 item.setModifyTime(thisDate);
                 item.setModifyUserId(uId);
                 item.setOperateDate(thisDate);
+
+                String strVerifyDeptName = DataTypeHelpers.stringReplaceSetString(item.getVerifyDeptName(), item.getVerifyDeptCode() + "-");
+                item.setVerifyDeptName(strVerifyDeptName);
+                String strVerifyDoctorName = DataTypeHelpers.stringReplaceSetString(item.getVerifyDoctorName(), item.getVerifyDoctorCode() + "-");
+                item.setVerifyDoctorName(strVerifyDoctorName);
 
                 if (item.getId() == null || item.getId().equals("")) {
                     item.setId(UUID.randomUUID().toString());

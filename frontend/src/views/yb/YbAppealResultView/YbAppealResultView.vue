@@ -257,11 +257,11 @@ export default {
     callback (key) {
       this.tableSelectKey = key
       if (key === '1') {
-        this.$refs.ybAppealResultOne.search()
+        this.$refs.ybAppealResultOne.searchPage()
       } else if (key === '2') {
-        this.$refs.ybAppealResultTwo.search()
+        this.$refs.ybAppealResultTwo.searchPage()
       } else if (key === '3') {
-        this.$refs.ybAppealResultHandle.search()
+        this.$refs.ybAppealResultHandle.searchPage()
       } else {
         console.log('ok')
       }

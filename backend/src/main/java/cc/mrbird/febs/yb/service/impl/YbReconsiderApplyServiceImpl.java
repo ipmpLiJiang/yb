@@ -217,6 +217,32 @@ public class YbReconsiderApplyServiceImpl extends ServiceImpl<YbReconsiderApplyM
     }
 
     @Override
+    public List<YbReconsiderApply> findReconsiderApplyList(YbReconsiderApply ybReconsiderApply){
+        LambdaQueryWrapper<YbReconsiderApply> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(YbReconsiderApply::getIsDeletemark,1);
+
+        if(ybReconsiderApply.getId()!=null) {
+            wrapper.eq(YbReconsiderApply::getId, ybReconsiderApply.getId());
+        }
+        if(ybReconsiderApply.getApplyDateStr()!=null) {
+            wrapper.eq(YbReconsiderApply::getApplyDateStr, ybReconsiderApply.getApplyDateStr());
+        }
+        if(ybReconsiderApply.getState()!=null) {
+            wrapper.eq(YbReconsiderApply::getState, ybReconsiderApply.getState());
+        }
+        if(ybReconsiderApply.getResetState()!=null) {
+            wrapper.eq(YbReconsiderApply::getResetState, ybReconsiderApply.getResetState());
+        }
+        if(ybReconsiderApply.getTaskState()!=null) {
+            wrapper.eq(YbReconsiderApply::getTaskState, ybReconsiderApply.getTaskState());
+        }
+        if(ybReconsiderApply.getRepayState()!=null) {
+            wrapper.eq(YbReconsiderApply::getRepayState, ybReconsiderApply.getRepayState());
+        }
+        return this.list(wrapper);
+    }
+
+    @Override
     public YbReconsiderApply findReconsiderApplyByApplyDateStrs(String appltDateStr) {
         return this.baseMapper.findReconsiderApplyByApplyDateStr(appltDateStr);
     }

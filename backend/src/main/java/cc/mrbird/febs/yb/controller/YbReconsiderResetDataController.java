@@ -8,6 +8,7 @@ import cc.mrbird.febs.common.exception.FebsException;
 import cc.mrbird.febs.common.domain.QueryRequest;
 
 import cc.mrbird.febs.common.properties.FebsProperties;
+import cc.mrbird.febs.export.excel.ExportExcelUtils;
 import cc.mrbird.febs.yb.domain.ResponseResultData;
 import cc.mrbird.febs.yb.entity.*;
 import cc.mrbird.febs.yb.service.IYbReconsiderResetDataService;
@@ -26,6 +27,7 @@ import com.wuwenze.poi.pojo.ExcelProperty;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Font;
+import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
@@ -153,43 +155,45 @@ public class YbReconsiderResetDataController extends BaseController {
     @PutMapping("updateResetData")
     @RequiresPermissions("ybReconsiderResetData:updateResetData")
     public FebsResponse updateAppealResulResetData(String applyDateStr, Integer dataType) {
-        ResponseResultData responseResultData = new ResponseResultData();
-        responseResultData.setSuccess(0);
+        int success = 0;
         try {
             User currentUser = FebsUtil.getCurrentUser();
             Long uid = currentUser.getUserId();
             String uname = currentUser.getUsername();
-            message = this.iYbReconsiderResetDataService.updateResetDatas(applyDateStr,uid,uname,dataType);
-            responseResultData.setSuccess(1);
-            if("".equals(message)){
+            message = this.iYbReconsiderResetDataService.updateResetDatas(applyDateStr, uid, uname, dataType);
+            if ("".equals(message)) {
                 message = "剔除数据成功.";
+                success = 1;
             }
-            if(message.equals("update0")){
+            if (message.equals("update0")) {
                 message = "未找到可更新的数据";
             }
-            if(message.equals("result0")){
+            if (message.equals("result0")) {
                 message = "未找到有效的申诉上传数据";
             }
-            responseResultData.setMessage(message);
         } catch (Exception e) {
             message = "剔除数据失败.";
             log.error(message, e);
-            responseResultData.setMessage(message);
         }
+
+        ResponseResultData responseResultData = new ResponseResultData();
+        responseResultData.setSuccess(success);
+        responseResultData.setMessage(message);
         return new FebsResponse().data(responseResultData);
     }
+
     @Log("修改")
     @PutMapping("updateHandleResetData")
     @RequiresPermissions("ybReconsiderResetData:updateResetData")
-    public FebsResponse updateHandResetData(String resultId,String resetId) {
+    public FebsResponse updateHandResetData(String resultId, String resetId) {
         ResponseResultData responseResultData = new ResponseResultData();
         responseResultData.setSuccess(0);
         try {
             User currentUser = FebsUtil.getCurrentUser();
             Long uid = currentUser.getUserId();
             String uname = currentUser.getUsername();
-            message = this.iYbReconsiderResetDataService.updateHandleResetDatas(resultId,resetId,uid,uname);
-            if("ok".equals(message)){
+            message = this.iYbReconsiderResetDataService.updateHandleResetDatas(resultId, resetId, uid, uname);
+            if ("ok".equals(message)) {
                 responseResultData.setSuccess(1);
                 message = "剔除数据成功.";
             }
@@ -203,37 +207,50 @@ public class YbReconsiderResetDataController extends BaseController {
     }
 
     @PostMapping("downFile")
-    public void downFile(HttpServletResponse response) {
+    public void downFile(HttpServletResponse response) throws FebsException {
         try {
-            String path = febsProperties.getUploadPath();
-            String fileName = "剔除数据模板.xlsx";
-            String filePath = path + fileName;
-            File file = new File(filePath);
-            if (file.exists()) {
-                InputStream ins = new FileInputStream(filePath);
-                BufferedInputStream bins = new BufferedInputStream(ins);// 放到缓冲流里面
-                OutputStream outs = response.getOutputStream();// 获取文件输出IO流
-                BufferedOutputStream bouts = new BufferedOutputStream(outs);
-                response.setHeader("Content-Disposition",
-                        "attachment;filename=" + URLEncoder.encode(fileName, "utf-8"));
-
-                int bytesRead = 0;
-                byte[] buffer = new byte[512];
-                //开始向网络传输文件流
-                while ((bytesRead = bins.read(buffer, 0, 512)) != -1) {
-                    bouts.write(buffer, 0, bytesRead);
-                }
-                bouts.flush();// 这里一定要调用flush()方法
-                ins.close();
-                bins.close();
-                outs.close();
-                bouts.close();
-            } else {
-//                response.sendRedirect("../error.jsp");
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
+            String sheetName1 = "明细扣款";
+            String sheetName2 = "主单扣款";
+            ExportExcelUtils.exportTemplateFileT(response,YbReconsiderResetDataExport.class,sheetName1,YbReconsiderResetMainExport.class,sheetName2);
+        } catch (Exception e) {
+            message = "导出Excel模板失败";
+            log.error(message, e);
+            throw new FebsException(message);
         }
     }
+
+//    @PostMapping("downFile")
+//    public void downFile(HttpServletResponse response) {
+//        try {
+//            String path = febsProperties.getUploadPath();
+//            String fileName = "剔除数据模板.xlsx";
+//            String filePath = path + fileName;
+//            File file = new File(filePath);
+//            if (file.exists()) {
+//                InputStream ins = new FileInputStream(filePath);
+//                BufferedInputStream bins = new BufferedInputStream(ins);// 放到缓冲流里面
+//                OutputStream outs = response.getOutputStream();// 获取文件输出IO流
+//                BufferedOutputStream bouts = new BufferedOutputStream(outs);
+//                response.setHeader("Content-Disposition",
+//                        "attachment;filename=" + URLEncoder.encode(fileName, "utf-8"));
+//
+//                int bytesRead = 0;
+//                byte[] buffer = new byte[512];
+//                //开始向网络传输文件流
+//                while ((bytesRead = bins.read(buffer, 0, 512)) != -1) {
+//                    bouts.write(buffer, 0, bytesRead);
+//                }
+//                bouts.flush();// 这里一定要调用flush()方法
+//                ins.close();
+//                bins.close();
+//                outs.close();
+//                bouts.close();
+//            } else {
+////                response.sendRedirect("../error.jsp");
+//            }
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//    }
 
 }

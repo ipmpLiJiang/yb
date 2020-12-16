@@ -21,8 +21,8 @@ public class Test {
             regularExpMessage = "必须是数字", comment = "提示: 必填，只能填写数字，并且长度不能超过11位")
     private Integer field2;
 
-    @ExcelField(value = "字段3", required = true, maxLength = 50,
-            comment = "提示：必填，只能填写邮箱，长度不能超过50个字符", validator = EmailValidator.class)
+//    @ExcelField(value = "字段3", required = true, maxLength = 50,
+//            comment = "提示：必填，只能填写邮箱，长度不能超过50个字符", validator = EmailValidator.class)
     private String field3;
 
     private Date createTime;

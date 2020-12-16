@@ -88,7 +88,7 @@ export default {
         title: '项目名称',
         dataIndex: 'projectName',
         fixed: 'left',
-        width: 140
+        width: 160
       },
       {
         title: '数量',
@@ -136,13 +136,13 @@ export default {
         title: '复议科室',
         dataIndex: 'verifyDeptName',
         fixed: 'right',
-        width: 120
+        width: 200
       },
       {
         title: '复议医生',
         dataIndex: 'verifyDoctorName',
         fixed: 'right',
-        width: 110
+        width: 130
       },
       {
         title: '意见书类型',
@@ -191,6 +191,13 @@ export default {
     // onSelectChange (selectedRowKeys) {
     //   this.selectedRowKeys = selectedRowKeys
     // },
+    searchPage () {
+      this.pagination.defaultCurrent = 1
+      if (this.paginationInfo) {
+        this.paginationInfo.current = this.pagination.defaultCurrent
+      }
+      this.search()
+    },
     search () {
       let { sortedInfo } = this
       let sortField, sortOrder
@@ -209,6 +216,7 @@ export default {
       // 取消选中
       this.selectedRowKeys = []
       // 重置分页
+      this.pagination.defaultCurrent = 1
       this.$refs.TableInfo.pagination.current = this.pagination.defaultCurrent
       if (this.paginationInfo) {
         this.paginationInfo.current = this.pagination.defaultCurrent

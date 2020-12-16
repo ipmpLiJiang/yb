@@ -270,4 +270,21 @@
         where id=#{id} and acceptState=2
 
     </update>
+    <!--acceptState in(0,1,2) 0待接收，1接受，2不接受-->
+    <select id="findAppealManageResetCheckCount" resultType="Integer">
+        SELECT
+            count(1)
+        FROM
+            yb_appeal_manage
+            INNER join yb_reconsider_apply_data on
+                yb_appeal_manage.applyDataId = yb_reconsider_apply_data.id and
+                yb_reconsider_apply_data.IS_DELETEMARK = 1
+            inner join yb_reconsider_apply on
+                yb_reconsider_apply.id = yb_reconsider_apply_data.pid and
+                yb_reconsider_apply.IS_DELETEMARK = 1
+        where
+            yb_appeal_manage.IS_DELETEMARK = 1 and
+            yb_appeal_manage.acceptState in(0,1,2) and
+            yb_reconsider_apply.applyDateStr = #{applyDateStr}
+</select>
 </mapper>

@@ -155,13 +155,13 @@ public class YbReconsiderApplyController extends BaseController {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM");
             String appDateStr = sdf.format(ybReconsiderApply.getApplyDate());
             ybReconsiderApply.setApplyDateStr(appDateStr);
-            message = this.iYbReconsiderApplyService.updateYbReconsiderApply(ybReconsiderApply,isUpOverdue);
-            if(message.equals("") || message.equals("ok")){
-                message = "ok";
-            }else if(message.equals("date")){
-                message = "当前结束日期应大于之前结束日期";
-            }else if(message.equals("nostate")){
-                message = "当前状态无法进行未申诉更新";
+            this.message = this.iYbReconsiderApplyService.updateYbReconsiderApply(ybReconsiderApply, isUpOverdue);
+            if(this.message.equals("") || this.message.equals("ok")){
+                this.message = "ok";
+            }else if(this.message.equals("date")){
+                this.message = "当前结束日期应大于之前结束日期";
+            }else if(this.message.equals("nostate")){
+                this.message = "当前状态无法进行未申诉更新";
             }
             success = 1;
         } catch (Exception e) {

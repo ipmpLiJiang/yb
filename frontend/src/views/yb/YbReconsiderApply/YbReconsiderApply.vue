@@ -33,7 +33,7 @@
           <span style="float: right; margin-top: 3px;">
             <a-button
               type="primary"
-              @click="search"
+              @click="searchPage"
             >查询</a-button>
             <a-button
               style="margin-left: 8px"
@@ -123,7 +123,7 @@
           <a @click="goto(record,1)">{{record.state==1||record.state==2?'上传审核一':'查看审核一'}}</a>
           <a-divider type="vertical" />
           <!-- 1待复议 2上传一 3申述一 4上传二 5申述二 6已剔除 7已还款 -->
-          <a @click="goto(record,2)" :disabled="record.state==2||record.state==3||record.state==4||record.state==5||record.state==6||record.state==7?false:true">
+          <a @click="goto(record,2)" :disabled="record.state==3||record.state==4||record.state==5||record.state==6||record.state==7?false:true">
             {{record.state==1||record.state==2||record.state==3||record.state==4?'上传审核二':'查看审核二'}}
           </a>
           <a-badge
@@ -155,7 +155,7 @@
       :title="uploadTitle"
       :visible="gotoVisiable"
       :footer="null"
-      width="100%"
+      width="99%"
       style="padding-top:0px;"
       :maskClosable="false"
       @cancel="handleCancel"
@@ -430,6 +430,13 @@ export default {
         ...this.queryParams
       })
     },
+    searchPage () {
+      this.pagination.defaultCurrent = 1
+      if (this.paginationInfo) {
+        this.paginationInfo.current = this.pagination.defaultCurrent
+      }
+      this.search()
+    },
     search () {
       let { sortedInfo } = this
       let sortField, sortOrder
@@ -448,6 +455,7 @@ export default {
       // 取消选中
       this.selectedRowKeys = []
       // 重置分页
+      this.pagination.defaultCurrent = 1
       this.$refs.TableInfo.pagination.current = this.pagination.defaultCurrent
       if (this.paginationInfo) {
         this.paginationInfo.current = this.pagination.defaultCurrent

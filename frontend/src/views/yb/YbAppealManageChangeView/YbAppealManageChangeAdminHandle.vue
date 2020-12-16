@@ -7,7 +7,7 @@
     :closable="true"
     @close="onClose"
     :visible="adminVisiable"
-    style="height: calc(100% - 55px);overflow: auto;padding-bottom: 53px;"
+    style="height: calc(100% - 15px);overflow: auto;padding-bottom: 53px;"
   >
     <appealData-module
     ref="appealDataModule"
@@ -161,20 +161,20 @@ export default {
       this.ybAppealManage.dataType = ybAppealManageChangeDetail.dataType
       this.ybAppealManage.verifyId = ybAppealManageChangeDetail.verifyId
       this.ybAppealManage.applyDataId = ybAppealManageChangeDetail.applyDataId
-      this.changePersons = this.ybAppealManageChangeDetail.readyDeptName + ' - ' + this.ybAppealManageChangeDetail.readyDoctorName
+      this.changePersons = this.ybAppealManageChangeDetail.readyDeptCode + '-' + this.ybAppealManageChangeDetail.readyDeptName + ' - ' + this.ybAppealManageChangeDetail.readyDoctorCode + '-' + this.ybAppealManageChangeDetail.readyDoctorName
       setTimeout(() => {
         this.setForms(ybAppealManageChangeDetail)
       }, 200)
     },
     setForms (target) {
       this.$refs.inputSelectVerifyDept.dataSource = [{
-        text: target.readyDeptName,
+        text: target.readyDeptCode + '-' + target.readyDeptName,
         value: target.readyDeptCode
       }]
       this.$refs.inputSelectVerifyDept.value = target.readyDeptCode
 
       this.$refs.inputSelectVerifyDoctor.dataSource = [{
-        text: target.readyDoctorName,
+        text: target.readyDoctorCode + '-' + target.readyDoctorName,
         value: target.readyDoctorCode
       }]
       this.$refs.inputSelectVerifyDoctor.value = target.readyDoctorCode
@@ -205,7 +205,7 @@ export default {
         return
       }
 
-      this.$put('ybAppealManage/updateCreateAdminYbAppealManage', {
+      this.$put('ybAppealManage/updateCreateAdminAppealManage', {
         ...ybAppealManage
       }).then(() => {
         this.reset()

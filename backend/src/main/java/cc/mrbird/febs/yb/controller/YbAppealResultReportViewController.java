@@ -347,9 +347,6 @@ public class YbAppealResultReportViewController extends BaseController {
                 if(zdApplyDateStrList.size()>0) {
                     zdApplyDateStrList = zdApplyDateStrList.stream().sorted(Comparator.naturalOrder()).collect(Collectors.toList());
                 }
-                String guid = UUID.randomUUID().toString();
-                String filePath = febsProperties.getUploadPath(); // 上传后的路径
-                filePath += "AppealResultTemp/" + guid + ".xlsx";
 
                 String sheetName1 = "明细扣款";
                 String sheetName2 = "主单扣款";
@@ -358,7 +355,7 @@ public class YbAppealResultReportViewController extends BaseController {
                 Map<String,Integer> sheetColumnCountMap =  new LinkedHashMap<>();
                 sheetColumnCountMap.put(sheetName1,excelMappingData.getPropertyList().size());
 
-                ExcelWriter writer = ExcelUtil.getWriter(filePath,sheetName1);
+                ExcelWriter writer = ExcelUtil.getWriterWithSheet(sheetName1);
 
                 //合并单元格后的标题行，使用默认标题样式
                 //writer.merge(row1.size() - 1, "测试标题1");
@@ -667,9 +664,6 @@ public class YbAppealResultReportViewController extends BaseController {
                 if(zdApplyDateStrList.size()>0) {
                     zdApplyDateStrList = zdApplyDateStrList.stream().sorted(Comparator.naturalOrder()).collect(Collectors.toList());
                 }
-                String guid = UUID.randomUUID().toString();
-                String filePath = febsProperties.getUploadPath(); // 上传后的路径
-                filePath += "AppealResultTemp/" + guid + ".xlsx";
 
                 String sheetName1 = "明细扣款";
                 String sheetName2 = "主单扣款";
@@ -678,7 +672,7 @@ public class YbAppealResultReportViewController extends BaseController {
                 Map<String,Integer> sheetColumnCountMap =  new LinkedHashMap<>();
                 sheetColumnCountMap.put(sheetName1,excelMappingData.getPropertyList().size());
 
-                ExcelWriter writer = ExcelUtil.getWriter(filePath,sheetName1);
+                ExcelWriter writer = ExcelUtil.getWriterWithSheet(sheetName1);
 
                 //合并单元格后的标题行，使用默认标题样式
                 //writer.merge(row1.size() - 1, "测试标题1");

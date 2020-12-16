@@ -178,13 +178,13 @@ export default {
         title: '项目编码',
         dataIndex: 'projectCode',
         fixed: 'left',
-        width: 100
+        width: 120
       },
       {
         title: '项目名称',
         dataIndex: 'projectName',
         fixed: 'left',
-        width: 140
+        width: 160
       },
       {
         title: '数量',
@@ -244,14 +244,14 @@ export default {
         dataIndex: 'verifyDeptName',
         scopedSlots: { customRender: 'verifyDeptName' },
         fixed: 'right',
-        width: 130
+        width: 250
       },
       {
         title: '参考复议医生',
         dataIndex: 'verifyDoctorName',
         scopedSlots: { customRender: 'verifyDoctorName' },
         fixed: 'right',
-        width: 130
+        width: 180
       },
       {
         title: '操作',
@@ -399,7 +399,7 @@ export default {
         r.data.data.forEach((item, i) => {
           dataSource.push({
             value: item.deptId,
-            text: item.deptName
+            text: item.deptId + '-' + item.deptName
           })
         })
       })
@@ -414,7 +414,7 @@ export default {
         r.data.data.forEach((item, i) => {
           dataSource.push({
             value: item.personCode,
-            text: item.personName
+            text: item.personCode + '-' + item.personName
           })
         })
       })
@@ -493,7 +493,6 @@ export default {
       }
     },
     save (key) {
-      debugger
       const newData = [...this.dataSource]
       const newCacheData = [...this.cacheData]
       const target = newData.filter(item => key === item.id)[0]
@@ -545,6 +544,13 @@ export default {
       this.selectedRowKeys = selectedRowKeys
       this.$emit('selectChangeKeyVerify', this.selectedRowKeys)
     },
+    searchPage () {
+      this.pagination.defaultCurrent = 1
+      if (this.paginationInfo) {
+        this.paginationInfo.current = this.pagination.defaultCurrent
+      }
+      this.search()
+    },
     search () {
       let { sortedInfo } = this
       let sortField, sortOrder
@@ -563,6 +569,7 @@ export default {
       // 取消选中
       this.selectedRowKeys = []
       // 重置分页
+      this.pagination.defaultCurrent = 1
       this.$refs.TableInfo.pagination.current = this.pagination.defaultCurrent
       if (this.paginationInfo) {
         this.paginationInfo.current = this.pagination.defaultCurrent

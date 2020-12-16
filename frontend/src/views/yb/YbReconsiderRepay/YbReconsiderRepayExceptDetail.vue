@@ -2,12 +2,12 @@
   <a-drawer
     title="查看还款明细"
     :maskClosable="false"
-    width=75%
+    width=70%
     placement="right"
     :closable="true"
     @close="onClose"
     :visible="lookVisiable"
-    style="height: calc(100% - 55px);overflow: auto;padding-bottom: 53px;"
+    style="height: calc(100% - 15px);overflow: auto;padding-bottom: 53px;"
   >
     <resetResult-module
     ref="resetResultModule"
@@ -130,13 +130,13 @@ export default {
         title: '项目编码',
         dataIndex: 'projectCode',
         fixed: 'left',
-        width: 100
+        width: 120
       },
       {
         title: '项目名称',
         dataIndex: 'projectName',
         fixed: 'left',
-        width: 140
+        width: 160
       },
       {
         title: '医保内金额',
@@ -207,6 +207,7 @@ export default {
       // 取消选中
       this.selectedRowKeys = []
       // 重置分页
+      this.pagination.defaultCurrent = 1
       this.$refs.TableInfo.pagination.current = this.pagination.defaultCurrent
       if (this.paginationInfo) {
         this.paginationInfo.current = this.pagination.defaultCurrent
@@ -302,7 +303,6 @@ export default {
     fetch (params = {}) {
       params.applyDateStr = this.ybReconsiderRepayExcep.belongDateStr
       params.billNo = this.ybReconsiderRepayExcep.billNo
-      console.log(this.ybReconsiderRepayExcep)
       if (this.ybReconsiderRepayExcep.warnType === 3 && this.ybReconsiderRepayExcep.orderNumberNew !== '' && this.ybReconsiderRepayExcep.orderNumberNew != null) {
         params.orderNumber = this.ybReconsiderRepayExcep.orderNumberNew
       }

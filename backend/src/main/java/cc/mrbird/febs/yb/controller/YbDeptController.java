@@ -55,7 +55,7 @@ public class YbDeptController extends BaseController {
     @GetMapping
     @RequiresPermissions("ybDept:view")
     public Map<String, Object> List(QueryRequest request, YbDept ybDept) {
-        return getDataTable(this.iYbDeptService.findYbDepts(request, ybDept));
+        return getDataTable(this.iYbDeptService.findYbDeptList(request, ybDept));
     }
 
     @GetMapping("findDeptList")

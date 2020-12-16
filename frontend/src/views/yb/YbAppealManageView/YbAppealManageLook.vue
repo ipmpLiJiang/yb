@@ -7,7 +7,7 @@
     :closable="true"
     @close="onClose"
     :visible="lookVisiable"
-    style="height: calc(100% - 55px);overflow: auto;padding-bottom: 53px;"
+    style="height: calc(100% - 15px);overflow: auto;padding-bottom: 53px;"
   >
     <appealData-module
     ref="appealDataModule"
@@ -32,7 +32,7 @@
                   v-bind="formItemLayout"
                   label="科室名称"
                 >
-                  {{ybAppealManageLook.readyDeptName}}
+                  {{ybAppealManageLook.readyDeptCode}}-{{ybAppealManageLook.readyDeptName}}
                 </a-form-item>
               </a-col>
               <a-col :span=14>
@@ -40,7 +40,7 @@
                   v-bind="formItemLayout"
                   label="医生姓名"
                 >
-                  {{ybAppealManageLook.readyDoctorName}}
+                  {{ybAppealManageLook.readyDoctorCode}}-{{ybAppealManageLook.readyDoctorName}}
                 </a-form-item>
               </a-col>
             </a-row>
@@ -98,7 +98,7 @@
                 v-bind="formItemLayout"
                 label="申请科室"
               >
-                {{ybAppealManageLook.readyDeptName}}
+                {{ybAppealManageLook.readyDeptCode}}-{{ybAppealManageLook.readyDeptName}}
               </a-form-item>
             </a-col>
             <a-col :span=6>
@@ -106,7 +106,7 @@
                 v-bind="formItemLayout"
                 label="申请人"
               >
-                {{ybAppealManageLook.readyDoctorName}}
+                {{ybAppealManageLook.readyDoctorCode}}-{{ybAppealManageLook.readyDoctorName}}
               </a-form-item>
             </a-col>
             <a-col :span=6>
@@ -114,7 +114,7 @@
                 v-bind="formItemLayout"
                 label="更改科室"
               >
-                {{ybAppealManageLook.changeDeptName}}
+                {{ybAppealManageLook.changeDeptCode}}-{{ybAppealManageLook.changeDeptName}}
               </a-form-item>
             </a-col>
             <a-col :span=6>
@@ -122,7 +122,7 @@
                 v-bind="formItemLayout"
                 label="更改人"
               >
-                {{ybAppealManageLook.changeDoctorName}}
+                {{ybAppealManageLook.changeDoctorCode}}-{{ybAppealManageLook.changeDoctorName}}
               </a-form-item>
             </a-col>
           </a-row>

@@ -64,6 +64,14 @@ public class DataTypeHelpers {
         return mer.find();
     }
 
+    public static String stringReplaceSetString(String str, String strReplace) {
+        if (str != null && strReplace != null) {
+            if (str.contains(strReplace)) {
+                str = str.replace(strReplace, "");
+            }
+        }
+        return str;
+    }
 
     public static String stringSeparate(String str, String val, String sep) {
         if (isNullOrEmpty(str)) {
@@ -85,23 +93,23 @@ public class DataTypeHelpers {
     }
 
     public static String stringDate6Chang7(String strDate, String sep) {
-        if(strDate.length()==6) {
+        if (strDate.length() == 6) {
             if (sep.equals("")) {
                 sep = "-";
             }
-            String str1 = strDate.substring(0,4);
-            String str2 = strDate.substring(4,strDate.length());
+            String str1 = strDate.substring(0, 4);
+            String str2 = strDate.substring(4, strDate.length());
             return str1 + sep + str2;
-        }else{
+        } else {
             return "";
         }
     }
 
     public static String stringDate7Chang6(String strDate) {
-        if(strDate.length()==7) {
+        if (strDate.length() == 7) {
             strDate = strDate.replace("-", "").replace("/", "");
             return strDate;
-        }else{
+        } else {
             return "";
         }
     }
@@ -190,7 +198,6 @@ public class DataTypeHelpers {
     }
 
 
-
     public static int stringDateFormatMaxDay(String strDate, String format, boolean isFormat) {
         if (isNullOrEmpty(format)) {
             format = "yyyyMMdd";
@@ -211,7 +218,7 @@ public class DataTypeHelpers {
         return maxDay;
     }
 
-    public static String stringDateFormatAddMonth(int addMonth,String strDate, String format, boolean isFormat) {
+    public static String stringDateFormatAddMonth(int addMonth, String strDate, String format, boolean isFormat) {
         if (isNullOrEmpty(format)) {
             format = "yyyyMMdd";
             isFormat = false;
@@ -246,7 +253,7 @@ public class DataTypeHelpers {
         Date date = null;
         try {
             date = DateUtil.parse(strDate);
-        }catch(Exception e){
+        } catch (Exception e) {
         }
         return date;
     }

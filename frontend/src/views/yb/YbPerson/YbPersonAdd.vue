@@ -2,12 +2,12 @@
   <a-drawer
     title="新增"
     :maskClosable="false"
-    width=650
+    width=45%
     placement="right"
     :closable="false"
     @close="onClose"
     :visible="addVisiable"
-    style="height: calc(100% - 55px);overflow: auto;padding-bottom: 53px;"
+    style="height: calc(100% - 15px);overflow: auto;padding-bottom: 53px;"
   >
     <a-form :form="form">
       <a-form-item

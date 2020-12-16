@@ -61,6 +61,7 @@
             <result column="orderNumber" property="orderNumber"/>
             <result column="orderNum" property="orderNum"/>
             <result column="isVerify" property="isVerify"/>
+            <result column="isPerson" property="isPerson"/>
                     <result column="COMMENTS" property="comments"/>
                     <result column="STATE" property="state"/>
                     <result column="IS_DELETEMARK" property="isDeletemark"/>
@@ -72,7 +73,7 @@
 
         <!-- 通用查询结果列 -->
         <sql id="Base_Column_List">
-        serialNo, billNo, proposalCode, projectCode, projectName, num, medicalPrice, ruleName, deductPrice, deductReason, repaymentReason, doctorName, deptCode, deptName, enterHospitalDate, outHospitalDate, costDate,enterHospitalDateStr,outHospitalDateStr,costDateStr, hospitalizedNo, treatmentMode, settlementDate,settlementDateStr, personalNo, insuredName, cardNumber, areaName, versionNumber, backAppeal, typeno, applyDate, applyDateStr, operatorId, operatorName, id, applyDataId, verifyDoctorCode, verifyDoctorName, verifyDeptCode, verifyDeptName, operateReason, operateDate, matchPersonId, matchPersonName, matchDate, reviewerId, reviewerName, reviewerDate, sendPersonId, sendPersonName, sendDate,insuredType,dataType,orderNumber,orderNum,isVerify, COMMENTS, STATE, IS_DELETEMARK, MODIFY_TIME, CREATE_TIME, CREATE_USER_ID, MODIFY_USER_ID
+        serialNo, billNo, proposalCode, projectCode, projectName, num, medicalPrice, ruleName, deductPrice, deductReason, repaymentReason, doctorName, deptCode, deptName, enterHospitalDate, outHospitalDate, costDate,enterHospitalDateStr,outHospitalDateStr,costDateStr, hospitalizedNo, treatmentMode, settlementDate,settlementDateStr, personalNo, insuredName, cardNumber, areaName, versionNumber, backAppeal, typeno, applyDate, applyDateStr, operatorId, operatorName, id, applyDataId, verifyDoctorCode, verifyDoctorName, verifyDeptCode, verifyDeptName, operateReason, operateDate, matchPersonId, matchPersonName, matchDate, reviewerId, reviewerName, reviewerDate, sendPersonId, sendPersonName, sendDate,insuredType,dataType,orderNumber,orderNum,isVerify,isPerson, COMMENTS, STATE, IS_DELETEMARK, MODIFY_TIME, CREATE_TIME, CREATE_USER_ID, MODIFY_USER_ID
     </sql>
     <update id="updateYbReconsiderVerifyView" parameterType="cc.mrbird.febs.yb.entity.YbReconsiderVerifyView">
         update yb_reconsider_verify_view
@@ -125,6 +126,8 @@
 <if test="sendPersonId != null">sendPersonId=#{sendPersonId},</if>
 <if test="sendPersonName != null">sendPersonName=#{sendPersonName},</if>
 <if test="sendDate != null">sendDate=#{sendDate},</if>
+<if test="isPerson != null">isPerson=#{isPerson},</if>
+<if test="isVerify != null">isVerify=#{isVerify},</if>
 <if test="comments != null">COMMENTS=#{comments},</if>
 <if test="state != null">STATE=#{state},</if>
 <if test="isDeletemark != null">IS_DELETEMARK=#{isDeletemark},</if>
@@ -182,6 +185,8 @@
             <if test="ybReconsiderVerifyView.versionNumber != null and ybReconsiderVerifyView.versionNumber != ''"> and versionNumber like concat('%', #{ ybReconsiderVerifyView.versionNumber} ,'%')</if>
             <if test="ybReconsiderVerifyView.backAppeal != null and ybReconsiderVerifyView.backAppeal != ''"> and backAppeal like concat('%', #{ ybReconsiderVerifyView.backAppeal} ,'%')</if>
         <if test="ybReconsiderVerifyView.typeno != null"> and typeno =#{ ybReconsiderVerifyView.typeno} </if>
+        <if test="ybReconsiderVerifyView.isVerify != null"> and isVerify =#{ ybReconsiderVerifyView.isVerify} </if>
+        <if test="ybReconsiderVerifyView.isPerson != null"> and isPerson =#{ ybReconsiderVerifyView.isPerson} </if>
         <if test="ybReconsiderVerifyView.applyDateFrom!= null">
             AND ybReconsiderVerifyView.applyDate <![CDATA[ >= ]]>  applyDateFrom}
         </if>
@@ -242,7 +247,9 @@
     <select id="findYbReconsiderVerifyViewNull" resultType="cc.mrbird.febs.yb.entity.YbReconsiderVerifyView" parameterType="cc.mrbird.febs.yb.entity.YbReconsiderVerifyView">
         select  *  from yb_reconsider_verify_view
         where  (
-        isVerify = 0
+        <if test="ybReconsiderVerifyView.isVerify != null and ybReconsiderVerifyView.isVerify != 0"> 1=2 </if>
+        <if test="ybReconsiderVerifyView.isVerify != null and ybReconsiderVerifyView.isVerify == 0"> isVerify = 0 </if>
+        <if test="ybReconsiderVerifyView.isVerify == null "> isVerify = 0 </if>
         <if test="ybReconsiderVerifyView.dataType != null"> and dataType =#{ ybReconsiderVerifyView.dataType} </if>
         <if test="ybReconsiderVerifyView.applyDateStr != null and ybReconsiderVerifyView.applyDateStr != ''"> and applyDateStr = #{ ybReconsiderVerifyView.applyDateStr} </if>
         <if test="ybReconsiderVerifyView.serialNo != null and ybReconsiderVerifyView.serialNo != ''"> and serialNo like concat('%', #{ ybReconsiderVerifyView.serialNo} ,'%')</if>
@@ -261,7 +268,10 @@
         <if test="searchType[2] == 'LIKE' and ybReconsiderVerifyView.verifyDeptName != null and ybReconsiderVerifyView.verifyDeptName != ''"> and verifyDeptName like concat('%', #{ ybReconsiderVerifyView.verifyDeptName} ,'%')</if>
         <if test="searchType[2] == 'EQ' and ybReconsiderVerifyView.verifyDeptName != null and ybReconsiderVerifyView.verifyDeptName != ''"> and verifyDeptName = #{ ybReconsiderVerifyView.verifyDeptName} </if>
         <if test="searchType[2] == 'NOTLIKE' and ybReconsiderVerifyView.verifyDeptName != null and ybReconsiderVerifyView.verifyDeptName != ''"> and verifyDeptName not like concat('%', #{ ybReconsiderVerifyView.verifyDeptName} ,'%')</if>
-        ) or ( isVerify = 1
+        ) or (
+        <if test="ybReconsiderVerifyView.isVerify != null and ybReconsiderVerifyView.isVerify != 1"> 1=2 </if>
+        <if test="ybReconsiderVerifyView.isVerify != null and ybReconsiderVerifyView.isVerify == 1"> isVerify = 1 </if>
+        <if test="ybReconsiderVerifyView.isVerify == null "> isVerify = 1 </if>
         <if test="ybReconsiderVerifyView.dataType != null"> and dataType =#{ ybReconsiderVerifyView.dataType} </if>
         <if test="ybReconsiderVerifyView.serialNo != null and ybReconsiderVerifyView.serialNo != ''"> and serialNo like concat('%', #{ ybReconsiderVerifyView.serialNo} ,'%')</if>
         <if test="ybReconsiderVerifyView.billNo != null and ybReconsiderVerifyView.billNo != ''"> and billNo like concat('%', #{ ybReconsiderVerifyView.billNo} ,'%')</if>
@@ -310,6 +320,7 @@
         <if test="ybReconsiderVerifyView.versionNumber != null and ybReconsiderVerifyView.versionNumber != ''"> and versionNumber like concat('%', #{ ybReconsiderVerifyView.versionNumber} ,'%')</if>
         <if test="ybReconsiderVerifyView.backAppeal != null and ybReconsiderVerifyView.backAppeal != ''"> and backAppeal like concat('%', #{ ybReconsiderVerifyView.backAppeal} ,'%')</if>
         <if test="ybReconsiderVerifyView.typeno != null"> and typeno =#{ ybReconsiderVerifyView.typeno} </if>
+        <if test="ybReconsiderVerifyView.isPerson != null"> and isPerson =#{ ybReconsiderVerifyView.isPerson} </if>
         <if test="ybReconsiderVerifyView.applyDateFrom!= null">
             AND ybReconsiderVerifyView.applyDate <![CDATA[ >= ]]>  applyDateFrom}
         </if>

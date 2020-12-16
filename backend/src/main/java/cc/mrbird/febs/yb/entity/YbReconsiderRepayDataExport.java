@@ -17,7 +17,7 @@ public class YbReconsiderRepayDataExport {
     /**
      * 所属期Str
      */
-    @ExcelField(value = "所属期Str")
+    @ExcelField(value = "所属期")
     private String belongDateStr;
 
     /**

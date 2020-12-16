@@ -251,47 +251,64 @@ from
     )
 </insert>
     <insert id="insertMainReconsiderVerifyImport">
-insert into yb_reconsider_verify(
-    id,
-	applyDataId,
-	IS_DELETEMARK,
-	COMMENTS,
-	verifyDoctorCode,
-	verifyDoctorName,
-	verifyDeptCode,
-	verifyDeptName,
-	matchPersonId,
-	matchPersonName,
-	matchDate,
-	dataType,
-	CREATE_USER_ID,
-	CREATE_TIME
-)
-select
-    UUID(),
-	rda.id,
-	1,
-    1,
-    'mrbird',
-    '系统管理员',
-    '101A',
-    '测试科室1',
-	#{matchPersonId},
-	#{matchPersonName},
-	NOW(),
-	1,
-	#{matchPersonId},
-	NOW()
-from
-	yb_reconsider_apply_data rda
-	INNER JOIN yb_reconsider_apply ra ON
-		rda.pid = ra.id and ra.IS_DELETEMARK = 1
-    WHERE
-    ra.applyDateStr= #{applyDate} and rda.dataType = 1 and rda.IS_DELETEMARK = 1
-    AND NOT EXISTS(
-        select vv.* from yb_reconsider_verify vv INNER JOIN yb_reconsider_apply_data dd ON vv.applyDataId = dd.id
-        and dd.IS_DELETEMARK = 1 INNER JOIN yb_reconsider_apply pp on pp.id = dd.pid and pp.IS_DELETEMARK = 1 where vv.IS_DELETEMARK = 1
-        and pp.applyDateStr=ra.applyDateStr and vv.applyDataId= rda.id and vv.dataType = 1
-    )
-</insert>
+        insert into yb_reconsider_verify(
+            id,
+            applyDataId,
+            IS_DELETEMARK,
+            COMMENTS,
+            verifyDoctorCode,
+            verifyDoctorName,
+            verifyDeptCode,
+            verifyDeptName,
+            matchPersonId,
+            matchPersonName,
+            matchDate,
+            dataType,
+            CREATE_USER_ID,
+            CREATE_TIME
+        )
+        select
+            UUID(),
+            rda.id,
+            1,
+            1,
+            'mrbird',
+            '系统管理员',
+            '101A',
+            '测试科室1',
+            #{matchPersonId},
+            #{matchPersonName},
+            NOW(),
+            1,
+            #{matchPersonId},
+            NOW()
+        from
+            yb_reconsider_apply_data rda
+            INNER JOIN yb_reconsider_apply ra ON
+                rda.pid = ra.id and ra.IS_DELETEMARK = 1
+            WHERE
+            ra.applyDateStr= #{applyDate} and rda.dataType = 1 and rda.IS_DELETEMARK = 1
+            AND NOT EXISTS(
+                select vv.* from yb_reconsider_verify vv INNER JOIN yb_reconsider_apply_data dd ON vv.applyDataId = dd.id
+                and dd.IS_DELETEMARK = 1 INNER JOIN yb_reconsider_apply pp on pp.id = dd.pid and pp.IS_DELETEMARK = 1 where vv.IS_DELETEMARK = 1
+                and pp.applyDateStr=ra.applyDateStr and vv.applyDataId= rda.id and vv.dataType = 1
+            )
+    </insert>
+    <!--State in(1,2) 1待审核、2已审核-->
+    <select id="findReconsiderVerifyResetCheckCount" resultType="Integer">
+        SELECT
+        count(1)
+    FROM
+        yb_reconsider_verify
+        INNER join yb_reconsider_apply_data on
+            yb_reconsider_verify.applyDataId = yb_reconsider_apply_data.id and
+            yb_reconsider_apply_data.IS_DELETEMARK = 1
+        inner join yb_reconsider_apply on
+            yb_reconsider_apply.id = yb_reconsider_apply_data.pid and
+            yb_reconsider_apply.IS_DELETEMARK = 1
+    where
+        yb_reconsider_verify.IS_DELETEMARK = 1 and
+        yb_reconsider_verify.state in(1,2) and
+        yb_reconsider_apply.applyDateStr = #{applyDateStr}
+</select>
 </mapper>

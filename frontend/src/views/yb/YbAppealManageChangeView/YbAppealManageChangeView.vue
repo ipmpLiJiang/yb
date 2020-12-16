@@ -162,13 +162,13 @@ export default {
     callback (key) {
       this.tableSelectKey = key
       if (key === '1') {
-        this.$refs.ybAppealManageChange.search()
+        this.$refs.ybAppealManageChange.searchPage()
       } else if (key === '2') {
-        this.$refs.ybAppealManageChangeEnd.search()
+        this.$refs.ybAppealManageChangeEnd.searchPage()
       } else if (key === '3') {
-        this.$refs.ybAppealManageChangeAdmin.search()
+        this.$refs.ybAppealManageChangeAdmin.searchPage()
       } else {
-        console.log('444')
+        console.log('4')
       }
     },
     handleExamineSuccess () {
@@ -225,7 +225,7 @@ export default {
       } else if (key === '3') {
         this.$refs.ybAppealManageChangeAdmin.onHistory()
       } else {
-        console.log('4444')
+        console.log('4')
       }
     }
   }

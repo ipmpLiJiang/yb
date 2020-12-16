@@ -48,13 +48,13 @@ public class TestController extends BaseController {
     public void generateImportTemplate(HttpServletResponse response) {
         // 构建数据
         List<Test> list = new ArrayList<>();
-        IntStream.range(0, 20).forEach(i -> {
-            Test test = new Test();
-            test.setField1("字段1");
-            test.setField2(i + 1);
-            test.setField3("mrbird" + i + "@gmail.com");
-            list.add(test);
-        });
+//        IntStream.range(0, 20).forEach(i -> {
+//            Test test = new Test();
+//            test.setField1("字段1");
+//            test.setField2(i + 1);
+//            test.setField3("mrbird" + i + "@gmail.com");
+//            list.add(test);
+//        });
         // 构建模板
         ExcelKit.$Export(Test.class, response).downXlsx(list, true);
     }

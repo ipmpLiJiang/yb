@@ -7,7 +7,7 @@
     :closable="false"
     @close="onClose"
     :visible="userEditVisiable"
-    style="height: calc(100% - 55px);overflow: auto;padding-bottom: 53px;">
+    style="height: calc(100% - 15px);overflow: auto;padding-bottom: 53px;">
     <a-form :form="form">
       <a-form-item label='用户名' v-bind="formItemLayout">
         <a-input readOnly v-decorator="['username']"/>

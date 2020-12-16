@@ -7,7 +7,7 @@
     :closable="true"
     @close="onClose"
     :visible="rejectVisiable"
-    style="height: calc(100% - 55px);overflow: auto;padding-bottom: 53px;"
+    style="height: calc(100% - 15px);overflow: auto;padding-bottom: 53px;"
   >
   <appealData-module
   ref="appealDataModule"
@@ -79,7 +79,7 @@
               >
                 <a-textarea
                   placeholder="请输入拒绝理由"
-                  :rows="5"
+                  :rows="7"
                   v-decorator="['refuseReason', {rules: [{ required: true, message: '拒绝理由不能为空' }] }]"
                 />
               </a-form-item>
@@ -242,13 +242,13 @@ export default {
     },
     fromSetTimeoutValue (item) {
       this.$refs.inputSelectChangeDept.dataSource = [{
-        text: item.readyDeptName,
+        text: item.readyDeptCode + '-' + item.readyDeptName,
         value: item.readyDeptCode
       }]
       this.$refs.inputSelectChangeDept.value = item.readyDeptCode
 
       this.$refs.inputSelectChangeDoctor.dataSource = [{
-        text: item.readyDoctorName,
+        text: item.readyDoctorCode + '-' + item.readyDoctorName,
         value: item.readyDoctorCode
       }]
       this.$refs.inputSelectChangeDoctor.value = item.readyDoctorCode

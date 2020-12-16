@@ -330,6 +330,8 @@ private static final long serialVersionUID=1L;
 
     public static final String ORDERNUMBER = "orderNumber";
 
+    public static final String APPLYDATAID = "applyDataId";
+
     public static final String COMMENTS ="COMMENTS" ;
 
     public static final String STATE ="STATE" ;

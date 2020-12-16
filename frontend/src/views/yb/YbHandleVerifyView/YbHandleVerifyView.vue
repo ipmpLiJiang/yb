@@ -158,9 +158,9 @@ export default {
     callback (key) {
       this.tableSelectKey = key
       if (key === '1') {
-        this.$refs.ybHandleVerifyDataSend.search()
+        this.$refs.ybHandleVerifyDataSend.searchPage()
       } else if (key === '2') {
-        this.$refs.ybHandleVerifyDataEnd.search()
+        this.$refs.ybHandleVerifyDataEnd.searchPage()
       } else {
         console.log('ok')
       }

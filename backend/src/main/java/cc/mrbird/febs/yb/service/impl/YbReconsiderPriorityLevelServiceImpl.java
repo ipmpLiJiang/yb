@@ -1,5 +1,6 @@
 package cc.mrbird.febs.yb.service.impl;
 
+import cc.mrbird.febs.com.controller.DataTypeHelpers;
 import cc.mrbird.febs.common.domain.QueryRequest;
 import cc.mrbird.febs.common.utils.SortUtil;
 import cc.mrbird.febs.yb.entity.YbReconsiderPriorityLevel;
@@ -82,6 +83,10 @@ public class YbReconsiderPriorityLevelServiceImpl extends ServiceImpl<YbReconsid
         ybReconsiderPriorityLevel.setId(UUID.randomUUID().toString());
         ybReconsiderPriorityLevel.setCreateTime(new Date());
         ybReconsiderPriorityLevel.setIsDeletemark(1);
+        String strDeptName = DataTypeHelpers.stringReplaceSetString(ybReconsiderPriorityLevel.getDeptName(),ybReconsiderPriorityLevel.getDeptCode() + "-");
+        ybReconsiderPriorityLevel.setDeptName(strDeptName);
+        String strDoctorName = DataTypeHelpers.stringReplaceSetString(ybReconsiderPriorityLevel.getDoctorName(),ybReconsiderPriorityLevel.getDoctorCode() + "-");
+        ybReconsiderPriorityLevel.setDoctorName(strDoctorName);
         this.save(ybReconsiderPriorityLevel);
     }
 
@@ -89,6 +94,10 @@ public class YbReconsiderPriorityLevelServiceImpl extends ServiceImpl<YbReconsid
     @Transactional
     public void updateYbReconsiderPriorityLevel(YbReconsiderPriorityLevel ybReconsiderPriorityLevel) {
         ybReconsiderPriorityLevel.setModifyTime(new Date());
+        String strDeptName = DataTypeHelpers.stringReplaceSetString(ybReconsiderPriorityLevel.getDeptName(),ybReconsiderPriorityLevel.getDeptCode() + "-");
+        ybReconsiderPriorityLevel.setDeptName(strDeptName);
+        String strDoctorName = DataTypeHelpers.stringReplaceSetString(ybReconsiderPriorityLevel.getDoctorName(),ybReconsiderPriorityLevel.getDoctorCode() + "-");
+        ybReconsiderPriorityLevel.setDoctorName(strDoctorName);
         this.baseMapper.updateYbReconsiderPriorityLevel(ybReconsiderPriorityLevel);
     }
 

@@ -39,7 +39,7 @@
             <a-button
               style="margin-left: 18px"
               type="primary"
-              @click="search"
+              @click="searchPage"
             >查询</a-button>
             <a-button
               style="margin-left: 18px"
@@ -97,7 +97,7 @@
     </div>
     <template>
       <a-modal
-        :width="500"
+        width="35%"
         :maskClosable="false"
         :footer="null"
         v-model="importVisible"
@@ -108,19 +108,19 @@
         :spinning="spinning"
         :delay="delayTime"
       >
-        <div>
+        <div style="padding-bottom:30px">
           <a-row
             justify="center"
             type="flex"
           >
-            <a-col :span=22>
+            <a-col :span=24>
               <a-form-item
                 label="复议年月"
                 v-bind="formItemLayout"
               >
                 <a-month-picker
                   placeholder="请选择复议年月"
-                  style="width: 120px"
+                  style="width: 200px"
                   @change="monthChange"
                   :default-value="defaultApplyDate"
                   :format="monthFormat"
@@ -132,14 +132,14 @@
             justify="center"
             type="flex"
           >
-            <a-col :span=22>
+            <a-col :span=24>
               <a-form-item
                 label="扣款类型"
                 v-bind="formItemLayout"
               >
                 <a-select
                   :value="selectDataType"
-                  style="width: 120px"
+                  style="width: 200px"
                   @change="handleDataTypeChange"
                 >
                   <a-select-option
@@ -156,14 +156,14 @@
             justify="center"
             type="flex"
           >
-            <a-col :span=22>
+            <a-col :span=24>
               <a-form-item
                 label="保险类型"
                 v-bind="formItemLayout"
               >
                 <a-select
                   :value="selectRepayType"
-                  style="width: 120px"
+                  style="width: 200px"
                   @change="handleRepayTypeChange"
                 >
                   <a-select-option
@@ -180,18 +180,20 @@
             justify="center"
             type="flex"
           >
-            <a-col :span=22>
+            <a-col :span=24>
               <a-form-item
                 label="文件名称"
                 v-bind="formItemLayout"
               >
                 <a-input
                   placeholder="上传文件名称"
+                  style="width: 200px"
                   v-model="uploadFileName"
                 />
               </a-form-item>
             </a-col>
           </a-row>
+          <br>
           <a-row
             justify="center"
             type="flex"
@@ -208,7 +210,7 @@
                 </a-button>
               </a-upload>
             </a-col>
-            <a-col :span=7>
+            <a-col :span=5>
               <a-popconfirm
                 title="确定下载还款模板？"
                 @confirm="downloadFile"
@@ -504,6 +506,13 @@ export default {
         }
       })
     },
+    searchPage () {
+      this.pagination.defaultCurrent = 1
+      if (this.paginationInfo) {
+        this.paginationInfo.current = this.pagination.defaultCurrent
+      }
+      this.search()
+    },
     search () {
       let { sortedInfo } = this
       let sortField, sortOrder
@@ -522,6 +531,7 @@ export default {
       // 取消选中
       this.selectedRowKeys = []
       // 重置分页
+      this.pagination.defaultCurrent = 1
       this.$refs.TableInfo.pagination.current = this.pagination.defaultCurrent
       if (this.paginationInfo) {
         this.paginationInfo.current = this.pagination.defaultCurrent

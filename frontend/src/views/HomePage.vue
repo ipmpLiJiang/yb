@@ -224,7 +224,7 @@ export default {
         '准备吃些什么呢'
       ]
       let index = Math.floor((Math.random() * welcomeArr.length))
-      return `${time}，${this.user.username}，${welcomeArr[index]}`
+      return `${time}，${this.user.xmname}，${welcomeArr[index]}`
     }
   },
   mounted () {

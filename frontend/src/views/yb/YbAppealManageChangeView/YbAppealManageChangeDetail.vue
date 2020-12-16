@@ -7,7 +7,7 @@
     :closable="true"
     @close="onClose"
     :visible="detailVisiable"
-    style="height: calc(100% - 55px);overflow: auto;padding-bottom: 53px;"
+    style="height: calc(100% - 15px);overflow: auto;padding-bottom: 53px;"
   >
     <appealData-module
     ref="appealDataModule"
@@ -23,45 +23,45 @@
     <br>
     <div style="padding-top:20px;padding-bottom:20px;border: 1px solid #e8e8e8;">
     <a-row type="flex" justify="start">
-    <a-col :span=20>
+    <a-col :span=22>
       <!--科室、医生-->
       <a-row>
-        <a-col :span=6>
+        <a-col :span=8>
           <a-form-item
             v-bind="formItemLayout"
             label="申请科室"
           >
-            {{ybAppealManageChangeDetail.readyDeptName}}
+            {{ybAppealManageChangeDetail.readyDeptCode}}-{{ybAppealManageChangeDetail.readyDeptName}}
           </a-form-item>
         </a-col>
-        <a-col :span=6>
+        <a-col :span=4>
           <a-form-item
             v-bind="formItemLayout"
             label="申请人"
           >
-            {{ybAppealManageChangeDetail.readyDoctorName}}
+            {{ybAppealManageChangeDetail.readyDoctorCode}}-{{ybAppealManageChangeDetail.readyDoctorName}}
           </a-form-item>
         </a-col>
-        <a-col :span=6>
+        <a-col :span=8>
           <a-form-item
             v-bind="formItemLayout"
             label="更改科室"
           >
-            {{ybAppealManageChangeDetail.changeDeptName}}
+            {{ybAppealManageChangeDetail.changeDeptCode}}-{{ybAppealManageChangeDetail.changeDeptName}}
           </a-form-item>
         </a-col>
-        <a-col :span=6>
+        <a-col :span=4>
           <a-form-item
             v-bind="formItemLayout"
             label="更改人"
           >
-            {{ybAppealManageChangeDetail.changeDoctorName}}
+            {{ybAppealManageChangeDetail.changeDoctorCode}}-{{ybAppealManageChangeDetail.changeDoctorName}}
           </a-form-item>
         </a-col>
       </a-row>
       <!--申诉理由-->
       <a-row type="flex" justify="start">
-        <a-col :span=20>
+        <a-col :span=22>
             <a-form-item
             v-bind="{
               labelCol: { span: 3 },
@@ -97,8 +97,8 @@ import moment from 'moment'
 import AppealDataModule from '../ybFunModule/AppealDataModule'
 import InpatientfeesModule from '../ybFunModule/InpatientfeesModule'
 const formItemLayout = {
-  labelCol: { span: 10 },
-  wrapperCol: { span: 13, offset: 1 }
+  labelCol: { span: 9 },
+  wrapperCol: { span: 14, offset: 1 }
 }
 export default {
   name: 'YbAppealManageChangeDetail',

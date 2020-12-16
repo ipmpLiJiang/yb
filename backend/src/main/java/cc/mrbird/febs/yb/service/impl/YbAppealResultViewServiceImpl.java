@@ -206,7 +206,7 @@ public class YbAppealResultViewServiceImpl extends ServiceImpl<YbAppealResultVie
     //打包下载导出列表
     @Override
     public List<YbAppealResultView> findAppealResultViewLists(YbAppealResultView ybAppealResultView) {
-        List<YbAppealResultView> list = new ArrayList<YbAppealResultView>();
+        List<YbAppealResultView> list = new ArrayList<>();
         try {
             LambdaQueryWrapper<YbAppealResultView> queryWrapper = new LambdaQueryWrapper<>();
             String sql = "";
@@ -252,7 +252,7 @@ public class YbAppealResultViewServiceImpl extends ServiceImpl<YbAppealResultVie
     //打包下载 查找部门
     @Override
     public List<YbAppealResultDownLoad> findYbAppealResultDownLoadList(YbAppealResultView ybAppealResultView) {
-        List<YbAppealResultDownLoad> downLoadList = new ArrayList<YbAppealResultDownLoad>();
+        List<YbAppealResultDownLoad> downLoadList = new ArrayList<>();
         try {
             int typeNo = 0;
 

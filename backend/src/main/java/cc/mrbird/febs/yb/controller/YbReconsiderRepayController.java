@@ -11,6 +11,7 @@ import cc.mrbird.febs.common.exception.FebsException;
 import cc.mrbird.febs.common.domain.QueryRequest;
 
 import cc.mrbird.febs.common.properties.FebsProperties;
+import cc.mrbird.febs.export.excel.ExportExcelUtils;
 import cc.mrbird.febs.yb.domain.ResponseImportResultData;
 import cc.mrbird.febs.yb.domain.ResponseResult;
 import cc.mrbird.febs.yb.domain.ResponseResultData;
@@ -19,15 +20,26 @@ import cc.mrbird.febs.yb.service.IYbReconsiderRepayService;
 
 import cc.mrbird.febs.common.utils.FebsUtil;
 import cc.mrbird.febs.system.domain.User;
+import cn.hutool.core.io.IoUtil;
+import cn.hutool.poi.excel.ExcelUtil;
+import cn.hutool.poi.excel.ExcelWriter;
+import cn.hutool.poi.excel.StyleSet;
 import com.baomidou.mybatisplus.core.toolkit.StringPool;
 import com.wuwenze.poi.ExcelKit;
+import com.wuwenze.poi.factory.ExcelMappingFactory;
+import com.wuwenze.poi.pojo.ExcelMapping;
+import com.wuwenze.poi.pojo.ExcelProperty;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.Font;
+import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
@@ -129,11 +141,11 @@ public class YbReconsiderRepayController extends BaseController {
     @Log("修改")
     @PutMapping("updateApplyState")
     @RequiresPermissions("ybReconsiderRepay:updateRepayState")
-    public FebsResponse updateReconsiderRepayApplyState(@Valid YbReconsiderRepay ybReconsiderRepay){
+    public FebsResponse updateReconsiderRepayApplyState(@Valid YbReconsiderRepay ybReconsiderRepay) {
         int success = 0;
         try {
             message = this.iYbReconsiderRepayService.updateReconsiderApplyState(ybReconsiderRepay);
-            if(message.equals("ok")){
+            if (message.equals("ok")) {
                 success = 1;
                 message = "完成还款成功";
             }
@@ -229,7 +241,7 @@ public class YbReconsiderRepayController extends BaseController {
                 List<String> orderNumberList = new ArrayList<>();
                 String congfu = "";
                 if (objJb.size() > 1) {
-                    if (objJb.get(0).length == 7) {
+                    if (objJb.get(0).length >= 7) {
                         for (int i = 1; i < objJb.size(); i++) {
                             message = "Excel导入 数据读取失败，请确保Excel列表数据正确无误.";
                             YbReconsiderRepayData rrd = new YbReconsiderRepayData();
@@ -560,36 +572,46 @@ public class YbReconsiderRepayController extends BaseController {
     }
 
     @PostMapping("downFile")
-    public void downFile(HttpServletResponse response) {
+    public void downFile(HttpServletResponse response) throws FebsException {
         try {
-            String path = febsProperties.getUploadPath();
-            String fileName = "还款管理模板.xlsx";
-            String filePath = path + fileName;
-            File file = new File(filePath);
-            if (file.exists()) {
-                InputStream ins = new FileInputStream(filePath);
-                BufferedInputStream bins = new BufferedInputStream(ins);// 放到缓冲流里面
-                OutputStream outs = response.getOutputStream();// 获取文件输出IO流
-                BufferedOutputStream bouts = new BufferedOutputStream(outs);
-                response.setHeader("Content-Disposition",
-                        "attachment;filename=" + URLEncoder.encode(fileName, "utf-8"));
-
-                int bytesRead = 0;
-                byte[] buffer = new byte[512];
-                //开始向网络传输文件流
-                while ((bytesRead = bins.read(buffer, 0, 512)) != -1) {
-                    bouts.write(buffer, 0, bytesRead);
-                }
-                bouts.flush();// 这里一定要调用flush()方法
-                ins.close();
-                bins.close();
-                outs.close();
-                bouts.close();
-            } else {
-//                response.sendRedirect("../error.jsp");
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
+            ExportExcelUtils.exportTemplateFile(response,YbReconsiderRepayDataExport.class,"还款明细");
+        } catch (Exception e) {
+            message = "导出Excel模板失败";
+            log.error(message, e);
+            throw new FebsException(message);
         }
     }
+
+//    @PostMapping("downFile")
+//    public void downFile(HttpServletResponse response) {
+//        try {
+//            String path = febsProperties.getUploadPath();
+//            String fileName = "还款管理模板.xlsx";
+//            String filePath = path + fileName;
+//            File file = new File(filePath);
+//            if (file.exists()) {
+//                InputStream ins = new FileInputStream(filePath);
+//                BufferedInputStream bins = new BufferedInputStream(ins);// 放到缓冲流里面
+//                OutputStream outs = response.getOutputStream();// 获取文件输出IO流
+//                BufferedOutputStream bouts = new BufferedOutputStream(outs);
+//                response.setHeader("Content-Disposition",
+//                        "attachment;filename=" + URLEncoder.encode(fileName, "utf-8"));
+//
+//                int bytesRead = 0;
+//                byte[] buffer = new byte[512];
+//                //开始向网络传输文件流
+//                while ((bytesRead = bins.read(buffer, 0, 512)) != -1) {
+//                    bouts.write(buffer, 0, bytesRead);
+//                }
+//                bouts.flush();// 这里一定要调用flush()方法
+//                ins.close();
+//                bins.close();
+//                outs.close();
+//                bouts.close();
+//            } else {
+//            }
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//    }
 }

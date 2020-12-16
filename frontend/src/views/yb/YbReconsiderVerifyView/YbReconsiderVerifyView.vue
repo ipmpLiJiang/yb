@@ -27,7 +27,7 @@
               />
             </a-form-item>
           </a-col>
-          <a-col :span=2 v-show="tableSelectKey==1||tableSelectKey==4?true:false">
+          <a-col :span=2 v-show="tableSelectKey==1||tableSelectKey==2?true:false">
             <a-button
               type="primary"
               @click="showSearchModal"
@@ -37,7 +37,7 @@
             <a-popconfirm
               title="确定自动匹配？"
               @confirm="addImport"
-              v-show="tableSelectKey==1||tableSelectKey==4?true:false"
+              v-show="tableSelectKey==1||tableSelectKey==2?true:false"
               okText="确定"
               style="margin-right: 15px"
               cancelText="取消"
@@ -47,7 +47,7 @@
             <a-button
               type="primary"
               style="margin-right: 15px"
-              v-show="tableSelectKey==1||tableSelectKey==4?true:false"
+              v-show="tableSelectKey==1||tableSelectKey==2?true:false"
               @click="showUpdateModal"
             >手动匹配</a-button>
             <a-popconfirm
@@ -66,7 +66,7 @@
             <a-popconfirm
               title="确定批量发送？"
               style="margin-right: 15px"
-              v-show="tableSelectKey==2||tableSelectKey==4?true:false"
+              v-show="tableSelectKey==2||tableSelectKey==3?true:false"
               @confirm="batchSend"
               okText="确定"
               cancelText="取消"
@@ -76,7 +76,7 @@
             <a-popconfirm
               title="确定全部发送？"
               style="margin-right: 15px"
-              v-show="tableSelectKey==2||tableSelectKey==4?true:false"
+              v-show="tableSelectKey==2||tableSelectKey==3?true:false"
               @confirm="batchSendA"
               okText="确定"
               cancelText="取消"
@@ -116,7 +116,7 @@
             </ybReconsiderVerify-stayed>
           </a-tab-pane>
           <a-tab-pane
-            key="4"
+            key="2"
             :forceRender="true"
             tab="主单待核对"
           >
@@ -130,7 +130,7 @@
             </ybReconsiderSendStayed-main>
           </a-tab-pane>
           <a-tab-pane
-            key="2"
+            key="3"
             :forceRender="true"
             tab="已核对"
           >
@@ -141,7 +141,7 @@
             </ybReconsiderSend-stayed>
           </a-tab-pane>
           <a-tab-pane
-            key="3"
+            key="4"
             :forceRender="true"
             tab="已完成"
           >
@@ -168,6 +168,7 @@
         <a-modal
           v-model="visibleSearch"
           title="筛选"
+          width="35%"
           on-ok="handleSearchOk"
         >
           <template slot="footer">
@@ -340,7 +341,6 @@ export default {
     },
     monthChange (date, dateString) {
       this.searchApplyDate = dateString
-      console.log(this.searchApplyDate)
     },
     showImport (data) {
       this.visibleUpdate = true
@@ -402,9 +402,9 @@ export default {
     },
     handleSearchOk (e) {
       if (this.tableSelectKey === '1') {
-        this.$refs.ybReconsiderVerifyStayed.reset()
+        this.$refs.ybReconsiderVerifyStayed.searchPage()
       } else {
-        this.$refs.ybReconsiderSendStayedMain.reset()
+        this.$refs.ybReconsiderSendStayedMain.searchPage()
       }
       this.visibleSearch = false
     },
@@ -425,7 +425,7 @@ export default {
     addImport () {
       this.spinning = true
       let url = 'importReconsiderVerify'
-      if (this.tableSelectKey === '4') {
+      if (this.tableSelectKey === '2') {
         url = 'importMainReconsiderVerify'
       }
 
@@ -434,10 +434,10 @@ export default {
       }).then(() => {
         this.spinning = false
         this.$message.success('匹配完成')
-        if (this.tableSelectKey === '4') {
-          this.$refs.ybReconsiderSendStayedMain.search()
+        if (this.tableSelectKey === '2') {
+          this.$refs.ybReconsiderSendStayedMain.searchPage()
         } else {
-          this.$refs.ybReconsiderVerifyStayed.search()
+          this.$refs.ybReconsiderVerifyStayed.searchPage()
         }
       }).catch(() => {
         this.spinning = false
@@ -449,14 +449,14 @@ export default {
       this.pcmVisible = false
     },
     batchSend () {
-      if (this.tableSelectKey === '4') {
+      if (this.tableSelectKey === '2') {
         this.$refs.ybReconsiderSendStayedMain.batchSend()
       } else {
         this.$refs.ybReconsiderSendStayed.batchSend()
       }
     },
     batchSendA () {
-      if (this.tableSelectKey === '4') {
+      if (this.tableSelectKey === '2') {
         this.$refs.ybReconsiderSendStayedMain.batchSendA()
       } else {
         this.$refs.ybReconsiderSendStayed.batchSendA()
@@ -484,13 +484,13 @@ export default {
       this.tableSelectKey = key
       if (key === '1') {
         this.clearValue()
-        this.$refs.ybReconsiderVerifyStayed.reset()
+        this.$refs.ybReconsiderVerifyStayed.searchPage()
       } else if (key === '2') {
-        this.$refs.ybReconsiderSendStayed.reset()
+        this.$refs.ybReconsiderSendStayedMain.searchPage()
       } else if (key === '3') {
-        this.$refs.ybReconsiderSendEnd.reset()
+        this.$refs.ybReconsiderSendStayed.searchPage()
       } else if (key === '4') {
-        this.$refs.ybReconsiderSendStayedMain.reset()
+        this.$refs.ybReconsiderSendEnd.searchPage()
       } else {
         console.log('ok')
       }

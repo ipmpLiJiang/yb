@@ -43,7 +43,7 @@
         where  1=1
         <if test="ybDept.id != null"> and id =#{ ybDept.id} </if>
             <if test="ybDept.deptId != null and ybDept.deptId != ''"> and deptId like concat('%', #{ ybDept.deptId} ,'%')</if>
-            <if test="ybDept.deptName != null and ybDept.deptName != ''"> and deptName like concat('%', #{ ybDept.deptName} ,'%')</if>
+            <if test="ybDept.deptName != null and ybDept.deptName != ''"> and (deptName like concat('%', #{ ybDept.deptName} ,'%') or spellCode like concat('%', #{ ybDept.deptName} ,'%'))</if>
             <if test="ybDept.spellCode != null and ybDept.spellCode != ''"> and spellCode like concat('%', #{ ybDept.spellCode} ,'%')</if>
             <if test="ybDept.comments != null and ybDept.comments != ''"> and COMMENTS like concat('%', #{ ybDept.comments} ,'%')</if>
         <if test="ybDept.state != null"> and STATE =#{ ybDept.state} </if>
