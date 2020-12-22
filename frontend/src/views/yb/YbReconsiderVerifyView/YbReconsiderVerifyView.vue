@@ -27,7 +27,7 @@
               />
             </a-form-item>
           </a-col>
-          <a-col :span=2 v-show="tableSelectKey==1||tableSelectKey==2?true:false">
+          <a-col :span=2>
             <a-button
               type="primary"
               @click="showSearchModal"
@@ -136,6 +136,7 @@
           >
             <ybReconsiderSend-stayed
               ref="ybReconsiderSendStayed"
+              :searchItem='searchItem'
               :applyDate='searchApplyDate'
             >
             </ybReconsiderSend-stayed>
@@ -147,6 +148,7 @@
           >
             <ybReconsiderSend-end
               ref="ybReconsiderSendEnd"
+              :searchItem='searchItem'
               :applyDate='searchApplyDate'
             >
             </ybReconsiderSend-end>
@@ -228,6 +230,21 @@
                 </a-select-option>
               </a-select>
               <a-input style="width: 220px" v-model="searchItem.dept.deptName" />
+            </a-input-group>
+            </a-form-item>
+          </p>
+          <p>
+            <a-form-item
+              v-bind="formItemLayout"
+              label="序号编码："
+            >
+            <a-input-group compact>
+              <a-select style="width: 85px" v-model="searchItem.order.type" default-value="EQ">
+                <a-select-option v-for="item in handleQuerySymbol" :key="item.value" :value="item.value">
+                  {{item.text}}
+                </a-select-option>
+              </a-select>
+              <a-input style="width: 220px" v-model="searchItem.order.orderNumber" />
             </a-input-group>
             </a-form-item>
           </p>
@@ -325,7 +342,8 @@ export default {
       searchItem: {
         project: {type: 'LIKE', projectName: ''},
         rule: {type: 'LIKE', ruleName: ''},
-        dept: {type: 'LIKE', deptName: ''}
+        dept: {type: 'LIKE', deptName: ''},
+        order: {type: 'LIKE', orderNumber: ''}
       }
     }
   },
@@ -401,11 +419,7 @@ export default {
       this.visibleSearch = true
     },
     handleSearchOk (e) {
-      if (this.tableSelectKey === '1') {
-        this.$refs.ybReconsiderVerifyStayed.searchPage()
-      } else {
-        this.$refs.ybReconsiderSendStayedMain.searchPage()
-      }
+      this.searchPageService(this.tableSelectKey)
       this.visibleSearch = false
     },
     handleSearchCancel (e) {
@@ -479,11 +493,15 @@ export default {
       this.searchItem.project.projectName = ''
       this.searchItem.rule.ruleName = ''
       this.searchItem.dept.deptName = ''
+      this.searchItem.order.orderNumber = ''
     },
     callback (key) {
       this.tableSelectKey = key
+      this.clearValue()
+      this.searchPageService(key)
+    },
+    searchPageService (key) {
       if (key === '1') {
-        this.clearValue()
         this.$refs.ybReconsiderVerifyStayed.searchPage()
       } else if (key === '2') {
         this.$refs.ybReconsiderSendStayedMain.searchPage()

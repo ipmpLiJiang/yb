@@ -138,6 +138,7 @@ public class YbReconsiderVerifyServiceImpl extends ServiceImpl<YbReconsiderVerif
             if (state == YbDefaultValue.APPLYSTATE_2 || state == YbDefaultValue.APPLYSTATE_3 || state == YbDefaultValue.APPLYSTATE_4 || state == YbDefaultValue.APPLYSTATE_5) {
                 int typeno = state == YbDefaultValue.APPLYSTATE_2 || state == YbDefaultValue.APPLYSTATE_3 ? YbDefaultValue.TYPENO_1 : YbDefaultValue.TYPENO_2;
                 List<YbReconsiderApplyData> radList = iYbReconsiderApplyDataService.findReconsiderApplyDataByNotVerifys(ybReconsiderApply.getApplyDateStr(), YbDefaultValue.DATATYPE_0, typeno);
+
                 if (radList.size() > 0) {
                     List<YbReconsiderPriorityLevel> rplList = iYbReconsiderPriorityLevelService.findReconsiderPriorityLevelList();
                     YbReconsiderInpatientfees waquery = new YbReconsiderInpatientfees();
@@ -151,6 +152,9 @@ public class YbReconsiderVerifyServiceImpl extends ServiceImpl<YbReconsiderVerif
 
                     List<YbReconsiderInpatientfees> queryRifList = new ArrayList<>();
                     List<YbReconsiderPriorityLevel> queryRlList = new ArrayList<>();
+                    List<YbPerson> personList = new ArrayList<>();
+                    personList = iYbPersonService.list();
+                    List<YbPerson> queryPersontList = new ArrayList<>();
                     List<YbReconsiderVerify> createList = new ArrayList<>();
                     Date thisDate = new Date();
                     for (YbReconsiderApplyData item : radList) {
@@ -203,11 +207,21 @@ public class YbReconsiderVerifyServiceImpl extends ServiceImpl<YbReconsiderVerif
                                     ybReconsiderVerify.setVerifyDoctorName(queryRlList.get(0).getDoctorName());
                                     isCreate = true;
                                 } else {
-                                    if (queryRifList.get(0).getDeptId() != null && queryRifList.get(0).getDeptName() != null && queryRifList.get(0).getOrderDocId() != null && queryRifList.get(0).getOrderDocName() != null) {
+                                    String strOrderDocId = queryRifList.get(0).getOrderDocId();
+                                    String strOrderDocName = queryRifList.get(0).getOrderDocName();
+                                    if(strOrderDocId != null && strOrderDocName == null){
+                                        queryPersontList = personList.stream().filter(p ->
+                                                p.getPersonCode().equals(strOrderDocId)).collect(Collectors.toList());
+                                        if (queryPersontList.size() > 0) {
+                                            strOrderDocName = queryPersontList.get(0).getPersonName();
+                                            queryRifList.get(0).setOrderDocName(strOrderDocName);//'开方医生名称'
+                                        }
+                                    }
+                                    if (queryRifList.get(0).getDeptId() != null && queryRifList.get(0).getDeptName() != null && strOrderDocId != null && strOrderDocName != null) {
                                         ybReconsiderVerify.setVerifyDeptCode(queryRifList.get(0).getDeptId());
                                         ybReconsiderVerify.setVerifyDeptName(queryRifList.get(0).getDeptName());
-                                        ybReconsiderVerify.setVerifyDoctorCode(queryRifList.get(0).getOrderDocId());
-                                        ybReconsiderVerify.setVerifyDoctorName(queryRifList.get(0).getOrderDocName());
+                                        ybReconsiderVerify.setVerifyDoctorCode(strOrderDocId);
+                                        ybReconsiderVerify.setVerifyDoctorName(strOrderDocName);
                                         isCreate = true;
                                     }
                                 }
@@ -289,7 +303,8 @@ public class YbReconsiderVerifyServiceImpl extends ServiceImpl<YbReconsiderVerif
         List<YbPerson> queryPersonList = new ArrayList<>();
         List<ComSms> smsList = new ArrayList<>();
         List<String> userCodeList = new ArrayList<>();
-        boolean isOpenSms = febsProperties.isOpenSms();
+        int nOpenSms = febsProperties.getOpenSms();
+        boolean isOpenSms = nOpenSms == 1 ? true : false;
         if (isOpenSms) {
             personList = iYbPersonService.findPersonList(new YbPerson(), 0);
             ComSms qu = new ComSms();
@@ -394,7 +409,8 @@ public class YbReconsiderVerifyServiceImpl extends ServiceImpl<YbReconsiderVerif
         List<YbPerson> queryPersonList = new ArrayList<>();
         List<ComSms> smsList = new ArrayList<>();
         List<String> userCodeList = new ArrayList<>();
-        boolean isOpenSms = febsProperties.isOpenSms();
+        int nOpenSms = febsProperties.getOpenSms();
+        boolean isOpenSms = nOpenSms == 1 ? true : false;
         if (isOpenSms) {
             personList = iYbPersonService.findPersonList(new YbPerson(), 0);
             ComSms qu = new ComSms();

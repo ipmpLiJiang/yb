@@ -299,7 +299,8 @@ public class YbAppealManageServiceImpl extends ServiceImpl<YbAppealManageMapper,
         }
 
         this.save(newAppealManage);
-        boolean isOpenSms = febsProperties.isOpenSms();
+        int nOpenSms = febsProperties.getOpenSms();
+        boolean isOpenSms = nOpenSms == 1 ? true : false;
         if(isOpenSms) {
             String sendContent = "医保管理平台提醒您，您的医保复议任务" + msg + "，请尽快处理";
             iComSmsService.sendSmsService(personCodeList, ComSms.SENDTYPE_3, sendContent, uId, Uname);
@@ -377,7 +378,8 @@ public class YbAppealManageServiceImpl extends ServiceImpl<YbAppealManageMapper,
         personCodeList.add(newAppealManage.getReadyDoctorCode());
 
         this.save(newAppealManage);
-        boolean isOpenSms = febsProperties.isOpenSms();
+        int nOpenSms = febsProperties.getOpenSms();
+        boolean isOpenSms = nOpenSms == 1 ? true : false;
         if(isOpenSms) {
             String sendContent = "医保管理平台提醒您，您的医保复议任务已发布，请尽快处理";
             iComSmsService.sendSmsService(personCodeList, ComSms.SENDTYPE_4, sendContent, uId, Uname);

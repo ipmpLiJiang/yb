@@ -32,22 +32,10 @@ import java.util.*;
  */
 public class ExportExcelUtils {
 
-    public static void exportExcel(HttpServletResponse response, Class<?> clazz, List<?> listData, String filePath, String fileName, String folderName, String sheetName) throws IOException {
-        String fname = UUID.randomUUID().toString();
-        if (!fileName.isEmpty()) {
-            fname = fileName;
-        }
-        if (folderName.isEmpty()) {
-            filePath += fname + ".xlsx";
-        } else {
-            filePath += folderName + "/" + fname + ".xlsx";
-        }
+    public static void exportExcel(HttpServletResponse response, Class<?> clazz, List<?> listData,  String sheetName) throws IOException {
         ExcelMapping excelMappingData = ExcelMappingFactory.get(clazz);
-
         int sheetColumnCount = excelMappingData.getPropertyList().size();
-
-        ExcelWriter writer = ExcelUtil.getWriter(filePath, sheetName);
-
+        ExcelWriter writer = ExcelUtil.getWriterWithSheet(sheetName);
 
         //合并单元格后的标题行，使用默认标题样式
         //writer.merge(row1.size() - 1, "测试标题1");

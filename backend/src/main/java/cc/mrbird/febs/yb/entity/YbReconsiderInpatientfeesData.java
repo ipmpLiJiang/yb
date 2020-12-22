@@ -181,4 +181,25 @@ public class YbReconsiderInpatientfeesData implements Serializable {
     @ExcelField(value = "itemYbCode")
     private String itemYbCode;
 
+    /**
+     * MiCode
+     */
+    @TableField("MiCode")
+    @ExcelField(value = "MiCode")
+    private String MiCode;
+
+    /**
+     * HisName
+     */
+    @TableField("HisName")
+    @ExcelField(value = "HisName")
+    private String HisName;
+
+    /**
+     * MiName
+     */
+    @TableField("MiName")
+    @ExcelField(value = "MiName")
+    private String MiName;
+
 }

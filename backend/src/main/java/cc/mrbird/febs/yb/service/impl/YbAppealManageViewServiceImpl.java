@@ -55,6 +55,7 @@ public class YbAppealManageViewServiceImpl extends ServiceImpl<YbAppealManageVie
             if (ybAppealManageView.getCurrencyField() != null && !"".equals(ybAppealManageView.getCurrencyField())) {
                 sql += " and (serialNo like'%" + ybAppealManageView.getCurrencyField() + "%'" +
                         " or billNo like'%" + ybAppealManageView.getCurrencyField() + "%'" +
+                        " or orderNumber = '" + ybAppealManageView.getCurrencyField() + "'" +
                         " or proposalCode like'%" + ybAppealManageView.getCurrencyField() + "%'" +
                         " or projectCode like'%" + ybAppealManageView.getCurrencyField() + "%'" +
                         " or ruleName like'%" + ybAppealManageView.getCurrencyField() + "%'" +
@@ -87,6 +88,7 @@ public class YbAppealManageViewServiceImpl extends ServiceImpl<YbAppealManageVie
             sql += ")";
             if (ybAppealManageView.getCurrencyField() != null && !"".equals(ybAppealManageView.getCurrencyField())) {
                 sql += " and (serialNo like'%" + ybAppealManageView.getCurrencyField() + "%'" +
+                        " or orderNumber = '" + ybAppealManageView.getCurrencyField() + "'" +
                         " or billNo like'%" + ybAppealManageView.getCurrencyField() + "%'" +
                         " or proposalCode like'%" + ybAppealManageView.getCurrencyField() + "%'" +
                         " or projectCode like'%" + ybAppealManageView.getCurrencyField() + "%'" +

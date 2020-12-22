@@ -203,7 +203,8 @@ public class ComSmsServiceImpl extends ServiceImpl<ComSmsMapper, ComSms> impleme
         ComSms comSms = new ComSms();
         comSms.setState(ComSms.STATE_0);
         List<ComSms> list = this.baseMapper.findSmsTopList(comSms);
-        boolean isOpenSms = febsProperties.isOpenSms();
+        int nOpenSms = febsProperties.getOpenSms();
+        boolean isOpenSms = nOpenSms == 1 ? true : false;
         if (list.size() > 0 && isOpenSms) {
             List<ComSms> sendList = new ArrayList<>();
             ComSms t1 = list.get(0);

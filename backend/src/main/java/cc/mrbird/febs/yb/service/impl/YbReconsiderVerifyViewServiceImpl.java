@@ -55,6 +55,68 @@ public class YbReconsiderVerifyViewServiceImpl extends ServiceImpl<YbReconsiderV
     }
 
     @Override
+    public IPage<YbReconsiderVerifyView> findYbReconsiderVerifyViews(QueryRequest request, YbReconsiderVerifyView ybReconsiderVerifyView, String[] searchType) {
+        try {
+            LambdaQueryWrapper<YbReconsiderVerifyView> queryWrapper = new LambdaQueryWrapper<>();
+            //queryWrapper.eq(YbReconsiderVerifyView::getIsDeletemark, 1);//1是未删 0是已删
+            queryWrapper.eq(YbReconsiderVerifyView::getApplyDateStr, ybReconsiderVerifyView.getApplyDateStr());//年月
+            queryWrapper.eq(YbReconsiderVerifyView::getState, ybReconsiderVerifyView.getState());//状态
+
+            String strSearchType = "";
+            if(ybReconsiderVerifyView.getProjectName() != null){
+                strSearchType = searchType[0];
+                if(strSearchType.equals("LIKE")){
+                    queryWrapper.like(YbReconsiderVerifyView::getProjectName,ybReconsiderVerifyView.getProjectName());
+                } else if(strSearchType.equals("EQ")){
+                    queryWrapper.eq(YbReconsiderVerifyView::getProjectName,ybReconsiderVerifyView.getProjectName());
+                } else if(strSearchType.equals("NOTLIKE")){
+                    queryWrapper.notLike(YbReconsiderVerifyView::getProjectName,ybReconsiderVerifyView.getProjectName());
+                }
+            }
+
+            if(ybReconsiderVerifyView.getRuleName() != null){
+                strSearchType = searchType[1];
+                if(strSearchType.equals("LIKE")){
+                    queryWrapper.like(YbReconsiderVerifyView::getRuleName,ybReconsiderVerifyView.getRuleName());
+                } else if(strSearchType.equals("EQ")){
+                    queryWrapper.eq(YbReconsiderVerifyView::getRuleName,ybReconsiderVerifyView.getRuleName());
+                } else if(strSearchType.equals("NOTLIKE")){
+                    queryWrapper.notLike(YbReconsiderVerifyView::getRuleName,ybReconsiderVerifyView.getRuleName());
+                }
+            }
+
+            if(ybReconsiderVerifyView.getVerifyDeptName() != null){
+                strSearchType = searchType[2];
+                if(strSearchType.equals("LIKE")){
+                    queryWrapper.like(YbReconsiderVerifyView::getVerifyDeptName,ybReconsiderVerifyView.getVerifyDeptName());
+                } else if(strSearchType.equals("EQ")){
+                    queryWrapper.eq(YbReconsiderVerifyView::getVerifyDeptName,ybReconsiderVerifyView.getVerifyDeptName());
+                } else if(strSearchType.equals("NOTLIKE")){
+                    queryWrapper.notLike(YbReconsiderVerifyView::getVerifyDeptName,ybReconsiderVerifyView.getVerifyDeptName());
+                }
+            }
+
+            if(ybReconsiderVerifyView.getOrderNumber() != null){
+                strSearchType = searchType[3];
+                if(strSearchType.equals("LIKE")){
+                    queryWrapper.like(YbReconsiderVerifyView::getOrderNumber,ybReconsiderVerifyView.getOrderNumber());
+                } else if(strSearchType.equals("EQ")){
+                    queryWrapper.eq(YbReconsiderVerifyView::getOrderNumber,ybReconsiderVerifyView.getOrderNumber());
+                } else if(strSearchType.equals("NOTLIKE")){
+                    queryWrapper.notLike(YbReconsiderVerifyView::getOrderNumber,ybReconsiderVerifyView.getOrderNumber());
+                }
+            }
+
+            Page<YbReconsiderVerifyView> page = new Page<>();
+            SortUtil.handlePageSort(request, page, false);//true 是属性  false是数据库字段可两个
+            return this.page(page, queryWrapper);
+        } catch (Exception e) {
+            log.error("获取字典信息失败", e);
+            return null;
+        }
+    }
+
+    @Override
     public IPage<YbReconsiderVerifyView> findYbReconsiderVerifyViewList(QueryRequest request, YbReconsiderVerifyView ybReconsiderVerifyView) {
         try {
             Page<YbReconsiderVerifyView> page = new Page<>();

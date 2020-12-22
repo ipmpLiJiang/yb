@@ -137,7 +137,7 @@ public class YbReconsiderRepayDataController extends BaseController {
         try {
             List<YbReconsiderRepayData> ybReconsiderRepayDatas = this.iYbReconsiderRepayDataService.findReconsiderRepayLists(ybReconsiderRepayData);
 
-            if(ybReconsiderRepayDatas.size()>0){
+            if (ybReconsiderRepayDatas.size() > 0) {
                 List<YbReconsiderRepayDataExport> dataList = new ArrayList<>();
                 SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
                 String dateString = "";
@@ -170,8 +170,7 @@ public class YbReconsiderRepayDataController extends BaseController {
                 }
 
                 dataList = dataList.stream().sorted(Comparator.comparing(YbReconsiderRepayDataExport::getOrderNumber)).collect(Collectors.toList());
-                String filePath = febsProperties.getUploadPath(); // 上传后的路径
-                ExportExcelUtils.exportExcel(response,YbReconsiderRepayDataExport.class,dataList,filePath,"","ReconsiderRepayTemp","还款明细");
+                ExportExcelUtils.exportExcel(response, YbReconsiderRepayDataExport.class, dataList, "还款明细");
             }
         } catch (Exception e) {
             message = "导出Excel失败";
@@ -187,8 +186,8 @@ public class YbReconsiderRepayDataController extends BaseController {
     }
 
     @GetMapping("findGroupBelongDateStr")
-    public FebsResponse findGroupBelongDateStrs(String pid){
-        List<String> list =  this.iYbReconsiderRepayDataService.findGroupBelongDateStrs(pid);
+    public FebsResponse findGroupBelongDateStrs(String pid) {
+        List<String> list = this.iYbReconsiderRepayDataService.findGroupBelongDateStrs(pid);
         Map<String, Object> result = new HashMap<>();
         if (list.size() > 0) {
             result.put("data", list);
@@ -211,25 +210,25 @@ public class YbReconsiderRepayDataController extends BaseController {
             Long uid = currentUser.getUserId();
             String uname = currentUser.getUsername();
 
-            message = this.iYbReconsiderRepayDataService.updateOrderNumberRepayDatas(ybReconsiderRepayData,uid,uname);
-            if("ok".equals(message)){
-                message = this.iYbReconsiderRepayDataService.updateFieldRepayDatas(ybReconsiderRepayData,uid,uname);
-                if("ok".equals(message) || "repay0".equals(message)) {
+            message = this.iYbReconsiderRepayDataService.updateOrderNumberRepayDatas(ybReconsiderRepayData, uid, uname);
+            if ("ok".equals(message)) {
+                message = this.iYbReconsiderRepayDataService.updateFieldRepayDatas(ybReconsiderRepayData, uid, uname);
+                if ("ok".equals(message) || "repay0".equals(message)) {
                     success = 1;
                     message = "还款数据成功.";
-                }else {
-                    if(message.equals("result0")){
+                } else {
+                    if (message.equals("result0")) {
                         message = "模糊匹配，未找到有效的申诉上传数据.";
                     }
                 }
             }
-            if(message.equals("update0")){
+            if (message.equals("update0")) {
                 message = "未找到可更新的数据.";
             }
-            if(message.equals("result0")){
+            if (message.equals("result0")) {
                 message = "未找到有效的申诉上传数据.";
             }
-            if(message.equals("")){
+            if (message.equals("")) {
                 message = "未找到可变更的数据.";
             }
         } catch (Exception e) {
@@ -245,15 +244,15 @@ public class YbReconsiderRepayDataController extends BaseController {
     @Log("修改")
     @PutMapping("updateHandleRepayData")
     @RequiresPermissions("ybReconsiderRepayData:updateRepayData")
-    public FebsResponse updateHandleRepayData(String resultId,String repayId) {
+    public FebsResponse updateHandleRepayData(String resultId, String repayId) {
         int success = 0;
         try {
             User currentUser = FebsUtil.getCurrentUser();
             Long uid = currentUser.getUserId();
             String uname = currentUser.getUsername();
-            message = this.iYbReconsiderRepayDataService.updateHandleRepayDatas(resultId,repayId,uid,uname);
-            if("ok".equals(message)){
-                success= 1;
+            message = this.iYbReconsiderRepayDataService.updateHandleRepayDatas(resultId, repayId, uid, uname);
+            if ("ok".equals(message)) {
+                success = 1;
                 message = "还款数据成功.";
             }
         } catch (Exception e) {

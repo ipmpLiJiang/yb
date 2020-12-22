@@ -168,7 +168,7 @@ public class UserController extends BaseController {
     public void export1(QueryRequest request, HttpServletResponse response) throws FebsException {
         try {
             String filePath = febsProperties.getUploadPath(); // 上传后的路径
-            ExportExcelUtils.exportExcel(response, UserRolesImport.class, null, filePath,"userRolesExport", "", "用户信息");
+            ExportExcelUtils.exportExcel(response, UserRolesImport.class, null, "用户信息");
         } catch (Exception e) {
             message = "导出Excel失败";
             log.error(message, e);

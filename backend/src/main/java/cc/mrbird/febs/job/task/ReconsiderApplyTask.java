@@ -24,4 +24,12 @@ public class ReconsiderApplyTask {
         }
         iYbReconsiderApplyService.findReconsiderApplyDataTask(params);
     }
+
+    public void applyNotTask(String params) {
+        if(params == null || params.equals("no")){
+            params = "";
+        }
+        iYbReconsiderApplyService.findReconsiderApplyDataNotTask(params);
+    }
+
 }

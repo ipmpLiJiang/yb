@@ -211,8 +211,8 @@ public class YbReconsiderResetController extends BaseController {
                                 }
                             }
                             if (objMx.size() > 1 || objZd.size() > 1) {
-                                List<YbReconsiderResetData> ListData = new ArrayList<YbReconsiderResetData>();
-                                List<YbReconsiderResetData> ListMain = new ArrayList<YbReconsiderResetData>();
+                                List<YbReconsiderResetData> ListData = new ArrayList<>();
+                                List<YbReconsiderResetData> ListMain = new ArrayList<>();
 
                                 YbReconsiderReset reconsiderReset = new YbReconsiderReset();
                                 reconsiderReset.setId(guid);

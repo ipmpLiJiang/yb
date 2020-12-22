@@ -48,4 +48,7 @@ public interface IYbReconsiderApplyDataService extends IService<YbReconsiderAppl
 //        int findReconsiderApplyDataCount(String applyDateStr,Integer dataType);
 
         void findReconsiderApplyDataTask(String applyDateStr);
+
+
+        void findReconsiderApplyDataNotTask(String applyDateStr);
 }

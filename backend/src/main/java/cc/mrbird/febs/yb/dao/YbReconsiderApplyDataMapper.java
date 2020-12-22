@@ -30,5 +30,13 @@ public interface YbReconsiderApplyDataMapper extends BaseMapper<YbReconsiderAppl
 
     List<YbReconsiderApplyData> findReconsiderApplyDataBetween(@Param("applyDateStr") String applyDateStr, @Param("dataType") Integer dataType, @Param("typeno") Integer typeno, @Param("startNum") Integer startNum, @Param("endNum") Integer endNum);
 
+
+    List<YbReconsiderApplyData> findReconsiderApplyDataNotBetween(@Param("applyDateStr") String applyDateStr, @Param("dataType") Integer dataType, @Param("typeno") Integer typeno, @Param("startNum") Integer startNum, @Param("endNum") Integer endNum);
+
+
+    List<YbReconsiderApplyData> findReconsiderApplyDataNotInpatientfees(@Param("applyDateStr") String applyDateStr, @Param("dataType") Integer dataType, @Param("typeno") Integer typeno);
+
     int findReconsiderApplyDataCount(@Param("applyDateStr") String applyDateStr, @Param("dataType") Integer dataType, @Param("typeno") Integer typeno);
+
+    int findReconsiderApplyDataNotCount(@Param("applyDateStr") String applyDateStr, @Param("dataType") Integer dataType, @Param("typeno") Integer typeno);
 }

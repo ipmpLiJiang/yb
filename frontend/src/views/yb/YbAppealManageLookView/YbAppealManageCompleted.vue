@@ -68,6 +68,7 @@ export default {
       loading: false,
       bordered: true,
       ybAppealManage: {},
+      tableFormat1: 'YYYY-MM-DD HH:mm:ss',
       tableFormat: 'YYYY-MM-DD'
     }
   },
@@ -148,6 +149,45 @@ export default {
         title: '医生姓名',
         dataIndex: 'doctorName',
         width: 100
+      },
+      {
+        title: '复议截止日期',
+        dataIndex: 'applyEndDate',
+        customRender: (text, row, index) => {
+          if (text !== '' && text !== null) {
+            if (isNaN(text) && !isNaN(Date.parse(text))) {
+              return moment(text).format(this.tableFormat1)
+            } else {
+              return text
+            }
+          } else {
+            return text
+          }
+        },
+        fixed: 'right',
+        width: 130
+      },
+      {
+        title: '复议科室',
+        dataIndex: 'readyDeptName',
+        customRender: (text, row, index) => {
+          if (text !== '' && text !== null) {
+            return row.readyDeptCode + '-' + row.readyDeptName
+          }
+        },
+        fixed: 'right',
+        width: 200
+      },
+      {
+        title: '申请人',
+        dataIndex: 'readyDoctorName',
+        customRender: (text, row, index) => {
+          if (text !== '' && text !== null) {
+            return row.readyDoctorCode + '-' + row.readyDoctorName
+          }
+        },
+        fixed: 'right',
+        width: 130
       },
       {
         title: '复议类型',

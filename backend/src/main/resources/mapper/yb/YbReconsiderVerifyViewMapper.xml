@@ -268,6 +268,9 @@
         <if test="searchType[2] == 'LIKE' and ybReconsiderVerifyView.verifyDeptName != null and ybReconsiderVerifyView.verifyDeptName != ''"> and verifyDeptName like concat('%', #{ ybReconsiderVerifyView.verifyDeptName} ,'%')</if>
         <if test="searchType[2] == 'EQ' and ybReconsiderVerifyView.verifyDeptName != null and ybReconsiderVerifyView.verifyDeptName != ''"> and verifyDeptName = #{ ybReconsiderVerifyView.verifyDeptName} </if>
         <if test="searchType[2] == 'NOTLIKE' and ybReconsiderVerifyView.verifyDeptName != null and ybReconsiderVerifyView.verifyDeptName != ''"> and verifyDeptName not like concat('%', #{ ybReconsiderVerifyView.verifyDeptName} ,'%')</if>
+        <if test="searchType[3] == 'LIKE' and ybReconsiderVerifyView.orderNumber != null and ybReconsiderVerifyView.orderNumber != ''"> and orderNumber like concat('%', #{ ybReconsiderVerifyView.orderNumber} ,'%')</if>
+        <if test="searchType[3] == 'EQ' and ybReconsiderVerifyView.orderNumber != null and ybReconsiderVerifyView.orderNumber != ''"> and orderNumber = #{ ybReconsiderVerifyView.orderNumber} </if>
+        <if test="searchType[3] == 'NOTLIKE' and ybReconsiderVerifyView.orderNumber != null and ybReconsiderVerifyView.orderNumber != ''"> and orderNumber not like concat('%', #{ ybReconsiderVerifyView.orderNumber} ,'%')</if>
         ) or (
         <if test="ybReconsiderVerifyView.isVerify != null and ybReconsiderVerifyView.isVerify != 1"> 1=2 </if>
         <if test="ybReconsiderVerifyView.isVerify != null and ybReconsiderVerifyView.isVerify == 1"> isVerify = 1 </if>
@@ -336,6 +339,9 @@
         <if test="searchType[2] == 'LIKE' and ybReconsiderVerifyView.verifyDeptName != null and ybReconsiderVerifyView.verifyDeptName != ''"> and verifyDeptName like concat('%', #{ ybReconsiderVerifyView.verifyDeptName} ,'%')</if>
         <if test="searchType[2] == 'EQ' and ybReconsiderVerifyView.verifyDeptName != null and ybReconsiderVerifyView.verifyDeptName != ''"> and verifyDeptName = #{ ybReconsiderVerifyView.verifyDeptName} </if>
         <if test="searchType[2] == 'NOTLIKE' and ybReconsiderVerifyView.verifyDeptName != null and ybReconsiderVerifyView.verifyDeptName != ''"> and verifyDeptName not like concat('%', #{ ybReconsiderVerifyView.verifyDeptName} ,'%')</if>
+        <if test="searchType[3] == 'LIKE' and ybReconsiderVerifyView.orderNumber != null and ybReconsiderVerifyView.orderNumber != ''"> and orderNumber like concat('%', #{ ybReconsiderVerifyView.orderNumber} ,'%')</if>
+        <if test="searchType[3] == 'EQ' and ybReconsiderVerifyView.orderNumber != null and ybReconsiderVerifyView.orderNumber != ''"> and orderNumber = #{ ybReconsiderVerifyView.orderNumber} </if>
+        <if test="searchType[3] == 'NOTLIKE' and ybReconsiderVerifyView.orderNumber != null and ybReconsiderVerifyView.orderNumber != ''"> and orderNumber not like concat('%', #{ ybReconsiderVerifyView.orderNumber} ,'%')</if>
         <if test="ybReconsiderVerifyView.operateReason != null and ybReconsiderVerifyView.operateReason != ''"> and operateReason like concat('%', #{ ybReconsiderVerifyView.operateReason} ,'%')</if>
         <if test="ybReconsiderVerifyView.operateDateFrom!= null">
             AND ybReconsiderVerifyView.operateDate <![CDATA[ >= ]]>  operateDateFrom}

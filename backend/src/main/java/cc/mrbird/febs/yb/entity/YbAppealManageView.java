@@ -362,6 +362,13 @@ public class YbAppealManageView implements Serializable {
     private String changeDeptName;
 
     /**
+     * 复议截止日期
+     */
+    @TableField("applyEndDate")
+    @ExcelField(value = "复议截止日期")
+    private Date applyEndDate;
+
+    /**
      * 操作理由
      */
     @TableField("operateReason")
@@ -661,6 +668,8 @@ public class YbAppealManageView implements Serializable {
     public static final String CHANGEDOCTORNAME = "changeDoctorName";
 
     public static final String CHANGEDEPTCODE = "changeDeptCode";
+
+    public static final String APPLYENDDATE = "applyEndDate";
 
     public static final String CHANGEDEPTNAME = "changeDeptName";
 

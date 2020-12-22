@@ -44,17 +44,6 @@
               <a-button type="primary">同步到用户</a-button>
             </a-popconfirm>
             </span>
-            <span style="margin-top: 3px;margin-right: 10px;">
-              <a-popconfirm
-              title="确定同步到医生？"
-              @confirm="personImport"
-              okText="确定"
-              style="margin-left: 15px"
-              cancelText="取消"
-            >
-              <a-button type="primary">同步到医生</a-button>
-            </a-popconfirm>
-            </span>
           </a-row>
           </div>
           <span style="float: right; margin-top: 3px;">

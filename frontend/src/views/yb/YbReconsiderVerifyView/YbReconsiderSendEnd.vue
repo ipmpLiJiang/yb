@@ -36,6 +36,11 @@ export default {
   props: {
     applyDate: {
       default: ''
+    },
+    searchItem: {
+      default () {
+        return {}
+      }
     }
   },
   data () {
@@ -242,6 +247,23 @@ export default {
       this.loading = true
       params.applyDateStr = this.applyDate
       params.state = 3
+      debugger
+      let searchType = [this.searchItem.project.type, this.searchItem.rule.type, this.searchItem.dept.type, this.searchItem.order.type]
+      params.searchType = searchType
+      if (this.searchItem !== undefined) {
+        if (this.searchItem.project.projectName !== '') {
+          params.projectName = this.searchItem.project.projectName
+        }
+        if (this.searchItem.rule.ruleName !== '') {
+          params.ruleName = this.searchItem.rule.ruleName
+        }
+        if (this.searchItem.dept.deptName !== '') {
+          params.verifyDeptName = this.searchItem.dept.deptName
+        }
+        if (this.searchItem.order.orderNumber !== '') {
+          params.orderNumber = this.searchItem.order.orderNumber
+        }
+      }
       if (this.paginationInfo) {
         // 如果分页信息不为空，则设置表格当前第几页，每页条数，并设置查询分页参数
         this.$refs.TableInfo.pagination.current = this.paginationInfo.current

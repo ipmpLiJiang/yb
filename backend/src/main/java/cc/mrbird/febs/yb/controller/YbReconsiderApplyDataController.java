@@ -390,6 +390,7 @@ public class YbReconsiderApplyDataController extends BaseController {
                                                     rrData.setBackAppeal(strBackAppeal);
                                                     rrData.setTypeno(typeno);
                                                     rrData.setDataType(YbDefaultValue.DATATYPE_0);
+                                                    rrData.setState(0);
                                                     ListData.add(rrData);
                                                 }
                                             }
@@ -464,6 +465,7 @@ public class YbReconsiderApplyDataController extends BaseController {
                                                         rrMain.setBackAppeal(strBackAppeal);
                                                         rrMain.setTypeno(typeno);
                                                         rrMain.setDataType(YbDefaultValue.DATATYPE_1);
+                                                        rrMain.setState(0);
                                                         ListMain.add(rrMain);
                                                     }
                                                 }

@@ -210,6 +210,7 @@ export default {
       bordered: true,
       uploadTitle: '上传审核一',
       tableFormat: 'YYYY-MM-DD',
+      tableFormat1: 'YYYY-MM-DD HH:mm:ss',
       gotoVisiable: false
     }
   },
@@ -240,7 +241,7 @@ export default {
         customRender: (text, row, index) => {
           if (text !== '' && text !== null) {
             if (isNaN(text) && !isNaN(Date.parse(text))) {
-              return moment(text).format(this.tableFormat)
+              return moment(text).format(this.tableFormat1)
             } else {
               return text
             }
@@ -256,7 +257,7 @@ export default {
         customRender: (text, row, index) => {
           if (text !== '' && text !== null) {
             if (isNaN(text) && !isNaN(Date.parse(text))) {
-              return moment(text).format(this.tableFormat)
+              return moment(text).format(this.tableFormat1)
             } else {
               return text
             }

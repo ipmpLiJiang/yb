@@ -257,7 +257,7 @@ public class YbPersonServiceImpl extends ServiceImpl<YbPersonMapper, YbPerson> i
             if (ybPerson.getTel() != null) {
                 queryWrapper.eq(YbPerson::getTel, ybPerson.getTel());
             }
-
+            list = this.list(queryWrapper);
         }
         return list;
     }

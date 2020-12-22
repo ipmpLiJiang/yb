@@ -180,7 +180,7 @@ public class YbHandleVerifyDataServiceImpl extends ServiceImpl<YbHandleVerifyDat
     public void updateSendStates(List<YbHandleVerifyData> list, Long uId, String Uname) {
         Date thisDate = new java.sql.Timestamp(new Date().getTime());
         int day = iComConfiguremanageService.getConfigDay();
-        List<YbHandleVerifyData> updateHandleVerifyList = new ArrayList<YbHandleVerifyData>();
+        List<YbHandleVerifyData> updateHandleVerifyList = new ArrayList<>();
         List<YbAppealManage> appealManageList = new ArrayList<YbAppealManage>();
         Date addDate = DataTypeHelpers.addDateMethod(thisDate, day);
 
@@ -189,7 +189,8 @@ public class YbHandleVerifyDataServiceImpl extends ServiceImpl<YbHandleVerifyDat
         List<ComSms> smsList = new ArrayList<>();
         List<ComSms> saveSmsList = new ArrayList<>();
         List<String> userCodeList = new ArrayList<>();
-        boolean isOpenSms = febsProperties.isOpenSms();
+        int nOpenSms = febsProperties.getOpenSms();
+        boolean isOpenSms = nOpenSms == 1 ? true : false;
         if (isOpenSms) {
             personList = iYbPersonService.findPersonList(new YbPerson(),0);
             ComSms qu = new ComSms();
@@ -291,7 +292,8 @@ public class YbHandleVerifyDataServiceImpl extends ServiceImpl<YbHandleVerifyDat
         List<ComSms> smsList = new ArrayList<>();
         List<ComSms> saveSmsList = new ArrayList<>();
         List<String> userCodeList = new ArrayList<>();
-        boolean isOpenSms = febsProperties.isOpenSms();
+        int nOpenSms = febsProperties.getOpenSms();
+        boolean isOpenSms = nOpenSms == 1 ? true : false;
         if (isOpenSms) {
             personList = iYbPersonService.findPersonList(new YbPerson(),0);
             ComSms qu = new ComSms();

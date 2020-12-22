@@ -21,7 +21,7 @@ public class FebsProperties {
 
     private String baseUrl;
 
-    private boolean openSms = false;
+    private int openSms;
 
     private String in0;
 

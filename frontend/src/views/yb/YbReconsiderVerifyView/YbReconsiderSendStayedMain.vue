@@ -385,7 +385,7 @@ export default {
       params.applyDateStr = this.applyDate
       params.state = 1
       params.dataType = 1
-      let searchType = [this.searchItem.project.type, this.searchItem.rule.type, this.searchItem.dept.type]
+      let searchType = [this.searchItem.project.type, this.searchItem.rule.type, this.searchItem.dept.type, this.searchItem.order.type]
       params.searchType = searchType
       if (this.searchItem !== undefined) {
         if (this.searchItem.rule.ruleName !== '') {
@@ -393,6 +393,9 @@ export default {
         }
         if (this.searchItem.dept.deptName !== '') {
           params.verifyDeptName = this.searchItem.dept.deptName
+        }
+        if (this.searchItem.order.orderNumber !== '') {
+          params.orderNumber = this.searchItem.order.orderNumber
         }
       }
       if (this.paginationInfo) {

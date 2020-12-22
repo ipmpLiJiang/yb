@@ -221,6 +221,47 @@
         ORDER BY
             dataType,orderNum
     </select>
+    <select id="findReconsiderApplyDataNotBetween" resultType="cc.mrbird.febs.yb.entity.YbReconsiderApplyData">
+        SELECT
+            yb_reconsider_apply_data.*
+        FROM
+            yb_reconsider_apply_data
+        INNER JOIN yb_reconsider_apply on
+            yb_reconsider_apply_data.pid = yb_reconsider_apply.id and
+            yb_reconsider_apply.IS_DELETEMARK = 1
+        where
+            yb_reconsider_apply.applyDateStr = #{applyDateStr} and
+            yb_reconsider_apply_data.IS_DELETEMARK = 1 and
+            yb_reconsider_apply_data.dataType = #{dataType} and
+            yb_reconsider_apply_data.typeno = #{typeno} and
+            yb_reconsider_apply_data.state = 1 and
+            yb_reconsider_apply_data.orderSettlementNum between #{startNum} and #{endNum}
+        ORDER BY
+            dataType,orderNum
+    </select>
+    <select id="findReconsiderApplyDataNotInpatientfees" resultType="cc.mrbird.febs.yb.entity.YbReconsiderApplyData">
+        SELECT
+            yb_reconsider_apply_data.*
+        FROM
+            yb_reconsider_apply_data
+        INNER JOIN yb_reconsider_apply on
+            yb_reconsider_apply_data.pid = yb_reconsider_apply.id and
+            yb_reconsider_apply.IS_DELETEMARK = 1
+        where
+            yb_reconsider_apply.applyDateStr = #{applyDateStr} and
+            yb_reconsider_apply_data.IS_DELETEMARK = 1 and
+            yb_reconsider_apply_data.dataType = #{dataType} and
+            yb_reconsider_apply_data.typeno = #{typeno} and
+            not exists(
+                select yri.id from yb_reconsider_inpatientfees yri where
+                    yri.applyDateStr = #{applyDateStr} and
+                    yri.IS_DELETEMARK = 1 and yri.dataType = #{dataType} and
+                    yri.typeno = #{typeno} and
+                    yri.applyDataId = yb_reconsider_apply_data.id
+            )
+        ORDER BY
+            dataType,orderNum
+    </select>
     <select id="findReconsiderApplyDataCount"  resultType="Integer">
         SELECT
             count(1)
@@ -235,4 +276,27 @@
             <if test="typeno != null"> and yb_reconsider_apply_data.typeno =#{ typeno} </if>
             <if test="dataType != null"> and yb_reconsider_apply_data.dataType =#{ dataType} </if>
     </select>
+
+    <select id="findReconsiderApplyDataNotCount" resultType="Integer">
+        SELECT
+            count(1)
+        FROM
+            yb_reconsider_apply_data
+        INNER JOIN yb_reconsider_apply on
+            yb_reconsider_apply_data.pid = yb_reconsider_apply.id and
+            yb_reconsider_apply.IS_DELETEMARK = 1
+        where
+            yb_reconsider_apply.applyDateStr = #{applyDateStr} and
+            yb_reconsider_apply_data.IS_DELETEMARK = 1 and
+            yb_reconsider_apply_data.dataType = #{dataType} and
+            yb_reconsider_apply_data.typeno = #{typeno} and
+            not exists(
+                select yri.id from yb_reconsider_inpatientfees yri where
+                    yri.applyDateStr = #{applyDateStr} and
+                    yri.IS_DELETEMARK = 1 and yri.dataType = #{dataType} and
+                    yri.typeno = #{typeno} and
+                    yri.applyDataId = yb_reconsider_apply_data.id
+            )
+    </select>
+
 </mapper>

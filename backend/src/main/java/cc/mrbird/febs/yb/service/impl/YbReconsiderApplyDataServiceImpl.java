@@ -13,6 +13,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -43,6 +44,9 @@ public class YbReconsiderApplyDataServiceImpl extends ServiceImpl<YbReconsiderAp
     private IYbReconsiderInpatientfeesService iYbReconsiderInpatientfeesService;
     @Autowired
     private IYbDeptService iYbDeptService;
+
+    @Autowired
+    private IYbPersonService iYbPersonService;
 
     @Autowired
     FebsProperties febsProperties;
@@ -317,10 +321,32 @@ public class YbReconsiderApplyDataServiceImpl extends ServiceImpl<YbReconsiderAp
 //    public int findReconsiderApplyDataCount(String applyDateStr, Integer dataType) {
 //        return this.baseMapper.findReconsiderApplyDataCount(applyDateStr, dataType);
 //    }
+    private boolean updateNotInpatientfees(String applyDateStr,int  dataType,int  typeno){
+        boolean isTrue = false;
+        List<YbReconsiderApplyData> reconsiderApplyDataList = this.baseMapper.findReconsiderApplyDataNotInpatientfees(applyDateStr,dataType,typeno);
+        if(reconsiderApplyDataList.size() > 0) {
+            List<YbReconsiderApplyData> updateList = new ArrayList<>();
+            int i = 1;
+            for(YbReconsiderApplyData item : reconsiderApplyDataList){
+                YbReconsiderApplyData update = new YbReconsiderApplyData();
+                update.setId(item.getId());
+                update.setState(1);
+                update.setOrderSettlementNum(i);
+                i++;
+                updateList.add(update);
+            }
+
+            if(updateList.size() >0){
+                isTrue = this.updateBatchById(updateList);
+            }
+        }
+
+        return isTrue;
+    }
 
     @Override
     @Transactional
-    public void findReconsiderApplyDataTask(String applyDateStr) {
+    public void findReconsiderApplyDataNotTask(String applyDateStr) {
         int dataType = 0;
         int typeno = 1;
         //当前复议年月
@@ -339,9 +365,11 @@ public class YbReconsiderApplyDataServiceImpl extends ServiceImpl<YbReconsiderAp
             return;
         }
         String msg = "";
+        int state = 1;
         YbReconsiderApplyTask ybReconsiderApplyTask = new YbReconsiderApplyTask();
         ybReconsiderApplyTask.setApplyDateStr(applyDateStr);
         ybReconsiderApplyTask.setTypeno(typeno);
+        ybReconsiderApplyTask.setState(state);
         List<YbReconsiderApplyTask> raTaskList = this.iYbReconsiderApplyTaskService.findReconsiderApplyTaskList(ybReconsiderApplyTask);
         //总数
         int totalRow = 0;
@@ -349,29 +377,34 @@ public class YbReconsiderApplyDataServiceImpl extends ServiceImpl<YbReconsiderAp
         int currentPage = 1;
         List<YbDeptHis> departList = new ArrayList<>();
         List<YbDeptHis> queryDepartList = new ArrayList<>();
+        List<YbPerson> personList = new ArrayList<>();
+        List<YbPerson> queryPersontList = new ArrayList<>();
         boolean noUpdate = false;
         YbReconsiderApplyTask createTask = new YbReconsiderApplyTask();
         if (raTaskList.size() == 0) {
-            totalRow = this.baseMapper.findReconsiderApplyDataCount(applyDateStr, dataType, typeno);
+            totalRow = this.baseMapper.findReconsiderApplyDataNotCount(applyDateStr, dataType, typeno);
             if (totalRow == 0) {
                 dataType = 1;
-                totalRow = this.baseMapper.findReconsiderApplyDataCount(applyDateStr, dataType, typeno);
+                totalRow = this.baseMapper.findReconsiderApplyDataNotCount(applyDateStr, dataType, typeno);
             }
             if (totalRow == 0) {
                 noUpdate = true;
             } else {
-                createTask = createReconsiderApplyTask(applyDateStr, dataType, typeno, currentPage, totalRow);
+                createTask = createReconsiderApplyTask(applyDateStr, 1, dataType, typeno, currentPage, totalRow);
             }
+
+            this.updateNotInpatientfees(applyDateStr, dataType, typeno);
         } else {
             YbReconsiderApplyTask reconsiderApplyTask = maxReconsiderApplyTask(raTaskList);
             if (reconsiderApplyTask.getCurrentPage().equals(reconsiderApplyTask.getTotalPage())) {
                 if (reconsiderApplyTask.getDataType() == 0) {
                     dataType = 1;
-                    totalRow = this.baseMapper.findReconsiderApplyDataCount(applyDateStr, dataType, typeno);
+                    totalRow = this.baseMapper.findReconsiderApplyDataNotCount(applyDateStr, dataType, typeno);
                     if (totalRow == 0) {
                         noUpdate = true;
                     } else {
-                        createTask = createReconsiderApplyTask(applyDateStr, dataType, typeno, currentPage, totalRow);
+                        createTask = createReconsiderApplyTask(applyDateStr, state, dataType, typeno, currentPage, totalRow);
+                        this.updateNotInpatientfees(applyDateStr, dataType, typeno);
                     }
                 } else {
                     noUpdate = true;
@@ -380,7 +413,7 @@ public class YbReconsiderApplyDataServiceImpl extends ServiceImpl<YbReconsiderAp
                 currentPage = reconsiderApplyTask.getCurrentPage() + 1;
                 totalRow = reconsiderApplyTask.getTotalRow();
                 dataType = reconsiderApplyTask.getDataType();
-                createTask = createReconsiderApplyTask(applyDateStr, dataType, typeno, currentPage, totalRow);
+                createTask = createReconsiderApplyTask(applyDateStr, state, dataType, typeno, currentPage, totalRow);
             }
         }
         if (!noUpdate) {
@@ -389,7 +422,7 @@ public class YbReconsiderApplyDataServiceImpl extends ServiceImpl<YbReconsiderAp
             //从orderNum结束
             int endNum = createTask.getEndNum();
 
-            List<YbReconsiderApplyData> reconsiderApplyDataList = this.baseMapper.findReconsiderApplyDataBetween(applyDateStr, dataType, typeno, startNum, endNum);
+            List<YbReconsiderApplyData> reconsiderApplyDataList = this.baseMapper.findReconsiderApplyDataNotBetween(applyDateStr, dataType, typeno, startNum, endNum);
             if (reconsiderApplyDataList.size() > 0) {
                 String hisSql = "";
                 String hisWhere = "";
@@ -402,7 +435,7 @@ public class YbReconsiderApplyDataServiceImpl extends ServiceImpl<YbReconsiderAp
                 String dateStrTo = DataTypeHelpers.stringDateFormatAddMonth(1, dateStrForm, "", false);
 //                String dateStrTo = dateArr[1];
                 if (dataType == 0) {
-                    hisWhere = hisTaskWhere(reconsiderApplyDataList, 0);
+                    hisWhere = hisTaskWhere(reconsiderApplyDataList, 0, state);
 
                     if (!hisWhere.equals("")) {
                         hisSql = "select * from his.V_SAP_INPFEES where " + hisWhere +
@@ -410,7 +443,7 @@ public class YbReconsiderApplyDataServiceImpl extends ServiceImpl<YbReconsiderAp
                                 "settlementdate < to_date('" + dateStrTo + "',' yyyy-mm-dd') ";
                     }
                 } else {
-                    hisWhere = hisTaskWhere(reconsiderApplyDataList, 1);
+                    hisWhere = hisTaskWhere(reconsiderApplyDataList, 1, state);
                     if (!hisWhere.equals("")) {
                         hisSql = "select * from his.V_SAP_INPSETTLEINFO where " + hisWhere +
                                 "settledate >= to_date('" + dateStrForm + "',' yyyy-mm-dd') and " +
@@ -437,6 +470,312 @@ public class YbReconsiderApplyDataServiceImpl extends ServiceImpl<YbReconsiderAp
                         }
                     }
 
+                    personList = iYbPersonService.list();
+
+                    if (departList.size() > 0) {
+                        List<YbReconsiderInpatientfees> createList = new ArrayList<>();
+                        if (dataType == 0) {
+                            List<YbReconsiderInpatientfeesData> rifDataList = new ArrayList<>();
+                            List<YbReconsiderInpatientfeesData> queryRifDataList = new ArrayList<>();
+
+                            OracleDB<YbReconsiderInpatientfeesData> oracleDB = new OracleDB<>();
+                            rifDataList = oracleDB.excuteSqlRS(new YbReconsiderInpatientfeesData(), hisSql);
+                            if (rifDataList.size() > 0) {
+                                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                                for (YbReconsiderApplyData item : reconsiderApplyDataList) {
+                                    queryRifDataList = rifDataList.stream().filter(
+                                            s -> s.getTransNo().equals(item.getSerialNo()) &&
+                                                    s.getHisName().equals(item.getProjectName()) &&
+                                                    sdf.format(s.getFeeDate()).equals(sdf.format(item.getCostDate()))
+                                    ).collect(Collectors.toList());
+
+                                    if (queryRifDataList.size() == 0) {
+                                        queryRifDataList = rifDataList.stream().filter(
+                                                s -> s.getTransNo().equals(item.getSerialNo()) &&
+                                                        s.getHisName().equals(item.getProjectName())
+                                        ).collect(Collectors.toList());
+                                    }
+//HIS数据是否匹配 医生编码
+//                                    (s.getOrderDocId().equals(item.getDoctorName()) ||
+//                                            s.getExcuteDocId().equals(item.getDoctorName()))
+
+                                    if (queryRifDataList.size() > 0) {
+                                        YbReconsiderInpatientfeesData obj = queryRifDataList.get(0);
+                                        YbReconsiderInpatientfees reconsiderInpatientfees = new YbReconsiderInpatientfees();
+                                        reconsiderInpatientfees.setId(UUID.randomUUID().toString());
+                                        reconsiderInpatientfees.setInpatientId(obj.getInpatientId());//住院号
+                                        reconsiderInpatientfees.setPatientName(obj.getPatientName());//患者姓名
+                                        reconsiderInpatientfees.setSettlementId(obj.getSettlementId());//HIS结算序号
+                                        reconsiderInpatientfees.setBillNo(obj.getBillNo());//'单据号'
+                                        reconsiderInpatientfees.setTransNo(obj.getTransNo());//'交易流水号'
+                                        reconsiderInpatientfees.setItemId(obj.getItemId());//'项目代码'
+                                        reconsiderInpatientfees.setItemCode(obj.getMiCode());//'项目医保编码'
+                                        reconsiderInpatientfees.setItemName(obj.getMiName());//'项目名称'
+                                        reconsiderInpatientfees.setItemCount(obj.getItemCount());//'项目数量'
+                                        reconsiderInpatientfees.setItemPrice(obj.getItemPrice());//'项目单价'
+                                        reconsiderInpatientfees.setItemAmount(obj.getItemAmount());//'项目金额'
+                                        reconsiderInpatientfees.setFeeDate(obj.getFeeDate());//'费用日期'
+                                        reconsiderInpatientfees.setDeptId(obj.getDeptId());//'住院科室代码'
+                                        if (obj.getDeptId() != null && (obj.getDeptName() == null || obj.getDeptName().equals(""))) {
+                                            queryDepartList = departList.stream().filter(
+                                                    s -> s.getDeptId().equals(obj.getDeptId())
+                                            ).collect(Collectors.toList());
+                                            if (queryDepartList.size() > 0) {
+                                                reconsiderInpatientfees.setDeptName(queryDepartList.get(0).getDeptName());//'执行科室名称'
+                                            }
+                                        } else {
+                                            reconsiderInpatientfees.setDeptName(obj.getDeptName());//'住院科室名称'
+                                        }
+                                        reconsiderInpatientfees.setOrderDocId(obj.getOrderDocId());//'开方医生代码'
+                                        if (personList.size() > 0 && obj.getOrderDocId() != null && obj.getOrderDocName() == null) {
+                                            queryPersontList = personList.stream().filter(p ->
+                                                    p.getPersonCode().equals(obj.getOrderDocId())).collect(Collectors.toList());
+                                            if (queryPersontList.size() > 0) {
+                                                reconsiderInpatientfees.setOrderDocName(queryPersontList.get(0).getPersonName());//'开方医生名称'
+                                            }
+                                        } else {
+                                            reconsiderInpatientfees.setOrderDocName(obj.getOrderDocName());//'开方医生名称'
+                                        }
+                                        reconsiderInpatientfees.setExcuteDeptId(obj.getExcuteDeptId());//'执行科室代码'
+                                        if (obj.getExcuteDeptId() != null && (obj.getExcuteDeptName() == null || obj.getExcuteDeptName().equals(""))) {
+                                            queryDepartList = departList.stream().filter(
+                                                    s -> s.getDeptId().equals(obj.getDeptId())
+                                            ).collect(Collectors.toList());
+                                            if (queryDepartList.size() > 0) {
+                                                reconsiderInpatientfees.setExcuteDeptName(queryDepartList.get(0).getDeptName());//'执行科室名称'
+                                            }
+                                        } else {
+                                            reconsiderInpatientfees.setExcuteDeptName(obj.getExcuteDeptName());//'执行科室名称'
+                                        }
+
+                                        reconsiderInpatientfees.setExcuteDocId(obj.getExcuteDocId());//'执行医生代码'
+                                        if (personList.size() > 0 && obj.getExcuteDocId() != null && obj.getExcuteDocName() == null) {
+                                            queryPersontList = personList.stream().filter(p ->
+                                                    p.getPersonCode().equals(obj.getExcuteDocId())).collect(Collectors.toList());
+                                            if (queryPersontList.size() > 0) {
+                                                reconsiderInpatientfees.setExcuteDocName(queryPersontList.get(0).getPersonName());//'开方医生名称'
+                                            }
+                                        } else {
+                                            reconsiderInpatientfees.setExcuteDocName(obj.getExcuteDocName());//'执行医生名称'
+                                        }
+
+                                        reconsiderInpatientfees.setSettlementDate(obj.getSettlementDate());//'结算时间'
+
+                                        reconsiderInpatientfees.setApplyDataId(item.getId());
+                                        reconsiderInpatientfees.setOrderNumber(item.getOrderNumber());//序号
+                                        reconsiderInpatientfees.setApplyDateStr(applyDateStr);
+                                        reconsiderInpatientfees.setDataType(dataType);
+                                        reconsiderInpatientfees.setTypeno(typeno);
+                                        reconsiderInpatientfees.setIsDeletemark(1);
+                                        reconsiderInpatientfees.setCreateTime(new Date());
+                                        reconsiderInpatientfees.setState(state);
+                                        createList.add(reconsiderInpatientfees);
+                                    }
+                                }
+                            } else {
+                                msg = "his接口明细扣款无数据.";
+                                log.error(msg);
+                            }
+                        }
+                        else {
+                            List<YbReconsiderInpatientfeesMain> rifMainList = new ArrayList<>();
+                            List<YbReconsiderInpatientfeesMain> queryRifMainList = new ArrayList<>();
+                            OracleDB<YbReconsiderInpatientfeesMain> oracleDB = new OracleDB<>();
+                            rifMainList = oracleDB.excuteSqlRS(new YbReconsiderInpatientfeesMain(), hisSql);
+                            if (rifMainList.size() > 0) {
+                                for (YbReconsiderApplyData item : reconsiderApplyDataList) {
+                                    queryRifMainList = rifMainList.stream().filter(
+                                            s -> s.getTransNo().equals(item.getSerialNo())
+                                    ).collect(Collectors.toList());
+
+                                    if (queryRifMainList.size() > 0) {
+                                        YbReconsiderInpatientfeesMain obj = queryRifMainList.get(0);
+                                        YbReconsiderInpatientfees reconsiderInpatientfees = new YbReconsiderInpatientfees();
+                                        reconsiderInpatientfees.setId(UUID.randomUUID().toString());
+                                        reconsiderInpatientfees.setInpatientId(obj.getInpatientId());//住院号
+                                        reconsiderInpatientfees.setPatientName(obj.getPatientName());//患者姓名
+                                        reconsiderInpatientfees.setSettlementId(obj.getSettlementId());//HIS结算序号
+                                        reconsiderInpatientfees.setBillNo(obj.getBillNo());//'单据号'
+                                        reconsiderInpatientfees.setTransNo(obj.getTransNo());//'交易流水号'
+
+                                        reconsiderInpatientfees.setOrderDocId(obj.getInHospDocId());//'入院责任医生代码'
+                                        reconsiderInpatientfees.setOrderDocName(obj.getInHospDocName());//'入院责任医生名称'
+
+                                        reconsiderInpatientfees.setDeptId(obj.getInHospDeptId());//'入院科室代码
+                                        reconsiderInpatientfees.setDeptName(obj.getInHospDeptName());//'入院科室名称
+
+                                        reconsiderInpatientfees.setExcuteDocId(obj.getInHospOpterId());//办入院操作员代码
+                                        reconsiderInpatientfees.setExcuteDocName(obj.getInHospOpterName());//办入院操作员名称
+
+                                        reconsiderInpatientfees.setExcuteDeptId(obj.getOpterDeptId());//办入院操作员科室代码
+                                        reconsiderInpatientfees.setExcuteDeptName(obj.getOpterDeptName());//办入院操作员科室名称
+
+                                        reconsiderInpatientfees.setSettlementDate(obj.getSettleDate());//'结算时间'
+
+                                        reconsiderInpatientfees.setApplyDataId(item.getId());
+                                        reconsiderInpatientfees.setOrderNumber(item.getOrderNumber());//序号
+                                        reconsiderInpatientfees.setApplyDateStr(applyDateStr);
+                                        reconsiderInpatientfees.setDataType(dataType);
+                                        reconsiderInpatientfees.setTypeno(typeno);
+                                        reconsiderInpatientfees.setIsDeletemark(1);
+                                        reconsiderInpatientfees.setCreateTime(new Date());
+                                        reconsiderInpatientfees.setState(state);
+                                        createList.add(reconsiderInpatientfees);
+                                    }
+                                }
+                            } else {
+                                msg = "his接口主单扣款无数据.";
+                                log.error(msg);
+                            }
+                        }
+                        if (createList.size() > 0) {
+                            msg = "His更新数据：" + createList.size() + "条";
+                            iYbReconsiderInpatientfeesService.saveBatch(createList);
+                            log.error(msg);
+                        }
+
+                        this.iYbReconsiderApplyTaskService.createYbReconsiderApplyTask(createTask);
+                    } else {
+                        msg = "his接口科室无数据.";
+                        log.error(msg);
+                    }
+                } else {
+                    msg = "his接口Where为空.";
+                    log.error(msg);
+                }
+                System.out.println(msg);
+//                System.out.println(hisSql);
+//                System.out.println(hisWhere);
+            }
+        }
+
+    }
+
+    @Override
+    @Transactional
+    public void findReconsiderApplyDataTask(String applyDateStr) {
+        int dataType = 0;
+        int typeno = 1;
+        //当前复议年月
+        if (applyDateStr == null || "".equals(applyDateStr)) {
+            applyDateStr = DataTypeHelpers.getUpNianYue();
+        }
+        YbReconsiderApply reconsiderApply = iYbReconsiderApplyService.findReconsiderApplyByApplyDateStrs(applyDateStr);
+        if (reconsiderApply == null) {
+            return;
+        }
+        if (reconsiderApply.getState() == 2 || reconsiderApply.getState() == 3) {
+            typeno = 1;
+        } else if (reconsiderApply.getState() == 4 || reconsiderApply.getState() == 5) {
+            typeno = 2;
+        } else {
+            return;
+        }
+        String msg = "";
+        int state = 0;
+        YbReconsiderApplyTask ybReconsiderApplyTask = new YbReconsiderApplyTask();
+        ybReconsiderApplyTask.setApplyDateStr(applyDateStr);
+        ybReconsiderApplyTask.setTypeno(typeno);
+        ybReconsiderApplyTask.setState(state);
+        List<YbReconsiderApplyTask> raTaskList = this.iYbReconsiderApplyTaskService.findReconsiderApplyTaskList(ybReconsiderApplyTask);
+        //总数
+        int totalRow = 0;
+        //当前页
+        int currentPage = 1;
+        List<YbDeptHis> departList = new ArrayList<>();
+        List<YbDeptHis> queryDepartList = new ArrayList<>();
+        List<YbPerson> personList = new ArrayList<>();
+        List<YbPerson> queryPersontList = new ArrayList<>();
+        boolean noUpdate = false;
+        YbReconsiderApplyTask createTask = new YbReconsiderApplyTask();
+        if (raTaskList.size() == 0) {
+            totalRow = this.baseMapper.findReconsiderApplyDataCount(applyDateStr, dataType, typeno);
+            if (totalRow == 0) {
+                dataType = 1;
+                totalRow = this.baseMapper.findReconsiderApplyDataCount(applyDateStr, dataType, typeno);
+            }
+            if (totalRow == 0) {
+                noUpdate = true;
+            } else {
+                createTask = createReconsiderApplyTask(applyDateStr, state, dataType, typeno, currentPage, totalRow);
+            }
+        } else {
+            YbReconsiderApplyTask reconsiderApplyTask = maxReconsiderApplyTask(raTaskList);
+            if (reconsiderApplyTask.getCurrentPage().equals(reconsiderApplyTask.getTotalPage())) {
+                if (reconsiderApplyTask.getDataType() == 0) {
+                    dataType = 1;
+                    totalRow = this.baseMapper.findReconsiderApplyDataCount(applyDateStr, dataType, typeno);
+                    if (totalRow == 0) {
+                        noUpdate = true;
+                    } else {
+                        createTask = createReconsiderApplyTask(applyDateStr, state, dataType, typeno, currentPage, totalRow);
+                    }
+                } else {
+                    noUpdate = true;
+                }
+            } else {
+                currentPage = reconsiderApplyTask.getCurrentPage() + 1;
+                totalRow = reconsiderApplyTask.getTotalRow();
+                dataType = reconsiderApplyTask.getDataType();
+                createTask = createReconsiderApplyTask(applyDateStr, state, dataType, typeno, currentPage, totalRow);
+            }
+        }
+        if (!noUpdate) {
+            //从orderNum开始
+            int startNum = createTask.getStartNum();
+            //从orderNum结束
+            int endNum = createTask.getEndNum();
+
+            List<YbReconsiderApplyData> reconsiderApplyDataList = this.baseMapper.findReconsiderApplyDataBetween(applyDateStr, dataType, typeno, startNum, endNum);
+            if (reconsiderApplyDataList.size() > 0) {
+                String hisSql = "";
+                String hisWhere = "";
+
+                //String[] dateArr = hisTaskDate(reconsiderApplyDataList);
+                //查询his日期区间 开始
+                String dateStrForm = applyDateStr + "-01";
+//                String dateStrForm = dateArr[0];
+                //查询his日期区间 结束
+                String dateStrTo = DataTypeHelpers.stringDateFormatAddMonth(1, dateStrForm, "", false);
+//                String dateStrTo = dateArr[1];
+                if (dataType == 0) {
+                    hisWhere = hisTaskWhere(reconsiderApplyDataList, 0, state);
+
+                    if (!hisWhere.equals("")) {
+                        hisSql = "select * from his.V_SAP_INPFEES where " + hisWhere +
+                                "settlementdate >= to_date('" + dateStrForm + "',' yyyy-mm-dd') and " +
+                                "settlementdate < to_date('" + dateStrTo + "',' yyyy-mm-dd') ";
+                    }
+                } else {
+                    hisWhere = hisTaskWhere(reconsiderApplyDataList, 1, state);
+                    if (!hisWhere.equals("")) {
+                        hisSql = "select * from his.V_SAP_INPSETTLEINFO where " + hisWhere +
+                                "settledate >= to_date('" + dateStrForm + "',' yyyy-mm-dd') and " +
+                                "settledate < to_date('" + dateStrTo + "',' yyyy-mm-dd') ";
+                    }
+                }
+
+                if (!hisSql.equals("")) {
+                    if (raTaskList.size() == 0) {
+                        OracleDB<YbDeptHis> oracleDB = new OracleDB<>();
+                        departList = oracleDB.excuteSqlRS(new YbDeptHis(), "select * from his.V_SAP_DEPART");
+                        if (departList.size() > 0) {
+                            //iYbDeptService.deleteBatchDepts();
+                            iYbDeptService.createBatchDepts(departList);
+                        }
+                    } else {
+                        List<YbDept> deptList = iYbDeptService.findDeptList(new YbDept(), 0);
+                        for (YbDept item : deptList) {
+                            YbDeptHis his = new YbDeptHis();
+                            his.setDeptId(item.getDeptId());
+                            his.setDeptName(item.getDeptName());
+                            his.setSpellCode(item.getSpellCode());
+                            departList.add(his);
+                        }
+                    }
+
+                    personList = iYbPersonService.list();
+
                     if (departList.size() > 0) {
                         List<YbReconsiderInpatientfees> createList = new ArrayList<>();
                         if (dataType == 0) {
@@ -453,6 +792,13 @@ public class YbReconsiderApplyDataServiceImpl extends ServiceImpl<YbReconsiderAp
                                                     s.getItemName().equals(item.getProjectName()) &&
                                                     sdf.format(s.getFeeDate()).equals(sdf.format(item.getCostDate()))
                                     ).collect(Collectors.toList());
+
+                                    if (queryRifDataList.size() == 0) {
+                                        queryRifDataList = rifDataList.stream().filter(
+                                                s -> s.getTransNo().equals(item.getSerialNo()) &&
+                                                        s.getItemName().equals(item.getProjectName())
+                                        ).collect(Collectors.toList());
+                                    }
 //HIS数据是否匹配 医生编码
 //                                    (s.getOrderDocId().equals(item.getDoctorName()) ||
 //                                            s.getExcuteDocId().equals(item.getDoctorName()))
@@ -485,7 +831,15 @@ public class YbReconsiderApplyDataServiceImpl extends ServiceImpl<YbReconsiderAp
                                             reconsiderInpatientfees.setDeptName(obj.getDeptName());//'住院科室名称'
                                         }
                                         reconsiderInpatientfees.setOrderDocId(obj.getOrderDocId());//'开方医生代码'
-                                        reconsiderInpatientfees.setOrderDocName(obj.getOrderDocName());//'开方医生名称'
+                                        if (personList.size() > 0 && obj.getOrderDocId() != null && obj.getOrderDocName() == null) {
+                                            queryPersontList = personList.stream().filter(p ->
+                                                    p.getPersonCode().equals(obj.getOrderDocId())).collect(Collectors.toList());
+                                            if (queryPersontList.size() > 0) {
+                                                reconsiderInpatientfees.setOrderDocName(queryPersontList.get(0).getPersonName());//'开方医生名称'
+                                            }
+                                        } else {
+                                            reconsiderInpatientfees.setOrderDocName(obj.getOrderDocName());//'开方医生名称'
+                                        }
                                         reconsiderInpatientfees.setExcuteDeptId(obj.getExcuteDeptId());//'执行科室代码'
                                         if (obj.getExcuteDeptId() != null && (obj.getExcuteDeptName() == null || obj.getExcuteDeptName().equals(""))) {
                                             queryDepartList = departList.stream().filter(
@@ -497,8 +851,18 @@ public class YbReconsiderApplyDataServiceImpl extends ServiceImpl<YbReconsiderAp
                                         } else {
                                             reconsiderInpatientfees.setExcuteDeptName(obj.getExcuteDeptName());//'执行科室名称'
                                         }
+
                                         reconsiderInpatientfees.setExcuteDocId(obj.getExcuteDocId());//'执行医生代码'
-                                        reconsiderInpatientfees.setExcuteDocName(obj.getExcuteDocName());//'执行医生名称'
+                                        if (personList.size() > 0 && obj.getExcuteDocId() != null && obj.getExcuteDocName() == null) {
+                                            queryPersontList = personList.stream().filter(p ->
+                                                    p.getPersonCode().equals(obj.getExcuteDocId())).collect(Collectors.toList());
+                                            if (queryPersontList.size() > 0) {
+                                                reconsiderInpatientfees.setExcuteDocName(queryPersontList.get(0).getPersonName());//'开方医生名称'
+                                            }
+                                        } else {
+                                            reconsiderInpatientfees.setExcuteDocName(obj.getExcuteDocName());//'执行医生名称'
+                                        }
+
                                         reconsiderInpatientfees.setSettlementDate(obj.getSettlementDate());//'结算时间'
 
                                         reconsiderInpatientfees.setApplyDataId(item.getId());
@@ -508,6 +872,7 @@ public class YbReconsiderApplyDataServiceImpl extends ServiceImpl<YbReconsiderAp
                                         reconsiderInpatientfees.setTypeno(typeno);
                                         reconsiderInpatientfees.setIsDeletemark(1);
                                         reconsiderInpatientfees.setCreateTime(new Date());
+                                        reconsiderInpatientfees.setState(state);
                                         createList.add(reconsiderInpatientfees);
                                     }
                                 }
@@ -557,6 +922,7 @@ public class YbReconsiderApplyDataServiceImpl extends ServiceImpl<YbReconsiderAp
                                         reconsiderInpatientfees.setTypeno(typeno);
                                         reconsiderInpatientfees.setIsDeletemark(1);
                                         reconsiderInpatientfees.setCreateTime(new Date());
+                                        reconsiderInpatientfees.setState(state);
                                         createList.add(reconsiderInpatientfees);
                                     }
                                 }
@@ -566,7 +932,7 @@ public class YbReconsiderApplyDataServiceImpl extends ServiceImpl<YbReconsiderAp
                             }
                         }
                         if (createList.size() > 0) {
-                            msg = "His更新数据："+ createList.size() + "条";
+                            msg = "His更新数据：" + createList.size() + "条";
                             iYbReconsiderInpatientfeesService.saveBatch(createList);
                             log.error(msg);
                         }
@@ -604,7 +970,7 @@ public class YbReconsiderApplyDataServiceImpl extends ServiceImpl<YbReconsiderAp
     }
 
     //创建定时任务Task数据
-    private YbReconsiderApplyTask createReconsiderApplyTask(String applyDateStr, int dataType, int typeno, int currentPage, int totalRow) {
+    private YbReconsiderApplyTask createReconsiderApplyTask(String applyDateStr, int state, int dataType, int typeno, int currentPage, int totalRow) {
         YbReconsiderApplyTask createTask = new YbReconsiderApplyTask();
         //从orderNum开始
         int startNum = 0;
@@ -654,14 +1020,14 @@ public class YbReconsiderApplyDataServiceImpl extends ServiceImpl<YbReconsiderAp
         createTask.setCurrentPage(currentPage);
         createTask.setPageSize(pageSize);
         createTask.setTotalPage(totalPage);
-
+        createTask.setState(state);
 //        createTask.setIsDeletemark(1);
 //        createTask.setCreateTime(new Date());
         return createTask;
     }
 
     //获取集合中，拼接his Where in 语句
-    private String hisTaskWhere(List<YbReconsiderApplyData> reconsiderApplyDataList, int dateType) {
+    private String hisTaskWhere(List<YbReconsiderApplyData> reconsiderApplyDataList, int dateType, int state) {
         String hisWhere = "";
         String sql = "";
         String sql1 = "";
@@ -674,6 +1040,7 @@ public class YbReconsiderApplyDataServiceImpl extends ServiceImpl<YbReconsiderAp
             String transno1 = arr[1] + "-" + item.getProjectName();
             String transno = item.getSerialNo();
             String project = item.getProjectName();
+//            String project = item.getProjectCode();
 
             if (dateType == 0) {
                 if (strList.stream().filter(s -> s.equals(transno)).count() == 0) {
@@ -716,10 +1083,13 @@ public class YbReconsiderApplyDataServiceImpl extends ServiceImpl<YbReconsiderAp
         if (dateType == 0) {
             //hisWhere = "itemKey in(" + sql + ")";
             hisWhere = " transno in(" + sql + ")";
-            //hisWhere += " and itemcode in(" + sql1 + ") and ";
+//            hisWhere += " and itemcode in(" + sql1 + ") and ";
 
-            hisWhere += " and itemname in(" + sql1 + ") and ";
-
+            if (state == 0) {
+                hisWhere += " and itemname in(" + sql1 + ") and ";
+            } else {
+                hisWhere += " and HisName in(" + sql1 + ") and ";
+            }
             //hisWhere = " itemybcode in(" + sql1 + ") and ";
             System.out.println(sql2);
         } else {

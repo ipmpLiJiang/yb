@@ -2,7 +2,7 @@
   <a-drawer
     title="新增"
     :maskClosable="false"
-    width=650
+    width=750
     placement="right"
     :closable="false"
     @close="onClose"
@@ -30,7 +30,9 @@
         >
         <a-date-picker
           placeholder="请输入审核一结束日期"
+          style="width:250px"
           v-decorator="['endDateOne', {rules: [{ required: true, message: '审核一结束日期不能为空' }] }]"
+          show-time
           :format="dayFormat"/>
         </a-form-item>
       </a-row>
@@ -41,7 +43,9 @@
         >
         <a-date-picker
           placeholder="请输入审核二结束日期"
+          style="width:250px"
           v-decorator="['endDateTwo', {rules: [{ required: true, message: '审核二结束日期不能为空' }] }]"
+          show-time
           :format="dayFormat"/>
         </a-form-item>
       </a-row>
@@ -66,8 +70,8 @@
 <script>
 import moment from 'moment'
 const formItemLayout = {
-  labelCol: { span: 6 },
-  wrapperCol: { span: 16, offset: 1 }
+  labelCol: { span: 5 },
+  wrapperCol: { span: 17, offset: 1 }
 }
 export default {
   name: 'YbReconsiderApplyAdd',
@@ -83,7 +87,7 @@ export default {
       form: this.$form.createForm(this),
       ybReconsiderApply: {},
       monthFormat: 'YYYY-MM',
-      dayFormat: 'YYYY-MM-DD'
+      dayFormat: 'YYYY-MM-DD HH:mm:ss'
     }
   },
   methods: {
