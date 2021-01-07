@@ -8,12 +8,10 @@ import cc.mrbird.febs.common.domain.QueryRequest;
 import cc.mrbird.febs.common.properties.FebsProperties;
 import cc.mrbird.febs.common.utils.SortUtil;
 import cc.mrbird.febs.yb.dao.YbAppealManageMapper;
-import cc.mrbird.febs.yb.entity.YbAppealManage;
-import cc.mrbird.febs.yb.entity.YbAppealManageView;
-import cc.mrbird.febs.yb.entity.YbAppealResult;
-import cc.mrbird.febs.yb.entity.YbDefaultValue;
+import cc.mrbird.febs.yb.entity.*;
 import cc.mrbird.febs.yb.service.IYbAppealManageService;
 import cc.mrbird.febs.yb.service.IYbAppealResultService;
+import cc.mrbird.febs.yb.service.IYbReconsiderApplyService;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -28,6 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -51,6 +50,9 @@ public class YbAppealManageServiceImpl extends ServiceImpl<YbAppealManageMapper,
     public IComSmsService iComSmsService;
 
     @Autowired
+    public IYbReconsiderApplyService iYbReconsiderApplyService;
+
+    @Autowired
     FebsProperties febsProperties;
 
     @Override
@@ -64,6 +66,18 @@ public class YbAppealManageServiceImpl extends ServiceImpl<YbAppealManageMapper,
             }
             if (ybAppealManage.getApplyDataId() != null) {
                 queryWrapper.eq(YbAppealManage::getApplyDataId, ybAppealManage.getApplyDataId());
+            }
+
+            if (ybAppealManage.getApplyDateStr() != null) {
+                queryWrapper.eq(YbAppealManage::getApplyDateStr, ybAppealManage.getApplyDateStr());
+            }
+
+            if (ybAppealManage.getDataType() != null) {
+                queryWrapper.eq(YbAppealManage::getDataType, ybAppealManage.getDataType());
+            }
+
+            if (ybAppealManage.getTypeno() != null) {
+                queryWrapper.eq(YbAppealManage::getTypeno, ybAppealManage.getTypeno());
             }
 
             Page<YbAppealManage> page = new Page<>();
@@ -114,7 +128,7 @@ public class YbAppealManageServiceImpl extends ServiceImpl<YbAppealManageMapper,
     }
 
     @Override
-    public int findAppealManageResetCheckCounts(String applyDateStr){
+    public int findAppealManageResetCheckCounts(String applyDateStr) {
         return this.baseMapper.findAppealManageResetCheckCount(applyDateStr);
     }
 
@@ -122,29 +136,48 @@ public class YbAppealManageServiceImpl extends ServiceImpl<YbAppealManageMapper,
     @Override
     @Transactional
     public void updateAcceptRejectStates(List<YbAppealManage> list, Long uId, String Uname) {
+        List<YbAppealManage> findList = new ArrayList<>();
+        List<YbAppealManage> queryList = new ArrayList<>();
+        LambdaQueryWrapper<YbAppealManage> wrapper = new LambdaQueryWrapper<>();
+        List<String> idList = new ArrayList<>();
         for (YbAppealManage item : list) {
-            Date thisDate = new Date();
-            item.setModifyUserId(uId);
-            item.setModifyTime(thisDate);
-            if (item.getAcceptState() == YbDefaultValue.ACCEPTSTATE_2) {
-                item.setOperateDate(thisDate);
-                item.setOperateProcess("接受申请-已拒绝");
-            } else if (item.getAcceptState() == YbDefaultValue.ACCEPTSTATE_1) {
-                item.setOperateDate(thisDate);
-                item.setOperateProcess("接受申请-待申诉");
-            }
-            LambdaQueryWrapper<YbAppealManage> queryWrapper = new LambdaQueryWrapper<>();
-            queryWrapper.eq(YbAppealManage::getAcceptState, YbDefaultValue.ACCEPTSTATE_0);
-            queryWrapper.eq(YbAppealManage::getId, item.getId());
-
-            String strChangeDeptName = DataTypeHelpers.stringReplaceSetString(item.getChangeDeptName(),item.getChangeDeptCode() + "-");
-            item.setChangeDeptName(strChangeDeptName);
-            String strChangeDoctorName = DataTypeHelpers.stringReplaceSetString(item.getChangeDoctorName(),item.getChangeDoctorCode() + "-");
-            item.setChangeDoctorName(strChangeDoctorName);
-
-            this.baseMapper.update(item, queryWrapper);
+            idList.add(item.getId());
         }
+        if (idList.size() > 0) {
+            wrapper.in(YbAppealManage::getId, idList);
+            findList = this.list(wrapper);
+        }
+        if (findList.size() > 0) {
+            for (YbAppealManage item : list) {
+                queryList = findList.stream().filter(
+                        s -> s.getId().equals(item.getId())
+                ).collect(Collectors.toList());
+                if (queryList.size() > 0) {
+                    if (queryList.get(0).getAcceptState() == YbDefaultValue.ACCEPTSTATE_0) {
+                        Date thisDate = new Date();
+                        item.setModifyUserId(uId);
+                        item.setModifyTime(thisDate);
+                        if (item.getAcceptState() == YbDefaultValue.ACCEPTSTATE_2) {
+                            item.setOperateDate(thisDate);
+                            item.setOperateProcess("接受申请-已拒绝");
+                        } else if (item.getAcceptState() == YbDefaultValue.ACCEPTSTATE_1) {
+                            item.setOperateDate(thisDate);
+                            item.setOperateProcess("接受申请-待申诉");
+                        }
+                        LambdaQueryWrapper<YbAppealManage> queryWrapper = new LambdaQueryWrapper<>();
+                        queryWrapper.eq(YbAppealManage::getAcceptState, YbDefaultValue.ACCEPTSTATE_0);
+                        queryWrapper.eq(YbAppealManage::getId, item.getId());
 
+                        String strChangeDeptName = DataTypeHelpers.stringReplaceSetString(item.getChangeDeptName(), item.getChangeDeptCode() + "-");
+                        item.setChangeDeptName(strChangeDeptName);
+                        String strChangeDoctorName = DataTypeHelpers.stringReplaceSetString(item.getChangeDoctorName(), item.getChangeDoctorCode() + "-");
+                        item.setChangeDoctorName(strChangeDoctorName);
+
+                        this.baseMapper.update(item, queryWrapper);
+                    }
+                }
+            }
+        }
     }
 
     private boolean createUpdateAcceptAppealResult(YbAppealManage ybAppealManage, Date thisDate, Long uId, String Uname) {
@@ -156,15 +189,26 @@ public class YbAppealManageServiceImpl extends ServiceImpl<YbAppealManageMapper,
         newAppealResult.setVerifyId(ybAppealManage.getVerifyId());
         newAppealResult.setManageId(ybAppealManage.getId());
 
-        String strReadyDeptName = DataTypeHelpers.stringReplaceSetString(ybAppealManage.getReadyDeptName(),ybAppealManage.getReadyDeptCode() + "-");
+        String strReadyDeptName = DataTypeHelpers.stringReplaceSetString(ybAppealManage.getReadyDeptName(), ybAppealManage.getReadyDeptCode() + "-");
         ybAppealManage.setReadyDeptName(strReadyDeptName);
-        String strReadyDoctorName = DataTypeHelpers.stringReplaceSetString(ybAppealManage.getReadyDoctorName(),ybAppealManage.getReadyDoctorCode() + "-");
+        String strReadyDoctorName = DataTypeHelpers.stringReplaceSetString(ybAppealManage.getReadyDoctorName(), ybAppealManage.getReadyDoctorCode() + "-");
         ybAppealManage.setReadyDoctorName(strReadyDoctorName);
 
         newAppealResult.setDeptCode(ybAppealManage.getReadyDeptCode());
         newAppealResult.setDeptName(ybAppealManage.getReadyDeptName());
         newAppealResult.setDoctorCode(ybAppealManage.getReadyDoctorCode());
         newAppealResult.setDoctorName(ybAppealManage.getReadyDoctorName());
+
+        newAppealResult.setApplyDateStr(ybAppealManage.getApplyDateStr());
+        newAppealResult.setOrderNum(ybAppealManage.getOrderNum());
+        newAppealResult.setOrderNumber(ybAppealManage.getOrderNumber());
+        newAppealResult.setTypeno(ybAppealManage.getTypeno());
+
+        newAppealResult.setOrderDoctorCode(ybAppealManage.getOrderDoctorCode());
+        newAppealResult.setOrderDoctorName(ybAppealManage.getOrderDoctorName());
+        newAppealResult.setOrderDeptCode(ybAppealManage.getOrderDeptCode());
+        newAppealResult.setOrderDeptName(ybAppealManage.getOrderDeptName());
+
         newAppealResult.setOperateDate(thisDate);
         newAppealResult.setOperateReason(ybAppealManage.getOperateReason());
         newAppealResult.setCreateUserId(uId);
@@ -180,40 +224,61 @@ public class YbAppealManageServiceImpl extends ServiceImpl<YbAppealManageMapper,
     @Transactional
     public String updateUploadStates(YbAppealManage ybAppealManage, Long uId, String Uname) {
         String message = "";
-        LambdaQueryWrapper<YbAppealManage> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(YbAppealManage::getId, ybAppealManage.getId());
-        List<YbAppealManage> manageList = this.list(queryWrapper);
-        if (manageList.size() > 0) {
-            YbAppealManage am = manageList.get(0);
-            if (am.getAcceptState() == YbDefaultValue.ACCEPTSTATE_1) {
-                Date thisDate = new Date();
-                boolean isTrue = true;
-                YbAppealManage updateAppealManage = new YbAppealManage();
-                if (ybAppealManage.getAcceptState() == YbDefaultValue.ACCEPTSTATE_6) {
-                    isTrue = this.createUpdateAcceptAppealResult(ybAppealManage, thisDate, uId, Uname);
+        YbAppealManage entity = this.getById(ybAppealManage.getId());
+        if (entity != null) {
+            Date thisDate = new Date();
+            boolean isUpdate = false;
+            String mms = "";
+            isUpdate = iYbReconsiderApplyService.findReconsiderApplyCheckEndDate(entity.getApplyDateStr(), entity.getTypeno());
+            if (entity.getTypeno() == YbDefaultValue.TYPENO_1) {
+                mms = "第一版";
+            } else {
+                mms = "第二版";
+            }
+            if (isUpdate) {
+                if (entity.getAcceptState() == YbDefaultValue.ACCEPTSTATE_1) {
+                    isUpdate = true;
+                    YbAppealManage updateAppealManage = new YbAppealManage();
+                    if (ybAppealManage.getAcceptState() == YbDefaultValue.ACCEPTSTATE_6) {
+                        ybAppealManage.setApplyDateStr(entity.getApplyDateStr());
+                        ybAppealManage.setOrderNum(entity.getOrderNum());
+                        ybAppealManage.setOrderNumber(entity.getOrderNumber());
+                        ybAppealManage.setTypeno(entity.getTypeno());
 
-                    updateAppealManage.setOperateProcess("待申诉-已申诉");
-                }
-                updateAppealManage.setId(ybAppealManage.getId());
-                updateAppealManage.setModifyUserId(uId);
-                updateAppealManage.setModifyTime(thisDate);
-                updateAppealManage.setOperateDate(thisDate);
-                updateAppealManage.setOperateReason(ybAppealManage.getOperateReason());
-                updateAppealManage.setAcceptState(ybAppealManage.getAcceptState());
+                        ybAppealManage.setOrderDoctorCode(entity.getOrderDoctorCode());
+                        ybAppealManage.setOrderDoctorName(entity.getOrderDoctorName());
+                        ybAppealManage.setOrderDeptCode(entity.getOrderDeptCode());
+                        ybAppealManage.setOrderDeptName(entity.getOrderDeptName());
 
-                if (isTrue) {
-                    queryWrapper.eq(YbAppealManage::getAcceptState, YbDefaultValue.ACCEPTSTATE_1);
-                    int count = this.baseMapper.update(updateAppealManage, queryWrapper);
-                    if (count == 0) {
-                        message = "复议申诉状态更新失败.";
+                        isUpdate = this.createUpdateAcceptAppealResult(ybAppealManage, thisDate, uId, Uname);
+
+                        updateAppealManage.setOperateProcess("待申诉-已申诉");
+                    }
+                    updateAppealManage.setId(ybAppealManage.getId());
+                    updateAppealManage.setModifyUserId(uId);
+                    updateAppealManage.setModifyTime(thisDate);
+                    updateAppealManage.setOperateDate(thisDate);
+                    updateAppealManage.setOperateReason(ybAppealManage.getOperateReason());
+                    updateAppealManage.setAcceptState(ybAppealManage.getAcceptState());
+
+                    if (isUpdate) {
+                        LambdaQueryWrapper<YbAppealManage> queryWrapper = new LambdaQueryWrapper<>();
+                        queryWrapper.eq(YbAppealManage::getId, ybAppealManage.getId());
+                        queryWrapper.eq(YbAppealManage::getAcceptState, YbDefaultValue.ACCEPTSTATE_1);
+                        int count = this.baseMapper.update(updateAppealManage, queryWrapper);
+                        if (count == 0) {
+                            message = "复议申诉状态更新失败.";
+                        } else {
+                            message = "ok";
+                        }
                     } else {
-                        message = "ok";
+                        message = "复议结果数据创建失败.";
                     }
                 } else {
-                    message = "复议结果数据创建失败.";
+                    message = "该申诉数据已申诉.";
                 }
             } else {
-                message = "该申诉数据已申诉.";
+                message = "当前已过 " + mms + " 截止日期，无法修改.";
             }
         } else {
             message = "未找到申诉数据.";
@@ -224,86 +289,151 @@ public class YbAppealManageServiceImpl extends ServiceImpl<YbAppealManageMapper,
 
     @Override
     @Transactional
-    public void updateCreateAppealManage(YbAppealManage ybAppealManage, Long uId, String Uname, Integer type) {
-        YbAppealManage newAppealManage = new YbAppealManage();
-        ArrayList<String> personCodeList = new ArrayList<String>();
-        Date thisDate = new Date();
-        newAppealManage.setId(UUID.randomUUID().toString());
-        newAppealManage.setApplyDataId(ybAppealManage.getApplyDataId());
-        newAppealManage.setVerifyId(ybAppealManage.getVerifyId());
-        newAppealManage.setAcceptState(YbDefaultValue.ACCEPTSTATE_0);
-        newAppealManage.setIsDeletemark(1);
-        newAppealManage.setCreateUserId(uId);
-        newAppealManage.setCreateTime(thisDate);
-        newAppealManage.setOperateDate(thisDate);
-        newAppealManage.setSourceType(ybAppealManage.getSourceType());
-        newAppealManage.setVerifySendId(ybAppealManage.getVerifyId());
-        newAppealManage.setDataType(ybAppealManage.getDataType());
-        int day = iComConfiguremanageService.getConfigDay();
-        Date enableDate = this.addDateMethod(thisDate, day);
-        newAppealManage.setEnableDate(enableDate);
-        newAppealManage.setOperateProcess("变更申请-创建");
-        //状态改为4  医保已审核
-        ybAppealManage.setAcceptState(YbDefaultValue.ACCEPTSTATE_4);
-        ybAppealManage.setModifyUserId(uId);
-        ybAppealManage.setModifyTime(thisDate);
-        ybAppealManage.setOperateDate(thisDate);
+    public String updateUploadStateCompleteds(YbAppealManage ybAppealManage, Long uId, String Uname) {
+        String message = "";
+        YbAppealManage entity = this.getById(ybAppealManage.getId());
+        if (entity != null) {
+            Date thisDate = new Date();
+            boolean isUpdate = false;
+            String mms = "";
+            isUpdate = iYbReconsiderApplyService.findReconsiderApplyCheckEndDate(entity.getApplyDateStr(), entity.getTypeno());
+            if (entity.getTypeno() == YbDefaultValue.TYPENO_1) {
+                mms = "第一版";
+            } else {
+                mms = "第二版";
+            }
+            if (isUpdate) {
+                if (entity.getAcceptState() == YbDefaultValue.ACCEPTSTATE_6) {
+                    YbAppealResult updateAppealResult = new YbAppealResult();
+                    updateAppealResult.setId(ybAppealManage.getId());
+                    updateAppealResult.setModifyUserId(uId);
+                    updateAppealResult.setModifyTime(thisDate);
+                    updateAppealResult.setOperateDate(thisDate);
+                    updateAppealResult.setOperateReason(ybAppealManage.getOperateReason());
+                    this.iYbAppealResultService.updateById(updateAppealResult);
 
-        String strReadyDeptName = DataTypeHelpers.stringReplaceSetString(ybAppealManage.getReadyDeptName(),ybAppealManage.getReadyDeptCode() + "-");
-        ybAppealManage.setReadyDeptName(strReadyDeptName);
-        String strReadyDoctorName = DataTypeHelpers.stringReplaceSetString(ybAppealManage.getReadyDoctorName(),ybAppealManage.getReadyDoctorCode() + "-");
-        ybAppealManage.setReadyDoctorName(strReadyDoctorName);
+                    YbAppealManage updateAppealManage = new YbAppealManage();
+                    updateAppealManage.setId(ybAppealManage.getId());
+                    updateAppealManage.setModifyUserId(uId);
+                    updateAppealManage.setModifyTime(thisDate);
+                    updateAppealManage.setOperateDate(thisDate);
+                    updateAppealManage.setOperateReason(ybAppealManage.getOperateReason());
 
-        String strChangeDeptName = DataTypeHelpers.stringReplaceSetString(ybAppealManage.getChangeDeptName(),ybAppealManage.getChangeDeptCode() + "-");
-        ybAppealManage.setChangeDeptName(strChangeDeptName);
-        String strChangeDoctorName = DataTypeHelpers.stringReplaceSetString(ybAppealManage.getChangeDoctorName(),ybAppealManage.getChangeDoctorCode() + "-");
-        ybAppealManage.setChangeDoctorName(strChangeDoctorName);
-
-
-        String msg = "";
-        if (type == 2) {
-            //拒绝
-            ybAppealManage.setRefuseId(uId);
-            ybAppealManage.setRefuseName(Uname);
-            ybAppealManage.setRefuseDate(thisDate);
-            ybAppealManage.setOperateProcess("变更申请-拒绝");
-            ybAppealManage.setApprovalState(YbDefaultValue.APPROVALSTATE_2);
-
-            newAppealManage.setReadyDeptCode(ybAppealManage.getReadyDeptCode());
-            newAppealManage.setReadyDeptName(ybAppealManage.getReadyDeptName());
-            newAppealManage.setReadyDoctorCode(ybAppealManage.getReadyDoctorCode());
-            newAppealManage.setReadyDoctorName(ybAppealManage.getReadyDoctorName());
-
-            personCodeList.add(ybAppealManage.getReadyDoctorCode());
-
-            msg = "拒绝已驳回";
-            this.updateExamineStates(ybAppealManage);
+                    int count = this.baseMapper.updateById(updateAppealManage);
+                    if (count == 0) {
+                        message = "复议申诉状态更新失败.";
+                    } else {
+                        message = "ok";
+                    }
+                } else {
+                    message = "未找到申诉数据1.";
+                }
+            } else {
+                message = "当前已过 " + mms + " 截止日期，无法修改.";
+            }
         } else {
-            //同意
-            newAppealManage.setReadyDeptCode(ybAppealManage.getChangeDeptCode());
-            newAppealManage.setReadyDeptName(ybAppealManage.getChangeDeptName());
-            newAppealManage.setReadyDoctorCode(ybAppealManage.getChangeDoctorCode());
-
-            newAppealManage.setReadyDoctorName(ybAppealManage.getChangeDoctorName());
-            ybAppealManage.setRefuseReason("");
-            ybAppealManage.setOperateProcess("变更申请-同意");
-            ybAppealManage.setApprovalState(YbDefaultValue.APPROVALSTATE_1);
-
-            LambdaQueryWrapper<YbAppealManage> queryWrapper = new LambdaQueryWrapper<>();
-            queryWrapper.eq(YbAppealManage::getAcceptState, YbDefaultValue.ACCEPTSTATE_2);
-            queryWrapper.eq(YbAppealManage::getId, ybAppealManage.getId());
-            this.baseMapper.update(ybAppealManage, queryWrapper);
-
-            msg = "已发布";
-            personCodeList.add(ybAppealManage.getChangeDoctorCode());
+            message = "未找到申诉数据2.";
         }
 
-        this.save(newAppealManage);
-        int nOpenSms = febsProperties.getOpenSms();
-        boolean isOpenSms = nOpenSms == 1 ? true : false;
-        if(isOpenSms) {
-            String sendContent = "医保管理平台提醒您，您的医保复议任务" + msg + "，请尽快处理";
-            iComSmsService.sendSmsService(personCodeList, ComSms.SENDTYPE_3, sendContent, uId, Uname);
+        return message;
+    }
+
+    @Override
+    @Transactional
+    public void updateCreateAppealManage(YbAppealManage ybAppealManage, Long uId, String Uname, Integer type) {
+        YbAppealManage entity = this.getById(ybAppealManage.getId());
+        if (entity != null && entity.getAcceptState() == YbDefaultValue.APPROVALSTATE_2) {
+
+            YbAppealManage newAppealManage = new YbAppealManage();
+            String personCode = "";
+            Date thisDate = new Date();
+            newAppealManage.setId(UUID.randomUUID().toString());
+            newAppealManage.setApplyDataId(ybAppealManage.getApplyDataId());
+            newAppealManage.setVerifyId(ybAppealManage.getVerifyId());
+            newAppealManage.setAcceptState(YbDefaultValue.ACCEPTSTATE_0);
+            newAppealManage.setIsDeletemark(1);
+            newAppealManage.setCreateUserId(uId);
+            newAppealManage.setCreateTime(thisDate);
+            newAppealManage.setOperateDate(thisDate);
+            newAppealManage.setSourceType(ybAppealManage.getSourceType());
+            newAppealManage.setVerifySendId(ybAppealManage.getVerifyId());
+            newAppealManage.setDataType(ybAppealManage.getDataType());
+            int day = iComConfiguremanageService.getConfigDay();
+            Date enableDate = this.addDateMethod(thisDate, day);
+            newAppealManage.setEnableDate(enableDate);
+            newAppealManage.setOperateProcess("变更申请-创建");
+
+            newAppealManage.setApplyDateStr(entity.getApplyDateStr());
+            newAppealManage.setOrderNum(entity.getOrderNum());
+            newAppealManage.setOrderNumber(entity.getOrderNumber());
+            newAppealManage.setTypeno(entity.getTypeno());
+
+            newAppealManage.setOrderDoctorCode(entity.getOrderDoctorCode());
+            newAppealManage.setOrderDoctorName(entity.getOrderDoctorName());
+            newAppealManage.setOrderDeptCode(entity.getOrderDeptCode());
+            newAppealManage.setOrderDeptName(entity.getOrderDeptName());
+            //状态改为4  医保已审核
+            ybAppealManage.setAcceptState(YbDefaultValue.ACCEPTSTATE_4);
+            ybAppealManage.setModifyUserId(uId);
+            ybAppealManage.setModifyTime(thisDate);
+            ybAppealManage.setOperateDate(thisDate);
+
+            String strReadyDeptName = DataTypeHelpers.stringReplaceSetString(ybAppealManage.getReadyDeptName(), ybAppealManage.getReadyDeptCode() + "-");
+            ybAppealManage.setReadyDeptName(strReadyDeptName);
+            String strReadyDoctorName = DataTypeHelpers.stringReplaceSetString(ybAppealManage.getReadyDoctorName(), ybAppealManage.getReadyDoctorCode() + "-");
+            ybAppealManage.setReadyDoctorName(strReadyDoctorName);
+
+            String strChangeDeptName = DataTypeHelpers.stringReplaceSetString(ybAppealManage.getChangeDeptName(), ybAppealManage.getChangeDeptCode() + "-");
+            ybAppealManage.setChangeDeptName(strChangeDeptName);
+            String strChangeDoctorName = DataTypeHelpers.stringReplaceSetString(ybAppealManage.getChangeDoctorName(), ybAppealManage.getChangeDoctorCode() + "-");
+            ybAppealManage.setChangeDoctorName(strChangeDoctorName);
+
+
+            String msg = "";
+            if (type == 2) {
+                //拒绝
+                ybAppealManage.setRefuseId(uId);
+                ybAppealManage.setRefuseName(Uname);
+                ybAppealManage.setRefuseDate(thisDate);
+                ybAppealManage.setOperateProcess("变更申请-拒绝");
+                ybAppealManage.setApprovalState(YbDefaultValue.APPROVALSTATE_2);
+
+                newAppealManage.setReadyDeptCode(ybAppealManage.getReadyDeptCode());
+                newAppealManage.setReadyDeptName(ybAppealManage.getReadyDeptName());
+                newAppealManage.setReadyDoctorCode(ybAppealManage.getReadyDoctorCode());
+                newAppealManage.setReadyDoctorName(ybAppealManage.getReadyDoctorName());
+
+                personCode = ybAppealManage.getReadyDoctorCode();
+
+                msg = "拒绝已驳回";
+                this.updateExamineStates(ybAppealManage);
+            } else {
+                //同意
+                newAppealManage.setReadyDeptCode(ybAppealManage.getChangeDeptCode());
+                newAppealManage.setReadyDeptName(ybAppealManage.getChangeDeptName());
+                newAppealManage.setReadyDoctorCode(ybAppealManage.getChangeDoctorCode());
+
+                newAppealManage.setReadyDoctorName(ybAppealManage.getChangeDoctorName());
+                ybAppealManage.setRefuseReason("");
+                ybAppealManage.setOperateProcess("变更申请-同意");
+                ybAppealManage.setApprovalState(YbDefaultValue.APPROVALSTATE_1);
+
+                LambdaQueryWrapper<YbAppealManage> queryWrapper = new LambdaQueryWrapper<>();
+                queryWrapper.eq(YbAppealManage::getAcceptState, YbDefaultValue.ACCEPTSTATE_2);
+                queryWrapper.eq(YbAppealManage::getId, ybAppealManage.getId());
+                this.baseMapper.update(ybAppealManage, queryWrapper);
+
+                msg = "已发布";
+                personCode = ybAppealManage.getChangeDoctorCode();
+            }
+
+            this.save(newAppealManage);
+            int nOpenSms = febsProperties.getOpenSms();
+            boolean isOpenSms = nOpenSms == 1 ? true : false;
+            if (isOpenSms) {
+                String sendContent = this.iYbReconsiderApplyService.getSendMessage(entity.getApplyDateStr(), enableDate, entity.getTypeno());
+                iComSmsService.sendSmsService(personCode, ComSms.SENDTYPE_3, sendContent, uId, Uname);
+            }
         }
     }
 
@@ -324,65 +454,85 @@ public class YbAppealManageServiceImpl extends ServiceImpl<YbAppealManageMapper,
     @Transactional
     public void updateCreateAdminAppealManage(YbAppealManage ybAppealManage, Long uId, String Uname) {
         Date thisDate = new Date();
+        YbAppealManage entity = this.getById(ybAppealManage.getId());
+        if (entity != null && (entity.getAcceptState() == YbDefaultValue.ACCEPTSTATE_0 || entity.getAcceptState() == YbDefaultValue.ACCEPTSTATE_1 || entity.getAcceptState() == YbDefaultValue.ACCEPTSTATE_2)) {
+            YbAppealManage updateAppealManage = new YbAppealManage();
+            updateAppealManage.setId(ybAppealManage.getId());
+            updateAppealManage.setAcceptState(YbDefaultValue.ACCEPTSTATE_3);
+            //updateAppealManage.setOperateReason("管理员更改");
+            ybAppealManage.setOperateProcess("管理员更改");
+            updateAppealManage.setOperateDate(thisDate);
+            updateAppealManage.setAdminPersonId(uId);
+            updateAppealManage.setAdminPersonName(Uname);
+            updateAppealManage.setAdminReason("管理员更改");
+            updateAppealManage.setAdminChangeDate(thisDate);
+            //方法 更改状态为0的数据 业务更改 管理员更改状态为1的数据 所有不调用该方法
+            //方法 更改状态为1的数据
+            LambdaQueryWrapper<YbAppealManage> queryWrapper = new LambdaQueryWrapper<>();
+            queryWrapper.eq(YbAppealManage::getAcceptState, entity.getAcceptState());
+            queryWrapper.eq(YbAppealManage::getId, ybAppealManage.getId());
+            this.baseMapper.update(updateAppealManage, queryWrapper);
 
-        YbAppealManage updateAppealManage = new YbAppealManage();
-        updateAppealManage.setId(ybAppealManage.getId());
-        updateAppealManage.setAcceptState(YbDefaultValue.ACCEPTSTATE_3);
-        //updateAppealManage.setOperateReason("管理员更改");
-        ybAppealManage.setOperateProcess("管理员更改");
-        updateAppealManage.setOperateDate(thisDate);
-        updateAppealManage.setAdminPersonId(uId);
-        updateAppealManage.setAdminPersonName(Uname);
-        updateAppealManage.setAdminReason("管理员更改");
-        updateAppealManage.setAdminChangeDate(thisDate);
-        //方法 更改状态为0的数据 业务更改 管理员更改状态为1的数据 所有不调用该方法
-        //方法 更改状态为1的数据
-        LambdaQueryWrapper<YbAppealManage> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(YbAppealManage::getAcceptState, YbDefaultValue.ACCEPTSTATE_1);
-        queryWrapper.eq(YbAppealManage::getId, ybAppealManage.getId());
-        this.baseMapper.update(updateAppealManage, queryWrapper);
+            YbAppealManage newAppealManage = new YbAppealManage();
+            newAppealManage.setId(UUID.randomUUID().toString());
+            newAppealManage.setDataType(ybAppealManage.getDataType());
+            newAppealManage.setSourceType(ybAppealManage.getSourceType());
+            newAppealManage.setApplyDataId(ybAppealManage.getApplyDataId());
+            newAppealManage.setVerifyId(ybAppealManage.getVerifyId());
 
-        YbAppealManage newAppealManage = new YbAppealManage();
-        newAppealManage.setId(UUID.randomUUID().toString());
-        newAppealManage.setDataType(ybAppealManage.getDataType());
-        newAppealManage.setSourceType(ybAppealManage.getSourceType());
-        newAppealManage.setApplyDataId(ybAppealManage.getApplyDataId());
-        newAppealManage.setVerifyId(ybAppealManage.getVerifyId());
+            int day = iComConfiguremanageService.getConfigDay();
+            Date enableDate = this.addDateMethod(thisDate, day);
+            newAppealManage.setEnableDate(enableDate);
+            //赋值 新增状态为0的数据 业务更改 管理员更改状态为1的数据 所有不赋值为0
+            //newAppealManage.setAcceptState(0);
+            //因业务需求管理员更改状态为1(接受)的数据
+//        newAppealManage.setAcceptState(YbDefaultValue.ACCEPTSTATE_1);
 
-        int day = iComConfiguremanageService.getConfigDay();
-        Date enableDate = this.addDateMethod(thisDate, day);
-        newAppealManage.setEnableDate(enableDate);
-        //赋值 新增状态为0的数据 业务更改 管理员更改状态为1的数据 所有不赋值为0
-        //newAppealManage.setAcceptState(0);
-        //因业务需求管理员更改状态为1(接受)的数据
-        newAppealManage.setAcceptState(YbDefaultValue.ACCEPTSTATE_1);
-        newAppealManage.setIsDeletemark(1);
-        newAppealManage.setCreateUserId(uId);
-        newAppealManage.setCreateTime(thisDate);
-        newAppealManage.setOperateDate(thisDate);
+            //因业务需求管理员更改状态传进来是什么就是什么
+            if(entity.getAcceptState() == YbDefaultValue.ACCEPTSTATE_2){
+                newAppealManage.setAcceptState(YbDefaultValue.ACCEPTSTATE_0);
+            }else {
+                newAppealManage.setAcceptState(entity.getAcceptState());
+            }
+            newAppealManage.setIsDeletemark(1);
+            newAppealManage.setCreateUserId(uId);
+            newAppealManage.setCreateTime(thisDate);
+            newAppealManage.setOperateDate(thisDate);
 
-        String strReadyDeptName = DataTypeHelpers.stringReplaceSetString(ybAppealManage.getReadyDeptName(),ybAppealManage.getReadyDeptCode() + "-");
-        ybAppealManage.setReadyDeptName(strReadyDeptName);
-        String strReadyDoctorName = DataTypeHelpers.stringReplaceSetString(ybAppealManage.getReadyDoctorName(),ybAppealManage.getReadyDoctorCode() + "-");
-        ybAppealManage.setReadyDoctorName(strReadyDoctorName);
+            newAppealManage.setApplyDateStr(entity.getApplyDateStr());
+            newAppealManage.setOrderNum(entity.getOrderNum());
+            newAppealManage.setOrderNumber(entity.getOrderNumber());
+            newAppealManage.setTypeno(entity.getTypeno());
 
-        newAppealManage.setReadyDeptCode(ybAppealManage.getReadyDeptCode());
-        newAppealManage.setReadyDeptName(ybAppealManage.getReadyDeptName());
-        newAppealManage.setReadyDoctorCode(ybAppealManage.getReadyDoctorCode());
-        newAppealManage.setReadyDoctorName(ybAppealManage.getReadyDoctorName());
-        newAppealManage.setVerifySendId(ybAppealManage.getVerifyId());
-        newAppealManage.setOperateProcess("管理员更改-创建");
+            newAppealManage.setOrderDoctorCode(entity.getOrderDoctorCode());
+            newAppealManage.setOrderDoctorName(entity.getOrderDoctorName());
+            newAppealManage.setOrderDeptCode(entity.getOrderDeptCode());
+            newAppealManage.setOrderDeptName(entity.getOrderDeptName());
 
-        ArrayList<String> personCodeList = new ArrayList<String>();
+            String strReadyDeptName = DataTypeHelpers.stringReplaceSetString(ybAppealManage.getReadyDeptName(), ybAppealManage.getReadyDeptCode() + "-");
+            ybAppealManage.setReadyDeptName(strReadyDeptName);
+            String strReadyDoctorName = DataTypeHelpers.stringReplaceSetString(ybAppealManage.getReadyDoctorName(), ybAppealManage.getReadyDoctorCode() + "-");
+            ybAppealManage.setReadyDoctorName(strReadyDoctorName);
 
-        personCodeList.add(newAppealManage.getReadyDoctorCode());
+            newAppealManage.setReadyDeptCode(ybAppealManage.getReadyDeptCode());
+            newAppealManage.setReadyDeptName(ybAppealManage.getReadyDeptName());
+            newAppealManage.setReadyDoctorCode(ybAppealManage.getReadyDoctorCode());
+            newAppealManage.setReadyDoctorName(ybAppealManage.getReadyDoctorName());
+            newAppealManage.setVerifySendId(ybAppealManage.getVerifyId());
+            newAppealManage.setOperateProcess("管理员更改-创建");
 
-        this.save(newAppealManage);
-        int nOpenSms = febsProperties.getOpenSms();
-        boolean isOpenSms = nOpenSms == 1 ? true : false;
-        if(isOpenSms) {
-            String sendContent = "医保管理平台提醒您，您的医保复议任务已发布，请尽快处理";
-            iComSmsService.sendSmsService(personCodeList, ComSms.SENDTYPE_4, sendContent, uId, Uname);
+            String personCode = newAppealManage.getReadyDoctorCode();
+
+            this.save(newAppealManage);
+            int nOpenSms = febsProperties.getOpenSms();
+            boolean isOpenSms = nOpenSms == 1 ? true : false;
+            if (isOpenSms) {
+                if(entity.getAcceptState() == YbDefaultValue.ACCEPTSTATE_1){
+                    enableDate = null;
+                }
+                String sendContent = this.iYbReconsiderApplyService.getSendMessage(entity.getApplyDateStr(), enableDate, entity.getTypeno());
+                iComSmsService.sendSmsService(personCode, ComSms.SENDTYPE_4, sendContent, uId, Uname);
+            }
         }
     }
 

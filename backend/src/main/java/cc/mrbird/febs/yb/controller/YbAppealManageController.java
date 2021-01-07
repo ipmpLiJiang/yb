@@ -100,13 +100,13 @@ public class YbAppealManageController extends BaseController {
     @Log("修改")
     @PutMapping("updateCreateAppealManage")
     @RequiresPermissions("ybAppealManage:amCreateUpdate")
-    public void updateCreateAppealManage(@Valid YbAppealManage ybAppealManage,Integer type) throws FebsException {
+    public void updateCreateAppealManage(@Valid YbAppealManage ybAppealManage, Integer type) throws FebsException {
         try {
             User currentUser = FebsUtil.getCurrentUser();
             Long uid = currentUser.getUserId();
             String uname = currentUser.getUsername();
 
-            this.iYbAppealManageService.updateCreateAppealManage(ybAppealManage,uid,uname,type);
+            this.iYbAppealManageService.updateCreateAppealManage(ybAppealManage, uid, uname, type);
         } catch (Exception e) {
             message = "修改失败";
             log.error(message, e);
@@ -123,7 +123,7 @@ public class YbAppealManageController extends BaseController {
             Long uid = currentUser.getUserId();
             String uname = currentUser.getUsername();
 
-            this.iYbAppealManageService.updateCreateAdminAppealManage(ybAppealManage,uid,uname);
+            this.iYbAppealManageService.updateCreateAdminAppealManage(ybAppealManage, uid, uname);
         } catch (Exception e) {
             message = "更改失败";
             log.error(message, e);
@@ -143,7 +143,7 @@ public class YbAppealManageController extends BaseController {
             List<YbAppealManage> list = JSON.parseObject(dataJson, new TypeReference<List<YbAppealManage>>() {
             });
 
-            this.iYbAppealManageService.updateAcceptRejectStates(list,uid ,uname);
+            this.iYbAppealManageService.updateAcceptRejectStates(list, uid, uname);
         } catch (Exception e) {
             message = "操作失败";
             log.error(message, e);
@@ -164,8 +164,38 @@ public class YbAppealManageController extends BaseController {
             YbAppealManage ybAppealManage = JSON.parseObject(dataJson, new TypeReference<YbAppealManage>() {
             });
 
-            message = this.iYbAppealManageService.updateUploadStates(ybAppealManage,uid ,uname);
-            if(message.equals("ok")){
+            message = this.iYbAppealManageService.updateUploadStates(ybAppealManage, uid, uname);
+            if (message.equals("ok")) {
+                success = 1;
+                message = "操作成功.";
+            }
+        } catch (Exception e) {
+            message = "操作失败.";
+            log.error(message, e);
+        }
+
+        ResponseResult rr = new ResponseResult();
+        rr.setMessage(message);
+        rr.setSuccess(success);
+
+        return new FebsResponse().data(rr);
+    }
+
+    @Log("修改")
+    @PutMapping("updateUploadStateCompleted")
+    @RequiresPermissions("ybAppealManage:uploadState")
+    public FebsResponse updateUploadStateCompleted(String dataJson) {
+        int success = 0;
+        try {
+            User currentUser = FebsUtil.getCurrentUser();
+            Long uid = currentUser.getUserId();
+            String uname = currentUser.getUsername();
+
+            YbAppealManage ybAppealManage = JSON.parseObject(dataJson, new TypeReference<YbAppealManage>() {
+            });
+
+            message = this.iYbAppealManageService.updateUploadStateCompleteds(ybAppealManage, uid, uname);
+            if (message.equals("ok")) {
                 success = 1;
                 message = "操作成功.";
             }

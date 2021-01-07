@@ -27,12 +27,12 @@
       <a-row>
         <a-form-item
           v-bind="formItemLayout"
-          label="审核一结束日期"
+          label="第一版结束日期"
         >
         <a-date-picker
-          placeholder="请输入审核一结束日期"
+          placeholder="请输入第一版结束日期"
           style="width:250px"
-          v-decorator="['endDateOne', {rules: [{ required: true, message: '审核一结束日期不能为空' }] }]"
+          v-decorator="['endDateOne', {rules: [{ required: true, message: '第一版结束日期不能为空' }] }]"
           show-time
           :format="dayFormat"/>
         </a-form-item>
@@ -40,12 +40,12 @@
       <a-row>
         <a-form-item
           v-bind="formItemLayout"
-          label="审核二结束日期"
+          label="第二版结束日期"
         >
         <a-date-picker
-          placeholder="请输入审核二结束日期"
+          placeholder="请输入第二版结束日期"
           style="width:250px"
-          v-decorator="['endDateTwo', {rules: [{ required: true, message: '审核二结束日期不能为空' }] }]"
+          v-decorator="['endDateTwo', {rules: [{ required: true, message: '第二版结束日期不能为空' }] }]"
           show-time
           :format="dayFormat"/>
         </a-form-item>

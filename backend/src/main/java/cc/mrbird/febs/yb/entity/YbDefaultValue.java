@@ -80,11 +80,11 @@ public  class YbDefaultValue {
 
 
     /**
-     * 审核版本 1 审核一
+     * 审核版本 1 第一版
      */
     public static final Integer TYPENO_1 = 1;
     /**
-     * 审核版本 2 审核二
+     * 审核版本 2 第二版
      */
     public static final Integer TYPENO_2 = 2;
 

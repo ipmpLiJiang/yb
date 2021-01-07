@@ -11,7 +11,7 @@
           justify="center"
           align="middle"
         >
-        <a-col :span=2>
+        <a-col :span=1>
           &nbsp;
         </a-col>
           <a-col :span=6>
@@ -33,7 +33,7 @@
               @click="showSearchModal"
             >筛选</a-button>
           </a-col>
-          <a-col :span=12>
+          <a-col :span=10>
             <a-popconfirm
               title="确定自动匹配？"
               @confirm="addImport"
@@ -64,6 +64,16 @@
               <a-button type="primary">批量核对</a-button>
             </a-popconfirm>
             <a-popconfirm
+              title="确定全部核对？"
+              style="margin-right: 15px"
+              v-show="tableSelectKey==1?true:false"
+              @confirm="batchVerifyA"
+              okText="确定"
+              cancelText="取消"
+            >
+              <a-button type="primary">全部核对</a-button>
+            </a-popconfirm>
+            <a-popconfirm
               title="确定批量发送？"
               style="margin-right: 15px"
               v-show="tableSelectKey==2||tableSelectKey==3?true:false"
@@ -83,10 +93,54 @@
             >
               <a-button type="primary">全部发送</a-button>
             </a-popconfirm>
+            <a-select :value="searchDataType" style="width: 100px" @change="handleDataTypeChange"
+            v-show="tableSelectKey==4?true:false"
+            >
+              <a-select-option
+              v-for="d in selectDataTypeDataSource"
+              :key="d.value"
+              >
+              {{ d.text }}
+              </a-select-option>
+            </a-select>
+            <a-select :value="searchTypeno" style="width: 100px" @change="handleTypenoChange"
+            v-show="tableSelectKey==4?true:false"
+            >
+              <a-select-option
+              v-for="d in selectTypenoDataSource"
+              :key="d.value"
+              >
+              {{ d.text }}
+              </a-select-option>
+            </a-select>
             <a-button
               type="primary"
+              style="margin-right: 15px"
               @click="searchTable"
             >刷新</a-button>
+          </a-col>
+
+          <a-col :span=2 v-show="tableSelectKey==1||tableSelectKey==2?true:false">
+            <a-upload
+                name="file"
+                accept=".xlsx,.xls"
+                style="margin-right: 15px"
+                :fileList="fileList"
+                :beforeUpload="beforeUpload"
+              >
+                <a-button type="primary">
+                  <a-icon type="upload" /> 上传 </a-button>
+              </a-upload>
+          </a-col>
+          <a-col :span=2 v-show="tableSelectKey==1||tableSelectKey==2?true:false">
+            <a-popconfirm
+              title="确定导出数据？"
+              @confirm="exportExcel"
+              okText="确定"
+              cancelText="取消"
+            >
+              <a-button type="primary" >导出数据</a-button>
+            </a-popconfirm>
           </a-col>
         </a-row>
       </div>
@@ -112,6 +166,8 @@
               @showImport="showImport"
               @handImport="handImport"
               @batchVerify="batchVerify"
+              @batchVerifyA="batchVerifyA"
+              @verifySpin="verifySpin"
             >
             </ybReconsiderVerify-stayed>
           </a-tab-pane>
@@ -126,6 +182,7 @@
               :searchItem='searchItem'
               @showImport="showImport"
               @handImport="handImport"
+              @verifySpin="verifySpin"
             >
             </ybReconsiderSendStayed-main>
           </a-tab-pane>
@@ -138,6 +195,7 @@
               ref="ybReconsiderSendStayed"
               :searchItem='searchItem'
               :applyDate='searchApplyDate'
+              @verifySpin="verifySpin"
             >
             </ybReconsiderSend-stayed>
           </a-tab-pane>
@@ -150,6 +208,8 @@
               ref="ybReconsiderSendEnd"
               :searchItem='searchItem'
               :applyDate='searchApplyDate'
+              :searchTypeno='searchTypeno'
+              :searchDataType='searchDataType'
             >
             </ybReconsiderSend-end>
           </a-tab-pane>
@@ -334,11 +394,16 @@ export default {
       spinning: false,
       delayTime: 500,
       selectDate: {},
+      fileList: [],
+      searchTypeno: 1,
+      searchDataType: 0,
       handleQuerySymbol: [
         {text: '等于', value: 'EQ'},
         {text: '包含', value: 'LIKE'},
         {text: '不包含', value: 'NOTLIKE'}
       ],
+      selectTypenoDataSource: [{text: '版本一', value: 1}, {text: '版本二', value: 2}],
+      selectDataTypeDataSource: [{text: '明细扣款', value: 0}, {text: '主单扣款', value: 1}],
       searchItem: {
         project: {type: 'LIKE', projectName: ''},
         rule: {type: 'LIKE', ruleName: ''},
@@ -355,10 +420,29 @@ export default {
     moment,
     formatDate () {
       let datemonth = moment().subtract(1, 'months').format('YYYY-MM')
+      this.initTypeno(datemonth)
       return datemonth
     },
     monthChange (date, dateString) {
       this.searchApplyDate = dateString
+      this.initTypeno(dateString)
+    },
+    initTypeno (applyDateStr) {
+      this.$get('ybReconsiderApply/getTypeno', {
+        applyDateStr: applyDateStr
+      }).then((r) => {
+        if (r.data.data.success === 1) {
+          this.searchTypeno = parseInt(r.data.data.data)
+        } else {
+          this.searchTypeno = 1
+        }
+      })
+    },
+    handleTypenoChange (value) {
+      this.searchTypeno = value
+    },
+    handleDataTypeChange (value) {
+      this.searchDataType = value
     },
     showImport (data) {
       this.visibleUpdate = true
@@ -436,6 +520,66 @@ export default {
       this.$refs.ybReconsiderVerifyViewDetail.setFormValues(record)
       this.detailVisiable = true
     },
+    beforeUpload (file) {
+      var testmsg = file.name.substring(file.name.lastIndexOf('.') + 1)
+      let isExcel = testmsg === 'xlsx'
+      if (!isExcel) {
+        isExcel = testmsg === 'xls'
+      }
+      // const isExcel = file.type === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+      if (!(isExcel)) {
+        this.$error({
+          title: '只能上传.xlsx,.xls格式的Excel文档~'
+        })
+        return
+      }
+      const isLt2M = file.size / 1024 / 1024 < 5
+      if (!isLt2M) {
+        this.$error({
+          title: '超5M限制，不允许上传~'
+        })
+        return
+      }
+      return (isExcel) && isLt2M && this.handleUpload(file)
+    },
+    handleUpload (file) {
+      this.spinning = true
+      // 点击删除文件调用removeUpload后会自动调用本方法handleUpload 待解决
+      const formData = new FormData()
+      formData.append('file', file)
+      formData.append('applyDateStr', this.searchApplyDate)
+      let dataType = this.tableSelectKey === '1' ? 0 : 1
+      formData.append('dataType', dataType)
+
+      this.$upload('ybReconsiderVerify/importReconsiderDataVerify', formData).then((r) => {
+        if (r.data.data.success === 1) {
+          this.$message.success('Excel导入成功.')
+          this.spinning = false
+          if (dataType === 0) {
+            this.$refs.ybReconsiderVerifyStayed.searchPage()
+          } else {
+            this.$refs.ybReconsiderSendStayedMain.searchPage()
+          }
+        } else {
+          this.$message.error(r.data.data.message)
+          this.spinning = false
+        }
+      }).catch(() => {
+        this.fileList = []
+        this.$message.error('Excel导入失败.')
+        this.spinning = false
+      })
+    },
+    exportExcel () {
+      let queryParams = {}
+      queryParams.applyDateStr = this.searchApplyDate
+      queryParams.state = 1
+      let dataType = this.tableSelectKey === '1' ? 0 : 1
+      queryParams.dataType = dataType
+      this.$export('ybReconsiderVerifyView/exportVerify', {
+        ...queryParams
+      })
+    },
     addImport () {
       this.spinning = true
       let url = 'importReconsiderVerify'
@@ -458,11 +602,20 @@ export default {
         this.$message.error('自动匹配操作失败.')
       })
     },
+    verifySpin () {
+      this.spinning = false
+    },
     batchVerify () {
+      this.spinning = true
       this.$refs.ybReconsiderVerifyStayed.batchVerify()
       this.pcmVisible = false
     },
+    batchVerifyA () {
+      this.spinning = true
+      this.$refs.ybReconsiderVerifyStayed.batchVerifyA()
+    },
     batchSend () {
+      this.spinning = true
       if (this.tableSelectKey === '2') {
         this.$refs.ybReconsiderSendStayedMain.batchSend()
       } else {
@@ -470,6 +623,7 @@ export default {
       }
     },
     batchSendA () {
+      this.spinning = true
       if (this.tableSelectKey === '2') {
         this.$refs.ybReconsiderSendStayedMain.batchSendA()
       } else {

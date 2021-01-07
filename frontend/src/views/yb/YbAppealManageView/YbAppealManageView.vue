@@ -7,7 +7,7 @@
       <div style="text-align:center;margin-bottom:20px">
         <a-row justify="center"
           align="middle">
-          <a-col :span=7>
+          <a-col :span=6>
               复议年月：
               <a-month-picker
                 placeholder="请输入复议年月"
@@ -16,7 +16,18 @@
                 :format="monthFormat"
               />
           </a-col>
-          <a-col :span=7>
+          <a-col :span=4>
+            版本类型：
+            <a-select :value="searchTypeno" style="width: 100px" @change="handleTypenoChange">
+              <a-select-option
+              v-for="d in selectTypenoDataSource"
+              :key="d.value"
+              >
+              {{ d.text }}
+              </a-select-option>
+            </a-select>
+          </a-col>
+          <a-col :span=6>
             <a-input-search placeholder="请输入关键字" v-model="searchText" style="width: 200px" enter-button @search="searchTable" />
           </a-col>
           <a-col :span=3 v-show="tableSelectKey==1?true:false">
@@ -59,9 +70,11 @@
               ref="ybAppealManageAccept"
               :applyDate='searchApplyDate'
               :searchText='searchText'
+              :searchTypeno='searchTypeno'
               @look="look"
               @reject="reject"
               @onHistoryLook="onHistoryLook"
+              @setTypeno="setTypeno"
             >
             </ybAppealManage-accept>
           </a-tab-pane>
@@ -75,6 +88,7 @@
               ref="ybAppealManageRefused"
               :searchText='searchText'
               :applyDate='searchApplyDate'
+              :searchTypeno='searchTypeno'
               @onHistoryLook="onHistoryLook"
               @look="look"
             >
@@ -90,6 +104,7 @@
               ref="ybAppealManageStayed"
               :searchText='searchText'
               :applyDate='searchApplyDate'
+              :searchTypeno='searchTypeno'
               @appeal='appeal'
               @onHistoryLook="onHistoryLook"
             >
@@ -105,6 +120,8 @@
               ref="ybAppealManageCompleted"
               :searchText='searchText'
               :applyDate='searchApplyDate'
+              :searchTypeno='searchTypeno'
+              @appealComplete='appealComplete'
               @onHistoryLook="onHistoryLook"
               @look="look"
             >
@@ -120,6 +137,7 @@
               ref="ybAppealManageOverdue"
               :searchText='searchText'
               :applyDate='searchApplyDate'
+              :searchTypeno='searchTypeno'
               @onHistoryLook="onHistoryLook"
               @look="look"
             >
@@ -159,6 +177,12 @@
       :appealVisiable="appealVisiable"
     >
     </ybAppealManage-upload>
+    <ybAppealManageUpload-complete
+      ref="ybAppealManageUploadComplete"
+      @close="handleAppealCompleteClose"
+      :appealCompleteVisiable="appealCompleteVisiable"
+    >
+    </ybAppealManageUpload-complete>
   </a-card>
 </template>
 
@@ -172,12 +196,13 @@ import YbAppealManageLook from './YbAppealManageLook'
 import YbAppealManageReject from './YbAppealManageReject'
 import YbAppealManageHistory from '../ybFunModule/YbAppealManageHistoryModule'
 import YbAppealManageUpload from './YbAppealManageUpload'
+import YbAppealManageUploadComplete from './YbAppealManageUploadComplete'
 import YbAppealManageOverdue from './YbAppealManageOverdue'
 
 export default {
   name: 'YbAppealManageView',
   components: {
-    YbAppealManageAccept, YbAppealManageRefused, YbAppealManageLook, YbAppealManageReject, YbAppealManageStayed, YbAppealManageCompleted, YbAppealManageHistory, YbAppealManageUpload, YbAppealManageOverdue},
+    YbAppealManageAccept, YbAppealManageRefused, YbAppealManageLook, YbAppealManageReject, YbAppealManageStayed, YbAppealManageCompleted, YbAppealManageHistory, YbAppealManageUpload, YbAppealManageUploadComplete, YbAppealManageOverdue},
   data () {
     return {
       monthFormat: 'YYYY-MM',
@@ -187,8 +212,11 @@ export default {
       lookVisiable: false,
       historyVisiable: false,
       appealVisiable: false,
+      appealCompleteVisiable: false,
       searchText: '',
-      tableSelectKey: '1'
+      tableSelectKey: '1',
+      searchTypeno: 1,
+      selectTypenoDataSource: [{text: '版本一', value: 1}, {text: '版本二', value: 2}]
     }
   },
   computed: {
@@ -203,6 +231,18 @@ export default {
     },
     monthChange (date, dateString) {
       this.searchApplyDate = dateString
+      this.initTypeno(dateString)
+    },
+    initTypeno (applyDateStr) {
+      this.$get('ybReconsiderApply/getTypeno', {
+        applyDateStr: applyDateStr
+      }).then((r) => {
+        if (r.data.data.success === 1) {
+          this.searchTypeno = parseInt(r.data.data.data)
+        } else {
+          this.searchTypeno = 1
+        }
+      })
     },
     callback (key) {
       this.tableSelectKey = key
@@ -217,6 +257,12 @@ export default {
       } else {
         this.$refs.ybAppealManageOverdue.searchPage()
       }
+    },
+    handleTypenoChange (value) {
+      this.searchTypeno = value
+    },
+    setTypeno (value) {
+      this.searchTypeno = value
     },
     handleLookSuccess () {
       this.lookVisiable = false
@@ -250,6 +296,15 @@ export default {
     appeal (record) {
       this.appealVisiable = true
       this.$refs.ybAppealManageUpload.setFormValues(record)
+    },
+    handleAppealCompleteClose () {
+      this.appealCompleteVisiable = false
+      // 保存数据返回时，申诉理由未更新，刷新后更新数据
+      this.$refs.ybAppealManageCompleted.search()
+    },
+    appealComplete (record) {
+      this.appealCompleteVisiable = true
+      this.$refs.ybAppealManageUploadComplete.setFormValues(record)
     },
     handleRejectSuccess () {
       this.rejectVisiable = false

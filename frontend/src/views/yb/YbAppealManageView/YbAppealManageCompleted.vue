@@ -24,6 +24,13 @@
             <div class="editable-row-operations">
               <span>
                 <a
+                  :disabled="record.isEnd===1?true:false"
+                  @click.stop="() => appealComplete(record,index)"
+                >修改</a>
+              </span>
+              <a-divider type="vertical" />
+              <span>
+                <a
                   @click.stop="() => look(record,index)"
                 >查看</a>
               </span>
@@ -32,7 +39,6 @@
         </a-table>
   </div>
 </template>
-
 <script>
 import moment from 'moment'
 export default {
@@ -43,6 +49,9 @@ export default {
     },
     searchText: {
       default: ''
+    },
+    searchTypeno: {
+      default: 1
     }
   },
   data () {
@@ -189,7 +198,7 @@ export default {
         dataIndex: 'operation',
         scopedSlots: { customRender: 'operation' },
         fixed: 'right',
-        width: 90
+        width: 130
       }]
     }
   },
@@ -244,6 +253,10 @@ export default {
       }
       this.search()
     },
+    appealComplete (record, index) {
+      record.rowNo = this.rowNo(index)
+      this.$emit('appealComplete', record)
+    },
     search () {
       let { sortedInfo } = this
       let sortField, sortOrder
@@ -289,6 +302,7 @@ export default {
       params.applyDateStr = this.applyDate
       params.acceptState = 6
       params.currencyField = this.searchText
+      params.typeno = this.searchTypeno
       if (this.paginationInfo) {
         // 如果分页信息不为空，则设置表格当前第几页，每页条数，并设置查询分页参数
         this.$refs.TableInfo.pagination.current = this.paginationInfo.current

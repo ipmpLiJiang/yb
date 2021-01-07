@@ -62,6 +62,10 @@
             <result column="orderNum" property="orderNum"/>
             <result column="isVerify" property="isVerify"/>
             <result column="isPerson" property="isPerson"/>
+            <result column="orderDoctorCode" property="orderDoctorCode"/>
+            <result column="orderDoctorName" property="orderDoctorName"/>
+            <result column="orderDeptCode" property="orderDeptCode"/>
+            <result column="orderDeptName" property="orderDeptName"/>
                     <result column="COMMENTS" property="comments"/>
                     <result column="STATE" property="state"/>
                     <result column="IS_DELETEMARK" property="isDeletemark"/>
@@ -73,7 +77,7 @@
 
         <!-- 通用查询结果列 -->
         <sql id="Base_Column_List">
-        serialNo, billNo, proposalCode, projectCode, projectName, num, medicalPrice, ruleName, deductPrice, deductReason, repaymentReason, doctorName, deptCode, deptName, enterHospitalDate, outHospitalDate, costDate,enterHospitalDateStr,outHospitalDateStr,costDateStr, hospitalizedNo, treatmentMode, settlementDate,settlementDateStr, personalNo, insuredName, cardNumber, areaName, versionNumber, backAppeal, typeno, applyDate, applyDateStr, operatorId, operatorName, id, applyDataId, verifyDoctorCode, verifyDoctorName, verifyDeptCode, verifyDeptName, operateReason, operateDate, matchPersonId, matchPersonName, matchDate, reviewerId, reviewerName, reviewerDate, sendPersonId, sendPersonName, sendDate,insuredType,dataType,orderNumber,orderNum,isVerify,isPerson, COMMENTS, STATE, IS_DELETEMARK, MODIFY_TIME, CREATE_TIME, CREATE_USER_ID, MODIFY_USER_ID
+        serialNo, billNo, proposalCode, projectCode, projectName, num, medicalPrice, ruleName, deductPrice, deductReason, repaymentReason, doctorName, deptCode, deptName, enterHospitalDate, outHospitalDate, costDate,enterHospitalDateStr,outHospitalDateStr,costDateStr, hospitalizedNo, treatmentMode, settlementDate,settlementDateStr, personalNo, insuredName, cardNumber, areaName, versionNumber, backAppeal, typeno, applyDate, applyDateStr, operatorId, operatorName, id, applyDataId, verifyDoctorCode, verifyDoctorName, verifyDeptCode, verifyDeptName, operateReason, operateDate, matchPersonId, matchPersonName, matchDate, reviewerId, reviewerName, reviewerDate, sendPersonId, sendPersonName, sendDate,insuredType,dataType,orderNumber,orderNum,isVerify,isPerson,orderDoctorCode,orderDoctorName,orderDeptCode,orderDeptName, COMMENTS, STATE, IS_DELETEMARK, MODIFY_TIME, CREATE_TIME, CREATE_USER_ID, MODIFY_USER_ID
     </sql>
     <update id="updateYbReconsiderVerifyView" parameterType="cc.mrbird.febs.yb.entity.YbReconsiderVerifyView">
         update yb_reconsider_verify_view
@@ -251,6 +255,7 @@
         <if test="ybReconsiderVerifyView.isVerify != null and ybReconsiderVerifyView.isVerify == 0"> isVerify = 0 </if>
         <if test="ybReconsiderVerifyView.isVerify == null "> isVerify = 0 </if>
         <if test="ybReconsiderVerifyView.dataType != null"> and dataType =#{ ybReconsiderVerifyView.dataType} </if>
+        <if test="ybReconsiderVerifyView.typeno != null"> and typeno =#{ ybReconsiderVerifyView.typeno} </if>
         <if test="ybReconsiderVerifyView.applyDateStr != null and ybReconsiderVerifyView.applyDateStr != ''"> and applyDateStr = #{ ybReconsiderVerifyView.applyDateStr} </if>
         <if test="ybReconsiderVerifyView.serialNo != null and ybReconsiderVerifyView.serialNo != ''"> and serialNo like concat('%', #{ ybReconsiderVerifyView.serialNo} ,'%')</if>
         <if test="ybReconsiderVerifyView.billNo != null and ybReconsiderVerifyView.billNo != ''"> and billNo like concat('%', #{ ybReconsiderVerifyView.billNo} ,'%')</if>
@@ -387,6 +392,98 @@
         </if>
         )
     </select>
+    <select id="findReconsiderVerifyViewList" resultType="cc.mrbird.febs.yb.entity.YbReconsiderVerifyView" parameterType="cc.mrbird.febs.yb.entity.YbReconsiderVerifyView">
+        select
+            ad.serialNo,
+            ad.billNo,
+            ad.proposalCode,
+            ad.projectCode,
+            ad.projectName,
+            ad.num,
+            ad.medicalPrice,
+            ad.ruleName,
+            ad.deductPrice,
+            ad.deductReason,
+            ad.repaymentReason,
+            ad.doctorName,
+            ad.deptCode,
+            ad.deptName,
+            ad.enterHospitalDate,
+            ad.outHospitalDate,
+            ad.costDate,
+            ad.enterHospitalDateStr,
+            ad.outHospitalDateStr,
+            ad.costDateStr,
+            ad.hospitalizedNo,
+            ad.treatmentMode,
+            ad.settlementDate,
+            ad.settlementDateStr,
+            ad.personalNo,
+            ad.insuredName,
+            ad.cardNumber,
+            ad.areaName,
+            ad.versionNumber,
+            ad.backAppeal,
+            ad.typeno,
+            ad.insuredType,
+            ad.dataType,
+            ad.orderNumber,
+            ad.orderNum,
+            ra.applyDate,
+            ra.applyDateStr,
+            ra.operatorId,
+            ra.operatorName,
+            case when rv.id is null then UUID() else rv.id end id,
+            ad.id applyDataId,
+            rv.verifyDoctorCode,
+            rv.verifyDoctorName,
+            rv.verifyDeptCode,
+            rv.verifyDeptName,
+            rv.operateReason,
+            rv.operateDate,
+            rv.matchPersonId,
+            rv.matchPersonName,
+            rv.matchDate,
+            rv.reviewerId,
+            rv.reviewerName,
+            rv.reviewerDate,
+            rv.sendPersonId,
+            rv.sendPersonName,
+            rv.sendDate,
+            rv.COMMENTS,
+            rv.STATE,
+            rv.IS_DELETEMARK,
+            rv.MODIFY_TIME,
+            rv.CREATE_TIME,
+            rv.CREATE_USER_ID,
+            rv.MODIFY_USER_ID,
+            rv.currencyField,
+            case when rv.id is null then '' else rv.orderDoctorCode end orderDoctorCode,
+            case when rv.id is null then '' else rv.orderDoctorName end orderDoctorName,
+            case when rv.id is null then '' else rv.orderDeptCode end orderDeptCode,
+            case when rv.id is null then '' else rv.orderDeptName end orderDeptName,
+            case when rv.id is null then 0 else 1 end isVerify,
+            case when yp.id is null then 0 else 1 end isPerson
+        from
+            yb_reconsider_apply_data ad
+            INNER JOIN yb_reconsider_apply ra ON
+                ra.id = ad.pid AND
+                ra.IS_DELETEMARK = 1
+            LEFT JOIN yb_reconsider_verify rv ON
+            ad.id = rv.applyDataId AND
+            rv.IS_DELETEMARK = 1
+            LEFT join yb_person yp on
+            rv.verifyDoctorCode = yp.personCode and
+            yp.IS_DELETEMARK = 1
+        where
+            ad.IS_DELETEMARK = 1 and
+            ra.applyDateStr = #{ybReconsiderVerifyView.applyDateStr} and
+            ad.dataType = #{ybReconsiderVerifyView.dataType} and
+            ad.typeno =  #{ybReconsiderVerifyView.typeno} and
+            (
+                (rv.id is not null and rv.state = #{ybReconsiderVerifyView.state}) or rv.id is null
+            )
+    </select>
     <select id="findReconsiderVerifyApplyDateCount" resultType="Integer">
     select
         count(*)
@@ -400,6 +497,6 @@
             ra.IS_DELETEMARK = 1
     WHERE
         rv.IS_DELETEMARK = 1 and ra.applyDateStr= #{applyDate} and ad.dataType = #{dataType} and
-        case when ra.state = 3 then ad.typeno = 1  when ra.state >= 5 then ad.typeno IN(1,2)  else 1=2 end
+        ad.typeno = #{typeno}
 </select>
 </mapper>

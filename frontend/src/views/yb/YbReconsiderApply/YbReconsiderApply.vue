@@ -120,11 +120,11 @@
             删除
           </a>
           <a-divider type="vertical" />
-          <a @click="goto(record,1)">{{record.state==1||record.state==2?'上传审核一':'查看审核一'}}</a>
+          <a @click="goto(record,1)">{{record.state==1||record.state==2?'上传第一版':'查看第一版'}}</a>
           <a-divider type="vertical" />
           <!-- 1待复议 2上传一 3申述一 4上传二 5申述二 6已剔除 7已还款 -->
           <a @click="goto(record,2)" :disabled="record.state==3||record.state==4||record.state==5||record.state==6||record.state==7?false:true">
-            {{record.state==1||record.state==2||record.state==3||record.state==4?'上传审核二':'查看审核二'}}
+            {{record.state==1||record.state==2||record.state==3||record.state==4?'上传第二版':'查看第二版'}}
           </a>
           <a-badge
             v-hasNoPermission="['ybReconsiderApply:update']"
@@ -208,7 +208,7 @@ export default {
       editVisiable: false,
       loading: false,
       bordered: true,
-      uploadTitle: '上传审核一',
+      uploadTitle: '上传第一版',
       tableFormat: 'YYYY-MM-DD',
       tableFormat1: 'YYYY-MM-DD HH:mm:ss',
       gotoVisiable: false
@@ -236,7 +236,7 @@ export default {
         width: 100
       },
       {
-        title: '审核一结束日期',
+        title: '第一版结束日期',
         dataIndex: 'endDateOne',
         customRender: (text, row, index) => {
           if (text !== '' && text !== null) {
@@ -252,7 +252,7 @@ export default {
         width: 140
       },
       {
-        title: '审核二结束日期',
+        title: '第二版结束日期',
         dataIndex: 'endDateTwo',
         customRender: (text, row, index) => {
           if (text !== '' && text !== null) {
@@ -370,7 +370,7 @@ export default {
       this.search()
     },
     goto (record, typeno) {
-      this.uploadTitle = typeno === 1 ? '上传审核一' : '上传审核二'
+      this.uploadTitle = typeno === 1 ? '上传第一版' : '上传第二版'
       setTimeout(() => {
         this.$refs.ybReconsiderApplyUpload.setFormValues(record, typeno)
       }, 200)

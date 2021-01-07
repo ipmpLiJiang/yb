@@ -19,6 +19,8 @@
     :inpatientfeesModule="ybAppealManageChangeDetail"
     >
     </inpatientfees-module>
+    <a-spin tip="Loading..." :spinning="spinning" :delay="delayTime">
+      <div>
     <div style="margin-top:20px;padding-bottom:20px;border: 1px solid #e8e8e8;">
     <div style="margin-top:20px;margin-left:20px;">
       <template>
@@ -94,6 +96,8 @@
       </a-row>
     </div>
     </div>
+    </div>
+    </a-spin>
   </a-drawer>
 </template>
 
@@ -127,6 +131,8 @@ export default {
       ybAppealManage: {},
       formItemLayout,
       formItemLayout1,
+      spinning: false,
+      delayTime: 500,
       changePersons: ''
     }
   },
@@ -138,6 +144,7 @@ export default {
     moment,
     reset () {
       this.loading = false
+      this.spinning = false
       this.ybAppealManageChangeDetail = {}
       this.form.resetFields()
     },
@@ -161,6 +168,7 @@ export default {
       this.ybAppealManage.dataType = ybAppealManageChangeDetail.dataType
       this.ybAppealManage.verifyId = ybAppealManageChangeDetail.verifyId
       this.ybAppealManage.applyDataId = ybAppealManageChangeDetail.applyDataId
+      this.ybAppealManage.acceptState = ybAppealManageChangeDetail.acceptState
       this.changePersons = this.ybAppealManageChangeDetail.readyDeptCode + '-' + this.ybAppealManageChangeDetail.readyDeptName + ' - ' + this.ybAppealManageChangeDetail.readyDoctorCode + '-' + this.ybAppealManageChangeDetail.readyDoctorName
       setTimeout(() => {
         this.setForms(ybAppealManageChangeDetail)
@@ -189,6 +197,7 @@ export default {
     },
     handleSubmit () {
       this.loading = true
+      this.spinning = true
       let ybAppealManage = this.ybAppealManage
       // ybAppealManage.id = this.ybAppealManageChangeDetail.id
       // ybAppealManage.sourceType = this.ybAppealManageChangeDetail.sourceType
@@ -202,6 +211,7 @@ export default {
           ybAppealManage.readyDeptCode === this.ybAppealManageChangeDetail.readyDeptCode) {
         this.$message.error('未更改 复议科室 和 复议医生 , 不可提交数据.')
         this.loading = false
+        this.spinning = false
         return
       }
 
@@ -212,6 +222,7 @@ export default {
         this.$emit('success')
       }).catch(() => {
         this.loading = false
+        this.spinning = false
       })
     }
   }

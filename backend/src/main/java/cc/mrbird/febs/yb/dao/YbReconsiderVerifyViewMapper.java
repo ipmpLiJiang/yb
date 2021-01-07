@@ -6,6 +6,8 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.List;
+
 /**
  * <p>
  * VIEW Mapper 接口
@@ -19,7 +21,9 @@ public interface YbReconsiderVerifyViewMapper extends BaseMapper<YbReconsiderVer
 
     IPage<YbReconsiderVerifyView> findYbReconsiderVerifyView(Page page, @Param("ybReconsiderVerifyView") YbReconsiderVerifyView ybReconsiderVerifyView);
 
-        int findReconsiderVerifyApplyDateCount(@Param("applyDate") String applyDate,@Param("dataType") Integer dataType);
+    int findReconsiderVerifyApplyDateCount(@Param("applyDate") String applyDate, @Param("dataType") Integer dataType, @Param("typeno") Integer typeno);
 
-        IPage<YbReconsiderVerifyView> findYbReconsiderVerifyViewNull(Page page, @Param("ybReconsiderVerifyView") YbReconsiderVerifyView ybReconsiderVerifyView,@Param("searchType") String[] searchType);
+    IPage<YbReconsiderVerifyView> findYbReconsiderVerifyViewNull(Page page, @Param("ybReconsiderVerifyView") YbReconsiderVerifyView ybReconsiderVerifyView, @Param("searchType") String[] searchType);
+
+    List<YbReconsiderVerifyView> findReconsiderVerifyViewList(@Param("ybReconsiderVerifyView") YbReconsiderVerifyView ybReconsiderVerifyView);
 }

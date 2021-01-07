@@ -170,33 +170,33 @@ public class YbReconsiderApply implements Serializable {
     private String applyDateStr;
 
     /**
-     * 审核一上传名称
+     * 第一版上传名称
      */
     @TableField("uploadFileNameOne")
-    @ExcelField(value = "审核一上传名称")
+    @ExcelField(value = "第一版上传名称")
     private String uploadFileNameOne;
 
     /**
-     * 审核二上传名称
+     * 第二版上传名称
      */
     @TableField("uploadFileNameTwo")
-    @ExcelField(value = "审核二上传名称")
+    @ExcelField(value = "第二版上传名称")
     private String uploadFileNameTwo;
 
     /**
-     * 审核一结束时间
+     * 第一版结束时间
      */
     @TableField("endDateOne")
-    @ExcelField(value = "审核一结束时间")
+    @ExcelField(value = "第一版结束时间")
     private Date endDateOne;
     private transient String endDateOneFrom;
     private transient String endDateOneTo;
 
     /**
-     * 审核二结束时间
+     * 第二版结束时间
      */
     @TableField("endDateTwo")
-    @ExcelField(value = "审核二结束时间")
+    @ExcelField(value = "第二版结束时间")
     private Date endDateTwo;
     private transient String endDateTwoFrom;
     private transient String endDateTwoTo;

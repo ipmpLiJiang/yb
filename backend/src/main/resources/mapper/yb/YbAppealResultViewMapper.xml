@@ -61,15 +61,34 @@
             <result column="repayState" property="repayState"/>
             <result column="orderNumber" property="orderNumber"/>
             <result column="orderNum" property="orderNum"/>
-                    <result column="resetDataId" property="resetDataId"/>
+            <result column="resetDataId" property="resetDataId"/>
             <result column="raResetState" property="raResetState"/>
             <result column="raResultState" property="raResultState"/>
             <result column="raRepayState" property="raRepayState"/>
+            <result column="attendDocId" property="attendDocId"/>
+            <result column="attendDocName" property="attendDocName"/>
+            <result column="orderDeptId" property="orderDeptId"/>
+            <result column="orderDeptName" property="orderDeptName"/>
+            <result column="orderDocId" property="orderDocId"/>
+            <result column="orderDocName" property="orderDocName"/>
+            <result column="excuteDeptId" property="excuteDeptId"/>
+            <result column="excuteDeptName" property="excuteDeptName"/>
+            <result column="excuteDocId" property="excuteDocId"/>
+            <result column="excuteDocName" property="excuteDocName"/>
+            <result column="feeOperatorId" property="feeOperatorId"/>
+            <result column="feeOperatorName" property="feeOperatorName"/>
+            <result column="feeDeptId" property="feeDeptId"/>
+            <result column="feeDeptName" property="feeDeptName"/>
+            <result column="arOrderDoctorCode" property="arOrderDoctorCode"/>
+            <result column="arOrderDoctorName" property="arOrderDoctorName"/>
+            <result column="arOrderDeptCode" property="arOrderDeptCode"/>
+            <result column="arOrderDeptName" property="arOrderDeptName"/>
+
         </resultMap>
 
         <!-- 通用查询结果列 -->
         <sql id="Base_Column_List">
-        serialNo, billNo, proposalCode, projectCode, projectName, num, medicalPrice, ruleName, deductPrice, deductReason, repaymentReason, doctorName, deptCode, deptName, enterHospitalDate, outHospitalDate, costDate,enterHospitalDateStr,outHospitalDateStr,costDateStr, hospitalizedNo, treatmentMode, settlementDate,settlementDateStr, personalNo, insuredName, cardNumber, areaName, versionNumber, backAppeal, typeno, applyDate, applyDateStr, operatorId, operatorName, id, applyDataId, verifyId, arDoctorCode, arDoctorName, arDeptCode, arDeptName, operateReason, operateDate, COMMENTS, STATE, IS_DELETEMARK, MODIFY_TIME, CREATE_TIME, CREATE_USER_ID, MODIFY_USER_ID, currencyField,sourceType,dataType,orderNumber,orderNum,resetDataId,repayState,raResetState,raResultState,raRepayState
+        serialNo, billNo, proposalCode, projectCode, projectName, num, medicalPrice, ruleName, deductPrice, deductReason, repaymentReason, doctorName, deptCode, deptName, enterHospitalDate, outHospitalDate, costDate,enterHospitalDateStr,outHospitalDateStr,costDateStr, hospitalizedNo, treatmentMode, settlementDate,settlementDateStr, personalNo, insuredName, cardNumber, areaName, versionNumber, backAppeal, typeno, applyDate, applyDateStr, operatorId, operatorName, id, applyDataId, verifyId, arDoctorCode, arDoctorName, arDeptCode, arDeptName, operateReason, operateDate, COMMENTS, STATE, IS_DELETEMARK, MODIFY_TIME, CREATE_TIME, CREATE_USER_ID, MODIFY_USER_ID, currencyField,sourceType,dataType,orderNumber,orderNum,resetDataId,repayState,raResetState,raResultState,raRepayState,attendDocId,attendDocName,orderDeptId,orderDeptName,orderDocId,orderDocName,excuteDeptId,excuteDeptName,excuteDocId,excuteDocName,itemTypeName,feeOperatorId,feeOperatorName,feeDeptId,feeDeptName,arOrderDoctorCode,arOrderDoctorName,arOrderDeptCode,arOrderDeptName
     </sql>
     <update id="updateYbAppealResultView" parameterType="cc.mrbird.febs.yb.entity.YbAppealResultView">
         update yb_appeal_result_view
@@ -213,5 +232,109 @@
             <if test="ybAppealResultView.currencyField != null and ybAppealResultView.currencyField != ''"> and currencyField like concat('%', #{ ybAppealResultView.currencyField} ,'%')</if>
         <if test="ybAppealResult.sourceType != null"> and sourceType =#{ ybAppealResult.sourceType} </if>
 </select>
+
+    <select id="findAppealResultList" resultType="cc.mrbird.febs.yb.entity.YbAppealResultView" parameterType="cc.mrbird.febs.yb.entity.YbAppealResultView">
+        select
+            ad.serialNo,
+            ad.billNo,
+            ad.proposalCode,
+            ad.projectCode,
+            ad.projectName,
+            ad.num,
+            ad.medicalPrice,
+            ad.ruleName,
+            ad.deductPrice,
+            ad.deductReason,
+            ad.repaymentReason,
+            ad.doctorName,
+            ad.deptCode,
+            ad.deptName,
+            ad.enterHospitalDate,
+            ad.outHospitalDate,
+            ad.costDate,
+            ad.enterHospitalDateStr,
+            ad.outHospitalDateStr,
+            ad.costDateStr,
+            ad.hospitalizedNo,
+            ad.treatmentMode,
+            ad.settlementDate,
+            ad.settlementDateStr,
+            ad.personalNo,
+            ad.insuredName,
+            ad.cardNumber,
+            ad.areaName,
+            ad.versionNumber,
+            ad.backAppeal,
+            ad.typeno,
+            ad.insuredType,
+            ad.dataType,
+            ad.orderNumber,
+            ad.orderNum,
+            ra.applyDate,
+            ra.applyDateStr,
+            ra.operatorId,
+          ra.operatorName,
+            ra.resetState raResetState,
+            ra.resultState raResultState,
+            ra.repayState raRepayState,
+          art.id,
+            art.applyDataId,
+          art.verifyId,
+            art.doctorCode arDoctorCode,
+            art.doctorName arDoctorName,
+            art.deptCode arDeptCode,
+            art.deptName arDeptName,
+            art.orderDoctorCode arOrderDoctorCode,
+            art.orderDoctorName arOrderDoctorName,
+            art.orderDeptCode arOrderDeptCode,
+            art.orderDeptName arOrderDeptName,
+            art.operateReason,
+            art.operateDate,
+            art.COMMENTS,
+            art.STATE,
+            art.IS_DELETEMARK,
+            art.MODIFY_TIME,
+            art.CREATE_TIME,
+            art.CREATE_USER_ID,
+            art.MODIFY_USER_ID,
+            art.sourceType,
+            art.resetDataId,
+            art.repayState,
+            art.currencyField,
+            rif.deptId orderDeptId,
+            rif.deptName orderDeptName,
+            rif.orderDocId,
+            rif.orderDocName,
+            rif.excuteDeptId,
+            rif.excuteDeptName,
+            rif.excuteDocId,
+            rif.excuteDocName,
+            rif.attendDocId,
+            rif.attendDocName,
+            rif.itemTypeCode,
+            rif.itemTypeName,
+            rif.feeOperatorId,
+            rif.feeOperatorName,
+            rif.feeDeptId,
+            rif.feeDeptName
+        from
+            yb_reconsider_apply_data ad
+            INNER JOIN yb_reconsider_apply ra ON
+                ra.id = ad.pid AND
+                ra.IS_DELETEMARK = 1
+            LEFT JOIN yb_appeal_result art ON
+                art.applyDataId = ad.id AND
+                art.IS_DELETEMARK = 1
+                <if test="ybAppealResultView.state != null and ybAppealResultView.state = 12 "> and art.state in(1,2) </if>
+                <if test="ybAppealResultView.state != null and ybAppealResultView.state != 12 "> and art.state = #{ ybAppealResultView.state} </if>
+                <if test="ybAppealResultView.sourceType != null "> and art.sourceType = #{ ybAppealResultView.sourceType} </if>
+            LEFT JOIN yb_reconsider_inpatientfees rif ON
+                rif.applyDataId = ad.id AND
+                rif.IS_DELETEMARK = 1
+        where
+            ad.IS_DELETEMARK = 1
+        <if test="ybAppealResultView.applyDateStr != null and ybAppealResultView.applyDateStr != ''"> and ra.applyDateStr = #{ ybAppealResultView.applyDateStr} </if>
+        <if test="ybAppealResultView.typeno != null "> and ad.typeno = #{ ybAppealResultView.typeno} </if>
+    </select>
 
 </mapper>

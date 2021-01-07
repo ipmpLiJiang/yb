@@ -14,4 +14,6 @@ public class OutComFile {
     private String url;
     private String thumbUrl;
     private String serName;
+    private int success;
+    private String message;
 }

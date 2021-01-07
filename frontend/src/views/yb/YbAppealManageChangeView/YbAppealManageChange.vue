@@ -43,6 +43,9 @@ export default {
     },
     searchText: {
       default: ''
+    },
+    searchTypeno: {
+      default: 1
     }
   },
   data () {
@@ -141,26 +144,6 @@ export default {
         width: 110
       },
       {
-        title: '复议科室',
-        dataIndex: 'readyDeptName',
-        customRender: (text, row, index) => {
-          if (text !== '' && text !== null) {
-            return row.readyDeptCode + '-' + row.readyDeptName
-          }
-        },
-        width: 200
-      },
-      {
-        title: '申请人',
-        dataIndex: 'readyDoctorName',
-        customRender: (text, row, index) => {
-          if (text !== '' && text !== null) {
-            return row.readyDoctorCode + '-' + row.readyDoctorName
-          }
-        },
-        width: 130
-      },
-      {
         title: '申请理由',
         dataIndex: 'operateReason',
         width: 300
@@ -180,6 +163,28 @@ export default {
           }
         },
         width: 110
+      },
+      {
+        title: '复议科室',
+        dataIndex: 'readyDeptName',
+        customRender: (text, row, index) => {
+          if (text !== '' && text !== null) {
+            return row.readyDeptCode + '-' + row.readyDeptName
+          }
+        },
+        fixed: 'right',
+        width: 200
+      },
+      {
+        title: '申请人',
+        dataIndex: 'readyDoctorName',
+        customRender: (text, row, index) => {
+          if (text !== '' && text !== null) {
+            return row.readyDoctorCode + '-' + row.readyDoctorName
+          }
+        },
+        fixed: 'right',
+        width: 130
       },
       {
         title: '复议截止日期',
@@ -208,7 +213,7 @@ export default {
     }
   },
   mounted () {
-    this.fetch()
+    this.initSearch()
   },
   methods: {
     moment,
@@ -230,6 +235,22 @@ export default {
           }
         }
       }
+    },
+    initSearch () {
+      let params = { applyDateStr: this.applyDate }
+      this.$get('ybReconsiderApply/getTypeno', {
+        ...params
+      }).then((r) => {
+        if (r.data.data.success === 1) {
+          this.$emit('setTypeno', parseInt(r.data.data.data))
+          this.searchTypeno = parseInt(r.data.data.data)
+          this.fetch()
+        } else {
+          this.$emit('setTypeno', 1)
+          this.searchTypeno = 1
+          this.fetch()
+        }
+      })
     },
     onSelectChange (selectedRowKeys) {
       this.selectedRowKeys = selectedRowKeys
@@ -303,6 +324,7 @@ export default {
       params.applyDateStr = this.applyDate
       params.acceptState = 2
       params.currencyField = this.searchText
+      params.typeno = this.searchTypeno
       if (this.paginationInfo) {
         // 如果分页信息不为空，则设置表格当前第几页，每页条数，并设置查询分页参数
         this.$refs.TableInfo.pagination.current = this.paginationInfo.current

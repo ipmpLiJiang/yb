@@ -28,19 +28,49 @@ public class YbReconsiderPriorityLevel implements Serializable , Comparable<YbRe
 private static final long serialVersionUID=1L;
 
     /**
-     * 规则
+     * 1规则
      */
     public static final Integer PL_STATE_1 = 1;
 
     /**
-     * 项目
+     * 2项目
      */
     public static final Integer PL_STATE_2 = 2;
 
     /**
-     * 科室
+     * 3科室
      */
     public static final Integer PL_STATE_3 = 3;
+
+    /**
+     * 1执行科室
+     */
+    public static final Integer DEPT_TYPE_1 = 1;
+
+    /**
+     * 2计费科室
+     */
+    public static final Integer DEPT_TYPE_2 = 2;
+
+    /**
+     * 1开单人员
+     */
+    public static final Integer PERSON_TYPE_1 = 1;
+
+    /**
+     * 2执行人员
+     */
+    public static final Integer PERSON_TYPE_2 = 2;
+
+    /**
+     * 3计费人员
+     */
+    public static final Integer PERSON_TYPE_3 = 3;
+
+    /**
+     * 4固定人员
+     */
+    public static final Integer PERSON_TYPE_4 = 4;
 
     /**
      * 复议规则id
@@ -82,6 +112,20 @@ private static final long serialVersionUID=1L;
     @TableField("deptName")
             @ExcelField(value ="科室名称")
     private String deptName;
+
+    /**
+     * 科室类型
+     */
+    @TableField("deptType")
+    @ExcelField(value ="科室类型")
+    private Integer deptType;
+
+    /**
+     * 人员类型
+     */
+    @TableField("personType")
+    @ExcelField(value ="人员类型")
+    private Integer personType;
 
     /**
      * 操作员代码
@@ -170,6 +214,10 @@ private static final long serialVersionUID=1L;
     public static final String DEPTCODE ="deptCode" ;
 
     public static final String DEPTNAME ="deptName" ;
+
+    public static final String DEPTTYPE ="deptType" ;
+
+    public static final String PERSONTYPE ="personType" ;
 
     public static final String OPERATORID ="operatorId" ;
 

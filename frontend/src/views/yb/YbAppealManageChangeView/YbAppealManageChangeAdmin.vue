@@ -47,6 +47,9 @@ export default {
     },
     searchText: {
       default: ''
+    },
+    searchTypeno: {
+      default: 1
     }
   },
   data () {
@@ -152,6 +155,7 @@ export default {
             return row.readyDeptCode + '-' + row.readyDeptName
           }
         },
+        fixed: 'right',
         width: 200
       },
       {
@@ -162,6 +166,7 @@ export default {
             return row.readyDoctorCode + '-' + row.readyDoctorName
           }
         },
+        fixed: 'right',
         width: 130
       },
       {
@@ -182,6 +187,24 @@ export default {
         width: 130
       },
       {
+        title: '状态',
+        dataIndex: 'acceptState',
+        customRender: (text, row, index) => {
+          switch (text) {
+            case 0:
+              return '待接收'
+            case 1:
+              return '已接收'
+            case 2:
+              return '已拒绝'
+            default:
+              return text
+          }
+        },
+        fixed: 'right',
+        width: 90
+      },
+      {
         title: '操作',
         dataIndex: 'operation',
         scopedSlots: { customRender: 'operation' },
@@ -191,7 +214,7 @@ export default {
     }
   },
   mounted () {
-    this.fetch()
+    // this.fetch()
   },
   methods: {
     moment,
@@ -288,8 +311,9 @@ export default {
     fetch (params = {}) {
       this.loading = true
       params.applyDateStr = this.applyDate
-      params.acceptState = 1
+      params.acceptState = 10 // 10 代表状态为 0 和 1
       params.currencyField = this.searchText
+      params.typeno = this.searchTypeno
       if (this.paginationInfo) {
         // 如果分页信息不为空，则设置表格当前第几页，每页条数，并设置查询分页参数
         this.$refs.TableInfo.pagination.current = this.paginationInfo.current

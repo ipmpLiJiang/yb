@@ -31,9 +31,13 @@ public interface IComSmsService extends IService<ComSms> {
 
         List<ComSms> findLmdSmsList(ComSms comSms);
 
+        List<ComSms> findSmsList(ComSms comSms);
+
         List<ComSms> findSmsTopLists(ComSms comSms);
 
         void sendSms();
 
         void sendSmsService(ArrayList<String> personCodeList, int sendType, String sendContent, Long uId, String Uname);
-        }
+
+        void sendSmsService(String personCode, int sendType, String sendContent, Long uId, String Uname);
+}

@@ -19,128 +19,132 @@
     :inpatientfeesModule="ybAppealManageChangeHandle"
     >
     </inpatientfees-module>
-    <div style="margin-top:20px;padding-bottom:20px;border: 1px solid #e8e8e8;">
-    <div style="margin-top:20px;margin-left:20px;">
-      <template>
-        <a-form :form="form">
-        <a-row type="flex" justify="start">
-          <a-col :span=12>
-            <a-row>
-              <a-col :span=10>
-                <a-form-item
-                  v-bind="formItemLayout0"
-                  label="申请科室"
-                >
-                  {{ybAppealManageChangeHandle.readyDeptCode}}-{{ybAppealManageChangeHandle.readyDeptName}}
-                </a-form-item>
-              </a-col>
-              <a-col :span=14>
-                <a-form-item
-                  v-bind="formItemLayout"
-                  label="变更为"
-                >
-                  <input-select
-                  ref="inputSelectChangeDept"
-                  :type=1
-                  @selectChange=selectDeptChange
-                  >
-                  </input-select>
-                </a-form-item>
-              </a-col>
-            </a-row>
-            <a-row>
-              <a-col :span=10>
-                <a-form-item
-                  v-bind="formItemLayout0"
-                  label="申请人"
-                >
-                  {{ybAppealManageChangeHandle.readyDoctorCode}}-{{ybAppealManageChangeHandle.readyDoctorName}}
-                </a-form-item>
-              </a-col>
-              <a-col :span=14>
-                <a-form-item
-                  v-bind="formItemLayout"
-                  label="变更为"
-                >
-                  <input-select
-                  ref="inputSelectChangeDoctor"
-                  :type=2
-                  @selectChange=selectDoctorChang
-                  >
-                  </input-select>
-                </a-form-item>
-              </a-col>
-            </a-row>
-            <a-row type="flex" justify="start">
-              <a-col :span=24>
-                <a-form-item
-                  v-bind="formItemLayout1"
-                  label="申请时间"
-                >
-                  {{ybAppealManageChangeHandle.operateDate}}
-                </a-form-item>
-              </a-col>
-            </a-row>
-            <a-row type="flex" justify="start">
-              <a-col :span=24>
-                <a-form-item
-                  v-bind="formItemLayout1"
-                  label="申请理由"
-                >
-                  {{ybAppealManageChangeHandle.operateReason}}
-                </a-form-item>
-              </a-col>
-            </a-row>
-          </a-col>
-          <a-col :span=12>
-            <a-form-item
-                v-bind="formItemLayout2"
-                label="拒绝理由"
+    <a-spin tip="Loading..." :spinning="spinning" :delay="delayTime">
+      <div>
+        <div style="margin-top:20px;padding-bottom:20px;border: 1px solid #e8e8e8;">
+        <div style="margin-top:20px;margin-left:20px;">
+          <template>
+            <a-form :form="form">
+              <a-row type="flex" justify="start">
+                <a-col :span=12>
+                  <a-row>
+                    <a-col :span=10>
+                      <a-form-item
+                        v-bind="formItemLayout0"
+                        label="申请科室"
+                      >
+                        {{ybAppealManageChangeHandle.readyDeptCode}}-{{ybAppealManageChangeHandle.readyDeptName}}
+                      </a-form-item>
+                    </a-col>
+                    <a-col :span=14>
+                      <a-form-item
+                        v-bind="formItemLayout"
+                        label="变更为"
+                      >
+                        <input-select
+                        ref="inputSelectChangeDept"
+                        :type=1
+                        @selectChange=selectDeptChange
+                        >
+                        </input-select>
+                      </a-form-item>
+                    </a-col>
+                  </a-row>
+                  <a-row>
+                    <a-col :span=10>
+                      <a-form-item
+                        v-bind="formItemLayout0"
+                        label="申请人"
+                      >
+                        {{ybAppealManageChangeHandle.readyDoctorCode}}-{{ybAppealManageChangeHandle.readyDoctorName}}
+                      </a-form-item>
+                    </a-col>
+                    <a-col :span=14>
+                      <a-form-item
+                        v-bind="formItemLayout"
+                        label="变更为"
+                      >
+                        <input-select
+                        ref="inputSelectChangeDoctor"
+                        :type=2
+                        @selectChange=selectDoctorChang
+                        >
+                        </input-select>
+                      </a-form-item>
+                    </a-col>
+                  </a-row>
+                  <a-row type="flex" justify="start">
+                    <a-col :span=24>
+                      <a-form-item
+                        v-bind="formItemLayout1"
+                        label="申请时间"
+                      >
+                        {{ybAppealManageChangeHandle.operateDate}}
+                      </a-form-item>
+                    </a-col>
+                  </a-row>
+                  <a-row type="flex" justify="start">
+                    <a-col :span=24>
+                      <a-form-item
+                        v-bind="formItemLayout1"
+                        label="申请理由"
+                      >
+                        {{ybAppealManageChangeHandle.operateReason}}
+                      </a-form-item>
+                    </a-col>
+                  </a-row>
+                </a-col>
+                <a-col :span=12>
+                  <a-form-item
+                      v-bind="formItemLayout2"
+                      label="拒绝理由"
+                    >
+                      <a-textarea
+                        placeholder="请输入拒绝理由"
+                        :rows="7"
+                        v-decorator="['refuseReason', {rules: [{ required: true, message: '拒绝理由不能为空' }] }]"
+                      />
+                    </a-form-item>
+                </a-col>
+              </a-row>
+            </a-form>
+          </template>
+          <a-row>
+            <a-col :span=4 :offset=8>
+              <a-popconfirm
+                title="确定同意？"
+                @confirm="handleSubmit"
+                okText="确定"
+                cancelText="取消"
               >
-                <a-textarea
-                  placeholder="请输入拒绝理由"
-                  :rows="7"
-                  v-decorator="['refuseReason', {rules: [{ required: true, message: '拒绝理由不能为空' }] }]"
-                />
-              </a-form-item>
-          </a-col>
-        </a-row>
-        </a-form>
-      </template>
-      <a-row>
-        <a-col :span=4 :offset=8>
-          <a-popconfirm
-            title="确定同意？"
-            @confirm="handleSubmit"
-            okText="确定"
-            cancelText="取消"
-          >
-            <a-button type="primary" style="margin-right: .8rem">同意</a-button>
-          </a-popconfirm>
-        </a-col>
-        <a-col :span=2>
-          <a-popconfirm
-            title="确定拒绝？"
-            @confirm="handleRejectSubmit"
-            okText="确定"
-            cancelText="取消"
-          >
-            <a-button type="primary" style="margin-right: .8rem">拒绝</a-button>
-          </a-popconfirm>
-        </a-col>
-        <a-col :span=10>
-          <a-popconfirm
-            title="确定放弃编辑？"
-            @confirm="onClose"
-            okText="确定"
-            cancelText="取消"
-          >
-            <a-button style="margin-right: .8rem">取消</a-button>
-          </a-popconfirm>
-        </a-col>
-      </a-row>
-    </div>
-    </div>
+                <a-button type="primary" style="margin-right: .8rem">同意</a-button>
+              </a-popconfirm>
+            </a-col>
+            <a-col :span=2>
+              <a-popconfirm
+                title="确定拒绝？"
+                @confirm="handleRejectSubmit"
+                okText="确定"
+                cancelText="取消"
+              >
+                <a-button type="primary" style="margin-right: .8rem">拒绝</a-button>
+              </a-popconfirm>
+            </a-col>
+            <a-col :span=10>
+              <a-popconfirm
+                title="确定放弃编辑？"
+                @confirm="onClose"
+                okText="确定"
+                cancelText="取消"
+              >
+                <a-button style="margin-right: .8rem">取消</a-button>
+              </a-popconfirm>
+            </a-col>
+          </a-row>
+        </div>
+        </div>
+      </div>
+    </a-spin>
   </a-drawer>
 </template>
 
@@ -182,6 +186,8 @@ export default {
       formItemLayout,
       formItemLayout1,
       formItemLayout2,
+      spinning: false,
+      delayTime: 500,
       ybAppealManageChangeHandle: {}
     }
   },
@@ -193,6 +199,7 @@ export default {
     moment,
     reset () {
       this.loading = false
+      this.spinning = false
       this.ybAppealManageChangeHandle = {}
       this.form.resetFields()
     },
@@ -243,6 +250,7 @@ export default {
       this.form.validateFields(['refuseReason'], (err, values) => {
         if (!err) {
           this.loading = true
+          this.spinning = true
           let fromReason = this.form.getFieldsValue(['refuseReason'])
           let ybAppealManage = {}
           ybAppealManage.acceptState = 4
@@ -264,6 +272,7 @@ export default {
             this.$emit('success')
           }).catch(() => {
             this.loading = false
+            this.spinning = false
           })
         }
       })
@@ -272,6 +281,7 @@ export default {
       this.form.validateFields(['changeDeptName', 'changeDoctorName'], (err, values) => {
         if (!err) {
           this.loading = true
+          this.spinning = true
           let ybAppealManage = {}
           ybAppealManage.acceptState = 4
           ybAppealManage.sourceType = this.ybAppealManageChangeHandle.sourceType
@@ -295,6 +305,7 @@ export default {
             this.$emit('success')
           }).catch(() => {
             this.loading = false
+            this.spinning = false
           })
         }
       })

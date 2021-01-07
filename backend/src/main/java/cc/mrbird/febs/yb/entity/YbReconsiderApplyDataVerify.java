@@ -150,6 +150,18 @@ public class YbReconsiderApplyDataVerify {
     private String backAppeal;
 
     /**
+     * 复议科室编码
+     */
+    @ExcelField(value = "复议科室编码")
+    private String verifyDeptCode;
+
+    /**
+     * 复议科室名称
+     */
+    @ExcelField(value = "复议科室名称")
+    private String verifyDeptName;
+
+    /**
             * 复议医生编码
      */
     @ExcelField(value = "复议医生编码")
@@ -162,16 +174,113 @@ public class YbReconsiderApplyDataVerify {
     private String verifyDoctorName;
 
     /**
-     * 复议科室编码
+     * 项目类型编码
      */
-    @ExcelField(value = "复议科室编码")
-    private String verifyDeptCode;
+    @ExcelField(value = "项目类型编码")
+    private String itemTypeCode;
 
     /**
-     * 复议科室名称
+     * 项目类型名称
      */
-    @ExcelField(value = "复议科室名称")
-    private String verifyDeptName;
+    @ExcelField(value = "项目类型名称")
+    private String itemTypeName;
+
+
+    /**
+     * 住院科室代码
+     */
+    @ExcelField(value = "住院科室代码")
+    private String orderDeptId;
+
+    /**
+     * 住院科室名称
+     */
+    @ExcelField(value = "住院科室名称")
+    private String orderDeptName;
+
+
+    /**
+     * 开方医生代码
+     */
+    @ExcelField(value = "开方医生代码")
+    private String orderDocId;
+
+
+    /**
+     * orderDocName
+     */
+    @ExcelField(value = "开方医生名称")
+    private String orderDocName;
+
+    /**
+     * 主治医生编码
+     */
+    @ExcelField(value = "主治医生编码")
+    private String attendDocId;
+
+
+    /**
+     * 主治医生名称
+     */
+    @ExcelField(value = "主治医生名称")
+    private String attendDocName;
+
+
+    /**
+     * 执行科室代码
+     */
+    @ExcelField(value = "执行科室代码")
+    private String excuteDeptId;
+
+
+    /**
+     * 执行科室名称
+     */
+    @ExcelField(value = "执行科室名称")
+    private String excuteDeptName;
+
+
+    /**
+     * 执行医生代码
+     */
+    @ExcelField(value = "执行医生代码")
+    private String excuteDocId;
+
+
+    /**
+     * 执行医生名称
+     */
+    @ExcelField(value = "执行医生名称")
+    private String excuteDocName;
+
+
+
+    /**
+     * 计费人编码
+     */
+    @ExcelField(value = "计费人编码")
+    private String feeOperatorId;
+
+
+    /**
+     * 计费人名称
+     */
+    @ExcelField(value = "计费人名称")
+    private String feeOperatorName;
+
+
+    /**
+     * 计费科室编码
+     */
+    @ExcelField(value = "计费科室编码")
+    private String feeDeptId;
+
+
+    /**
+     * 计费科室名称
+     */
+    @ExcelField(value = "计费科室名称")
+    private String feeDeptName;
 
 
 }

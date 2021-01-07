@@ -49,7 +49,16 @@ public class YbAppealManageViewServiceImpl extends ServiceImpl<YbAppealManageVie
             sql += " applyDateStr='" + ybAppealManageView.getApplyDateStr() + "' ";
 
             if (ybAppealManageView.getAcceptState() != null) {
-                sql += " and acceptState = " + ybAppealManageView.getAcceptState();
+                if(ybAppealManageView.getAcceptState() == 10){
+                    sql += " and (acceptState = 1 or acceptState = 0)";
+                }else if(ybAppealManageView.getAcceptState() == 210){
+                    sql += " and (acceptState = 1 or acceptState = 0 or acceptState = 2)";
+                }else {
+                    sql += " and acceptState = " + ybAppealManageView.getAcceptState();
+                }
+            }
+            if (ybAppealManageView.getTypeno() != null) {
+                sql += " and typeno = " + ybAppealManageView.getTypeno();
             }
             sql += ")";
             if (ybAppealManageView.getCurrencyField() != null && !"".equals(ybAppealManageView.getCurrencyField())) {
@@ -84,6 +93,9 @@ public class YbAppealManageViewServiceImpl extends ServiceImpl<YbAppealManageVie
 
             if (ybAppealManageView.getAcceptState() != null) {
                 sql += " and acceptState = " + ybAppealManageView.getAcceptState();
+            }
+            if (ybAppealManageView.getTypeno() != null) {
+                sql += " and typeno = " + ybAppealManageView.getTypeno();
             }
             sql += ")";
             if (ybAppealManageView.getCurrencyField() != null && !"".equals(ybAppealManageView.getCurrencyField())) {

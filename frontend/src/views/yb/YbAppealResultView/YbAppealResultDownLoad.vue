@@ -57,7 +57,7 @@ export default {
       let f = ''
       formData.sourceType = this.appealResultDownLoad.sourceType
       if (formData.typeno === 1 || formData.typeno === 2) {
-        f = this.appealResultDownLoad.typeno === 1 ? '审核一' : '审核二'
+        f = this.appealResultDownLoad.typeno === 1 ? '第一版' : '第二版'
         formData.state = 12
         formData.sourceType = 0
         if (this.appealResultDownLoad.dataType === 0) {

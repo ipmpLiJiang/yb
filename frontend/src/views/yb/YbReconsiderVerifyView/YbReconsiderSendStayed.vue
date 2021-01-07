@@ -203,7 +203,15 @@ export default {
           verifyDoctorCode: target.verifyDoctorCode,
           verifyDoctorName: target.verifyDoctorName,
           verifyDeptCode: target.verifyDeptCode,
-          verifyDeptName: target.verifyDeptName
+          verifyDeptName: target.verifyDeptName,
+          orderDoctorCode: target.orderDoctorCode,
+          orderDoctorName: target.orderDoctorName,
+          orderDeptCode: target.orderDeptCode,
+          orderDeptName: target.orderDeptName,
+          applyDateStr: target.applyDateStr,
+          orderNumber: target.orderNumber,
+          orderNum: target.orderNum,
+          typeno: target.typeno
         }]
         this.sendService(data)
       } else {
@@ -224,7 +232,15 @@ export default {
               verifyDoctorCode: target.verifyDoctorCode,
               verifyDoctorName: target.verifyDoctorName,
               verifyDeptCode: target.verifyDeptCode,
-              verifyDeptName: target.verifyDeptName}
+              verifyDeptName: target.verifyDeptName,
+              orderDoctorCode: target.orderDoctorCode,
+              orderDoctorName: target.orderDoctorName,
+              orderDeptCode: target.orderDeptCode,
+              orderDeptName: target.orderDeptName,
+              applyDateStr: target.applyDateStr,
+              orderNumber: target.orderNumber,
+              orderNum: target.orderNum,
+              typeno: target.typeno}
 
             data.push(arrData)
           }
@@ -246,8 +262,10 @@ export default {
         dataJson: jsonString, dataType: 0
       }).then(() => {
         this.$message.success('发送成功')
+        this.$emit('verifySpin')
         this.search()
       }).catch(() => {
+        this.$emit('verifySpin')
         this.loading = false
       })
     },
@@ -257,11 +275,14 @@ export default {
           applyDateStr: this.applyDate, state: 2, dataType: 0
         }).then(() => {
           this.$message.success('发送成功')
+          this.$emit('verifySpin')
           this.search()
         }).catch(() => {
+          this.$emit('verifySpin')
           this.loading = false
         })
       } else {
+        this.$emit('verifySpin')
         this.$message.warning('无数据，无法全部发送!')
       }
     },
@@ -319,7 +340,6 @@ export default {
       this.loading = true
       params.applyDateStr = this.applyDate
       params.state = 2
-      debugger
       let searchType = [this.searchItem.project.type, this.searchItem.rule.type, this.searchItem.dept.type, this.searchItem.order.type]
       params.searchType = searchType
       if (this.searchItem !== undefined) {

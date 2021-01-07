@@ -16,9 +16,13 @@ import cc.mrbird.febs.common.properties.FebsProperties;
 
 import cc.mrbird.febs.common.utils.FebsUtil;
 import cc.mrbird.febs.system.domain.User;
+import cc.mrbird.febs.yb.domain.ResponseResult;
 import cc.mrbird.febs.yb.entity.YbAppealResultView;
+import cc.mrbird.febs.yb.entity.YbDefaultValue;
+import cc.mrbird.febs.yb.entity.YbReconsiderApply;
 import cc.mrbird.febs.yb.service.IYbAppealResultService;
 import cc.mrbird.febs.yb.service.IYbAppealResultViewService;
+import cc.mrbird.febs.yb.service.IYbReconsiderApplyService;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.util.ZipUtil;
@@ -62,6 +66,9 @@ public class ComFileController extends BaseController {
 
     @Autowired
     public IYbAppealResultViewService iYbAppealResultViewService;
+
+    @Autowired
+    public IYbReconsiderApplyService iYbReconsiderApplyService;
 
     /**
      * 分页查询数据
@@ -250,7 +257,7 @@ public class ComFileController extends BaseController {
 
     @PostMapping("listImgComFile")
     public FebsResponse findImgListComFiles(InUploadFile inUploadFile) {
-        List<OutComFile> outList = new ArrayList<OutComFile>();
+        List<OutComFile> outList = new ArrayList<>();
         try {
             List<ComFile> list = this.iComFileService.findListComFile(inUploadFile.getId());
             String strId = inUploadFile.getId();
@@ -281,92 +288,132 @@ public class ComFileController extends BaseController {
         if (file.isEmpty()) {
             throw new FebsException("空文件");
         }
-        int num = 1;
-        List<ComFile> list = this.iComFileService.findListComFile(inUploadFile.getId());
-        if (list.size() > 0) {
-            ComFile comFile = list.get(list.size() - 1);
-            String code = comFile.getServerName();
-            int strNum = code.lastIndexOf("-");
-            String comFileName = code.substring(strNum + 1, code.length() - 4);
-            num = Integer.parseInt(comFileName) + 1;
-        }
-        String newFileName = inUploadFile.getProposalCode();
-        if (num < 10) {
-            newFileName += "-00" + String.valueOf(num);
-        } else if (num < 100) {
-            newFileName += "-0" + String.valueOf(num);
-        } else {
-            newFileName += "-" + String.valueOf(num);
-        }
-        String strId = inUploadFile.getId();
-        User currentUser = FebsUtil.getCurrentUser();
-        int sourceType = inUploadFile.getSourceType();
-        String strSourceType = sourceType == 0 ? "In" : "Out";
-        // String deptName = inUploadFile.getDeptName() + strId + strSourceType;
-        String deptName = currentUser.getUsername() + "/" + strSourceType;
-        String fileName2 = file.getOriginalFilename();  // 文件名
-        String suffixName = fileName2.substring(fileName2.lastIndexOf("."));  // 后缀名
-        String filePath = febsProperties.getUploadPath(); // 上传后的路径
-        String fileName = newFileName + suffixName; // 新文件名
-        File dest = new File(filePath + inUploadFile.getApplyDateStr() + "/" + deptName + "/" + fileName);
-        if (!dest.getParentFile().exists()) {
-            dest.getParentFile().mkdirs();
-        }
-        try {
-            file.transferTo(dest);
-        } catch (IOException e) {
-            throw new FebsException(e.getMessage());
-        }
-
-        String Id = UUID.randomUUID().toString();
-        ComFile cf = new ComFile();
-        cf.setId(Id);
-        cf.setCreateTime(new Date());
-        cf.setClientName(fileName2);//客户端的名称
-        cf.setServerName(fileName);
-        cf.setRefTabId(strId);
-        cf.setRefTabTable(currentUser.getUsername());
-        iComFileService.createComFile(cf);
-        String fileUrl = febsProperties.getBaseUrl() + "/uploadFile/" + inUploadFile.getApplyDateStr() + "/" + deptName + "/" + fileName;
-
+        boolean isUpdate = false;
+        String mms = "";
+        Date thisDate = new Date();
         OutComFile outComFile = new OutComFile();
-        outComFile.setUid(Id);
-        outComFile.setName(fileName2);
-        outComFile.setStatus("done");
-        outComFile.setUrl(fileUrl);
-        outComFile.setThumbUrl(fileUrl);
-        outComFile.setSerName(fileName);
+        if(inUploadFile.getIsCheck() == 1) {
+            isUpdate = iYbReconsiderApplyService.findReconsiderApplyCheckEndDate(inUploadFile.getApplyDateStr(),inUploadFile.getTypeno());
+            if (inUploadFile.getTypeno() == YbDefaultValue.TYPENO_1) {
+                mms = "第一版";
+            } else {
+                mms = "第二版";
+            }
+        }else{
+            isUpdate = true ;
+        }
+        if (isUpdate) {
+            int num = 1;
+            List<ComFile> list = this.iComFileService.findListComFile(inUploadFile.getId());
+            if (list.size() > 0) {
+                ComFile comFile = list.get(list.size() - 1);
+                String code = comFile.getServerName();
+                int strNum = code.lastIndexOf("-");
+                String comFileName = code.substring(strNum + 1, code.length() - 4);
+                num = Integer.parseInt(comFileName) + 1;
+            }
+            String newFileName = inUploadFile.getProposalCode();
+            if (num < 10) {
+                newFileName += "-00" + String.valueOf(num);
+            } else if (num < 100) {
+                newFileName += "-0" + String.valueOf(num);
+            } else {
+                newFileName += "-" + String.valueOf(num);
+            }
+            String strId = inUploadFile.getId();
+            User currentUser = FebsUtil.getCurrentUser();
+            int sourceType = inUploadFile.getSourceType();
+            String strSourceType = sourceType == 0 ? "In" : "Out";
+            // String deptName = inUploadFile.getDeptName() + strId + strSourceType;
+            String deptName = currentUser.getUsername() + "/" + strSourceType;
+            String fileName2 = file.getOriginalFilename();  // 文件名
+            String suffixName = fileName2.substring(fileName2.lastIndexOf("."));  // 后缀名
+            String filePath = febsProperties.getUploadPath(); // 上传后的路径
+            String fileName = newFileName + suffixName; // 新文件名
+            File dest = new File(filePath + inUploadFile.getApplyDateStr() + "/" + deptName + "/" + fileName);
+            if (!dest.getParentFile().exists()) {
+                dest.getParentFile().mkdirs();
+            }
+            try {
+                file.transferTo(dest);
+            } catch (IOException e) {
+                throw new FebsException(e.getMessage());
+            }
+
+            String Id = UUID.randomUUID().toString();
+            ComFile cf = new ComFile();
+            cf.setId(Id);
+            cf.setCreateTime(thisDate);
+            cf.setClientName(fileName2);//客户端的名称
+            cf.setServerName(fileName);
+            cf.setRefTabId(strId);
+            cf.setRefTabTable(currentUser.getUsername());
+            iComFileService.createComFile(cf);
+            String fileUrl = febsProperties.getBaseUrl() + "/uploadFile/" + inUploadFile.getApplyDateStr() + "/" + deptName + "/" + fileName;
+
+            outComFile.setSuccess(1);
+            outComFile.setUid(Id);
+            outComFile.setName(fileName2);
+            outComFile.setStatus("done");
+            outComFile.setUrl(fileUrl);
+            outComFile.setThumbUrl(fileUrl);
+            outComFile.setSerName(fileName);
+        } else{
+            outComFile.setSuccess(0);
+            outComFile.setMessage("当前已过 " + mms + " 截止日期，无法上传图片.");
+        }
+
         return new FebsResponse().put("data", outComFile);
     }
 
     @Log("删除")
     @PostMapping("deleteImg")
     public FebsResponse deleteImgComFile(InUploadFile inUploadFile) {
-        boolean bl = false;
+        int success = 0;
         try {
-            String strId = inUploadFile.getId();
-            ComFile comFile = this.iComFileService.findComFileById(strId);
-            if (comFile != null) {
-                String strRefId = comFile.getRefTabId();
-                int sourceType = inUploadFile.getSourceType();
-                String strSourceType = sourceType == 0 ? "In" : "Out";
-                User currentUser = FebsUtil.getCurrentUser();
-                //String deptName = inUploadFile.getDeptName() + strRefId + strSourceType;
-                String deptName = currentUser.getUsername() + "/" + strSourceType;
-                String filePath = febsProperties.getUploadPath(); // 上传后的路径
-                String fileUrl = filePath + inUploadFile.getApplyDateStr() + "/" + deptName + "/" + inUploadFile.getSerName();
-                boolean blFile = deleteFile(fileUrl);
-                if (blFile) {
-                    int count = this.iComFileService.deleteComFile(inUploadFile.getId());
-                    if (count > 0) {
-                        bl = true;
+            boolean isUpdate = false;
+            String mms = "";
+            if(inUploadFile.getIsCheck() == 1) {
+                isUpdate = iYbReconsiderApplyService.findReconsiderApplyCheckEndDate(inUploadFile.getApplyDateStr(),inUploadFile.getTypeno());
+                if (inUploadFile.getTypeno() == YbDefaultValue.TYPENO_1) {
+                    mms = "第一版";
+                } else {
+                    mms = "第二版";
+                }
+            }else{
+                isUpdate = true ;
+            }
+            if (isUpdate) {
+                String strId = inUploadFile.getId();
+                ComFile comFile = this.iComFileService.findComFileById(strId);
+                if (comFile != null) {
+                    String strRefId = comFile.getRefTabId();
+                    int sourceType = inUploadFile.getSourceType();
+                    String strSourceType = sourceType == 0 ? "In" : "Out";
+                    User currentUser = FebsUtil.getCurrentUser();
+                    //String deptName = inUploadFile.getDeptName() + strRefId + strSourceType;
+                    String deptName = currentUser.getUsername() + "/" + strSourceType;
+                    String filePath = febsProperties.getUploadPath(); // 上传后的路径
+                    String fileUrl = filePath + inUploadFile.getApplyDateStr() + "/" + deptName + "/" + inUploadFile.getSerName();
+                    boolean blFile = deleteFile(fileUrl);
+                    if (blFile) {
+                        int count = this.iComFileService.deleteComFile(inUploadFile.getId());
+                        if (count > 0) {
+                            success = 1;
+                        }
                     }
                 }
+            }else{
+                message = "当前已过 " + mms + " 截止日期，无法删除图片.";
             }
         } catch (Exception e) {
+            message = "删除失败.";
             log.error(message, e);
         }
-        return new FebsResponse().put("success", bl);
+        ResponseResult rr = new ResponseResult();
+        rr.setMessage(message);
+        rr.setSuccess(success);
+        return new FebsResponse().data(rr);
     }
 
     /**

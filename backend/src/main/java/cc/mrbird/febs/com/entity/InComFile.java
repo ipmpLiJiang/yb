@@ -14,5 +14,5 @@ public class InComFile {
     private String deptName;//部门名称 按照部门上传图片
     private String area;// 按照区域上传图片
     private String applyDateStr;//年月
-    private Integer type;//审核一或审核二
+    private Integer type;//第一版或第二版
 }

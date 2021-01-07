@@ -100,4 +100,21 @@
         order by CREATE_TIME desc limit 150
     </select>
 
+    <select id="findSmsOne" resultType="cc.mrbird.febs.com.entity.ComSms">
+       SELECT
+            *
+        FROM
+            com_sms
+        WHERE
+            IS_DELETEMARK = 1
+            <if test="comSms.id != null and comSms.id != ''"> and id =#{ comSms.id} </if>
+            <if test="comSms.sendcode != null and comSms.sendcode != ''"> and sendcode = #{ comSms.sendcode} </if>
+            <if test="comSms.sendType != null"> and sendType =#{ comSms.sendType} </if>
+            <if test="comSms.state != null"> and STATE =#{ comSms.state} </if>
+            <if test="comSms.mobile != null and comSms.mobile != ''"> and mobile = #{ comSms.mobile} </if>
+        ORDER BY
+            CREATE_TIME desc
+            LIMIT 1
+    </select>
+
 </mapper>

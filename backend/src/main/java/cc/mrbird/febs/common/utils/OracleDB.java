@@ -45,7 +45,7 @@ public class OracleDB<T extends Serializable> {
         }
     }
 
-    public List<T> excuteSqlRS(T t, String sql) {
+    public List<T> excuteSqlRS(T t, String sql) throws Exception {
         List<T> resultList = new ArrayList<>();
         if (sql == null || sql.trim() == "") {
             return resultList;
@@ -54,6 +54,7 @@ public class OracleDB<T extends Serializable> {
         Connection con = null;// 创建一个数据库连接
         PreparedStatement pre = null;// 创建预编译语句对象，一般都是用这个而不用Statement
         ResultSet result = null;// 创建一个结果集对象
+        boolean isErr = false;
         try {
             con = source.getConnection();
             //String sql = "SELECT * FROM Table where id = ?";// 预编译语句，“？”代表参数
@@ -64,6 +65,7 @@ public class OracleDB<T extends Serializable> {
                 resultList = (List<T>) ResultSetToBean.putResult(result, t.getClass());
             }
         } catch (Exception e) {
+            isErr = true;
             e.printStackTrace();
             log.error("His连接、读取数据异常",e);
         } finally {
@@ -79,6 +81,9 @@ public class OracleDB<T extends Serializable> {
             } catch (Exception e) {
                 e.printStackTrace();
             }
+        }
+        if(isErr) {
+            throw new Exception("his接口执行异常");
         }
         return resultList;
     }

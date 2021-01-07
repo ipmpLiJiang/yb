@@ -155,11 +155,67 @@ private static final long serialVersionUID=1L;
     private Integer dataType;
 
     /**
+     * 开方医生编码
+     */
+    @TableField("orderDoctorCode")
+    @ExcelField(value ="开方医生编码")
+    private String orderDoctorCode;
+
+    /**
+     * 开方医生名称
+     */
+    @TableField("orderDoctorName")
+    @ExcelField(value ="开方医生名称")
+    private String orderDoctorName;
+
+    /**
+     * 开方科室编码
+     */
+    @TableField("orderDeptCode")
+    @ExcelField(value ="开方科室编码")
+    private String orderDeptCode;
+
+    /**
+     * 开方科室名称
+     */
+    @TableField("orderDeptName")
+    @ExcelField(value ="开方科室名称")
+    private String orderDeptName;
+
+    /**
      * 还款状态
      */
     @TableField("repayState")
     //@ExcelField(value ="还款状态")
     private Integer repayState;
+
+    /**
+     * 复议年月Str
+     */
+    @TableField("applyDateStr")
+    @ExcelField(value = "复议年月Str")
+    private String applyDateStr;
+
+    /**
+     * 序号
+     */
+    @TableField("orderNumber")
+    @ExcelField(value = "序号")
+    private String orderNumber;
+
+    /**
+     * 排序
+     */
+    @TableField("orderNum")
+    @ExcelField(value = "排序")
+    private Integer orderNum;
+
+    /**
+     * 版本类型
+     */
+    @TableField("typeno")
+    //@ExcelField(value ="版本类型")
+    private Integer typeno;
 
     /**
      * 备注
@@ -251,7 +307,20 @@ private static final long serialVersionUID=1L;
 
     public static final String DATATYPE ="dataType" ;
 
+    public static final String ORDERDOCTORCODE = "orderDoctorCode";
+
+    public static final String ORDERDOCTORNAME = "orderDoctorName";
+
+    public static final String ORDERDEPTCODE = "orderDeptCode";
+
+    public static final String ORDERDEPTNAME = "orderDeptName";
+
     public static final String REPAYSTATE ="repayState" ;
+
+    public static final String APPLYDATESTR = "applyDateStr";
+    public static final String ORDERNUMBER = "orderNumber";
+    public static final String ORDERNUM = "orderNum";
+    public static final String TYPENO = "typeno";
 
     public static final String COMMENTS ="COMMENTS" ;
 

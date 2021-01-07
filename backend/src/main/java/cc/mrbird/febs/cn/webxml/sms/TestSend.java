@@ -3,10 +3,13 @@ package cc.mrbird.febs.cn.webxml.sms;
 import cc.mrbird.febs.common.utils.OracleDB;
 import cc.mrbird.febs.yb.entity.YbDeptHis;
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.util.NumberUtil;
 import lombok.ToString;
+import net.bytebuddy.implementation.bytecode.Throw;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -16,6 +19,25 @@ import java.util.stream.Collectors;
  * @createDate 2020/11/3
  */
 public class TestSend {
+    private static String aa() throws Exception {
+        String str = "ddd";
+        boolean istr = false;
+        try {
+            Integer s = Integer.parseInt(str);
+            str = s.toString();
+        } catch (Exception e) {
+            istr = true;
+        } finally {
+            System.out.println("finally");
+        }
+
+        if (istr) {
+            throw new Exception("未添加资产,请重新添加");
+        }
+
+        return str;
+    }
+
     public static void main(String[] args) throws IOException {
 //        String dateStr = "2010-03-11";
 //        Date date = DateUtil.parse(dateStr);
@@ -25,16 +47,50 @@ public class TestSend {
 //        } else {
 //            System.out.println("日期错误");
 //        }
+//        try {
+//            String ss = aa();
+//            System.out.println(ss);
+//        }catch (Exception e){
+//            System.out.println("1111111111111111");
+//        }
+//        Calendar cal = Calendar.getInstance();//使用默认时区和语言环境获得一个日历。
+//        cal.setTime(new Date());
+//        cal.add(Calendar.DATE, -1);//取当前日期的前一天.
+//
+//        Date d1 = null;
+//        Date d2 = null;
+        try {
+//            d1 = new Date();
+//            d2 = cal.getTime();
 
-        List<String> strList = new ArrayList<>();
-        strList.add("aaa");
-        strList.add("bbb");
-        strList.add("aaabbb");
-        strList.add("abab");
+            double d = (double)9000000 / 3600000;//;new BigDecimal((float)9000000 / 3600000).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
 
-        strList = strList.stream().filter(s -> s.contains("ab")).collect(Collectors.toList());
+            if (d > 2) {
+                System.out.println(d);
+            } else {
+                System.out.println("333");
+            }
+            //毫秒ms
+//            long diff = d1.getTime() - d2.getTime();
 
-        System.out.println(strList);
+//            long diffSeconds = diff / 1000 % 60;
+//            long diffMinutes = diff / (60 * 1000) % 60;
+//            long diffHours = diff / (60 * 60 * 1000);
+//            long diffDays = diff / (24 * 60 * 60 * 1000);
+
+
+//            System.out.println(d1);
+//            System.out.println(d2);
+//
+//            System.out.println(diff);
+
+//            System.out.println(diffDays + " 天, ");
+//            System.out.println(diffHours + " 小时, ");
+//            System.out.println(diffMinutes + " 分钟, ");
+//            System.out.println(diffSeconds + " 秒.");
+        } catch (Exception e) {
+
+        }
 //        try {
 //            SmsService smsService = new SmsService();
 //            SmsServicePortType ssp = smsService.getSmsServiceHttpPort();

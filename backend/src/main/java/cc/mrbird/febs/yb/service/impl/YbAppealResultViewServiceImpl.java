@@ -208,6 +208,7 @@ public class YbAppealResultViewServiceImpl extends ServiceImpl<YbAppealResultVie
     public List<YbAppealResultView> findAppealResultViewLists(YbAppealResultView ybAppealResultView) {
         List<YbAppealResultView> list = new ArrayList<>();
         try {
+            /*
             LambdaQueryWrapper<YbAppealResultView> queryWrapper = new LambdaQueryWrapper<>();
             String sql = "";
             sql += " applyDateStr ='" + ybAppealResultView.getApplyDateStr() + "'";
@@ -243,6 +244,8 @@ public class YbAppealResultViewServiceImpl extends ServiceImpl<YbAppealResultVie
             list = this.baseMapper.selectList(queryWrapper);
 
             return list;
+            */
+            return this.baseMapper.findAppealResultList(ybAppealResultView);
         } catch (Exception e) {
             log.error("获取字典信息失败", e);
             return list;
@@ -272,9 +275,9 @@ public class YbAppealResultViewServiceImpl extends ServiceImpl<YbAppealResultVie
 
             String typeName = "";
             if (typeNo == YbDefaultValue.TYPENO_1) {
-                typeName = "_审核一_" + f;
+                typeName = "_第一版_" + f;
             } else if (typeNo == YbDefaultValue.TYPENO_2) {
-                typeName = "_审核二_" + f;
+                typeName = "_第二版_" + f;
             } else {
                 typeName = "_手动复议_";
             }

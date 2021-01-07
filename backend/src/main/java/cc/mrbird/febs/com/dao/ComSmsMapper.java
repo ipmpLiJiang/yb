@@ -21,4 +21,6 @@ public interface ComSmsMapper extends BaseMapper<ComSms> {
         IPage<ComSms> findComSms(Page page, @Param("comSms") ComSms comSms);
 
         List<ComSms> findSmsTopList(@Param("comSms") ComSms comSms);
+
+        ComSms findSmsOne(@Param("comSms") ComSms comSms);
         }

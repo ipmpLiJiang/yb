@@ -14,6 +14,17 @@
     :scroll="{ x: 900 }"
   >
     <template
+        slot='verifyDoctorName'
+        slot-scope="text, record, index"
+    >
+      <div v-if="record.isPerson===0" style="color:#FF0000">
+        <b>{{record.verifyDoctorName}}</b>
+      </div>
+      <div v-else>
+        {{record.verifyDoctorName}}
+      </div>
+    </template>
+    <template
       slot="remark"
       slot-scope="text, record"
     >
@@ -163,6 +174,7 @@ export default {
       {
         title: '复议医生',
         dataIndex: 'verifyDoctorName',
+        scopedSlots: { customRender: 'verifyDoctorName' },
         fixed: 'right',
         width: 130
       },
@@ -212,7 +224,12 @@ export default {
               verifyDoctorCode: target.verifyDoctorCode,
               verifyDoctorName: target.verifyDoctorName,
               verifyDeptCode: target.verifyDeptCode,
-              verifyDeptName: target.verifyDeptName}
+              verifyDeptName: target.verifyDeptName,
+              dataType: target.dataType,
+              applyDateStr: target.applyDateStr,
+              orderNumber: target.orderNumber,
+              orderNum: target.orderNum,
+              typeno: target.typeno}
 
             data.push(arrData)
           }
@@ -235,8 +252,6 @@ export default {
         for (let key of selectedRowKeys) {
           let target = this.dataSource.filter(item => key === item.id)[0]
           let arrData = {
-            id: target.id,
-            applyDataId: target.applyDataId,
             verifyDoctorCode: target.verifyDoctorCode,
             verifyDoctorName: target.verifyDoctorName,
             verifyDeptCode: target.verifyDeptCode,
@@ -260,12 +275,17 @@ export default {
         for (let key of selectedRowKeys) {
           let target = this.dataSource.filter(item => key === item.id)[0]
           let arrData = {
-            id: target.id,
+            id: target.isVerify === 0 ? '' : target.id,
             applyDataId: target.applyDataId,
             verifyDoctorCode: selectDate.doctorCode,
             verifyDoctorName: selectDate.doctorName,
             verifyDeptCode: selectDate.deptCode,
-            verifyDeptName: selectDate.deptName
+            verifyDeptName: selectDate.deptName,
+            dataType: target.dataType,
+            applyDateStr: target.applyDateStr,
+            orderNumber: target.orderNumber,
+            orderNum: target.orderNum,
+            typeno: target.typeno
           }
           data.push(arrData)
         }
@@ -298,7 +318,11 @@ export default {
           verifyDoctorCode: target.verifyDoctorCode,
           verifyDoctorName: target.verifyDoctorName,
           verifyDeptCode: target.verifyDeptCode,
-          verifyDeptName: target.verifyDeptName
+          verifyDeptName: target.verifyDeptName,
+          applyDateStr: target.applyDateStr,
+          orderNumber: target.orderNumber,
+          orderNum: target.orderNum,
+          typeno: target.typeno
         }]
         this.sendService(data)
       } else {
@@ -311,8 +335,10 @@ export default {
         dataJson: jsonString, dataType: 1
       }).then(() => {
         this.$message.success('发送成功')
+        this.$emit('verifySpin')
         this.search()
       }).catch(() => {
+        this.$emit('verifySpin')
         this.loading = false
       })
     },
@@ -322,11 +348,14 @@ export default {
           applyDateStr: this.applyDate, state: 1, dataType: 1
         }).then(() => {
           this.$message.success('发送成功')
+          this.$emit('verifySpin')
           this.search()
         }).catch(() => {
+          this.$emit('verifySpin')
           this.loading = false
         })
       } else {
+        this.$emit('verifySpin')
         this.$message.warning('无数据，无法全部发送!')
       }
     },

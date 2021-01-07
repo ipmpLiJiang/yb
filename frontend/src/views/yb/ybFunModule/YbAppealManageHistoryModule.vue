@@ -108,12 +108,22 @@ export default {
       {
         title: '复议科室',
         dataIndex: 'readyDeptName',
-        width: 200
+        customRender: (text, row, index) => {
+          if (text !== '' && text !== null) {
+            return row.readyDeptCode + '-' + row.readyDeptName
+          }
+        },
+        width: 250
       },
       {
         title: '复议医生',
         dataIndex: 'readyDoctorName',
-        width: 130
+        customRender: (text, row, index) => {
+          if (text !== '' && text !== null) {
+            return row.readyDoctorCode + '-' + row.readyDoctorName
+          }
+        },
+        width: 180
       },
       {
         title: '复议类型',

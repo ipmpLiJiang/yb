@@ -85,16 +85,17 @@ public class YbReconsiderInpatientfeesMain implements Serializable {
     /**
      * 入院科室代码
      */
-    @TableField("inHospDeptId")
+    @TableField("inHosDeptId")
     @ExcelField(value = "入院科室代码")
-    private String inHospDeptId;
+    private String inHosDeptId;
+
 
     /**
      * 入院科室名称
      */
-    @TableField("inHospDeptName")
+    @TableField("inHosDeptName")
     @ExcelField(value = "入院科室名称")
-    private String inHospDeptName;
+    private String inHosDeptName;
 
     /**
      * 办入院操作员科室代码
@@ -109,5 +110,7 @@ public class YbReconsiderInpatientfeesMain implements Serializable {
     @TableField("opterDeptName")
     @ExcelField(value = "办入院操作员科室名称")
     private String opterDeptName;
+
+
 
 }

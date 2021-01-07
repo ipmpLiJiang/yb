@@ -35,7 +35,7 @@ public interface IYbReconsiderVerifyService extends IService<YbReconsiderVerify>
 
     void updateReviewerStates(List<YbReconsiderVerify> list, Long uId, String Uname);
 
-    void  updateAllReviewerStates(String applyDateStr, Long uId, String Uname);
+    void  updateAllReviewerStates(String applyDateStr,int state,int dataType, Long uId, String Uname);
 
     void updateReconsiderVerifyImports(List<YbReconsiderVerify> list, Long uId, String Uname);
 
@@ -44,4 +44,6 @@ public interface IYbReconsiderVerifyService extends IService<YbReconsiderVerify>
     void updateAllSendStates(String applyDateStr,Integer state,Integer dataType, Long uId, String Uname);
 
     int findReconsiderVerifyResetCheckCounts(String applyDateStr);
+
+    void importReconsiderDataVerifys(String applyDateStr, int dataType, int typeno, List<YbReconsiderVerify> verifyList);
 }

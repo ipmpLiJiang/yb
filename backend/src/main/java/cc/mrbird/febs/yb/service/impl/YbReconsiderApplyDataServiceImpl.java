@@ -208,6 +208,7 @@ public class YbReconsiderApplyDataServiceImpl extends ServiceImpl<YbReconsiderAp
             rrData.setDataType(item.getDataType());
             rrData.setOrderSettlementNum(i);
             rrData.setIsDeletemark(1);
+            rrData.setState(item.getState());
             createDataList.add(rrData);
             i++;
         }
@@ -240,6 +241,7 @@ public class YbReconsiderApplyDataServiceImpl extends ServiceImpl<YbReconsiderAp
             rrMain.setDataType(item.getDataType());
             rrMain.setOrderSettlementNum(i);//结算日期排序
             rrMain.setIsDeletemark(item.getIsDeletemark());
+            rrMain.setState(item.getState());
             createMainList.add(rrMain);
             i++;
         }
@@ -312,7 +314,7 @@ public class YbReconsiderApplyDataServiceImpl extends ServiceImpl<YbReconsiderAp
         }
     }
 
-//    @Override
+    //    @Override
 //    public List<YbReconsiderApplyData> findReconsiderApplyDataBetween(String applyDateStr, Integer dataType, Integer startNum, Integer endNum) {
 //        return this.baseMapper.findReconsiderApplyDataBetween(applyDateStr,  dataType,  startNum,  endNum);
 //    }
@@ -321,13 +323,13 @@ public class YbReconsiderApplyDataServiceImpl extends ServiceImpl<YbReconsiderAp
 //    public int findReconsiderApplyDataCount(String applyDateStr, Integer dataType) {
 //        return this.baseMapper.findReconsiderApplyDataCount(applyDateStr, dataType);
 //    }
-    private boolean updateNotInpatientfees(String applyDateStr,int  dataType,int  typeno){
+    private boolean updateNotInpatientfees(String applyDateStr, int dataType, int typeno) {
         boolean isTrue = false;
-        List<YbReconsiderApplyData> reconsiderApplyDataList = this.baseMapper.findReconsiderApplyDataNotInpatientfees(applyDateStr,dataType,typeno);
-        if(reconsiderApplyDataList.size() > 0) {
+        List<YbReconsiderApplyData> reconsiderApplyDataList = this.baseMapper.findReconsiderApplyDataNotInpatientfees(applyDateStr, dataType, typeno);
+        if (reconsiderApplyDataList.size() > 0) {
             List<YbReconsiderApplyData> updateList = new ArrayList<>();
             int i = 1;
-            for(YbReconsiderApplyData item : reconsiderApplyDataList){
+            for (YbReconsiderApplyData item : reconsiderApplyDataList) {
                 YbReconsiderApplyData update = new YbReconsiderApplyData();
                 update.setId(item.getId());
                 update.setState(1);
@@ -336,7 +338,7 @@ public class YbReconsiderApplyDataServiceImpl extends ServiceImpl<YbReconsiderAp
                 updateList.add(update);
             }
 
-            if(updateList.size() >0){
+            if (updateList.size() > 0) {
                 isTrue = this.updateBatchById(updateList);
             }
         }
@@ -452,14 +454,18 @@ public class YbReconsiderApplyDataServiceImpl extends ServiceImpl<YbReconsiderAp
                 }
 
                 if (!hisSql.equals("")) {
-                    if (raTaskList.size() == 0) {
-                        OracleDB<YbDeptHis> oracleDB = new OracleDB<>();
-                        departList = oracleDB.excuteSqlRS(new YbDeptHis(), "select * from his.V_SAP_DEPART");
-                        if (departList.size() > 0) {
-                            //iYbDeptService.deleteBatchDepts();
-                            iYbDeptService.createBatchDepts(departList);
+                    try {
+                        if (raTaskList.size() == 0) {
+                            OracleDB<YbDeptHis> oracleDB = new OracleDB<>();
+                            departList = oracleDB.excuteSqlRS(new YbDeptHis(), "select * from his.V_SAP_DEPART");
+                            if (departList.size() > 0) {
+                                //iYbDeptService.deleteBatchDepts();
+                                iYbDeptService.createBatchDepts(departList);
+                            }
                         }
-                    } else {
+
+                        departList = new ArrayList<>();
+
                         List<YbDept> deptList = iYbDeptService.findDeptList(new YbDept(), 0);
                         for (YbDept item : deptList) {
                             YbDeptHis his = new YbDeptHis();
@@ -468,175 +474,189 @@ public class YbReconsiderApplyDataServiceImpl extends ServiceImpl<YbReconsiderAp
                             his.setSpellCode(item.getSpellCode());
                             departList.add(his);
                         }
-                    }
 
-                    personList = iYbPersonService.list();
+                        personList = iYbPersonService.list();
 
-                    if (departList.size() > 0) {
-                        List<YbReconsiderInpatientfees> createList = new ArrayList<>();
-                        if (dataType == 0) {
-                            List<YbReconsiderInpatientfeesData> rifDataList = new ArrayList<>();
-                            List<YbReconsiderInpatientfeesData> queryRifDataList = new ArrayList<>();
+                        if (departList.size() > 0) {
+                            List<YbReconsiderInpatientfees> createList = new ArrayList<>();
+                            if (dataType == 0) {
+                                List<YbReconsiderInpatientfeesData> rifDataList = new ArrayList<>();
+                                List<YbReconsiderInpatientfeesData> queryRifDataList = new ArrayList<>();
 
-                            OracleDB<YbReconsiderInpatientfeesData> oracleDB = new OracleDB<>();
-                            rifDataList = oracleDB.excuteSqlRS(new YbReconsiderInpatientfeesData(), hisSql);
-                            if (rifDataList.size() > 0) {
-                                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-                                for (YbReconsiderApplyData item : reconsiderApplyDataList) {
-                                    queryRifDataList = rifDataList.stream().filter(
-                                            s -> s.getTransNo().equals(item.getSerialNo()) &&
-                                                    s.getHisName().equals(item.getProjectName()) &&
-                                                    sdf.format(s.getFeeDate()).equals(sdf.format(item.getCostDate()))
-                                    ).collect(Collectors.toList());
-
-                                    if (queryRifDataList.size() == 0) {
+                                OracleDB<YbReconsiderInpatientfeesData> oracleDB = new OracleDB<>();
+                                rifDataList = oracleDB.excuteSqlRS(new YbReconsiderInpatientfeesData(), hisSql);
+                                if (rifDataList.size() > 0) {
+                                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                                    for (YbReconsiderApplyData item : reconsiderApplyDataList) {
                                         queryRifDataList = rifDataList.stream().filter(
                                                 s -> s.getTransNo().equals(item.getSerialNo()) &&
-                                                        s.getHisName().equals(item.getProjectName())
+                                                        s.getHisName().equals(item.getProjectName()) &&
+                                                        sdf.format(s.getFeeDate()).equals(sdf.format(item.getCostDate()))
                                         ).collect(Collectors.toList());
-                                    }
-//HIS数据是否匹配 医生编码
-//                                    (s.getOrderDocId().equals(item.getDoctorName()) ||
-//                                            s.getExcuteDocId().equals(item.getDoctorName()))
 
-                                    if (queryRifDataList.size() > 0) {
-                                        YbReconsiderInpatientfeesData obj = queryRifDataList.get(0);
-                                        YbReconsiderInpatientfees reconsiderInpatientfees = new YbReconsiderInpatientfees();
-                                        reconsiderInpatientfees.setId(UUID.randomUUID().toString());
-                                        reconsiderInpatientfees.setInpatientId(obj.getInpatientId());//住院号
-                                        reconsiderInpatientfees.setPatientName(obj.getPatientName());//患者姓名
-                                        reconsiderInpatientfees.setSettlementId(obj.getSettlementId());//HIS结算序号
-                                        reconsiderInpatientfees.setBillNo(obj.getBillNo());//'单据号'
-                                        reconsiderInpatientfees.setTransNo(obj.getTransNo());//'交易流水号'
-                                        reconsiderInpatientfees.setItemId(obj.getItemId());//'项目代码'
-                                        reconsiderInpatientfees.setItemCode(obj.getMiCode());//'项目医保编码'
-                                        reconsiderInpatientfees.setItemName(obj.getMiName());//'项目名称'
-                                        reconsiderInpatientfees.setItemCount(obj.getItemCount());//'项目数量'
-                                        reconsiderInpatientfees.setItemPrice(obj.getItemPrice());//'项目单价'
-                                        reconsiderInpatientfees.setItemAmount(obj.getItemAmount());//'项目金额'
-                                        reconsiderInpatientfees.setFeeDate(obj.getFeeDate());//'费用日期'
-                                        reconsiderInpatientfees.setDeptId(obj.getDeptId());//'住院科室代码'
-                                        if (obj.getDeptId() != null && (obj.getDeptName() == null || obj.getDeptName().equals(""))) {
-                                            queryDepartList = departList.stream().filter(
-                                                    s -> s.getDeptId().equals(obj.getDeptId())
+                                        if (queryRifDataList.size() == 0) {
+                                            queryRifDataList = rifDataList.stream().filter(
+                                                    s -> s.getTransNo().equals(item.getSerialNo()) &&
+                                                            s.getHisName().equals(item.getProjectName())
                                             ).collect(Collectors.toList());
-                                            if (queryDepartList.size() > 0) {
-                                                reconsiderInpatientfees.setDeptName(queryDepartList.get(0).getDeptName());//'执行科室名称'
-                                            }
-                                        } else {
-                                            reconsiderInpatientfees.setDeptName(obj.getDeptName());//'住院科室名称'
-                                        }
-                                        reconsiderInpatientfees.setOrderDocId(obj.getOrderDocId());//'开方医生代码'
-                                        if (personList.size() > 0 && obj.getOrderDocId() != null && obj.getOrderDocName() == null) {
-                                            queryPersontList = personList.stream().filter(p ->
-                                                    p.getPersonCode().equals(obj.getOrderDocId())).collect(Collectors.toList());
-                                            if (queryPersontList.size() > 0) {
-                                                reconsiderInpatientfees.setOrderDocName(queryPersontList.get(0).getPersonName());//'开方医生名称'
-                                            }
-                                        } else {
-                                            reconsiderInpatientfees.setOrderDocName(obj.getOrderDocName());//'开方医生名称'
-                                        }
-                                        reconsiderInpatientfees.setExcuteDeptId(obj.getExcuteDeptId());//'执行科室代码'
-                                        if (obj.getExcuteDeptId() != null && (obj.getExcuteDeptName() == null || obj.getExcuteDeptName().equals(""))) {
-                                            queryDepartList = departList.stream().filter(
-                                                    s -> s.getDeptId().equals(obj.getDeptId())
-                                            ).collect(Collectors.toList());
-                                            if (queryDepartList.size() > 0) {
-                                                reconsiderInpatientfees.setExcuteDeptName(queryDepartList.get(0).getDeptName());//'执行科室名称'
-                                            }
-                                        } else {
-                                            reconsiderInpatientfees.setExcuteDeptName(obj.getExcuteDeptName());//'执行科室名称'
                                         }
 
-                                        reconsiderInpatientfees.setExcuteDocId(obj.getExcuteDocId());//'执行医生代码'
-                                        if (personList.size() > 0 && obj.getExcuteDocId() != null && obj.getExcuteDocName() == null) {
-                                            queryPersontList = personList.stream().filter(p ->
-                                                    p.getPersonCode().equals(obj.getExcuteDocId())).collect(Collectors.toList());
-                                            if (queryPersontList.size() > 0) {
-                                                reconsiderInpatientfees.setExcuteDocName(queryPersontList.get(0).getPersonName());//'开方医生名称'
+                                        if (queryRifDataList.size() > 0) {
+                                            YbReconsiderInpatientfeesData obj = queryRifDataList.get(0);
+                                            YbReconsiderInpatientfees reconsiderInpatientfees = new YbReconsiderInpatientfees();
+                                            reconsiderInpatientfees.setId(UUID.randomUUID().toString());
+                                            reconsiderInpatientfees.setInpatientId(obj.getInpatientId());//住院号
+                                            reconsiderInpatientfees.setPatientName(obj.getPatientName());//患者姓名
+                                            reconsiderInpatientfees.setSettlementId(obj.getSettlementId());//HIS结算序号
+                                            reconsiderInpatientfees.setBillNo(obj.getBillNo());//'单据号'
+                                            reconsiderInpatientfees.setTransNo(obj.getTransNo());//'交易流水号'
+                                            reconsiderInpatientfees.setItemId(obj.getItemId());//'项目代码'
+                                            reconsiderInpatientfees.setItemCode(obj.getMiCode());//'项目医保编码'
+                                            reconsiderInpatientfees.setItemName(obj.getMiName());//'项目名称'
+                                            reconsiderInpatientfees.setItemCount(obj.getItemCount());//'项目数量'
+                                            reconsiderInpatientfees.setItemPrice(obj.getItemPrice());//'项目单价'
+                                            reconsiderInpatientfees.setItemAmount(obj.getItemAmount());//'项目金额'
+                                            reconsiderInpatientfees.setFeeDate(obj.getFeeDate());//'费用日期'
+                                            reconsiderInpatientfees.setDeptId(obj.getDeptId());//'住院科室代码'
+                                            if (obj.getDeptId() != null && (obj.getDeptName() == null || obj.getDeptName().equals(""))) {
+                                                queryDepartList = departList.stream().filter(
+                                                        s -> s.getDeptId().equals(obj.getDeptId())
+                                                ).collect(Collectors.toList());
+                                                if (queryDepartList.size() > 0) {
+                                                    reconsiderInpatientfees.setDeptName(queryDepartList.get(0).getDeptName());//'执行科室名称'
+                                                }
+                                            } else {
+                                                reconsiderInpatientfees.setDeptName(obj.getDeptName());//'住院科室名称'
                                             }
-                                        } else {
-                                            reconsiderInpatientfees.setExcuteDocName(obj.getExcuteDocName());//'执行医生名称'
+                                            reconsiderInpatientfees.setOrderDocId(obj.getOrderDocId());//'开方医生代码'
+                                            if (personList.size() > 0 && obj.getOrderDocId() != null && obj.getOrderDocName() == null) {
+                                                queryPersontList = personList.stream().filter(p ->
+                                                        p.getPersonCode().equals(obj.getOrderDocId())).collect(Collectors.toList());
+                                                if (queryPersontList.size() > 0) {
+                                                    reconsiderInpatientfees.setOrderDocName(queryPersontList.get(0).getPersonName());//'开方医生名称'
+                                                }
+                                            } else {
+                                                reconsiderInpatientfees.setOrderDocName(obj.getOrderDocName());//'开方医生名称'
+                                            }
+                                            reconsiderInpatientfees.setExcuteDeptId(obj.getExcuteDeptId());//'执行科室代码'
+                                            if (obj.getExcuteDeptId() != null && (obj.getExcuteDeptName() == null || obj.getExcuteDeptName().equals(""))) {
+                                                queryDepartList = departList.stream().filter(
+                                                        s -> s.getDeptId().equals(obj.getExcuteDeptId())
+                                                ).collect(Collectors.toList());
+                                                if (queryDepartList.size() > 0) {
+                                                    reconsiderInpatientfees.setExcuteDeptName(queryDepartList.get(0).getDeptName());//'执行科室名称'
+                                                }
+                                            } else {
+                                                reconsiderInpatientfees.setExcuteDeptName(obj.getExcuteDeptName());//'执行科室名称'
+                                            }
+
+                                            reconsiderInpatientfees.setExcuteDocId(obj.getExcuteDocId());//'执行医生代码'
+                                            if (personList.size() > 0 && obj.getExcuteDocId() != null && obj.getExcuteDocName() == null) {
+                                                queryPersontList = personList.stream().filter(p ->
+                                                        p.getPersonCode().equals(obj.getExcuteDocId())).collect(Collectors.toList());
+                                                if (queryPersontList.size() > 0) {
+                                                    reconsiderInpatientfees.setExcuteDocName(queryPersontList.get(0).getPersonName());//'开方医生名称'
+                                                }
+                                            } else {
+                                                reconsiderInpatientfees.setExcuteDocName(obj.getExcuteDocName());//'执行医生名称'
+                                            }
+
+                                            reconsiderInpatientfees.setSettlementDate(obj.getSettlementDate());//'结算时间'
+
+                                            reconsiderInpatientfees.setMiCode(obj.getMiCode());
+                                            reconsiderInpatientfees.setHisName(obj.getHisName());
+                                            reconsiderInpatientfees.setMiName(obj.getMiName());
+
+                                            reconsiderInpatientfees.setDyyz(obj.getDyyz());
+                                            reconsiderInpatientfees.setAttendDocId(obj.getAttendDocId());
+                                            reconsiderInpatientfees.setAttendDocName(obj.getAttendDocName());
+                                            reconsiderInpatientfees.setItemTypeCode(obj.getItemTypeCode());
+                                            reconsiderInpatientfees.setItemTypeName(obj.getItemTypeName());
+
+                                            reconsiderInpatientfees.setFeeOperatorId(obj.getFeeOperatorId());
+                                            reconsiderInpatientfees.setFeeOperatorName(obj.getFeeOperatorName());
+                                            reconsiderInpatientfees.setFeeDeptId(obj.getFeeDeptId());
+                                            reconsiderInpatientfees.setFeeDeptName(obj.getFeeDeptName());
+
+                                            reconsiderInpatientfees.setApplyDataId(item.getId());
+                                            reconsiderInpatientfees.setOrderNumber(item.getOrderNumber());//序号
+                                            reconsiderInpatientfees.setApplyDateStr(applyDateStr);
+                                            reconsiderInpatientfees.setDataType(dataType);
+                                            reconsiderInpatientfees.setTypeno(typeno);
+                                            reconsiderInpatientfees.setIsDeletemark(1);
+                                            reconsiderInpatientfees.setCreateTime(new Date());
+                                            reconsiderInpatientfees.setState(state);
+                                            createList.add(reconsiderInpatientfees);
                                         }
-
-                                        reconsiderInpatientfees.setSettlementDate(obj.getSettlementDate());//'结算时间'
-
-                                        reconsiderInpatientfees.setApplyDataId(item.getId());
-                                        reconsiderInpatientfees.setOrderNumber(item.getOrderNumber());//序号
-                                        reconsiderInpatientfees.setApplyDateStr(applyDateStr);
-                                        reconsiderInpatientfees.setDataType(dataType);
-                                        reconsiderInpatientfees.setTypeno(typeno);
-                                        reconsiderInpatientfees.setIsDeletemark(1);
-                                        reconsiderInpatientfees.setCreateTime(new Date());
-                                        reconsiderInpatientfees.setState(state);
-                                        createList.add(reconsiderInpatientfees);
                                     }
+                                } else {
+                                    msg = "his接口明细扣款无数据.";
+                                    log.error(msg);
                                 }
                             } else {
-                                msg = "his接口明细扣款无数据.";
-                                log.error(msg);
-                            }
-                        }
-                        else {
-                            List<YbReconsiderInpatientfeesMain> rifMainList = new ArrayList<>();
-                            List<YbReconsiderInpatientfeesMain> queryRifMainList = new ArrayList<>();
-                            OracleDB<YbReconsiderInpatientfeesMain> oracleDB = new OracleDB<>();
-                            rifMainList = oracleDB.excuteSqlRS(new YbReconsiderInpatientfeesMain(), hisSql);
-                            if (rifMainList.size() > 0) {
-                                for (YbReconsiderApplyData item : reconsiderApplyDataList) {
-                                    queryRifMainList = rifMainList.stream().filter(
-                                            s -> s.getTransNo().equals(item.getSerialNo())
-                                    ).collect(Collectors.toList());
+                                List<YbReconsiderInpatientfeesMain> rifMainList = new ArrayList<>();
+                                List<YbReconsiderInpatientfeesMain> queryRifMainList = new ArrayList<>();
+                                OracleDB<YbReconsiderInpatientfeesMain> oracleDB = new OracleDB<>();
+                                rifMainList = oracleDB.excuteSqlRS(new YbReconsiderInpatientfeesMain(), hisSql);
+                                if (rifMainList.size() > 0) {
+                                    for (YbReconsiderApplyData item : reconsiderApplyDataList) {
+                                        queryRifMainList = rifMainList.stream().filter(
+                                                s -> s.getTransNo().equals(item.getSerialNo())
+                                        ).collect(Collectors.toList());
 
-                                    if (queryRifMainList.size() > 0) {
-                                        YbReconsiderInpatientfeesMain obj = queryRifMainList.get(0);
-                                        YbReconsiderInpatientfees reconsiderInpatientfees = new YbReconsiderInpatientfees();
-                                        reconsiderInpatientfees.setId(UUID.randomUUID().toString());
-                                        reconsiderInpatientfees.setInpatientId(obj.getInpatientId());//住院号
-                                        reconsiderInpatientfees.setPatientName(obj.getPatientName());//患者姓名
-                                        reconsiderInpatientfees.setSettlementId(obj.getSettlementId());//HIS结算序号
-                                        reconsiderInpatientfees.setBillNo(obj.getBillNo());//'单据号'
-                                        reconsiderInpatientfees.setTransNo(obj.getTransNo());//'交易流水号'
+                                        if (queryRifMainList.size() > 0) {
+                                            YbReconsiderInpatientfeesMain obj = queryRifMainList.get(0);
+                                            YbReconsiderInpatientfees reconsiderInpatientfees = new YbReconsiderInpatientfees();
+                                            reconsiderInpatientfees.setId(UUID.randomUUID().toString());
+                                            reconsiderInpatientfees.setInpatientId(obj.getInpatientId());//住院号
+                                            reconsiderInpatientfees.setPatientName(obj.getPatientName());//患者姓名
+                                            reconsiderInpatientfees.setSettlementId(obj.getSettlementId());//HIS结算序号
+                                            reconsiderInpatientfees.setBillNo(obj.getBillNo());//'单据号'
+                                            reconsiderInpatientfees.setTransNo(obj.getTransNo());//'交易流水号'
 
-                                        reconsiderInpatientfees.setOrderDocId(obj.getInHospDocId());//'入院责任医生代码'
-                                        reconsiderInpatientfees.setOrderDocName(obj.getInHospDocName());//'入院责任医生名称'
+                                            reconsiderInpatientfees.setOrderDocId(obj.getInHospDocId());//'入院责任医生代码'
+                                            reconsiderInpatientfees.setOrderDocName(obj.getInHospDocName());//'入院责任医生名称'
 
-                                        reconsiderInpatientfees.setDeptId(obj.getInHospDeptId());//'入院科室代码
-                                        reconsiderInpatientfees.setDeptName(obj.getInHospDeptName());//'入院科室名称
+                                            reconsiderInpatientfees.setDeptId(obj.getInHosDeptId());//'入院科室代码
+                                            reconsiderInpatientfees.setDeptName(obj.getInHosDeptName());//'入院科室名称
 
-                                        reconsiderInpatientfees.setExcuteDocId(obj.getInHospOpterId());//办入院操作员代码
-                                        reconsiderInpatientfees.setExcuteDocName(obj.getInHospOpterName());//办入院操作员名称
+                                            reconsiderInpatientfees.setExcuteDocId(obj.getInHospOpterId());//办入院操作员代码
+                                            reconsiderInpatientfees.setExcuteDocName(obj.getInHospOpterName());//办入院操作员名称
 
-                                        reconsiderInpatientfees.setExcuteDeptId(obj.getOpterDeptId());//办入院操作员科室代码
-                                        reconsiderInpatientfees.setExcuteDeptName(obj.getOpterDeptName());//办入院操作员科室名称
+                                            reconsiderInpatientfees.setExcuteDeptId(obj.getOpterDeptId());//办入院操作员科室代码
+                                            reconsiderInpatientfees.setExcuteDeptName(obj.getOpterDeptName());//办入院操作员科室名称
 
-                                        reconsiderInpatientfees.setSettlementDate(obj.getSettleDate());//'结算时间'
+                                            reconsiderInpatientfees.setSettlementDate(obj.getSettleDate());//'结算时间'
 
-                                        reconsiderInpatientfees.setApplyDataId(item.getId());
-                                        reconsiderInpatientfees.setOrderNumber(item.getOrderNumber());//序号
-                                        reconsiderInpatientfees.setApplyDateStr(applyDateStr);
-                                        reconsiderInpatientfees.setDataType(dataType);
-                                        reconsiderInpatientfees.setTypeno(typeno);
-                                        reconsiderInpatientfees.setIsDeletemark(1);
-                                        reconsiderInpatientfees.setCreateTime(new Date());
-                                        reconsiderInpatientfees.setState(state);
-                                        createList.add(reconsiderInpatientfees);
+                                            reconsiderInpatientfees.setApplyDataId(item.getId());
+                                            reconsiderInpatientfees.setOrderNumber(item.getOrderNumber());//序号
+                                            reconsiderInpatientfees.setApplyDateStr(applyDateStr);
+                                            reconsiderInpatientfees.setDataType(dataType);
+                                            reconsiderInpatientfees.setTypeno(typeno);
+                                            reconsiderInpatientfees.setIsDeletemark(1);
+                                            reconsiderInpatientfees.setCreateTime(new Date());
+                                            reconsiderInpatientfees.setState(state);
+                                            createList.add(reconsiderInpatientfees);
+                                        }
                                     }
+                                } else {
+                                    msg = "his接口主单扣款无数据.";
+                                    log.error(msg);
                                 }
-                            } else {
-                                msg = "his接口主单扣款无数据.";
+                            }
+                            if (createList.size() > 0) {
+                                msg = "His更新数据：" + createList.size() + "条";
+                                iYbReconsiderInpatientfeesService.saveBatch(createList);
                                 log.error(msg);
                             }
-                        }
-                        if (createList.size() > 0) {
-                            msg = "His更新数据：" + createList.size() + "条";
-                            iYbReconsiderInpatientfeesService.saveBatch(createList);
+
+                            this.iYbReconsiderApplyTaskService.createYbReconsiderApplyTask(createTask);
+                        } else {
+                            msg = "his接口科室无数据.";
                             log.error(msg);
                         }
-
-                        this.iYbReconsiderApplyTaskService.createYbReconsiderApplyTask(createTask);
-                    } else {
-                        msg = "his接口科室无数据.";
+                    } catch (Exception e) {
+                        msg = e.getMessage();
                         log.error(msg);
                     }
                 } else {
@@ -756,14 +776,17 @@ public class YbReconsiderApplyDataServiceImpl extends ServiceImpl<YbReconsiderAp
                 }
 
                 if (!hisSql.equals("")) {
-                    if (raTaskList.size() == 0) {
-                        OracleDB<YbDeptHis> oracleDB = new OracleDB<>();
-                        departList = oracleDB.excuteSqlRS(new YbDeptHis(), "select * from his.V_SAP_DEPART");
-                        if (departList.size() > 0) {
-                            //iYbDeptService.deleteBatchDepts();
-                            iYbDeptService.createBatchDepts(departList);
+                    try {
+                        if (raTaskList.size() == 0) {
+                            OracleDB<YbDeptHis> oracleDB = new OracleDB<>();
+                            departList = oracleDB.excuteSqlRS(new YbDeptHis(), "select * from his.V_SAP_DEPART");
+                            if (departList.size() > 0) {
+                                //iYbDeptService.deleteBatchDepts();
+                                iYbDeptService.createBatchDepts(departList);
+                            }
                         }
-                    } else {
+                        departList = new ArrayList<>();
+
                         List<YbDept> deptList = iYbDeptService.findDeptList(new YbDept(), 0);
                         for (YbDept item : deptList) {
                             YbDeptHis his = new YbDeptHis();
@@ -772,174 +795,189 @@ public class YbReconsiderApplyDataServiceImpl extends ServiceImpl<YbReconsiderAp
                             his.setSpellCode(item.getSpellCode());
                             departList.add(his);
                         }
-                    }
 
-                    personList = iYbPersonService.list();
+                        personList = iYbPersonService.list();
 
-                    if (departList.size() > 0) {
-                        List<YbReconsiderInpatientfees> createList = new ArrayList<>();
-                        if (dataType == 0) {
-                            List<YbReconsiderInpatientfeesData> rifDataList = new ArrayList<>();
-                            List<YbReconsiderInpatientfeesData> queryRifDataList = new ArrayList<>();
+                        if (departList.size() > 0) {
+                            List<YbReconsiderInpatientfees> createList = new ArrayList<>();
+                            if (dataType == 0) {
+                                List<YbReconsiderInpatientfeesData> rifDataList = new ArrayList<>();
+                                List<YbReconsiderInpatientfeesData> queryRifDataList = new ArrayList<>();
 
-                            OracleDB<YbReconsiderInpatientfeesData> oracleDB = new OracleDB<>();
-                            rifDataList = oracleDB.excuteSqlRS(new YbReconsiderInpatientfeesData(), hisSql);
-                            if (rifDataList.size() > 0) {
-                                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-                                for (YbReconsiderApplyData item : reconsiderApplyDataList) {
-                                    queryRifDataList = rifDataList.stream().filter(
-                                            s -> s.getTransNo().equals(item.getSerialNo()) &&
-                                                    s.getItemName().equals(item.getProjectName()) &&
-                                                    sdf.format(s.getFeeDate()).equals(sdf.format(item.getCostDate()))
-                                    ).collect(Collectors.toList());
-
-                                    if (queryRifDataList.size() == 0) {
+                                OracleDB<YbReconsiderInpatientfeesData> oracleDB = new OracleDB<>();
+                                rifDataList = oracleDB.excuteSqlRS(new YbReconsiderInpatientfeesData(), hisSql);
+                                if (rifDataList.size() > 0) {
+                                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                                    for (YbReconsiderApplyData item : reconsiderApplyDataList) {
                                         queryRifDataList = rifDataList.stream().filter(
                                                 s -> s.getTransNo().equals(item.getSerialNo()) &&
-                                                        s.getItemName().equals(item.getProjectName())
+                                                        s.getItemName().equals(item.getProjectName()) &&
+                                                        sdf.format(s.getFeeDate()).equals(sdf.format(item.getCostDate()))
                                         ).collect(Collectors.toList());
-                                    }
-//HIS数据是否匹配 医生编码
-//                                    (s.getOrderDocId().equals(item.getDoctorName()) ||
-//                                            s.getExcuteDocId().equals(item.getDoctorName()))
 
-                                    if (queryRifDataList.size() > 0) {
-                                        YbReconsiderInpatientfeesData obj = queryRifDataList.get(0);
-                                        YbReconsiderInpatientfees reconsiderInpatientfees = new YbReconsiderInpatientfees();
-                                        reconsiderInpatientfees.setId(UUID.randomUUID().toString());
-                                        reconsiderInpatientfees.setInpatientId(obj.getInpatientId());//住院号
-                                        reconsiderInpatientfees.setPatientName(obj.getPatientName());//患者姓名
-                                        reconsiderInpatientfees.setSettlementId(obj.getSettlementId());//HIS结算序号
-                                        reconsiderInpatientfees.setBillNo(obj.getBillNo());//'单据号'
-                                        reconsiderInpatientfees.setTransNo(obj.getTransNo());//'交易流水号'
-                                        reconsiderInpatientfees.setItemId(obj.getItemId());//'项目代码'
-                                        reconsiderInpatientfees.setItemCode(obj.getItemCode());//'项目医保编码'
-                                        reconsiderInpatientfees.setItemName(obj.getItemName());//'项目名称'
-                                        reconsiderInpatientfees.setItemCount(obj.getItemCount());//'项目数量'
-                                        reconsiderInpatientfees.setItemPrice(obj.getItemPrice());//'项目单价'
-                                        reconsiderInpatientfees.setItemAmount(obj.getItemAmount());//'项目金额'
-                                        reconsiderInpatientfees.setFeeDate(obj.getFeeDate());//'费用日期'
-                                        reconsiderInpatientfees.setDeptId(obj.getDeptId());//'住院科室代码'
-                                        if (obj.getDeptId() != null && (obj.getDeptName() == null || obj.getDeptName().equals(""))) {
-                                            queryDepartList = departList.stream().filter(
-                                                    s -> s.getDeptId().equals(obj.getDeptId())
+                                        if (queryRifDataList.size() == 0) {
+                                            queryRifDataList = rifDataList.stream().filter(
+                                                    s -> s.getTransNo().equals(item.getSerialNo()) &&
+                                                            s.getItemName().equals(item.getProjectName())
                                             ).collect(Collectors.toList());
-                                            if (queryDepartList.size() > 0) {
-                                                reconsiderInpatientfees.setDeptName(queryDepartList.get(0).getDeptName());//'执行科室名称'
-                                            }
-                                        } else {
-                                            reconsiderInpatientfees.setDeptName(obj.getDeptName());//'住院科室名称'
-                                        }
-                                        reconsiderInpatientfees.setOrderDocId(obj.getOrderDocId());//'开方医生代码'
-                                        if (personList.size() > 0 && obj.getOrderDocId() != null && obj.getOrderDocName() == null) {
-                                            queryPersontList = personList.stream().filter(p ->
-                                                    p.getPersonCode().equals(obj.getOrderDocId())).collect(Collectors.toList());
-                                            if (queryPersontList.size() > 0) {
-                                                reconsiderInpatientfees.setOrderDocName(queryPersontList.get(0).getPersonName());//'开方医生名称'
-                                            }
-                                        } else {
-                                            reconsiderInpatientfees.setOrderDocName(obj.getOrderDocName());//'开方医生名称'
-                                        }
-                                        reconsiderInpatientfees.setExcuteDeptId(obj.getExcuteDeptId());//'执行科室代码'
-                                        if (obj.getExcuteDeptId() != null && (obj.getExcuteDeptName() == null || obj.getExcuteDeptName().equals(""))) {
-                                            queryDepartList = departList.stream().filter(
-                                                    s -> s.getDeptId().equals(obj.getDeptId())
-                                            ).collect(Collectors.toList());
-                                            if (queryDepartList.size() > 0) {
-                                                reconsiderInpatientfees.setExcuteDeptName(queryDepartList.get(0).getDeptName());//'执行科室名称'
-                                            }
-                                        } else {
-                                            reconsiderInpatientfees.setExcuteDeptName(obj.getExcuteDeptName());//'执行科室名称'
                                         }
 
-                                        reconsiderInpatientfees.setExcuteDocId(obj.getExcuteDocId());//'执行医生代码'
-                                        if (personList.size() > 0 && obj.getExcuteDocId() != null && obj.getExcuteDocName() == null) {
-                                            queryPersontList = personList.stream().filter(p ->
-                                                    p.getPersonCode().equals(obj.getExcuteDocId())).collect(Collectors.toList());
-                                            if (queryPersontList.size() > 0) {
-                                                reconsiderInpatientfees.setExcuteDocName(queryPersontList.get(0).getPersonName());//'开方医生名称'
+                                        if (queryRifDataList.size() > 0) {
+                                            YbReconsiderInpatientfeesData obj = queryRifDataList.get(0);
+                                            YbReconsiderInpatientfees reconsiderInpatientfees = new YbReconsiderInpatientfees();
+                                            reconsiderInpatientfees.setId(UUID.randomUUID().toString());
+                                            reconsiderInpatientfees.setInpatientId(obj.getInpatientId());//住院号
+                                            reconsiderInpatientfees.setPatientName(obj.getPatientName());//患者姓名
+                                            reconsiderInpatientfees.setSettlementId(obj.getSettlementId());//HIS结算序号
+                                            reconsiderInpatientfees.setBillNo(obj.getBillNo());//'单据号'
+                                            reconsiderInpatientfees.setTransNo(obj.getTransNo());//'交易流水号'
+                                            reconsiderInpatientfees.setItemId(obj.getItemId());//'项目代码'
+                                            reconsiderInpatientfees.setItemCode(obj.getItemCode());//'项目医保编码'
+                                            reconsiderInpatientfees.setItemName(obj.getItemName());//'项目名称'
+                                            reconsiderInpatientfees.setItemCount(obj.getItemCount());//'项目数量'
+                                            reconsiderInpatientfees.setItemPrice(obj.getItemPrice());//'项目单价'
+                                            reconsiderInpatientfees.setItemAmount(obj.getItemAmount());//'项目金额'
+                                            reconsiderInpatientfees.setFeeDate(obj.getFeeDate());//'费用日期'
+                                            reconsiderInpatientfees.setDeptId(obj.getDeptId());//'住院科室代码'
+                                            if (obj.getDeptId() != null && (obj.getDeptName() == null || obj.getDeptName().equals(""))) {
+                                                queryDepartList = departList.stream().filter(
+                                                        s -> s.getDeptId().equals(obj.getDeptId())
+                                                ).collect(Collectors.toList());
+                                                if (queryDepartList.size() > 0) {
+                                                    reconsiderInpatientfees.setDeptName(queryDepartList.get(0).getDeptName());//'执行科室名称'
+                                                }
+                                            } else {
+                                                reconsiderInpatientfees.setDeptName(obj.getDeptName());//'住院科室名称'
                                             }
-                                        } else {
-                                            reconsiderInpatientfees.setExcuteDocName(obj.getExcuteDocName());//'执行医生名称'
+                                            reconsiderInpatientfees.setOrderDocId(obj.getOrderDocId());//'开方医生代码'
+                                            if (personList.size() > 0 && obj.getOrderDocId() != null && obj.getOrderDocName() == null) {
+                                                queryPersontList = personList.stream().filter(p ->
+                                                        p.getPersonCode().equals(obj.getOrderDocId())).collect(Collectors.toList());
+                                                if (queryPersontList.size() > 0) {
+                                                    reconsiderInpatientfees.setOrderDocName(queryPersontList.get(0).getPersonName());//'开方医生名称'
+                                                }
+                                            } else {
+                                                reconsiderInpatientfees.setOrderDocName(obj.getOrderDocName());//'开方医生名称'
+                                            }
+                                            reconsiderInpatientfees.setExcuteDeptId(obj.getExcuteDeptId());//'执行科室代码'
+                                            if (obj.getExcuteDeptId() != null && (obj.getExcuteDeptName() == null || obj.getExcuteDeptName().equals(""))) {
+                                                queryDepartList = departList.stream().filter(
+                                                        s -> s.getDeptId().equals(obj.getExcuteDeptId())
+                                                ).collect(Collectors.toList());
+                                                if (queryDepartList.size() > 0) {
+                                                    reconsiderInpatientfees.setExcuteDeptName(queryDepartList.get(0).getDeptName());//'执行科室名称'
+                                                }
+                                            } else {
+                                                reconsiderInpatientfees.setExcuteDeptName(obj.getExcuteDeptName());//'执行科室名称'
+                                            }
+
+                                            reconsiderInpatientfees.setExcuteDocId(obj.getExcuteDocId());//'执行医生代码'
+                                            if (personList.size() > 0 && obj.getExcuteDocId() != null && obj.getExcuteDocName() == null) {
+                                                queryPersontList = personList.stream().filter(p ->
+                                                        p.getPersonCode().equals(obj.getExcuteDocId())).collect(Collectors.toList());
+                                                if (queryPersontList.size() > 0) {
+                                                    reconsiderInpatientfees.setExcuteDocName(queryPersontList.get(0).getPersonName());//'开方医生名称'
+                                                }
+                                            } else {
+                                                reconsiderInpatientfees.setExcuteDocName(obj.getExcuteDocName());//'执行医生名称'
+                                            }
+
+                                            reconsiderInpatientfees.setSettlementDate(obj.getSettlementDate());//'结算时间'
+
+                                            reconsiderInpatientfees.setMiCode(obj.getMiCode());
+                                            reconsiderInpatientfees.setHisName(obj.getHisName());
+                                            reconsiderInpatientfees.setMiName(obj.getMiName());
+
+                                            reconsiderInpatientfees.setDyyz(obj.getDyyz());
+                                            reconsiderInpatientfees.setAttendDocId(obj.getAttendDocId());
+                                            reconsiderInpatientfees.setAttendDocName(obj.getAttendDocName());
+                                            reconsiderInpatientfees.setItemTypeCode(obj.getItemTypeCode());
+                                            reconsiderInpatientfees.setItemTypeName(obj.getItemTypeName());
+
+                                            reconsiderInpatientfees.setFeeOperatorId(obj.getFeeOperatorId());
+                                            reconsiderInpatientfees.setFeeOperatorName(obj.getFeeOperatorName());
+                                            reconsiderInpatientfees.setFeeDeptId(obj.getFeeDeptId());
+                                            reconsiderInpatientfees.setFeeDeptName(obj.getFeeDeptName());
+
+                                            reconsiderInpatientfees.setApplyDataId(item.getId());
+                                            reconsiderInpatientfees.setOrderNumber(item.getOrderNumber());//序号
+                                            reconsiderInpatientfees.setApplyDateStr(applyDateStr);
+                                            reconsiderInpatientfees.setDataType(dataType);
+                                            reconsiderInpatientfees.setTypeno(typeno);
+                                            reconsiderInpatientfees.setIsDeletemark(1);
+                                            reconsiderInpatientfees.setCreateTime(new Date());
+                                            reconsiderInpatientfees.setState(state);
+                                            createList.add(reconsiderInpatientfees);
                                         }
-
-                                        reconsiderInpatientfees.setSettlementDate(obj.getSettlementDate());//'结算时间'
-
-                                        reconsiderInpatientfees.setApplyDataId(item.getId());
-                                        reconsiderInpatientfees.setOrderNumber(item.getOrderNumber());//序号
-                                        reconsiderInpatientfees.setApplyDateStr(applyDateStr);
-                                        reconsiderInpatientfees.setDataType(dataType);
-                                        reconsiderInpatientfees.setTypeno(typeno);
-                                        reconsiderInpatientfees.setIsDeletemark(1);
-                                        reconsiderInpatientfees.setCreateTime(new Date());
-                                        reconsiderInpatientfees.setState(state);
-                                        createList.add(reconsiderInpatientfees);
                                     }
+                                } else {
+                                    msg = "his接口明细扣款无数据.";
+                                    log.error(msg);
                                 }
                             } else {
-                                msg = "his接口明细扣款无数据.";
+                                List<YbReconsiderInpatientfeesMain> rifMainList = new ArrayList<>();
+                                List<YbReconsiderInpatientfeesMain> queryRifMainList = new ArrayList<>();
+                                OracleDB<YbReconsiderInpatientfeesMain> oracleDB = new OracleDB<>();
+                                rifMainList = oracleDB.excuteSqlRS(new YbReconsiderInpatientfeesMain(), hisSql);
+                                if (rifMainList.size() > 0) {
+                                    for (YbReconsiderApplyData item : reconsiderApplyDataList) {
+                                        queryRifMainList = rifMainList.stream().filter(
+                                                s -> s.getTransNo().equals(item.getSerialNo())
+                                        ).collect(Collectors.toList());
+
+                                        if (queryRifMainList.size() > 0) {
+                                            YbReconsiderInpatientfeesMain obj = queryRifMainList.get(0);
+                                            YbReconsiderInpatientfees reconsiderInpatientfees = new YbReconsiderInpatientfees();
+                                            reconsiderInpatientfees.setId(UUID.randomUUID().toString());
+                                            reconsiderInpatientfees.setInpatientId(obj.getInpatientId());//住院号
+                                            reconsiderInpatientfees.setPatientName(obj.getPatientName());//患者姓名
+                                            reconsiderInpatientfees.setSettlementId(obj.getSettlementId());//HIS结算序号
+                                            reconsiderInpatientfees.setBillNo(obj.getBillNo());//'单据号'
+                                            reconsiderInpatientfees.setTransNo(obj.getTransNo());//'交易流水号'
+
+                                            reconsiderInpatientfees.setOrderDocId(obj.getInHospDocId());//'入院责任医生代码'
+                                            reconsiderInpatientfees.setOrderDocName(obj.getInHospDocName());//'入院责任医生名称'
+
+                                            reconsiderInpatientfees.setDeptId(obj.getInHosDeptId());//'入院科室代码
+                                            reconsiderInpatientfees.setDeptName(obj.getInHosDeptName());//'入院科室名称
+
+                                            reconsiderInpatientfees.setExcuteDocId(obj.getInHospOpterId());//办入院操作员代码
+                                            reconsiderInpatientfees.setExcuteDocName(obj.getInHospOpterName());//办入院操作员名称
+
+                                            reconsiderInpatientfees.setExcuteDeptId(obj.getOpterDeptId());//办入院操作员科室代码
+                                            reconsiderInpatientfees.setExcuteDeptName(obj.getOpterDeptName());//办入院操作员科室名称
+
+                                            reconsiderInpatientfees.setSettlementDate(obj.getSettleDate());//'结算时间'
+
+                                            reconsiderInpatientfees.setApplyDataId(item.getId());
+                                            reconsiderInpatientfees.setOrderNumber(item.getOrderNumber());//序号
+                                            reconsiderInpatientfees.setApplyDateStr(applyDateStr);
+                                            reconsiderInpatientfees.setDataType(dataType);
+                                            reconsiderInpatientfees.setTypeno(typeno);
+                                            reconsiderInpatientfees.setIsDeletemark(1);
+                                            reconsiderInpatientfees.setCreateTime(new Date());
+                                            reconsiderInpatientfees.setState(state);
+                                            createList.add(reconsiderInpatientfees);
+                                        }
+                                    }
+                                } else {
+                                    msg = "his接口主单扣款无数据.";
+                                    log.error(msg);
+                                }
+                            }
+                            if (createList.size() > 0) {
+                                msg = "His更新数据：" + createList.size() + "条";
+                                iYbReconsiderInpatientfeesService.saveBatch(createList);
                                 log.error(msg);
                             }
+
+                            this.iYbReconsiderApplyTaskService.createYbReconsiderApplyTask(createTask);
                         } else {
-                            List<YbReconsiderInpatientfeesMain> rifMainList = new ArrayList<>();
-                            List<YbReconsiderInpatientfeesMain> queryRifMainList = new ArrayList<>();
-                            OracleDB<YbReconsiderInpatientfeesMain> oracleDB = new OracleDB<>();
-                            rifMainList = oracleDB.excuteSqlRS(new YbReconsiderInpatientfeesMain(), hisSql);
-                            if (rifMainList.size() > 0) {
-                                for (YbReconsiderApplyData item : reconsiderApplyDataList) {
-                                    queryRifMainList = rifMainList.stream().filter(
-                                            s -> s.getTransNo().equals(item.getSerialNo())
-                                    ).collect(Collectors.toList());
-
-                                    if (queryRifMainList.size() > 0) {
-                                        YbReconsiderInpatientfeesMain obj = queryRifMainList.get(0);
-                                        YbReconsiderInpatientfees reconsiderInpatientfees = new YbReconsiderInpatientfees();
-                                        reconsiderInpatientfees.setId(UUID.randomUUID().toString());
-                                        reconsiderInpatientfees.setInpatientId(obj.getInpatientId());//住院号
-                                        reconsiderInpatientfees.setPatientName(obj.getPatientName());//患者姓名
-                                        reconsiderInpatientfees.setSettlementId(obj.getSettlementId());//HIS结算序号
-                                        reconsiderInpatientfees.setBillNo(obj.getBillNo());//'单据号'
-                                        reconsiderInpatientfees.setTransNo(obj.getTransNo());//'交易流水号'
-
-                                        reconsiderInpatientfees.setOrderDocId(obj.getInHospDocId());//'入院责任医生代码'
-                                        reconsiderInpatientfees.setOrderDocName(obj.getInHospDocName());//'入院责任医生名称'
-
-                                        reconsiderInpatientfees.setDeptId(obj.getInHospDeptId());//'入院科室代码
-                                        reconsiderInpatientfees.setDeptName(obj.getInHospDeptName());//'入院科室名称
-
-                                        reconsiderInpatientfees.setExcuteDocId(obj.getInHospOpterId());//办入院操作员代码
-                                        reconsiderInpatientfees.setExcuteDocName(obj.getInHospOpterName());//办入院操作员名称
-
-                                        reconsiderInpatientfees.setExcuteDeptId(obj.getOpterDeptId());//办入院操作员科室代码
-                                        reconsiderInpatientfees.setExcuteDeptName(obj.getOpterDeptName());//办入院操作员科室名称
-
-                                        reconsiderInpatientfees.setSettlementDate(obj.getSettleDate());//'结算时间'
-
-                                        reconsiderInpatientfees.setApplyDataId(item.getId());
-                                        reconsiderInpatientfees.setOrderNumber(item.getOrderNumber());//序号
-                                        reconsiderInpatientfees.setApplyDateStr(applyDateStr);
-                                        reconsiderInpatientfees.setDataType(dataType);
-                                        reconsiderInpatientfees.setTypeno(typeno);
-                                        reconsiderInpatientfees.setIsDeletemark(1);
-                                        reconsiderInpatientfees.setCreateTime(new Date());
-                                        reconsiderInpatientfees.setState(state);
-                                        createList.add(reconsiderInpatientfees);
-                                    }
-                                }
-                            } else {
-                                msg = "his接口主单扣款无数据.";
-                                log.error(msg);
-                            }
-                        }
-                        if (createList.size() > 0) {
-                            msg = "His更新数据：" + createList.size() + "条";
-                            iYbReconsiderInpatientfeesService.saveBatch(createList);
+                            msg = "his接口科室无数据.";
                             log.error(msg);
                         }
-
-                        this.iYbReconsiderApplyTaskService.createYbReconsiderApplyTask(createTask);
-                    } else {
-                        msg = "his接口科室无数据.";
+                    } catch (Exception e) {
+                        msg = e.getMessage();
                         log.error(msg);
                     }
                 } else {

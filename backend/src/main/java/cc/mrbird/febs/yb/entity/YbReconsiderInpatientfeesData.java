@@ -182,24 +182,88 @@ public class YbReconsiderInpatientfeesData implements Serializable {
     private String itemYbCode;
 
     /**
-     * MiCode
+     * miCode
      */
-    @TableField("MiCode")
-    @ExcelField(value = "MiCode")
-    private String MiCode;
+    @TableField("miCode")
+    @ExcelField(value = "miCode")
+    private String miCode;
 
     /**
      * HisName
      */
-    @TableField("HisName")
-    @ExcelField(value = "HisName")
-    private String HisName;
+    @TableField("hisName")
+    @ExcelField(value = "hisName")
+    private String hisName;
 
     /**
-     * MiName
+     * miName
      */
-    @TableField("MiName")
-    @ExcelField(value = "MiName")
-    private String MiName;
+    @TableField("miName")
+    @ExcelField(value = "miName")
+    private String miName;
+
+    /**
+     * dyyz
+     */
+    @TableField("dyyz")
+    @ExcelField(value = "dyyz")
+    private String dyyz;
+
+    /**
+     * attendDocId
+     */
+    @TableField("attendDocId")
+    @ExcelField(value = "attendDocId")
+    private String attendDocId;
+
+    /**
+     * attendDocName
+     */
+    @TableField("attendDocName")
+    @ExcelField(value = "attendDocName")
+    private String attendDocName;
+
+    /**
+     * itemTypeCode
+     */
+    @TableField("itemTypeCode")
+    @ExcelField(value = "itemTypeCode")
+    private String itemTypeCode;
+
+    /**
+     * itemTypeName
+     */
+    @TableField("itemTypeName")
+    @ExcelField(value = "itemTypeName")
+    private String itemTypeName;
+
+    /**
+     * 计费人编码
+     */
+    @TableField("feeOperatorId")
+    @ExcelField(value = "计费人编码")
+    private String feeOperatorId;
+
+    /**
+     * 计费人名称
+     */
+    @TableField("feeOperatorName")
+    @ExcelField(value = "计费人名称")
+    private String feeOperatorName;
+
+    /**
+     * 计费科室编码
+     */
+    @TableField("feeDeptId")
+    @ExcelField(value = "计费科室编码")
+    private String feeDeptId;
+
+    /**
+     * 计费科室名称
+     */
+    @TableField("feeDeptName")
+    @ExcelField(value = "计费科室名称")
+    private String feeDeptName;
+
 
 }

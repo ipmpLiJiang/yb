@@ -22,4 +22,5 @@ public class InUploadFile implements Serializable {
     private  Integer state;
     private  Integer dataType;
     private  Integer sourceType;
+    private  Integer isCheck = 0;
 }

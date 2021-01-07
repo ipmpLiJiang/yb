@@ -87,7 +87,7 @@ export default {
       {
         title: '单据号',
         dataIndex: 'billNo',
-        width: 100
+        width: 110
       },
       {
         title: '交易流水号',
@@ -102,7 +102,7 @@ export default {
       {
         title: '项目医保编码',
         dataIndex: 'itemCode',
-        width: 120
+        width: 130
       },
       {
         title: '项目名称',
@@ -137,23 +137,78 @@ export default {
         width: 110
       },
       {
-        title: '住院科室名称',
+        title: '项目类型',
+        dataIndex: 'itemTypeName',
+        width: 100
+      },
+      {
+        title: '住院科室',
         dataIndex: 'deptName',
+        customRender: (text, row, index) => {
+          if (text !== '' && text !== null) {
+            return row.deptId + '-' + row.deptName
+          }
+        },
+        width: 150
+      },
+      {
+        title: '主治医生',
+        dataIndex: 'attendDocName',
+        customRender: (text, row, index) => {
+          if (text !== '' && text !== null) {
+            return row.attendDocId + '-' + row.attendDocName
+          }
+        },
         width: 130
       },
       {
-        title: '开方医生名称',
+        title: '开方医生',
         dataIndex: 'orderDocName',
+        customRender: (text, row, index) => {
+          if (text !== '' && text !== null) {
+            return row.orderDocId + '-' + row.orderDocName
+          }
+        },
         width: 130
       },
       {
-        title: '执行科室名称',
+        title: '执行科室',
         dataIndex: 'excuteDeptName',
+        customRender: (text, row, index) => {
+          if (text !== '' && text !== null) {
+            return row.excuteDeptId + '-' + row.excuteDeptName
+          }
+        },
+        width: 150
+      },
+      {
+        title: '执行医生',
+        dataIndex: 'excuteDocName',
+        customRender: (text, row, index) => {
+          if (text !== '' && text !== null) {
+            return row.excuteDocId + '-' + row.excuteDocName
+          }
+        },
         width: 130
       },
       {
-        title: '执行医生名称',
-        dataIndex: 'excuteDocName',
+        title: '计费科室',
+        dataIndex: 'feeDeptName',
+        customRender: (text, row, index) => {
+          if (text !== '' && text !== null) {
+            return row.feeDeptId + '-' + row.feeDeptName
+          }
+        },
+        width: 150
+      },
+      {
+        title: '计费人',
+        dataIndex: 'feeOperatorName',
+        customRender: (text, row, index) => {
+          if (text !== '' && text !== null) {
+            return row.feeOperatorId + '-' + row.feeOperatorName
+          }
+        },
         width: 130
       },
       {

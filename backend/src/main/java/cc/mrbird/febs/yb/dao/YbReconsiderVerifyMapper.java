@@ -26,7 +26,7 @@ public interface YbReconsiderVerifyMapper extends BaseMapper<YbReconsiderVerify>
     void insertMainReconsiderVerifyImport(@Param("applyDate") String applyDate, @Param("matchPersonId") long matchPersonId, @Param("matchPersonName") String matchPersonName);
 
 
-    List<YbReconsiderVerify> findReconsiderVerifyList(@Param("applyDateStr") String applyDateStr,@Param("dataType") Integer dataType,@Param("state") Integer state);
+    List<YbReconsiderVerify> findReconsiderVerifyList(@Param("applyDateStr") String applyDateStr,@Param("dataType") Integer dataType,@Param("state") Integer state,@Param("typeno") Integer typeno);
 
     int findReconsiderVerifyResetCheckCount(@Param("applyDateStr") String applyDateStr);
 }

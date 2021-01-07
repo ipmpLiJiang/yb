@@ -76,8 +76,10 @@
                         @preview="handlePreview"
                       >
                       </a-upload>
-                      <a-modal :width="600" :visible="previewVisible" :footer="null" @cancel="handleCancel">
-                        <img alt="example" style="width: 100%" :src="previewImage" />
+                      <a-modal width="85%" :visible="previewVisible" :footer="null" @cancel="handleCancel">
+                        <div style="text-align:center">
+                        <img alt="example" style="width: auto; height: auto; max-width: 100%; max-height: 100%;" :src="previewImage" />
+                      </div>
                       </a-modal>
                     </div>
                   </template>

@@ -4,45 +4,57 @@
 
         <!-- 通用查询映射结果 -->
         <resultMap id="BaseResultMap" type="cc.mrbird.febs.yb.entity.YbReconsiderInpatientfees">
-                    <id column="id" property="id"/>
-                    <result column="inpatientId" property="inpatientId"/>
-                    <result column="patientName" property="patientName"/>
-                    <result column="settlementId" property="settlementId"/>
-                    <result column="billNo" property="billNo"/>
-                    <result column="transNo" property="transNo"/>
-                    <result column="itemId" property="itemId"/>
-                    <result column="itemCode" property="itemCode"/>
-                    <result column="itemName" property="itemName"/>
-                    <result column="itemCount" property="itemCount"/>
-                    <result column="itemPrice" property="itemPrice"/>
-                    <result column="itemAmount" property="itemAmount"/>
-                    <result column="feeDate" property="feeDate"/>
-                    <result column="deptId" property="deptId"/>
-                    <result column="deptName" property="deptName"/>
-                    <result column="orderDocId" property="orderDocId"/>
-                    <result column="orderDocName" property="orderDocName"/>
-                    <result column="excuteDeptId" property="excuteDeptId"/>
-                    <result column="excuteDeptName" property="excuteDeptName"/>
-                    <result column="excuteDocId" property="excuteDocId"/>
-                    <result column="excuteDocName" property="excuteDocName"/>
-                    <result column="settlementDate" property="settlementDate"/>
+            <id column="id" property="id"/>
+            <result column="inpatientId" property="inpatientId"/>
+            <result column="patientName" property="patientName"/>
+            <result column="settlementId" property="settlementId"/>
+            <result column="billNo" property="billNo"/>
+            <result column="transNo" property="transNo"/>
+            <result column="itemId" property="itemId"/>
+            <result column="itemCode" property="itemCode"/>
+            <result column="itemName" property="itemName"/>
+            <result column="itemCount" property="itemCount"/>
+            <result column="itemPrice" property="itemPrice"/>
+            <result column="itemAmount" property="itemAmount"/>
+            <result column="feeDate" property="feeDate"/>
+            <result column="deptId" property="deptId"/>
+            <result column="deptName" property="deptName"/>
+            <result column="orderDocId" property="orderDocId"/>
+            <result column="orderDocName" property="orderDocName"/>
+            <result column="excuteDeptId" property="excuteDeptId"/>
+            <result column="excuteDeptName" property="excuteDeptName"/>
+            <result column="excuteDocId" property="excuteDocId"/>
+            <result column="excuteDocName" property="excuteDocName"/>
+            <result column="settlementDate" property="settlementDate"/>
             <result column="applyDateStr" property="applyDateStr"/>
             <result column="dataType" property="dataType"/>
             <result column="typeno" property="typeno"/>
             <result column="orderNumber" property="orderNumber"/>
             <result column="applyDataId" property="applyDataId"/>
-                    <result column="COMMENTS" property="comments"/>
-                    <result column="STATE" property="state"/>
-                    <result column="IS_DELETEMARK" property="isDeletemark"/>
-                    <result column="MODIFY_TIME" property="modifyTime"/>
-                    <result column="CREATE_TIME" property="createTime"/>
-                    <result column="CREATE_USER_ID" property="createUserId"/>
-                    <result column="MODIFY_USER_ID" property="modifyUserId"/>
+            <result column="miCode" property="miCode"/>
+            <result column="hisName" property="hisName"/>
+            <result column="miName" property="miName"/>
+            <result column="dyyz" property="dyyz"/>
+            <result column="attendDocId" property="attendDocId"/>
+            <result column="attendDocName" property="attendDocName"/>
+            <result column="itemTypeCode" property="itemTypeCode"/>
+            <result column="itemTypeName" property="itemTypeName"/>
+            <result column="feeOperatorId" property="feeOperatorId"/>
+            <result column="feeOperatorName" property="feeOperatorName"/>
+            <result column="feeDeptId" property="feeDeptId"/>
+            <result column="feeDeptName" property="feeDeptName"/>
+            <result column="COMMENTS" property="comments"/>
+            <result column="STATE" property="state"/>
+            <result column="IS_DELETEMARK" property="isDeletemark"/>
+            <result column="MODIFY_TIME" property="modifyTime"/>
+            <result column="CREATE_TIME" property="createTime"/>
+            <result column="CREATE_USER_ID" property="createUserId"/>
+            <result column="MODIFY_USER_ID" property="modifyUserId"/>
         </resultMap>
 
         <!-- 通用查询结果列 -->
         <sql id="Base_Column_List">
-        id, inpatientId, patientName, settlementId, billNo, transNo, itemId, itemCode, itemName, itemCount, itemPrice, itemAmount, feeDate, deptId, deptName, orderDocId, orderDocName, excuteDeptId, excuteDeptName, excuteDocId, excuteDocName, settlementDate,applyDateStr,dataType,typeno,orderNumber,applyDataId, COMMENTS, STATE, IS_DELETEMARK, MODIFY_TIME, CREATE_TIME, CREATE_USER_ID, MODIFY_USER_ID
+        id, inpatientId, patientName, settlementId, billNo, transNo, itemId, itemCode, itemName, itemCount, itemPrice, itemAmount, feeDate, deptId, deptName, orderDocId, orderDocName, excuteDeptId, excuteDeptName, excuteDocId, excuteDocName, settlementDate,applyDateStr,dataType,typeno,orderNumber,applyDataId,miCode,hisName,miName,dyyz,attendDocId,attendDocName,itemTypeCode,itemTypeName,feeOperatorId,feeOperatorName,feeDeptId,feeDeptName, COMMENTS, STATE, IS_DELETEMARK, MODIFY_TIME, CREATE_TIME, CREATE_USER_ID, MODIFY_USER_ID
     </sql>
     <update id="updateYbReconsiderInpatientfees" parameterType="cc.mrbird.febs.yb.entity.YbReconsiderInpatientfees">
         update yb_reconsider_inpatientfees
@@ -70,9 +82,21 @@
 <if test="settlementDate != null">settlementDate=#{settlementDate},</if>
 <if test="applyDateStr != null">applyDateStr=#{applyDateStr},</if>
 <if test="dataType != null">dataType=#{dataType},</if>
-            <if test="typeno != null">typeno=#{typeno},</if>
+<if test="typeno != null">typeno=#{typeno},</if>
 <if test="orderNumber != null">orderNumber=#{orderNumber},</if>
-            <if test="applyDataId != null">applyDataId=#{applyDataId},</if>
+<if test="applyDataId != null">applyDataId=#{applyDataId},</if>
+<if test="miCode != null">miCode=#{miCode},</if>
+<if test="hisName != null">hisName=#{hisName},</if>
+<if test="miName != null">miName=#{miName},</if>
+<if test="dyyz != null">dyyz=#{dyyz},</if>
+<if test="attendDocId != null">attendDocId=#{attendDocId},</if>
+<if test="attendDocName != null">attendDocName=#{attendDocName},</if>
+<if test="itemTypeCode != null">itemTypeCode=#{itemTypeCode},</if>
+<if test="itemTypeName != null">itemTypeName=#{itemTypeName},</if>
+<if test="feeOperatorId != null">feeOperatorId=#{feeOperatorId},</if>
+<if test="feeOperatorName != null">feeOperatorName=#{feeOperatorName},</if>
+<if test="feeDeptId != null">feeDeptId=#{feeDeptId},</if>
+<if test="feeDeptName != null">feeDeptName=#{feeDeptName},</if>
 <if test="comments != null">COMMENTS=#{comments},</if>
 <if test="state != null">STATE=#{state},</if>
 <if test="isDeletemark != null">IS_DELETEMARK=#{isDeletemark},</if>

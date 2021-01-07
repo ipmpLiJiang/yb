@@ -43,6 +43,9 @@ export default {
     },
     searchText: {
       default: ''
+    },
+    searchTypeno: {
+      default: 1
     }
   },
   data () {
@@ -179,7 +182,7 @@ export default {
         width: 200
       },
       {
-        title: '申请人',
+        title: '复议医生',
         dataIndex: 'readyDoctorName',
         customRender: (text, row, index) => {
           if (text !== '' && text !== null) {
@@ -199,7 +202,7 @@ export default {
     }
   },
   mounted () {
-    this.fetch()
+    this.initSearch()
   },
   methods: {
     moment,
@@ -227,6 +230,22 @@ export default {
           }
         }
       }
+    },
+    initSearch () {
+      let params = { applyDateStr: this.applyDate }
+      this.$get('ybReconsiderApply/getTypeno', {
+        ...params
+      }).then((r) => {
+        if (r.data.data.success === 1) {
+          this.$emit('setTypeno', parseInt(r.data.data.data))
+          this.searchTypeno = parseInt(r.data.data.data)
+          this.fetch()
+        } else {
+          this.$emit('setTypeno', 1)
+          this.searchTypeno = 1
+          this.fetch()
+        }
+      })
     },
     onSelectChange (selectedRowKeys) {
       this.selectedRowKeys = selectedRowKeys
@@ -300,6 +319,7 @@ export default {
       params.applyDateStr = this.applyDate
       params.acceptState = 0
       params.currencyField = this.searchText
+      params.typeno = this.searchTypeno
       if (this.paginationInfo) {
         // 如果分页信息不为空，则设置表格当前第几页，每页条数，并设置查询分页参数
         this.$refs.TableInfo.pagination.current = this.paginationInfo.current

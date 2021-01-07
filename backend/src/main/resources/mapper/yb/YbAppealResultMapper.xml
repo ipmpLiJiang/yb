@@ -21,7 +21,15 @@
         <result column="resetPersonName" property="resetPersonName"/>
         <result column="resetDate" property="resetDate"/>
         <result column="dataType" property="dataType"/>
+        <result column="orderDoctorCode" property="orderDoctorCode"/>
+        <result column="orderDoctorName" property="orderDoctorName"/>
+        <result column="orderDeptCode" property="orderDeptCode"/>
+        <result column="orderDeptName" property="orderDeptName"/>
         <result column="repayState" property="repayState"/>
+        <result column="applyDateStr" property="applyDateStr"/>
+        <result column="typeno" property="typeno"/>
+        <result column="orderNumber" property="orderNumber"/>
+        <result column="orderNum" property="orderNum"/>
         <result column="COMMENTS" property="comments"/>
         <result column="STATE" property="state"/>
         <result column="IS_DELETEMARK" property="isDeletemark"/>
@@ -33,7 +41,7 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, applyDataId, verifyId, manageId, doctorCode, doctorName, deptCode, deptName, operateReason, operateDate, currencyField,sourceType,resetDataId,resetPersonId,resetPersonName,resetDate,dataType,repayState, COMMENTS, STATE, IS_DELETEMARK, MODIFY_TIME, CREATE_TIME, CREATE_USER_ID, MODIFY_USER_ID
+        id, applyDataId, verifyId, manageId, doctorCode, doctorName, deptCode, deptName, operateReason, operateDate, currencyField,sourceType,resetDataId,resetPersonId,resetPersonName,resetDate,dataType,orderDoctorCode,orderDoctorName,orderDeptCode,orderDeptName,repayState,applyDateStr,typeno,orderNumber,orderNum, COMMENTS, STATE, IS_DELETEMARK, MODIFY_TIME, CREATE_TIME, CREATE_USER_ID, MODIFY_USER_ID
     </sql>
     <update id="updateYbAppealResult" parameterType="cc.mrbird.febs.yb.entity.YbAppealResult">
         update yb_appeal_result
@@ -54,7 +62,15 @@
             <if test="resetPersonName != null">resetPersonName=#{resetPersonName},</if>
             <if test="resetDate != null">resetDate=#{resetDate},</if>
             <if test="dataType != null">dataType=#{dataType},</if>
+            <if test="orderDoctorCode != null">orderDoctorCode=#{orderDoctorCode},</if>
+            <if test="orderDoctorName != null">orderDoctorName=#{orderDoctorName},</if>
+            <if test="orderDeptCode != null">orderDeptCode=#{orderDeptCode},</if>
+            <if test="orderDeptName != null">orderDeptName=#{orderDeptName},</if>
             <if test="repayState != null">repayState=#{repayState},</if>
+            <if test="applyDateStr != null">applyDateStr=#{applyDateStr},</if>
+            <if test="typeno != null">typeno=#{typeno},</if>
+            <if test="orderNumber != null">orderNumber=#{orderNumber},</if>
+            <if test="orderNum != null">orderNum=#{orderNum},</if>
             <if test="comments != null">COMMENTS=#{comments},</if>
             <if test="state != null">STATE=#{state},</if>
             <if test="isDeletemark != null">IS_DELETEMARK=#{isDeletemark},</if>

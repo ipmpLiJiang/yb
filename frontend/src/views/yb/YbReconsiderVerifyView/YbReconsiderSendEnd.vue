@@ -41,6 +41,12 @@ export default {
       default () {
         return {}
       }
+    },
+    searchTypeno: {
+      default: 1
+    },
+    searchDataType: {
+      default: 1
     }
   },
   data () {
@@ -155,9 +161,9 @@ export default {
         customRender: (text, row, index) => {
           switch (text) {
             case 1:
-              return '审核一'
+              return '第一版'
             case 2:
-              return '审核二'
+              return '第二版'
             default:
               return text
           }
@@ -246,8 +252,9 @@ export default {
     fetch (params = {}) {
       this.loading = true
       params.applyDateStr = this.applyDate
+      params.typeno = this.searchTypeno
+      params.dataType = this.searchDataType
       params.state = 3
-      debugger
       let searchType = [this.searchItem.project.type, this.searchItem.rule.type, this.searchItem.dept.type, this.searchItem.order.type]
       params.searchType = searchType
       if (this.searchItem !== undefined) {

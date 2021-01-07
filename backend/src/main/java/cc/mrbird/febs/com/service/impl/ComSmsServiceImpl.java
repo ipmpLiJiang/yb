@@ -87,9 +87,6 @@ public class ComSmsServiceImpl extends ServiceImpl<ComSmsMapper, ComSms> impleme
         if (comSms.getState() != null) {
             wrapper.eq(ComSms::getState, comSms.getState());
         }
-        if (comSms.getState() != null) {
-            wrapper.eq(ComSms::getState, comSms.getState());
-        }
         wrapper.eq(ComSms::getIsDeletemark, 1);
         list = this.list(wrapper);
         return list;
@@ -98,6 +95,19 @@ public class ComSmsServiceImpl extends ServiceImpl<ComSmsMapper, ComSms> impleme
     @Override
     public List<ComSms> findSmsTopLists(ComSms comSms) {
         return this.baseMapper.findSmsTopList(comSms);
+    }
+
+    @Override
+    public List<ComSms> findSmsList(ComSms comSms) {
+        LambdaQueryWrapper<ComSms> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(ComSms::getIsDeletemark, 1);
+        if (comSms.getSendcode() != null) {
+            wrapper.eq(ComSms::getSendcode, comSms.getSendcode());
+        }
+        if (comSms.getMobile() != null) {
+            wrapper.eq(ComSms::getMobile, comSms.getMobile());
+        }
+        return this.list(wrapper);
     }
 
     @Override
@@ -123,6 +133,7 @@ public class ComSmsServiceImpl extends ServiceImpl<ComSmsMapper, ComSms> impleme
         this.baseMapper.deleteBatchIds(list);
 
     }
+
     @Override
     @Transactional
     public void sendSmsService(ArrayList<String> personCodeList, int sendType, String sendContent, Long uId, String Uname) {
@@ -163,13 +174,82 @@ public class ComSmsServiceImpl extends ServiceImpl<ComSmsMapper, ComSms> impleme
                     }
                 }
 
-                if(createList.size()>0) {
+                if (createList.size() > 0) {
                     String msg = sendMsg(mobiles, sendContent);
                     if (msg.equals("0")) {
                         this.saveBatch(createList);
                     } else {
                         //0 0/3 21-23 1/1 * ? //0 0/3 * * * ?
                         log.error("发短信Error Service", msg);
+                    }
+                }
+            }
+        }
+    }
+
+    @Override
+    @Transactional
+    public void sendSmsService(String personCode, int sendType, String sendContent, Long uId, String Uname) {
+        if (!personCode.equals("")) {
+            ArrayList<String> personCodeList = new ArrayList<>();
+            personCodeList.add(personCode);
+            List<YbPerson> personList = iYbPersonService.findPersonList(personCodeList);
+            if (personList.size() > 0) {
+                boolean isAdd = false;
+                YbPerson item = personList.get(0);
+                if (item.getTel() != null) {
+                    if (Validator.isMobile(item.getTel())) {
+                        isAdd = true;
+                    }
+                }
+                if (isAdd) {
+                    ComSms querySms = new ComSms();
+                    querySms.setState(1);
+                    querySms.setSendType(sendType);
+                    querySms.setMobile(item.getTel());
+                    querySms.setSendcode(item.getPersonCode());
+                    querySms = this.baseMapper.findSmsOne(querySms);
+
+                    if (querySms != null) {
+                        try {
+                            Date d1 = new Date();
+                            Date d2 = querySms.getCreateTime();
+                            long diff = d1.getTime() - d2.getTime();
+                            double diffHours = (double)diff / (60 * 60 * 1000);
+                            if (diffHours > 2) {
+                                isAdd = true;
+                            } else {
+                                isAdd = false;
+                            }
+                        } catch (Exception e) {
+                            isAdd = false;
+                        }
+                    }
+
+                    if (isAdd) {
+                        ComSms comSms = new ComSms();
+
+                        comSms.setMobile(item.getTel());
+                        comSms.setId(UUID.randomUUID().toString());
+                        comSms.setSendcode(item.getPersonCode());
+                        comSms.setSendname(item.getPersonName());
+
+                        comSms.setSendType(sendType);
+                        comSms.setState(ComSms.STATE_1);
+                        comSms.setSendcontent(sendContent);
+                        comSms.setOperatorId(uId);
+                        comSms.setOperatorName(Uname);
+                        comSms.setIsDeletemark(1);
+                        comSms.setCreateUserId(uId);
+                        comSms.setCreateTime(new Date());
+
+                        String msg = sendMsg(item.getTel(), sendContent);
+                        if (msg.equals("0")) {
+                            this.save(comSms);
+                        } else {
+                            //0 0/3 21-23 1/1 * ? //0 0/3 * * * ?
+                            log.error("发短信Error Service", msg);
+                        }
                     }
                 }
             }

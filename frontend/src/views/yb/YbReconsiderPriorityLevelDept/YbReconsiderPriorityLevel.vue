@@ -110,6 +110,7 @@
     </div>
     <!-- 新增字典 -->
     <ybReconsiderPriorityLevel-add
+      ref="ybReconsiderPriorityLevelAdd"
       @close="handleAddClose"
       @success="handleAddSuccess"
       :addVisiable="addVisiable"
@@ -184,6 +185,21 @@ export default {
         width: 70
       },
       {
+        title: '科室类型',
+        dataIndex: 'deptType',
+        customRender: (text, row, index) => {
+          switch (text) {
+            case 1:
+              return '执行科室'
+            case 2:
+              return '计费科室'
+            default:
+              return text
+          }
+        },
+        width: 120
+      },
+      {
         title: '科室名称',
         dataIndex: 'deptName',
         customRender: (text, row, index) => {
@@ -193,7 +209,26 @@ export default {
         }
       },
       {
-        title: '医生名称',
+        title: '默认复议医生类型',
+        dataIndex: 'personType',
+        customRender: (text, row, index) => {
+          switch (text) {
+            case 1:
+              return '开单人员'
+            case 2:
+              return '执行人员'
+            case 3:
+              return '计费人员'
+            case 4:
+              return '固定人员'
+            default:
+              return text
+          }
+        },
+        width: 180
+      },
+      {
+        title: '默认复议医生名称',
         dataIndex: 'doctorName',
         customRender: (text, row, index) => {
           if (text !== '' && text !== null) {
@@ -242,6 +277,7 @@ export default {
     },
     add () {
       this.addVisiable = true
+      this.$refs.ybReconsiderPriorityLevelAdd.setFormValues()
     },
     handleEditSuccess () {
       this.editVisiable = false

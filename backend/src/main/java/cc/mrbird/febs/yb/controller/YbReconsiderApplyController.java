@@ -8,6 +8,7 @@ import cc.mrbird.febs.common.exception.FebsException;
 import cc.mrbird.febs.common.domain.QueryRequest;
 
 import cc.mrbird.febs.yb.domain.ResponseResult;
+import cc.mrbird.febs.yb.domain.ResponseResultData;
 import cc.mrbird.febs.yb.service.IYbReconsiderApplyService;
 import cc.mrbird.febs.yb.entity.YbReconsiderApply;
 
@@ -230,6 +231,24 @@ public class YbReconsiderApplyController extends BaseController {
         }
         ResponseResult rr = new ResponseResult();
         rr.setSuccess(success);
+        rr.setMessage(message);
+        return  new FebsResponse().data(rr);
+    }
+
+    @GetMapping("getTypeno")
+    public FebsResponse getTypeno(String applyDateStr) {
+        int success = 0;
+        int typeno = 0;
+        try {
+            typeno = this.iYbReconsiderApplyService.getReconsiderApplyTypeno(applyDateStr);
+            success = 1;
+        }catch (Exception e) {
+            message = "获取状态值失败";
+            log.error(message, e);
+        }
+        ResponseResultData rr = new ResponseResultData();
+        rr.setSuccess(success);
+        rr.setData(String.valueOf(typeno));
         rr.setMessage(message);
         return  new FebsResponse().data(rr);
     }

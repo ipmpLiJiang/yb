@@ -2,6 +2,8 @@ package cc.mrbird.febs.yb.service;
 
 import cc.mrbird.febs.yb.entity.YbReconsiderInpatientfees;
 import com.baomidou.mybatisplus.extension.service.IService;
+
+import java.util.ArrayList;
 import java.util.List;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -32,4 +34,6 @@ public interface IYbReconsiderInpatientfeesService extends IService<YbReconsider
         void deleteYbReconsiderInpatientfeess(String[]Ids);
 
         List<YbReconsiderInpatientfees> findReconsiderInpatientfeesList(YbReconsiderInpatientfees ybReconsiderInpatientfees);
-        }
+
+        List<YbReconsiderInpatientfees> findReconsiderInpatientfeesList(ArrayList<String> applyDataIdList);
+}

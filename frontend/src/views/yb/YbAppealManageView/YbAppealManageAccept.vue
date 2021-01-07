@@ -29,15 +29,16 @@
                 <a-divider type="vertical" />
                 <a-popconfirm
                 title="确定接受？"
+                :disabled="record.isEnd===1?true:false"
                 @confirm="() => accept(record)"
                 >
-                <a>接受</a>
+                <a :disabled="record.isEnd===1?true:false" href="#">接受申诉</a>
                 </a-popconfirm>
                 <a-divider type="vertical" />
                 <a
                   @click.stop="() => reject(record,index)"
-                  :disabled="record.enableType===1?false:true"
-                >拒绝</a>
+                  :disabled="record.isEnd===1?true: record.enableType===1?false:true"
+                >拒绝申诉</a>
               </span>
             </div>
           </template>
@@ -55,6 +56,9 @@ export default {
     },
     searchText: {
       default: ''
+    },
+    searchTypeno: {
+      default: 1
     }
   },
   data () {
@@ -163,12 +167,12 @@ export default {
         width: 100
       },
       {
-        title: '可操作日期',
+        title: '确认截止时间',
         dataIndex: 'enableDate',
         customRender: (text, row, index) => {
           if (text !== '' && text !== null) {
             if (isNaN(text) && !isNaN(Date.parse(text))) {
-              return moment(text).format(this.tableFormat)
+              return moment(text).format(this.tableFormat) + ' 24:00'
             } else {
               return text
             }
@@ -177,7 +181,7 @@ export default {
           }
         },
         fixed: 'right',
-        width: 110
+        width: 125
       },
       {
         title: '复议截止日期',
@@ -194,19 +198,19 @@ export default {
           }
         },
         fixed: 'right',
-        width: 130
+        width: 125
       },
       {
         title: '操作',
         dataIndex: 'operation',
         scopedSlots: { customRender: 'operation' },
         fixed: 'right',
-        width: 170
+        width: 230
       }]
     }
   },
   mounted () {
-    this.fetch()
+    this.initSearch()
   },
   methods: {
     moment,
@@ -328,6 +332,22 @@ export default {
       }
       this.search()
     },
+    initSearch () {
+      let params = { applyDateStr: this.applyDate }
+      this.$get('ybReconsiderApply/getTypeno', {
+        ...params
+      }).then((r) => {
+        if (r.data.data.success === 1) {
+          this.$emit('setTypeno', parseInt(r.data.data.data))
+          this.searchTypeno = parseInt(r.data.data.data)
+          this.fetch()
+        } else {
+          this.$emit('setTypeno', 1)
+          this.searchTypeno = 1
+          this.fetch()
+        }
+      })
+    },
     search () {
       let { sortedInfo } = this
       let sortField, sortOrder
@@ -373,6 +393,7 @@ export default {
       params.applyDateStr = this.applyDate
       params.acceptState = 0
       params.currencyField = this.searchText
+      params.typeno = this.searchTypeno
       if (this.paginationInfo) {
         // 如果分页信息不为空，则设置表格当前第几页，每页条数，并设置查询分页参数
         this.$refs.TableInfo.pagination.current = this.paginationInfo.current

@@ -503,6 +503,13 @@ public class YbAppealManageView implements Serializable {
     private String operateProcess;
 
     /**
+     * 是否截止
+     */
+    @TableField("isEnd")
+    @ExcelField(value = "是否截止")
+    private Integer isEnd;
+
+    /**
      * 备注
      */
     @TableField("COMMENTS")
@@ -646,6 +653,8 @@ public class YbAppealManageView implements Serializable {
     public static final String OPERATORID = "operatorId";
 
     public static final String OPERATORNAME = "operatorName";
+
+    public static final String ISEND = "isEnd";
 
     public static final String OPERATEPROCESS = "operateProcess";
 

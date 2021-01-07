@@ -3,6 +3,7 @@ package cc.mrbird.febs.yb.service.impl;
 import cc.mrbird.febs.common.domain.QueryRequest;
 import cc.mrbird.febs.common.utils.SortUtil;
 import cc.mrbird.febs.yb.dao.YbReconsiderVerifyViewMapper;
+import cc.mrbird.febs.yb.entity.YbDefaultValue;
 import cc.mrbird.febs.yb.entity.YbReconsiderApply;
 import cc.mrbird.febs.yb.entity.YbReconsiderVerifyView;
 import cc.mrbird.febs.yb.service.IYbReconsiderApplyService;
@@ -42,9 +43,16 @@ public class YbReconsiderVerifyViewServiceImpl extends ServiceImpl<YbReconsiderV
     public IPage<YbReconsiderVerifyView> findYbReconsiderVerifyViews(QueryRequest request, YbReconsiderVerifyView ybReconsiderVerifyView) {
         try {
             LambdaQueryWrapper<YbReconsiderVerifyView> queryWrapper = new LambdaQueryWrapper<>();
-            //queryWrapper.eq(YbReconsiderVerifyView::getIsDeletemark, 1);//1是未删 0是已删
             queryWrapper.eq(YbReconsiderVerifyView::getApplyDateStr, ybReconsiderVerifyView.getApplyDateStr());//年月
-            queryWrapper.eq(YbReconsiderVerifyView::getState, ybReconsiderVerifyView.getState());//状态
+            if (ybReconsiderVerifyView.getState() != null) {
+                queryWrapper.eq(YbReconsiderVerifyView::getState, ybReconsiderVerifyView.getState());//状态
+            }
+            if (ybReconsiderVerifyView.getDataType() != null) {
+                queryWrapper.eq(YbReconsiderVerifyView::getDataType, ybReconsiderVerifyView.getDataType());
+            }
+            if (ybReconsiderVerifyView.getTypeno() != null) {
+                queryWrapper.eq(YbReconsiderVerifyView::getTypeno, ybReconsiderVerifyView.getTypeno());
+            }
             Page<YbReconsiderVerifyView> page = new Page<>();
             SortUtil.handlePageSort(request, page, false);//true 是属性  false是数据库字段可两个
             return this.page(page, queryWrapper);
@@ -52,6 +60,11 @@ public class YbReconsiderVerifyViewServiceImpl extends ServiceImpl<YbReconsiderV
             log.error("获取字典信息失败", e);
             return null;
         }
+    }
+
+    @Override
+    public List<YbReconsiderVerifyView> findReconsiderVerifyViewLists(YbReconsiderVerifyView ybReconsiderVerifyView) {
+        return this.baseMapper.findReconsiderVerifyViewList(ybReconsiderVerifyView);
     }
 
     @Override
@@ -63,48 +76,56 @@ public class YbReconsiderVerifyViewServiceImpl extends ServiceImpl<YbReconsiderV
             queryWrapper.eq(YbReconsiderVerifyView::getState, ybReconsiderVerifyView.getState());//状态
 
             String strSearchType = "";
-            if(ybReconsiderVerifyView.getProjectName() != null){
+            if (ybReconsiderVerifyView.getProjectName() != null) {
                 strSearchType = searchType[0];
-                if(strSearchType.equals("LIKE")){
-                    queryWrapper.like(YbReconsiderVerifyView::getProjectName,ybReconsiderVerifyView.getProjectName());
-                } else if(strSearchType.equals("EQ")){
-                    queryWrapper.eq(YbReconsiderVerifyView::getProjectName,ybReconsiderVerifyView.getProjectName());
-                } else if(strSearchType.equals("NOTLIKE")){
-                    queryWrapper.notLike(YbReconsiderVerifyView::getProjectName,ybReconsiderVerifyView.getProjectName());
+                if (strSearchType.equals("LIKE")) {
+                    queryWrapper.like(YbReconsiderVerifyView::getProjectName, ybReconsiderVerifyView.getProjectName());
+                } else if (strSearchType.equals("EQ")) {
+                    queryWrapper.eq(YbReconsiderVerifyView::getProjectName, ybReconsiderVerifyView.getProjectName());
+                } else if (strSearchType.equals("NOTLIKE")) {
+                    queryWrapper.notLike(YbReconsiderVerifyView::getProjectName, ybReconsiderVerifyView.getProjectName());
                 }
             }
 
-            if(ybReconsiderVerifyView.getRuleName() != null){
+            if (ybReconsiderVerifyView.getRuleName() != null) {
                 strSearchType = searchType[1];
-                if(strSearchType.equals("LIKE")){
-                    queryWrapper.like(YbReconsiderVerifyView::getRuleName,ybReconsiderVerifyView.getRuleName());
-                } else if(strSearchType.equals("EQ")){
-                    queryWrapper.eq(YbReconsiderVerifyView::getRuleName,ybReconsiderVerifyView.getRuleName());
-                } else if(strSearchType.equals("NOTLIKE")){
-                    queryWrapper.notLike(YbReconsiderVerifyView::getRuleName,ybReconsiderVerifyView.getRuleName());
+                if (strSearchType.equals("LIKE")) {
+                    queryWrapper.like(YbReconsiderVerifyView::getRuleName, ybReconsiderVerifyView.getRuleName());
+                } else if (strSearchType.equals("EQ")) {
+                    queryWrapper.eq(YbReconsiderVerifyView::getRuleName, ybReconsiderVerifyView.getRuleName());
+                } else if (strSearchType.equals("NOTLIKE")) {
+                    queryWrapper.notLike(YbReconsiderVerifyView::getRuleName, ybReconsiderVerifyView.getRuleName());
                 }
             }
 
-            if(ybReconsiderVerifyView.getVerifyDeptName() != null){
+            if (ybReconsiderVerifyView.getVerifyDeptName() != null) {
                 strSearchType = searchType[2];
-                if(strSearchType.equals("LIKE")){
-                    queryWrapper.like(YbReconsiderVerifyView::getVerifyDeptName,ybReconsiderVerifyView.getVerifyDeptName());
-                } else if(strSearchType.equals("EQ")){
-                    queryWrapper.eq(YbReconsiderVerifyView::getVerifyDeptName,ybReconsiderVerifyView.getVerifyDeptName());
-                } else if(strSearchType.equals("NOTLIKE")){
-                    queryWrapper.notLike(YbReconsiderVerifyView::getVerifyDeptName,ybReconsiderVerifyView.getVerifyDeptName());
+                if (strSearchType.equals("LIKE")) {
+                    queryWrapper.like(YbReconsiderVerifyView::getVerifyDeptName, ybReconsiderVerifyView.getVerifyDeptName());
+                } else if (strSearchType.equals("EQ")) {
+                    queryWrapper.eq(YbReconsiderVerifyView::getVerifyDeptName, ybReconsiderVerifyView.getVerifyDeptName());
+                } else if (strSearchType.equals("NOTLIKE")) {
+                    queryWrapper.notLike(YbReconsiderVerifyView::getVerifyDeptName, ybReconsiderVerifyView.getVerifyDeptName());
                 }
             }
 
-            if(ybReconsiderVerifyView.getOrderNumber() != null){
+            if (ybReconsiderVerifyView.getOrderNumber() != null) {
                 strSearchType = searchType[3];
-                if(strSearchType.equals("LIKE")){
-                    queryWrapper.like(YbReconsiderVerifyView::getOrderNumber,ybReconsiderVerifyView.getOrderNumber());
-                } else if(strSearchType.equals("EQ")){
-                    queryWrapper.eq(YbReconsiderVerifyView::getOrderNumber,ybReconsiderVerifyView.getOrderNumber());
-                } else if(strSearchType.equals("NOTLIKE")){
-                    queryWrapper.notLike(YbReconsiderVerifyView::getOrderNumber,ybReconsiderVerifyView.getOrderNumber());
+                if (strSearchType.equals("LIKE")) {
+                    queryWrapper.like(YbReconsiderVerifyView::getOrderNumber, ybReconsiderVerifyView.getOrderNumber());
+                } else if (strSearchType.equals("EQ")) {
+                    queryWrapper.eq(YbReconsiderVerifyView::getOrderNumber, ybReconsiderVerifyView.getOrderNumber());
+                } else if (strSearchType.equals("NOTLIKE")) {
+                    queryWrapper.notLike(YbReconsiderVerifyView::getOrderNumber, ybReconsiderVerifyView.getOrderNumber());
                 }
+            }
+
+            if (ybReconsiderVerifyView.getDataType() != null) {
+                queryWrapper.eq(YbReconsiderVerifyView::getDataType, ybReconsiderVerifyView.getDataType());
+            }
+
+            if (ybReconsiderVerifyView.getTypeno() != null) {
+                queryWrapper.eq(YbReconsiderVerifyView::getTypeno, ybReconsiderVerifyView.getTypeno());
             }
 
             Page<YbReconsiderVerifyView> page = new Page<>();
@@ -151,18 +172,31 @@ public class YbReconsiderVerifyViewServiceImpl extends ServiceImpl<YbReconsiderV
     }
 
     @Override
-    public int findReconsiderVerifyApplyDateCounts(String applyDate, Integer dataType) {
-        return this.baseMapper.findReconsiderVerifyApplyDateCount(applyDate, dataType);
+    public int findReconsiderVerifyApplyDateCounts(String applyDate, Integer dataType, Integer typeno) {
+        return this.baseMapper.findReconsiderVerifyApplyDateCount(applyDate, dataType, typeno);
     }
 
     @Override
     public IPage<YbReconsiderVerifyView> findYbReconsiderVerifyViewNulls(QueryRequest request, YbReconsiderVerifyView ybReconsiderVerifyView, String[] searchType) {
         try {
             Page<YbReconsiderVerifyView> page = new Page<>();
-            int count = this.findReconsiderVerifyApplyDateCounts(ybReconsiderVerifyView.getApplyDateStr(), ybReconsiderVerifyView.getDataType());
-            if (count > 0) {
-                SortUtil.handlePageSort(request, page, false);//true 是属性  false是数据库字段可两个
-                return this.baseMapper.findYbReconsiderVerifyViewNull(page, ybReconsiderVerifyView, searchType);
+            YbReconsiderApply reconsiderApply = iYbReconsiderApplyService.findReconsiderApplyByApplyDateStrs(ybReconsiderVerifyView.getApplyDateStr());
+            if (reconsiderApply != null) {
+                int applyState = reconsiderApply.getState();
+                int typeno = applyState == YbDefaultValue.APPLYSTATE_2 || applyState == YbDefaultValue.APPLYSTATE_3 ? YbDefaultValue.TYPENO_1 :
+                        applyState == YbDefaultValue.APPLYSTATE_4 || applyState == YbDefaultValue.APPLYSTATE_5 ? YbDefaultValue.TYPENO_2 : 0;
+                if (typeno == YbDefaultValue.TYPENO_1 || typeno == YbDefaultValue.TYPENO_2) {
+                    int count = this.findReconsiderVerifyApplyDateCounts(ybReconsiderVerifyView.getApplyDateStr(), ybReconsiderVerifyView.getDataType(), typeno);
+                    if (count > 0) {
+                        ybReconsiderVerifyView.setTypeno(typeno);
+                        SortUtil.handlePageSort(request, page, false);//true 是属性  false是数据库字段可两个
+                        return this.baseMapper.findYbReconsiderVerifyViewNull(page, ybReconsiderVerifyView, searchType);
+                    } else {
+                        return page;
+                    }
+                } else {
+                    return page;
+                }
             } else {
                 return page;
             }

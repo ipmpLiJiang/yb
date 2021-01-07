@@ -252,6 +252,41 @@ public class YbAppealResultViewController extends BaseController {
                     are.setVersionNumber(item.getVersionNumber());
                     //反馈申诉
                     are.setBackAppeal(item.getOperateReason());
+
+                    are.setItemTypeCode(item.getItemTypeCode());
+                    are.setItemTypeName(item.getItemTypeName());
+
+                    are.setResultDeptCode(item.getArDeptCode());
+                    are.setResultDeptName(item.getArDeptName());
+                    are.setResultDoctorCode(item.getArDoctorCode());
+                    are.setResultDoctorName(item.getArDoctorName());
+                    are.setAttendDocId(item.getAttendDocId());
+                    are.setAttendDocName(item.getAttendDocName());
+                    are.setOrderDeptId(item.getOrderDeptId());
+                    are.setOrderDeptName(item.getOrderDeptName());
+                    are.setOrderDocId(item.getOrderDocId());
+                    are.setOrderDocName(item.getOrderDocName());
+                    are.setExcuteDeptId(item.getExcuteDeptId());
+                    are.setExcuteDeptName(item.getExcuteDeptName());
+                    are.setExcuteDocId(item.getExcuteDocId());
+                    are.setExcuteDocName(item.getExcuteDocName());
+                    are.setFeeOperatorId(item.getFeeOperatorId());
+                    are.setFeeOperatorName(item.getFeeOperatorName());
+                    are.setFeeDeptId(item.getFeeDeptId());
+                    are.setFeeDeptName(item.getFeeDeptName());
+
+                    if (item.getArOrderDeptCode() != null && !item.getArOrderDeptCode().equals(""))
+                        are.setOrderDeptId(item.getArOrderDeptCode());
+
+                    if (item.getArOrderDeptName() != null && !item.getArOrderDeptName().equals(""))
+                        are.setOrderDeptName(item.getArOrderDeptName());
+
+                    if (item.getArOrderDoctorCode() != null && !item.getArOrderDoctorCode().equals(""))
+                        are.setOrderDocId(item.getArOrderDoctorCode());
+
+                    if (item.getArOrderDoctorName() != null && !item.getArOrderDoctorName().equals(""))
+                        are.setOrderDocName(item.getArOrderDoctorName());
+
                     dataList.add(are);
 
                 }
@@ -319,21 +354,21 @@ public class YbAppealResultViewController extends BaseController {
 
                 ExcelMapping excelMappingData = ExcelMappingFactory.get(YbAppealResultDataExport.class);
 
-                Map<String,Integer> sheetColumnCountMap =  new LinkedHashMap<>();
-                sheetColumnCountMap.put(sheetName1,excelMappingData.getPropertyList().size());
+                Map<String, Integer> sheetColumnCountMap = new LinkedHashMap<>();
+                sheetColumnCountMap.put(sheetName1, excelMappingData.getPropertyList().size());
 
                 ExcelWriter writer = ExcelUtil.getWriterWithSheet(sheetName1);
 
                 List<String> rowHead = new ArrayList<>();
                 Map<String, String> headerAliasData = new LinkedHashMap<>();
-                for(ExcelProperty item : excelMappingData.getPropertyList()){
+                for (ExcelProperty item : excelMappingData.getPropertyList()) {
                     rowHead.add(item.getColumn());
                     headerAliasData.put(item.getName(), item.getColumn());
                 }
 
-                if(dataList.size()==0) {
+                if (dataList.size() == 0) {
                     writer.writeHeadRow(rowHead);
-                }else {
+                } else {
                     writer.setHeaderAlias(headerAliasData);
                     writer.write(dataList, true);
                 }
@@ -342,27 +377,27 @@ public class YbAppealResultViewController extends BaseController {
                 writer.autoSizeColumnAll();
 
                 //标题Row高度
-                writer.setRowHeight(0,25);
+                writer.setRowHeight(0, 25);
                 //内容Row高度
                 for (int i = 1; i <= dataList.size(); i++) {
-                    writer.setRowHeight(i,20);
+                    writer.setRowHeight(i, 20);
                 }
 
                 ExcelMapping excelMappingMain = ExcelMappingFactory.get(YbAppealResultMainExport.class);
-                sheetColumnCountMap.put(sheetName2,excelMappingMain.getPropertyList().size());
+                sheetColumnCountMap.put(sheetName2, excelMappingMain.getPropertyList().size());
 
                 rowHead.clear();
                 writer.setSheet(sheetName2);
 
                 Map<String, String> headerAliasMain = new LinkedHashMap<>();
-                for(ExcelProperty item : excelMappingMain.getPropertyList()){
+                for (ExcelProperty item : excelMappingMain.getPropertyList()) {
                     rowHead.add(item.getColumn());
                     headerAliasMain.put(item.getName(), item.getColumn());
                 }
 
-                if(mainList.size()==0) {
+                if (mainList.size() == 0) {
                     writer.writeHeadRow(rowHead);
-                }else {
+                } else {
                     writer.setHeaderAlias(headerAliasMain);
                     writer.write(mainList, true);
                 }
@@ -371,10 +406,10 @@ public class YbAppealResultViewController extends BaseController {
                 writer.autoSizeColumnAll();
 
                 //标题Row高度
-                writer.setRowHeight(0,25);
+                writer.setRowHeight(0, 25);
                 //内容Row高度
                 for (int i = 1; i <= mainList.size(); i++) {
-                    writer.setRowHeight(i,20);
+                    writer.setRowHeight(i, 20);
                 }
 
                 StyleSet style = writer.getStyleSet();
@@ -387,7 +422,7 @@ public class YbAppealResultViewController extends BaseController {
                 cellStyle.setFont(f1);
 
                 List<org.apache.poi.ss.usermodel.Sheet> sheetList = writer.getSheets();
-                for(org.apache.poi.ss.usermodel.Sheet sheet : sheetList){
+                for (org.apache.poi.ss.usermodel.Sheet sheet : sheetList) {
                     int count = sheetColumnCountMap.get(sheet.getSheetName());
                     for (int i = 0; i <= count; i++) {
                         sheet.autoSizeColumn(i);

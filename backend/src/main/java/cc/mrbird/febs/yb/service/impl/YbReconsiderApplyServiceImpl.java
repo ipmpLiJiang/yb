@@ -25,6 +25,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -99,10 +100,8 @@ public class YbReconsiderApplyServiceImpl extends ServiceImpl<YbReconsiderApplyM
     @Transactional
     public String createReconsiderApplyCheck(YbReconsiderApply ybReconsiderApply) {
         String message = "";
-        LambdaQueryWrapper<YbReconsiderApply> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(YbReconsiderApply::getApplyDateStr, ybReconsiderApply.getApplyDateStr());
-        List<YbReconsiderApply> list = this.list(wrapper);
-        if (list.size() == 0) {
+        YbReconsiderApply reconsiderApply = this.findReconsiderApplyByApplyDateStrs(ybReconsiderApply.getApplyDateStr());
+        if (reconsiderApply == null) {
             ybReconsiderApply.setCreateTime(new Date());
             if (ybReconsiderApply.getId() == null || "".equals(ybReconsiderApply.getId())) {
                 ybReconsiderApply.setId(UUID.randomUUID().toString());
@@ -199,12 +198,10 @@ public class YbReconsiderApplyServiceImpl extends ServiceImpl<YbReconsiderApplyM
     @Transactional
     public boolean updateYbReconsiderApplyState(String applyDateStr, Integer state) {
         boolean bl = false;
-        LambdaQueryWrapper<YbReconsiderApply> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(YbReconsiderApply::getApplyDateStr, applyDateStr);
-        List<YbReconsiderApply> list = this.list(wrapper);
-        if (list.size() > 0) {
+        YbReconsiderApply reconsiderApply = this.findReconsiderApplyByApplyDateStrs(applyDateStr);
+        if (reconsiderApply != null) {
             YbReconsiderApply update = new YbReconsiderApply();
-            update.setId(list.get(0).getId());
+            update.setId(reconsiderApply.getId());
             update.setModifyTime(new Date());
             update.setState(state);
             int count = this.baseMapper.updateById(update);
@@ -217,26 +214,26 @@ public class YbReconsiderApplyServiceImpl extends ServiceImpl<YbReconsiderApplyM
     }
 
     @Override
-    public List<YbReconsiderApply> findReconsiderApplyList(YbReconsiderApply ybReconsiderApply){
+    public List<YbReconsiderApply> findReconsiderApplyList(YbReconsiderApply ybReconsiderApply) {
         LambdaQueryWrapper<YbReconsiderApply> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(YbReconsiderApply::getIsDeletemark,1);
+        wrapper.eq(YbReconsiderApply::getIsDeletemark, 1);
 
-        if(ybReconsiderApply.getId()!=null) {
+        if (ybReconsiderApply.getId() != null) {
             wrapper.eq(YbReconsiderApply::getId, ybReconsiderApply.getId());
         }
-        if(ybReconsiderApply.getApplyDateStr()!=null) {
+        if (ybReconsiderApply.getApplyDateStr() != null) {
             wrapper.eq(YbReconsiderApply::getApplyDateStr, ybReconsiderApply.getApplyDateStr());
         }
-        if(ybReconsiderApply.getState()!=null) {
+        if (ybReconsiderApply.getState() != null) {
             wrapper.eq(YbReconsiderApply::getState, ybReconsiderApply.getState());
         }
-        if(ybReconsiderApply.getResetState()!=null) {
+        if (ybReconsiderApply.getResetState() != null) {
             wrapper.eq(YbReconsiderApply::getResetState, ybReconsiderApply.getResetState());
         }
-        if(ybReconsiderApply.getTaskState()!=null) {
+        if (ybReconsiderApply.getTaskState() != null) {
             wrapper.eq(YbReconsiderApply::getTaskState, ybReconsiderApply.getTaskState());
         }
-        if(ybReconsiderApply.getRepayState()!=null) {
+        if (ybReconsiderApply.getRepayState() != null) {
             wrapper.eq(YbReconsiderApply::getRepayState, ybReconsiderApply.getRepayState());
         }
         return this.list(wrapper);
@@ -245,6 +242,24 @@ public class YbReconsiderApplyServiceImpl extends ServiceImpl<YbReconsiderApplyM
     @Override
     public YbReconsiderApply findReconsiderApplyByApplyDateStrs(String appltDateStr) {
         return this.baseMapper.findReconsiderApplyByApplyDateStr(appltDateStr);
+    }
+
+    @Override
+    public boolean findReconsiderApplyCheckEndDate(String appltDateStr, int typeno) {
+        YbReconsiderApply reconsiderApply = this.findReconsiderApplyByApplyDateStrs(appltDateStr);
+        boolean isUpdate = false;
+        Date thisDate = new Date();
+        Date compareDate = new Date();
+        if (typeno == YbDefaultValue.TYPENO_1) {
+            compareDate = reconsiderApply.getEndDateOne();
+        } else {
+            compareDate = reconsiderApply.getEndDateTwo();
+        }
+
+        if (compareDate.compareTo(thisDate) == 1) {
+            isUpdate = true;
+        }
+        return isUpdate;
     }
 
     @Transactional
@@ -335,7 +350,7 @@ public class YbReconsiderApplyServiceImpl extends ServiceImpl<YbReconsiderApplyM
             job.setCronExpression(cron);
             job.setStatus("0");
             job.setCreateTime(date);
-            job.setRemark("His:"+remark);
+            job.setRemark("His:" + remark);
             //将正在运行的任务关闭
             String jobs = "";
             for (Job item : findList) {
@@ -371,4 +386,51 @@ public class YbReconsiderApplyServiceImpl extends ServiceImpl<YbReconsiderApplyM
     }
 
 
+    @Override
+    public String getSendMessage(String applyDateStr, Date enableDate, int typeno) {
+        YbReconsiderApply entity = this.findReconsiderApplyByApplyDateStrs(applyDateStr);
+        Date endDate = new Date();
+        SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy年MM月dd日 E HH:mm点");//HH时mm分ss秒
+        SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy年MM月dd日 E");
+        String ssm = "";
+        if (typeno == YbDefaultValue.TYPENO_1) {
+            ssm = "第一版";
+            endDate = entity.getEndDateOne();
+        } else {
+            ssm = "第二版";
+            endDate = entity.getEndDateTwo();
+        }
+        String date1 = sdf1.format(endDate);
+        String wangz = "登录网址：http://192.168.78.136:3086/#/login，用户名为工号，密码为身份证后6位。";
+        applyDateStr  = applyDateStr.replace("-","年");
+        if (enableDate != null) {
+            Calendar cal = Calendar.getInstance();//使用默认时区和语言环境获得一个日历。
+            cal.setTime(enableDate);
+            cal.add(Calendar.DATE, -1);
+
+            String date2 = sdf2.format(cal.getTime()) + " 24:00 ";
+            if (enableDate.compareTo(endDate) == 1) {
+                ssm = "武汉市医保" + applyDateStr + "月" + ssm + " 复议数据已发给您，请在复议截止时间前完成 责任人确认工作和复议工作，此次复议截止时间是 " + date1 + "，请及时登录医保管理系统处理。" + wangz;
+            } else {
+                ssm = "武汉市医保" + applyDateStr + "月" + ssm + " 复议数据已发给您，请在 " + date2 + "前完成责任人确认工作，否则默认责任人为本人。此次复议截止时间是 " + date1 + "，请及时登录医保管理系统处理。" + wangz;
+            }
+        } else {
+            ssm = "您有其他医生转发的医保违规项目需复议，此次复议截止时间是" + date1 + "，请及时登录医保管理系统处理。" + wangz;
+        }
+        return ssm;
+    }
+
+    @Override
+    public int getReconsiderApplyTypeno(String applyDateStr) {
+        int typeno = 1;
+        YbReconsiderApply reconsiderApply = this.findReconsiderApplyByApplyDateStrs(applyDateStr);
+        if (reconsiderApply != null) {
+            int state = reconsiderApply.getState();
+            typeno = state == YbDefaultValue.APPLYSTATE_2 || state == YbDefaultValue.APPLYSTATE_3 ? YbDefaultValue.TYPENO_1 :
+                    state == YbDefaultValue.APPLYSTATE_4 || state == YbDefaultValue.APPLYSTATE_5 ? YbDefaultValue.TYPENO_2 :
+                    state > 5 ? YbDefaultValue.TYPENO_2 : 1;
+
+        }
+        return typeno;
+    }
 }

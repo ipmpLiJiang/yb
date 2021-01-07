@@ -3,6 +3,7 @@ package cc.mrbird.febs.yb.service.impl;
 import cc.mrbird.febs.common.domain.QueryRequest;
 import cc.mrbird.febs.common.utils.SortUtil;
 import cc.mrbird.febs.yb.dao.YbReconsiderInpatientfeesMapper;
+import cc.mrbird.febs.yb.entity.YbPerson;
 import cc.mrbird.febs.yb.entity.YbReconsiderInpatientfees;
 import cc.mrbird.febs.yb.service.IYbReconsiderInpatientfeesService;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -14,10 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * <p>
@@ -127,6 +125,16 @@ public class YbReconsiderInpatientfeesServiceImpl extends ServiceImpl<YbReconsid
             wrapper.eq(YbReconsiderInpatientfees::getTypeno, ybReconsiderInpatientfees.getTypeno());
         }
         return this.list(wrapper);
+    }
+
+
+    @Override
+    public List<YbReconsiderInpatientfees> findReconsiderInpatientfeesList(ArrayList<String> applyDataIdList) {
+        LambdaQueryWrapper<YbReconsiderInpatientfees> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(YbReconsiderInpatientfees::getIsDeletemark, 1);
+        wrapper.in(YbReconsiderInpatientfees::getApplyDataId,applyDataIdList);
+        List<YbReconsiderInpatientfees> list = this.list(wrapper);
+        return list;
     }
 
 

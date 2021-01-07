@@ -45,7 +45,12 @@
             </a-select-option>
         </a-select>
         <template v-else>
+          <div v-if="record.isPerson===0" style="color:#FF0000">
+            <b>{{ text }}</b>
+          </div>
+          <div v-else>
             {{ text }}
+          </div>
         </template>
         </div>
     </template>
@@ -326,7 +331,11 @@ export default {
             verifyDoctorName: selectDate.doctorName,
             verifyDeptCode: selectDate.deptCode,
             verifyDeptName: selectDate.deptName,
-            dataType: target.dataType
+            dataType: target.dataType,
+            applyDateStr: target.applyDateStr,
+            orderNumber: target.orderNumber,
+            orderNum: target.orderNum,
+            typeno: target.typeno
           }
           data.push(arrData)
         }
@@ -363,7 +372,11 @@ export default {
             verifyDoctorName: target.verifyDoctorName,
             verifyDeptCode: target.verifyDeptCode,
             verifyDeptName: target.verifyDeptName,
-            dataType: target.dataType
+            dataType: target.dataType,
+            applyDateStr: target.applyDateStr,
+            orderNumber: target.orderNumber,
+            orderNum: target.orderNum,
+            typeno: target.typeno
           }
           data.push(arrData)
         }
@@ -378,15 +391,34 @@ export default {
       this.selectedRowKeys = []
       this.loading = false
     },
+    batchVerifyA () {
+      if (this.dataSource.length > 0) {
+        this.$put('ybReconsiderVerify/updateAReviewerState', {
+          applyDateStr: this.applyDate, state: 1, dataType: 0
+        }).then(() => {
+          this.$message.success('全部核对审核')
+          this.$emit('verifySpin')
+          this.search()
+        }).catch(() => {
+          this.loading = false
+          this.$emit('verifySpin')
+        })
+      } else {
+        this.$message.warning('无数据，无法全部核对审核!')
+        this.$emit('verifySpin')
+      }
+    },
     verifyService (data) {
       let jsonString = JSON.stringify(data)
       this.$put('ybReconsiderVerify/updateReviewerState', {
         dataJson: jsonString
       }).then(() => {
         this.$message.success('核对成功')
+        this.$emit('verifySpin')
         this.search()
       }).catch(() => {
         this.loading = false
+        this.$emit('verifySpin')
       })
     },
     // 模拟往服务器发送请求
@@ -519,7 +551,11 @@ export default {
             verifyDoctorName: this.ybReconsiderVerify.verifyDoctorName,
             verifyDeptCode: this.ybReconsiderVerify.verifyDeptCode,
             verifyDeptName: this.ybReconsiderVerify.verifyDeptName,
-            dataType: this.ybReconsiderVerify.dataType}]
+            dataType: this.ybReconsiderVerify.dataType,
+            applyDateStr: target.applyDateStr,
+            orderNumber: target.orderNumber,
+            orderNum: target.orderNum,
+            typeno: target.typeno}]
           this.verifyService(arrData)
         } else {
           this.$message.warning('未选择，参考复议科室 或 参考复议医生.')
@@ -597,7 +633,6 @@ export default {
       params.applyDateStr = this.applyDate
       params.state = 1
       params.dataType = 0
-      debugger
       let searchType = [this.searchItem.project.type, this.searchItem.rule.type, this.searchItem.dept.type, this.searchItem.order.type]
       params.searchType = searchType
       if (this.searchItem !== undefined) {

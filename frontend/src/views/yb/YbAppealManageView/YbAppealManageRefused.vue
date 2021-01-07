@@ -43,6 +43,9 @@ export default {
     },
     searchText: {
       default: ''
+    },
+    searchTypeno: {
+      default: 1
     }
   },
   data () {
@@ -151,7 +154,7 @@ export default {
         width: 100
       },
       {
-        title: '可操作日期',
+        title: '确认截止时间',
         dataIndex: 'enableDate',
         customRender: (text, row, index) => {
           if (text !== '' && text !== null) {
@@ -165,7 +168,7 @@ export default {
           }
         },
         fixed: 'right',
-        width: 110
+        width: 130
       },
       {
         title: '复议截止日期',
@@ -289,6 +292,7 @@ export default {
       params.applyDateStr = this.applyDate
       params.acceptState = 2
       params.currencyField = this.searchText
+      params.typeno = this.searchTypeno
       if (this.paginationInfo) {
         // 如果分页信息不为空，则设置表格当前第几页，每页条数，并设置查询分页参数
         this.$refs.TableInfo.pagination.current = this.paginationInfo.current

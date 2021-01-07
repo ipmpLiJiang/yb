@@ -2,7 +2,7 @@
   <a-drawer
     title="新增"
     :maskClosable="false"
-    width=650
+    width=800
     placement="right"
     :closable="false"
     @close="onClose"
@@ -10,6 +10,19 @@
     style="height: calc(100% - 15px);overflow: auto;padding-bottom: 53px;"
   >
     <a-form :form="form">
+      <a-form-item
+          label="科室类型"
+          v-bind="formItemLayout"
+        >
+        <a-radio-group  v-decorator="['deptType']">
+          <a-radio value="1">
+            执行科室
+          </a-radio>
+          <a-radio value="2">
+            计费科室
+          </a-radio>
+        </a-radio-group>
+      </a-form-item>
       <a-form-item
         v-bind="formItemLayout"
         label="科室名称"
@@ -23,12 +36,31 @@
         </input-select>
       </a-form-item>
       <a-form-item
+          label="默认复议医生类型"
+          v-bind="formItemLayout"
+        >
+        <a-radio-group  v-decorator="['personType']" @change="handleChange">
+          <a-radio value="1">
+            开单人员
+          </a-radio>
+          <a-radio value="2">
+            执行人员
+          </a-radio>
+          <a-radio value="3">
+            计费人员
+          </a-radio>
+          <a-radio value="4">
+            固定人员
+          </a-radio>
+        </a-radio-group>
+      </a-form-item>
+      <a-form-item
         v-bind="formItemLayout"
-        label="医生名称"
+        label="默认复议医生名称"
       >
         <input-select
             ref="inputSelectDoctor"
-            v-decorator="['doctorCode', {rules: [{ required: true, message: '医生名称不能为空' }] }]"
+            v-decorator="['doctorCode', {rules: [{required: checkPersonType, message: '医生名称不能为空' }] }]"
             :type=2
             @selectChange=selectDoctorChange
         >
@@ -57,10 +89,10 @@
 import InputSelect from '../../common/InputSelect'
 const formItemLayout = {
   labelCol: {
-    span: 3
+    span: 7
   },
   wrapperCol: {
-    span: 18
+    span: 14
   }
 }
 export default {
@@ -76,6 +108,7 @@ export default {
       loading: false,
       formItemLayout,
       form: this.$form.createForm(this),
+      checkPersonType: true,
       ybPriorityLevel: {},
       ybReconsiderPriorityLevel: {}
     }
@@ -85,7 +118,35 @@ export default {
       this.loading = false
       this.ybReconsiderPriorityLevel = {}
       this.ybPriorityLevel = {}
+      this.$refs.inputSelectDoctor.dataSource = []
+      this.$refs.inputSelectDoctor.value = ''
+      this.$refs.inputSelectDept.dataSource = []
+      this.$refs.inputSelectDept.value = ''
       this.form.resetFields()
+    },
+    handleChange (e) {
+      if (e.target.value === '4') {
+        this.checkPersonType = true
+        this.$nextTick(() => {
+          this.form.validateFields(['doctorCode'], { force: this.checkPersonType })
+        })
+      } else {
+        this.checkPersonType = false
+        this.$nextTick(() => {
+          this.form.validateFields(['doctorCode'], { force: this.checkPersonType })
+        })
+        this.$refs.inputSelectDoctor.dataSource = []
+        this.$refs.inputSelectDoctor.value = ''
+        this.ybPriorityLevel.doctorCode = ''
+        this.ybPriorityLevel.doctorName = ''
+        this.form.getFieldDecorator('doctorCode')
+        this.form.getFieldDecorator('doctorName')
+
+        this.form.setFieldsValue({
+          doctorCode: '',
+          doctorName: ''
+        })
+      }
     },
     onClose () {
       this.reset()
@@ -100,7 +161,13 @@ export default {
       this.ybPriorityLevel.deptName = item.text
     },
     setFormValues () {
-      this.$refs.inputSelectDept.dataSource = []
+      // this.$refs.inputSelectDept.dataSource = []
+      this.form.getFieldDecorator('deptType')
+      this.form.getFieldDecorator('personType')
+      this.form.setFieldsValue({
+        deptType: '1',
+        personType: '4'
+      })
     },
     handleSubmit () {
       if (this.ybPriorityLevel.doctorCode !== '' && this.ybPriorityLevel.doctorCode !== undefined) {
@@ -127,6 +194,9 @@ export default {
         if (!err) {
           this.setFields()
           this.ybReconsiderPriorityLevel.state = 3
+          if (this.ybReconsiderPriorityLevel.doctorCode === '') {
+            this.ybReconsiderPriorityLevel.doctorName = ''
+          }
           this.$post('ybReconsiderPriorityLevel', {
             ...this.ybReconsiderPriorityLevel
           }).then(() => {
@@ -140,7 +210,7 @@ export default {
     },
     setFields () {
       // let values = this.form.getFieldsValue(['rplName', 'doctorCode', 'doctorName', 'deptCode', 'deptName'])
-      let values = this.form.getFieldsValue(['doctorCode', 'doctorName', 'deptCode', 'deptName'])
+      let values = this.form.getFieldsValue(['doctorCode', 'doctorName', 'deptCode', 'deptName', 'deptType', 'personType'])
       if (typeof values !== 'undefined') {
         Object.keys(values).forEach(_key => {
           this.ybReconsiderPriorityLevel[_key] = values[_key]

@@ -409,6 +409,161 @@ public class YbAppealResultView implements Comparable<YbAppealResultView> {
 
 
     /**
+     * 住院科室代码
+     */
+    @TableField("orderDeptId")
+    @ExcelField(value = "住院科室代码")
+    private String orderDeptId;
+
+    /**
+     * 住院科室名称
+     */
+    @TableField("orderDeptName")
+    @ExcelField(value = "住院科室名称")
+    private String orderDeptName;
+
+    /**
+     * 开方医生代码
+     */
+    @TableField("orderDocId")
+    @ExcelField(value = "开方医生代码")
+    private String orderDocId;
+
+
+    /**
+     * orderDocName
+     */
+    @TableField("orderDocName")
+    @ExcelField(value = "开方医生名称")
+    private String orderDocName;
+
+
+    /**
+     * 执行科室代码
+     */
+    @TableField("excuteDeptId")
+    @ExcelField(value = "执行科室代码")
+    private String excuteDeptId;
+
+
+    /**
+     * 执行科室名称
+     */
+    @TableField("excuteDeptName")
+    @ExcelField(value = "执行科室名称")
+    private String excuteDeptName;
+
+
+    /**
+     * 执行医生代码
+     */
+    @TableField("excuteDocId")
+    @ExcelField(value = "执行医生代码")
+    private String excuteDocId;
+
+
+    /**
+     * 执行医生名称
+     */
+    @TableField("excuteDocName")
+    @ExcelField(value = "执行医生名称")
+    private String excuteDocName;
+
+
+    /**
+     * 主治医生编码
+     */
+    @TableField("attendDocId")
+    @ExcelField(value = "主治医生编码")
+    private String attendDocId;
+
+
+    /**
+     * 主治医生名称
+     */
+    @TableField("attendDocName")
+    @ExcelField(value = "主治医生名称")
+    private String attendDocName;
+
+
+    /**
+     * 项目类型编码
+     */
+    @TableField("itemTypeCode")
+    @ExcelField(value = "项目类型编码")
+    private String itemTypeCode;
+
+
+    /**
+     * 项目类型名称
+     */
+    @TableField("itemTypeName")
+    @ExcelField(value = "项目类型名称")
+    private String itemTypeName;
+
+
+    /**
+     * 计费人编码
+     */
+    @TableField("feeOperatorId")
+    @ExcelField(value = "计费人编码")
+    private String feeOperatorId;
+
+
+    /**
+     * 计费人名称
+     */
+    @TableField("feeOperatorName")
+    @ExcelField(value = "计费人名称")
+    private String feeOperatorName;
+
+
+    /**
+     * 计费科室编码
+     */
+    @TableField("feeDeptId")
+    @ExcelField(value = "计费科室编码")
+    private String feeDeptId;
+
+
+    /**
+     * 计费科室名称
+     */
+    @TableField("feeDeptName")
+    @ExcelField(value = "计费科室名称")
+    private String feeDeptName;
+
+
+
+    /**
+     * 开方医生编码
+     */
+    @TableField("arOrderDoctorCode")
+    @ExcelField(value ="开方医生编码")
+    private String arOrderDoctorCode;
+
+    /**
+     * 开方医生名称
+     */
+    @TableField("arOrderDoctorName")
+    @ExcelField(value ="开方医生名称")
+    private String arOrderDoctorName;
+
+    /**
+     * 开方科室编码
+     */
+    @TableField("arOrderDeptCode")
+    @ExcelField(value ="开方科室编码")
+    private String arOrderDeptCode;
+
+    /**
+     * 开方科室名称
+     */
+    @TableField("arOrderDeptName")
+    @ExcelField(value ="开方科室名称")
+    private String arOrderDeptName;
+
+    /**
      * 备注
      */
     @TableField("COMMENTS")

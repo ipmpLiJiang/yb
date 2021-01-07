@@ -5,6 +5,7 @@ import cc.mrbird.febs.yb.entity.YbReconsiderApplyData;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.text.ParseException;
+import java.util.Date;
 import java.util.List;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -44,6 +45,10 @@ public interface IYbReconsiderApplyService extends IService<YbReconsiderApply> {
 
     List<YbReconsiderApply> findReconsiderApplyList(YbReconsiderApply ybReconsiderApply);
 
+    boolean findReconsiderApplyCheckEndDate(String appltDateStr, int typeno);
+
+    String getSendMessage(String applyDateStr, Date enableDate, int typeno);
+
     void updateEnableOverdue(String applyDateStr);
 
     void updateApplyEndDateOne(String applyDateStr);
@@ -51,4 +56,6 @@ public interface IYbReconsiderApplyService extends IService<YbReconsiderApply> {
     void updateApplyEndDateTwo(String applyDateStr);
 
     String createJobState(String applyDateStr);
+
+    int getReconsiderApplyTypeno(String applyDateStr);
 }

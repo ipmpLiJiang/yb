@@ -224,6 +224,91 @@ private static final long serialVersionUID=1L;
     private String applyDataId;
 
     /**
+     * 医保项目编码
+     */
+    @TableField("miCode")
+    @ExcelField(value = "医保项目编码")
+    private String miCode;
+
+    /**
+     * 医保项目名称
+     */
+    @TableField("hisName")
+    @ExcelField(value = "医保项目名称")
+    private String hisName;
+
+    /**
+     * 医保项目名称
+     */
+    @TableField("miName")
+    @ExcelField(value = "医保项目名称1")
+    private String miName;
+
+    /**
+     * 类型
+     */
+    @TableField("dyyz")
+    @ExcelField(value = "类型")
+    private String dyyz;
+
+    /**
+     * 主治医生编码
+     */
+    @TableField("attendDocId")
+    @ExcelField(value = "主治医生编码")
+    private String attendDocId;
+
+    /**
+     * 主治医生名称
+     */
+    @TableField("attendDocName")
+    @ExcelField(value = "主治医生名称")
+    private String attendDocName;
+
+    /**
+     * 项目类型编码
+     */
+    @TableField("itemTypeCode")
+    @ExcelField(value = "项目类型编码")
+    private String itemTypeCode;
+
+    /**
+     * 项目类型名称
+     */
+    @TableField("itemTypeName")
+    @ExcelField(value = "项目类型名称")
+    private String itemTypeName;
+
+
+    /**
+     * 计费人编码
+     */
+    @TableField("feeOperatorId")
+    @ExcelField(value = "计费人编码")
+    private String feeOperatorId;
+
+    /**
+     * 计费人名称
+     */
+    @TableField("feeOperatorName")
+    @ExcelField(value = "计费人名称")
+    private String feeOperatorName;
+
+    /**
+     * 计费科室编码
+     */
+    @TableField("feeDeptId")
+    @ExcelField(value = "计费科室编码")
+    private String feeDeptId;
+
+    /**
+     * 计费科室名称
+     */
+    @TableField("feeDeptName")
+    @ExcelField(value = "计费科室名称")
+    private String feeDeptName;
+
+    /**
      * 备注
      */
     @TableField("COMMENTS")

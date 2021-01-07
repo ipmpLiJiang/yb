@@ -6,23 +6,23 @@ import cc.mrbird.febs.com.controller.ImportExcelUtils;
 import cc.mrbird.febs.common.annotation.Log;
 import cc.mrbird.febs.common.controller.BaseController;
 import cc.mrbird.febs.common.domain.FebsResponse;
-import cc.mrbird.febs.common.domain.router.VueRouter;
-import cc.mrbird.febs.common.exception.FebsException;
 import cc.mrbird.febs.common.domain.QueryRequest;
-
+import cc.mrbird.febs.common.exception.FebsException;
 import cc.mrbird.febs.common.properties.FebsProperties;
-import cc.mrbird.febs.export.excel.ExportExcelUtils;
-import cc.mrbird.febs.yb.domain.ResponseImportResultData;
-import cc.mrbird.febs.yb.entity.*;
-import cc.mrbird.febs.yb.service.IYbReconsiderApplyService;
-import cc.mrbird.febs.yb.service.IYbReconsiderVerifyService;
-
 import cc.mrbird.febs.common.utils.FebsUtil;
 import cc.mrbird.febs.system.domain.User;
+import cc.mrbird.febs.yb.domain.ResponseImportResultData;
+import cc.mrbird.febs.yb.entity.*;
+import cc.mrbird.febs.yb.service.IYbReconsiderApplyDataService;
+import cc.mrbird.febs.yb.service.IYbReconsiderApplyService;
+import cc.mrbird.febs.yb.service.IYbReconsiderInpatientfeesService;
+import cc.mrbird.febs.yb.service.IYbReconsiderVerifyService;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.StringPool;
 import com.wuwenze.poi.ExcelKit;
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +34,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import java.io.File;
-import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -55,6 +54,12 @@ public class YbReconsiderVerifyController extends BaseController {
 
     @Autowired
     public IYbReconsiderApplyService iYbReconsiderApplyService;
+
+    @Autowired
+    public IYbReconsiderApplyDataService iYbReconsiderApplyDataService;
+
+    @Autowired
+    private IYbReconsiderInpatientfeesService iYbReconsiderInpatientfeesService;
 
     @Autowired
     private FebsProperties febsProperties;
@@ -250,9 +255,25 @@ public class YbReconsiderVerifyController extends BaseController {
         }
     }
 
+    @Log("修改")
+    @PutMapping("updateAReviewerState")
+    @RequiresPermissions("ybReconsiderVerify:stateUpdate")
+    public void updateAReviewerState(String applyDateStr, Integer state, Integer dataType) throws FebsException {
+        try {
+            User currentUser = FebsUtil.getCurrentUser();
+            Long uid = currentUser.getUserId();
+            String uname = currentUser.getUsername();
+
+            this.iYbReconsiderVerifyService.updateAllReviewerStates(applyDateStr, state, dataType, uid, uname);
+        } catch (Exception e) {
+            message = "核对审核失败";
+            log.error(message, e);
+            throw new FebsException(message);
+        }
+    }
 
     @PostMapping("importReconsiderDataVerify")
-    @RequiresPermissions("ybReconsiderVerify:add")
+    @RequiresPermissions("ybReconsiderVerify:addImport")
     public FebsResponse importReconsiderApplyData(@RequestParam MultipartFile file, @RequestParam String applyDateStr, @RequestParam Integer dataType) {
         int success = 0;
         String uploadFileName = "";
@@ -260,108 +281,113 @@ public class YbReconsiderVerifyController extends BaseController {
         if (file.isEmpty()) {
             message = "空文件";
         } else {
-            YbReconsiderApply queryReconsiderApply = new YbReconsiderApply();
-            queryReconsiderApply.setApplyDateStr(applyDateStr);
-            List<YbReconsiderApply> list = iYbReconsiderApplyService.findReconsiderApplyList(queryReconsiderApply);
-            queryReconsiderApply = list.size() > 0 ? list.get(0) : null;
+            YbReconsiderApply reconsiderApply = iYbReconsiderApplyService.findReconsiderApplyByApplyDateStrs(applyDateStr);
 
-            if (queryReconsiderApply != null) {
-                int state = queryReconsiderApply.getState();
-                int typeno = state == YbDefaultValue.APPLYSTATE_2 || state == YbDefaultValue.APPLYSTATE_3 ? 1 :
-                        state == YbDefaultValue.APPLYSTATE_4 || state == YbDefaultValue.APPLYSTATE_5 ? 2 : 0;
+            if (reconsiderApply != null) {
+                int state = reconsiderApply.getState();
+                int typeno = state == YbDefaultValue.APPLYSTATE_2 || state == YbDefaultValue.APPLYSTATE_3 ? YbDefaultValue.TYPENO_1 :
+                        state == YbDefaultValue.APPLYSTATE_4 || state == YbDefaultValue.APPLYSTATE_5 ? YbDefaultValue.TYPENO_2 : 0;
 
-                if (typeno == YbDefaultValue.DATATYPE_0 || typeno == YbDefaultValue.DATATYPE_1) {
-                    uploadFileName = file.getOriginalFilename();
-                    boolean blError = false;
-                    try {
-                        String filePath = febsProperties.getUploadPath(); // 上传后的路径
-                        File getFile = FileHelpers.fileUpLoad(file, filePath, queryReconsiderApply.getId(), "ReconsiderVerifyTemp");
-                        Map<Integer, String> sheetMap = ImportExcelUtils.getSheelNames(getFile);
-                        ssm = dataType == 0 ? "明细扣款" : "主单扣款";
-                        if (sheetMap.size() > 0) {
-                            int nZd = 0;
-                            int nMx = 0;
-                            String value = sheetMap.get(0);
-                            if (value.equals("明细扣款")) {
-                                nMx = 1;
-                            }
-                            if (value.equals("主单扣款")) {
-                                nZd = 1;
-                            }
+                if (typeno == YbDefaultValue.TYPENO_1 || typeno == YbDefaultValue.TYPENO_2) {
+                    LambdaQueryWrapper<YbReconsiderApplyData> wrapper = new LambdaQueryWrapper<>();
+                    wrapper.eq(YbReconsiderApplyData::getPid, reconsiderApply.getId());
+                    wrapper.eq(YbReconsiderApplyData::getTypeno, typeno);
+                    wrapper.eq(YbReconsiderApplyData::getDataType, dataType);
+                    List<YbReconsiderApplyData> applyDataList = this.iYbReconsiderApplyDataService.list(wrapper);
 
-                            if (nZd == 1 || nMx == 1) {
-                                List<Object[]> objMx = new ArrayList<Object[]>();
-                                List<Object[]> objZd = new ArrayList<Object[]>();
+                    if (applyDataList.size() > 0) {
+                        uploadFileName = file.getOriginalFilename();
+                        boolean blError = false;
+                        User currentUser = FebsUtil.getCurrentUser();
+                        try {
+                            List<YbReconsiderApplyData> queryApplyDataList = new ArrayList<>();
+                            String filePath = febsProperties.getUploadPath(); // 上传后的路径
+                            File getFile = FileHelpers.fileUpLoad(file, filePath, reconsiderApply.getId(), "ReconsiderVerifyTemp");
+                            Map<Integer, String> sheetMap = ImportExcelUtils.getSheelNames(getFile);
+                            ssm = dataType == 0 ? "明细扣款" : "主单扣款";
+                            if (sheetMap.size() > 0) {
+                                int nZd = 0;
+                                int nMx = 0;
+                                String value = sheetMap.get(0);
                                 if (value.equals("明细扣款")) {
-                                    objMx = ImportExcelUtils.importExcelBySheetIndex(getFile, 0, 0, 0);
+                                    nMx = 1;
                                 }
                                 if (value.equals("主单扣款")) {
-                                    objZd = ImportExcelUtils.importExcelBySheetIndex(getFile, 0, 0, 0);
+                                    nZd = 1;
                                 }
-                                if (objMx.size() > 1 || objZd.size() > 1) {
-                                    List<YbReconsiderApplyDataVerify> ListData = new ArrayList<>();
-                                    List<YbReconsiderApplyDataVerify> ListMain = new ArrayList<>();
 
-                                    if (objMx.size() > 1) {
-                                        if (objMx.get(0).length >= 31) {
-                                            for (int i = 1; i < objMx.size(); i++) {
-                                                YbReconsiderApplyDataVerify rrData = new YbReconsiderApplyDataVerify();
-                                                ListData.add(rrData);
-                                            }
-                                        } else {
-                                            blError = true;
-                                            message = "Excel导入失败，Sheet明细扣款 列表列数不正确";
-                                        }
+                                if (nZd == 1 || nMx == 1) {
+                                    List<Object[]> objMx = new ArrayList<Object[]>();
+                                    List<Object[]> objZd = new ArrayList<Object[]>();
+                                    if (value.equals("明细扣款")) {
+                                        objMx = ImportExcelUtils.importExcelBySheetIndex(getFile, 0, 0, 0);
                                     }
-                                    if (objZd.size() > 1) {
-                                        if (objZd.get(0).length >= 22) {
-                                            for (int i = 1; i < objZd.size(); i++) {
-                                                YbReconsiderApplyDataVerify rrMain = new YbReconsiderApplyDataVerify();
-
-                                                ListMain.add(rrMain);
-                                            }
-                                        } else {
-                                            blError = true;
-                                            message = "Excel导入失败，Sheet主单扣款 列表列数不正确";
-                                        }
+                                    if (value.equals("主单扣款")) {
+                                        objZd = ImportExcelUtils.importExcelBySheetIndex(getFile, 0, 0, 0);
                                     }
+                                    if (objMx.size() > 1 || objZd.size() > 1) {
+                                        List<YbReconsiderVerify> verifyList = new ArrayList<>();
+                                        if (objMx.size() > 1) {
+                                            if (objMx.get(0).length >= 47) {
+                                                YbReconsiderInpatientfees queryRif = new YbReconsiderInpatientfees();
+                                                queryRif.setApplyDateStr(applyDateStr);
+                                                queryRif.setDataType(dataType);
+                                                queryRif.setTypeno(typeno);
+                                                List<YbReconsiderInpatientfees> rifList = this.iYbReconsiderInpatientfeesService.findReconsiderInpatientfeesList(queryRif);
+                                                for (int i = 1; i < objMx.size(); i++) {
+                                                    YbReconsiderVerify rv = this.getReconsiderVerify(objMx, i, applyDateStr, currentUser, dataType, applyDataList, rifList);
+                                                    if (rv != null) {
+                                                        verifyList.add(rv);
+                                                    }
+                                                }
+                                            } else {
+                                                blError = true;
+                                                message = "Excel导入失败，Sheet明细扣款 列表列数不正确";
+                                            }
+                                        }
+                                        if (objZd.size() > 1) {
+                                            if (objZd.get(0).length >= 22) {
+                                                for (int i = 1; i < objZd.size(); i++) {
+                                                    YbReconsiderVerify rv = this.getReconsiderVerify(objZd, i, applyDateStr, currentUser, dataType, applyDataList, null);
+                                                    if (rv != null) {
+                                                        verifyList.add(rv);
+                                                    }
+                                                }
+                                            } else {
+                                                blError = true;
+                                                message = "Excel导入失败，Sheet主单扣款 列表列数不正确";
+                                            }
+                                        }
 
-                                    if (!blError) {
-//                                        if (ListData.size() > 0 || ListMain.size() > 0) {
-//                                            //1待复议 2上传一 3申述一 4上传二 5申述二 6已剔除 7已还款
-//                                            YbReconsiderApply ybReconsiderApply = new YbReconsiderApply();
-//                                            if (typeno == 1) {
-//                                                ybReconsiderApply.setState(YbDefaultValue.APPLYSTATE_2);//State=2 审核一
-//                                                ybReconsiderApply.setUploadFileNameOne(uploadFileName);
-//                                            }
-//                                            if (typeno == 2) {
-//                                                ybReconsiderApply.setState(YbDefaultValue.APPLYSTATE_4);
-//                                                ybReconsiderApply.setUploadFileNameTwo(uploadFileName);
-//                                            }
-//                                            ybReconsiderApply.setId(pid);
-//
-//                                            this.iYbReconsiderApplyDataService.importReconsiderApply(ybReconsiderApply, ListData, ListMain);
-//                                            success = 1;
-//                                            message = "Excel导入成功.";
-//                                        } else {
-//                                            message = "Excel导入失败，导入数据为空.";
-//                                        }
+                                        if (!blError) {
+                                            if (verifyList.size() > 0) {
+                                                this.iYbReconsiderVerifyService.importReconsiderDataVerifys(applyDateStr, dataType, typeno, verifyList);
+                                                success = 1;
+                                                message = "Excel导入成功.";
+                                            } else {
+                                                message = "Excel导入失败，导入数据为空.";
+                                            }
+                                        }
+                                    } else {
+                                        message = "Excel导入失败，请确认 " + ssm + " 列表数据是否正确.";
                                     }
                                 } else {
-                                    message = "Excel导入失败，请确认 "+ssm+" 列表数据是否正确.";
+                                    message = "Excel导入失败，确保Sheet页名为 " + ssm + " .";
                                 }
                             } else {
                                 message = "Excel导入失败，确保Sheet页名为 " + ssm + " .";
                             }
-                        } else {
-                            message = "Excel导入失败，确保Sheet页名为 " + ssm + " .";
+                        } catch (Exception ex) {
+                            //message = ex.getMessage();
+                            if ("".equals(message)) {
+                                message = "Excel导入失败.";
+                            }
+                            log.error(message, ex);
                         }
-                    } catch (Exception ex) {
-                        //message = ex.getMessage();
-                        if ("".equals(message)) {
-                            message = "Excel导入失败.";
-                        }
-                        log.error(message, ex);
+                    } else {
+                        message = typeno == 1 ? "第一版" : "第二版";
+                        message += dataType == 0 ? " 明细扣款数据" : " 主单扣款数据";
+                        message = "Excel导入失败，" + applyDateStr + " 未上传" + message + ".";
                     }
                 } else {
                     ssm = state == YbDefaultValue.APPLYSTATE_1 ? "为：待复议" :
@@ -380,6 +406,92 @@ public class YbReconsiderVerifyController extends BaseController {
 
         rrd.setFileName(uploadFileName);
         return new FebsResponse().data(rrd);
+    }
+
+    private YbReconsiderVerify getReconsiderVerify(List<Object[]> obj, int i, String applyDateStr,
+                                                   User currentUser, int dataType, List<YbReconsiderApplyData> applyDataList,
+                                                   List<YbReconsiderInpatientfees> rifList) {
+        YbReconsiderVerify ybReconsiderVerify = null;
+        List<YbReconsiderApplyData> queryApplyDataList = new ArrayList<>();
+        String strOrderNumber = DataTypeHelpers.importTernaryOperate(obj.get(i), 0);//序号
+        String strDeptCode = "";
+        String strDeptName = "";
+        String strDocCode = "";
+        String strDocName = "";
+        String strOrderDeptCode = "";
+        String strOrderDeptName = "";
+        String strOrderDoctorCode = "";
+        String strOrderDoctorName = "";
+        if (dataType == 0) {
+            strDeptCode = DataTypeHelpers.importTernaryOperate(obj.get(i), 27);//科室编码
+            strDeptName = DataTypeHelpers.importTernaryOperate(obj.get(i), 28);//科室名称
+            strDocCode = DataTypeHelpers.importTernaryOperate(obj.get(i), 29);//医生编码
+            strDocName = DataTypeHelpers.importTernaryOperate(obj.get(i), 30);//医生名称
+
+            strOrderDeptCode = DataTypeHelpers.importTernaryOperate(obj.get(i), 33);//住院科室编码
+            strOrderDeptName = DataTypeHelpers.importTernaryOperate(obj.get(i), 34);//住院科室名称
+            strOrderDoctorCode = DataTypeHelpers.importTernaryOperate(obj.get(i), 35);//开方医生编码
+            strOrderDoctorName = DataTypeHelpers.importTernaryOperate(obj.get(i), 36);//开方医生名称
+        } else {
+            strDeptCode = DataTypeHelpers.importTernaryOperate(obj.get(i), 18);//科室编码
+            strDeptName = DataTypeHelpers.importTernaryOperate(obj.get(i), 19);//科室名称
+            strDocCode = DataTypeHelpers.importTernaryOperate(obj.get(i), 20);//医生编码
+            strDocName = DataTypeHelpers.importTernaryOperate(obj.get(i), 21);//医生名称
+        }
+        Date thisDate = new Date();
+        if (!strOrderNumber.equals("")) {
+            queryApplyDataList = applyDataList.stream().filter(
+                    s -> s.getOrderNumber().equals(strOrderNumber)
+            ).collect(Collectors.toList());
+            if (queryApplyDataList.size() > 0) {
+                if (!strDeptCode.equals("") && !strDeptName.equals("") &&
+                        !strDocCode.equals("") && !strDocName.equals("")) {
+                    YbReconsiderApplyData entity = queryApplyDataList.get(0);
+
+                    ybReconsiderVerify = new YbReconsiderVerify();
+                    ybReconsiderVerify.setId(UUID.randomUUID().toString());
+                    ybReconsiderVerify.setApplyDataId(entity.getId());
+                    ybReconsiderVerify.setVerifyDeptCode(strDeptCode);
+                    ybReconsiderVerify.setVerifyDeptName(strDeptName);
+                    ybReconsiderVerify.setVerifyDoctorCode(strDocCode);
+                    ybReconsiderVerify.setVerifyDoctorName(strDocName);
+
+                    ybReconsiderVerify.setOperateDate(thisDate);//'操作日期'
+                    ybReconsiderVerify.setMatchDate(thisDate);//'匹配日期'
+                    ybReconsiderVerify.setMatchPersonId(currentUser.getUserId());//'匹配人代码'
+                    ybReconsiderVerify.setMatchPersonName(currentUser.getUsername());//'匹配人'
+
+                    ybReconsiderVerify.setApplyDateStr(applyDateStr);
+                    ybReconsiderVerify.setTypeno(entity.getTypeno());
+                    ybReconsiderVerify.setOrderNumber(entity.getOrderNumber());
+                    ybReconsiderVerify.setOrderNum(entity.getOrderNum());
+                    ybReconsiderVerify.setDataType(entity.getDataType());//扣款类型  0 明细扣款 1 主单扣款
+
+                    if (entity.getDataType() == YbDefaultValue.DATATYPE_0) {
+                        List<YbReconsiderInpatientfees> queryRifList = new ArrayList<>();
+                        queryRifList = rifList.stream().filter(s -> s.getApplyDataId().equals(entity.getId())).collect(Collectors.toList());
+                        if (queryRifList.size() > 0) {
+                            strOrderDeptCode = strOrderDeptCode == "" || strOrderDeptCode == null ? queryRifList.get(0).getDeptId() : strOrderDeptCode;
+                            strOrderDeptName = strOrderDeptName == "" || strOrderDeptName == null ? queryRifList.get(0).getDeptName() : strOrderDeptName;
+                            strOrderDoctorCode = strOrderDoctorCode == "" || strOrderDoctorCode == null ? queryRifList.get(0).getOrderDocId() : strOrderDoctorCode;
+                            strOrderDoctorName = strOrderDoctorName == "" || strOrderDoctorName == null ? queryRifList.get(0).getOrderDocName() : strOrderDoctorName;
+                        }
+
+                        //住院科室、开单医生
+                        ybReconsiderVerify.setOrderDeptCode(strOrderDeptCode);
+                        ybReconsiderVerify.setOrderDeptName(strOrderDeptName);
+                        ybReconsiderVerify.setOrderDoctorCode(strOrderDoctorCode);
+                        ybReconsiderVerify.setOrderDoctorName(strOrderDoctorName);
+                    }
+
+                    ybReconsiderVerify.setState(YbDefaultValue.VERIFYSTATE_1);//1 待审核、2已审核、3已发送
+                    ybReconsiderVerify.setIsDeletemark(1);
+                    ybReconsiderVerify.setCreateUserId(currentUser.getUserId());
+                    ybReconsiderVerify.setCreateTime(thisDate);
+                }
+            }
+        }
+        return ybReconsiderVerify;
     }
 
 }

@@ -1,12 +1,12 @@
 <template>
   <a-drawer
-    title="申诉填报"
+    title="申诉更改"
     :maskClosable="false"
     width=75%
     placement="right"
     :closable="true"
     @close="onClose"
-    :visible="appealVisiable"
+    :visible="appealCompleteVisiable"
     style="height: calc(100% - 15px);overflow: auto;padding-bottom: 53px;"
   >
   <appealData-module
@@ -20,15 +20,6 @@
     >
     </inpatientfees-module>
     <div style="margin-top:20px;">
-      <a-popconfirm
-        title="确定获取上次复议数据！"
-        @confirm="loadLastData"
-        v-show="isShow"
-        okText="确定"
-        cancelText="取消"
-      >
-        <a-button type="primary" style="margin-right: .8rem">获取上次复议数据</a-button>
-      </a-popconfirm>
     <div style="padding-top:20px;padding-bottom:20px;border: 1px solid #e8e8e8;">
       <template>
         <a-form :form="form">
@@ -75,18 +66,8 @@
             <!--按钮-->
             <a-row type="flex" justify="end">
               <a-col :span=5>
-                <a-popconfirm
-                  title="确定提交数据？提交后不可更改！"
-                  @confirm="handleSubmit(1)"
-                  okText="确定"
-                  cancelText="取消"
-                >
-                  <a-button type="primary" style="margin-right: .8rem">提交</a-button>
-                </a-popconfirm>
-              </a-col>
-              <a-col :span=5>
                 <a-button
-                  @click="handleSubmit(0)"
+                  @click="handleSubmit"
                   type="primary"
                   :loading="loading"
                 >保存</a-button>
@@ -164,7 +145,7 @@ export default {
   components: {
     AppealDataModule, InpatientfeesModule},
   props: {
-    appealVisiable: {
+    appealCompleteVisiable: {
       default: false
     }
   },
@@ -176,7 +157,6 @@ export default {
       ybAppealManage: {},
       previewVisible: false,
       previewImage: '',
-      isShow: false,
       fileList: [],
       form: this.$form.createForm(this)
     }
@@ -224,6 +204,7 @@ export default {
       formData.append('isCheck', 1)
       this.uploading = true
       let that = this
+
       this.$upload('comFile/uploadImg', formData).then((r) => {
         if (r.data.data.success === 1) {
           that.fileList.push(r.data.data)
@@ -247,6 +228,8 @@ export default {
       formData.deptName = this.ybAppealManageUpload.readyDeptName
       formData.applyDateStr = this.ybAppealManageUpload.applyDateStr
       formData.sourceType = this.ybAppealManageUpload.sourceType
+      formData.typeno = this.ybAppealManageUpload.typeno
+      formData.isCheck = 1
       formData.serName = file.serName
       this.$post('comFile/deleteImg', {
         ...formData
@@ -281,75 +264,24 @@ export default {
       this.ybAppealManageUpload = {}
       this.fileList = []
       this.previewVisible = false
-      this.isShow = false
       this.previewImage = ''
       this.$emit('close')
     },
-    loadLastData () {
-      if (this.ybAppealManageUpload.sourceType === 1) {
-        let formData = {
-          verifyId: this.ybAppealManageUpload.verifySendId,
-          applyDataId: this.ybAppealManageUpload.applyDataId,
-          id: this.ybAppealManageUpload.id,
-          currencyField: this.ybAppealManageUpload.applyDateStr
-        }
-        this.$post('ybAppealResult/findLoadLastAppealResul', {
-          ...formData
-        }).then((r) => {
-          if (r.data.data.success === 1) {
-            this.findFileList(formData.id)
-          } else {
-            if (r.data.data.message !== '') {
-              this.$message.error(r.data.data.message)
-            } else {
-              this.$message.error('获取上次复议数据操作失败.')
-            }
-          }
-          if (r.data.data.data !== '') {
-            this.form.getFieldDecorator('operateReason')
-            this.form.setFieldsValue({
-              'operateReason': r.data.data.data
-            })
-          }
-        })
-      }
-    },
-    handleSubmit (type) {
+    handleSubmit () {
       this.form.validateFields((err, values) => {
         if (!err) {
           let fromData = this.form.getFieldsValue(['operateReason'])
-          let acceptState = type === 0 ? 1 : 6 // 1 保存 6提交
-          // 复议判断图片必须上传
-          if (acceptState === 6 && this.fileList.length < 1) {
-            this.$message.warning('未上传复议图片，无法提交！')
-            return false
-          }
           let data = {
             id: this.ybAppealManageUpload.id,
-            acceptState: acceptState,
-            sourceType: this.ybAppealManageUpload.sourceType,
-            applyDataId: this.ybAppealManageUpload.applyDataId,
-            verifyId: this.ybAppealManageUpload.verifyId,
-            readyDeptCode: this.ybAppealManageUpload.readyDeptCode,
-            readyDeptName: this.ybAppealManageUpload.readyDeptName,
-            readyDoctorCode: this.ybAppealManageUpload.readyDoctorCode,
-            readyDoctorName: this.ybAppealManageUpload.readyDoctorName,
-            dataType: this.ybAppealManageUpload.dataType,
             operateReason: fromData.operateReason
           }
           let jsonString = JSON.stringify(data)
-          this.$put('ybAppealManage/updateUploadState', {
+          this.$put('ybAppealManage/updateUploadStateCompleted', {
             dataJson: jsonString
           }).then((r) => {
             if (r.data.data.success === 1) {
-              if (acceptState === 6) {
-                this.$message.success('提交成功！')
-                this.onClose()
-                this.$emit('success')
-              } else {
-                this.loading = false
-                this.$message.success('保存成功！')
-              }
+              this.loading = false
+              this.$message.success('保存成功！')
             } else {
               this.$message.error(r.data.data.message)
             }
@@ -362,12 +294,6 @@ export default {
     setFormValues ({ ...ybAppealManageUpload }) {
       this.ybAppealManageUpload = ybAppealManageUpload
 
-      if (this.ybAppealManageUpload.sourceType === 1) {
-        this.isShow = true
-      } else {
-        this.isShow = false
-      }
-
       this.form.getFieldDecorator('operateReason')
       this.form.setFieldsValue({
         'operateReason': ybAppealManageUpload.operateReason
@@ -378,30 +304,6 @@ export default {
       setTimeout(() => {
         this.$refs.inpatientfeesModule.search()
       }, 200)
-    },
-    findCreate (ybAppealResult) {
-      // 列表点击申诉时创建复议审核上传数据，业务需求变更不调用此方法,更改为提交时创建复议审核上传数据
-      this.$post('ybAppealResult/findCreateAppealResult', {
-        ...ybAppealResult
-      }).then((r) => {
-        if (r.data.data.success === 0) {
-          this.$message.error('查询创建失败!')
-          this.onClose()
-        } else {
-          ybAppealResult = r.data.data.data
-          this.ybAppealManageUpload.operateReason = ybAppealResult.operateReason
-          this.ybAppealManageUpload.readyDeptCode = ybAppealResult.deptCode
-          this.ybAppealManageUpload.readyDeptName = ybAppealResult.deptName
-          this.ybAppealManageUpload.readyDoctorCode = ybAppealResult.doctorCode
-          this.ybAppealManageUpload.readyDoctorName = ybAppealResult.doctorName
-
-          this.form.setFieldsValue({
-            'operateReason': ybAppealResult.operateReason
-          })
-        }
-      }).catch(() => {
-        this.loading = false
-      })
     },
     findFileList (id) {
       let formData = {}

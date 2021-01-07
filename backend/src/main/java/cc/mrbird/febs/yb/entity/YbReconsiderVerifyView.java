@@ -449,6 +449,34 @@ public class YbReconsiderVerifyView implements Serializable {
     @ExcelField(value = "是否医生")
     private Integer isPerson;
 
+    /**
+     * 开方医生编码
+     */
+    @TableField("orderDoctorCode")
+    @ExcelField(value ="开方医生编码")
+    private String orderDoctorCode;
+
+    /**
+     * 开方医生名称
+     */
+    @TableField("orderDoctorName")
+    @ExcelField(value ="开方医生名称")
+    private String orderDoctorName;
+
+    /**
+     * 开方科室编码
+     */
+    @TableField("orderDeptCode")
+    @ExcelField(value ="开方科室编码")
+    private String orderDeptCode;
+
+    /**
+     * 开方科室名称
+     */
+    @TableField("orderDeptName")
+    @ExcelField(value ="开方科室名称")
+    private String orderDeptName;
+
 
     /**
      * 备注
@@ -619,6 +647,14 @@ public class YbReconsiderVerifyView implements Serializable {
     public static final String ISVERIFY = "isVerify";
 
     public static final String ISPERSON = "isPerson";
+
+    public static final String ORDERDOCTORCODE = "orderDoctorCode";
+
+    public static final String ORDERDOCTORNAME = "orderDoctorName";
+
+    public static final String ORDERDEPTCODE = "orderDeptCode";
+
+    public static final String ORDERDEPTNAME = "orderDeptName";
 
     public static final String COMMENTS = "COMMENTS";
 

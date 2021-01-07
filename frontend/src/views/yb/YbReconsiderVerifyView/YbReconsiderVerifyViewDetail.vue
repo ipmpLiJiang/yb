@@ -128,7 +128,11 @@ export default {
         verifyDoctorName: this.ybReconsiderVerify.verifyDoctorName,
         verifyDeptCode: this.ybReconsiderVerify.verifyDeptCode,
         verifyDeptName: this.ybReconsiderVerify.verifyDeptName,
-        dataType: this.ybReconsiderVerifyView.dataType}]
+        dataType: this.ybReconsiderVerifyView.dataType,
+        applyDateStr: this.ybReconsiderVerifyView.applyDateStr,
+        orderNumber: this.ybReconsiderVerifyView.orderNumber,
+        orderNum: this.ybReconsiderVerifyView.orderNum,
+        typeno: this.ybReconsiderVerifyView.typeno}]
 
       let jsonString = JSON.stringify(arrData)
       this.ybReconsiderVerify = {}

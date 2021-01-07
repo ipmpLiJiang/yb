@@ -25,13 +25,16 @@ public interface IYbReconsiderVerifyViewService extends IService<YbReconsiderVer
 
     IPage<YbReconsiderVerifyView> findYbReconsiderVerifyViewList(QueryRequest request, YbReconsiderVerifyView ybReconsiderVerifyView);
 
+    List<YbReconsiderVerifyView> findReconsiderVerifyViewLists(YbReconsiderVerifyView ybReconsiderVerifyView);
+
+
     void createYbReconsiderVerifyView(YbReconsiderVerifyView ybReconsiderVerifyView);
 
     void updateYbReconsiderVerifyView(YbReconsiderVerifyView ybReconsiderVerifyView);
 
     void deleteYbReconsiderVerifyViews(String[] Ids);
 
-    int findReconsiderVerifyApplyDateCounts(String applyDate,Integer dataType);
+    int findReconsiderVerifyApplyDateCounts(String applyDate,Integer dataType,Integer typeno);
 
     IPage<YbReconsiderVerifyView> findYbReconsiderVerifyViewNulls(QueryRequest request, YbReconsiderVerifyView ybReconsiderVerifyView,String[] searchType);
 }

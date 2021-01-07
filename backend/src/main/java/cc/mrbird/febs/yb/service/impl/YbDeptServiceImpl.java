@@ -110,7 +110,7 @@ public class YbDeptServiceImpl extends ServiceImpl<YbDeptMapper, YbDept> impleme
         List<YbDept> createList = new ArrayList<>();
         List<YbDept> findList = this.findDeptList(new YbDept(), 0);
         for (YbDeptHis item : list) {
-            if (findList.stream().filter(s -> s.getDeptName().equals(item.getDeptName())).count() == 0) {
+            if (findList.stream().filter(s -> s.getDeptId().equals(item.getDeptId())).count() == 0) {
                 YbDept dept = new YbDept();
                 dept.setDeptId(item.getDeptId());
                 dept.setDeptName(item.getDeptName());
