@@ -190,8 +190,12 @@ public class YbReconsiderApplyServiceImpl extends ServiceImpl<YbReconsiderApplyM
     @Override
     @Transactional
     public void deleteBatchStateIdsYbReconsiderApplys(String[] Ids, Integer state) {
-        List<String> listString = Arrays.asList(Ids);
-        this.baseMapper.deleteBatchStateIdsYbReconsiderApply(listString, state);
+        List<String> list = Arrays.asList(Ids);
+//        this.baseMapper.deleteBatchStateIdsYbReconsiderApply(listString, state);
+        LambdaQueryWrapper<YbReconsiderApply> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(YbReconsiderApply::getState,state);
+        wrapper.in(YbReconsiderApply::getId,list);
+        this.baseMapper.delete(wrapper);
     }
 
     @Override
@@ -425,12 +429,25 @@ public class YbReconsiderApplyServiceImpl extends ServiceImpl<YbReconsiderApplyM
         int typeno = 1;
         YbReconsiderApply reconsiderApply = this.findReconsiderApplyByApplyDateStrs(applyDateStr);
         if (reconsiderApply != null) {
-            int state = reconsiderApply.getState();
+            int state = reconsiderApply.getState() != null ? reconsiderApply.getState() : 1;
             typeno = state == YbDefaultValue.APPLYSTATE_2 || state == YbDefaultValue.APPLYSTATE_3 ? YbDefaultValue.TYPENO_1 :
                     state == YbDefaultValue.APPLYSTATE_4 || state == YbDefaultValue.APPLYSTATE_5 ? YbDefaultValue.TYPENO_2 :
-                    state > 5 ? YbDefaultValue.TYPENO_2 : 1;
+                            state > 5 ? 3 : 1;
 
         }
         return typeno;
+    }
+
+    @Override
+    @Transactional
+    public void updateReconsiderApplyState2345(YbReconsiderApply reconsiderApply){
+        YbReconsiderApply updateEntity = new YbReconsiderApply();
+        updateEntity.setId(reconsiderApply.getId());
+        if (reconsiderApply.getState() == YbDefaultValue.APPLYSTATE_2) { //上传一
+            updateEntity.setState(YbDefaultValue.APPLYSTATE_3);//申诉一/核对一
+        } else if (reconsiderApply.getState() == YbDefaultValue.APPLYSTATE_4) {
+            updateEntity.setState(YbDefaultValue.APPLYSTATE_5);//申诉二/核对二
+        }
+        this.updateById(updateEntity);
     }
 }

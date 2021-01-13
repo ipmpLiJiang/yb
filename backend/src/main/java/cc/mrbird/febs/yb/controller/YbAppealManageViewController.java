@@ -63,6 +63,21 @@ public class YbAppealManageViewController extends BaseController {
         return getDataTable(this.iYbAppealManageViewService.findAppealManageUserViews(request, ybAppealManageView));
     }
 
+    @GetMapping("appealManageOperateRoomView")
+    @RequiresPermissions("ybAppealManageView:operateRoomView")
+    public Map<String, Object> operateRoomList(QueryRequest request, YbAppealManageView ybAppealManageView) {
+        User currentUser = FebsUtil.getCurrentUser();
+        ybAppealManageView.setOrderDoctorCode(currentUser.getUsername());
+        return getDataTable(this.iYbAppealManageViewService.findAppealManageOperateRoomViews(request, ybAppealManageView));
+    }
+
+    @GetMapping("appealManageConfireView")
+    @RequiresPermissions("ybAppealManageView:confireView")
+    public Map<String, Object> confireList(QueryRequest request, YbAppealManageView ybAppealManageView) {
+        User currentUser = FebsUtil.getCurrentUser();
+        return getDataTable(this.iYbAppealManageViewService.findAppealManageConfireViews(request, ybAppealManageView,currentUser));
+    }
+
     /**
      * 添加
      *

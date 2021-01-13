@@ -111,7 +111,7 @@
     </template>
     <template>
       <div>
-        <a-modal :width="800" :maskClosable="false" :footer="null" v-model="downLoadVisible" title="导出图片" @ok="handleOk">
+        <a-modal width="85%" :maskClosable="false" :footer="null" v-model="downLoadVisible" title="导出图片" @ok="handleOk">
           <ybAppealResult-downLoad
           ref="ybAppealResultDownload"
           :tableSelectKey="tableSelectKey"

@@ -63,11 +63,16 @@
                     <result column="adminChangeDate" property="adminChangeDate"/>
                     <result column="adminReason" property="adminReason"/>
                     <result column="enableDate" property="enableDate"/>
+            <result column="isEnableDate" property="isEnableDate"/>
                     <result column="enableType" property="enableType"/>
                     <result column="sourceType" property="sourceType"/>
             <result column="dataType" property="dataType"/>
             <result column="orderNumber" property="orderNumber"/>
             <result column="orderNum" property="orderNum"/>
+            <result column="orderDoctorCode" property="orderDoctorCode"/>
+            <result column="orderDoctorName" property="orderDoctorName"/>
+            <result column="orderDeptCode" property="orderDeptCode"/>
+            <result column="orderDeptName" property="orderDeptName"/>
             <result column="isEnd" property="isEnd"/>
                     <result column="COMMENTS" property="comments"/>
                     <result column="STATE" property="state"/>
@@ -82,7 +87,7 @@
 
         <!-- 通用查询结果列 -->
         <sql id="Base_Column_List">
-        serialNo, billNo, proposalCode, projectCode, projectName, num, medicalPrice, ruleName, deductPrice, deductReason, repaymentReason, doctorName, deptCode, deptName, enterHospitalDate, outHospitalDate, costDate,enterHospitalDateStr,outHospitalDateStr,costDateStr, hospitalizedNo, treatmentMode, settlementDate,settlementDateStr, personalNo, insuredName, cardNumber, areaName, versionNumber, backAppeal, typeno, applyDate, applyDateStr, operatorId, operatorName, id, applyDataId, verifyId, readyDoctorCode, readyDoctorName, readyDeptCode, readyDeptName, changeDoctorCode, changeDoctorName, changeDeptCode, changeDeptName,applyEndDate, operateReason, operateDate, acceptState, refuseId, refuseName, refuseReason, refuseDate, adminPersonId, adminPersonName, adminChangeDate, adminReason,enableDate,enableType,sourceType, dataType,orderNumber,orderNum,isEnd,COMMENTS, STATE, IS_DELETEMARK, MODIFY_TIME, CREATE_TIME, CREATE_USER_ID, MODIFY_USER_ID, currencyField,approvalState
+        serialNo, billNo, proposalCode, projectCode, projectName, num, medicalPrice, ruleName, deductPrice, deductReason, repaymentReason, doctorName, deptCode, deptName, enterHospitalDate, outHospitalDate, costDate,enterHospitalDateStr,outHospitalDateStr,costDateStr, hospitalizedNo, treatmentMode, settlementDate,settlementDateStr, personalNo, insuredName, cardNumber, areaName, versionNumber, backAppeal, typeno, applyDate, applyDateStr, operatorId, operatorName, id, applyDataId, verifyId, readyDoctorCode, readyDoctorName, readyDeptCode, readyDeptName, changeDoctorCode, changeDoctorName, changeDeptCode, changeDeptName,applyEndDate, operateReason, operateDate, acceptState, refuseId, refuseName, refuseReason, refuseDate, adminPersonId, adminPersonName, adminChangeDate, adminReason,enableDate,isEnableDate,enableType,sourceType, dataType,orderNumber,orderNum,orderDoctorCode,orderDoctorName,orderDeptCode,orderDeptName,isEnd,COMMENTS, STATE, IS_DELETEMARK, MODIFY_TIME, CREATE_TIME, CREATE_USER_ID, MODIFY_USER_ID, currencyField,approvalState
     </sql>
     <update id="updateYbAppealManageView" parameterType="cc.mrbird.febs.yb.entity.YbAppealManageView">
         update yb_appeal_manage_view

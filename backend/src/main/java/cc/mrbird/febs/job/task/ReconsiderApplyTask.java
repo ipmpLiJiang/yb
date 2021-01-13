@@ -29,7 +29,7 @@ public class ReconsiderApplyTask {
         if(params == null || params.equals("no")){
             params = "";
         }
-        iYbReconsiderApplyService.findReconsiderApplyDataNotTask(params);
+//        iYbReconsiderApplyService.findReconsiderApplyDataNotTask(params);
     }
 
 }

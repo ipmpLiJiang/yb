@@ -361,7 +361,7 @@ public class YbReconsiderVerifyController extends BaseController {
 
                                         if (!blError) {
                                             if (verifyList.size() > 0) {
-                                                this.iYbReconsiderVerifyService.importReconsiderDataVerifys(applyDateStr, dataType, typeno, verifyList);
+                                                this.iYbReconsiderVerifyService.importReconsiderDataVerifys(reconsiderApply, dataType, typeno, verifyList);
                                                 success = 1;
                                                 message = "Excel导入成功.";
                                             } else {
@@ -476,13 +476,13 @@ public class YbReconsiderVerifyController extends BaseController {
                             strOrderDoctorCode = strOrderDoctorCode == "" || strOrderDoctorCode == null ? queryRifList.get(0).getOrderDocId() : strOrderDoctorCode;
                             strOrderDoctorName = strOrderDoctorName == "" || strOrderDoctorName == null ? queryRifList.get(0).getOrderDocName() : strOrderDoctorName;
                         }
-
-                        //住院科室、开单医生
-                        ybReconsiderVerify.setOrderDeptCode(strOrderDeptCode);
-                        ybReconsiderVerify.setOrderDeptName(strOrderDeptName);
-                        ybReconsiderVerify.setOrderDoctorCode(strOrderDoctorCode);
-                        ybReconsiderVerify.setOrderDoctorName(strOrderDoctorName);
                     }
+
+                    //住院科室、开单医生
+                    ybReconsiderVerify.setOrderDeptCode(strOrderDeptCode);
+                    ybReconsiderVerify.setOrderDeptName(strOrderDeptName);
+                    ybReconsiderVerify.setOrderDoctorCode(strOrderDoctorCode);
+                    ybReconsiderVerify.setOrderDoctorName(strOrderDoctorName);
 
                     ybReconsiderVerify.setState(YbDefaultValue.VERIFYSTATE_1);//1 待审核、2已审核、3已发送
                     ybReconsiderVerify.setIsDeletemark(1);

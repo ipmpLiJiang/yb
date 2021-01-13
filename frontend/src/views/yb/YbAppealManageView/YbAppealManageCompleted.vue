@@ -23,8 +23,7 @@
           >
             <div class="editable-row-operations">
               <span>
-                <a
-                  :disabled="record.isEnd===1?true:false"
+                <a :disabled="record.isEnd===1?true:false"
                   @click.stop="() => appealComplete(record,index)"
                 >修改</a>
               </span>

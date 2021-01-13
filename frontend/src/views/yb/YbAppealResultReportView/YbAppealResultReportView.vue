@@ -132,7 +132,7 @@
     </ybAppealManage-history>
     <template>
       <div>
-        <a-modal :width="800" :maskClosable="false" :footer="null" v-model="lookVisiable" title="查看申诉材料" @ok="handleOk">
+        <a-modal width="85%" :maskClosable="false" :footer="null" v-model="lookVisiable" title="查看申诉材料" @ok="handleOk">
           <ybAppealManageResultLook-module
           ref="ybAppealManageResultLookModule"
           @close="lookClose"

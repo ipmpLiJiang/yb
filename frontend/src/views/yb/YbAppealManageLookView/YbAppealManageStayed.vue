@@ -154,17 +154,6 @@ export default {
         width: 100
       },
       {
-        title: '复议科室',
-        dataIndex: 'readyDeptName',
-        customRender: (text, row, index) => {
-          if (text !== '' && text !== null) {
-            return row.readyDeptCode + '-' + row.readyDeptName
-          }
-        },
-        fixed: 'right',
-        width: 200
-      },
-      {
         title: '复议截止日期',
         dataIndex: 'applyEndDate',
         customRender: (text, row, index) => {
@@ -180,6 +169,17 @@ export default {
         },
         fixed: 'right',
         width: 130
+      },
+      {
+        title: '复议科室',
+        dataIndex: 'readyDeptName',
+        customRender: (text, row, index) => {
+          if (text !== '' && text !== null) {
+            return row.readyDeptCode + '-' + row.readyDeptName
+          }
+        },
+        fixed: 'right',
+        width: 200
       },
       {
         title: '复议医生',

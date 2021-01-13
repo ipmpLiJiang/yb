@@ -127,7 +127,7 @@
     </template>
     <template>
       <div>
-        <a-modal :width="1024" :maskClosable="false" :footer="null" v-model="editVisible" title="录入还款方案" @ok="handleOk">
+        <a-modal width="85%" :maskClosable="false" :footer="null" v-model="editVisible" title="录入还款方案" @ok="handleOk">
           <ybAppealResultRepayment-edit
           ref="ybAppealResultRepaymentEdit"
           @close="handleOk"

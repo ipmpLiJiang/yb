@@ -461,6 +461,13 @@ public class YbAppealManageView implements Serializable {
     private transient String enableDateTo;
 
     /**
+     * 是否可操作日期
+     */
+    @TableField("isEnableDate")
+    @ExcelField(value = "是否可操作日期")
+    private Integer isEnableDate;
+
+    /**
      * 可操作状态
      */
     @TableField("enableType")
@@ -494,6 +501,34 @@ public class YbAppealManageView implements Serializable {
     @TableField("orderNum")
     @ExcelField(value = "排序")
     private Integer orderNum;
+
+    /**
+     * 开方医生编码
+     */
+    @TableField("orderDoctorCode")
+    @ExcelField(value ="开方医生编码")
+    private String orderDoctorCode;
+
+    /**
+     * 开方医生名称
+     */
+    @TableField("orderDoctorName")
+    @ExcelField(value ="开方医生名称")
+    private String orderDoctorName;
+
+    /**
+     * 开方科室编码
+     */
+    @TableField("orderDeptCode")
+    @ExcelField(value ="开方科室编码")
+    private String orderDeptCode;
+
+    /**
+     * 开方科室名称
+     */
+    @TableField("orderDeptName")
+    @ExcelField(value ="开方科室名称")
+    private String orderDeptName;
 
     /**
      * 操作过程
@@ -653,6 +688,14 @@ public class YbAppealManageView implements Serializable {
     public static final String OPERATORID = "operatorId";
 
     public static final String OPERATORNAME = "operatorName";
+
+    public static final String ORDERDOCTORCODE = "orderDoctorCode";
+
+    public static final String ORDERDOCTORNAME = "orderDoctorName";
+
+    public static final String ORDERDEPTCODE = "orderDeptCode";
+
+    public static final String ORDERDEPTNAME = "orderDeptName";
 
     public static final String ISEND = "isEnd";
 

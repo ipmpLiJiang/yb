@@ -235,7 +235,7 @@ public class YbAppealManageServiceImpl extends ServiceImpl<YbAppealManageMapper,
             } else {
                 mms = "第二版";
             }
-            if (isUpdate) {
+            if (isUpdate || entity.getSourceType() == YbDefaultValue.SOURCETYPE_1) {
                 if (entity.getAcceptState() == YbDefaultValue.ACCEPTSTATE_1) {
                     isUpdate = true;
                     YbAppealManage updateAppealManage = new YbAppealManage();
@@ -302,7 +302,7 @@ public class YbAppealManageServiceImpl extends ServiceImpl<YbAppealManageMapper,
             } else {
                 mms = "第二版";
             }
-            if (isUpdate) {
+            if (isUpdate || entity.getSourceType() == YbDefaultValue.SOURCETYPE_1) {
                 if (entity.getAcceptState() == YbDefaultValue.ACCEPTSTATE_6) {
                     YbAppealResult updateAppealResult = new YbAppealResult();
                     updateAppealResult.setId(ybAppealManage.getId());

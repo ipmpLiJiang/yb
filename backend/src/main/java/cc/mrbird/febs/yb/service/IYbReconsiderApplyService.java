@@ -35,6 +35,8 @@ public interface IYbReconsiderApplyService extends IService<YbReconsiderApply> {
 
     void deleteYbReconsiderApplys(String[] Ids);
 
+    void updateReconsiderApplyState2345(YbReconsiderApply reconsiderApply);
+
     void deleteBatchStateIdsYbReconsiderApplys(String[] Ids, Integer state);
 
     boolean updateYbReconsiderApplyState(String applyDateStr, Integer state);

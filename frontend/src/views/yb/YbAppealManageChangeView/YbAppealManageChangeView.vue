@@ -160,7 +160,7 @@ export default {
       searchText: '',
       tableSelectKey: '1',
       searchTypeno: 1,
-      selectTypenoDataSource: [{text: '版本一', value: 1}, {text: '版本二', value: 2}]
+      selectTypenoDataSource: [{text: '全部', value: 0}, {text: '版本一', value: 1}, {text: '版本二', value: 2}, {text: '人工复议', value: 3}]
     }
   },
   computed: {
@@ -190,6 +190,9 @@ export default {
     },
     handleTypenoChange (value) {
       this.searchTypeno = value
+      setTimeout(() => {
+        this.callback(this.tableSelectKey)
+      }, 100)
     },
     setTypeno (value) {
       this.searchTypeno = value

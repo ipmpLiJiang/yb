@@ -151,6 +151,7 @@ public class YbReconsiderVerifyViewController extends BaseController {
     @PostMapping("exportVerify")
     @RequiresPermissions("ybReconsiderVerifyView:nullview")
     public void exportVerify(QueryRequest request, YbReconsiderVerifyView ybReconsiderVerifyView, HttpServletResponse response) throws FebsException {
+        boolean isError = false;
         try {
             YbReconsiderApply reconsiderApply = this.iYbReconsiderApplyService.findReconsiderApplyByApplyDateStrs(ybReconsiderVerifyView.getApplyDateStr());
             if (reconsiderApply != null) {
@@ -242,7 +243,8 @@ public class YbReconsiderVerifyViewController extends BaseController {
                             exportList.add(dataExport);
                         }
                         if (exportList.size() == 0) {
-                            throw new FebsException("未找到明细扣款数据");
+                            isError = true;
+                            message = "未找到明细扣款数据";
                         } else {
                             ExportExcelUtils.exportExcel(response, YbReconsiderApplyDataVerify.class, exportList, "明细扣款");
                         }
@@ -275,20 +277,28 @@ public class YbReconsiderVerifyViewController extends BaseController {
                             exportList.add(dataExport);
                         }
                         if (exportList.size() == 0) {
-                            throw new FebsException("未找到主单扣款数据");
+                            isError = true;
+                            message = "未找到主单扣款数据";
                         } else {
                             ExportExcelUtils.exportExcel(response, YbReconsiderApplyMainVerify.class, exportList, "主单扣款");
                         }
                     }
 
                 } else {
-                    throw new FebsException(ybReconsiderVerifyView.getApplyDateStr() + " 当前状态无法进行下载");
+                    isError = true;
+                    message = ybReconsiderVerifyView.getApplyDateStr() + " 当前状态无法进行下载";
                 }
             } else {
-                throw new FebsException("未找到 " + ybReconsiderVerifyView.getApplyDateStr() + " 上传数据.");
+                isError = true;
+                message = "未找到 " + ybReconsiderVerifyView.getApplyDateStr() + " 上传数据.";
+            }
+            if(isError){
+                throw new FebsException(message);
             }
         } catch (Exception e) {
-            message = "导出Excel失败";
+            if(!isError)
+                message = "导出Excel失败";
+
             log.error(message, e);
             throw new FebsException(message);
         }

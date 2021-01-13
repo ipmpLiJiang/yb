@@ -158,17 +158,17 @@ export default {
         dataIndex: 'enableDate',
         customRender: (text, row, index) => {
           if (text !== '' && text !== null) {
-            if (isNaN(text) && !isNaN(Date.parse(text))) {
-              return moment(text).format(this.tableFormat)
+            if (row.isEnableDate === 1) {
+              return moment(text).format(this.tableFormat) + ' 24:00'
             } else {
-              return text
+              return moment(row.applyEndDate).format(this.tableFormat1)
             }
           } else {
             return text
           }
         },
         fixed: 'right',
-        width: 130
+        width: 125
       },
       {
         title: '复议截止日期',

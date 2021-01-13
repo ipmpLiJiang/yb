@@ -1,5 +1,6 @@
 package cc.mrbird.febs.yb.service;
 
+import cc.mrbird.febs.system.domain.User;
 import cc.mrbird.febs.yb.entity.YbAppealManage;
 import cc.mrbird.febs.yb.entity.YbAppealManageView;
 import cc.mrbird.febs.yb.entity.YbReconsiderVerify;
@@ -26,6 +27,11 @@ public interface IYbAppealManageViewService extends IService<YbAppealManageView>
     IPage<YbAppealManageView> findYbAppealManageViewList(QueryRequest request, YbAppealManageView ybAppealManageView);
 
     IPage<YbAppealManageView> findAppealManageUserViews(QueryRequest request, YbAppealManageView ybAppealManageView);
+
+    IPage<YbAppealManageView> findAppealManageOperateRoomViews(QueryRequest request, YbAppealManageView ybAppealManageView);
+
+
+    IPage<YbAppealManageView> findAppealManageConfireViews(QueryRequest request, YbAppealManageView ybAppealManageView, User currentUser);
 
     void createYbAppealManageView(YbAppealManageView ybAppealManageView);
 

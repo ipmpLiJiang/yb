@@ -1,12 +1,17 @@
 package cc.mrbird.febs.cn.webxml.sms;
 
 import cc.mrbird.febs.common.utils.OracleDB;
-import cc.mrbird.febs.yb.entity.YbDeptHis;
+import cc.mrbird.febs.yb.entity.*;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.NumberUtil;
+import cn.hutool.json.JSONObject;
+import cn.hutool.json.JSONUtil;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.TypeReference;
 import lombok.ToString;
 import net.bytebuddy.implementation.bytecode.Throw;
 
+import java.io.Console;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
@@ -38,7 +43,27 @@ public class TestSend {
         return str;
     }
 
+    private static YbAppealConfireJson getAppealConfireJson(String dataJson){
+        YbAppealConfireJson appealConfireJson = JSON.parseObject(dataJson, new TypeReference<YbAppealConfireJson>() {
+        });
+
+        return  appealConfireJson;
+    }
+
     public static void main(String[] args) throws IOException {
+
+        String dataJson = "{'id':'1','doctorCode':'zhangsan','doctorName':'张三','adminType':1,'comments':'2222','state':0,'isDeletemark':0," +
+                "'child':[{'id':'11','pid':'1','deptCode':'111','deptName':'内科'},{'id':'22','pid':'1','deptCode':'222','deptName':'外科'}]}";
+
+//        JSONObject josn = JSONUtil.parseObj(dataJson);
+        //id,pid,deptCode,deptName
+        YbAppealConfireJson yac = getAppealConfireJson(dataJson);
+
+        dataJson = JSONUtil.toJsonStr(yac);
+
+        System.out.println(dataJson);
+        //id,doctorCode,doctorName,adminType,comments,state,isDeletemark,child
+
 //        String dateStr = "2010-03-11";
 //        Date date = DateUtil.parse(dateStr);
 //

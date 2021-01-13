@@ -114,7 +114,7 @@
     </template>
     <template>
       <div>
-        <a-modal :width="800" :maskClosable="false" :footer="null" v-model="editVisible" title="录入扣款方案" @ok="handleOk">
+        <a-modal width="85%" :maskClosable="false" :footer="null" v-model="editVisible" title="录入扣款方案" @ok="handleOk">
           <ybAppealResultDeductImplement-edit
           ref="ybAppealResultDeductImplementEdit"
           @close="handleOk"

@@ -1,5 +1,6 @@
 package cc.mrbird.febs.yb.service;
 
+import cc.mrbird.febs.yb.entity.YbReconsiderApply;
 import cc.mrbird.febs.yb.entity.YbReconsiderVerify;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -45,5 +46,5 @@ public interface IYbReconsiderVerifyService extends IService<YbReconsiderVerify>
 
     int findReconsiderVerifyResetCheckCounts(String applyDateStr);
 
-    void importReconsiderDataVerifys(String applyDateStr, int dataType, int typeno, List<YbReconsiderVerify> verifyList);
+    void importReconsiderDataVerifys(YbReconsiderApply reconsiderApply, int dataType, int typeno, List<YbReconsiderVerify> verifyList);
 }

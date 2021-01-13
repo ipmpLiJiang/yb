@@ -66,7 +66,7 @@ public class HanGenerator {
         // strategy.setCapitalMode(true);// 全局大写命名 ORACLE 注意
         //strategy.setTablePrefix(new String[] { "tlog_", "tsys_" });// 此处可以修改为您的表前缀
         strategy.setNaming(NamingStrategy.underline_to_camel);// 表名生成策略
-        strategy.setInclude(new String[]{"yb_sap_depart"}); // 需要生成的表
+        strategy.setInclude(new String[]{"yb_appeal_confire_data"}); // 需要生成的表
         // strategy.setExclude(new String[]{"test"}); // 排除生成的表
         // 自定义实体父类
         // strategy.setSuperEntityClass("com.baomidou.demo.TestEntity");
@@ -159,7 +159,8 @@ public class HanGenerator {
                 // 自定义输入文件名称
                 return PageUrl + moduleName + "/" + tableInfo.getEntityName() + "/" + tableInfo.getEntityName() + "Edit.vue";
             }
-        });**/
+        });
+         **/
 
         //  自定义 xxUpdate.html生成
         focList.add(new FileOutConfig("/templates/templatesMybatis/mapper.java.vm") {

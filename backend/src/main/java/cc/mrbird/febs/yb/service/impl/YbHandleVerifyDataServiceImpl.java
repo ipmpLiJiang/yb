@@ -221,7 +221,7 @@ public class YbHandleVerifyDataServiceImpl extends ServiceImpl<YbHandleVerifyDat
         Date thisDate = new java.sql.Timestamp(new Date().getTime());
         int day = iComConfiguremanageService.getConfigDay();
         List<YbHandleVerifyData> updateHandleVerifyList = new ArrayList<>();
-        List<YbAppealManage> appealManageList = new ArrayList<YbAppealManage>();
+        List<YbAppealManage> appealManageList = new ArrayList<>();
         Date addDate = DataTypeHelpers.addDateMethod(thisDate, day);
 
         List<YbPerson> personList = this.findPerson(list);
@@ -277,17 +277,17 @@ public class YbHandleVerifyDataServiceImpl extends ServiceImpl<YbHandleVerifyDat
                 ybAppealManage.setAcceptState(YbDefaultValue.ACCEPTSTATE_1);
                 ybAppealManage.setDataType(ybHandleVerifyData.getDataType());
 
-                ybAppealManage.setApplyDateStr(ybHandleVerifyData.getApplyDateStr());
-                ybAppealManage.setOrderNum(ybHandleVerifyData.getOrderNum());
-                ybAppealManage.setOrderNumber(ybHandleVerifyData.getOrderNumber());
-                ybAppealManage.setTypeno(ybHandleVerifyData.getTypeno());
-
                 queryHvdList = hvdList.stream().filter(s->s.getId().equals(ybHandleVerifyData.getId())).collect(Collectors.toList());
                 if(queryHvdList.size()>0) {
                     ybAppealManage.setOrderDoctorCode(queryHvdList.get(0).getOrderDoctorCode());
                     ybAppealManage.setOrderDoctorName(queryHvdList.get(0).getOrderDoctorName());
                     ybAppealManage.setOrderDeptCode(queryHvdList.get(0).getOrderDeptCode());
                     ybAppealManage.setOrderDeptName(queryHvdList.get(0).getOrderDeptName());
+
+                    ybAppealManage.setApplyDateStr(queryHvdList.get(0).getApplyDateStr());
+                    ybAppealManage.setOrderNum(queryHvdList.get(0).getOrderNum());
+                    ybAppealManage.setOrderNumber(queryHvdList.get(0).getOrderNumber());
+                    ybAppealManage.setTypeno(queryHvdList.get(0).getTypeno());
                 }
 
                 updateHandleVerifyList.add(updateHandleVerify);

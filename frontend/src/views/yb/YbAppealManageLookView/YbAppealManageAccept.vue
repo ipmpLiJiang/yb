@@ -154,6 +154,23 @@ export default {
         width: 100
       },
       {
+        title: '确认截止时间',
+        dataIndex: 'enableDate',
+        customRender: (text, row, index) => {
+          if (text !== '' && text !== null) {
+            if (row.isEnableDate === 1) {
+              return moment(text).format(this.tableFormat) + ' 24:00'
+            } else {
+              return moment(row.applyEndDate).format(this.tableFormat1)
+            }
+          } else {
+            return text
+          }
+        },
+        fixed: 'right',
+        width: 125
+      },
+      {
         title: '复议截止日期',
         dataIndex: 'applyEndDate',
         customRender: (text, row, index) => {

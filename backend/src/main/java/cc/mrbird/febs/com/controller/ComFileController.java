@@ -302,7 +302,7 @@ public class ComFileController extends BaseController {
         }else{
             isUpdate = true ;
         }
-        if (isUpdate) {
+        if (isUpdate || inUploadFile.getSourceType() == YbDefaultValue.SOURCETYPE_1) {
             int num = 1;
             List<ComFile> list = this.iComFileService.findListComFile(inUploadFile.getId());
             if (list.size() > 0) {
@@ -383,7 +383,7 @@ public class ComFileController extends BaseController {
             }else{
                 isUpdate = true ;
             }
-            if (isUpdate) {
+            if (isUpdate || inUploadFile.getSourceType() == YbDefaultValue.SOURCETYPE_1) {
                 String strId = inUploadFile.getId();
                 ComFile comFile = this.iComFileService.findComFileById(strId);
                 if (comFile != null) {

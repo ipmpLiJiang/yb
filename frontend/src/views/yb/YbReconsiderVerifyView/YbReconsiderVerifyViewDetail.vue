@@ -20,62 +20,69 @@
     >
     </inpatientfees-module>
     <template>
-    <a-form :form="form" >
-      <div style="margin:20px 0px">
-        <a-row
-          justify="center"
-          type="flex"
-        >
-          <a-col :span=8>
-              <a-form-item
-              v-bind="{
-                labelCol: { span: 7 },
-                wrapperCol: { span: 16 }
-              }"
-              label="参考复议科室">
-                <input-select
-                  ref="inputSelectVerifyDept"
-                  :type=1
-                  @selectChange=selectDeptChang
-                >
-                </input-select>
-              </a-form-item>
-          </a-col>
-          <a-col :span=8>
-            <a-form-item
-              v-bind="{
-                labelCol: { span: 7 },
-                wrapperCol: { span: 16 }
-              }"
-              label="参考复议医生">
-              <input-select
-              ref="inputSelectVerifyDoctor"
-              :type=2
-              @selectChange=selectDoctorChang
-              >
-              </input-select>
-              </a-form-item>
-          </a-col>
-          <a-col :span=2>
-            <a-button
-              @click="handleSubmit"
-              type="primary"
-              :loading="loading"
-            >提交</a-button>
-          </a-col>
-          <a-col :span=3>
-            <a-popconfirm
-              title="确定放弃编辑？"
-              @confirm="onClose"
-              okText="确定"
-              cancelText="取消"
+      <a-spin tip="Loading..." :spinning="spinning" :delay="delayTime">
+      <div>
+        <a-form :form="form" >
+          <div style="margin:20px 0px">
+            <a-row
+              justify="center"
+              type="flex"
             >
-              <a-button style="margin-right: .8rem">取消</a-button>
-            </a-popconfirm>
-          </a-col>
-        </a-row>
+              <a-col :span=8>
+                  <a-form-item
+                  v-bind="{
+                    labelCol: { span: 7 },
+                    wrapperCol: { span: 16 }
+                  }"
+                  label="参考复议科室">
+                    <input-select
+                      ref="inputSelectVerifyDept"
+                      :type=1
+                      @selectChange=selectDeptChang
+                    >
+                    </input-select>
+                  </a-form-item>
+              </a-col>
+              <a-col :span=8>
+                <a-form-item
+                  v-bind="{
+                    labelCol: { span: 7 },
+                    wrapperCol: { span: 16 }
+                  }"
+                  label="参考复议医生">
+                  <input-select
+                  ref="inputSelectVerifyDoctor"
+                  :type=2
+                  @selectChange=selectDoctorChang
+                  >
+                  </input-select>
+                  </a-form-item>
+              </a-col>
+              <a-col :span=2>
+                <a-popconfirm
+                  title="确定放弃提交？"
+                  @confirm="handleSubmit"
+                  okText="确定"
+                  cancelText="取消"
+                >
+                  <a-button type="primary" style="margin-right: .8rem">提交</a-button>
+                </a-popconfirm>
+              </a-col>
+              <a-col :span=3>
+                <a-popconfirm
+                  title="确定放弃编辑？"
+                  @confirm="onClose"
+                  okText="确定"
+                  cancelText="取消"
+                >
+                  <a-button style="margin-right: .8rem">取消</a-button>
+                </a-popconfirm>
+              </a-col>
+            </a-row>
+          </div>
+        </a-form>
       </div>
-    </a-form>
+      </a-spin>
     </template>
   </a-drawer>
 </template>
@@ -102,6 +109,8 @@ export default {
       loading: false,
       ybReconsiderVerifyView: {},
       ybReconsiderVerify: {},
+      spinning: false,
+      delayTime: 500,
       form: this.$form.createForm(this)
     }
   },
@@ -111,6 +120,7 @@ export default {
     moment,
     reset () {
       this.loading = false
+      this.spinning = false
       this.ybReconsiderVerify = {}
       this.ybReconsiderVerifyView = {}
       this.form.resetFields()
@@ -121,6 +131,7 @@ export default {
     },
     handleSubmit () {
       this.loading = true
+      this.spinning = true
       let arrData = [{
         id: this.ybReconsiderVerifyView.isVerify === 0 ? '' : this.ybReconsiderVerify.id,
         applyDataId: this.ybReconsiderVerifyView.applyDataId,
@@ -143,6 +154,7 @@ export default {
         this.$emit('success')
       }).catch(() => {
         this.loading = false
+        this.spinning = false
       })
     },
     selectDoctorChang (item) {
