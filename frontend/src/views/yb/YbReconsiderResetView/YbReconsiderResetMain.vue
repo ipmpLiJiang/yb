@@ -84,7 +84,7 @@ export default {
         title: '单据号',
         dataIndex: 'billNo',
         fixed: 'left',
-        width: 100
+        width: 110
       },
       {
         title: '医保内金额',
@@ -94,7 +94,7 @@ export default {
       {
         title: '规则名称',
         dataIndex: 'ruleName',
-        width: 100
+        width: 120
       },
       {
         title: '扣除金额',

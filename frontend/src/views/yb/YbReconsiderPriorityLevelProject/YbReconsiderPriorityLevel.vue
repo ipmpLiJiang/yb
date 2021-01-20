@@ -110,6 +110,7 @@
     </div>
     <!-- 新增字典 -->
     <ybReconsiderPriorityLevel-add
+      ref="ybReconsiderPriorityLevelAdd"
       @close="handleAddClose"
       @success="handleAddSuccess"
       :addVisiable="addVisiable"
@@ -188,6 +189,25 @@ export default {
         dataIndex: 'rplName'
       },
       {
+        title: '默认复议科室类型',
+        dataIndex: 'deptType',
+        customRender: (text, row, index) => {
+          switch (text) {
+            case 1:
+              return '开单科室'
+            case 2:
+              return '执行科室'
+            case 3:
+              return '计费科室'
+            case 4:
+              return '固定科室'
+            default:
+              return text
+          }
+        },
+        width: 150
+      },
+      {
         title: '科室名称',
         dataIndex: 'deptName',
         customRender: (text, row, index) => {
@@ -196,6 +216,25 @@ export default {
           }
         },
         width: 250
+      },
+      {
+        title: '默认复议医生类型',
+        dataIndex: 'personType',
+        customRender: (text, row, index) => {
+          switch (text) {
+            case 1:
+              return '开单人员'
+            case 2:
+              return '执行人员'
+            case 3:
+              return '计费人员'
+            case 4:
+              return '固定人员'
+            default:
+              return text
+          }
+        },
+        width: 150
       },
       {
         title: '医生名称',
@@ -246,7 +285,7 @@ export default {
       this.addVisiable = false
     },
     add () {
-      // this.$refs.ybReconsiderPriorityLevelAdd.setFormValues()
+      this.$refs.ybReconsiderPriorityLevelAdd.setFormValues()
       this.addVisiable = true
     },
     handleEditSuccess () {
@@ -362,6 +401,8 @@ export default {
         params.pageSize = this.pagination.defaultPageSize
         params.pageNum = this.pagination.defaultCurrent
       }
+      params.sortField = 'create_Time'
+      params.sortOrder = 'descend'
       params.state = 2
       this.$get('ybReconsiderPriorityLevel', {
         ...params

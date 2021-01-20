@@ -136,6 +136,8 @@ export default {
   data () {
     return {
       series: [],
+      top: 10,
+      bottom: 10,
       chartOptions: {
         chart: {
           toolbar: {
@@ -197,7 +199,8 @@ export default {
       userRole: '',
       userDept: '',
       lastLoginTime: '',
-      welcomeMessage: ''
+      welcomeMessage: '',
+      dataSource: []
     }
   },
   computed: {
@@ -207,6 +210,24 @@ export default {
     }),
     avatar () {
       return `static/avatar/${this.user.avatar}`
+    },
+    columns () {
+      return [{
+        title: '压缩包文件名称',
+        dataIndex: 'fileName'
+      },
+      {
+        title: '科室',
+        dataIndex: 'deptName',
+        width: 250
+      },
+      {
+        title: '操作',
+        dataIndex: 'operation',
+        scopedSlots: { customRender: 'operation' },
+        fixed: 'right',
+        width: 150
+      }]
     }
   },
   methods: {

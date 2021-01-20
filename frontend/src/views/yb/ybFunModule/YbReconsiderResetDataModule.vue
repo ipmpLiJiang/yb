@@ -2,7 +2,7 @@
   <a-drawer
     title="查看剔除明细"
     :maskClosable="false"
-    width=75%
+    width=85%
     placement="right"
     :closable="true"
     @close="onClose"

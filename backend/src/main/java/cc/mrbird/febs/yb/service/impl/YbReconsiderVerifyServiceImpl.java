@@ -1,6 +1,7 @@
 package cc.mrbird.febs.yb.service.impl;
 
 import cc.mrbird.febs.com.controller.DataTypeHelpers;
+import cc.mrbird.febs.com.entity.ComConfiguremanage;
 import cc.mrbird.febs.com.entity.ComSms;
 import cc.mrbird.febs.com.service.IComConfiguremanageService;
 import cc.mrbird.febs.com.service.IComSmsService;
@@ -129,7 +130,7 @@ public class YbReconsiderVerifyServiceImpl extends ServiceImpl<YbReconsiderVerif
 
         YbReconsiderApply ybReconsiderApply = this.iYbReconsiderApplyService.findReconsiderApplyByApplyDateStrs(applyDateStr);
         boolean isCreate = true;
-        if(ybReconsiderApply!=null) {
+        if (ybReconsiderApply != null) {
             int state = ybReconsiderApply.getState();
             if (state == YbDefaultValue.APPLYSTATE_2 || state == YbDefaultValue.APPLYSTATE_3 || state == YbDefaultValue.APPLYSTATE_4 || state == YbDefaultValue.APPLYSTATE_5) {
                 int typeno = state == YbDefaultValue.APPLYSTATE_2 || state == YbDefaultValue.APPLYSTATE_3 ? YbDefaultValue.TYPENO_1 : YbDefaultValue.TYPENO_2;
@@ -146,16 +147,29 @@ public class YbReconsiderVerifyServiceImpl extends ServiceImpl<YbReconsiderVerif
 
                     List<YbReconsiderPriorityLevel> rlProjectList = rplList.stream().filter(s -> s.getState() == YbReconsiderPriorityLevel.PL_STATE_2).collect(Collectors.toList());
                     List<YbReconsiderPriorityLevel> rlRuleList = rplList.stream().filter(s -> s.getState() == YbReconsiderPriorityLevel.PL_STATE_1).collect(Collectors.toList());
-                    List<YbReconsiderPriorityLevel> rlDeptList = rplList.stream().filter(s -> s.getState() == YbReconsiderPriorityLevel.PL_STATE_3).collect(Collectors.toList());
+                    List<YbReconsiderPriorityLevel> rlExcuteDeptList = rplList.stream().filter(s -> s.getState() == YbReconsiderPriorityLevel.PL_STATE_3 && s.getDeptState() == YbReconsiderPriorityLevel.DEPT_STATE_1).collect(Collectors.toList());
+//                    List<YbReconsiderPriorityLevel> rlFeeDeptList = rplList.stream().filter(s -> s.getState() == YbReconsiderPriorityLevel.PL_STATE_3 && s.getDeptState() == YbReconsiderPriorityLevel.DEPT_STATE_2).collect(Collectors.toList());
 
                     List<YbReconsiderInpatientfees> queryRifList = new ArrayList<>();
                     List<YbReconsiderPriorityLevel> queryRlList = new ArrayList<>();
                     List<YbPerson> personList = new ArrayList<>();
                     personList = iYbPersonService.list();
-                    List<YbPerson> queryPersontList = new ArrayList<>();
+                    List<Integer> intList = new ArrayList<>();
+                    intList.add(4);//部门
+                    List<ComConfiguremanage> configList = iComConfiguremanageService.getConfigLists(intList);
+                    List<ComConfiguremanage> queryConfigList = new ArrayList<>();
+                    ComConfiguremanage configuremanage = new ComConfiguremanage();
                     List<YbReconsiderVerify> createList = new ArrayList<>();
+                    YbReconsiderInpatientfees entityRif = new YbReconsiderInpatientfees();
                     Date thisDate = new Date();
+                    String strDocId = "";
+                    String strDocName = "";
+                    String strDeptId = "";
+                    String strDeptName = "";
+                    String projectCode = "";
+                    boolean isKaiDan = false;
                     for (YbReconsiderApplyData item : radList) {
+                        YbReconsiderPriorityLevel entityRpl = new YbReconsiderPriorityLevel();
                         isCreate = false;
 
                         queryRifList = rifList.stream().filter(s ->
@@ -183,31 +197,42 @@ public class YbReconsiderVerifyServiceImpl extends ServiceImpl<YbReconsiderVerif
                             }
                         }
                         if (queryRlList.size() > 0) {
-                            ybReconsiderVerify.setVerifyDeptCode(queryRlList.get(0).getDeptCode());
-                            ybReconsiderVerify.setVerifyDeptName(queryRlList.get(0).getDeptName());
-                            ybReconsiderVerify.setVerifyDoctorCode(queryRlList.get(0).getDoctorCode());
-                            ybReconsiderVerify.setVerifyDoctorName(queryRlList.get(0).getDoctorName());
-
-                            isCreate = true;
+                            entityRpl = queryRlList.get(0);
+                            if (queryRifList.size() > 0) {
+                                entityRif = queryRifList.get(0);
+                            } else {
+                                entityRif = null;
+                            }
+                            ybReconsiderVerify = this.getReconsiderVerifyImport(ybReconsiderVerify, entityRpl, entityRif);
+                            if (ybReconsiderVerify.getVerifyDoctorCode() != null) {
+                                isCreate = true;
+                            }
                         } else {
                             if (queryRifList.size() > 0) {
-                                YbReconsiderInpatientfees entityRif = queryRifList.get(0);
+                                strDocId = null;
+                                strDocName = null;
+                                strDeptId = null;
+                                strDeptName = null;
+                                entityRif = queryRifList.get(0);
                                 String deptCode = entityRif.getExcuteDeptId();
                                 //科室
                                 if (deptCode != null) {
-                                    queryRlList = rlDeptList.stream().filter(
+                                    queryRlList = rlExcuteDeptList.stream().filter(
                                             s -> s.getDeptCode().equals(deptCode)
                                     ).collect(Collectors.toList());
                                 } else {
                                     queryRlList = new ArrayList<>();
                                 }
-
-                                String strDocId = "";
-                                String strDocName = "";
-                                String strDeptId = "";
-                                String strDeptName = "";
+//                                if (queryRlList.size() == 0) {
+//                                    String feeDeptCode = entityRif.getFeeDeptId();
+//                                    if (feeDeptCode != null) {
+//                                        queryRlList = rlFeeDeptList.stream().filter(
+//                                                s -> s.getDeptCode().equals(feeDeptCode)
+//                                        ).collect(Collectors.toList());
+//                                    }
+//                                }
                                 if (queryRlList.size() > 0) {
-                                    YbReconsiderPriorityLevel entityRpl = queryRlList.get(0);
+                                    entityRpl = queryRlList.get(0);
                                     if (entityRpl.getPersonType().equals(YbReconsiderPriorityLevel.PERSON_TYPE_4)) {
                                         ybReconsiderVerify.setVerifyDeptCode(entityRpl.getDeptCode());
                                         ybReconsiderVerify.setVerifyDeptName(entityRpl.getDeptName());
@@ -217,35 +242,107 @@ public class YbReconsiderVerifyServiceImpl extends ServiceImpl<YbReconsiderVerif
                                     } else {
                                         if (entityRpl.getPersonType().equals(YbReconsiderPriorityLevel.PERSON_TYPE_1)) {
                                             strDocId = entityRif.getOrderDocId();
-                                            strDocName = this.getInpatientfeesDocName(entityRif, personList, YbReconsiderPriorityLevel.PERSON_TYPE_1);
-                                            strDeptId = entityRif.getDeptId();
-                                            strDeptName = entityRif.getDeptName();
-                                        }
-                                        if (entityRpl.getPersonType().equals(YbReconsiderPriorityLevel.PERSON_TYPE_2)) {
+                                            if (entityRif.getOrderDocName() == null || entityRif.getOrderDocName().equals("")) {
+                                                strDocName = this.getInpatientfeesDocName(entityRif, personList, YbReconsiderPriorityLevel.PERSON_TYPE_1);
+                                            } else {
+                                                strDocName = entityRif.getOrderDocName();
+                                            }
+                                            if (entityRpl.getIsFixDept()) {
+                                                strDeptId = entityRpl.getDeptCode();
+                                                strDeptName = entityRpl.getDeptName();
+                                            } else {
+                                                strDeptId = entityRif.getDeptId();
+                                                strDeptName = entityRif.getDeptName();
+                                            }
+                                        } else if (entityRpl.getPersonType().equals(YbReconsiderPriorityLevel.PERSON_TYPE_2)) {
                                             strDocId = entityRif.getExcuteDocId();
-                                            strDocName = this.getInpatientfeesDocName(entityRif, personList, YbReconsiderPriorityLevel.PERSON_TYPE_2);
-                                            strDeptId = entityRif.getExcuteDeptId();
-                                            strDeptName = entityRif.getExcuteDeptName();
-                                        }
-                                        if (entityRpl.getPersonType().equals(YbReconsiderPriorityLevel.PERSON_TYPE_3)) {
+                                            if (entityRif.getExcuteDocName() == null || entityRif.getExcuteDocName().equals("")) {
+                                                strDocName = this.getInpatientfeesDocName(entityRif, personList, YbReconsiderPriorityLevel.PERSON_TYPE_2);
+                                            } else {
+                                                strDocName = entityRif.getExcuteDocName();
+                                            }
+                                            if (entityRpl.getIsFixDept()) {
+                                                strDeptId = entityRpl.getDeptCode();
+                                                strDeptName = entityRpl.getDeptName();
+                                            } else {
+                                                strDeptId = entityRif.getExcuteDeptId();
+                                                strDeptName = entityRif.getExcuteDeptName();
+                                            }
+                                        } else if (entityRpl.getPersonType().equals(YbReconsiderPriorityLevel.PERSON_TYPE_3)) {
                                             strDocId = entityRif.getFeeOperatorId();
-                                            strDocName = this.getInpatientfeesDocName(entityRif, personList, YbReconsiderPriorityLevel.PERSON_TYPE_3);
-                                            strDeptId = entityRif.getFeeDeptId();
-                                            strDeptName = entityRif.getFeeDeptName();
+                                            if (entityRif.getFeeOperatorName() == null || entityRif.getFeeOperatorName().equals("")) {
+                                                strDocName = this.getInpatientfeesDocName(entityRif, personList, YbReconsiderPriorityLevel.PERSON_TYPE_3);
+                                            } else {
+                                                strDocName = entityRif.getFeeOperatorName();
+                                            }
+                                            if (entityRpl.getIsFixDept()) {
+                                                strDeptId = entityRpl.getDeptCode();
+                                                strDeptName = entityRpl.getDeptName();
+                                            } else {
+                                                strDeptId = entityRif.getFeeDeptId();
+                                                strDeptName = entityRif.getFeeDeptName();
+                                            }
                                         }
                                         if (strDeptId != null && strDeptName != null && strDocId != null && strDocName != null) {
-                                            ybReconsiderVerify.setVerifyDeptCode(entityRif.getDeptId());
-                                            ybReconsiderVerify.setVerifyDeptName(entityRif.getDeptName());
+                                            ybReconsiderVerify.setVerifyDeptCode(strDeptId);
+                                            ybReconsiderVerify.setVerifyDeptName(strDeptName);
                                             ybReconsiderVerify.setVerifyDoctorCode(strDocId);
                                             ybReconsiderVerify.setVerifyDoctorName(strDocName);
                                             isCreate = true;
                                         }
                                     }
                                 } else {
-                                    strDocId = entityRif.getOrderDocId();
-                                    strDocName = this.getInpatientfeesDocName(entityRif, personList, YbReconsiderPriorityLevel.PERSON_TYPE_1);
-                                    strDeptId = entityRif.getDeptId();
-                                    strDeptName = entityRif.getDeptName();
+                                    isKaiDan = false;
+                                    projectCode = entityRif.getItemCode();
+                                    if (projectCode != null && !projectCode.equals("")) {
+                                        String strSub = projectCode.substring(0, 1);
+                                        if (configList.size() > 0) {
+                                            queryConfigList = configList.stream().filter(z -> z.getStringField().equals(strSub)).collect(Collectors.toList());
+                                            if (queryConfigList.size() == 0) {
+                                                queryConfigList = configList.stream().filter(z -> z.getStringField().equals("zm")).collect(Collectors.toList());
+                                            }
+                                            if (queryConfigList.size() > 0) {
+                                                configuremanage = queryConfigList.get(0);
+                                                if (configuremanage.getIntField() == YbReconsiderPriorityLevel.PERSON_TYPE_1) {
+                                                    isKaiDan = true;
+                                                } else if (configuremanage.getIntField() == YbReconsiderPriorityLevel.PERSON_TYPE_2) {
+                                                    strDocId = entityRif.getExcuteDocId();
+                                                    if (entityRif.getExcuteDocName() == null || entityRif.getExcuteDocName().equals("")) {
+                                                        strDocName = this.getInpatientfeesDocName(entityRif, personList, YbReconsiderPriorityLevel.PERSON_TYPE_2);
+                                                    } else {
+                                                        strDocName = entityRif.getExcuteDocName();
+                                                    }
+                                                    strDeptId = entityRif.getExcuteDeptId();
+                                                    strDeptName = entityRif.getExcuteDeptName();
+                                                } else if (configuremanage.getIntField() == YbReconsiderPriorityLevel.PERSON_TYPE_3) {
+                                                    strDocId = entityRif.getFeeOperatorId();
+                                                    if (entityRif.getFeeOperatorName() == null || entityRif.getFeeOperatorName().equals("")) {
+                                                        strDocName = this.getInpatientfeesDocName(entityRif, personList, YbReconsiderPriorityLevel.PERSON_TYPE_3);
+                                                    } else {
+                                                        strDocName = entityRif.getFeeOperatorName();
+                                                    }
+                                                    strDeptId = entityRif.getFeeDeptId();
+                                                    strDeptName = entityRif.getFeeDeptName();
+                                                }
+                                            } else {
+                                                isKaiDan = true;
+                                            }
+                                        } else {
+                                            isKaiDan = true;
+                                        }
+                                    } else {
+                                        isKaiDan = true;
+                                    }
+                                    if (isKaiDan) {
+                                        strDocId = entityRif.getOrderDocId();
+                                        if (entityRif.getOrderDocName() == null || entityRif.getOrderDocName().equals("")) {
+                                            strDocName = this.getInpatientfeesDocName(entityRif, personList, YbReconsiderPriorityLevel.PERSON_TYPE_1);
+                                        } else {
+                                            strDocName = entityRif.getOrderDocName();
+                                        }
+                                        strDeptId = entityRif.getDeptId();
+                                        strDeptName = entityRif.getDeptName();
+                                    }
                                     if (strDeptId != null && strDeptName != null && strDocId != null && strDocName != null) {
                                         ybReconsiderVerify.setVerifyDeptCode(strDeptId);
                                         ybReconsiderVerify.setVerifyDeptName(strDeptName);
@@ -260,6 +357,7 @@ public class YbReconsiderVerifyServiceImpl extends ServiceImpl<YbReconsiderVerif
                             if (ybReconsiderVerify.getId() == null || "".equals(ybReconsiderVerify.getId())) {
                                 ybReconsiderVerify.setId(UUID.randomUUID().toString());
                             }
+
                             if (queryRifList.size() > 0) {
                                 ybReconsiderVerify.setOrderDeptCode(queryRifList.get(0).getDeptId());
                                 ybReconsiderVerify.setOrderDeptName(queryRifList.get(0).getDeptName());
@@ -297,6 +395,71 @@ public class YbReconsiderVerifyServiceImpl extends ServiceImpl<YbReconsiderVerif
         }
     }
 
+    private YbReconsiderVerify getReconsiderVerifyImport(YbReconsiderVerify rv, YbReconsiderPriorityLevel rpl, YbReconsiderInpatientfees rif) {
+        String strDocId = null;
+        String strDocName = null;
+        String strDeptId = null;
+        String strDeptName = null;
+        if (rpl.getDeptType() == YbReconsiderPriorityLevel.DEPT_TYPE_4) {
+            strDeptId = rpl.getDeptCode();
+            strDeptName = rpl.getDeptName();
+        } else {
+            if (rif != null) {
+                if (rpl.getDeptType() == YbReconsiderPriorityLevel.DEPT_TYPE_1) {
+                    if (rif.getDeptId() != null && rif.getDeptName() != null) {
+                        strDeptId = rif.getDeptId();
+                        strDeptName = rif.getDeptName();
+                    }
+                } else if (rpl.getDeptType() == YbReconsiderPriorityLevel.DEPT_TYPE_2) {
+                    if (rif.getExcuteDeptId() != null && rif.getExcuteDeptName() != null) {
+                        strDeptId = rif.getExcuteDeptId();
+                        strDeptName = rif.getExcuteDeptName();
+                    }
+                } else if (rpl.getDeptType() == YbReconsiderPriorityLevel.DEPT_TYPE_3) {
+                    if (rif.getFeeDeptId() != null && rif.getFeeDeptName() != null) {
+                        strDeptId = rif.getFeeDeptId();
+                        strDeptName = rif.getFeeDeptName();
+                    }
+                }
+            }
+        }
+        if (rpl.getPersonType() == YbReconsiderPriorityLevel.PERSON_TYPE_4) {
+            strDocId = rpl.getDoctorCode();
+            strDocName = rpl.getDoctorName();
+        } else {
+            if (rif != null) {
+                if (rpl.getPersonType() == YbReconsiderPriorityLevel.PERSON_TYPE_1) {
+                    if (rif.getOrderDocId() != null && rif.getOrderDocName() != null) {
+                        strDocId = rif.getOrderDocId();
+                        strDocName = rif.getOrderDocName();
+                    }
+                } else if (rpl.getPersonType() == YbReconsiderPriorityLevel.PERSON_TYPE_2) {
+                    if (rif.getExcuteDeptId() != null && rif.getExcuteDeptName() != null) {
+                        strDocId = rif.getExcuteDocId();
+                        strDocName = rif.getExcuteDocName();
+                    }
+                } else if (rpl.getPersonType() == YbReconsiderPriorityLevel.PERSON_TYPE_3) {
+                    if (rif.getFeeOperatorId() != null && rif.getFeeOperatorName() != null) {
+                        strDocId = rif.getFeeOperatorId();
+                        strDocName = rif.getFeeOperatorName();
+                    }
+                }
+            }
+        }
+        if (strDeptId != null && strDeptName != null && strDocId != null && strDocName != null) {
+            rv.setVerifyDeptCode(strDeptId);
+            rv.setVerifyDeptName(strDeptName);
+            rv.setVerifyDoctorCode(strDocId);
+            rv.setVerifyDoctorName(strDocName);
+        } else {
+            rv.setVerifyDeptCode(null);
+            rv.setVerifyDeptName(null);
+            rv.setVerifyDoctorCode(null);
+            rv.setVerifyDoctorName(null);
+        }
+        return rv;
+    }
+
     /**
      * 1type 开单医生 2type 执行医生 3type计费人
      */
@@ -307,12 +470,10 @@ public class YbReconsiderVerifyServiceImpl extends ServiceImpl<YbReconsiderVerif
         if (type == 1) {
             strDocId = item.getOrderDocId();
             strDocName = item.getOrderDocName();
-        }
-        if (type == 2) {
+        } else if (type == 2) {
             strDocId = item.getExcuteDocId();
             strDocName = item.getExcuteDocName();
-        }
-        if (type == 3) {
+        } else if (type == 3) {
             strDocId = item.getFeeOperatorId();
             strDocName = item.getFeeOperatorName();
         }
@@ -334,7 +495,7 @@ public class YbReconsiderVerifyServiceImpl extends ServiceImpl<YbReconsiderVerif
 
         YbReconsiderApply ybReconsiderApply = this.iYbReconsiderApplyService.findReconsiderApplyByApplyDateStrs(applyDateStr);
         boolean isCreate = true;
-        if(ybReconsiderApply!=null) {
+        if (ybReconsiderApply != null) {
             int state = ybReconsiderApply.getState();
             if (state == YbDefaultValue.APPLYSTATE_2 || state == YbDefaultValue.APPLYSTATE_3 || state == YbDefaultValue.APPLYSTATE_4 || state == YbDefaultValue.APPLYSTATE_5) {
                 int typeno = state == YbDefaultValue.APPLYSTATE_2 || state == YbDefaultValue.APPLYSTATE_3 ? YbDefaultValue.TYPENO_1 : YbDefaultValue.TYPENO_2;
@@ -467,7 +628,7 @@ public class YbReconsiderVerifyServiceImpl extends ServiceImpl<YbReconsiderVerif
             isCreate = true;
         }
         int state = reconsiderApply.getState();
-        if ((state == YbDefaultValue.APPLYSTATE_2 || state == YbDefaultValue.APPLYSTATE_4) && isCreate){
+        if ((state == YbDefaultValue.APPLYSTATE_2 || state == YbDefaultValue.APPLYSTATE_4) && isCreate) {
             this.iYbReconsiderApplyService.updateReconsiderApplyState2345(reconsiderApply);
         }
     }
@@ -512,6 +673,7 @@ public class YbReconsiderVerifyServiceImpl extends ServiceImpl<YbReconsiderVerif
         List<YbPerson> personList = this.findPerson(list);
         List<YbPerson> queryPersonList = new ArrayList<>();
         List<ComSms> smsList = new ArrayList<>();
+        List<String> userCodeList = new ArrayList<>();
         int nOpenSms = febsProperties.getOpenSms();
         boolean isOpenSms = nOpenSms == 1 ? true : false;
 
@@ -594,7 +756,6 @@ public class YbReconsiderVerifyServiceImpl extends ServiceImpl<YbReconsiderVerif
                     }
 
                     if (isOpenSms) {
-                        List<String> userCodeList = new ArrayList<>();
                         if (userCodeList.stream().filter(s -> s.equals(ybReconsiderVerify.getVerifyDoctorCode())).count() == 0) {
                             if (smsList.stream().filter(s -> s.getSendcode().equals(ybReconsiderVerify.getVerifyDoctorCode())).count() == 0) {
                                 userCodeList.add(ybReconsiderVerify.getVerifyDoctorCode());
@@ -643,6 +804,7 @@ public class YbReconsiderVerifyServiceImpl extends ServiceImpl<YbReconsiderVerif
                 List<YbPerson> personList = iYbPersonService.findPersonList(new YbPerson(), 0);
                 List<YbPerson> queryPersonList = new ArrayList<>();
                 List<ComSms> smsList = new ArrayList<>();
+                List<String> userCodeList = new ArrayList<>();
                 int nOpenSms = febsProperties.getOpenSms();
                 List<YbReconsiderVerify> list = this.baseMapper.findReconsiderVerifyList(applyDateStr, dataType, state, typeno);
 
@@ -722,7 +884,6 @@ public class YbReconsiderVerifyServiceImpl extends ServiceImpl<YbReconsiderVerif
                                 queryWrapper.eq(YbReconsiderVerify::getState, YbDefaultValue.VERIFYSTATE_1);
                             }
                             if (isOpenSms) {
-                                List<String> userCodeList = new ArrayList<>();
                                 if (userCodeList.stream().filter(s -> s.equals(ybReconsiderVerify.getVerifyDoctorCode())).count() == 0) {
                                     if (smsList.stream().filter(s -> s.getSendcode().equals(ybReconsiderVerify.getVerifyDoctorCode())).count() == 0) {
                                         userCodeList.add(ybReconsiderVerify.getVerifyDoctorCode());
@@ -747,6 +908,7 @@ public class YbReconsiderVerifyServiceImpl extends ServiceImpl<YbReconsiderVerif
                                     }
                                 }
                             }
+
                             this.baseMapper.update(ybReconsiderVerify, queryWrapper);
                         }
                     }

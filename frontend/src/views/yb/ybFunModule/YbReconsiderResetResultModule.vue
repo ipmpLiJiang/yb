@@ -2,7 +2,7 @@
   <a-drawer
     title="查看还款明细"
     :maskClosable="false"
-    width=80%
+    width=85%
     placement="right"
     :closable="true"
     @close="onClose"

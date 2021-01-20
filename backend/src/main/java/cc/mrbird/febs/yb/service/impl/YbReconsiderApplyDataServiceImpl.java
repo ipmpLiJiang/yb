@@ -548,6 +548,7 @@ public class YbReconsiderApplyDataServiceImpl extends ServiceImpl<YbReconsiderAp
                     dataType = 1;
                     totalRow = this.baseMapper.findReconsiderApplyDataCount(applyDateStr, dataType, typeno);
                     if (totalRow == 0) {
+                        this.findReconsiderApplyDataNotTask(applyDateStr, typeno);
                         noUpdate = true;
                     } else {
                         createTask = createReconsiderApplyTask(applyDateStr, state, dataType, typeno, currentPage, totalRow);

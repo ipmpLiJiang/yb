@@ -186,7 +186,7 @@ export default {
       },
       {
         title: '科室类型',
-        dataIndex: 'deptType',
+        dataIndex: 'deptState',
         customRender: (text, row, index) => {
           switch (text) {
             case 1:
@@ -209,6 +209,21 @@ export default {
         }
       },
       {
+        title: '是否固定科室',
+        dataIndex: 'isFixDept',
+        customRender: (text, row, index) => {
+          switch (text) {
+            case false:
+              return '否'
+            case true:
+              return '是'
+            default:
+              return text
+          }
+        },
+        width: 120
+      },
+      {
         title: '默认复议医生类型',
         dataIndex: 'personType',
         customRender: (text, row, index) => {
@@ -225,7 +240,7 @@ export default {
               return text
           }
         },
-        width: 180
+        width: 150
       },
       {
         title: '默认复议医生名称',
@@ -392,6 +407,9 @@ export default {
         params.pageSize = this.pagination.defaultPageSize
         params.pageNum = this.pagination.defaultCurrent
       }
+      params.sortField = 'create_Time'
+      params.sortOrder = 'descend'
+      // params.sortOrder = 'ascend'
       params.state = 3
       this.$get('ybReconsiderPriorityLevel', {
         ...params

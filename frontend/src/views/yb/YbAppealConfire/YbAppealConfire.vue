@@ -34,7 +34,7 @@
               :sm="24"
             >
               <a-form-item
-                label="管理员状态"
+                label="管理员类型"
                 v-bind="formItemLayout"
               >
                 <a-select v-model="queryParams.adminType" style="width: 100px" @change="handleAdminTypeChange"
@@ -218,7 +218,7 @@ export default {
         width: 180
       },
       {
-        title: '管理员状态',
+        title: '管理员类型',
         dataIndex: 'adminType',
         customRender: (text, row, index) => {
           switch (text) {

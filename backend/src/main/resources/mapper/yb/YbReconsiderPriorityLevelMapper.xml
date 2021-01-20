@@ -10,8 +10,10 @@
                     <result column="doctorName" property="doctorName"/>
                     <result column="deptCode" property="deptCode"/>
                     <result column="deptName" property="deptName"/>
+            <result column="deptState" property="deptState"/>
             <result column="deptType" property="deptType"/>
             <result column="personType" property="personType"/>
+            <result column="isFixDept" property="isFixDept"/>
                     <result column="operatorId" property="operatorId"/>
                     <result column="operatorName" property="operatorName"/>
                     <result column="currencyField" property="currencyField"/>
@@ -26,7 +28,7 @@
 
         <!-- 通用查询结果列 -->
         <sql id="Base_Column_List">
-        id, rplName, doctorCode, doctorName, deptCode, deptName,deptType,personType, operatorId, operatorName, currencyField, COMMENTS, STATE, IS_DELETEMARK, MODIFY_TIME, CREATE_TIME, CREATE_USER_ID, MODIFY_USER_ID
+        id, rplName, doctorCode, doctorName, deptCode, deptName,deptState,deptType,personType,isFixDept, operatorId, operatorName, currencyField, COMMENTS, STATE, IS_DELETEMARK, MODIFY_TIME, CREATE_TIME, CREATE_USER_ID, MODIFY_USER_ID
     </sql>
     <update id="updateYbReconsiderPriorityLevel" parameterType="cc.mrbird.febs.yb.entity.YbReconsiderPriorityLevel">
         update yb_reconsider_priority_level
@@ -36,8 +38,10 @@
 <if test="doctorName != null">doctorName=#{doctorName},</if>
 <if test="deptCode != null">deptCode=#{deptCode},</if>
 <if test="deptName != null">deptName=#{deptName},</if>
+<if test="deptState != null">deptState=#{deptState},</if>
 <if test="deptType != null">deptType=#{deptType},</if>
 <if test="personType != null">personType=#{personType},</if>
+<if test="isFixDept != null">isFixDept=#{isFixDept},</if>
 <if test="operatorId != null">operatorId=#{operatorId},</if>
 <if test="operatorName != null">operatorName=#{operatorName},</if>
 <if test="currencyField != null">currencyField=#{currencyField},</if>
@@ -61,8 +65,10 @@
             <if test="ybReconsiderPriorityLevel.doctorName != null and ybReconsiderPriorityLevel.doctorName != ''"> and doctorName like concat('%', #{ ybReconsiderPriorityLevel.doctorName} ,'%')</if>
             <if test="ybReconsiderPriorityLevel.deptCode != null and ybReconsiderPriorityLevel.deptCode != ''"> and deptCode like concat('%', #{ ybReconsiderPriorityLevel.deptCode} ,'%')</if>
             <if test="ybReconsiderPriorityLevel.deptName != null and ybReconsiderPriorityLevel.deptName != ''"> and deptName like concat('%', #{ ybReconsiderPriorityLevel.deptName} ,'%')</if>
+        <if test="ybReconsiderPriorityLevel.deptState != null"> and deptState =#{ ybReconsiderPriorityLevel.deptState} </if>
         <if test="ybReconsiderPriorityLevel.deptType != null"> and deptType =#{ ybReconsiderPriorityLevel.deptType} </if>
         <if test="ybReconsiderPriorityLevel.personType != null"> and personType =#{ ybReconsiderPriorityLevel.personType} </if>
+        <if test="ybReconsiderPriorityLevel.isFixDept != null"> and isFixDept =#{ ybReconsiderPriorityLevel.isFixDept} </if>
             <if test="ybReconsiderPriorityLevel.operatorName != null and ybReconsiderPriorityLevel.operatorName != ''"> and operatorName like concat('%', #{ ybReconsiderPriorityLevel.operatorName} ,'%')</if>
             <if test="ybReconsiderPriorityLevel.currencyField != null and ybReconsiderPriorityLevel.currencyField != ''"> and currencyField like concat('%', #{ ybReconsiderPriorityLevel.currencyField} ,'%')</if>
             <if test="ybReconsiderPriorityLevel.comments != null and ybReconsiderPriorityLevel.comments != ''"> and COMMENTS like concat('%', #{ ybReconsiderPriorityLevel.comments} ,'%')</if>

@@ -45,12 +45,12 @@ private static final long serialVersionUID=1L;
     /**
      * 1执行科室
      */
-    public static final Integer DEPT_TYPE_1 = 1;
+    public static final Integer DEPT_STATE_1 = 1;
 
     /**
      * 2计费科室
      */
-    public static final Integer DEPT_TYPE_2 = 2;
+    public static final Integer DEPT_STATE_2 = 2;
 
     /**
      * 1开单人员
@@ -71,6 +71,27 @@ private static final long serialVersionUID=1L;
      * 4固定人员
      */
     public static final Integer PERSON_TYPE_4 = 4;
+
+
+    /**
+     * 1开单科室
+     */
+    public static final Integer DEPT_TYPE_1 = 1;
+
+    /**
+     * 2执行科室
+     */
+    public static final Integer DEPT_TYPE_2 = 2;
+
+    /**
+     * 3计费科室
+     */
+    public static final Integer DEPT_TYPE_3 = 3;
+
+    /**
+     * 4固定科室
+     */
+    public static final Integer DEPT_TYPE_4 = 4;
 
     /**
      * 复议规则id
@@ -116,16 +137,32 @@ private static final long serialVersionUID=1L;
     /**
      * 科室类型
      */
-    @TableField("deptType")
+    @TableField("deptState")
     @ExcelField(value ="科室类型")
-    private Integer deptType;
+    private Integer deptState;
 
     /**
-     * 人员类型
+     * 复议科室类型
+     */
+    @TableField("deptType")
+    @ExcelField(value ="复议科室类型")
+    private Integer deptType;
+
+
+
+    /**
+     * 复议医生类型
      */
     @TableField("personType")
-    @ExcelField(value ="人员类型")
+    @ExcelField(value ="复议医生类型")
     private Integer personType;
+
+    /**
+     * 是否固定科室
+     */
+    @TableField("isFixDept")
+    @ExcelField(value ="是否固定科室")
+    private Boolean isFixDept;
 
     /**
      * 操作员代码
@@ -214,6 +251,8 @@ private static final long serialVersionUID=1L;
     public static final String DEPTCODE ="deptCode" ;
 
     public static final String DEPTNAME ="deptName" ;
+
+    public static final String DEPTSTATE ="deptState" ;
 
     public static final String DEPTTYPE ="deptType" ;
 

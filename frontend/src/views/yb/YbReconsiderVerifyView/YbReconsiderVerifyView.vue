@@ -11,9 +11,6 @@
           justify="center"
           align="middle"
         >
-        <a-col :span=1>
-          &nbsp;
-        </a-col>
           <a-col :span=6>
             <a-form-item
               v-bind="formItemLayout"
@@ -566,7 +563,7 @@ export default {
         }
       }).catch(() => {
         this.fileList = []
-        this.$message.error('Excel导入失败.')
+        this.$message.error('Excel导入失败 或 该年月无数据导出.')
         this.spinning = false
       })
     },
@@ -681,3 +678,9 @@ export default {
 .editable-row-operations a {
   margin-right: 8px;
 }
+.card-container {
+  border: 1px solid #E0E0E0;
+  overflow: hidden;
+  padding-top: 3px;
+}
+</style>

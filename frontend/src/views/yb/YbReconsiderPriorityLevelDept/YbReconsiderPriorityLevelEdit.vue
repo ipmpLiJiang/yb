@@ -10,19 +10,54 @@
     style="height: calc(100% - 15px);overflow: auto;padding-bottom: 53px;"
   >
     <a-form :form="form">
+      <a-row justify="center" type="flex">
+        <a-col :span="14">
       <a-form-item
           label="科室类型"
-          v-bind="formItemLayout"
+          v-bind="{
+                labelCol: {
+                  span: 12
+                },
+                wrapperCol: {
+                  span: 12
+                }
+              }"
         >
-        <a-radio-group  v-decorator="['deptType']">
+        <a-radio-group  v-decorator="['deptState']">
           <a-radio value="1">
             执行科室
           </a-radio>
-          <a-radio value="2">
-            计费科室
-          </a-radio>
         </a-radio-group>
       </a-form-item>
+        </a-col>
+      <a-col :span="9">
+          <a-form-item
+              label=""
+              v-bind="{
+                labelCol: {
+                  span: 10
+                },
+                wrapperCol: {
+                  span: 14
+                }
+              }"
+            >
+            <a-checkbox v-decorator="[
+              'isFixDept',
+              {
+                valuePropName: 'checked',
+                initialValue: isDefaultCheck,
+              },
+            ]">
+              是否固定科室
+            </a-checkbox>
+          </a-form-item>
+        </a-col>
+        <a-col :span="1">
+        </a-col>
+      </a-row>
+      <a-row justify="start" type="flex">
+        <a-col :span="24">
       <a-form-item
         v-bind="formItemLayout"
         label="科室名称"
@@ -35,6 +70,10 @@
         >
         </input-select>
       </a-form-item>
+      </a-col>
+      </a-row>
+      <a-row justify="start" type="flex">
+        <a-col :span="24">
       <a-form-item
           label="默认复议医生类型"
           v-bind="formItemLayout"
@@ -54,6 +93,10 @@
           </a-radio>
         </a-radio-group>
       </a-form-item>
+      </a-col>
+      </a-row>
+      <a-row justify="start" type="flex">
+        <a-col :span="24">
       <a-form-item
         v-bind="formItemLayout"
         label="医生名称"
@@ -66,6 +109,8 @@
         >
         </input-select>
       </a-form-item>
+      </a-col>
+      </a-row>
     </a-form>
     <div class="drawer-bootom-button">
       <a-popconfirm
@@ -111,6 +156,7 @@ export default {
       form: this.$form.createForm(this),
       checkPersonType: true,
       ybPriorityLevel: {},
+      isDefaultCheck: false,
       ybReconsiderPriorityLevel: {}
     }
   },
@@ -118,6 +164,7 @@ export default {
     moment,
     reset () {
       this.loading = false
+      this.ybPriorityLevel = {}
       this.$refs.inputSelectDoctor.dataSource = []
       this.$refs.inputSelectDoctor.value = ''
       this.$refs.inputSelectDept.dataSource = []
@@ -169,14 +216,16 @@ export default {
       } else {
         this.checkPersonType = false
       }
-      this.form.getFieldDecorator('deptType')
+      this.form.getFieldDecorator('deptState')
       this.form.getFieldDecorator('personType')
+      this.form.getFieldDecorator('isFixDept')
 
       this.form.setFieldsValue({
-        deptType: ybReconsiderPriorityLevel.deptType.toString(),
-        personType: ybReconsiderPriorityLevel.personType.toString()
+        deptState: ybReconsiderPriorityLevel.deptState.toString(),
+        personType: ybReconsiderPriorityLevel.personType.toString(),
+        isFixDept: ybReconsiderPriorityLevel.isFixDept
       })
-
+      this.isDefaultCheck = ybReconsiderPriorityLevel.isFixDept
       setTimeout(() => {
         this.$refs.inputSelectDept.dataSource = [{
           text: ybReconsiderPriorityLevel.deptCode + '-' + ybReconsiderPriorityLevel.deptName,
@@ -224,6 +273,7 @@ export default {
         if (!err) {
           let ybReconsiderPriorityLevel = this.form.getFieldsValue()
           ybReconsiderPriorityLevel.id = this.ybReconsiderPriorityLevel.id
+          ybReconsiderPriorityLevel.state = 3
           if (ybReconsiderPriorityLevel.doctorCode === '') {
             ybReconsiderPriorityLevel.doctorName = ''
           }

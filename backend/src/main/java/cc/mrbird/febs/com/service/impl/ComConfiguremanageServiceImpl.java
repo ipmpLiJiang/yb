@@ -86,15 +86,7 @@ public class ComConfiguremanageServiceImpl extends ServiceImpl<ComConfiguremanag
     @Override
     public List<ComConfiguremanage> getConfigLists(List<Integer> ctypeList) {
         LambdaQueryWrapper<ComConfiguremanage> queryWrapper = new LambdaQueryWrapper<>();
-        String sql = "";
-        for(Integer type :ctypeList ){
-            if(sql.equals("")){
-                sql = " configureType = " + type;
-            }else{
-                sql += " or configureType = " + type;
-            }
-        }
-        queryWrapper.apply(sql);
+        queryWrapper.in(ComConfiguremanage::getConfigureType,ctypeList);
         List<ComConfiguremanage> configList = this.list(queryWrapper);
         return configList;
     }

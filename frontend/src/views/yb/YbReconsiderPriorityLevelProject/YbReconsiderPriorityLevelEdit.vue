@@ -2,7 +2,7 @@
   <a-drawer
     title="修改"
     :maskClosable="false"
-    width=650
+    width=800
     placement="right"
     :closable="false"
     @close="onClose"
@@ -20,16 +20,54 @@
         />
       </a-form-item>
       <a-form-item
+          label="默认复议科室类型"
+          v-bind="formItemLayout"
+        >
+        <a-radio-group  v-decorator="['deptType']" @change="handleDeptChange">
+          <a-radio value="1">
+            开单科室
+          </a-radio>
+          <a-radio value="2">
+            执行科室
+          </a-radio>
+          <a-radio value="3">
+            计费科室
+          </a-radio>
+          <a-radio value="4">
+            固定科室
+          </a-radio>
+        </a-radio-group>
+      </a-form-item>
+      <a-form-item
         v-bind="formItemLayout"
         label="科室名称"
       >
         <input-select
             ref="inputSelectDept"
-            v-decorator="['deptCode', {rules: [{ required: true, message: '科室名称不能为空' }] }]"
+            v-decorator="['deptCode', {rules: [{ required: checkDeptType, message: '科室名称不能为空' }] }]"
             :type=1
             @selectChange=selectDeptChange
         >
         </input-select>
+      </a-form-item>
+      <a-form-item
+          label="默认复议医生类型"
+          v-bind="formItemLayout"
+        >
+        <a-radio-group  v-decorator="['personType']" @change="handlePersonChange">
+          <a-radio value="1">
+            开单人员
+          </a-radio>
+          <a-radio value="2">
+            执行人员
+          </a-radio>
+          <a-radio value="3">
+            计费人员
+          </a-radio>
+          <a-radio value="4">
+            固定人员
+          </a-radio>
+        </a-radio-group>
       </a-form-item>
       <a-form-item
         v-bind="formItemLayout"
@@ -37,7 +75,7 @@
       >
         <input-select
             ref="inputSelectDoctor"
-            v-decorator="['doctorCode', {rules: [{ required: true, message: '医生名称不能为空' }] }]"
+            v-decorator="['doctorCode', {rules: [{ required: checkPersonType, message: '医生名称不能为空' }] }]"
             :type=2
             @selectChange=selectDoctorChange
         >
@@ -68,10 +106,10 @@ import moment from 'moment'
 
 const formItemLayout = {
   labelCol: {
-    span: 3
+    span: 6
   },
   wrapperCol: {
-    span: 18
+    span: 15
   }
 }
 export default {
@@ -85,6 +123,8 @@ export default {
   data () {
     return {
       loading: false,
+      checkPersonType: true,
+      checkDeptType: true,
       formItemLayout,
       form: this.$form.createForm(this),
       ybPriorityLevel: {},
@@ -94,6 +134,11 @@ export default {
   methods: {
     reset () {
       this.loading = false
+      this.ybPriorityLevel = {}
+      this.$refs.inputSelectDoctor.dataSource = []
+      this.$refs.inputSelectDoctor.value = ''
+      this.$refs.inputSelectDept.dataSource = []
+      this.$refs.inputSelectDept.value = ''
       this.form.resetFields()
     },
     onClose () {
@@ -107,6 +152,54 @@ export default {
     selectDeptChange (item) {
       this.ybPriorityLevel.deptCode = item.value
       this.ybPriorityLevel.deptName = item.text
+    },
+    handleDeptChange (e) {
+      if (e.target.value === '4') {
+        this.checkDeptType = true
+        this.$nextTick(() => {
+          this.form.validateFields(['deptCode'], { force: this.checkDeptType })
+        })
+      } else {
+        this.checkDeptType = false
+        this.$nextTick(() => {
+          this.form.validateFields(['deptCode'], { force: this.checkDeptType })
+        })
+        this.$refs.inputSelectDept.dataSource = []
+        this.$refs.inputSelectDept.value = ''
+        this.ybPriorityLevel.deptCode = ''
+        this.ybPriorityLevel.deptName = ''
+        this.form.getFieldDecorator('deptCode')
+        this.form.getFieldDecorator('deptName')
+
+        this.form.setFieldsValue({
+          deptCode: '',
+          deptName: ''
+        })
+      }
+    },
+    handlePersonChange (e) {
+      if (e.target.value === '4') {
+        this.checkPersonType = true
+        this.$nextTick(() => {
+          this.form.validateFields(['doctorCode'], { force: this.checkPersonType })
+        })
+      } else {
+        this.checkPersonType = false
+        this.$nextTick(() => {
+          this.form.validateFields(['doctorCode'], { force: this.checkPersonType })
+        })
+        this.$refs.inputSelectDoctor.dataSource = []
+        this.$refs.inputSelectDoctor.value = ''
+        this.ybPriorityLevel.doctorCode = ''
+        this.ybPriorityLevel.doctorName = ''
+        this.form.getFieldDecorator('doctorCode')
+        this.form.getFieldDecorator('doctorName')
+
+        this.form.setFieldsValue({
+          doctorCode: '',
+          doctorName: ''
+        })
+      }
     },
     setFormValues ({
       ...ybReconsiderPriorityLevel
@@ -130,17 +223,37 @@ export default {
         }
       })
       this.ybReconsiderPriorityLevel.id = ybReconsiderPriorityLevel.id
+      if (ybReconsiderPriorityLevel.personType === 4) {
+        this.checkPersonType = true
+      } else {
+        this.checkPersonType = false
+      }
+      if (ybReconsiderPriorityLevel.deptType === 4) {
+        this.checkDeptType = true
+      } else {
+        this.checkDeptType = false
+      }
+      this.form.getFieldDecorator('personType')
+      this.form.getFieldDecorator('deptType')
+      this.form.setFieldsValue({
+        personType: ybReconsiderPriorityLevel.personType.toString(),
+        deptType: ybReconsiderPriorityLevel.deptType.toString()
+      })
       setTimeout(() => {
-        this.$refs.inputSelectDept.dataSource = [{
-          text: ybReconsiderPriorityLevel.deptCode + '-' + ybReconsiderPriorityLevel.deptName,
-          value: ybReconsiderPriorityLevel.deptCode
-        }]
+        if (ybReconsiderPriorityLevel.deptCode !== '' && ybReconsiderPriorityLevel.deptCode !== null) {
+          this.$refs.inputSelectDept.dataSource = [{
+            text: ybReconsiderPriorityLevel.deptCode + '-' + ybReconsiderPriorityLevel.deptName,
+            value: ybReconsiderPriorityLevel.deptCode
+          }]
+        }
         this.$refs.inputSelectDept.value = ybReconsiderPriorityLevel.deptCode
 
-        this.$refs.inputSelectDoctor.dataSource = [{
-          text: ybReconsiderPriorityLevel.doctorCode + '-' + ybReconsiderPriorityLevel.doctorName,
-          value: ybReconsiderPriorityLevel.doctorCode
-        }]
+        if (ybReconsiderPriorityLevel.doctorCode !== '' && ybReconsiderPriorityLevel.doctorCode !== null) {
+          this.$refs.inputSelectDoctor.dataSource = [{
+            text: ybReconsiderPriorityLevel.doctorCode + '-' + ybReconsiderPriorityLevel.doctorName,
+            value: ybReconsiderPriorityLevel.doctorCode
+          }]
+        }
         this.$refs.inputSelectDoctor.value = ybReconsiderPriorityLevel.doctorCode
 
         this.ybPriorityLevel.doctorCode = ybReconsiderPriorityLevel.doctorCode
@@ -174,6 +287,13 @@ export default {
         if (!err) {
           let ybReconsiderPriorityLevel = this.form.getFieldsValue()
           ybReconsiderPriorityLevel.id = this.ybReconsiderPriorityLevel.id
+          ybReconsiderPriorityLevel.state = 2
+          if (ybReconsiderPriorityLevel.doctorCode === '') {
+            ybReconsiderPriorityLevel.doctorName = ''
+          }
+          if (ybReconsiderPriorityLevel.deptCode === '') {
+            ybReconsiderPriorityLevel.deptName = ''
+          }
           this.$put('ybReconsiderPriorityLevel', {
             ...ybReconsiderPriorityLevel
           }).then(() => {

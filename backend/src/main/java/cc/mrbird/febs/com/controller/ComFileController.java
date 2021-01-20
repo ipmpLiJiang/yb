@@ -1,9 +1,6 @@
 package cc.mrbird.febs.com.controller;
 
-import cc.mrbird.febs.com.entity.ComFile;
-import cc.mrbird.febs.com.entity.InComFile;
-import cc.mrbird.febs.com.entity.InUploadFile;
-import cc.mrbird.febs.com.entity.OutComFile;
+import cc.mrbird.febs.com.entity.*;
 import cc.mrbird.febs.com.service.IComFileService;
 import cc.mrbird.febs.common.annotation.Log;
 import cc.mrbird.febs.common.controller.BaseController;
@@ -31,6 +28,7 @@ import cn.hutool.poi.excel.ExcelWriter;
 import com.baomidou.mybatisplus.core.toolkit.StringPool;
 import com.wuwenze.poi.ExcelKit;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FileUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -39,6 +37,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
@@ -292,15 +291,15 @@ public class ComFileController extends BaseController {
         String mms = "";
         Date thisDate = new Date();
         OutComFile outComFile = new OutComFile();
-        if(inUploadFile.getIsCheck() == 1) {
-            isUpdate = iYbReconsiderApplyService.findReconsiderApplyCheckEndDate(inUploadFile.getApplyDateStr(),inUploadFile.getTypeno());
+        if (inUploadFile.getIsCheck() == 1) {
+            isUpdate = iYbReconsiderApplyService.findReconsiderApplyCheckEndDate(inUploadFile.getApplyDateStr(), inUploadFile.getTypeno());
             if (inUploadFile.getTypeno() == YbDefaultValue.TYPENO_1) {
                 mms = "第一版";
             } else {
                 mms = "第二版";
             }
-        }else{
-            isUpdate = true ;
+        } else {
+            isUpdate = true;
         }
         if (isUpdate || inUploadFile.getSourceType() == YbDefaultValue.SOURCETYPE_1) {
             int num = 1;
@@ -358,7 +357,7 @@ public class ComFileController extends BaseController {
             outComFile.setUrl(fileUrl);
             outComFile.setThumbUrl(fileUrl);
             outComFile.setSerName(fileName);
-        } else{
+        } else {
             outComFile.setSuccess(0);
             outComFile.setMessage("当前已过 " + mms + " 截止日期，无法上传图片.");
         }
@@ -373,15 +372,15 @@ public class ComFileController extends BaseController {
         try {
             boolean isUpdate = false;
             String mms = "";
-            if(inUploadFile.getIsCheck() == 1) {
-                isUpdate = iYbReconsiderApplyService.findReconsiderApplyCheckEndDate(inUploadFile.getApplyDateStr(),inUploadFile.getTypeno());
+            if (inUploadFile.getIsCheck() == 1) {
+                isUpdate = iYbReconsiderApplyService.findReconsiderApplyCheckEndDate(inUploadFile.getApplyDateStr(), inUploadFile.getTypeno());
                 if (inUploadFile.getTypeno() == YbDefaultValue.TYPENO_1) {
                     mms = "第一版";
                 } else {
                     mms = "第二版";
                 }
-            }else{
-                isUpdate = true ;
+            } else {
+                isUpdate = true;
             }
             if (isUpdate || inUploadFile.getSourceType() == YbDefaultValue.SOURCETYPE_1) {
                 String strId = inUploadFile.getId();
@@ -403,7 +402,7 @@ public class ComFileController extends BaseController {
                         }
                     }
                 }
-            }else{
+            } else {
                 message = "当前已过 " + mms + " 截止日期，无法删除图片.";
             }
         } catch (Exception e) {
@@ -436,4 +435,78 @@ public class ComFileController extends BaseController {
         }
         return flag;
     }
+
+    @PostMapping("weUploadFile")
+    public WangEditor weUploadFileImg(@RequestParam("file") MultipartFile multipartFile, HttpServletRequest request) {
+        try {
+            // 获取项目路径
+            String realPath = request.getSession().getServletContext()
+                    .getRealPath("");
+            InputStream inputStream = multipartFile.getInputStream();
+
+            String contextPath = request.getServletContext().getContextPath();
+
+            // 服务器根目录的路径
+            String path = realPath.replace(contextPath.substring(1), "");
+            // 根目录下新建文件夹upload，存放上传图片
+            String uploadPath = path + "upload";
+            // 获取文件名称
+            String filename = Calendar.getInstance().getTimeInMillis() + "image";
+            // 将文件上传的服务器根目录下的upload文件夹
+            File file = new File(uploadPath, filename);
+            FileUtils.copyInputStreamToFile(inputStream, file);
+            // 返回图片访问路径
+            String url = request.getScheme() + "://" + request.getServerName()
+                    + ":" + request.getServerPort() + "/upload/" + filename;
+            String[] strs = {url};
+            WangEditor we = new WangEditor(strs);
+            return we;
+        } catch (IOException e) {
+            log.error("上传文件失败", e);
+        }
+        return null;
+
+    }
+
+    @PostMapping("weUploadFiles")
+    public WangEditor uploadFile(@RequestParam("files") MultipartFile[] files, HttpServletRequest request) {
+        try {
+            List list = new ArrayList();
+
+            for (MultipartFile multipartFile : files) {
+                // 获取项目路径
+                String realPath = request.getSession().getServletContext()
+                        .getRealPath("");
+                InputStream inputStream = multipartFile.getInputStream();
+
+                //String contextPath = request.getServletContext().getContextPath();
+                //logger.info(contextPath);
+                // 服务器根目录的路径
+                String path = realPath;
+                // 根目录下新建文件夹upload，存放上传图片
+                String uploadPath = path + "upload";
+                // 获取文件名称
+                String filename = Calendar.getInstance().getTimeInMillis() + "image";
+                // 将文件上传的服务器根目录下的upload文件夹
+                File file = new File(uploadPath, filename);
+                FileUtils.copyInputStreamToFile(inputStream, file);
+                // 返回图片访问路径
+                String url = request.getScheme() + "://" + request.getServerName()
+                        + ":" + request.getServerPort() + "/upload/" + filename;
+                list.add(url);
+
+            }
+            //ArrayList<String> list=new ArrayList<String>();
+
+            String[] strings = new String[list.size()];
+
+            list.toArray(strings);
+            WangEditor we = new WangEditor(strings);
+            return we;
+        } catch (IOException e) {
+            log.error("上传文件失败", e);
+        }
+        return null;
+    }
+
 }

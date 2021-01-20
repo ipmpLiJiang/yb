@@ -113,11 +113,16 @@
           ></a-icon>
           <a-divider type="vertical" />
           <a
-             v-hasPermission="['ybReconsiderApply:delete']"
+            v-hasPermission="['ybReconsiderApply:delete']"
             @click="del(record)"
             :disabled="record.state==1?false:true"
+            title="修改"
           >
-            删除
+          <a-icon
+            type="delete"
+            theme="outlined"
+            twoToneColor="record.state==1?#4a9ff5:#C0C0C0"
+          ></a-icon>
           </a>
           <a-divider type="vertical" />
           <a @click="goto(record,1)">{{record.state==1||record.state==2?'上传第一版':'查看第一版'}}</a>

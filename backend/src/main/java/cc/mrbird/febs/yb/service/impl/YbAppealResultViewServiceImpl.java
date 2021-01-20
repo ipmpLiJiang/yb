@@ -130,6 +130,10 @@ public class YbAppealResultViewServiceImpl extends ServiceImpl<YbAppealResultVie
                 queryWrapper.eq(YbAppealResultView::getPersonalNo, ybAppealResultView.getPersonalNo());
             }
 
+            if(ybAppealResultView.getId() != null && ybAppealResultView.getId() !=""){
+                queryWrapper.eq(YbAppealResultView::getId, ybAppealResultView.getId());
+            }
+
             Page<YbAppealResultView> page = new Page<>();
             SortUtil.handlePageSort(request, page, false);//true 是属性  false是数据库字段可两个
             return this.page(page, queryWrapper);

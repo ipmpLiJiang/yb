@@ -2,7 +2,7 @@
   <a-drawer
     title="手动剔除"
     :maskClosable="false"
-    width=75%
+    width=85%
     placement="right"
     :closable="true"
     @close="onClose"
@@ -31,6 +31,9 @@
       >
         <template slot="operationDeductReason" slot-scope="text, record, index">
           <span :title="record.deductReason">{{record.deductReason}}</span>
+        </template>
+        <template slot="operationReason" slot-scope="text, record, index">
+          <span :title="record.operateReason">{{record.operateReason}}</span>
         </template>
       <a slot="action" slot-scope="text">action</a>
         <template
@@ -110,6 +113,7 @@ export default {
       bordered: true,
       isUpdate: false,
       state: 1,
+      resultId: null,
       ybReconsiderResetExceptDetail: {}
     }
   },
@@ -168,19 +172,18 @@ export default {
       {
         title: '费用日期',
         dataIndex: 'costDateStr',
-        customRender: (text, row, index) => {
-          if (text !== '' && text !== null) {
-            return moment(text).format('YYYY-MM-DD')
-          } else {
-            return text
-          }
-        },
+        width: 110
+      },
+      {
+        title: '结算日期',
+        dataIndex: 'settlementDateStr',
         width: 110
       },
       {
         title: '申请理由',
-        dataIndex: 'operateReason',
-        width: 120
+        scopedSlots: { customRender: 'operationReason' },
+        ellipsis: true,
+        width: 200
       },
       {
         title: '申请日期',
@@ -197,14 +200,24 @@ export default {
       {
         title: '科室名称',
         dataIndex: 'arDeptName',
+        customRender: (text, row, index) => {
+          if (text !== '' && text !== null) {
+            return row.arDeptCode + '-' + row.arDeptName
+          }
+        },
         fixed: 'right',
-        width: 120
+        width: 140
       },
       {
         title: '医生姓名',
         dataIndex: 'arDoctorName',
+        customRender: (text, row, index) => {
+          if (text !== '' && text !== null) {
+            return row.arDoctorCode + '-' + row.arDoctorName
+          }
+        },
         fixed: 'right',
-        width: 105
+        width: 120
       },
       {
         title: '状态',
@@ -263,6 +276,8 @@ export default {
     },
     onClose () {
       this.loading = false
+      this.state = 1
+      this.resultId = null
       this.ybReconsiderResetExceptDetail = {}
       this.reset()
       this.$emit('close', this.isUpdate)
@@ -278,6 +293,7 @@ export default {
         }).then((r) => {
           if (r.data.data.success === 1) {
             this.isUpdate = true
+            this.resultId = updateParams.resultId
             this.state = 2
             this.search()
             this.$message.success(r.data.data.message)
@@ -298,6 +314,8 @@ export default {
     setFormValues ({ ...ybReconsiderResetExceptDetail }) {
       this.isUpdate = false
       this.ybReconsiderResetExceptDetail = ybReconsiderResetExceptDetail
+      this.state = 1
+      this.resultId = null
       this.search()
     },
     search () {
@@ -334,6 +352,9 @@ export default {
       params.dataType = this.ybReconsiderResetExceptDetail.dataType
       params.sourceType = 0
       params.state = this.state
+      if (this.isUpdate) {
+        params.id = this.resultId
+      }
       this.loading = true
       if (this.paginationInfo) {
         // 如果分页信息不为空，则设置表格当前第几页，每页条数，并设置查询分页参数
