@@ -146,4 +146,19 @@
         <if test="type != null and type==1"> and t_user.user_id is not null </if>
     </select>
 
+    <select id="findPersonResultList" resultType="cc.mrbird.febs.yb.entity.YbPerson">
+        SELECT
+            DISTINCT
+            yb_person.*
+        FROM
+            yb_appeal_result
+            inner join yb_person on
+                yb_appeal_result.doctorCode = yb_person.personCode and
+                yb_person.IS_DELETEMARK =1
+        WHERE
+            yb_appeal_result.IS_DELETEMARK = 1 AND
+            yb_appeal_result.applyDateStr = #{ applyDateStr} AND
+            yb_appeal_result.state =2
+    </select>
+
 </mapper>

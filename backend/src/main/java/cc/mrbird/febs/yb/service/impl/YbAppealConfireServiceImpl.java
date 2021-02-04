@@ -76,6 +76,18 @@ public class YbAppealConfireServiceImpl extends ServiceImpl<YbAppealConfireMappe
     }
 
     @Override
+    public IPage<YbAppealConfire> findAppealConfireUserView(QueryRequest request, String doctorContent, Integer adminType, String deptContent,Long uid) {
+        try {
+            Page<YbAppealConfire> page = new Page<>();
+            SortUtil.handlePageSort(request, page, true);//true 是属性  false是数据库字段可两个
+            return this.baseMapper.findAppealConfireUserView(page, doctorContent,adminType,deptContent,uid);
+        } catch (Exception e) {
+            log.error("获取失败", e);
+            return null;
+        }
+    }
+
+    @Override
     public IPage<YbAppealConfire> findYbAppealConfireList(QueryRequest request, YbAppealConfire ybAppealConfire) {
         try {
             Page<YbAppealConfire> page = new Page<>();

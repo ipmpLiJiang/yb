@@ -69,7 +69,7 @@ public class YbReconsiderRuleController extends BaseController {
             User currentUser = FebsUtil.getCurrentUser();
             ybReconsiderRule.setCreateUserId(currentUser.getUserId());
             ybReconsiderRule.setOperatorid(currentUser.getUserId());
-            ybReconsiderRule.setOperatorname(currentUser.getUsername());
+            ybReconsiderRule.setOperatorname(currentUser.getUsername() + "-" + currentUser.getXmname());
             ybReconsiderRule.setRno(1);
             this.iYbReconsiderRuleService.createYbReconsiderRule(ybReconsiderRule);
         } catch (Exception e) {
@@ -93,7 +93,7 @@ public class YbReconsiderRuleController extends BaseController {
             User currentUser = FebsUtil.getCurrentUser();
             ybReconsiderRule.setModifyUserId(currentUser.getUserId());
             ybReconsiderRule.setOperatorid(currentUser.getUserId());
-            ybReconsiderRule.setOperatorname(currentUser.getUsername());
+            ybReconsiderRule.setOperatorname(currentUser.getUsername() + "-" + currentUser.getXmname());
             ybReconsiderRule.setRno(1);
             this.iYbReconsiderRuleService.updateYbReconsiderRule(ybReconsiderRule);
         } catch (Exception e) {

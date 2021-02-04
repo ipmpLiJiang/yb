@@ -55,10 +55,24 @@ public class YbAppealResultDeductimplementViewController extends BaseController 
         return getDataTable(this.iYbAppealResultDeductimplementViewService.findYbAppealResultDeductimplementViews(request, ybAppealResultDeductimplementView));
     }
 
+    @GetMapping("findAppealResultView")
+    @RequiresPermissions("ybAppealResultDeductimplementView:view")
+    public Map<String, Object> List2(QueryRequest request, YbAppealResultDeductimplementView ybAppealResultDeductimplementView) {
+        return getDataTable(this.iYbAppealResultDeductimplementViewService.findAppealResultDeductimplementView(request, ybAppealResultDeductimplementView));
+    }
+
     @GetMapping("findAppealResultDeductimplementViewList")
     @RequiresPermissions("ybAppealResultDeductimplementView:view")
     public Map<String, Object> List1(QueryRequest request, YbAppealResultDeductimplementView ybAppealResultDeductimplementView) {
         return getDataTable(this.iYbAppealResultDeductimplementViewService.findYbAppealResultDeductimplementViewList(request, ybAppealResultDeductimplementView));
+    }
+
+    @GetMapping("findAppealResultUserView")
+    @RequiresPermissions("ybAppealResultDeductimplementView:userView")
+    public Map<String, Object> userList1(QueryRequest request, YbAppealResultDeductimplementView ybAppealResultDeductimplementView) {
+        User currentUser = FebsUtil.getCurrentUser();
+        ybAppealResultDeductimplementView.setArDoctorCode(currentUser.getUsername());
+        return getDataTable(this.iYbAppealResultDeductimplementViewService.findAppealResultDeductimplementView(request, ybAppealResultDeductimplementView));
     }
 
     @GetMapping("findAppealResultDeductimplementUserView")
@@ -81,7 +95,6 @@ public class YbAppealResultDeductimplementViewController extends BaseController 
     public void addYbAppealResultDeductimplementView(@Valid YbAppealResultDeductimplementView ybAppealResultDeductimplementView) throws FebsException {
         try {
             User currentUser = FebsUtil.getCurrentUser();
-            ybAppealResultDeductimplementView.setCreateUserId(currentUser.getUserId());
             this.iYbAppealResultDeductimplementViewService.createYbAppealResultDeductimplementView(ybAppealResultDeductimplementView);
         } catch (Exception e) {
             message = "新增/按钮失败";
@@ -102,7 +115,6 @@ public class YbAppealResultDeductimplementViewController extends BaseController 
     public void updateYbAppealResultDeductimplementView(@Valid YbAppealResultDeductimplementView ybAppealResultDeductimplementView) throws FebsException {
         try {
             User currentUser = FebsUtil.getCurrentUser();
-            ybAppealResultDeductimplementView.setModifyUserId(currentUser.getUserId());
             this.iYbAppealResultDeductimplementViewService.updateYbAppealResultDeductimplementView(ybAppealResultDeductimplementView);
         } catch (Exception e) {
             message = "修改失败";

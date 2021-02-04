@@ -53,12 +53,12 @@ public class YbAppealResultRepayment implements Serializable, Comparable<YbAppea
     @ExcelField(value = "复议年月Str")
     private String applyDateStr;
 
-    /**
-     * 复议上传Id
-     */
-    @TableField("resultId")
-    @ExcelField(value = "复议上传Id")
-    private String resultId;
+//    /**
+//     * 复议上传Id
+//     */
+//    @TableField("resultId")
+//    @ExcelField(value = "复议上传Id")
+//    private String resultId;
 
     /**
      * 剔除明细Id
@@ -66,6 +66,13 @@ public class YbAppealResultRepayment implements Serializable, Comparable<YbAppea
     @TableField("resetDataId")
     @ExcelField(value = "剔除明细Id")
     private String resetDataId;
+
+    /**
+     * 关联Id
+     */
+    @TableField("relatelDataId")
+    @ExcelField(value ="关联Id")
+    private String relatelDataId;
 
     /**
      * 扣除落实Id
@@ -144,9 +151,11 @@ public class YbAppealResultRepayment implements Serializable, Comparable<YbAppea
 
     public static final String ID = "id";
 
-    public static final String RESULTID = "resultId";
+//    public static final String RESULTID = "resultId";
 
     public static final String RESETDATAID = "resetDataId";
+
+    public static final String RELATELDATAID = "relatelDataId";
 
     public static final String DEDUCTIMPLEMENTID = "deductImplementId";
 

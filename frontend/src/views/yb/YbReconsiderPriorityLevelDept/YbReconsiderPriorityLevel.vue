@@ -206,7 +206,8 @@ export default {
           if (text !== '' && text !== null) {
             return row.deptCode + '-' + row.deptName
           }
-        }
+        },
+        width: 200
       },
       {
         title: '是否固定科室',

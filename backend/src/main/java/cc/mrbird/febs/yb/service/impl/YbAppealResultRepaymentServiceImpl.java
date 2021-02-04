@@ -84,7 +84,7 @@ public class YbAppealResultRepaymentServiceImpl extends ServiceImpl<YbAppealResu
     @Transactional
     public String createAppealResultRepayment(YbAppealResultRepayment ybAppealResultRepayment) {
         LambdaQueryWrapper<YbAppealResultRepayment> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(YbAppealResultRepayment::getResultId, ybAppealResultRepayment.getResultId());
+        wrapper.eq(YbAppealResultRepayment::getRelatelDataId, ybAppealResultRepayment.getRelatelDataId());
         wrapper.eq(YbAppealResultRepayment::getResetDataId, ybAppealResultRepayment.getResetDataId());
         List<YbAppealResultRepayment> list = this.list(wrapper);
         if (list.size() == 0) {
@@ -118,14 +118,15 @@ public class YbAppealResultRepaymentServiceImpl extends ServiceImpl<YbAppealResu
 
             List<YbAppealResultRepayment> createList = new ArrayList<>();
             for (YbAppealResultRepaymentView item : queryRepaymentList) {
-                if (queryList.stream().filter(s -> s.getResultId().equals(item.getResultId()) &&
+                if (queryList.stream().filter(s ->
+//                        s.getRelatelDataId().equals(item.getRelatelDataId()) &&
                         s.getResetDataId().equals(item.getResetDataId())
                 ).count() == 0) {
                     YbAppealResultRepayment ybAppealResultRepayment = new YbAppealResultRepayment();
                     ybAppealResultRepayment.setId(UUID.randomUUID().toString());
                     ybAppealResultRepayment.setApplyDate(item.getApplyDate());
                     ybAppealResultRepayment.setApplyDateStr(item.getApplyDateStr());
-                    ybAppealResultRepayment.setResultId(item.getResultId());
+//                    ybAppealResultRepayment.setRelatelDataId(item.getRelatelDataId());
                     ybAppealResultRepayment.setResetDataId(item.getResetDataId());
                     ybAppealResultRepayment.setDeductImplementId(item.getDeductImplementId());
                     ybAppealResultRepayment.setDataType(item.getDataType());
@@ -156,7 +157,8 @@ public class YbAppealResultRepaymentServiceImpl extends ServiceImpl<YbAppealResu
             List<YbAppealResultRepayment> createList = new ArrayList<>();
 
             for (YbAppealResultRepayment item : appealResultRepaymentList) {
-                if (queryList.stream().filter(s -> s.getResultId().equals(item.getResultId()) &&
+                if (queryList.stream().filter(s ->
+//                        s.getResultId().equals(item.getResultId()) &&
                         s.getResetDataId().equals(item.getResetDataId())
                 ).count() == 0) {
                     YbAppealResultRepayment ybAppealResultRepayment = new YbAppealResultRepayment();
@@ -164,7 +166,7 @@ public class YbAppealResultRepaymentServiceImpl extends ServiceImpl<YbAppealResu
                     Date appDate = DataTypeHelpers.stringDateFormat(item.getApplyDateStr() + "-15", "", false);
                     ybAppealResultRepayment.setApplyDate(appDate);
                     ybAppealResultRepayment.setApplyDateStr(item.getApplyDateStr());
-                    ybAppealResultRepayment.setResultId(item.getResultId());
+//                    ybAppealResultRepayment.setResultId(item.getResultId());
                     ybAppealResultRepayment.setResetDataId(item.getResetDataId());
                     ybAppealResultRepayment.setDeductImplementId(item.getDeductImplementId());
                     ybAppealResultRepayment.setDataType(item.getDataType());

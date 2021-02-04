@@ -71,7 +71,7 @@ public class YbAppealResultServiceImpl extends ServiceImpl<YbAppealResultMapper,
     @Override
     @Transactional
     public void createYbAppealResult(YbAppealResult ybAppealResult) {
-        if(ybAppealResult.getId() == null || "".equals(ybAppealResult.getId())) {
+        if (ybAppealResult.getId() == null || "".equals(ybAppealResult.getId())) {
             ybAppealResult.setId(UUID.randomUUID().toString());
         }
         ybAppealResult.setCreateTime(new Date());
@@ -95,11 +95,11 @@ public class YbAppealResultServiceImpl extends ServiceImpl<YbAppealResultMapper,
 
     @Override
     @Transactional
-    public YbAppealResult findCreateAppealResult(YbAppealResult ybAppealResult , Long uId, String Uname){
+    public YbAppealResult findCreateAppealResult(YbAppealResult ybAppealResult, Long uId, String Uname) {
         LambdaQueryWrapper<YbAppealResult> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(YbAppealResult::getId,ybAppealResult.getId());
-        List<YbAppealResult>  list = this.baseMapper.selectList(queryWrapper);
-        if(list.size() > 0){
+        queryWrapper.eq(YbAppealResult::getId, ybAppealResult.getId());
+        List<YbAppealResult> list = this.baseMapper.selectList(queryWrapper);
+        if (list.size() > 0) {
             ybAppealResult = list.get(0);
         } else {
             Date thisDate = new java.sql.Timestamp(new Date().getTime());
@@ -109,13 +109,12 @@ public class YbAppealResultServiceImpl extends ServiceImpl<YbAppealResultMapper,
             ybAppealResult.setOperateDate(thisDate);
             //ybAppealResult.setOperateReason("");
             int count = this.baseMapper.insert(ybAppealResult);
-            if(count == 0)
-            {
+            if (count == 0) {
                 ybAppealResult = new YbAppealResult();
             }
         }
 
-        return  ybAppealResult;
+        return ybAppealResult;
     }
 
     //打包下载 查找部门
@@ -129,7 +128,7 @@ public class YbAppealResultServiceImpl extends ServiceImpl<YbAppealResultMapper,
     @Transactional
     public void updateAppealResulResetDatas(String applyDateStr, Long resetPersonId, String resetPersonName) {
         Date resetDate = new Date();
-        this.baseMapper.updateAppealResulResetData(applyDateStr,resetPersonId,resetPersonName,resetDate);
+        this.baseMapper.updateAppealResulResetData(applyDateStr, resetPersonId, resetPersonName, resetDate);
     }
 
     //数据剔除业务
@@ -147,22 +146,93 @@ public class YbAppealResultServiceImpl extends ServiceImpl<YbAppealResultMapper,
     //手动剔除业务
     @Override
     public List<YbAppealResult> findAppealResulDataHandles(String applyDateStr) {
-        return  this.baseMapper.findAppealResulDataHandle(applyDateStr);
+        return this.baseMapper.findAppealResulDataHandle(applyDateStr);
+    }
+
+    @Override
+    public List<YbAppealResult> findAppealResultList(YbAppealResult appealResult) {
+        LambdaQueryWrapper<YbAppealResult> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(YbAppealResult::getIsDeletemark, 1);
+        if (appealResult.getApplyDateStr() != null) {
+            wrapper.eq(YbAppealResult::getApplyDateStr, appealResult.getApplyDateStr());
+        }
+
+        if (appealResult.getState() != null) {
+            wrapper.eq(YbAppealResult::getState, appealResult.getState());
+        }
+
+        if (appealResult.getSourceType() != null) {
+            wrapper.eq(YbAppealResult::getSourceType, appealResult.getSourceType());
+        }
+
+        if (appealResult.getDataType() != null) {
+            wrapper.eq(YbAppealResult::getDataType, appealResult.getDataType());
+        }
+
+        if (appealResult.getTypeno() != null) {
+            wrapper.eq(YbAppealResult::getTypeno, appealResult.getTypeno());
+        }
+
+        if (appealResult.getRepayState() != null) {
+            wrapper.eq(YbAppealResult::getRepayState, appealResult.getRepayState());
+        }
+
+        if (appealResult.getOrderNumber() != null) {
+            wrapper.eq(YbAppealResult::getOrderNumber, appealResult.getOrderNumber());
+        }
+
+        if (appealResult.getOrderNum() != null) {
+            wrapper.eq(YbAppealResult::getOrderNum, appealResult.getOrderNum());
+        }
+
+        if (appealResult.getRelatelDataId() != null) {
+            wrapper.eq(YbAppealResult::getRelatelDataId, appealResult.getRelatelDataId());
+        }
+
+        if (appealResult.getApplyDataId() != null) {
+            wrapper.eq(YbAppealResult::getApplyDataId, appealResult.getApplyDataId());
+        }
+
+        if (appealResult.getId() != null) {
+            wrapper.eq(YbAppealResult::getId, appealResult.getId());
+        }
+
+        if (appealResult.getDoctorCode() != null) {
+            wrapper.eq(YbAppealResult::getDoctorCode, appealResult.getDoctorCode());
+        }
+
+        if (appealResult.getDoctorName() != null) {
+            wrapper.eq(YbAppealResult::getDoctorName, appealResult.getDoctorName());
+        }
+
+        if (appealResult.getDeptCode() != null) {
+            wrapper.eq(YbAppealResult::getDeptCode, appealResult.getDeptCode());
+        }
+
+        if (appealResult.getDeptName() != null) {
+            wrapper.eq(YbAppealResult::getDeptName, appealResult.getDeptName());
+        }
+
+        return this.list(wrapper);
     }
 
     //申请，查询第一次复议记录
     @Override
     public YbAppealResult findLoadLastAppealResulData(YbAppealResult appealResult) {
         YbAppealResult ybAppealResult = null;
-                LambdaQueryWrapper<YbAppealResult> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(YbAppealResult::getApplyDataId,appealResult.getApplyDataId());
-        queryWrapper.eq(YbAppealResult::getVerifyId,appealResult.getVerifyId());
-        List<YbAppealResult>  list = this.baseMapper.selectList(queryWrapper);
-        if(list.size() > 0) {
+        LambdaQueryWrapper<YbAppealResult> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(YbAppealResult::getApplyDataId, appealResult.getApplyDataId());
+        queryWrapper.eq(YbAppealResult::getVerifyId, appealResult.getVerifyId());
+        List<YbAppealResult> list = this.baseMapper.selectList(queryWrapper);
+        if (list.size() > 0) {
             ybAppealResult = list.get(0);
         }
 
         return ybAppealResult;
     }
 
+    @Override
+    public int updatAppealResultCancelData(List<YbAppealResult> list){
+        return this.baseMapper.updateAppealResultCancelData(list);
+    }
 }

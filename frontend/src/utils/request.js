@@ -10,6 +10,7 @@ let FEBS_REQUEST = axios.create({
   baseURL: 'http://127.0.0.1:9527/',
   // baseURL: 'http://127.0.0.1:9001/',
   // baseURL: 'http://192.168.78.136:9527/',
+  // baseURL: 'http://221.232.155.142:9527/',
   responseType: 'json',
   validateStatus (status) {
     // 200 外的状态码都认定为失败
@@ -85,6 +86,7 @@ FEBS_REQUEST.interceptors.response.use((config) => {
 })
 
 const request = {
+  baseURL: 'http://127.0.0.1:9527/',
   post (url, params) {
     return FEBS_REQUEST.post(url, params, {
       transformRequest: [(params) => {

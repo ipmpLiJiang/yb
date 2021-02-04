@@ -51,6 +51,10 @@ public class YbReconsiderResetDataViewServiceImpl extends ServiceImpl<YbReconsid
                 sql += " AND seekState = " + ybReconsiderResetDataView.getSeekState();
             }
 
+            if (ybReconsiderResetDataView.getResetType() != null) {
+                sql += " AND resetType = " + ybReconsiderResetDataView.getResetType();
+            }
+
             sql += ")";
             if (ybReconsiderResetDataView.getCurrencyField() != null && !"".equals(ybReconsiderResetDataView.getCurrencyField())) {
                 if (ybReconsiderResetDataView.getDataType() != null) {
@@ -77,6 +81,71 @@ public class YbReconsiderResetDataViewServiceImpl extends ServiceImpl<YbReconsid
                 }
             }
             queryWrapper.apply(sql);
+
+            Page<YbReconsiderResetDataView> page = new Page<>();
+            SortUtil.handlePageSort(request, page, false);//true 是属性  false是数据库字段可两个
+            return this.page(page, queryWrapper);
+        } catch (Exception e) {
+            log.error("获取字典信息失败", e);
+            return null;
+        }
+    }
+
+    @Override
+    public IPage<YbReconsiderResetDataView> findReconsiderResetDataViews(QueryRequest request, YbReconsiderResetDataView ybReconsiderResetDataView) {
+        try {
+            LambdaQueryWrapper<YbReconsiderResetDataView> queryWrapper = new LambdaQueryWrapper<>();
+            if (ybReconsiderResetDataView.getId() != null) {
+                queryWrapper.ne(YbReconsiderResetDataView::getId, ybReconsiderResetDataView.getId());
+            }
+
+            if (ybReconsiderResetDataView.getApplyDateStr() != null) {
+                queryWrapper.eq(YbReconsiderResetDataView::getApplyDateStr, ybReconsiderResetDataView.getApplyDateStr());
+            }
+
+            if (ybReconsiderResetDataView.getBillNo() != null) {
+                queryWrapper.eq(YbReconsiderResetDataView::getBillNo, ybReconsiderResetDataView.getBillNo());
+            }
+
+            if (ybReconsiderResetDataView.getSerialNo() != null) {
+                queryWrapper.eq(YbReconsiderResetDataView::getSerialNo, ybReconsiderResetDataView.getSerialNo());
+            }
+
+            if (ybReconsiderResetDataView.getRuleName() != null) {
+                queryWrapper.eq(YbReconsiderResetDataView::getRuleName, ybReconsiderResetDataView.getRuleName());
+            }
+
+            if (ybReconsiderResetDataView.getProjectCode() != null) {
+                queryWrapper.eq(YbReconsiderResetDataView::getProjectCode, ybReconsiderResetDataView.getProjectCode());
+            }
+
+            if (ybReconsiderResetDataView.getProjectName() != null) {
+                queryWrapper.eq(YbReconsiderResetDataView::getProjectName, ybReconsiderResetDataView.getProjectName());
+            }
+
+            if (ybReconsiderResetDataView.getPersonalNo() != null) {
+                queryWrapper.eq(YbReconsiderResetDataView::getPersonalNo, ybReconsiderResetDataView.getPersonalNo());
+            }
+
+            if (ybReconsiderResetDataView.getDataType() != null) {
+                queryWrapper.eq(YbReconsiderResetDataView::getDataType, ybReconsiderResetDataView.getDataType());
+            }
+
+            if (ybReconsiderResetDataView.getSeekState() != null) {
+                queryWrapper.eq(YbReconsiderResetDataView::getSeekState, ybReconsiderResetDataView.getSeekState());
+            }
+
+            if (ybReconsiderResetDataView.getState() != null) {
+                queryWrapper.eq(YbReconsiderResetDataView::getState, ybReconsiderResetDataView.getState());
+            }
+
+            if (ybReconsiderResetDataView.getOrderNumber() != null) {
+                queryWrapper.eq(YbReconsiderResetDataView::getOrderNumber, ybReconsiderResetDataView.getOrderNumber());
+            }
+
+            if (ybReconsiderResetDataView.getResetType() != null) {
+                queryWrapper.eq(YbReconsiderResetDataView::getResetType, ybReconsiderResetDataView.getResetType());
+            }
 
             Page<YbReconsiderResetDataView> page = new Page<>();
             SortUtil.handlePageSort(request, page, false);//true 是属性  false是数据库字段可两个

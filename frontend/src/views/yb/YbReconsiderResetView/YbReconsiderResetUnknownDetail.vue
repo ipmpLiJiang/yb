@@ -2,16 +2,16 @@
   <a-drawer
     title="手动剔除"
     :maskClosable="false"
-    width=90%
+    width=85%
     placement="right"
     :closable="true"
     @close="onClose"
-    :visible="exceptResetVisiable"
+    :visible="unknownResetVisiable"
     style="height: calc(100% - 15px);overflow: auto;padding-bottom: 53px;"
   >
     <resetData-module
       ref="resetDataModule"
-      :ybResetDataModule="ybReconsiderResetExceptDetail"
+      :ybResetDataModule="ybReconsiderResetUnknownDetail"
     >
     </resetData-module>
     <template>
@@ -38,19 +38,16 @@
       </a-table>
     </template>
     <div style="font-weight:bolder;color:red;margin-top:10px;margin-bottom:10px;">
-      <a-row
-        justify="end"
-        type="flex"
-      >
-        <a-col :span=16>
-        </a-col>
-        <a-col :span=4>
-          剔除汇总扣款金额： {{totalDeductPrice}}
-        </a-col>
-        <a-col :span=4>
-          申诉汇总扣款金额： {{resultDeductPrice}}
-        </a-col>
-      </a-row>
+    <a-row justify="end" type="flex">
+      <a-col :span=16>
+      </a-col>
+    <a-col :span=4>
+      剔除汇总扣款金额： {{totalDeductPrice}}
+    </a-col>
+    <a-col :span=4>
+      申诉汇总扣款金额： {{resultDeductPrice}}
+    </a-col>
+    </a-row>
     </div>
     <template>
       <!-- 申诉表格区域 -->
@@ -157,12 +154,12 @@ const formItemLayout = {
   }
 }
 export default {
-  name: 'YbReconsiderResetExceptDetail',
+  name: 'YbReconsiderResetUnknownDetail',
   components: {
     ResetDataModule
   },
   props: {
-    exceptResetVisiable: {
+    unknownResetVisiable: {
       default: false
     }
   },
@@ -214,7 +211,9 @@ export default {
       seekState: 0,
       totalDeductPrice: 0,
       resultDeductPrice: 0,
-      ybReconsiderResetExceptDetail: {}
+      deductPriceReset: 0,
+      deductPriceResult: 0,
+      ybReconsiderResetUnknownDetail: {}
     }
   },
   computed: {
@@ -256,7 +255,7 @@ export default {
       {
         title: '规则名称',
         dataIndex: 'ruleName',
-        width: 160
+        width: 140
       },
       {
         title: '扣除金额',
@@ -272,12 +271,12 @@ export default {
       {
         title: '费用日期',
         dataIndex: 'costDateStr',
-        width: 105
+        width: 110
       },
       {
         title: '结算日期',
         dataIndex: 'settlementDateStr',
-        width: 105
+        width: 110
       },
       {
         title: '申请理由',
@@ -295,7 +294,7 @@ export default {
             return text
           }
         },
-        width: 105
+        width: 110
       },
       {
         title: '科室名称',
@@ -375,7 +374,7 @@ export default {
       {
         title: '规则名称',
         dataIndex: 'ruleName',
-        width: 160
+        width: 140
       },
       {
         title: '扣除金额',
@@ -391,12 +390,12 @@ export default {
       {
         title: '费用日期',
         dataIndex: 'costDateStr',
-        width: 130
+        width: 135
       },
       {
         title: '结算日期',
         dataIndex: 'settlementDateStr',
-        width: 105
+        width: 110
       },
       {
         title: '住院号',
@@ -518,13 +517,13 @@ export default {
       this.totalDeductPrice = 0
       this.deductPriceReset = 0
       this.deductPriceResult = 0
-      this.ybReconsiderResetExceptDetail = {}
+      this.ybReconsiderResetUnknownDetail = {}
       this.reset()
       this.$emit('close', this.isUpdate)
     },
     handleReset (type) {
       if (this.selectedRowKeys.length >= 1) {
-        let resetIds = this.ybReconsiderResetExceptDetail.id
+        let resetIds = this.ybReconsiderResetUnknownDetail.id
         if (this.selectedRowKeys1.length > 0) {
           resetIds += ',' + this.selectedRowKeys1
         }
@@ -545,10 +544,10 @@ export default {
               ...updateParams
             }).then((r) => {
               if (r.data.data.success === 1) {
-                this.isUpdate = true
-                this.state = 2
                 this.totalDeductPrice = this.deductPriceReset
                 this.resultDeductPrice = this.deductPriceResult
+                this.isUpdate = true
+                this.state = 2
                 this.search()
                 if (this.dataSource1.length > 0) {
                   this.seekState = 1
@@ -577,7 +576,7 @@ export default {
     },
     resetDeductPrice () {
       this.resultDeductPrice = 0
-      this.totalDeductPrice = this.ybReconsiderResetExceptDetail.deductPrice
+      this.totalDeductPrice = this.ybReconsiderResetUnknownDetail.deductPrice
     },
     onSelectChange (selectedRowKeys) {
       this.selectedRowKeys = selectedRowKeys
@@ -589,16 +588,16 @@ export default {
     },
     onSelectChange1 (selectedRowKeys) {
       this.selectedRowKeys1 = selectedRowKeys
-      this.totalDeductPrice = this.ybReconsiderResetExceptDetail.deductPrice
+      this.totalDeductPrice = this.ybReconsiderResetUnknownDetail.deductPrice
       for (var id of selectedRowKeys) {
         var target = this.dataSource1.filter(item => id === item.id)[0]
         this.totalDeductPrice += target.deductPrice
       }
     },
-    setFormValues ({ ...ybReconsiderResetExceptDetail }) {
+    setFormValues ({ ...ybReconsiderResetUnknownDetail }) {
       this.isUpdate = false
-      this.ybReconsiderResetExceptDetail = ybReconsiderResetExceptDetail
-      this.totalDeductPrice = ybReconsiderResetExceptDetail.deductPrice
+      this.ybReconsiderResetUnknownDetail = ybReconsiderResetUnknownDetail
+      this.totalDeductPrice = ybReconsiderResetUnknownDetail.deductPrice
       this.state = 1
       this.resultDeductPrice = 0
       this.deductPriceReset = 0
@@ -654,13 +653,13 @@ export default {
       })
     },
     fetch1 (params = {}) {
-      params.id = this.ybReconsiderResetExceptDetail.id
-      params.applyDateStr = this.ybReconsiderResetExceptDetail.applyDateStr
-      params.serialNo = this.ybReconsiderResetExceptDetail.serialNo
+      params.id = this.ybReconsiderResetUnknownDetail.id
+      params.applyDateStr = this.ybReconsiderResetUnknownDetail.applyDateStr
+      params.serialNo = this.ybReconsiderResetUnknownDetail.serialNo
       params.billNo = this.ybReconsiderResetExceptDetail.billNo
-      params.projectCode = this.ybReconsiderResetExceptDetail.projectCode
-      params.projectName = this.ybReconsiderResetExceptDetail.projectName
-      params.dataType = this.ybReconsiderResetExceptDetail.dataType
+      params.projectCode = this.ybReconsiderResetUnknownDetail.projectCode
+      params.projectName = this.ybReconsiderResetUnknownDetail.projectName
+      params.dataType = this.ybReconsiderResetUnknownDetail.dataType
       params.seekState = this.seekState
       this.loading1 = true
       if (this.paginationInfo1) {
@@ -686,12 +685,12 @@ export default {
       })
     },
     fetch (params = {}) {
-      params.applyDateStr = this.ybReconsiderResetExceptDetail.applyDateStr
-      params.serialNo = this.ybReconsiderResetExceptDetail.serialNo
+      params.applyDateStr = this.ybReconsiderResetUnknownDetail.applyDateStr
+      params.serialNo = this.ybReconsiderResetUnknownDetail.serialNo
       params.billNo = this.ybReconsiderResetExceptDetail.billNo
-      params.projectCode = this.ybReconsiderResetExceptDetail.projectCode
-      params.projectName = this.ybReconsiderResetExceptDetail.projectName
-      params.dataType = this.ybReconsiderResetExceptDetail.dataType
+      params.projectCode = this.ybReconsiderResetUnknownDetail.projectCode
+      params.projectName = this.ybReconsiderResetUnknownDetail.projectName
+      params.dataType = this.ybReconsiderResetUnknownDetail.dataType
       params.sourceType = 0
       params.state = this.state
       this.loading = true

@@ -98,4 +98,40 @@
         order by p.create_time desc
     </select>
 
+    <select id="findAppealConfireUserView" resultType="cc.mrbird.febs.yb.entity.YbAppealConfire" >
+        SELECT
+        p.id,
+        p.doctorCode,
+        p.doctorName,
+        p.adminType,
+        p.COMMENTS,
+        p.STATE,
+        p.IS_DELETEMARK,
+        p.MODIFY_TIME,
+        p.CREATE_TIME,
+        p.CREATE_USER_ID,
+        p.MODIFY_USER_ID,
+        GROUP_CONCAT(CONCAT(d.deptCode,'-',d.deptName)) currencyField
+        FROM yb_appeal_confire p
+        left join yb_appeal_confire_data d on
+        p.id = d.pid and
+        d.IS_DELETEMARK =1
+        where
+        p.IS_DELETEMARK = 1
+        <if test="doctorContent != null and doctorContent != ''">
+            and (p.doctorCode like concat('%', #{ doctorContent } ,'%') or p.doctorName like concat('%', #{ doctorContent } ,'%'))
+        </if>
+        <if test="adminType != null">
+            and p.adminType = #{ adminType }
+        </if>
+        <if test="uid != null">
+            and p.CREATE_USER_ID = #{ uid }
+        </if>
+        <if test="deptContent != null and deptContent != ''">
+            and p.id in(select DISTINCT pid from yb_appeal_confire_data where deptName like concat('%', #{ deptContent } ,'%'))
+        </if>
+        GROUP BY p.id
+        order by p.create_time desc
+    </select>
+
 </mapper>

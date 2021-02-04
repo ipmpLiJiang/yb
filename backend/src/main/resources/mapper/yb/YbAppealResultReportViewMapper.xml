@@ -64,18 +64,18 @@
                     <result column="CREATE_USER_ID" property="createUserId"/>
                     <result column="MODIFY_USER_ID" property="modifyUserId"/>
                     <result column="sourceType" property="sourceType"/>
-                    <result column="resetDataId" property="resetDataId"/>
+<!--                    <result column="resetDataId" property="resetDataId"/>-->
                     <result column="repayState" property="repayState"/>
                     <result column="currencyField" property="currencyField"/>
                     <result column="repaymentPrice" property="repaymentPrice"/>
                     <result column="adjustPrice" property="adjustPrice"/>
             <result column="isSuccess" property="isSuccess"/>
-
+            <result column="relatelDataId" property="relatelDataId"/>
         </resultMap>
 
         <!-- 通用查询结果列 -->
         <sql id="Base_Column_List">
-        serialNo, billNo, proposalCode, projectCode, projectName, num, medicalPrice, ruleName, deductPrice, deductReason, repaymentReason, doctorName, deptCode, deptName, enterHospitalDate, outHospitalDate, costDate, enterHospitalDateStr, outHospitalDateStr, costDateStr, hospitalizedNo, treatmentMode, settlementDate, settlementDateStr, personalNo, insuredName, cardNumber, areaName, versionNumber, backAppeal, typeno, insuredType, dataType, orderNumber,orderNum, applyDate, applyDateStr, operatorId, operatorName, raResetState, raResultState, raRepayState, id, manageId, applyDataId, verifyId, arDoctorCode, arDoctorName, arDeptCode, arDeptName, operateReason, operateDate, COMMENTS, STATE, IS_DELETEMARK, MODIFY_TIME, CREATE_TIME, CREATE_USER_ID, MODIFY_USER_ID, sourceType, resetDataId, repayState, currencyField, repaymentPrice, adjustPrice,isSuccess
+        serialNo, billNo, proposalCode, projectCode, projectName, num, medicalPrice, ruleName, deductPrice, deductReason, repaymentReason, doctorName, deptCode, deptName, enterHospitalDate, outHospitalDate, costDate, enterHospitalDateStr, outHospitalDateStr, costDateStr, hospitalizedNo, treatmentMode, settlementDate, settlementDateStr, personalNo, insuredName, cardNumber, areaName, versionNumber, backAppeal, typeno, insuredType, dataType, orderNumber,orderNum, applyDate, applyDateStr, operatorId, operatorName, raResetState, raResultState, raRepayState, id, manageId, applyDataId, verifyId, arDoctorCode, arDoctorName, arDeptCode, arDeptName, operateReason, operateDate, COMMENTS, STATE, IS_DELETEMARK, MODIFY_TIME, CREATE_TIME, CREATE_USER_ID, MODIFY_USER_ID, sourceType,  repayState, currencyField, repaymentPrice, adjustPrice,isSuccess,relatelDataId
     </sql>
     <update id="updateYbAppealResultReportView" parameterType="cc.mrbird.febs.yb.entity.YbAppealResultReportView">
         update yb_appeal_result_report_view
@@ -139,7 +139,7 @@
 <if test="createUserId != null">CREATE_USER_ID=#{createUserId},</if>
 <if test="modifyUserId != null">MODIFY_USER_ID=#{modifyUserId},</if>
 <if test="sourceType != null">sourceType=#{sourceType},</if>
-<if test="resetDataId != null">resetDataId=#{resetDataId},</if>
+<if test="resetDataId != null">-- resetDataId=#{resetDataId},</if>
 <if test="repayState != null">repayState=#{repayState},</if>
 <if test="currencyField != null">currencyField=#{currencyField},</if>
 <if test="repaymentPrice != null">repaymentPrice=#{repaymentPrice},</if>
@@ -243,7 +243,6 @@
             AND ybAppealResultReportView.CREATE_TIME <![CDATA[ <= ]]>  createTimeTo}
         </if>
         <if test="ybAppealResultReportView.sourceType != null"> and sourceType =#{ ybAppealResultReportView.sourceType} </if>
-            <if test="ybAppealResultReportView.resetDataId != null and ybAppealResultReportView.resetDataId != ''"> and resetDataId like concat('%', #{ ybAppealResultReportView.resetDataId} ,'%')</if>
         <if test="ybAppealResultReportView.repayState != null"> and repayState =#{ ybAppealResultReportView.repayState} </if>
             <if test="ybAppealResultReportView.currencyField != null and ybAppealResultReportView.currencyField != ''"> and currencyField like concat('%', #{ ybAppealResultReportView.currencyField} ,'%')</if>
         <if test="ybAppealResultReportView.isSuccess != null"> and isSuccess =#{ ybAppealResultReportView.isSuccess} </if>

@@ -193,8 +193,8 @@ public class YbReconsiderApplyServiceImpl extends ServiceImpl<YbReconsiderApplyM
         List<String> list = Arrays.asList(Ids);
 //        this.baseMapper.deleteBatchStateIdsYbReconsiderApply(listString, state);
         LambdaQueryWrapper<YbReconsiderApply> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(YbReconsiderApply::getState,state);
-        wrapper.in(YbReconsiderApply::getId,list);
+        wrapper.eq(YbReconsiderApply::getState, state);
+        wrapper.in(YbReconsiderApply::getId, list);
         this.baseMapper.delete(wrapper);
     }
 
@@ -391,7 +391,7 @@ public class YbReconsiderApplyServiceImpl extends ServiceImpl<YbReconsiderApplyM
 
 
     @Override
-    public String getSendMessage(String applyDateStr, Date enableDate, int typeno) {
+    public String getSendMessage(String applyDateStr, Date enableDate, int typeno, boolean isChange) {
         YbReconsiderApply entity = this.findReconsiderApplyByApplyDateStrs(applyDateStr);
         Date endDate = new Date();
         SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy年MM月dd日 E HH:mm点");//HH时mm分ss秒
@@ -406,8 +406,8 @@ public class YbReconsiderApplyServiceImpl extends ServiceImpl<YbReconsiderApplyM
         }
         String date1 = sdf1.format(endDate);
         String wangz = "登录网址：http://192.168.78.136:3086/#/login，用户名为工号，密码为身份证后6位。";
-        applyDateStr  = applyDateStr.replace("-","年");
-        if (enableDate != null) {
+        applyDateStr = applyDateStr.replace("-", "年");
+        if (!isChange) {
             Calendar cal = Calendar.getInstance();//使用默认时区和语言环境获得一个日历。
             cal.setTime(enableDate);
             cal.add(Calendar.DATE, -1);
@@ -440,7 +440,7 @@ public class YbReconsiderApplyServiceImpl extends ServiceImpl<YbReconsiderApplyM
 
     @Override
     @Transactional
-    public void updateReconsiderApplyState2345(YbReconsiderApply reconsiderApply){
+    public void updateReconsiderApplyState2345(YbReconsiderApply reconsiderApply) {
         YbReconsiderApply updateEntity = new YbReconsiderApply();
         updateEntity.setId(reconsiderApply.getId());
         if (reconsiderApply.getState() == YbDefaultValue.APPLYSTATE_2) { //上传一

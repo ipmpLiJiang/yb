@@ -63,6 +63,13 @@ public class YbAppealConfireController extends BaseController {
         return getDataTable(this.iYbAppealConfireService.findAppealConfireView(request, doctorContent, adminType, deptContent));
     }
 
+    @GetMapping("findAppealConfireView")
+    @RequiresPermissions("ybAppealConfire:userView")
+    public Map<String, Object> findUserList(QueryRequest request, String doctorContent, Integer adminType, String deptContent) {
+        User currentUser = FebsUtil.getCurrentUser();
+        return getDataTable(this.iYbAppealConfireService.findAppealConfireUserView(request, doctorContent, adminType, deptContent,currentUser.getUserId()));
+    }
+
     /**
      * 添加
      *

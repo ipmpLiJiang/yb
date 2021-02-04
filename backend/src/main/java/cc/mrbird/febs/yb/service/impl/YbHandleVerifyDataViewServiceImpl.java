@@ -51,6 +51,7 @@ public class YbHandleVerifyDataViewServiceImpl extends ServiceImpl<YbHandleVerif
             sql += ")";
             if (ybHandleVerifyDataView.getCurrencyField() != null && !"".equals(ybHandleVerifyDataView.getCurrencyField())) {
                 sql += " and (serialNo like'%" + ybHandleVerifyDataView.getCurrencyField() + "%'" +
+                        " or orderNumber like'%" + ybHandleVerifyDataView.getCurrencyField() + "%'" +
                         " or billNo like'%" + ybHandleVerifyDataView.getCurrencyField() + "%'" +
                         " or proposalCode like'%" + ybHandleVerifyDataView.getCurrencyField() + "%'" +
                         " or projectCode like'%" + ybHandleVerifyDataView.getCurrencyField() + "%'" +

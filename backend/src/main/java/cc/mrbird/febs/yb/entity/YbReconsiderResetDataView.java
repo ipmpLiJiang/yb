@@ -1,3 +1,4 @@
+
 package cc.mrbird.febs.yb.entity;
 
 import java.math.BigDecimal;
@@ -232,6 +233,8 @@ public class YbReconsiderResetDataView implements Serializable, Comparable<YbRec
     @ExcelField(value = "状态")
     private Integer state;
 
+
+
     /**
      * 剔除表
      */
@@ -276,74 +279,122 @@ public class YbReconsiderResetDataView implements Serializable, Comparable<YbRec
     @ExcelField(value = "还款金额")
     private BigDecimal repaymentPrice;
 
+//    /**
+//     * 复议申请明细
+//     */
+//    @TableField("applyDataId")
+//    @ExcelField(value ="复议申请明细")
+//    private String applyDataId;
+
+//    /**
+//     * 申请序号
+//     */
+//    @TableField("applyOrderNumber")
+//    @ExcelField(value ="申请序号")
+//    private String applyOrderNumber;
+
+//    /**
+//     * 复议上传Id
+//     */
+//    @TableField("resultId")
+//    @ExcelField(value ="复议上传Id")
+//    private String resultId;
+
+    /**
+     * 剔除类型
+     */
+    @TableField("resetType")
+    //@ExcelField(value = "剔除类型")
+    private Integer resetType;
+
+    /**
+     * 关联Id
+     */
+    @TableField("relatelDataId")
+    @ExcelField(value = "关联Id")
+    private String relatelDataId;
+
+
+    /**
+     * 剔除人代码
+     */
+    @TableField("resetPersonId")
+    @ExcelField(value = "剔除人代码")
+    private Long resetPersonId;
+
+    /**
+     * 剔除人
+     */
+    @TableField("resetPersonName")
+    @ExcelField(value = "剔除人")
+    private String resetPersonName;
+
+    /**
+     * 剔除日期
+     */
+    @TableField("resetDate")
+    @ExcelField(value ="剔除日期")
+    private Date resetDate;
+    private transient String resetDateFrom;
+    private transient String resetDateTo;
+
+    /**
+     * 主状态
+     */
+    @TableField("resetState")
+    @ExcelField(value = "主状态")
+    private Integer resetState;
+
 
     public static final String ID = "id";
-
     public static final String SERIALNO = "serialNo";
-
     public static final String BILLNO = "billNo";
-
     public static final String PROJECTCODE = "projectCode";
-
     public static final String PROJECTNAME = "projectName";
-
     public static final String MEDICALPRICE = "medicalPrice";
-
     public static final String RULENAME = "ruleName";
-
     public static final String DEDUCTPRICE = "deductPrice";
-
     public static final String DEDUCTREASON = "deductReason";
-
     public static final String REPAYMENTREASON = "repaymentReason";
-
     public static final String DOCTORNAME = "doctorName";
-
     public static final String DEPTCODE = "deptCode";
-
     public static final String DEPTNAME = "deptName";
-
     public static final String COSTDATE = "costDate";
-
     public static final String COSTDATESTR = "costDateStr";
-
     public static final String HOSPITALIZEDNO = "hospitalizedNo";
-
     public static final String TREATMENTMODE = "treatmentMode";
-
     public static final String SETTLEMENTDATE = "settlementDate";
-
     public static final String SETTLEMENTDATESTR = "settlementDateStr";
-
     public static final String PERSONALNO = "personalNo";
-
     public static final String INSUREDNAME = "insuredName";
-
     public static final String CARDNUMBER = "cardNumber";
-
     public static final String AREANAME = "areaName";
-
     public static final String INSUREDTYPE = "insuredType";
-
     public static final String DATATYPE = "dataType";
-
     public static final String REPAYMENTPRICE = "repaymentPrice";
-
     public static final String ORDERNUMBER = "orderNumber";
-
     public static final String ORDERNUM = "orderNum";
-
-    public static final String STATE = "STATE";
-
+    public static final String STATE = "state";
     public static final String RESETID = "resetId";
-
     public static final String APPLYDATE = "applyDate";
-
     public static final String APPLYDATESTR = "applyDateStr";
-
     public static final String CURRENCYFIELD = "currencyField";
-
     public static final String SEEKSTATE = "seekState";
+//    public static final String APPLYDATAID ="applyDataId" ;
+//    public static final String APPLYORDERNUMBER = "applyOrderNumber";
+
+    public static final String RELATELDATAID = "relatelDataId";
+
+    public static final String RESETPERSONID = "resetPersonId";
+
+    public static final String RESETPERSONNAME = "resetPersonName";
+
+//    public static final String RESULTID = "resultId";
+
+    public static final String RESETDATE = "resetDate";
+
+    public static final String RESETSTATE = "resetState";
+
 
     @Override
     public int compareTo(YbReconsiderResetDataView o) {

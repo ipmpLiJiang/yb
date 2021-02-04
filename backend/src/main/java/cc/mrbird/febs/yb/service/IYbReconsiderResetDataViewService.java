@@ -22,6 +22,8 @@ public interface IYbReconsiderResetDataViewService extends IService<YbReconsider
 
         IPage<YbReconsiderResetDataView> findYbReconsiderResetDataViewList(QueryRequest request, YbReconsiderResetDataView ybReconsiderResetDataView);
 
+        IPage<YbReconsiderResetDataView> findReconsiderResetDataViews(QueryRequest request, YbReconsiderResetDataView ybReconsiderResetDataView);
+
         void createYbReconsiderResetDataView(YbReconsiderResetDataView ybReconsiderResetDataView);
 
         void updateYbReconsiderResetDataView(YbReconsiderResetDataView ybReconsiderResetDataView);

@@ -33,19 +33,26 @@ private static final long serialVersionUID=1L;
                                 @ExcelField(value ="扣款落实Id")
     private String id;
 
-    /**
-     * 复议上传Id
-     */
-    @TableField("resultId")
-            @ExcelField(value ="复议上传Id")
-    private String resultId;
-
+//    /**
+//     * 复议上传Id
+//     */
+//    @TableField("resultId")
+//            @ExcelField(value ="复议上传Id")
+//    private String resultId;
+//
     /**
      * 剔除明细Id
      */
     @TableField("resetDataId")
             @ExcelField(value ="剔除明细Id")
     private String resetDataId;
+
+    /**
+     * 关联Id
+     */
+    @TableField("relatelDataId")
+            @ExcelField(value ="关联Id")
+    private String relatelDataId;
 
     /**
      * 绩效年月
@@ -157,9 +164,11 @@ private static final long serialVersionUID=1L;
 
     public static final String ID ="id" ;
 
-    public static final String RESULTID ="resultId" ;
+//    public static final String RESULTID ="resultId" ;
 
     public static final String RESETDATAID ="resetDataId" ;
+
+    public static final String RELATELDATAID = "relatelDataId";
 
     public static final String IMPLEMENTDATE ="implementDate" ;
 

@@ -399,8 +399,7 @@ export default {
         params.pageSize = this.pagination.defaultPageSize
         params.pageNum = this.pagination.defaultCurrent
       }
-      params.sortField = 'p.CREATE_TIME'
-      this.$get('ybAppealConfire', {
+      this.$get('ybAppealConfire/findAppealConfireView', {
         ...params
       }).then((r) => {
         let data = r.data

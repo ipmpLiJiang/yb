@@ -413,6 +413,8 @@ export default {
         ...formData
       }).then((r) => {
         for (let data of r.data.data) {
+          data.url = this.$baseURL + data.url
+          data.thumbUrl = this.$baseURL + data.thumbUrl
           this.fileList.push(data)
         }
       })

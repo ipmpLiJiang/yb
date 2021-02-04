@@ -2,7 +2,7 @@
   <a-drawer
     title="查看剔除明细"
     :maskClosable="false"
-    width=85%
+    width=90%
     placement="right"
     :closable="true"
     @close="onClose"
@@ -31,6 +31,9 @@
         <template slot="operationDeductReason" slot-scope="text, record, index">
           <span :title="record.deductReason">{{record.deductReason}}</span>
         </template>
+        <template slot="operationOperateReason" slot-scope="text, record, index">
+          <span :title="record.operateReason">{{record.operateReason}}</span>
+        </template>
       <a slot="action" slot-scope="text">action</a>
         <template
           slot="remark"
@@ -44,6 +47,35 @@
           </a-popover>
         </template>
       </a-table>
+    </template>
+    <template>
+      <a-row
+        justify="center"
+        type="flex"
+      >
+        <a-col :span=3>
+          <a-popconfirm
+            title="确定取消剔除数据？"
+            @confirm="handleCancelReset()"
+            v-show="isHandleBtn"
+            okText="确定"
+            cancelText="取消"
+          >
+          <a-button
+              type="primary"
+              style="margin-right: .8rem"
+            >取消剔除</a-button>
+          </a-popconfirm>
+        </a-col>
+        <a-col :span=1>
+          <a-button
+            style="margin-right: .8rem"
+            @click="onClose"
+          >
+            返回
+          </a-button>
+        </a-col>
+      </a-row>
     </template>
   </a-drawer>
 </template>
@@ -82,6 +114,8 @@ export default {
       },
       loading: false,
       bordered: true,
+      isHandleBtn: false,
+      isUpdate: false,
       ybReconsiderResetData: {}
     }
   },
@@ -135,7 +169,7 @@ export default {
         title: '扣除原因',
         scopedSlots: { customRender: 'operationDeductReason' },
         ellipsis: true,
-        width: 250
+        width: 200
       },
       {
         title: '费用日期',
@@ -151,8 +185,9 @@ export default {
       },
       {
         title: '申请理由',
-        dataIndex: 'operateReason',
-        width: 120
+        scopedSlots: { customRender: 'operationOperateReason' },
+        ellipsis: true,
+        width: 200
       },
       {
         title: '申请日期',
@@ -180,12 +215,15 @@ export default {
       },
       {
         title: '状态',
-        dataIndex: 'resetDataId',
+        dataIndex: 'state',
         customRender: (text, row, index) => {
-          if (text !== null) {
-            return '已剔除'
-          } else {
-            return '未剔除'
+          switch (text) {
+            case 1:
+              return '未剔除'
+            case 2:
+              return '已剔除'
+            default:
+              return text
           }
         },
         fixed: 'right',
@@ -220,16 +258,43 @@ export default {
     },
     onClose () {
       this.loading = false
+      this.isHandleBtn = false
+      this.$emit('close', this.isUpdate)
+      this.isUpdate = false
       this.ybReconsiderResetData = {}
       this.reset()
-      this.$emit('close')
     },
     onSelectChange (selectedRowKeys) {
       this.selectedRowKeys = selectedRowKeys
     },
     setFormValues ({ ...ybReconsiderResetData }) {
       this.ybReconsiderResetData = ybReconsiderResetData
+      this.isUpdate = false
+      if (this.ybReconsiderResetData.resetType === 2) {
+        this.isHandleBtn = true
+      } else {
+        this.isHandleBtn = false
+      }
       this.search()
+    },
+    handleCancelReset () {
+      this.isUpdate = true
+      let updateParams = {
+        resetId: this.ybReconsiderResetData.id,
+        applyDateStr: this.ybReconsiderResetData.applyDateStr
+      }
+      this.$put('ybReconsiderResetData/updateHandleResetCanceltData', {
+        ...updateParams
+      }).then((r) => {
+        if (r.data.data.success === 1) {
+          this.$message.success(r.data.data.message)
+          this.onClose()
+        } else {
+          this.$message.warning(r.data.data.message)
+        }
+      }).catch(() => {
+        this.$message.error('取消剔除操作失败.')
+      })
     },
     search () {
       let { sortedInfo } = this
@@ -256,12 +321,13 @@ export default {
     },
     fetch (params = {}) {
       params.applyDateStr = this.ybReconsiderResetData.applyDateStr
-      params.billNo = this.ybReconsiderResetData.billNo
-      params.serialNo = this.ybReconsiderResetData.serialNo
-      params.ruleName = this.ybReconsiderResetData.ruleName
-      params.projectCode = this.ybReconsiderResetData.projectCode
-      params.projectName = this.ybReconsiderResetData.projectName
-      params.personalNo = this.ybReconsiderResetData.personalNo
+      // params.billNo = this.ybReconsiderResetData.billNo
+      // params.serialNo = this.ybReconsiderResetData.serialNo
+      // params.ruleName = this.ybReconsiderResetData.ruleName
+      // params.projectCode = this.ybReconsiderResetData.projectCode
+      // params.projectName = this.ybReconsiderResetData.projectName
+      // params.personalNo = this.ybReconsiderResetData.personalNo
+      params.relatelDataId = this.ybReconsiderResetData.relatelDataId
       params.dataType = this.ybReconsiderResetData.dataType
       params.sourceType = 0
       params.state = 2

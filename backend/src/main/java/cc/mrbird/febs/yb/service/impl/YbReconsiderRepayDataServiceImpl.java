@@ -174,21 +174,21 @@ public class YbReconsiderRepayDataServiceImpl extends ServiceImpl<YbReconsiderRe
                     message = "result0";
                 }
                 //更新申诉上传
-                List<YbAppealResult> updateResultList = new ArrayList<YbAppealResult>();
+                List<YbAppealResult> updateResultList = new ArrayList<>();
                 //更新还款
-                List<YbReconsiderRepayData> updateRepayDataList = new ArrayList<YbReconsiderRepayData>();
+                List<YbReconsiderRepayData> updateRepayDataList = new ArrayList<>();
                 //更新剔除
-                List<YbReconsiderResetData> updateResetDataList = new ArrayList<YbReconsiderResetData>();
+                List<YbReconsiderResetData> updateResetDataList = new ArrayList<>();
 
                 List<YbReconsiderResetData> searchResetDataList = null;
-                List<YbAppealResult> searchResultList = new ArrayList<YbAppealResult>();
+                List<YbAppealResult> searchResultList = new ArrayList<>();
 
                 //有序号优先匹配
                 for (YbReconsiderRepayData rrd : repayDataList) {
                     YbReconsiderRepayData updateRepayData = new YbReconsiderRepayData();
                     updateRepayData.setId(rrd.getId());
 
-                    searchResetDataList = new ArrayList<YbReconsiderResetData>();
+                    searchResetDataList = new ArrayList<>();
 
                     searchResetDataList = resetDataList.stream().filter(
                             s -> s.getOrderNumber().equals(rrd.getOrderNumber()) &&
@@ -200,12 +200,14 @@ public class YbReconsiderRepayDataServiceImpl extends ServiceImpl<YbReconsiderRe
                             YbReconsiderResetData rAd = searchResetDataList.get(0);
 
                             searchResultList = resultList.stream().filter(
-                                    s -> s.getResetDataId().equals(rAd.getId())
+                                    s -> s.getRelatelDataId().equals(rAd.getRelatelDataId())
                             ).collect(Collectors.toList());
 
                             if (searchResultList.size() == 1) {
+                                YbAppealResult appealResult = searchResultList.get(0);
+
                                 YbAppealResult updateResult = new YbAppealResult();
-                                updateResult.setId(searchResultList.get(0).getId());
+                                updateResult.setId(appealResult.getId());
 
                                 YbReconsiderResetData updateResetData = new YbReconsiderResetData();
                                 updateResetData.setId(rAd.getId());
@@ -232,9 +234,9 @@ public class YbReconsiderRepayDataServiceImpl extends ServiceImpl<YbReconsiderRe
                                 updateResetData.setRepaymentPrice(repaymentPrice);
                                 updateRepayData.setResultId(updateResult.getId());
                                 updateRepayData.setResetDataId(rAd.getId());
-                                updateRepayData.setResultId(searchResultList.get(0).getId());
+                                updateRepayData.setResultId(appealResult.getId());
 
-                                updateRepayData.setApplyDataId(searchResultList.get(0).getApplyDataId());
+                                updateRepayData.setApplyDataId(appealResult.getApplyDataId());
                                 updateRepayData.setWarnType(YbDefaultValue.WARNTYPE_1);
                                 updateRepayData.setSeekState(YbDefaultValue.SEEKSTATE_1);
 
@@ -301,14 +303,14 @@ public class YbReconsiderRepayDataServiceImpl extends ServiceImpl<YbReconsiderRe
                     message = "result0";
                 }
                 //更新申诉上传
-                List<YbAppealResult> updateResultList = new ArrayList<YbAppealResult>();
+                List<YbAppealResult> updateResultList = new ArrayList<>();
                 //更新还款
-                List<YbReconsiderRepayData> updateRepayDataList = new ArrayList<YbReconsiderRepayData>();
+                List<YbReconsiderRepayData> updateRepayDataList = new ArrayList<>();
                 //更新剔除
-                List<YbReconsiderResetData> updateResetDataList = new ArrayList<YbReconsiderResetData>();
+                List<YbReconsiderResetData> updateResetDataList = new ArrayList<>();
 
                 List<YbReconsiderResetData> searchResetDataList = null;
-                List<YbAppealResult> searchResultList = new ArrayList<YbAppealResult>();
+                List<YbAppealResult> searchResultList = new ArrayList<>();
 
                 //模糊(字段)匹配
                 for (YbReconsiderRepayData rrd : repayDataList) {
@@ -335,12 +337,14 @@ public class YbReconsiderRepayDataServiceImpl extends ServiceImpl<YbReconsiderRe
                             YbReconsiderResetData rAd = searchResetDataList.get(0);
 
                             searchResultList = resultList.stream().filter(
-                                    s -> s.getResetDataId().equals(rAd.getId())
+                                    s -> s.getRelatelDataId().equals(rAd.getRelatelDataId())
                             ).collect(Collectors.toList());
 
                             if (searchResultList.size() == 1) {
+                                YbAppealResult appealResult = searchResultList.get(0);
+
                                 YbAppealResult updateResult = new YbAppealResult();
-                                updateResult.setId(searchResultList.get(0).getId());
+                                updateResult.setId(appealResult.getId());
 
                                 YbReconsiderResetData updateResetData = new YbReconsiderResetData();
                                 updateResetData.setId(rAd.getId());
@@ -368,8 +372,8 @@ public class YbReconsiderRepayDataServiceImpl extends ServiceImpl<YbReconsiderRe
 
                                 updateRepayData.setOrderNumberNew(rAd.getOrderNumber());
                                 updateRepayData.setResetDataId(rAd.getId());
-                                updateRepayData.setResultId(searchResultList.get(0).getId());
-                                updateRepayData.setApplyDataId(searchResultList.get(0).getApplyDataId());
+                                updateRepayData.setResultId(appealResult.getId());
+                                updateRepayData.setApplyDataId(appealResult.getApplyDataId());
                                 updateRepayData.setWarnType(YbDefaultValue.WARNTYPE_2);//字段匹配
                                 updateRepayData.setUpdateType(YbDefaultValue.UPDATETYPE_1);
                                 updateRepayData.setSeekState(YbDefaultValue.SEEKSTATE_1);
@@ -454,7 +458,7 @@ public class YbReconsiderRepayDataServiceImpl extends ServiceImpl<YbReconsiderRe
                 }
                 YbAppealResult appealResult = this.iYbAppealResultService.getById(resultId);
                 if (appealResult != null) {
-                    YbReconsiderResetData reconsiderResetData = this.iYbReconsiderResetDataService.getById(appealResult.getResetDataId());
+                    YbReconsiderResetData reconsiderResetData = null;//this.iYbReconsiderResetDataService.getById(appealResult.getResetDataId());
                     if (appealResult.getRepayState() == YbDefaultValue.RESULTREPAYSTATE_2 || appealResult.getRepayState() == YbDefaultValue.RESULTREPAYSTATE_3) {
                         YbReconsiderRepayData updateRepayData = new YbReconsiderRepayData();
                         updateRepayData.setId(repayData.getId());

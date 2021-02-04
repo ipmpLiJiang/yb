@@ -27,31 +27,31 @@
                     <result column="insuredName" property="insuredName"/>
                     <result column="cardNumber" property="cardNumber"/>
                     <result column="areaName" property="areaName"/>
-                    <result column="resetId" property="resetId"/>
-                    <result column="applyDate" property="applyDate"/>
-                    <result column="applyDateStr" property="applyDateStr"/>
-                    <result column="applyDataId" property="applyDataId"/>
-                    <result column="reconsiderApplyId" property="reconsiderApplyId"/>
-                    <result column="appealResultId" property="appealResultId"/>
-                    <result column="verifyId" property="verifyId"/>
-                    <result column="manageId" property="manageId"/>
-                    <result column="arDoctorCode" property="arDoctorCode"/>
-                    <result column="arDoctorName" property="arDoctorName"/>
-                    <result column="arDeptCode" property="arDeptCode"/>
-                    <result column="arDeptName" property="arDeptName"/>
-                    <result column="typeno" property="typeno"/>
-                    <result column="operateType" property="operateType"/>
-                    <result column="currencyField" property="currencyField"/>
-            <result column="insuredType" property="insuredType"/>
+                    <result column="insuredType" property="insuredType"/>
             <result column="dataType" property="dataType"/>
             <result column="orderNumber" property="orderNumber"/>
             <result column="orderNum" property="orderNum"/>
             <result column="repaymentPrice" property="repaymentPrice"/>
+            <result column="state" property="state"/>
+            <result column="seekState" property="seekState"/>
+            <result column="resetId" property="resetId"/>
+                    <result column="applyDate" property="applyDate"/>
+                    <result column="applyDateStr" property="applyDateStr"/>
+            <result column="currencyField" property="currencyField"/>
+<!--            <result column="applyDataId" property="applyDataId"/>-->
+<!--            <result column="applyOrderNumber" property="applyOrderNumber"/>-->
+<!--            <result column="resultId" property="resultId"/>-->
+            <result column="resetType" property="resetType"/>
+            <result column="relatelDataId" property="relatelDataId"/>
+            <result column="resetPersonId" property="resetPersonId"/>
+            <result column="resetPersonName" property="resetPersonName"/>
+            <result column="resetDate" property="resetDate"/>
+            <result column="resetState" property="resetState"/>
         </resultMap>
 
         <!-- 通用查询结果列 -->
         <sql id="Base_Column_List">
-        id, serialNo, billNo, projectCode, projectName, medicalPrice, ruleName, deductPrice, deductReason, repaymentReason, doctorName, deptCode, deptName, costDate, costDateStr, hospitalizedNo, treatmentMode, settlementDate, settlementDateStr, personalNo, insuredName, cardNumber, areaName, resetId, applyDate, applyDateStr, applyDataId, reconsiderApplyId, appealResultId, verifyId, manageId, arDoctorCode, arDoctorName, arDeptCode, arDeptName, typeno, operateType,currencyField,insuredType,dataType,orderNumber,orderNum,repaymentPrice
+        id,serialNo,billNo,projectCode,projectName,medicalPrice,ruleName,deductPrice,deductReason,repaymentReason,doctorName ,deptCode,deptName,costDate,costDateStr,hospitalizedNo,treatmentMode,settlementDate,settlementDateStr,personalNo,insuredName,cardNumber,areaName,insuredType,dataType,orderNumber,orderNum,repaymentPrice,STATE,seekState,resetDate,resetType,relatelDataId,resetPersonId,resetPersonName,resetId,applyDate,applyDateStr,currencyField,resetState
     </sql>
     <update id="updateYbReconsiderResetDataView" parameterType="cc.mrbird.febs.yb.entity.YbReconsiderResetDataView">
         update yb_reconsider_reset_data_view
@@ -82,17 +82,6 @@
 <if test="resetId != null">resetId=#{resetId},</if>
 <if test="applyDate != null">applyDate=#{applyDate},</if>
 <if test="applyDateStr != null">applyDateStr=#{applyDateStr},</if>
-<if test="applyDataId != null">applyDataId=#{applyDataId},</if>
-<if test="reconsiderApplyId != null">reconsiderApplyId=#{reconsiderApplyId},</if>
-<if test="appealResultId != null">appealResultId=#{appealResultId},</if>
-<if test="verifyId != null">verifyId=#{verifyId},</if>
-<if test="manageId != null">manageId=#{manageId},</if>
-<if test="arDoctorCode != null">arDoctorCode=#{arDoctorCode},</if>
-<if test="arDoctorName != null">arDoctorName=#{arDoctorName},</if>
-<if test="arDeptCode != null">arDeptCode=#{arDeptCode},</if>
-<if test="arDeptName != null">arDeptName=#{arDeptName},</if>
-<if test="typeno != null">typeno=#{typeno},</if>
-<if test="operateType != null">operateType=#{operateType},</if>
         </trim>
 
     </update>
@@ -139,16 +128,8 @@
         </if>
             <if test="ybReconsiderResetDataView.applyDateStr != null and ybReconsiderResetDataView.applyDateStr != ''"> and applyDateStr like concat('%', #{ ybReconsiderResetDataView.applyDateStr} ,'%')</if>
             <if test="ybReconsiderResetDataView.applyDataId != null and ybReconsiderResetDataView.applyDataId != ''"> and applyDataId like concat('%', #{ ybReconsiderResetDataView.applyDataId} ,'%')</if>
-            <if test="ybReconsiderResetDataView.reconsiderApplyId != null and ybReconsiderResetDataView.reconsiderApplyId != ''"> and reconsiderApplyId like concat('%', #{ ybReconsiderResetDataView.reconsiderApplyId} ,'%')</if>
-            <if test="ybReconsiderResetDataView.appealResultId != null and ybReconsiderResetDataView.appealResultId != ''"> and appealResultId like concat('%', #{ ybReconsiderResetDataView.appealResultId} ,'%')</if>
-            <if test="ybReconsiderResetDataView.verifyId != null and ybReconsiderResetDataView.verifyId != ''"> and verifyId like concat('%', #{ ybReconsiderResetDataView.verifyId} ,'%')</if>
-            <if test="ybReconsiderResetDataView.manageId != null and ybReconsiderResetDataView.manageId != ''"> and manageId like concat('%', #{ ybReconsiderResetDataView.manageId} ,'%')</if>
-            <if test="ybReconsiderResetDataView.arDoctorCode != null and ybReconsiderResetDataView.arDoctorCode != ''"> and arDoctorCode like concat('%', #{ ybReconsiderResetDataView.arDoctorCode} ,'%')</if>
-            <if test="ybReconsiderResetDataView.arDoctorName != null and ybReconsiderResetDataView.arDoctorName != ''"> and arDoctorName like concat('%', #{ ybReconsiderResetDataView.arDoctorName} ,'%')</if>
-            <if test="ybReconsiderResetDataView.arDeptCode != null and ybReconsiderResetDataView.arDeptCode != ''"> and arDeptCode like concat('%', #{ ybReconsiderResetDataView.arDeptCode} ,'%')</if>
-            <if test="ybReconsiderResetDataView.arDeptName != null and ybReconsiderResetDataView.arDeptName != ''"> and arDeptName like concat('%', #{ ybReconsiderResetDataView.arDeptName} ,'%')</if>
-        <if test="ybReconsiderResetDataView.typeno != null"> and typeno =#{ ybReconsiderResetDataView.typeno} </if>
-        <if test="ybReconsiderResetDataView.operateType != null"> and operateType =#{ ybReconsiderResetDataView.operateType} </if>
+      <if test="ybReconsiderResetDataView.resultId != null and ybReconsiderResetDataView.resultId != ''"> and resultId like concat('%', #{ ybReconsiderResetDataView.resultId} ,'%')</if>
+        <if test="ybReconsiderResetDataView.applyDataId != null and ybReconsiderResetDataView.applyDataId != ''"> and applyDataId like concat('%', #{ ybReconsiderResetDataView.applyDataId} ,'%')</if>
 </select>
 
 </mapper>

@@ -10,6 +10,7 @@ import java.util.List;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import cc.mrbird.febs.common.domain.QueryRequest;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * <p>
@@ -32,6 +33,8 @@ public interface IYbPersonService extends IService<YbPerson> {
     List<YbPerson> findPersonList(YbPerson ybPerson,int type);
 
     List<YbPerson> findPersonList(ArrayList<String> personCodeList);
+
+    List<YbPerson> findPersonResultList(String applyDateStr);
 
     void deleteYbPersons(String[] Ids);
 

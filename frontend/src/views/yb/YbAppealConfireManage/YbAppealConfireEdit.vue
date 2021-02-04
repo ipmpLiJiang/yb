@@ -1,0 +1,258 @@
+<template>
+  <a-drawer
+    title="编辑"
+    :maskClosable="false"
+    width=65%
+    placement="right"
+    :closable="false"
+    @close="onClose"
+    :visible="editVisiable"
+    style="height: calc(100% - 55px);overflow: auto;padding-bottom: 53px;"
+  >
+    <a-form :form="form">
+      <a-row
+        justify="start"
+        type="flex"
+      >
+        <a-col :span=10>
+          <a-form-item
+            v-bind="formItemLayout"
+            label="职工"
+          >
+            <input-select
+              ref="inputSelectDoctor"
+              v-show="isEdit?false:true"
+              v-decorator="['doctorCode', {rules: [{required: true, message: '职工不能为空' }] }]"
+              :type=2
+              @selectChange=selectDoctorChange
+            >
+            </input-select>
+            <p v-show="!isEdit?false:true">
+              {{txtValue}}
+            </p>
+          </a-form-item>
+        </a-col>
+        <a-col :span=14>
+          <a-form-item
+            label="管理员类型"
+            v-bind="formItemLayout"
+          >
+            <a-radio-group v-decorator="['adminType']">
+              <a-radio value="1">
+                联络员
+              </a-radio>
+              <a-radio value="2">
+                科主任
+              </a-radio>
+              <a-radio value="3">
+                护士长
+              </a-radio>
+            </a-radio-group>
+          </a-form-item>
+        </a-col>
+      </a-row>
+      <a-row
+        justify="start"
+        type="flex"
+      >
+        <a-col :span=10>
+          <a-form-item
+            v-bind="formItemLayout"
+            label="管理科室列表"
+          >
+            <input-select
+              ref="inputSelectDept"
+              :type=1
+              @selectChange=selectDeptChange
+            >
+            </input-select>
+          </a-form-item>
+        </a-col>
+        <a-col :span=3>
+          <a-button
+            @click="handleSubmit"
+            type="primary"
+          >添加科室/保存</a-button>
+        </a-col>
+        <a-col :span=11>
+          <a-popconfirm
+            title="确定放弃编辑？"
+            @confirm="onClose"
+            okText="确定"
+            cancelText="取消"
+          >
+            <a-button style="margin-right: .8rem">取消</a-button>
+          </a-popconfirm>
+        </a-col>
+      </a-row>
+    </a-form>
+    <!--表格-->
+    <template>
+      <ybAppealConfire-data
+        ref="ybAppealConfireData"
+        :pid="ybAppealConfire.id"
+      >
+      </ybAppealConfire-data>
+    </template>
+  </a-drawer>
+</template>
+<script>
+import InputSelect from '../../common/InputSelect'
+import YbAppealConfireData from './YbAppealConfireData'
+const formItemLayout = {
+  labelCol: { span: 5 },
+  wrapperCol: { span: 16 }
+}
+export default {
+  name: 'YbAppealConfireEdit',
+  props: {
+    editVisiable: {
+      default: false
+    }
+  },
+  components: { InputSelect, YbAppealConfireData },
+  data () {
+    return {
+      loading: false,
+      formItemLayout,
+      form: this.$form.createForm(this),
+      ybAcData: {},
+      isUpdate: false,
+      isEdit: false,
+      txtValue: '',
+      ybAppealConfire: {}
+    }
+  },
+  methods: {
+    reset () {
+      this.loading = false
+      this.ybAppealConfire = {}
+      this.$refs.inputSelectDoctor.dataSource = []
+      this.$refs.inputSelectDoctor.value = ''
+      this.$refs.inputSelectDept.dataSource = []
+      this.$refs.inputSelectDept.value = ''
+      this.form.resetFields()
+    },
+    onClose () {
+      this.reset()
+      if (this.isUpdate) {
+        this.$emit('success')
+      } else {
+        this.$emit('close')
+      }
+    },
+    selectDoctorChange (item) {
+      this.ybAppealConfire.doctorCode = item.value
+      this.ybAppealConfire.doctorName = item.text
+    },
+    selectDeptChange (item) {
+      this.ybAcData.deptCode = item.value
+      this.ybAcData.deptName = item.text
+    },
+    setFormValues (obj) {
+      this.isUpdate = false
+      this.form.getFieldDecorator('adminType')
+      if (obj === undefined || obj === null || obj === '') {
+        this.isEdit = false
+        this.form.setFieldsValue({
+          adminType: '1'
+        })
+        this.$refs.ybAppealConfireData.searchPage('')
+      } else {
+        this.txtValue = obj.doctorCode + '-' + obj.doctorName
+        this.isEdit = true
+        this.form.setFieldsValue({
+          adminType: obj.adminType.toString()
+        })
+        setTimeout(() => {
+          if (obj.doctorCode !== '' && obj.doctorCode !== null) {
+            this.$refs.inputSelectDoctor.dataSource = [{
+              text: obj.doctorCode + '-' + obj.doctorName,
+              value: obj.doctorCode
+            }]
+          }
+          this.$refs.inputSelectDoctor.value = obj.doctorCode
+
+          this.ybAppealConfire.doctorCode = obj.doctorCode
+          this.ybAppealConfire.doctorName = obj.doctorName
+          this.ybAppealConfire.id = obj.id
+          this.ybAppealConfire.adminType = obj.adminType
+          this.$refs.ybAppealConfireData.searchPage(obj.id)
+        }, 200)
+      }
+    },
+    handleSubmit () {
+      this.isUpdate = true
+      let isData = false
+      if (this.ybAppealConfire.doctorCode !== '' && this.ybAppealConfire.doctorCode !== undefined) {
+        this.form.getFieldDecorator('doctorCode')
+        this.form.setFieldsValue({
+          doctorCode: this.ybAppealConfire.doctorCode
+        })
+        this.form.getFieldDecorator('doctorName')
+        this.form.setFieldsValue({
+          doctorName: this.ybAppealConfire.doctorName
+        })
+      }
+      if (this.ybAcData.deptCode !== '' && this.ybAcData.deptCode !== undefined) {
+        this.ybAppealConfire.child = [
+          { deptCode: this.ybAcData.deptCode, deptName: this.ybAcData.deptName }
+        ]
+        isData = true
+      } else {
+        this.ybAppealConfire.child = []
+      }
+      this.form.validateFields((err, values) => {
+        if (!err) {
+          this.setFields()
+          let jsonString = JSON.stringify(this.ybAppealConfire)
+          if (this.ybAppealConfire.id === undefined || this.ybAppealConfire.id === null || this.ybAppealConfire.id === '') {
+            this.$post('ybAppealConfire/addAppealConfire', {
+              dataJson: jsonString
+            }).then((r) => {
+              if (r.data.data.success === 1) {
+                this.ybAppealConfire.id = r.data.data.data
+                if (isData) {
+                  this.$refs.ybAppealConfireData.searchPage(this.ybAppealConfire.id)
+                }
+                this.$message.success('保存成功')
+              } else {
+                this.$message.error(r.data.data.message)
+              }
+            }).catch(() => {
+              this.loading = false
+              this.$message.success('保存失败')
+            })
+          } else {
+            this.$put('ybAppealConfire/updateAppealConfire', {
+              dataJson: jsonString
+            }).then((r) => {
+              if (r.data.data.success === 1) {
+                if (isData) {
+                  this.$refs.ybAppealConfireData.searchPage(this.ybAppealConfire.id)
+                }
+                this.$message.success('保存成功')
+              } else {
+                this.$message.error(r.data.data.message)
+              }
+            }).catch(() => {
+              this.loading = false
+              this.$message.success('保存失败')
+            })
+          }
+        }
+        this.$refs.inputSelectDept.dataSource = []
+        this.$refs.inputSelectDept.value = ''
+        this.ybAcData.deptCode = ''
+        this.ybAcData.deptName = ''
+      })
+    },
+    setFields () {
+      let values = this.form.getFieldsValue(['doctorCode', 'doctorName', 'adminType'])
+      if (typeof values !== 'undefined') {
+        Object.keys(values).forEach(_key => { this.ybAppealConfire[_key] = values[_key] })
+      }
+    }
+  }
+}
+</script>

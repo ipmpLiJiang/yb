@@ -312,7 +312,7 @@ public class YbReconsiderRepayController extends BaseController {
                             User currentUser = FebsUtil.getCurrentUser();
                             Long uid = currentUser.getUserId();
                             String uname = currentUser.getUsername();
-                            blError = this.iYbReconsiderRepayService.importReconsiderRepay(listRrd, uid, uname, uploadFileName);
+                            blError = this.iYbReconsiderRepayService.importReconsiderRepay(listRrd, currentUser, uploadFileName);
                             if (blError) {
                                 success = 1;
                                 message = "Excel导入成功.";
@@ -540,7 +540,7 @@ public class YbReconsiderRepayController extends BaseController {
                             User currentUser = FebsUtil.getCurrentUser();
                             Long uid = currentUser.getUserId();
                             String uname = currentUser.getUsername();
-                            blError = this.iYbReconsiderRepayService.importReconsiderRepay(listRrd, uid, uname, uploadFileName);
+                            blError = this.iYbReconsiderRepayService.importReconsiderRepay(listRrd, currentUser, uploadFileName);
                             if (blError) {
                                 success = 1;
                                 message = "Excel导入成功.";

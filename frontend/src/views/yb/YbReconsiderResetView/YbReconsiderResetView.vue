@@ -144,9 +144,23 @@
               ref="ybReconsiderResetUnknown"
               :applyDate="searchApplyDate"
               :searchText="searchText"
+              @unknownReset="unknownReset"
               @look="look"
             >
             </ybReconsiderReset-unknown>
+          </a-tab-pane>
+          <a-tab-pane
+            key="5"
+            :forceRender="true"
+            tab="手动剔除"
+          >
+            <ybReconsiderResetHandle-data
+              ref="ybReconsiderResetHandleData"
+              :applyDate="searchApplyDate"
+              :searchText="searchText"
+              @look="look"
+            >
+            </ybReconsiderResetHandle-data>
           </a-tab-pane>
         </a-tabs>
       </div>
@@ -165,6 +179,13 @@
       :exceptResetVisiable="exceptResetVisiable"
     >
     </ybReconsiderResetExcept-detail>
+    <!-- 未知 -->
+    <ybReconsiderResetUnknown-detail
+      ref="ybReconsiderResetUnknownDetail"
+      @close="handleUnknownResetClose"
+      :unknownResetVisiable="unknownResetVisiable"
+    >
+    </ybReconsiderResetUnknown-detail>
   </a-card>
 </template>
 
@@ -176,7 +197,8 @@ import YbReconsiderResetDataModule from '../ybFunModule/YbReconsiderResetDataMod
 import YbReconsiderResetExcept from './YbReconsiderResetExcept'
 import YbReconsiderResetUnknown from './YbReconsiderResetUnknown'
 import YbReconsiderResetExceptDetail from './YbReconsiderResetExceptDetail'
-
+import YbReconsiderResetUnknownDetail from './YbReconsiderResetUnknownDetail'
+import YbReconsiderResetHandleData from './YbReconsiderResetHandleData'
 const formItemLayout = {
   labelCol: { span: 9 },
   wrapperCol: { span: 13, offset: 1 }
@@ -184,7 +206,7 @@ const formItemLayout = {
 export default {
   name: 'YbReconsiderResetView',
   components: {
-    YbReconsiderResetMain, YbReconsiderResetData, YbReconsiderResetDataModule, YbReconsiderResetExcept, YbReconsiderResetUnknown, YbReconsiderResetExceptDetail},
+    YbReconsiderResetMain, YbReconsiderResetData, YbReconsiderResetDataModule, YbReconsiderResetExcept, YbReconsiderResetUnknown, YbReconsiderResetExceptDetail, YbReconsiderResetUnknownDetail, YbReconsiderResetHandleData},
   data () {
     return {
       formItemLayout,
@@ -198,6 +220,7 @@ export default {
       spinning: false,
       delayTime: 500,
       exceptResetVisiable: false,
+      unknownResetVisiable: false,
       tableSelectKey: '1'
     }
   },
@@ -272,6 +295,7 @@ export default {
     },
     beforeUpload (file) {
       var testmsg = file.name.substring(file.name.lastIndexOf('.') + 1)
+      testmsg = testmsg.toLowerCase()
       let isExcel = testmsg === 'xlsx'
       if (!isExcel) {
         isExcel = testmsg === 'xls'
@@ -340,8 +364,21 @@ export default {
       this.exceptResetVisiable = true
       this.$refs.ybReconsiderResetExceptDetail.setFormValues(record)
     },
-    handleLookClose () {
+    unknownReset (record) {
+      this.unknownResetVisiable = true
+      this.$refs.ybReconsiderResetUnknownDetail.setFormValues(record)
+    },
+    handleUnknownResetClose (isUpdate) {
+      this.unknownResetVisiable = false
+      if (isUpdate) {
+        this.$refs.ybReconsiderResetUnknown.search()
+      }
+    },
+    handleLookClose (isUpdate) {
       this.lookVisiable = false
+      if (isUpdate) {
+        this.$refs.ybReconsiderResetHandleData.searchPage()
+      }
     },
     look (record) {
       this.lookVisiable = true
@@ -357,6 +394,8 @@ export default {
         this.$refs.ybReconsiderResetExcept.searchPage()
       } else if (key === '4') {
         this.$refs.ybReconsiderResetUnknown.searchPage()
+      } else if (key === '5') {
+        this.$refs.ybReconsiderResetHandleData.searchPage()
       } else {
         console.log('ok')
       }

@@ -73,7 +73,7 @@ public class YbReconsiderApplyController extends BaseController {
             User currentUser = FebsUtil.getCurrentUser();
             ybReconsiderApply.setCreateUserId(currentUser.getUserId());
             ybReconsiderApply.setOperatorId(currentUser.getUserId());
-            ybReconsiderApply.setOperatorName(currentUser.getUsername());
+            ybReconsiderApply.setOperatorName(currentUser.getUsername() + "-" + currentUser.getXmname());
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM");
             String appDateStr = sdf.format(ybReconsiderApply.getApplyDate());
             ybReconsiderApply.setApplyDateStr(appDateStr);
@@ -118,7 +118,7 @@ public class YbReconsiderApplyController extends BaseController {
             User currentUser = FebsUtil.getCurrentUser();
             ybReconsiderApply.setCreateUserId(currentUser.getUserId());
             ybReconsiderApply.setOperatorId(currentUser.getUserId());
-            ybReconsiderApply.setOperatorName(currentUser.getUsername());
+            ybReconsiderApply.setOperatorName(currentUser.getUsername() + "-" + currentUser.getXmname());
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM");
             String appDateStr = sdf.format(ybReconsiderApply.getApplyDate());
             ybReconsiderApply.setApplyDateStr(appDateStr);
@@ -152,7 +152,7 @@ public class YbReconsiderApplyController extends BaseController {
             User currentUser = FebsUtil.getCurrentUser();
             ybReconsiderApply.setModifyUserId(currentUser.getUserId());
             ybReconsiderApply.setOperatorId(currentUser.getUserId());
-            ybReconsiderApply.setOperatorName(currentUser.getUsername());
+            ybReconsiderApply.setOperatorName(currentUser.getUsername() + "-" + currentUser.getXmname());
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM");
             String appDateStr = sdf.format(ybReconsiderApply.getApplyDate());
             ybReconsiderApply.setApplyDateStr(appDateStr);

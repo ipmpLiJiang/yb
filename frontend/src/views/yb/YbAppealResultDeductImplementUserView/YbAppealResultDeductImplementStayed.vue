@@ -75,8 +75,14 @@ export default {
         width: 70
       },
       {
-        title: '意见书编码',
-        dataIndex: 'proposalCode',
+        title: '交易流水号',
+        dataIndex: 'serialNo',
+        fixed: 'left',
+        width: 140
+      },
+      {
+        title: '项目编码',
+        dataIndex: 'projectCode',
         fixed: 'left',
         width: 140
       },
@@ -84,12 +90,7 @@ export default {
         title: '项目名称',
         dataIndex: 'projectName',
         fixed: 'left',
-        width: 160
-      },
-      {
-        title: '数量',
-        dataIndex: 'num',
-        width: 70
+        width: 200
       },
       {
         title: '医保内金额',
@@ -99,7 +100,7 @@ export default {
       {
         title: '规则名称',
         dataIndex: 'ruleName',
-        width: 140
+        width: 180
       },
       {
         title: '扣除金额',
@@ -115,7 +116,7 @@ export default {
       {
         title: '费用日期',
         dataIndex: 'costDateStr',
-        width: 110
+        width: 130
       },
       {
         title: '扣款类型',
@@ -130,6 +131,7 @@ export default {
               return text
           }
         },
+        fixed: 'right',
         width: 90
       }]
     }

@@ -69,7 +69,7 @@ public class YbReconsiderPriorityLevelController extends BaseController {
             User currentUser = FebsUtil.getCurrentUser();
             ybReconsiderPriorityLevel.setCreateUserId(currentUser.getUserId());
             ybReconsiderPriorityLevel.setOperatorId(currentUser.getUserId());
-            ybReconsiderPriorityLevel.setOperatorName(currentUser.getUsername());
+            ybReconsiderPriorityLevel.setOperatorName(currentUser.getUsername() + "-" + currentUser.getXmname());
             if (ybReconsiderPriorityLevel.getState() == YbReconsiderPriorityLevel.PL_STATE_1 ||
                     ybReconsiderPriorityLevel.getState() == YbReconsiderPriorityLevel.PL_STATE_2) {
                 if(ybReconsiderPriorityLevel.getPersonType() != YbReconsiderPriorityLevel.PERSON_TYPE_4){

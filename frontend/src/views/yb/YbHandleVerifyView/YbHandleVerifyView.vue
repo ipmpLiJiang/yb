@@ -24,8 +24,14 @@
               <a-input-search placeholder="请输入关键字" v-model="searchText" style="width: 200px" enter-button @search="searchTable" />
             </a-col>
             <a-col :span=3 v-show="tableSelectKey==1?true:false">
-              <a-button type="primary"
-              @click="importData" >获取剔除数据</a-button>
+              <a-popconfirm
+              title="确定获取剔除数据剔除？"
+              @confirm="importData"
+              okText="确定"
+              cancelText="取消"
+            >
+              <a-button type="primary">获取剔除数据</a-button>
+            </a-popconfirm>
             </a-col>
             <a-col :span=3 v-show="tableSelectKey==1?true:false">
               <a-popconfirm

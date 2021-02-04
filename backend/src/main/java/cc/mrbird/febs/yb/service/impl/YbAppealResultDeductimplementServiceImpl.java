@@ -4,9 +4,11 @@ import cc.mrbird.febs.common.domain.QueryRequest;
 import cc.mrbird.febs.common.utils.SortUtil;
 import cc.mrbird.febs.yb.entity.YbAppealResultDeductimplement;
 import cc.mrbird.febs.yb.dao.YbAppealResultDeductimplementMapper;
+import cc.mrbird.febs.yb.entity.YbReconsiderResetDataView;
 import cc.mrbird.febs.yb.entity.YbReconsiderResetDeductimplement;
 import cc.mrbird.febs.yb.entity.YbReconsiderResetResultView;
 import cc.mrbird.febs.yb.service.IYbAppealResultDeductimplementService;
+import cc.mrbird.febs.yb.service.IYbReconsiderResetDataViewService;
 import cc.mrbird.febs.yb.service.IYbReconsiderResetResultViewService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
@@ -39,7 +41,7 @@ import java.util.stream.Collectors;
 public class YbAppealResultDeductimplementServiceImpl extends ServiceImpl<YbAppealResultDeductimplementMapper, YbAppealResultDeductimplement> implements IYbAppealResultDeductimplementService {
 
     @Autowired
-    private IYbReconsiderResetResultViewService iYbReconsiderResetResultViewService;
+    private IYbReconsiderResetDataViewService iYbReconsiderResetDataViewService;
 
     @Override
     public IPage<YbAppealResultDeductimplement> findYbAppealResultDeductimplements(QueryRequest request, YbAppealResultDeductimplement ybAppealResultDeductimplement) {
@@ -84,7 +86,7 @@ public class YbAppealResultDeductimplementServiceImpl extends ServiceImpl<YbAppe
     @Transactional
     public String createAppealResultDeductimplement(YbAppealResultDeductimplement ybAppealResultDeductimplement) {
         LambdaQueryWrapper<YbAppealResultDeductimplement> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(YbAppealResultDeductimplement::getResultId, ybAppealResultDeductimplement.getResultId());
+        wrapper.eq(YbAppealResultDeductimplement::getRelatelDataId, ybAppealResultDeductimplement.getRelatelDataId());
         wrapper.eq(YbAppealResultDeductimplement::getResetDataId, ybAppealResultDeductimplement.getResetDataId());
         List<YbAppealResultDeductimplement> list = this.list(wrapper);
         if (list.size() == 0) {
@@ -108,11 +110,11 @@ public class YbAppealResultDeductimplementServiceImpl extends ServiceImpl<YbAppe
     @Transactional
     public void importCreateAppealResultDeductimplement(YbAppealResultDeductimplement ybAppealResultDeductimplement, List<YbReconsiderResetDeductimplement> listResetDeductimplement) {
         String applyDateStr = ybAppealResultDeductimplement.getApplyDateStr();
-        YbReconsiderResetResultView ybReconsiderResetResultView = new YbReconsiderResetResultView();
-        ybReconsiderResetResultView.setApplyDateStr(applyDateStr);
-        List<YbReconsiderResetResultView> resetResultList = this.iYbReconsiderResetResultViewService.findReconsiderResetResultViewList(ybReconsiderResetResultView);
+        YbReconsiderResetDataView ybReconsiderResetDataView = new YbReconsiderResetDataView();
+        ybReconsiderResetDataView.setApplyDateStr(applyDateStr);
+        List<YbReconsiderResetDataView> resetDataViewList = this.iYbReconsiderResetDataViewService.findYbReconsiderResetDataList(ybReconsiderResetDataView);
         List<YbAppealResultDeductimplement> createList = new ArrayList<>();
-        List<YbReconsiderResetResultView> queryList = new ArrayList<>();
+        List<YbReconsiderResetDataView> queryList = new ArrayList<>();
 
         LambdaQueryWrapper<YbAppealResultDeductimplement> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(YbAppealResultDeductimplement::getApplyDateStr, applyDateStr);
@@ -122,15 +124,15 @@ public class YbAppealResultDeductimplementServiceImpl extends ServiceImpl<YbAppe
         Long userId = ybAppealResultDeductimplement.getCreateUserId();
 
         for (YbReconsiderResetDeductimplement item : listResetDeductimplement) {
-            queryList = resetResultList.stream().filter(
+            queryList = resetDataViewList.stream().filter(
                     s -> s.getOrderNumber().equals(item.getOrderNumber()) &&
                             s.getDataType().equals(item.getDataType())
             ).collect(Collectors.toList());
             if (queryList.size() > 0) {
-                YbReconsiderResetResultView rrr = queryList.get(0);
+                YbReconsiderResetDataView rrr = queryList.get(0);
                 if (ardList.stream().filter(
                         s -> s.getApplyDateStr().equals(applyDateStr) &&
-                                s.getResultId().equals(rrr.getResultId()) &&
+                                s.getRelatelDataId().equals(rrr.getRelatelDataId()) &&
                                 s.getResetDataId().equals(rrr.getId()) &&
                                 s.getDataType().equals(rrr.getDataType())
                 ).count() == 0) {
@@ -138,7 +140,7 @@ public class YbAppealResultDeductimplementServiceImpl extends ServiceImpl<YbAppe
                     createDeductimplement.setId(UUID.randomUUID().toString());
                     createDeductimplement.setApplyDate(applyDate);
                     createDeductimplement.setApplyDateStr(applyDateStr);
-                    createDeductimplement.setResultId(rrr.getResultId());
+                    createDeductimplement.setRelatelDataId(rrr.getRelatelDataId());
                     createDeductimplement.setResetDataId(rrr.getId());
                     createDeductimplement.setImplementDate(item.getImplementDate());
                     createDeductimplement.setImplementDateStr(item.getImplementDateStr());

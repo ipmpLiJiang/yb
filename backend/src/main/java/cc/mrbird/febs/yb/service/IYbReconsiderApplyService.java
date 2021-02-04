@@ -49,7 +49,7 @@ public interface IYbReconsiderApplyService extends IService<YbReconsiderApply> {
 
     boolean findReconsiderApplyCheckEndDate(String appltDateStr, int typeno);
 
-    String getSendMessage(String applyDateStr, Date enableDate, int typeno);
+    String getSendMessage(String applyDateStr, Date enableDate, int typeno,boolean isChange);
 
     void updateEnableOverdue(String applyDateStr);
 

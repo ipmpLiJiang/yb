@@ -84,17 +84,9 @@ public class YbAppealResultDeductimplementViewServiceImpl extends ServiceImpl<Yb
                     }
                 }
 
-                if(ybAppealResultDeductimplementView.getDeductImplementId()!=null){
-                    sql +=  " and deductImplementId IS NOT NULL";
-                }else{
-                    sql +=  " and deductImplementId IS NULL";
-                }
-
                 if (ybAppealResultDeductimplementView.getArDoctorCode() != null) {
                     sql +=  " and arDoctorCode = '" + ybAppealResultDeductimplementView.getArDoctorCode() + "'";
                 }
-
-                sql +=  " and STATE = 2 and raResetState = 1 and sourceType = 0 ";
 
                 sql +=  ")";
                 if (ybAppealResultDeductimplementView.getCurrencyField() != null && !"".equals(ybAppealResultDeductimplementView.getCurrencyField())) {
@@ -102,7 +94,6 @@ public class YbAppealResultDeductimplementViewServiceImpl extends ServiceImpl<Yb
                         if (ybAppealResultDeductimplementView.getDataType() == 0) {
                             sql += " and (serialNo like'%" + ybAppealResultDeductimplementView.getCurrencyField() + "%'" +
                                     " or billNo like'%" + ybAppealResultDeductimplementView.getCurrencyField() + "%'" +
-                                    " or proposalCode like'%" + ybAppealResultDeductimplementView.getCurrencyField() + "%'" +
                                     " or projectCode like'%" + ybAppealResultDeductimplementView.getCurrencyField() + "%'" +
                                     " or projectName like'%" + ybAppealResultDeductimplementView.getCurrencyField() + "%'" +
                                     " or ruleName like'%" + ybAppealResultDeductimplementView.getCurrencyField() + "%'" +
@@ -116,7 +107,6 @@ public class YbAppealResultDeductimplementViewServiceImpl extends ServiceImpl<Yb
                     } else {
                         sql += " and (serialNo like'%" + ybAppealResultDeductimplementView.getCurrencyField() + "%'" +
                                 " or billNo like'%" + ybAppealResultDeductimplementView.getCurrencyField() + "%'" +
-                                " or proposalCode like'%" + ybAppealResultDeductimplementView.getCurrencyField() + "%'" +
                                 " or projectCode like'%" + ybAppealResultDeductimplementView.getCurrencyField() + "%'" +
                                 " or projectName like'%" + ybAppealResultDeductimplementView.getCurrencyField() + "%'" +
                                 " or ruleName like'%" + ybAppealResultDeductimplementView.getCurrencyField() + "%'" +
@@ -127,8 +117,14 @@ public class YbAppealResultDeductimplementViewServiceImpl extends ServiceImpl<Yb
 
 
                 Page<YbAppealResultDeductimplementView> page = new Page<>();
+//                page.setSearchCount(false);
+
                 SortUtil.handlePageSort(request, page, false);//true 是属性  false是数据库字段可两个
-                return this.page(page, queryWrapper);
+//                int count = 100;
+//                IPage<YbAppealResultDeductimplementView> pg = this.page(page, queryWrapper);
+//                pg.getRecords()
+//                pg.setTotal(100);
+                return page;
             } else {
                 return null;
             }
@@ -144,9 +140,47 @@ public class YbAppealResultDeductimplementViewServiceImpl extends ServiceImpl<Yb
     public IPage<YbAppealResultDeductimplementView> findYbAppealResultDeductimplementViewList(QueryRequest
                                                                                                       request, YbAppealResultDeductimplementView ybAppealResultDeductimplementView) {
         try {
+            LambdaQueryWrapper<YbAppealResultDeductimplementView> queryWrapper = new LambdaQueryWrapper<>();
+            if(ybAppealResultDeductimplementView.getDeductImplementId()!=null) {
+                queryWrapper.eq(YbAppealResultDeductimplementView::getDeductImplementId,ybAppealResultDeductimplementView.getDeductImplementId());
+            }
             Page<YbAppealResultDeductimplementView> page = new Page<>();
             SortUtil.handlePageSort(request, page, false);//true 是属性  false是数据库字段可两个
-            return this.baseMapper.findYbAppealResultDeductimplementView(page, ybAppealResultDeductimplementView);
+//            return this.baseMapper.findYbAppealResultDeductimplementView(page, ybAppealResultDeductimplementView);
+            return this.page(page, queryWrapper);
+        } catch (Exception e) {
+            log.error("获取VIEW失败", e);
+            return null;
+        }
+    }
+
+    @Override
+    public IPage<YbAppealResultDeductimplementView> findAppealResultDeductimplementView(QueryRequest request, YbAppealResultDeductimplementView ybAppealResultDeductimplementView) {
+        try {
+            List<String> listStr = new ArrayList<>();
+            //ApplyDateFrom getApplyDateTo 存储的格式是 2020-09
+            if (ybAppealResultDeductimplementView.getApplyDateFrom().equals(ybAppealResultDeductimplementView.getApplyDateTo())) {
+                listStr.add(ybAppealResultDeductimplementView.getApplyDateFrom());
+            } else {
+                listStr = DataTypeHelpers.stringApplyDateStrToList(ybAppealResultDeductimplementView.getApplyDateFrom(), ybAppealResultDeductimplementView.getApplyDateTo());
+            }
+            if (listStr.size() > 0) {
+                if (listStr.size() == 1) {
+                    ybAppealResultDeductimplementView.setApplyDateFrom(null);
+                    ybAppealResultDeductimplementView.setApplyDateTo(null);
+                    ybAppealResultDeductimplementView.setApplyDateStr(ybAppealResultDeductimplementView.getApplyDateFrom());
+                } else {
+                    String applyDateStrForm = ybAppealResultDeductimplementView.getApplyDateFrom() + "-01";
+                    String applyDateStrTo = ybAppealResultDeductimplementView.getApplyDateTo() + "-" + String.valueOf(DataTypeHelpers.stringDateFormatMaxDay(ybAppealResultDeductimplementView.getApplyDateTo() + "-01", "", false));
+
+                    ybAppealResultDeductimplementView.setApplyDateFrom(applyDateStrForm);
+                    ybAppealResultDeductimplementView.setApplyDateTo(applyDateStrTo);
+                    ybAppealResultDeductimplementView.setApplyDateStr(null);
+                }
+            }
+            Page<YbAppealResultDeductimplementView> page = new Page<>();
+            SortUtil.handlePageSort(request, page, false);//true 是属性  false是数据库字段可两个
+            return this.baseMapper.findAppealResultDeductimplementView(page, ybAppealResultDeductimplementView);
         } catch (Exception e) {
             log.error("获取VIEW失败", e);
             return null;
@@ -157,8 +191,7 @@ public class YbAppealResultDeductimplementViewServiceImpl extends ServiceImpl<Yb
     @Transactional
     public void createYbAppealResultDeductimplementView(YbAppealResultDeductimplementView
                                                                 ybAppealResultDeductimplementView) {
-        ybAppealResultDeductimplementView.setCreateTime(new Date());
-        ybAppealResultDeductimplementView.setIsDeletemark(1);
+
         this.save(ybAppealResultDeductimplementView);
     }
 
@@ -166,7 +199,6 @@ public class YbAppealResultDeductimplementViewServiceImpl extends ServiceImpl<Yb
     @Transactional
     public void updateYbAppealResultDeductimplementView(YbAppealResultDeductimplementView
                                                                 ybAppealResultDeductimplementView) {
-        ybAppealResultDeductimplementView.setModifyTime(new Date());
         this.baseMapper.updateYbAppealResultDeductimplementView(ybAppealResultDeductimplementView);
     }
 

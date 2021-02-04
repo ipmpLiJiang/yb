@@ -44,15 +44,14 @@
                     <result column="applyDataId" property="applyDataId"/>
                     <result column="resultId" property="resultId"/>
                     <result column="resetDate" property="resetDate"/>
-                    <result column="resetPersonId" property="resetPersonId"/>
-                    <result column="resetPersonName" property="resetPersonName"/>
             <result column="repayState" property="repayState"/>
             <result column="repaymentPrice" property="repaymentPrice"/>
+            <result column="relatelDataId" property="relatelDataId"/>
         </resultMap>
 
         <!-- 通用查询结果列 -->
         <sql id="Base_Column_List">
-        id, serialNo, billNo, projectCode, projectName, medicalPrice, ruleName, deductPrice, deductReason, repaymentReason, doctorName, deptCode, deptName, costDate, costDateStr, hospitalizedNo, treatmentMode, settlementDate, settlementDateStr, personalNo, insuredName, cardNumber, areaName, insuredType, dataType, orderNumber,orderNum, STATE, seekState, resetId, applyDate, applyDateStr, currencyField, arDoctorCode, arDoctorName, arDeptCode, arDeptName, applyDataId, resultId, resetDate, resetPersonId, resetPersonName,repayState,repaymentPrice
+        id, serialNo, billNo, projectCode, projectName, medicalPrice, ruleName, deductPrice, deductReason, repaymentReason, doctorName, deptCode, deptName, costDate, costDateStr, hospitalizedNo, treatmentMode, settlementDate, settlementDateStr, personalNo, insuredName, cardNumber, areaName, insuredType, dataType, orderNumber,orderNum, STATE, seekState, resetId, applyDate, applyDateStr, currencyField, arDoctorCode, arDoctorName, arDeptCode, arDeptName, applyDataId, resultId, resetDate, repayState,repaymentPrice,relatelDataId
     </sql>
     <update id="updateYbReconsiderResetResultView" parameterType="cc.mrbird.febs.yb.entity.YbReconsiderResetResultView">
         update yb_reconsider_reset_result_view
@@ -96,8 +95,6 @@
 <if test="applyDataId != null">applyDataId=#{applyDataId},</if>
 <if test="resultId != null">resultId=#{resultId},</if>
 <if test="resetDate != null">resetDate=#{resetDate},</if>
-<if test="resetPersonId != null">resetPersonId=#{resetPersonId},</if>
-<if test="resetPersonName != null">resetPersonName=#{resetPersonName},</if>
         </trim>
 
     </update>
@@ -161,7 +158,7 @@
         <if test="ybReconsiderResetResultView.resetDateTo!= null">
             AND ybReconsiderResetResultView.resetDate <![CDATA[ <= ]]>  resetDateTo}
         </if>
-            <if test="ybReconsiderResetResultView.resetPersonName != null and ybReconsiderResetResultView.resetPersonName != ''"> and resetPersonName like concat('%', #{ ybReconsiderResetResultView.resetPersonName} ,'%')</if>
+
 </select>
 
 </mapper>

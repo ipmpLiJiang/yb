@@ -39,12 +39,12 @@ private static final long serialVersionUID=1L;
             @ExcelField(value ="手动核对Id")
     private String pid;
 
-    /**
-     * 剔除明细Id
-     */
-    @TableField("resetId")
-            @ExcelField(value ="剔除明细Id")
-    private String resetId;
+//    /**
+//     * 剔除明细Id
+//     */
+//    @TableField("resetId")
+//            @ExcelField(value ="剔除明细Id")
+//    private String resetId;
 
     /**
      * 复议申请明细
@@ -310,7 +310,12 @@ private static final long serialVersionUID=1L;
             @ExcelField(value ="复议上传Id")
     private String resultId;
 
-
+    /**
+     * 关联Id
+     */
+    @TableField("relatelDataId")
+    @ExcelField(value = "关联Id")
+    private String relatelDataId;
 
     public static final String ID ="id" ;
 
@@ -389,5 +394,7 @@ private static final long serialVersionUID=1L;
     public static final String MODIFY_USER_ID ="MODIFY_USER_ID" ;
 
     public static final String RESULTID ="resultId" ;
+
+    public static final String RELATELDATAID = "relatelDataId";
 
         }

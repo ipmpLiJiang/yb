@@ -431,7 +431,7 @@ public class YbAppealManageServiceImpl extends ServiceImpl<YbAppealManageMapper,
             int nOpenSms = febsProperties.getOpenSms();
             boolean isOpenSms = nOpenSms == 1 ? true : false;
             if (isOpenSms) {
-                String sendContent = this.iYbReconsiderApplyService.getSendMessage(entity.getApplyDateStr(), enableDate, entity.getTypeno());
+                String sendContent = this.iYbReconsiderApplyService.getSendMessage(entity.getApplyDateStr(), enableDate, entity.getTypeno(),true);
                 iComSmsService.sendSmsService(personCode, ComSms.SENDTYPE_3, sendContent, uId, Uname);
             }
         }
@@ -530,7 +530,7 @@ public class YbAppealManageServiceImpl extends ServiceImpl<YbAppealManageMapper,
                 if(entity.getAcceptState() == YbDefaultValue.ACCEPTSTATE_1){
                     enableDate = null;
                 }
-                String sendContent = this.iYbReconsiderApplyService.getSendMessage(entity.getApplyDateStr(), enableDate, entity.getTypeno());
+                String sendContent = this.iYbReconsiderApplyService.getSendMessage(entity.getApplyDateStr(), enableDate, entity.getTypeno(),true);
                 iComSmsService.sendSmsService(personCode, ComSms.SENDTYPE_4, sendContent, uId, Uname);
             }
         }

@@ -5,8 +5,9 @@
         <!-- 通用查询映射结果 -->
         <resultMap id="BaseResultMap" type="cc.mrbird.febs.yb.entity.YbAppealResultDeductimplement">
                     <id column="id" property="id"/>
-                    <result column="resultId" property="resultId"/>
+<!--                    <result column="resultId" property="resultId"/>-->
                     <result column="resetDataId" property="resetDataId"/>
+            <result column="relatelDataId" property="relatelDataId"/>
                     <result column="implementDate" property="implementDate"/>
                     <result column="implementDateStr" property="implementDateStr"/>
                     <result column="shareState" property="shareState"/>
@@ -25,13 +26,14 @@
 
         <!-- 通用查询结果列 -->
         <sql id="Base_Column_List">
-        id, resultId, resetDataId, implementDate, implementDateStr, shareState, shareProgramme,applyDate,applyDateStr,dataType, COMMENTS, STATE, IS_DELETEMARK, MODIFY_TIME, CREATE_TIME, CREATE_USER_ID, MODIFY_USER_ID
+        id, resetDataId,relatelDataId, implementDate, implementDateStr, shareState, shareProgramme,applyDate,applyDateStr,dataType, COMMENTS, STATE, IS_DELETEMARK, MODIFY_TIME, CREATE_TIME, CREATE_USER_ID, MODIFY_USER_ID
     </sql>
     <update id="updateYbAppealResultDeductimplement" parameterType="cc.mrbird.febs.yb.entity.YbAppealResultDeductimplement">
         update yb_appeal_result_deductimplement
         <trim prefix="set" suffixOverrides=",">
-<if test="resultId != null">resultId=#{resultId},</if>
+<!--<if test="resultId != null">resultId=#{resultId},</if>-->
 <if test="resetDataId != null">resetDataId=#{resetDataId},</if>
+            <if test="relatelDataId != null">relatelDataId=#{relatelDataId},</if>
 <if test="implementDate != null">implementDate=#{implementDate},</if>
 <if test="implementDateStr != null">implementDateStr=#{implementDateStr},</if>
 <if test="shareState != null">shareState=#{shareState},</if>
@@ -54,8 +56,8 @@
         select  *  from yb_appeal_result_deductimplement
         where  1=1
             <if test="ybAppealResultDeductimplement.id != null and ybAppealResultDeductimplement.id != ''"> and id =#{ ybAppealResultDeductimplement.id} </if>
-            <if test="ybAppealResultDeductimplement.resultId != null and ybAppealResultDeductimplement.resultId != ''"> and resultId like concat('%', #{ ybAppealResultDeductimplement.resultId} ,'%')</if>
-            <if test="ybAppealResultDeductimplement.resetDataId != null and ybAppealResultDeductimplement.resetDataId != ''"> and resetDataId like concat('%', #{ ybAppealResultDeductimplement.resetDataId} ,'%')</if>
+        <if test="ybAppealResultDeductimplement.resetDataId != null and ybAppealResultDeductimplement.resetDataId != ''"> and resetDataId like concat('%', #{ ybAppealResultDeductimplement.resetDataId} ,'%')</if>
+            <if test="ybAppealResultDeductimplement.relatelDataId != null and ybAppealResultDeductimplement.relatelDataId != ''"> and relatelDataId like concat('%', #{ ybAppealResultDeductimplement.relatelDataId} ,'%')</if>
         <if test="ybAppealResultDeductimplement.implementDateFrom!= null">
             AND ybAppealResultDeductimplement.implementDate <![CDATA[ >= ]]>  implementDateFrom}
         </if>

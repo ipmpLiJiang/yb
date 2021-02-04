@@ -379,12 +379,12 @@ public class YbAppealResultView implements Comparable<YbAppealResultView> {
     @ExcelField(value = "排序")
     private Integer orderNum;
 
-    /**
-     * 剔除明细扣款
-     */
-    @TableField("resetDataId")
-    @ExcelField(value = "剔除明细扣款")
-    private String resetDataId;
+//    /**
+//     * 剔除明细扣款
+//     */
+//    @TableField("resetDataId")
+//    @ExcelField(value = "剔除明细扣款")
+//    private String resetDataId;
 
     /**
      * 剔除状态
@@ -630,6 +630,13 @@ public class YbAppealResultView implements Comparable<YbAppealResultView> {
     //@ExcelField(value ="数据类型")
     private Integer dataType;
 
+    /**
+     * 关联Id
+     */
+    @TableField("relatelDataId")
+    @ExcelField(value = "关联Id")
+    private String relatelDataId;
+
     public static final String SERIALNO = "serialNo";
 
     public static final String BILLNO = "billNo";
@@ -722,7 +729,7 @@ public class YbAppealResultView implements Comparable<YbAppealResultView> {
 
     public static final String SOURCETYPE = "sourceType";
 
-    public static final String RESETDATAID = "resetDataId";
+//    public static final String RESETDATAID = "resetDataId";
 
     public static final String RARESETSTATE = "raResetState";
 
@@ -751,6 +758,8 @@ public class YbAppealResultView implements Comparable<YbAppealResultView> {
     public static final String MODIFY_USER_ID = "MODIFY_USER_ID";
 
     public static final String CURRENCYFIELD = "currencyField";
+
+    public static final String RELATELDATAID = "relatelDataId";
 
     @Override
     public int compareTo(YbAppealResultView o) {

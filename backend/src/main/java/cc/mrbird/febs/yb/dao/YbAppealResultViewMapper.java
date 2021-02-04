@@ -21,4 +21,6 @@ public interface YbAppealResultViewMapper extends BaseMapper<YbAppealResultView>
         IPage<YbAppealResultView> findYbAppealResultView(Page page, @Param("ybAppealResultView") YbAppealResultView ybAppealResultView);
 
         List<YbAppealResultView> findAppealResultList(@Param("ybAppealResultView") YbAppealResultView ybAppealResultView);
+
+        List<YbAppealResultView> findAppealResultHandleList(@Param("ybAppealResultView") YbAppealResultView ybAppealResultView);
 }

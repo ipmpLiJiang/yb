@@ -2,6 +2,7 @@ package cc.mrbird.febs.yb.service.impl;
 
 import cc.mrbird.febs.common.domain.QueryRequest;
 import cc.mrbird.febs.common.utils.SortUtil;
+import cc.mrbird.febs.system.domain.User;
 import cc.mrbird.febs.yb.dao.YbReconsiderRepayMapper;
 import cc.mrbird.febs.yb.entity.*;
 import cc.mrbird.febs.yb.service.IYbReconsiderApplyService;
@@ -135,15 +136,15 @@ public class YbReconsiderRepayServiceImpl extends ServiceImpl<YbReconsiderRepayM
 
     @Override
     @Transactional
-    public boolean importReconsiderRepay(List<YbReconsiderRepayData> list, Long uid, String uname, String uploadFileName) {
+    public boolean importReconsiderRepay(List<YbReconsiderRepayData> list, User currentUser, String uploadFileName) {
         YbReconsiderRepayData ybReconsiderRepayData = list.get(0);
         YbReconsiderRepay ybReconsiderRepay = new YbReconsiderRepay();
         ybReconsiderRepay.setId(ybReconsiderRepayData.getPid());
         ybReconsiderRepay.setIsDeletemark(1);
-        ybReconsiderRepay.setCreateUserId(uid);
+        ybReconsiderRepay.setCreateUserId(currentUser.getUserId());
         ybReconsiderRepay.setCreateTime(new Date());
-        ybReconsiderRepay.setOperatorId(uid);
-        ybReconsiderRepay.setOperatorName(uname);
+        ybReconsiderRepay.setOperatorId(currentUser.getUserId());
+        ybReconsiderRepay.setOperatorName(currentUser.getUsername() + "-" + currentUser.getXmname());
         ybReconsiderRepay.setRepayType(ybReconsiderRepayData.getRepayType());
         ybReconsiderRepay.setDataType(ybReconsiderRepayData.getDataType());
         ybReconsiderRepay.setUploadFileName(uploadFileName);

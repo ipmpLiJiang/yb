@@ -244,6 +244,65 @@ public class YbReconsiderResetData implements Comparable<YbReconsiderResetData> 
     @ExcelField(value = "还款金额")
     private BigDecimal repaymentPrice;
 
+//    /**
+//     * 复议申请明细
+//     */
+//    @TableField("applyDataId")
+//    @ExcelField(value = "复议申请明细")
+//    private String applyDataId;
+
+//    /**
+//     * 申请序号
+//     */
+//    @TableField("applyOrderNumber")
+//    @ExcelField(value = "申请序号")
+//    private String applyOrderNumber;
+
+//    /**
+//     * 复议上传Id
+//     */
+//    @TableField("resultId")
+//    @ExcelField(value ="复议上传Id")
+//    private String resultId;
+
+    /**
+     * 剔除类型
+     */
+    @TableField("resetType")
+    //@ExcelField(value = "剔除类型")
+    private Integer resetType;
+
+    /**
+     * 关联Id
+     */
+    @TableField("relatelDataId")
+    @ExcelField(value = "关联Id")
+    private String relatelDataId;
+
+
+    /**
+     * 剔除人代码
+     */
+    @TableField("resetPersonId")
+    @ExcelField(value = "剔除人代码")
+    private Long resetPersonId;
+
+    /**
+     * 剔除人
+     */
+    @TableField("resetPersonName")
+    @ExcelField(value = "剔除人")
+    private String resetPersonName;
+
+    /**
+     * 剔除日期
+     */
+    @TableField("resetDate")
+    @ExcelField(value = "剔除日期")
+    private Date resetDate;
+    private transient String resetDateFrom;
+    private transient String resetDateTo;
+
     /**
      * 备注
      */
@@ -361,6 +420,20 @@ public class YbReconsiderResetData implements Comparable<YbReconsiderResetData> 
     public static final String SEEKSTATE = "seekState";
 
     public static final String REPAYMENTPRICE = "repaymentPrice";
+
+//    public static final String APPLYDATAID = "applyDataId";
+
+//    public static final String APPLYORDERNUMBER = "applyOrderNumber";
+
+    public static final String RELATELDATAID = "relatelDataId";
+
+    public static final String RESETPERSONID = "resetPersonId";
+
+    public static final String RESETPERSONNAME = "resetPersonName";
+
+//    public static final String RESULTID = "resultId";
+
+    public static final String RESETDATE = "resetDate";
 
     public static final String IS_DELETEMARK = "IS_DELETEMARK";
 

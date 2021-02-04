@@ -240,7 +240,7 @@ public  class YbDefaultValue {
 
 
     /**
-     * 数据剔除 明细状态 0 上传
+     * 数据剔除 明细状态 0 一对一
      */
     public static final Integer RESETDATA_STATE_0 = 0;
     /**
@@ -262,5 +262,18 @@ public  class YbDefaultValue {
      */
     public static final Integer SHARESTATE_1 = 1;
 
+    /**
+     * 扣款落实 2 其他分摊
+     */
+    public static final Integer SHARESTATE_2 = 2;
+
+    /**
+     * 剔除类型  1 自动剔除
+     */
+    public static final Integer RESETTYPE_1 = 1;
+    /**
+     * 剔除类型 2 手动剔除
+     */
+    public static final Integer RESETTYPE_2 = 2;
 
 }

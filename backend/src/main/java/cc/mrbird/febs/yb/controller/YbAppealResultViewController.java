@@ -156,21 +156,34 @@ public class YbAppealResultViewController extends BaseController {
     @PostMapping("excel1")
     public void export1(QueryRequest request, YbAppealResultView ybAppealResultView, HttpServletResponse response) throws FebsException {
         try {
-            List<YbAppealResultView> appealResultViewList = this.iYbAppealResultViewService.findAppealResultViewLists(ybAppealResultView);
+            List<YbAppealResultView> appealResultViewList = null;
+            if(ybAppealResultView.getSourceType()==0) {
+                appealResultViewList = this.iYbAppealResultViewService.findAppealResultViewLists(ybAppealResultView);
+            }else{
+                appealResultViewList = this.iYbAppealResultViewService.findAppealResultHandleViewLists(ybAppealResultView);
+            }
 
             if (appealResultViewList.size() > 0) {
                 List<YbAppealResultView> appealResultViewDataList = new ArrayList<>();
                 List<YbAppealResultView> appealResultViewMainList = new ArrayList<>();
+                if(ybAppealResultView.getSourceType()==0) {
+                    appealResultViewDataList = appealResultViewList.stream().filter(
+                            s -> s.getDataType().equals(YbDefaultValue.DATATYPE_0)).
+                            sorted(Comparator.comparing(YbAppealResultView::getOrderNum)).collect(Collectors.toList());
 
-                appealResultViewDataList = appealResultViewList.stream().filter(
-                        s -> s.getDataType().equals(YbDefaultValue.DATATYPE_0)).collect(Collectors.toList());
-                if (appealResultViewDataList.size() > 0) {
-                    Collections.sort(appealResultViewDataList);
-                }
-                appealResultViewMainList = appealResultViewList.stream().filter(
-                        s -> s.getDataType().equals(YbDefaultValue.DATATYPE_1)).collect(Collectors.toList());
-                if (appealResultViewMainList.size() > 0) {
-                    Collections.sort(appealResultViewMainList);
+                    appealResultViewMainList = appealResultViewList.stream().filter(
+                            s -> s.getDataType().equals(YbDefaultValue.DATATYPE_1)).
+                            sorted(Comparator.comparing(YbAppealResultView::getOrderNum)).collect(Collectors.toList());
+                }else{
+                    appealResultViewDataList = appealResultViewList.stream().filter(
+                            s -> s.getDataType().equals(YbDefaultValue.DATATYPE_0)).
+                            sorted(Comparator.comparing(YbAppealResultView::getTypeno).
+                                    thenComparing(YbAppealResultView::getOrderNum)).collect(Collectors.toList());
+
+                    appealResultViewMainList = appealResultViewList.stream().filter(
+                            s -> s.getDataType().equals(YbDefaultValue.DATATYPE_1)).
+                            sorted(Comparator.comparing(YbAppealResultView::getTypeno).
+                                    thenComparing(YbAppealResultView::getOrderNum)).collect(Collectors.toList());
                 }
 
                 List<YbAppealResultDataExport> dataList = new ArrayList<>();

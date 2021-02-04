@@ -22,6 +22,8 @@ public interface IYbAppealResultDeductimplementViewService extends IService<YbAp
 
         IPage<YbAppealResultDeductimplementView> findYbAppealResultDeductimplementViewList(QueryRequest request, YbAppealResultDeductimplementView ybAppealResultDeductimplementView);
 
+        IPage<YbAppealResultDeductimplementView> findAppealResultDeductimplementView(QueryRequest request, YbAppealResultDeductimplementView ybAppealResultDeductimplementView);
+
         void createYbAppealResultDeductimplementView(YbAppealResultDeductimplementView ybAppealResultDeductimplementView);
 
         void updateYbAppealResultDeductimplementView(YbAppealResultDeductimplementView ybAppealResultDeductimplementView);

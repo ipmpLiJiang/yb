@@ -16,9 +16,10 @@
         <result column="operateDate" property="operateDate"/>
         <result column="currencyField" property="currencyField"/>
         <result column="sourceType" property="sourceType"/>
-        <result column="resetDataId" property="resetDataId"/>
-        <result column="resetPersonId" property="resetPersonId"/>
-        <result column="resetPersonName" property="resetPersonName"/>
+        <result column="relatelDataId" property="relatelDataId"/>
+<!--        <result column="resetDataId" property="resetDataId"/>-->
+<!--        <result column="resetPersonId" property="resetPersonId"/>-->
+<!--        <result column="resetPersonName" property="resetPersonName"/>-->
         <result column="resetDate" property="resetDate"/>
         <result column="dataType" property="dataType"/>
         <result column="orderDoctorCode" property="orderDoctorCode"/>
@@ -41,8 +42,9 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, applyDataId, verifyId, manageId, doctorCode, doctorName, deptCode, deptName, operateReason, operateDate, currencyField,sourceType,resetDataId,resetPersonId,resetPersonName,resetDate,dataType,orderDoctorCode,orderDoctorName,orderDeptCode,orderDeptName,repayState,applyDateStr,typeno,orderNumber,orderNum, COMMENTS, STATE, IS_DELETEMARK, MODIFY_TIME, CREATE_TIME, CREATE_USER_ID, MODIFY_USER_ID
+        id, applyDataId, verifyId, manageId, doctorCode, doctorName, deptCode, deptName, operateReason, operateDate, currencyField,sourceType,relatelDataId,resetDate,dataType,orderDoctorCode,orderDoctorName,orderDeptCode,orderDeptName,repayState,applyDateStr,typeno,orderNumber,orderNum, COMMENTS, STATE, IS_DELETEMARK, MODIFY_TIME, CREATE_TIME, CREATE_USER_ID, MODIFY_USER_ID
     </sql>
+<!--    resetDataId,resetPersonId,resetPersonName,-->
     <update id="updateYbAppealResult" parameterType="cc.mrbird.febs.yb.entity.YbAppealResult">
         update yb_appeal_result
         <trim prefix="set" suffixOverrides=",">
@@ -57,9 +59,10 @@
             <if test="operateDate != null">operateDate=#{operateDate},</if>
             <if test="currencyField != null">currencyField=#{currencyField},</if>
             <if test="sourceType != null">sourceType=#{sourceType},</if>
-            <if test="resetDataId != null">resetDataId=#{resetDataId},</if>
-            <if test="resetPersonId != null">resetPersonId=#{resetPersonId},</if>
-            <if test="resetPersonName != null">resetPersonName=#{resetPersonName},</if>
+            <if test="relatelDataId != null">relatelDataId=#{relatelDataId},</if>
+<!--            <if test="resetDataId != null">resetDataId=#{resetDataId},</if>-->
+<!--            <if test="resetPersonId != null">resetPersonId=#{resetPersonId},</if>-->
+<!--            <if test="resetPersonName != null">resetPersonName=#{resetPersonName},</if>-->
             <if test="resetDate != null">resetDate=#{resetDate},</if>
             <if test="dataType != null">dataType=#{dataType},</if>
             <if test="orderDoctorCode != null">orderDoctorCode=#{orderDoctorCode},</if>
@@ -122,10 +125,6 @@
         </if>
         <if test="ybAppealResult.sourceType != null">and sourceType =#{ ybAppealResult.sourceType}</if>
         <if test="ybAppealResult.repayState != null">and repayState =#{ ybAppealResult.repayState}</if>
-        <if test="ybAppealResult.resetPersonId != null">and resetPersonId =#{ ybAppealResult.resetPersonId}</if>
-        <if test="ybAppealResult.resetPersonName != null and ybAppealResult.resetPersonName != ''">and resetPersonName
-            =#{ ybAppealResult.resetPersonName}
-        </if>
         <if test="ybAppealResult.resetDateFrom!= null">
             AND ybAppealResult.resetDate <![CDATA[ >= ]]>  resetDateFrom}
         </if>
@@ -199,7 +198,6 @@
         yb_appeal_result.IS_DELETEMARK = 1 AND
         yb_appeal_result.STATE = 1 AND
         yb_appeal_result.sourceType = 0 AND
-        yb_appeal_result.resetDataId IS NULL AND
         yb_reconsider_apply.applyDateStr = #{ applyDateStr}
         <if test="dataType != null">and yb_appeal_result.dataType =#{ dataType}</if>
     </select>
@@ -218,7 +216,6 @@
         yb_appeal_result.IS_DELETEMARK = 1 AND
         yb_appeal_result.STATE = 2 AND
         yb_appeal_result.sourceType = 0 AND
-        yb_appeal_result.resetDataId IS NOT NULL AND
         yb_appeal_result.repayState in (2,3) AND
         yb_reconsider_apply.applyDateStr = #{ applyDateStr}
         <if test="dataType != null">and yb_appeal_result.dataType =#{ dataType}</if>
@@ -238,7 +235,6 @@
             yb_reconsider_apply.applyDateStr = #{applyDateStr} AND
             yb_appeal_result.IS_DELETEMARK = 1 AND
             yb_appeal_result.STATE = 2 AND
-            yb_appeal_result.resetDataId IS NOT NULL AND
             NOT EXISTS (
                 SELECT
                     yb_handle_verify_data.ID
@@ -251,9 +247,21 @@
                     yb_handle_verify_data.IS_DELETEMARK = 1
                 AND yb_reconsider_apply.applyDateStr = yb_handle_verify.applyDateStr
                 AND yb_appeal_result.id = yb_handle_verify_data.resultId
-                AND yb_appeal_result.resetDataId = yb_handle_verify_data.resetId
             )
 </select>
+    <update id="updateAppealResultCancelData">
+        update yb_appeal_result
+        set
+            relatelDataId = null,
+            resetDate = null,
+            repayState = 1,
+            state = 1
+        where id in (
+        <foreach item="item" index="index" collection="resultList" separator=",">
+            #{item.id}
+        </foreach>
+        )
+    </update>
     <update id="updateAppealResulResetData">
         UPDATE yb_appeal_result
         INNER JOIN yb_reconsider_apply_data ON

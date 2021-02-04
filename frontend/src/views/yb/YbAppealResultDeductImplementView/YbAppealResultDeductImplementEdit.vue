@@ -27,6 +27,9 @@
               <a-radio value="1">
                 科室分摊
               </a-radio>
+              <a-radio value="2">
+                其他分摊
+              </a-radio>
             </a-radio-group>
           </a-form-item>
         </a-col>
@@ -146,7 +149,7 @@ export default {
         if (!err) {
           this.setFields()
           this.ybAppealResultDeductImplement.resetDataId = this.ybAppealResult.resetDataId
-          this.ybAppealResultDeductImplement.resultId = this.ybAppealResult.id
+          this.ybAppealResultDeductImplement.relatelDataId = this.ybAppealResult.relatelDataId
           this.ybAppealResultDeductImplement.implementDateStr = this.selectImplementDateStr
           this.ybAppealResultDeductImplement.applyDateStr = this.ybAppealResult.applyDateStr
           this.ybAppealResultDeductImplement.dataType = this.ybAppealResult.dataType

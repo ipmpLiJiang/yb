@@ -222,6 +222,11 @@ public class YbPersonServiceImpl extends ServiceImpl<YbPersonMapper, YbPerson> i
         return list;
     }
 
+    @Override
+    public List<YbPerson> findPersonResultList(String applyDateStr){
+        return this.findPersonResultList(applyDateStr);
+    }
+
     /**
      * type 0 查询集合 type 1 like
      */

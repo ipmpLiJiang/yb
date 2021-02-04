@@ -519,6 +519,7 @@ export default {
     },
     beforeUpload (file) {
       var testmsg = file.name.substring(file.name.lastIndexOf('.') + 1)
+      testmsg = testmsg.toLowerCase()
       let isExcel = testmsg === 'xlsx'
       if (!isExcel) {
         isExcel = testmsg === 'xls'

@@ -186,7 +186,8 @@ export default {
       },
       {
         title: '规则名称',
-        dataIndex: 'rplName'
+        dataIndex: 'rplName',
+        width: 350
       },
       {
         title: '默认复议科室类型',

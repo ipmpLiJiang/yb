@@ -185,24 +185,47 @@ public class YbReconsiderResetDataController extends BaseController {
     @Log("修改")
     @PutMapping("updateHandleResetData")
     @RequiresPermissions("ybReconsiderResetData:updateResetData")
-    public FebsResponse updateHandResetData(String resultId, String resetId) {
-        ResponseResultData responseResultData = new ResponseResultData();
-        responseResultData.setSuccess(0);
+    public FebsResponse updateHandResetData(String resultIds, String resetIds) {
+        int success = 0;
         try {
             User currentUser = FebsUtil.getCurrentUser();
             Long uid = currentUser.getUserId();
             String uname = currentUser.getUsername();
-            message = this.iYbReconsiderResetDataService.updateHandleResetDatas(resultId, resetId, uid, uname);
+            message = this.iYbReconsiderResetDataService.updateHandleResetDatas(resultIds, resetIds, uid, uname);
             if ("ok".equals(message)) {
-                responseResultData.setSuccess(1);
+                success = 1;
                 message = "剔除数据成功.";
             }
-            responseResultData.setMessage(message);
         } catch (Exception e) {
             message = "剔除数据失败.";
             log.error(message, e);
-            responseResultData.setMessage(message);
         }
+
+        ResponseResultData responseResultData = new ResponseResultData();
+        responseResultData.setSuccess(success);
+        responseResultData.setMessage(message);
+        return new FebsResponse().data(responseResultData);
+    }
+
+    @Log("修改")
+    @PutMapping("updateHandleResetCanceltData")
+    @RequiresPermissions("ybReconsiderResetData:updateResetData")
+    public FebsResponse updateHandResetCanceltData(String resetId,String applyDateStr) {
+        int success = 0;
+        try {
+            message = this.iYbReconsiderResetDataService.updateHandleResetCancelData(resetId,applyDateStr);
+            if ("ok".equals(message)) {
+                success = 1;
+                message = "取消剔除数据成功.";
+            }
+        } catch (Exception e) {
+            message = "取消剔除数据失败.";
+            log.error(message, e);
+        }
+
+        ResponseResultData responseResultData = new ResponseResultData();
+        responseResultData.setSuccess(success);
+        responseResultData.setMessage(message);
         return new FebsResponse().data(responseResultData);
     }
 
@@ -211,7 +234,7 @@ public class YbReconsiderResetDataController extends BaseController {
         try {
             String sheetName1 = "明细扣款";
             String sheetName2 = "主单扣款";
-            ExportExcelUtils.exportTemplateFileT(response,YbReconsiderResetDataExport.class,sheetName1,YbReconsiderResetMainExport.class,sheetName2);
+            ExportExcelUtils.exportTemplateFileT(response, YbReconsiderResetDataExport.class, sheetName1, YbReconsiderResetMainExport.class, sheetName2);
         } catch (Exception e) {
             message = "导出Excel模板失败";
             log.error(message, e);

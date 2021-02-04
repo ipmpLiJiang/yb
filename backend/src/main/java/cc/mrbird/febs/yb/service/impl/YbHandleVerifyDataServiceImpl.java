@@ -156,7 +156,7 @@ public class YbHandleVerifyDataServiceImpl extends ServiceImpl<YbHandleVerifyDat
                         insertData.setVerifyId(item.getVerifyId());
                         insertData.setManageId(item.getManageId());
                         insertData.setResultId(item.getId());
-                        insertData.setResetId(item.getResetDataId());
+//                        insertData.setResetId(item.getResetDataId());
                         insertData.setDataType(item.getDataType());
                         insertData.setApplyDateStr(item.getApplyDateStr());
                         insertData.setOrderNum(item.getOrderNum());
@@ -169,6 +169,10 @@ public class YbHandleVerifyDataServiceImpl extends ServiceImpl<YbHandleVerifyDat
                         insertData.setMatchPersonId(uid);
                         insertData.setMatchPersonName(uname);
                         insertData.setMatchDate(thisDate);
+
+                        insertData.setCreateTime(thisDate);
+                        insertData.setCreateUserId(uid);
+                        insertData.setRelatelDataId(item.getRelatelDataId());
 
                         insertData.setOrderDoctorCode(item.getOrderDoctorCode());
                         insertData.setOrderDoctorName(item.getOrderDoctorName());
@@ -271,6 +275,7 @@ public class YbHandleVerifyDataServiceImpl extends ServiceImpl<YbHandleVerifyDat
 
                 ybAppealManage.setIsDeletemark(1);
                 ybAppealManage.setCreateUserId(uId);
+                ybAppealManage.setApprovalState(0);
                 ybAppealManage.setCreateTime(thisDate);
 
                 ybAppealManage.setSourceType(YbDefaultValue.SOURCETYPE_1);

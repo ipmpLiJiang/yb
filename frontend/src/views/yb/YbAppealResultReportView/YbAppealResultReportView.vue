@@ -212,6 +212,12 @@ export default {
         width: 70
       },
       {
+        title: '交易流水号',
+        dataIndex: 'serialNo',
+        fixed: 'left',
+        width: 135
+      },
+      {
         title: '意见书编码',
         dataIndex: 'proposalCode',
         fixed: 'left',
@@ -237,16 +243,6 @@ export default {
         title: '规则名称',
         dataIndex: 'ruleName',
         width: 140
-      },
-      {
-        title: '扣除金额',
-        dataIndex: 'deductPrice',
-        width: 100
-      },
-      {
-        title: '调整扣款金额',
-        dataIndex: 'adjustPrice',
-        width: 120
       },
       {
         title: '扣除原因',
@@ -434,7 +430,7 @@ export default {
           params.pageSize = this.pagination.defaultPageSize
           params.pageNum = this.pagination.defaultCurrent
         }
-        params.sortField = 'applyDateStr asc,orderNum'
+        params.sortField = 'applyDateStr asc,typeno asc,orderNum'
         // params.sortOrder = 'descend'
         params.sortOrder = 'ascend'
         this.$get('ybAppealResultReportView', {

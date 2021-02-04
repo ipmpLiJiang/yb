@@ -6,7 +6,7 @@
         <resultMap id="BaseResultMap" type="cc.mrbird.febs.yb.entity.YbHandleVerifyData">
                     <id column="id" property="id"/>
                     <result column="pid" property="pid"/>
-                    <result column="resetId" property="resetId"/>
+<!--                    <result column="resetId" property="resetId"/>-->
                     <result column="applyDataId" property="applyDataId"/>
                     <result column="verifyId" property="verifyId"/>
                     <result column="manageId" property="manageId"/>
@@ -43,17 +43,19 @@
                     <result column="CREATE_USER_ID" property="createUserId"/>
                     <result column="MODIFY_USER_ID" property="modifyUserId"/>
                     <result column="resultId" property="resultId"/>
+            <result column="relatelDataId" property="relatelDataId"/>
         </resultMap>
 
         <!-- 通用查询结果列 -->
         <sql id="Base_Column_List">
-        id, pid, resetId, applyDataId, verifyId, manageId, doctorCode, doctorName, deptCode, deptName, operateReason, operateDate, matchPersonId, matchPersonName, matchDate, reviewerId, reviewerName, reviewerDate, sendPersonId, sendPersonName, sendDate, currencyField, dataType,orderDoctorCode,orderDoctorName,orderDeptCode,orderDeptName,applyDateStr,typeno,orderNumber,orderNum, COMMENTS, STATE, IS_DELETEMARK, MODIFY_TIME, CREATE_TIME, CREATE_USER_ID, MODIFY_USER_ID, resultId
+        id, pid, applyDataId, verifyId, manageId, doctorCode, doctorName, deptCode, deptName, operateReason, operateDate, matchPersonId, matchPersonName, matchDate, reviewerId, reviewerName, reviewerDate, sendPersonId, sendPersonName, sendDate, currencyField, dataType,orderDoctorCode,orderDoctorName,orderDeptCode,orderDeptName,applyDateStr,typeno,orderNumber,orderNum, COMMENTS, STATE, IS_DELETEMARK, MODIFY_TIME, CREATE_TIME, CREATE_USER_ID, MODIFY_USER_ID, resultId, relatelDataId
     </sql>
+<!--    resetId-->
     <update id="updateYbHandleVerifyData" parameterType="cc.mrbird.febs.yb.entity.YbHandleVerifyData">
         update yb_handle_verify_data
         <trim prefix="set" suffixOverrides=",">
 <if test="pid != null">pid=#{pid},</if>
-<if test="resetId != null">resetId=#{resetId},</if>
+<!--<if test="resetId != null">resetId=#{resetId},</if>-->
 <if test="applyDataId != null">applyDataId=#{applyDataId},</if>
 <if test="verifyId != null">verifyId=#{verifyId},</if>
 <if test="manageId != null">manageId=#{manageId},</if>
@@ -90,6 +92,7 @@
 <if test="createUserId != null">CREATE_USER_ID=#{createUserId},</if>
 <if test="modifyUserId != null">MODIFY_USER_ID=#{modifyUserId},</if>
 <if test="resultId != null">resultId=#{resultId},</if>
+            <if test="relatelDataId != null">relatelDataId=#{relatelDataId},</if>
         </trim>
                 where id=#{id}
 
@@ -99,7 +102,6 @@
         where  1=1
             <if test="ybHandleVerifyData.id != null and ybHandleVerifyData.id != ''"> and id =#{ ybHandleVerifyData.id} </if>
             <if test="ybHandleVerifyData.pid != null and ybHandleVerifyData.pid != ''"> and pid like concat('%', #{ ybHandleVerifyData.pid} ,'%')</if>
-            <if test="ybHandleVerifyData.resetId != null and ybHandleVerifyData.resetId != ''"> and resetId like concat('%', #{ ybHandleVerifyData.resetId} ,'%')</if>
             <if test="ybHandleVerifyData.applyDataId != null and ybHandleVerifyData.applyDataId != ''"> and applyDataId like concat('%', #{ ybHandleVerifyData.applyDataId} ,'%')</if>
             <if test="ybHandleVerifyData.verifyId != null and ybHandleVerifyData.verifyId != ''"> and verifyId like concat('%', #{ ybHandleVerifyData.verifyId} ,'%')</if>
             <if test="ybHandleVerifyData.manageId != null and ybHandleVerifyData.manageId != ''"> and manageId like concat('%', #{ ybHandleVerifyData.manageId} ,'%')</if>
@@ -153,6 +155,7 @@
             AND ybHandleVerifyData.CREATE_TIME <![CDATA[ <= ]]>  createTimeTo}
         </if>
             <if test="ybHandleVerifyData.resultId != null and ybHandleVerifyData.resultId != ''"> and resultId like concat('%', #{ ybHandleVerifyData.resultId} ,'%')</if>
+        <if test="ybHandleVerifyData.relatelDataId != null and ybHandleVerifyData.relatelDataId != ''"> and relatelDataId like concat('%', #{ ybHandleVerifyData.relatelDataId} ,'%')</if>
 </select>
 
     <select id="findHandleVerifyDataList" resultType="cc.mrbird.febs.yb.entity.YbHandleVerifyData">

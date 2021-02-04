@@ -100,6 +100,18 @@ public class YbReconsiderResetDeductimplementMainExport {
     private String areaName;
 
     /**
+     * 科室
+     */
+    @ExcelField(value ="复议科室名称")
+    private String resultDeptName;
+
+    /**
+     * 医生
+     */
+    @ExcelField(value ="复议医生姓名")
+    private String resultDoctorName;
+
+    /**
      * 绩效年月
      */
     @ExcelField(value = "绩效年月")

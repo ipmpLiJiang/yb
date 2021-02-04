@@ -186,6 +186,7 @@ export default {
     },
     beforeUpload (file) {
       var testmsg = file.name.substring(file.name.lastIndexOf('.') + 1)
+      testmsg = testmsg.toLowerCase()
       let isExcel = testmsg === 'xlsx'
       if (!isExcel) {
         isExcel = testmsg === 'xls'
@@ -217,6 +218,7 @@ export default {
         if (r.data.data.success === 1) {
           this.$message.success('Excel导入成功.')
           this.spinning = false
+          this.callback(this.tableSelectKey)
         } else {
           this.$message.error(r.data.data.message)
           this.spinning = false

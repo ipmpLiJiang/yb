@@ -22,7 +22,10 @@
           >
             <div class="editable-row-operations">
               <span>
-                <a
+                <a v-show="record.seekState===1?false:true"
+                  @click="() => unknownReset(record,index)"
+                >手动剔除</a>
+                <a v-show="record.seekState===0?false:true"
                   @click="() => look(record,index)"
                 >查看剔除明细</a>
               </span>
@@ -181,6 +184,10 @@ export default {
     look (record, index) {
       record.rowNo = this.rowNo(index)
       this.$emit('look', record)
+    },
+    unknownReset (record, index) {
+      record.rowNo = this.rowNo(index)
+      this.$emit('unknownReset', record)
     },
     exportExcel () {
       if (this.dataSource.length > 0) {

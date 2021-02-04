@@ -202,7 +202,6 @@ public class YbAppealResultDeductimplementController extends BaseController {
                                 List<Object[]> objZd = new ArrayList<Object[]>();
                                 for (Integer key : sheetMap.keySet()) {
                                     String value = sheetMap.get(key);
-                                    int sheetIndex = key;
                                     if (value.equals("明细扣款")) {
                                         objMx = ImportExcelUtils.importExcelBySheetIndex(getFile, key, 0, 0);
                                     }
@@ -223,7 +222,7 @@ public class YbAppealResultDeductimplementController extends BaseController {
                                     boolean zdIsNull = false;
 
                                     if (objMx.size() > 1) {
-                                        if (objMx.get(0).length == 23) {
+                                        if (objMx.get(0).length == 25) {
                                             for (int i = 1; i < objMx.size(); i++) {
                                                 message = "明细扣款数据读取失败，请确保Excel列表数据正确无误.";
                                                 YbReconsiderResetDeductimplement rrd = new YbReconsiderResetDeductimplement();
@@ -239,7 +238,7 @@ public class YbAppealResultDeductimplementController extends BaseController {
                                                 }
                                                 rrd.setOrderNumber(strOrderNumber);
 
-                                                String implementDateStr = DataTypeHelpers.importTernaryOperate(objMx.get(i), 20);
+                                                String implementDateStr = DataTypeHelpers.importTernaryOperate(objMx.get(i), 22);
                                                 if (implementDateStr.equals("")) {
                                                     blError = true;
                                                     message = "明细扣款数据存在绩效年月为空，请填写完整后再上传...";
@@ -261,28 +260,34 @@ public class YbAppealResultDeductimplementController extends BaseController {
                                                 }
                                                 Date implementDate = DataTypeHelpers.stringDateFormat(implementDateStr + "-15", "yyyyMM-dd", true);
                                                 rrd.setImplementDate(implementDate);
-                                                implementDateStr = DataTypeHelpers.stringDate6Chang7(implementDateStr,"-");
+                                                implementDateStr = DataTypeHelpers.stringDate6Chang7(implementDateStr, "-");
                                                 rrd.setImplementDateStr(implementDateStr);
-                                                String shareStateStr = DataTypeHelpers.importTernaryOperate(objMx.get(i), 21);
+                                                String shareStateStr = DataTypeHelpers.importTernaryOperate(objMx.get(i), 23);
                                                 if (shareStateStr.equals("")) {
                                                     blError = true;
                                                     message = "明细扣款数据存在分摊方式为空，请填写完整后再上传...";
                                                     break;
                                                 } else {
-                                                    if (shareStateStr.equals("个人分摊") || shareStateStr.equals("科室分摊")) {
-                                                        rrd.setShareState(shareStateStr.equals("个人分摊") ? YbDefaultValue.SHARESTATE_0 : YbDefaultValue.SHARESTATE_1);
+                                                    if (shareStateStr.equals("个人分摊") || shareStateStr.equals("科室分摊") || shareStateStr.equals("其他分摊")) {
+                                                        if (shareStateStr.equals("个人分摊")) {
+                                                            rrd.setShareState(YbDefaultValue.SHARESTATE_0);
+                                                        } else if (shareStateStr.equals("科室分摊")) {
+                                                            rrd.setShareState(YbDefaultValue.SHARESTATE_1);
+                                                        } else {
+                                                            rrd.setShareState(YbDefaultValue.SHARESTATE_2);
+                                                        }
                                                     } else {
                                                         blError = true;
-                                                        message = "明细扣款数据存在分摊方式填写错误，应填写【个人分摊/科室分摊】 ,请填写完整后再上传...";
+                                                        message = "明细扣款数据存在分摊方式填写错误，应填写【个人分摊、科室分摊或其他分摊】 ,请填写完整后再上传...";
                                                         break;
                                                     }
                                                 }
                                                 rrd.setShareStateStr(shareStateStr);
-                                                String shareProgramme = DataTypeHelpers.importTernaryOperate(objMx.get(i), 22);
+                                                String shareProgramme = DataTypeHelpers.importTernaryOperate(objMx.get(i), 24);
                                                 rrd.setShareProgramme(shareProgramme);
 
                                                 rrd.setDataType(YbDefaultValue.DATATYPE_0);
-                                                listDataCount =1;
+                                                listDataCount = 1;
                                                 resetDeductimplementList.add(rrd);
                                             }
                                         } else {
@@ -292,7 +297,7 @@ public class YbAppealResultDeductimplementController extends BaseController {
                                     }
                                     if (!blError) {
                                         if (objZd.size() > 1) {
-                                            if (objZd.get(0).length == 16) {
+                                            if (objZd.get(0).length == 18) {
                                                 for (int i = 1; i < objZd.size(); i++) {
                                                     message = "主单扣款落实数据读取失败，请确保Excel列表数据正确无误.";
                                                     YbReconsiderResetDeductimplement rrd = new YbReconsiderResetDeductimplement();
@@ -307,7 +312,7 @@ public class YbAppealResultDeductimplementController extends BaseController {
                                                         zdIsNull = true;
                                                     }
                                                     rrd.setOrderNumber(strOrderNumber);
-                                                    String implementDateStr = DataTypeHelpers.importTernaryOperate(objZd.get(i), 13);
+                                                    String implementDateStr = DataTypeHelpers.importTernaryOperate(objZd.get(i), 15);
                                                     if (implementDateStr.equals("")) {
                                                         blError = true;
                                                         message = "主单扣款数据存在绩效年月为空，请填写完整后再上传...";
@@ -329,24 +334,30 @@ public class YbAppealResultDeductimplementController extends BaseController {
                                                     }
                                                     Date implementDate = DataTypeHelpers.stringDateFormat(implementDateStr + "-15", "yyyyMM-dd", true);
                                                     rrd.setImplementDate(implementDate);
-                                                    implementDateStr = DataTypeHelpers.stringDate6Chang7(implementDateStr,"-");
+                                                    implementDateStr = DataTypeHelpers.stringDate6Chang7(implementDateStr, "-");
                                                     rrd.setImplementDateStr(implementDateStr);
-                                                    String shareStateStr = DataTypeHelpers.importTernaryOperate(objZd.get(i), 14);
+                                                    String shareStateStr = DataTypeHelpers.importTernaryOperate(objZd.get(i), 16);
                                                     if (shareStateStr.equals("")) {
                                                         blError = true;
                                                         message = "主单扣款数据存在分摊方式为空，请填写完整后再上传...";
                                                         break;
                                                     } else {
-                                                        if (shareStateStr.equals("个人分摊") || shareStateStr.equals("科室分摊")) {
-                                                            rrd.setShareState(shareStateStr.equals("个人分摊") ? YbDefaultValue.SHARESTATE_0 : YbDefaultValue.SHARESTATE_1);
+                                                        if (shareStateStr.equals("个人分摊") || shareStateStr.equals("科室分摊") || shareStateStr.equals("其他分摊")) {
+                                                            if (shareStateStr.equals("个人分摊")) {
+                                                                rrd.setShareState(YbDefaultValue.SHARESTATE_0);
+                                                            } else if (shareStateStr.equals("科室分摊")) {
+                                                                rrd.setShareState(YbDefaultValue.SHARESTATE_1);
+                                                            } else {
+                                                                rrd.setShareState(YbDefaultValue.SHARESTATE_2);
+                                                            }
                                                         } else {
                                                             blError = true;
-                                                            message = "主单扣款数据存在分摊方式填写错误，应填写【个人分摊或科室分摊】 ,请填写完整后再上传...";
+                                                            message = "主单扣款数据存在分摊方式填写错误，应填写【个人分摊、科室分摊或其他分摊】 ,请填写完整后再上传...";
                                                             break;
                                                         }
                                                     }
                                                     rrd.setShareStateStr(shareStateStr);
-                                                    String shareProgramme = DataTypeHelpers.importTernaryOperate(objZd.get(i), 15);
+                                                    String shareProgramme = DataTypeHelpers.importTernaryOperate(objZd.get(i), 17);
                                                     rrd.setShareProgramme(shareProgramme);
 
                                                     rrd.setDataType(YbDefaultValue.DATATYPE_1);

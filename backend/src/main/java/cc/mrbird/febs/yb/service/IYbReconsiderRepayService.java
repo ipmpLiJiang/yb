@@ -1,5 +1,6 @@
 package cc.mrbird.febs.yb.service;
 
+import cc.mrbird.febs.system.domain.User;
 import cc.mrbird.febs.yb.entity.YbReconsiderRepay;
 import cc.mrbird.febs.yb.entity.YbReconsiderRepayData;
 import com.baomidou.mybatisplus.extension.service.IService;
@@ -34,5 +35,5 @@ public interface IYbReconsiderRepayService extends IService<YbReconsiderRepay> {
 
     String updateReconsiderApplyState(YbReconsiderRepay ybReconsiderRepay);
 
-    boolean importReconsiderRepay(List<YbReconsiderRepayData> list, Long uid, String uname, String uploadFileName);
+    boolean importReconsiderRepay(List<YbReconsiderRepayData> list, User currentUser, String uploadFileName);
 }

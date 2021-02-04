@@ -22,4 +22,7 @@ public interface YbPersonMapper extends BaseMapper<YbPerson> {
     IPage<YbPerson> findYbPerson(Page page, @Param("ybPerson") YbPerson ybPerson);
 
     List<YbPerson> findPersonList( @Param("type") Integer type);
+
+
+    List<YbPerson> findPersonResultList( @Param("applyDateStr") String applyDateStr);
 }

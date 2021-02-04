@@ -33,5 +33,5 @@ public interface YbAppealResultMapper extends BaseMapper<YbAppealResult> {
 
     void updateAppealResulResetData(@Param("applyDateStr") String applyDateStr,@Param("resetPersonId") Long resetPersonId,@Param("resetPersonName") String resetPersonName,@Param("resetDate") Date resetDate);
 
-
+    int updateAppealResultCancelData(@Param("resultList") List<YbAppealResult> resultList);
 }

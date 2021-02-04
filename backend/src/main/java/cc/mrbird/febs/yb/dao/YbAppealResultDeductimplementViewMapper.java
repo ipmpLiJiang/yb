@@ -6,6 +6,8 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.apache.ibatis.annotations.Param;
 
+import java.sql.Date;
+
 /**
  * <p>
  * VIEW Mapper 接口
@@ -17,4 +19,7 @@ import org.apache.ibatis.annotations.Param;
 public interface YbAppealResultDeductimplementViewMapper extends BaseMapper<YbAppealResultDeductimplementView> {
         void updateYbAppealResultDeductimplementView(YbAppealResultDeductimplementView ybAppealResultDeductimplementView);
         IPage<YbAppealResultDeductimplementView> findYbAppealResultDeductimplementView(Page page, @Param("ybAppealResultDeductimplementView") YbAppealResultDeductimplementView ybAppealResultDeductimplementView);
-        }
+
+        IPage<YbAppealResultDeductimplementView> findAppealResultDeductimplementView(Page page, @Param("ybAppealResultDeductimplementView") YbAppealResultDeductimplementView ybAppealResultDeductimplementView);
+
+}

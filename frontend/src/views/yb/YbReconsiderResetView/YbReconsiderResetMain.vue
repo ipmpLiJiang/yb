@@ -102,11 +102,6 @@ export default {
         width: 100
       },
       {
-        title: '费用日期',
-        dataIndex: 'costDateStr',
-        width: 110
-      },
-      {
         title: '住院号',
         dataIndex: 'hospitalizedNo',
         width: 100

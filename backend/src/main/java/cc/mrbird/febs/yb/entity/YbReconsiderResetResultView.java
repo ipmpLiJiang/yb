@@ -319,19 +319,6 @@ public class YbReconsiderResetResultView implements Serializable {
     private transient String resetDateFrom;
     private transient String resetDateTo;
 
-    /**
-     * 剔除人代码
-     */
-    @TableField("resetPersonId")
-    @ExcelField(value = "剔除人代码")
-    private Long resetPersonId;
-
-    /**
-     * 剔除人
-     */
-    @TableField("resetPersonName")
-    @ExcelField(value = "剔除人")
-    private String resetPersonName;
 
     /**
      * 还款金额
@@ -339,6 +326,14 @@ public class YbReconsiderResetResultView implements Serializable {
     @TableField("repaymentPrice")
     @ExcelField(value = "还款金额")
     private BigDecimal repaymentPrice;
+
+    /**
+     * 关联Id
+     */
+    @TableField("relatelDataId")
+    @ExcelField(value = "关联Id")
+    private String relatelDataId;
+
 
     public static final String ID = "id";
 
@@ -422,9 +417,7 @@ public class YbReconsiderResetResultView implements Serializable {
 
     public static final String RESETDATE = "resetDate";
 
-    public static final String RESETPERSONID = "resetPersonId";
-
-    public static final String RESETPERSONNAME = "resetPersonName";
+    public static final String RELATELDATAID = "relatelDataId";
 
 
 }

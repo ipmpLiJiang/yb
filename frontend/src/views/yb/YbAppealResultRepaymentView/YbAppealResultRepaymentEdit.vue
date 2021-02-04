@@ -132,8 +132,8 @@ export default {
         width: 70
       },
       {
-        title: '意见书编码',
-        dataIndex: 'proposalCode',
+        title: '交易流水号',
+        dataIndex: 'serialNo',
         fixed: 'left',
         width: 140
       },
@@ -142,11 +142,6 @@ export default {
         dataIndex: 'projectName',
         fixed: 'left',
         width: 160
-      },
-      {
-        title: '数量',
-        dataIndex: 'num',
-        width: 70
       },
       {
         title: '医保内金额',
@@ -209,6 +204,8 @@ export default {
               return '个人分摊'
             case 1:
               return '科室分摊'
+            case 2:
+              return '其他分摊'
             default:
               return text
           }

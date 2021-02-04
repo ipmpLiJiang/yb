@@ -14,6 +14,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -51,14 +52,14 @@ public class YbAppealResultViewServiceImpl extends ServiceImpl<YbAppealResultVie
                 if (ybAppealResultView.getTypeno() == YbDefaultValue.TYPENO_1) {
                     sql += " and typeno = " + YbDefaultValue.TYPENO_1;
                 } else {
-                    sql += " and typeno = "+ YbDefaultValue.TYPENO_2;
+                    sql += " and typeno = " + YbDefaultValue.TYPENO_2;
                 }
             }
             if (ybAppealResultView.getDataType() != null) {
                 if (ybAppealResultView.getDataType() == YbDefaultValue.DATATYPE_0) {
-                    sql += " and dataType = "+ YbDefaultValue.DATATYPE_0;
+                    sql += " and dataType = " + YbDefaultValue.DATATYPE_0;
                 } else {
-                    sql += " and dataType = "+ YbDefaultValue.DATATYPE_1;
+                    sql += " and dataType = " + YbDefaultValue.DATATYPE_1;
                 }
             }
             if (ybAppealResultView.getSourceType() != null) {
@@ -69,7 +70,7 @@ public class YbAppealResultViewServiceImpl extends ServiceImpl<YbAppealResultVie
                     sql += " and STATE IN (1,2)";
                 }
                 if (ybAppealResultView.getState() == YbDefaultValue.RESULTSTATE_1) {
-                    sql += " and STATE = "+ YbDefaultValue.RESULTSTATE_1;
+                    sql += " and STATE = " + YbDefaultValue.RESULTSTATE_1;
                 }
             }
 
@@ -117,21 +118,50 @@ public class YbAppealResultViewServiceImpl extends ServiceImpl<YbAppealResultVie
         try {
             LambdaQueryWrapper<YbAppealResultView> queryWrapper = new LambdaQueryWrapper<>();
             queryWrapper.eq(YbAppealResultView::getApplyDateStr, ybAppealResultView.getApplyDateStr());
-            queryWrapper.eq(YbAppealResultView::getBillNo, ybAppealResultView.getBillNo());
-            queryWrapper.eq(YbAppealResultView::getSerialNo, ybAppealResultView.getSerialNo());
-            queryWrapper.eq(YbAppealResultView::getRuleName, ybAppealResultView.getRuleName());
-            queryWrapper.eq(YbAppealResultView::getDataType, ybAppealResultView.getDataType());
-            queryWrapper.eq(YbAppealResultView::getSourceType, ybAppealResultView.getSourceType());
-            queryWrapper.eq(YbAppealResultView::getState, ybAppealResultView.getState());
-            if (ybAppealResultView.getDataType() == YbDefaultValue.DATATYPE_0) {
-                queryWrapper.eq(YbAppealResultView::getProjectCode, ybAppealResultView.getProjectCode());
-                queryWrapper.eq(YbAppealResultView::getProjectName, ybAppealResultView.getProjectName());
-            } else {
-                queryWrapper.eq(YbAppealResultView::getPersonalNo, ybAppealResultView.getPersonalNo());
+
+            if (ybAppealResultView.getBillNo() != null && ybAppealResultView.getBillNo() != "") {
+                queryWrapper.eq(YbAppealResultView::getBillNo, ybAppealResultView.getBillNo());
             }
 
-            if(ybAppealResultView.getId() != null && ybAppealResultView.getId() !=""){
+            if (ybAppealResultView.getSerialNo() != null && ybAppealResultView.getSerialNo() != "") {
+                queryWrapper.eq(YbAppealResultView::getSerialNo, ybAppealResultView.getSerialNo());
+            }
+
+            if (ybAppealResultView.getDataType() != null) {
+                queryWrapper.eq(YbAppealResultView::getDataType, ybAppealResultView.getDataType());
+            }
+
+            if (ybAppealResultView.getSourceType() != null) {
+                queryWrapper.eq(YbAppealResultView::getSourceType, ybAppealResultView.getSourceType());
+            }
+
+            if (ybAppealResultView.getState() != null) {
+                queryWrapper.eq(YbAppealResultView::getState, ybAppealResultView.getState());
+            }
+
+            if (ybAppealResultView.getDataType() == YbDefaultValue.DATATYPE_0) {
+                if (ybAppealResultView.getProjectCode() != null && ybAppealResultView.getProjectCode() != "") {
+                    queryWrapper.eq(YbAppealResultView::getProjectCode, ybAppealResultView.getProjectCode());
+                }
+                if (ybAppealResultView.getProjectName() != null && ybAppealResultView.getProjectName() != "") {
+                    queryWrapper.eq(YbAppealResultView::getProjectName, ybAppealResultView.getProjectName());
+                }
+            } else {
+                if (ybAppealResultView.getPersonalNo() != null && ybAppealResultView.getPersonalNo() != "") {
+                    queryWrapper.eq(YbAppealResultView::getPersonalNo, ybAppealResultView.getPersonalNo());
+                }
+            }
+
+            if (ybAppealResultView.getRuleName() != null && ybAppealResultView.getRuleName() != "") {
+                queryWrapper.eq(YbAppealResultView::getRuleName, ybAppealResultView.getRuleName());
+            }
+
+            if (ybAppealResultView.getId() != null && ybAppealResultView.getId() != "") {
                 queryWrapper.eq(YbAppealResultView::getId, ybAppealResultView.getId());
+            }
+
+            if (ybAppealResultView.getRelatelDataId() != null && ybAppealResultView.getRelatelDataId() != "") {
+                queryWrapper.eq(YbAppealResultView::getRelatelDataId, ybAppealResultView.getRelatelDataId());
             }
 
             Page<YbAppealResultView> page = new Page<>();
@@ -205,6 +235,18 @@ public class YbAppealResultViewServiceImpl extends ServiceImpl<YbAppealResultVie
     public void deleteYbAppealResultViews(String[] Ids) {
         List<String> list = Arrays.asList(Ids);
         this.baseMapper.deleteBatchIds(list);
+    }
+
+    //打包下载导出列表
+    @Override
+    public List<YbAppealResultView> findAppealResultHandleViewLists(@Param("ybAppealResultView") YbAppealResultView ybAppealResultView){
+        List<YbAppealResultView> list = new ArrayList<>();
+        try {
+            return this.baseMapper.findAppealResultHandleList(ybAppealResultView);
+        } catch (Exception e) {
+            log.error("获取字典信息失败", e);
+            return list;
+        }
     }
 
     //打包下载导出列表

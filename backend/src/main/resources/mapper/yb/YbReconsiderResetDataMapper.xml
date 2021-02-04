@@ -33,6 +33,14 @@
             <result column="orderNumber" property="orderNumber"/>
             <result column="orderNum" property="orderNum"/>
             <result column="repaymentPrice" property="repaymentPrice"/>
+<!--            <result column="applyDataId" property="applyDataId"/>-->
+<!--            <result column="applyOrderNumber" property="applyOrderNumber"/>-->
+            <result column="resetType" property="resetType"/>
+            <result column="relatelDataId" property="relatelDataId"/>
+            <result column="resetPersonId" property="resetPersonId"/>
+            <result column="resetPersonName" property="resetPersonName"/>
+<!--            <result column="resultId" property="resultId"/>-->
+            <result column="resetDate" property="resetDate"/>
                     <result column="COMMENTS" property="comments"/>
                     <result column="STATE" property="state"/>
                     <result column="IS_DELETEMARK" property="isDeletemark"/>
@@ -44,7 +52,7 @@
 
         <!-- 通用查询结果列 -->
         <sql id="Base_Column_List">
-        id, pid, serialNo, billNo, projectCode, projectName, medicalPrice, ruleName, deductPrice, deductReason, repaymentReason, doctorName, deptCode, deptName, costDate, costDateStr, hospitalizedNo, treatmentMode, settlementDate, settlementDateStr, personalNo, insuredName, cardNumber, areaName,insuredType,dataType,orderNumber,orderNum,repaymentPrice, COMMENTS, STATE, IS_DELETEMARK, MODIFY_TIME, CREATE_TIME, CREATE_USER_ID, MODIFY_USER_ID
+        id, pid, serialNo, billNo, projectCode, projectName, medicalPrice, ruleName, deductPrice, deductReason, repaymentReason, doctorName, deptCode, deptName, costDate, costDateStr, hospitalizedNo, treatmentMode, settlementDate, settlementDateStr, personalNo, insuredName, cardNumber, areaName,insuredType,dataType,orderNumber,orderNum,repaymentPrice,relatelDataId,resetType,resetPersonId,resetPersonName,resetDate, COMMENTS, STATE, IS_DELETEMARK, MODIFY_TIME, CREATE_TIME, CREATE_USER_ID, MODIFY_USER_ID
     </sql>
     <update id="updateYbReconsiderResetData" parameterType="cc.mrbird.febs.yb.entity.YbReconsiderResetData">
         update yb_reconsider_reset_data
@@ -77,6 +85,14 @@
 <if test="orderNumber != null">orderNumber=#{orderNumber},</if>
 <if test="orderNum != null">orderNum=#{orderNum},</if>
 <if test="repaymentPrice != null">repaymentPrice=#{repaymentPrice},</if>
+<!--<if test="applyDataId != null">applyDataId=#{applyDataId},</if>-->
+<!--<if test="applyOrderNumber != null">applyOrderNumber=#{applyOrderNumber},</if>-->
+<!--<if test="resultId != null">resultId=#{resultId},</if>-->
+<if test="resetType != null">resetType=#{resetType},</if>
+<if test="relatelDataId != null">relatelDataId=#{relatelDataId},</if>
+<if test="resetPersonId != null">resetPersonId=#{resetPersonId},</if>
+<if test="resetPersonName != null">resetPersonName=#{resetPersonName},</if>
+<if test="resetDate != null">resetDate=#{resetDate},</if>
 <if test="comments != null">COMMENTS=#{comments},</if>
 <if test="state != null">STATE=#{state},</if>
 <if test="isDeletemark != null">IS_DELETEMARK=#{isDeletemark},</if>
@@ -87,6 +103,22 @@
         </trim>
                 where id=#{id}
 
+    </update>
+    <update id="updateReconsiderResetCancelData">
+        update yb_reconsider_reset_data
+        set
+            relatelDataId = null,
+            resetDate = null,
+            resetType = 0,
+            resetPersonId = null,
+            resetPersonName = null,
+            seekState = 0,
+            state = 1
+        where id in (
+        <foreach item="item" index="index" collection="resetList" separator=",">
+            #{item.id}
+        </foreach>
+        )
     </update>
     <select id="findYbReconsiderResetData" resultType="cc.mrbird.febs.yb.entity.YbReconsiderResetData" parameterType="cc.mrbird.febs.yb.entity.YbReconsiderResetData">
         select  *  from yb_reconsider_reset_data

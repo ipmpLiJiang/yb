@@ -1,12 +1,12 @@
 package cc.mrbird.febs.yb.service.impl;
 
+import cc.mrbird.febs.com.entity.ComSms;
+import cc.mrbird.febs.com.service.IComSmsService;
 import cc.mrbird.febs.common.domain.QueryRequest;
+import cc.mrbird.febs.common.properties.FebsProperties;
 import cc.mrbird.febs.common.utils.SortUtil;
-import cc.mrbird.febs.yb.entity.YbDefaultValue;
-import cc.mrbird.febs.yb.entity.YbReconsiderApply;
-import cc.mrbird.febs.yb.entity.YbReconsiderReset;
+import cc.mrbird.febs.yb.entity.*;
 import cc.mrbird.febs.yb.dao.YbReconsiderResetMapper;
-import cc.mrbird.febs.yb.entity.YbReconsiderResetData;
 import cc.mrbird.febs.yb.service.*;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
@@ -19,10 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -43,6 +40,15 @@ public class YbReconsiderResetServiceImpl extends ServiceImpl<YbReconsiderResetM
 
     @Autowired
     IYbReconsiderApplyService iYbReconsiderApplyService;
+
+    @Autowired
+    IYbPersonService iYbPersonService;
+
+    @Autowired
+    IComSmsService iComSmsService;
+
+    @Autowired
+    FebsProperties febsProperties;
 
     @Override
     public IPage<YbReconsiderReset> findYbReconsiderResets(QueryRequest request, YbReconsiderReset ybReconsiderReset) {
@@ -111,7 +117,7 @@ public class YbReconsiderResetServiceImpl extends ServiceImpl<YbReconsiderResetM
 
     @Override
     public YbReconsiderReset findReconsiderResetByApplyDateStr(String applyDateStr) {
-        LambdaQueryWrapper<YbReconsiderReset> wrapper = new LambdaQueryWrapper<YbReconsiderReset>();
+        LambdaQueryWrapper<YbReconsiderReset> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(YbReconsiderReset::getApplyDateStr, applyDateStr);
         List<YbReconsiderReset> list = this.list(wrapper);
         if (list.size() > 0) {
@@ -129,6 +135,7 @@ public class YbReconsiderResetServiceImpl extends ServiceImpl<YbReconsiderResetM
         wrapper.eq(YbReconsiderApply::getApplyDateStr, ybReconsiderReset.getApplyDateStr());
         wrapper.ne(YbReconsiderApply::getState, YbDefaultValue.APPLYSTATE_1);
         List<YbReconsiderApply> list = this.iYbReconsiderApplyService.list(wrapper);
+        Date thisDate = new Date();
         if (list.size() > 0) {
             if (list.get(0).getResetState() == 0) {
                 LambdaQueryWrapper<YbReconsiderReset> wrapperReset = new LambdaQueryWrapper<>();
@@ -146,14 +153,45 @@ public class YbReconsiderResetServiceImpl extends ServiceImpl<YbReconsiderResetM
                                 s.getSeekState() == YbDefaultValue.SEEKSTATE_0).count();
 
                         if (count == 0) {
-                            YbReconsiderApply update = new YbReconsiderApply();
-                            update.setId(list.get(0).getId());
-                            update.setModifyTime(new Date());
-                            update.setState(YbDefaultValue.APPLYSTATE_6);
-                            update.setResetState(1);
-                            boolean bl = this.iYbReconsiderApplyService.updateById(update);
+//                            List<ComSms> createSmsList = new ArrayList<>();
+//                            int nOpenSms = febsProperties.getOpenSms();
+//                            String sendContent = "";
+//                            boolean isOpenSms = nOpenSms == 1 ? true : false;
+//                            if (isOpenSms) {
+//                                List<YbPerson> personList = iYbPersonService.findPersonResultList(ybReconsiderReset.getApplyDateStr());
+//                                for(YbPerson person : personList) {
+//                                    ComSms sms = new ComSms();
+//                                    sms.setSendcode(person.getPersonCode());
+//                                    sms.setSendname(person.getPersonName());
+//                                    sms.setMobile(person.getTel());
+//                                    sms.setSendcontent(sendContent);
+//                                    sms.setState(ComSms.STATE_0);
+//                                    sms.setSendType(ComSms.SENDTYPE_5);
+//                                    sms.setCreateTime(thisDate);
+//                                    sms.setIsDeletemark(1);
+//                                    createSmsList.add(sms);
+//                                }
+//                            }
+
+                            YbReconsiderReset updateReset  = new YbReconsiderReset();
+                            updateReset.setId(searchReconsiderReset.getId());
+                            updateReset.setState(1);
+                            boolean bl = this.updateById(updateReset);
                             if (bl) {
-                                message = "ok";
+                                YbReconsiderApply updateApply = new YbReconsiderApply();
+                                updateApply.setId(list.get(0).getId());
+                                updateApply.setModifyTime(thisDate);
+                                updateApply.setState(YbDefaultValue.APPLYSTATE_6);
+                                updateApply.setResetState(1);
+                                bl = this.iYbReconsiderApplyService.updateById(updateApply);
+                                if (bl) {
+//                                    if(createSmsList.size()>0) {
+//                                        this.iComSmsService.saveBatch(createSmsList);
+//                                    }
+                                    message = "ok";
+                                }
+                            } else {
+                                message = "该年月 " + ybReconsiderReset.getApplyDateStr() + " 完成剔除失败.";
                             }
                         } else {
                             message = "该年月 " + ybReconsiderReset.getApplyDateStr() + " 剔除业务还有未处理完的数据.";

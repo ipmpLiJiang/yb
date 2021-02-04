@@ -265,7 +265,7 @@ public class ComFileController extends BaseController {
             //String deptName = inUploadFile.getDeptName() + strId + strSourceType;
             if (list.size() > 0) {
                 for (ComFile item : list) {
-                    String fileUrl = febsProperties.getBaseUrl() + "/uploadFile/" + inUploadFile.getApplyDateStr() + "/" + item.getRefTabTable() + "/" + strSourceType + "/" + item.getServerName();
+                    String fileUrl = "uploadFile/" + inUploadFile.getApplyDateStr() + "/" + item.getRefTabTable() + "/" + strSourceType + "/" + item.getServerName();
                     OutComFile outComFile = new OutComFile();
                     outComFile.setUid(item.getId());
                     outComFile.setName(item.getServerName());

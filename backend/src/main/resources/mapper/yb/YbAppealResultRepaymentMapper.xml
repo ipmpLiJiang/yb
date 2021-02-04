@@ -5,8 +5,9 @@
         <!-- 通用查询映射结果 -->
         <resultMap id="BaseResultMap" type="cc.mrbird.febs.yb.entity.YbAppealResultRepayment">
                     <id column="id" property="id"/>
-                    <result column="resultId" property="resultId"/>
+<!--                    <result column="resultId" property="resultId"/>-->
                     <result column="resetDataId" property="resetDataId"/>
+            <result column="relatelDataId" property="relatelDataId"/>
                     <result column="deductImplementId" property="deductImplementId"/>
                     <result column="repaymentProgramme" property="repaymentProgramme"/>
                     <result column="applyDate" property="applyDate"/>
@@ -23,13 +24,14 @@
 
         <!-- 通用查询结果列 -->
         <sql id="Base_Column_List">
-        id, resultId, resetDataId, deductImplementId, repaymentProgramme,applyDate,applyDateStr,dataType, COMMENTS, STATE, IS_DELETEMARK, MODIFY_TIME, CREATE_TIME, CREATE_USER_ID, MODIFY_USER_ID
+        id, resetDataId, relatelDataId, deductImplementId, repaymentProgramme,applyDate,applyDateStr,dataType, COMMENTS, STATE, IS_DELETEMARK, MODIFY_TIME, CREATE_TIME, CREATE_USER_ID, MODIFY_USER_ID
     </sql>
     <update id="updateYbAppealResultRepayment" parameterType="cc.mrbird.febs.yb.entity.YbAppealResultRepayment">
         update yb_appeal_result_repayment
         <trim prefix="set" suffixOverrides=",">
-<if test="resultId != null">resultId=#{resultId},</if>
+<!--<if test="resultId != null">resultId=#{resultId},</if>-->
 <if test="resetDataId != null">resetDataId=#{resetDataId},</if>
+            <if test="relatelDataId != null">relatelDataId=#{relatelDataId},</if>
 <if test="deductImplementId != null">deductImplementId=#{deductImplementId},</if>
 <if test="repaymentProgramme != null">repaymentProgramme=#{repaymentProgramme},</if>
 <if test="applyDate != null">applyDate=#{applyDate},</if>
@@ -50,8 +52,8 @@
         select  *  from yb_appeal_result_repayment
         where  1=1
             <if test="ybAppealResultRepayment.id != null and ybAppealResultRepayment.id != ''"> and id =#{ ybAppealResultRepayment.id} </if>
-            <if test="ybAppealResultRepayment.resultId != null and ybAppealResultRepayment.resultId != ''"> and resultId like concat('%', #{ ybAppealResultRepayment.resultId} ,'%')</if>
-            <if test="ybAppealResultRepayment.resetDataId != null and ybAppealResultRepayment.resetDataId != ''"> and resetDataId like concat('%', #{ ybAppealResultRepayment.resetDataId} ,'%')</if>
+        <if test="ybAppealResultRepayment.resetDataId != null and ybAppealResultRepayment.resetDataId != ''"> and resetDataId like concat('%', #{ ybAppealResultRepayment.resetDataId} ,'%')</if>
+            <if test="ybAppealResultRepayment.relatelDataId != null and ybAppealResultRepayment.relatelDataId != ''"> and relatelDataId like concat('%', #{ ybAppealResultRepayment.relatelDataId} ,'%')</if>
             <if test="ybAppealResultRepayment.deductImplementId != null and ybAppealResultRepayment.deductImplementId != ''"> and deductImplementId like concat('%', #{ ybAppealResultRepayment.deductImplementId} ,'%')</if>
             <if test="ybAppealResultRepayment.repaymentProgramme != null and ybAppealResultRepayment.repaymentProgramme != ''"> and repaymentProgramme like concat('%', #{ ybAppealResultRepayment.repaymentProgramme} ,'%')</if>
         <if test="ybAppealResultRepayment.applyDateFrom!= null">

@@ -182,6 +182,8 @@ public class YbReconsiderResetController extends BaseController {
             if (yRr == null) {
                 boolean blError = false;
                 try {
+                    User currentUser = FebsUtil.getCurrentUser();
+                    Date thisDate= new Date();
                     String guid = UUID.randomUUID().toString();
                     String filePath = febsProperties.getUploadPath(); // 上传后的路径
                     File getFile = FileHelpers.fileUpLoad(file, filePath, guid, "ReconsiderResetTemp");
@@ -218,6 +220,7 @@ public class YbReconsiderResetController extends BaseController {
                                 reconsiderReset.setId(guid);
                                 reconsiderReset.setIsDeletemark(1);
                                 reconsiderReset.setApplyDateStr(applyDateStr);
+                                reconsiderReset.setState(0);
                                 String newApplyDateStr = applyDateStr + "15";
                                 Date applyDate = DataTypeHelpers.stringDateFormat(newApplyDateStr, null, false);
                                 reconsiderReset.setApplyDate(applyDate);
@@ -297,6 +300,8 @@ public class YbReconsiderResetController extends BaseController {
                                             String strAreaName = DataTypeHelpers.importTernaryOperate(objMx.get(i), 19);//'统筹区名称',
                                             rrData.setAreaName(strAreaName);
                                             rrData.setDataType(YbDefaultValue.DATATYPE_0);
+                                            rrData.setCreateUserId(currentUser.getUserId());
+                                            rrData.setCreateTime(thisDate);
                                             ListData.add(rrData);
                                         }
                                     } else {
@@ -357,6 +362,8 @@ public class YbReconsiderResetController extends BaseController {
                                                 String strAreaName = DataTypeHelpers.importTernaryOperate(objZd.get(i), 12);//'统筹区名称',
                                                 rrMain.setAreaName(strAreaName);
                                                 rrMain.setDataType(YbDefaultValue.DATATYPE_1);
+                                                rrMain.setCreateUserId(currentUser.getUserId());
+                                                rrMain.setCreateTime(thisDate);
                                                 ListMain.add(rrMain);
                                             }
                                         } else {

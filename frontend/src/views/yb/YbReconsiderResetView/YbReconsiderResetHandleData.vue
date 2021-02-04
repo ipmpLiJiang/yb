@@ -8,37 +8,40 @@
           :dataSource="dataSource"
           :pagination="pagination"
           :loading="loading"
+          :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
           @change="handleTableChange"
           :bordered="bordered"
           :scroll="{ x: 900 }"
         >
-          <template slot="operationDeductReason" slot-scope="text, record, index">
-            <span :title="record.deductReason">{{record.deductReason}}</span>
+          <template
+            slot="operation"
+            slot-scope="text, record, index"
+          >
+            <div class="editable-row-operations">
+              <span>
+                <a
+                  @click="() => look(record,index)"
+                >查看剔除明细</a>
+              </span>
+            </div>
           </template>
+          <template slot="operationDeductReason" slot-scope="text, record, index">
+          <span :title="record.deductReason">{{record.deductReason}}</span>
+        </template>
         </a-table>
   </div>
 </template>
 
 <script>
 import moment from 'moment'
-import { custom } from '../../js/custom'
 export default {
-  name: 'YbAppealResultDeductImplementComplete',
+  name: 'YbReconsiderResetHandleData',
   props: {
-    applyDateStr: {
-      default: ''
-    },
-    applyDateToStr: {
-      default: ''
-    },
-    defaultFormatDate: {
+    applyDate: {
       default: ''
     },
     searchText: {
       default: ''
-    },
-    searchDataType: {
-      default: 0
     }
   },
   data () {
@@ -63,7 +66,7 @@ export default {
       },
       loading: false,
       bordered: true,
-      ybAppealResultDeductImplement: {}
+      ybAppealResult: {}
     }
   },
   computed: {
@@ -78,19 +81,25 @@ export default {
         title: '交易流水号',
         dataIndex: 'serialNo',
         fixed: 'left',
-        width: 140
+        width: 135
+      },
+      {
+        title: '单据号',
+        dataIndex: 'billNo',
+        fixed: 'left',
+        width: 110
       },
       {
         title: '项目编码',
         dataIndex: 'projectCode',
         fixed: 'left',
-        width: 140
+        width: 120
       },
       {
         title: '项目名称',
         dataIndex: 'projectName',
         fixed: 'left',
-        width: 200
+        width: 160
       },
       {
         title: '医保内金额',
@@ -100,7 +109,7 @@ export default {
       {
         title: '规则名称',
         dataIndex: 'ruleName',
-        width: 180
+        width: 140
       },
       {
         title: '扣除金额',
@@ -116,17 +125,37 @@ export default {
       {
         title: '费用日期',
         dataIndex: 'costDateStr',
-        width: 130
+        width: 135
       },
       {
-        title: '扣款类型',
-        dataIndex: 'dataType',
+        title: '住院号',
+        dataIndex: 'hospitalizedNo',
+        width: 100
+      },
+      {
+        title: '就医方式',
+        dataIndex: 'treatmentMode',
+        width: 100
+      },
+      {
+        title: '个人编号',
+        dataIndex: 'personalNo',
+        width: 110
+      },
+      {
+        title: '科室名称',
+        dataIndex: 'deptName',
+        width: 120
+      },
+      {
+        title: '状态',
+        dataIndex: 'seekState',
         customRender: (text, row, index) => {
           switch (text) {
             case 0:
-              return '明细扣款'
+              return '未剔除'
             case 1:
-              return '主单扣款'
+              return '已剔除'
             default:
               return text
           }
@@ -135,38 +164,16 @@ export default {
         width: 90
       },
       {
-        title: '落实年月',
-        dataIndex: 'implementDateStr',
+        title: '操作',
+        dataIndex: 'operation',
+        scopedSlots: { customRender: 'operation' },
         fixed: 'right',
-        width: 90
-      },
-      {
-        title: '分摊方式',
-        dataIndex: 'shareState',
-        customRender: (text, row, index) => {
-          switch (text) {
-            case 0:
-              return '个人分摊'
-            case 1:
-              return '科室分摊'
-            case 2:
-              return '其他分摊'
-            default:
-              return text
-          }
-        },
-        fixed: 'right',
-        width: 90
-      },
-      {
-        title: '分摊方案',
-        dataIndex: 'shareProgramme',
-        fixed: 'right',
-        width: 250
+        width: 120
       }]
     }
   },
   mounted () {
+    this.fetch()
   },
   methods: {
     moment,
@@ -176,6 +183,10 @@ export default {
     },
     onSelectChange (selectedRowKeys) {
       this.selectedRowKeys = selectedRowKeys
+    },
+    look (record, index) {
+      record.rowNo = this.rowNo(index)
+      this.$emit('look', record)
     },
     searchPage () {
       this.pagination.defaultCurrent = 1
@@ -225,51 +236,36 @@ export default {
       })
     },
     fetch (params = {}) {
-      let dateStr = this.applyDateStr
-      let dateToStr = this.applyDateToStr
-
-      let arrDateStr = custom.resetApplyDateStr(dateStr, dateToStr, this.defaultFormatDate)
-      dateStr = arrDateStr[0]
-      dateToStr = arrDateStr[1]
-
-      let msg = custom.checkApplyDateStr(dateStr, dateToStr, 3)
-      if (msg === '') {
-        this.loading = true
-        params.applyDateFrom = dateStr
-        params.applyDateTo = dateToStr
-        params.currencyField = this.searchText
-        if (this.searchDataType !== 2) {
-          params.dataType = this.searchDataType
-        }
-        params.deductImplementId = '1' // 随便传一个值，代表已经填过扣款落实表
-        if (this.paginationInfo) {
-          // 如果分页信息不为空，则设置表格当前第几页，每页条数，并设置查询分页参数
-          this.$refs.TableInfo.pagination.current = this.paginationInfo.current
-          this.$refs.TableInfo.pagination.pageSize = this.paginationInfo.pageSize
-          params.pageSize = this.paginationInfo.pageSize
-          params.pageNum = this.paginationInfo.current
-        } else {
-          // 如果分页信息为空，则设置为默认值
-          params.pageSize = this.pagination.defaultPageSize
-          params.pageNum = this.pagination.defaultCurrent
-        }
-        params.sortField = 'applyDateStr asc,orderNum'
-        // params.sortOrder = 'descend'
-        params.sortOrder = 'ascend'
-        this.$get('ybAppealResultDeductimplementView/findAppealResultDeductimplementUserView', {
-          ...params
-        }).then((r) => {
-          let data = r.data
-          const pagination = { ...this.pagination }
-          pagination.total = data.total
-          this.loading = false
-          this.dataSource = data.rows
-          this.pagination = pagination
-        })
-        this.selectedRowKeys = []
+      this.loading = true
+      params.applyDateStr = this.applyDate
+      params.currencyField = this.searchText
+      params.state = 0
+      params.seekState = 1
+      params.resetType = 2
+      if (this.paginationInfo) {
+        // 如果分页信息不为空，则设置表格当前第几页，每页条数，并设置查询分页参数
+        this.$refs.TableInfo.pagination.current = this.paginationInfo.current
+        this.$refs.TableInfo.pagination.pageSize = this.paginationInfo.pageSize
+        params.pageSize = this.paginationInfo.pageSize
+        params.pageNum = this.paginationInfo.current
       } else {
-        this.$message.error(msg)
+        // 如果分页信息为空，则设置为默认值
+        params.pageSize = this.pagination.defaultPageSize
+        params.pageNum = this.pagination.defaultCurrent
       }
+      params.sortField = 'resetDate'
+      params.sortOrder = 'descend'
+      this.$get('ybReconsiderResetDataView', {
+        ...params
+      }).then((r) => {
+        let data = r.data
+        const pagination = { ...this.pagination }
+        pagination.total = data.total
+        this.loading = false
+        this.dataSource = data.rows
+        this.pagination = pagination
+      })
+      this.selectedRowKeys = []
     }
   }
 }

@@ -37,6 +37,8 @@ public interface IYbAppealResultViewService extends IService<YbAppealResultView>
 
     List<YbAppealResultView> findAppealResultViewLists(YbAppealResultView ybAppealResultView);
 
+    List<YbAppealResultView> findAppealResultHandleViewLists(YbAppealResultView ybAppealResultView);
+
     List<YbAppealResultDownLoad> findYbAppealResultDownLoadList(YbAppealResultView ybAppealResultView);
 
 }

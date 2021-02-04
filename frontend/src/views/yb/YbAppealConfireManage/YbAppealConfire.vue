@@ -12,17 +12,47 @@
               :sm="24"
             >
               <a-form-item
-                label="关键字"
+                label="职工"
                 v-bind="formItemLayout"
               >
-                <a-input v-model="queryParams.currencyField" />
+                <a-input v-model="queryParams.doctorContent" />
+              </a-form-item>
+            </a-col>
+            <a-col
+              :md="8"
+              :sm="24"
+            >
+              <a-form-item
+                label="科室"
+                v-bind="formItemLayout"
+              >
+                <a-input v-model="queryParams.deptContent" />
+              </a-form-item>
+            </a-col>
+            <a-col
+              :md="8"
+              :sm="24"
+            >
+              <a-form-item
+                label="管理员类型"
+                v-bind="formItemLayout"
+              >
+                <a-select v-model="queryParams.adminType" style="width: 100px" @change="handleAdminTypeChange"
+                >
+                  <a-select-option
+                  v-for="d in selectAdminTypeDataSource"
+                  :key="d.value"
+                  >
+                  {{ d.text }}
+                  </a-select-option>
+                </a-select>
               </a-form-item>
             </a-col>
           </div>
           <span style="float: right; margin-top: 3px;">
             <a-button
               type="primary"
-              @click="searchPage"
+              @click="search"
             >查询</a-button>
             <a-button
               style="margin-left: 8px"
@@ -42,16 +72,16 @@
     <div>
       <div class="operator">
         <a-button
-          v-hasPermission="['ybReconsiderPriorityLevel:add']"
+          v-hasPermission="['ybAppealConfire:add']"
           type="primary"
           ghost
           @click="add"
         >新增</a-button>
         <a-button
-          v-hasPermission="['ybReconsiderPriorityLevel:delete']"
+          v-hasPermission="['ybAppealConfire:delete']"
           @click="batchDelete"
         >删除</a-button>
-        <a-dropdown v-hasPermission="['ybReconsiderPriorityLevel:export']">
+        <a-dropdown v-hasPermission="['ybAppealConfire:export']">
           <a-menu slot="overlay">
             <a-menu-item
               key="export-data"
@@ -68,7 +98,7 @@
       <a-table
         ref="TableInfo"
         :columns="columns"
-        :rowKey="record => record. id                                "
+        :rowKey="record => record. id                        "
         :dataSource="dataSource"
         :pagination="pagination"
         :loading="loading"
@@ -93,59 +123,51 @@
           slot-scope="text, record"
         >
           <a-icon
-            v-hasPermission="['ybReconsiderPriorityLevel:update']"
+            v-hasPermission="['ybAppealConfire:update']"
             type="setting"
             theme="twoTone"
             twoToneColor="#4a9ff5"
             @click="edit(record)"
-            title="修改"
+            title="编辑"
+          ></a-icon>
+          <a-divider type="vertical" />
+          <a-icon
+            v-hasPermission="['ybAppealConfire:delete']"
+            type="delete"
+            theme="twoTone"
+            twoToneColor="#4a9ff5"
+            @click="del(record)"
+            title="删除"
           ></a-icon>
           <a-badge
-            v-hasNoPermission="['ybReconsiderPriorityLevel:update']"
+            v-hasNoPermission="['ybAppealConfire:update']"
             status="warning"
             text="无权限"
           ></a-badge>
         </template>
       </a-table>
     </div>
-    <!-- 新增字典 -->
-    <ybReconsiderPriorityLevel-add
-      ref="ybReconsiderPriorityLevelAdd"
-      @close="handleAddClose"
-      @success="handleAddSuccess"
-      :addVisiable="addVisiable"
-    >
-    </ybReconsiderPriorityLevel-add>
-    <!-- 修改字典 -->
-    <ybReconsiderPriorityLevel-edit
-      ref="ybReconsiderPriorityLevelEdit"
+    <!-- 编辑字典 -->
+    <ybAppealConfire-edit
+      ref="ybAppealConfireEdit"
       @close="handleEditClose"
       @success="handleEditSuccess"
       :editVisiable="editVisiable"
     >
-    </ybReconsiderPriorityLevel-edit>
+    </ybAppealConfire-edit>
   </a-card>
 </template>
 
 <script>
-import YbReconsiderPriorityLevelAdd from './YbReconsiderPriorityLevelAdd'
-import YbReconsiderPriorityLevelEdit from './YbReconsiderPriorityLevelEdit'
+import YbAppealConfireEdit from './YbAppealConfireEdit'
 
 const formItemLayout = {
-  labelCol: {
-    span: 8
-  },
-  wrapperCol: {
-    span: 15,
-    offset: 1
-  }
+  labelCol: { span: 8 },
+  wrapperCol: { span: 15, offset: 1 }
 }
 export default {
-  name: 'YbReconsiderPriorityLevel',
-  components: {
-    YbReconsiderPriorityLevelAdd,
-    YbReconsiderPriorityLevelEdit
-  },
+  name: 'YbAppealConfire',
+  components: { YbAppealConfireEdit },
   data () {
     return {
       advanced: false,
@@ -166,8 +188,10 @@ export default {
         },
         showTotal: (total, range) => `显示 ${range[0]} ~ ${range[1]} 条记录，共 ${total} 条记录`
       },
-      queryParams: {},
-      addVisiable: false,
+      queryParams: {
+        adminType: 0
+      },
+      selectAdminTypeDataSource: [{text: '全部', value: 0}, {text: '联络员', value: 1}, {text: '科主任', value: 2}, {text: '护士长', value: 3}],
       editVisiable: false,
       loading: false,
       bordered: true
@@ -177,97 +201,60 @@ export default {
     columns () {
       return [{
         title: '序号',
-        customRender: (text, record, index) =>
-          `${(this.pagination.defaultCurrent - 1) *
-            this.pagination.defaultPageSize +
-            index +
-            1}`,
-        width: 70
-      },
-      {
-        title: '项目名称',
-        dataIndex: 'rplName',
-        width: 350
-      },
-      {
-        title: '默认复议科室类型',
-        dataIndex: 'deptType',
         customRender: (text, row, index) => {
-          switch (text) {
-            case 1:
-              return '开单科室'
-            case 2:
-              return '执行科室'
-            case 3:
-              return '计费科室'
-            case 4:
-              return '固定科室'
-            default:
-              return text
-          }
+          return this.rowNo(index)
         },
-        width: 150
+        width: 75,
+        fixed: 'left'
       },
       {
-        title: '科室名称',
-        dataIndex: 'deptName',
-        customRender: (text, row, index) => {
-          if (text !== '' && text !== null) {
-            return row.deptCode + '-' + row.deptName
-          }
-        },
-        width: 250
-      },
-      {
-        title: '默认复议医生类型',
-        dataIndex: 'personType',
-        customRender: (text, row, index) => {
-          switch (text) {
-            case 1:
-              return '开单人员'
-            case 2:
-              return '执行人员'
-            case 3:
-              return '计费人员'
-            case 4:
-              return '固定人员'
-            default:
-              return text
-          }
-        },
-        width: 150
-      },
-      {
-        title: '医生名称',
+        title: '职工名称',
         dataIndex: 'doctorName',
         customRender: (text, row, index) => {
           if (text !== '' && text !== null) {
             return row.doctorCode + '-' + row.doctorName
           }
         },
-        width: 150
+        width: 180
       },
       {
-        title: '操作员',
-        dataIndex: 'operatorName',
-        width: 150
+        title: '管理员类型',
+        dataIndex: 'adminType',
+        customRender: (text, row, index) => {
+          switch (text) {
+            case 1:
+              return '联络员'
+            case 2:
+              return '科主任'
+            case 3:
+              return '护士长'
+            default:
+              return text
+          }
+        },
+        width: 120
+      },
+      {
+        title: '管理科室',
+        dataIndex: 'currencyField'
       },
       {
         title: '操作',
         dataIndex: 'operation',
-        scopedSlots: {
-          customRender: 'operation'
-        },
+        scopedSlots: { customRender: 'operation' },
         fixed: 'right',
-        width: 100
-      }
-      ]
+        width: 110
+      }]
     }
   },
   mounted () {
     this.fetch()
   },
   methods: {
+    rowNo (index) {
+      return (this.pagination.defaultCurrent - 1) *
+            this.pagination.defaultPageSize + index + 1
+    },
     onSelectChange (selectedRowKeys) {
       this.selectedRowKeys = selectedRowKeys
     },
@@ -278,28 +265,43 @@ export default {
       }
     },
     handleAddSuccess () {
-      this.addVisiable = false
-      this.$message.success('新增成功')
+      this.editVisiable = false
       this.search()
     },
     handleAddClose () {
-      this.addVisiable = false
+      this.editVisiable = false
     },
     add () {
-      this.$refs.ybReconsiderPriorityLevelAdd.setFormValues()
-      this.addVisiable = true
+      this.editVisiable = true
+      this.$refs.ybAppealConfireEdit.setFormValues()
     },
     handleEditSuccess () {
       this.editVisiable = false
-      this.$message.success('修改成功')
       this.search()
     },
     handleEditClose () {
       this.editVisiable = false
     },
     edit (record) {
-      this.$refs.ybReconsiderPriorityLevelEdit.setFormValues(record)
+      this.$refs.ybAppealConfireEdit.setFormValues(record)
       this.editVisiable = true
+    },
+    del (record) {
+      let that = this
+      this.$confirm({
+        title: '确定删除该记录?',
+        content: '当您点击确定按钮后，这条记录将会被彻底删除',
+        centered: true,
+        onOk () {
+          let ybAppealConfireIds = record.id
+          that.$delete('ybAppealConfire/' + ybAppealConfireIds).then(() => {
+            that.$message.success('删除成功')
+            that.selectedRowKeys = []
+            that.search()
+          }
+          )
+        }
+      })
     },
     batchDelete () {
       if (!this.selectedRowKeys.length) {
@@ -312,45 +314,38 @@ export default {
         content: '当您点击确定按钮后，这些记录将会被彻底删除',
         centered: true,
         onOk () {
-          let ybReconsiderPriorityLevelIds = that.selectedRowKeys.join(',')
-          that.$delete('ybReconsiderPriorityLevel/' + ybReconsiderPriorityLevelIds).then(() => {
+          let ybAppealConfireIds = that.selectedRowKeys.join(',')
+          that.$delete('ybAppealConfire/' + ybAppealConfireIds).then(() => {
             that.$message.success('删除成功')
             that.selectedRowKeys = []
             that.search()
-          })
+          }
+          )
         },
         onCancel () {
           that.selectedRowKeys = []
         }
       })
     },
+    handleAdminTypeChange (value) {
+      this.queryParams.adminType = value
+    },
     exportExcel () {
-      let {
-        sortedInfo
-      } = this
+      let { sortedInfo } = this
       let sortField, sortOrder
       // 获取当前列的排序和列的过滤规则
       if (sortedInfo) {
         sortField = sortedInfo.field
         sortOrder = sortedInfo.order
       }
-      this.$export('ybReconsiderPriorityLevel/excel', {
+      this.$export('ybAppealConfire/excel', {
         sortField: sortField,
         sortOrder: sortOrder,
         ...this.queryParams
       })
     },
-    searchPage () {
-      this.pagination.defaultCurrent = 1
-      if (this.paginationInfo) {
-        this.paginationInfo.current = this.pagination.defaultCurrent
-      }
-      this.search()
-    },
     search () {
-      let {
-        sortedInfo
-      } = this
+      let { sortedInfo } = this
       let sortField, sortOrder
       // 获取当前列的排序和列的过滤规则
       if (sortedInfo) {
@@ -367,7 +362,6 @@ export default {
       // 取消选中
       this.selectedRowKeys = []
       // 重置分页
-      this.pagination.defaultCurrent = 1
       this.$refs.TableInfo.pagination.current = this.pagination.defaultCurrent
       if (this.paginationInfo) {
         this.paginationInfo.current = this.pagination.defaultCurrent
@@ -391,6 +385,9 @@ export default {
     },
     fetch (params = {}) {
       this.loading = true
+      if (params.adminType === 0 || params.adminType === undefined) {
+        params.adminType = null
+      }
       if (this.paginationInfo) {
         // 如果分页信息不为空，则设置表格当前第几页，每页条数，并设置查询分页参数
         this.$refs.TableInfo.pagination.current = this.paginationInfo.current
@@ -402,21 +399,17 @@ export default {
         params.pageSize = this.pagination.defaultPageSize
         params.pageNum = this.pagination.defaultCurrent
       }
-      params.sortField = 'create_Time'
-      params.sortOrder = 'descend'
-      params.state = 2
-      this.$get('ybReconsiderPriorityLevel', {
+      this.$get('ybAppealConfire', {
         ...params
       }).then((r) => {
         let data = r.data
-        const pagination = {
-          ...this.pagination
-        }
+        const pagination = { ...this.pagination }
         pagination.total = data.total
         this.loading = false
         this.dataSource = data.rows
         this.pagination = pagination
-      })
+      }
+      )
     }
   }
 }

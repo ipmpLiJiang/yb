@@ -8,6 +8,7 @@ import cc.mrbird.febs.common.domain.QueryRequest;
 
 import cc.mrbird.febs.common.properties.FebsProperties;
 import cc.mrbird.febs.yb.entity.*;
+import cc.mrbird.febs.yb.service.IYbAppealResultService;
 import cc.mrbird.febs.yb.service.IYbReconsiderResetDataViewService;
 
 import cc.mrbird.febs.common.utils.FebsUtil;
@@ -55,6 +56,9 @@ public class YbReconsiderResetDataViewController extends BaseController {
     @Autowired
     public FebsProperties febsProperties;
 
+    @Autowired
+    public IYbAppealResultService iYbAppealResultService;
+
     /**
      * 分页查询数据
      *
@@ -66,6 +70,12 @@ public class YbReconsiderResetDataViewController extends BaseController {
     @RequiresPermissions("ybReconsiderResetDataView:view")
     public Map<String, Object> List(QueryRequest request, YbReconsiderResetDataView ybReconsiderResetDataView) {
         return getDataTable(this.iYbReconsiderResetDataViewService.findYbReconsiderResetDataViews(request, ybReconsiderResetDataView));
+    }
+
+    @GetMapping("findReconsiderResetDataView")
+    @RequiresPermissions("ybReconsiderResetDataView:view")
+    public Map<String, Object> findList(QueryRequest request, YbReconsiderResetDataView ybReconsiderResetDataView) {
+        return getDataTable(this.iYbReconsiderResetDataViewService.findReconsiderResetDataViews(request, ybReconsiderResetDataView));
     }
 
     /**
@@ -373,6 +383,11 @@ public class YbReconsiderResetDataViewController extends BaseController {
         try {
             List<YbReconsiderResetDataView> resetDataList = this.iYbReconsiderResetDataViewService.findYbReconsiderResetDataList(resetDataView);
 
+            YbAppealResult queryAppealResult = new YbAppealResult();
+            queryAppealResult.setApplyDateStr(resetDataView.getApplyDateStr());
+            queryAppealResult.setState(2);
+            List<YbAppealResult> appealResultList = iYbAppealResultService.findAppealResultList(queryAppealResult);
+            List<YbAppealResult> queryAppealResultList = new ArrayList<>();
             if (resetDataList.size() > 0) {
                 List<YbReconsiderResetDataView> resetDataDataList = new ArrayList<>();
                 List<YbReconsiderResetDataView> resetDataMainList = new ArrayList<>();
@@ -397,7 +412,7 @@ public class YbReconsiderResetDataViewController extends BaseController {
                     YbReconsiderResetDeductimplementDataExport are = new YbReconsiderResetDeductimplementDataExport();
                     if(isOne){
                         are.setImplementDateStr("格式:202010");
-                        are.setShareStateStr("个人分摊/科室分摊");
+                        are.setShareStateStr("个人分摊/科室分摊/其他分摊");
                     }
                     isOne = false;
                     //序号
@@ -449,6 +464,12 @@ public class YbReconsiderResetDataViewController extends BaseController {
                     are.setInsuredName(item.getInsuredName());
                     //统筹区名称
                     are.setAreaName(item.getAreaName());
+
+                    queryAppealResultList = appealResultList.stream().filter(s->s.getRelatelDataId().equals(item.getRelatelDataId())).collect(Collectors.toList());
+                    if(queryAppealResultList.size()>0){
+                        are.setResultDoctorName(queryAppealResultList.get(0).getDoctorCode()+"-"+queryAppealResultList.get(0).getDoctorName());
+                        are.setResultDeptName(queryAppealResultList.get(0).getDeptCode()+"-"+queryAppealResultList.get(0).getDeptName());
+                    }
                     dataList.add(are);
                 }
 
@@ -458,7 +479,7 @@ public class YbReconsiderResetDataViewController extends BaseController {
                     YbReconsiderResetDeductimplementMainExport are = new YbReconsiderResetDeductimplementMainExport();
                     if(isOne){
                         are.setImplementDateStr("格式:202010");
-                        are.setShareStateStr("个人分摊/科室分摊");
+                        are.setShareStateStr("个人分摊/科室分摊/其他分摊");
                     }
                     isOne = false;
                     //序号
@@ -495,6 +516,11 @@ public class YbReconsiderResetDataViewController extends BaseController {
                     are.setInsuredType(item.getInsuredType());
                     //统筹区名称
                     are.setAreaName(item.getAreaName());
+                    queryAppealResultList = appealResultList.stream().filter(s->s.getRelatelDataId().equals(item.getRelatelDataId())).collect(Collectors.toList());
+                    if(queryAppealResultList.size()>0){
+                        are.setResultDoctorName(queryAppealResultList.get(0).getDoctorCode()+"-"+queryAppealResultList.get(0).getDoctorName());
+                        are.setResultDeptName(queryAppealResultList.get(0).getDeptCode()+"-"+queryAppealResultList.get(0).getDeptName());
+                    }
                     mainList.add(are);
                 }
 

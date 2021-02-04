@@ -46,8 +46,9 @@
                     <result column="applyDataId" property="applyDataId"/>
                     <result column="verifyId" property="verifyId"/>
                     <result column="manageId" property="manageId"/>
-                    <result column="resetId" property="resetId"/>
+<!--                    <result column="resetId" property="resetId"/>-->
                     <result column="resultId" property="resultId"/>
+            <result column="relatelDataId" property="relatelDataId"/>
                     <result column="hvDoctorCode" property="hvDoctorCode"/>
                     <result column="hvDoctorName" property="hvDoctorName"/>
                     <result column="hvDeptCode" property="hvDeptCode"/>
@@ -61,7 +62,7 @@
 
         <!-- 通用查询结果列 -->
         <sql id="Base_Column_List">
-        serialNo, billNo, proposalCode, projectCode, projectName, num, medicalPrice, ruleName, deductPrice, deductReason, repaymentReason, doctorName, deptCode, deptName, enterHospitalDate, outHospitalDate, costDate, enterHospitalDateStr, outHospitalDateStr, costDateStr, hospitalizedNo, treatmentMode, settlementDate, settlementDateStr, personalNo, insuredName, cardNumber, areaName, versionNumber, backAppeal, typeno, insuredType, dataType, orderNumber,orderNum, applyDate, applyDateStr, id, pid, applyDataId, verifyId, manageId, resetId, resultId, hvDoctorCode, hvDoctorName, hvDeptCode, hvDeptName, operateReason, operateDate, STATE, IS_DELETEMARK, currencyField
+        serialNo, billNo, proposalCode, projectCode, projectName, num, medicalPrice, ruleName, deductPrice, deductReason, repaymentReason, doctorName, deptCode, deptName, enterHospitalDate, outHospitalDate, costDate, enterHospitalDateStr, outHospitalDateStr, costDateStr, hospitalizedNo, treatmentMode, settlementDate, settlementDateStr, personalNo, insuredName, cardNumber, areaName, versionNumber, backAppeal, typeno, insuredType, dataType, orderNumber,orderNum, applyDate, applyDateStr, id, pid, applyDataId, verifyId, manageId, resultId,relatelDataId, hvDoctorCode, hvDoctorName, hvDeptCode, hvDeptName, operateReason, operateDate, STATE, IS_DELETEMARK, currencyField
     </sql>
     <update id="updateYbHandleVerifyDataView" parameterType="cc.mrbird.febs.yb.entity.YbHandleVerifyDataView">
         update yb_handle_verify_data_view
@@ -107,7 +108,7 @@
 <if test="applyDataId != null">applyDataId=#{applyDataId},</if>
 <if test="verifyId != null">verifyId=#{verifyId},</if>
 <if test="manageId != null">manageId=#{manageId},</if>
-<if test="resetId != null">resetId=#{resetId},</if>
+<!--<if test="resetId != null">resetId=#{resetId},</if>-->
 <if test="resultId != null">resultId=#{resultId},</if>
 <if test="hvDoctorCode != null">hvDoctorCode=#{hvDoctorCode},</if>
 <if test="hvDoctorName != null">hvDoctorName=#{hvDoctorName},</if>
@@ -187,7 +188,6 @@
             <if test="ybHandleVerifyDataView.applyDataId != null and ybHandleVerifyDataView.applyDataId != ''"> and applyDataId like concat('%', #{ ybHandleVerifyDataView.applyDataId} ,'%')</if>
             <if test="ybHandleVerifyDataView.verifyId != null and ybHandleVerifyDataView.verifyId != ''"> and verifyId like concat('%', #{ ybHandleVerifyDataView.verifyId} ,'%')</if>
             <if test="ybHandleVerifyDataView.manageId != null and ybHandleVerifyDataView.manageId != ''"> and manageId like concat('%', #{ ybHandleVerifyDataView.manageId} ,'%')</if>
-            <if test="ybHandleVerifyDataView.resetId != null and ybHandleVerifyDataView.resetId != ''"> and resetId like concat('%', #{ ybHandleVerifyDataView.resetId} ,'%')</if>
             <if test="ybHandleVerifyDataView.resultId != null and ybHandleVerifyDataView.resultId != ''"> and resultId like concat('%', #{ ybHandleVerifyDataView.resultId} ,'%')</if>
             <if test="ybHandleVerifyDataView.hvDoctorCode != null and ybHandleVerifyDataView.hvDoctorCode != ''"> and hvDoctorCode like concat('%', #{ ybHandleVerifyDataView.hvDoctorCode} ,'%')</if>
             <if test="ybHandleVerifyDataView.hvDoctorName != null and ybHandleVerifyDataView.hvDoctorName != ''"> and hvDoctorName like concat('%', #{ ybHandleVerifyDataView.hvDoctorName} ,'%')</if>

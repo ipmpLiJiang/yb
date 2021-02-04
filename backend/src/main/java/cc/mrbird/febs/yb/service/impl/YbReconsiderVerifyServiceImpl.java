@@ -685,7 +685,7 @@ public class YbReconsiderVerifyServiceImpl extends ServiceImpl<YbReconsiderVerif
             smsList = iComSmsService.findLmdSmsList(qu);
             typeno = list.get(0).getTypeno();
             applyDateStr = list.get(0).getApplyDateStr();
-            sendContent = this.iYbReconsiderApplyService.getSendMessage(applyDateStr, addDate, typeno);
+            sendContent = this.iYbReconsiderApplyService.getSendMessage(applyDateStr, addDate, typeno, false);
         }
         for (YbReconsiderVerify ybReconsiderVerify : list) {
             if (ybReconsiderVerify.getVerifyDeptCode() != "" && ybReconsiderVerify.getVerifyDeptCode() != null &&
@@ -816,7 +816,7 @@ public class YbReconsiderVerifyServiceImpl extends ServiceImpl<YbReconsiderVerif
                     qu.setSendType(ComSms.SENDTYPE_1);
                     smsList = iComSmsService.findLmdSmsList(qu);
 
-                    sendContent = this.iYbReconsiderApplyService.getSendMessage(applyDateStr, addDate, typeno);
+                    sendContent = this.iYbReconsiderApplyService.getSendMessage(applyDateStr, addDate, typeno, false);
                 }
                 for (YbReconsiderVerify ybReconsiderVerify : list) {
                     if (ybReconsiderVerify.getState() != YbDefaultValue.VERIFYSTATE_3) {
