@@ -52,27 +52,13 @@ public class YbAppealResultDeductimplementViewController extends BaseController 
     @GetMapping
     @RequiresPermissions("ybAppealResultDeductimplementView:view")
     public Map<String, Object> List(QueryRequest request, YbAppealResultDeductimplementView ybAppealResultDeductimplementView) {
-        return getDataTable(this.iYbAppealResultDeductimplementViewService.findYbAppealResultDeductimplementViews(request, ybAppealResultDeductimplementView));
+        return getDataTable(this.iYbAppealResultDeductimplementViewService.findAppealResultDeductimplementViews(request, ybAppealResultDeductimplementView,false));
     }
 
     @GetMapping("findAppealResultView")
     @RequiresPermissions("ybAppealResultDeductimplementView:view")
     public Map<String, Object> List2(QueryRequest request, YbAppealResultDeductimplementView ybAppealResultDeductimplementView) {
-        return getDataTable(this.iYbAppealResultDeductimplementViewService.findAppealResultDeductimplementView(request, ybAppealResultDeductimplementView));
-    }
-
-    @GetMapping("findAppealResultDeductimplementViewList")
-    @RequiresPermissions("ybAppealResultDeductimplementView:view")
-    public Map<String, Object> List1(QueryRequest request, YbAppealResultDeductimplementView ybAppealResultDeductimplementView) {
-        return getDataTable(this.iYbAppealResultDeductimplementViewService.findYbAppealResultDeductimplementViewList(request, ybAppealResultDeductimplementView));
-    }
-
-    @GetMapping("findAppealResultUserView")
-    @RequiresPermissions("ybAppealResultDeductimplementView:userView")
-    public Map<String, Object> userList1(QueryRequest request, YbAppealResultDeductimplementView ybAppealResultDeductimplementView) {
-        User currentUser = FebsUtil.getCurrentUser();
-        ybAppealResultDeductimplementView.setArDoctorCode(currentUser.getUsername());
-        return getDataTable(this.iYbAppealResultDeductimplementViewService.findAppealResultDeductimplementView(request, ybAppealResultDeductimplementView));
+        return getDataTable(this.iYbAppealResultDeductimplementViewService.findAppealResultDmtView(request, ybAppealResultDeductimplementView));
     }
 
     @GetMapping("findAppealResultDeductimplementUserView")
@@ -80,7 +66,22 @@ public class YbAppealResultDeductimplementViewController extends BaseController 
     public Map<String, Object> userList(QueryRequest request, YbAppealResultDeductimplementView ybAppealResultDeductimplementView) {
         User currentUser = FebsUtil.getCurrentUser();
         ybAppealResultDeductimplementView.setArDoctorCode(currentUser.getUsername());
-        return getDataTable(this.iYbAppealResultDeductimplementViewService.findYbAppealResultDeductimplementViews(request, ybAppealResultDeductimplementView));
+        return getDataTable(this.iYbAppealResultDeductimplementViewService.findAppealResultDeductimplementViews(request, ybAppealResultDeductimplementView,true));
+    }
+
+    @GetMapping("findAppealResultUserView")
+    @RequiresPermissions("ybAppealResultDeductimplementView:userView")
+    public Map<String, Object> userList1(QueryRequest request, YbAppealResultDeductimplementView ybAppealResultDeductimplementView) {
+        User currentUser = FebsUtil.getCurrentUser();
+        ybAppealResultDeductimplementView.setArDoctorCode(currentUser.getUsername());
+        return getDataTable(this.iYbAppealResultDeductimplementViewService.findAppealResultDmtUserView(request, ybAppealResultDeductimplementView));
+    }
+
+
+    @GetMapping("findAppealResultDeductimplementViewList")
+    @RequiresPermissions("ybAppealResultDeductimplementView:view")
+    public Map<String, Object> List1(QueryRequest request, YbAppealResultDeductimplementView ybAppealResultDeductimplementView) {
+        return getDataTable(this.iYbAppealResultDeductimplementViewService.findYbAppealResultDeductimplementViewList(request, ybAppealResultDeductimplementView));
     }
 
     /**

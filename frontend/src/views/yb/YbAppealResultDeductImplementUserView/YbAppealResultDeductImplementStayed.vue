@@ -132,7 +132,7 @@ export default {
           }
         },
         fixed: 'right',
-        width: 90
+        width: 95
       }]
     }
   },
@@ -223,10 +223,10 @@ export default {
           params.pageSize = this.pagination.defaultPageSize
           params.pageNum = this.pagination.defaultCurrent
         }
-        params.sortField = 'applyDateStr asc,orderNum'
+        params.sortField = 'rr.applyDateStr,rrd.dataType,rrd.orderNum'
         // params.sortOrder = 'descend'
         params.sortOrder = 'ascend'
-        this.$get('ybAppealResultDeductimplementView/findAppealResultDeductimplementUserView', {
+        this.$get('ybAppealResultDeductimplementView/findAppealResultUserView', {
           ...params
         }).then((r) => {
           let data = r.data

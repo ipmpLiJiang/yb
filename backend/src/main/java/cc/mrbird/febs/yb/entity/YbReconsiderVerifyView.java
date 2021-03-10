@@ -33,6 +33,13 @@ public class YbReconsiderVerifyView implements Serializable {
     private static final long serialVersionUID = 1L;
 
     /**
+     * pid
+     */
+    @TableField("pid")
+    @ExcelField(value = "pid")
+    private String pid;
+
+    /**
      * 交易流水号
      */
     @TableField("serialNo")
@@ -129,32 +136,6 @@ public class YbReconsiderVerifyView implements Serializable {
     @ExcelField(value = "科室名称")
     private String deptName;
 
-    /**
-     * 入院日期
-     */
-    @TableField("enterHospitalDate")
-    @ExcelField(value = "入院日期")
-    private Date enterHospitalDate;
-    private transient String enterHospitalDateFrom;
-    private transient String enterHospitalDateTo;
-
-    /**
-     * 出院日期
-     */
-    @TableField("outHospitalDate")
-    @ExcelField(value = "出院日期")
-    private Date outHospitalDate;
-    private transient String outHospitalDateFrom;
-    private transient String outHospitalDateTo;
-
-    /**
-     * 费用日期
-     */
-    @TableField("costDate")
-    @ExcelField(value = "费用日期")
-    private Date costDate;
-    private transient String costDateFrom;
-    private transient String costDateTo;
 
     /**
      * 入院日期
@@ -191,14 +172,6 @@ public class YbReconsiderVerifyView implements Serializable {
     @ExcelField(value = "就医方式")
     private String treatmentMode;
 
-    /**
-     * 结算日期
-     */
-    @TableField("settlementDate")
-    @ExcelField(value = "结算日期")
-    private Date settlementDate;
-    private transient String settlementDateFrom;
-    private transient String settlementDateTo;
 
     /**
      * 结算日期
@@ -256,34 +229,12 @@ public class YbReconsiderVerifyView implements Serializable {
     private Integer typeno;
 
     /**
-     * 复议年月
-     */
-    @TableField("applyDate")
-    @ExcelField(value = "复议年月")
-    private Date applyDate;
-    private transient String applyDateFrom;
-    private transient String applyDateTo;
-
-    /**
      * 复议年月Str
      */
     @TableField("applyDateStr")
     @ExcelField(value = "复议年月Str")
     private String applyDateStr;
 
-    /**
-     * 操作员代码
-     */
-    @TableField("operatorId")
-    @ExcelField(value = "操作员代码")
-    private Long operatorId;
-
-    /**
-     * 操作员名称
-     */
-    @TableField("operatorName")
-    @ExcelField(value = "操作员名称")
-    private String operatorName;
 
     private String id;
 
@@ -479,58 +430,13 @@ public class YbReconsiderVerifyView implements Serializable {
 
 
     /**
-     * 备注
-     */
-    @TableField("COMMENTS")
-    @ExcelField(value = "备注")
-    private String comments;
-
-    /**
      * 状态
      */
     @TableField("STATE")
     @ExcelField(value = "状态")
     private Integer state;
 
-    /**
-     * 是否删除
-     */
-    @TableField("IS_DELETEMARK")
-    @ExcelField(value = "是否删除")
-    private Integer isDeletemark;
-
-    /**
-     * 修改时间
-     */
-    @TableField("MODIFY_TIME")
-    @ExcelField(value = "修改时间")
-    private Date modifyTime;
-    private transient String modifyTimeFrom;
-    private transient String modifyTimeTo;
-
-    /**
-     * 创建时间
-     */
-    @TableField("CREATE_TIME")
-    @ExcelField(value = "创建时间")
-    private Date createTime;
-    private transient String createTimeFrom;
-    private transient String createTimeTo;
-
-    /**
-     * 创建人
-     */
-    @TableField("CREATE_USER_ID")
-    @ExcelField(value = "创建人")
-    private Long createUserId;
-
-    /**
-     * 修改人
-     */
-    @TableField("MODIFY_USER_ID")
-    @ExcelField(value = "修改人")
-    private Long modifyUserId;
-
+    public static final String PID = "pid";
 
     public static final String SERIALNO = "serialNo";
 
@@ -560,12 +466,6 @@ public class YbReconsiderVerifyView implements Serializable {
 
     public static final String DEPTNAME = "deptName";
 
-    public static final String ENTERHOSPITALDATE = "enterHospitalDate";
-
-    public static final String OUTHOSPITALDATE = "outHospitalDate";
-
-    public static final String COSTDATE = "costDate";
-
     public static final String ENTERHOSPITALDATESTR = "enterHospitalDateStr";
 
     public static final String OUTHOSPITALDATESTR = "outHospitalDateStr";
@@ -575,8 +475,6 @@ public class YbReconsiderVerifyView implements Serializable {
     public static final String HOSPITALIZEDNO = "hospitalizedNo";
 
     public static final String TREATMENTMODE = "treatmentMode";
-
-    public static final String SETTLEMENTDATE = "settlementDate";
 
     public static final String SETTLEMENTDATESTR = "settlementDateStr";
 
@@ -594,13 +492,7 @@ public class YbReconsiderVerifyView implements Serializable {
 
     public static final String TYPENO = "typeno";
 
-    public static final String APPLYDATE = "applyDate";
-
     public static final String APPLYDATESTR = "applyDateStr";
-
-    public static final String OPERATORID = "operatorId";
-
-    public static final String OPERATORNAME = "operatorName";
 
     public static final String ID = "id";
 
@@ -656,18 +548,7 @@ public class YbReconsiderVerifyView implements Serializable {
 
     public static final String ORDERDEPTNAME = "orderDeptName";
 
-    public static final String COMMENTS = "COMMENTS";
-
     public static final String STATE = "STATE";
 
-    public static final String IS_DELETEMARK = "IS_DELETEMARK";
-
-    public static final String MODIFY_TIME = "MODIFY_TIME";
-
-    public static final String CREATE_TIME = "CREATE_TIME";
-
-    public static final String CREATE_USER_ID = "CREATE_USER_ID";
-
-    public static final String MODIFY_USER_ID = "MODIFY_USER_ID";
 
 }

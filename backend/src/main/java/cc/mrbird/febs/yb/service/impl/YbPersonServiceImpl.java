@@ -224,7 +224,7 @@ public class YbPersonServiceImpl extends ServiceImpl<YbPersonMapper, YbPerson> i
 
     @Override
     public List<YbPerson> findPersonResultList(String applyDateStr){
-        return this.findPersonResultList(applyDateStr);
+        return this.baseMapper.findPersonResultList(applyDateStr);
     }
 
     /**

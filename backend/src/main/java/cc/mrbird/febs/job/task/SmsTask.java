@@ -2,7 +2,9 @@ package cc.mrbird.febs.job.task;
 
 import cc.mrbird.febs.cn.webxml.sms.SmsService;
 import cc.mrbird.febs.cn.webxml.sms.SmsServicePortType;
+import cc.mrbird.febs.com.entity.ComSms;
 import cc.mrbird.febs.com.service.IComSmsService;
+import cc.mrbird.febs.yb.entity.YbDefaultValue;
 import cc.mrbird.febs.yb.service.IYbReconsiderApplyDataService;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
@@ -24,8 +26,10 @@ public class SmsTask {
     @Autowired
     IComSmsService iComSmsService;
 
-    public void sendSmsTask(){
-        iComSmsService.sendSms();
+    public void sendSmsTask() {
+        iComSmsService.sendSms(ComSms.SENDTYPE_1);
+        iComSmsService.sendSms(ComSms.SENDTYPE_5);
+//        iComSmsService.sendSms(ComSms.SENDTYPE_6);
     }
 
 }

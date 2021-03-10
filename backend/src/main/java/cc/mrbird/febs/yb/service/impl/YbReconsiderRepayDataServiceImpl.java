@@ -167,7 +167,7 @@ public class YbReconsiderRepayDataServiceImpl extends ServiceImpl<YbReconsiderRe
         queryWrapperRay.apply(sql);
         List<YbReconsiderRepayData> repayDataList = this.list(queryWrapperRay);
         if (repayDataList.size() > 0) {
-            List<YbReconsiderResetData> resetDataList = this.iYbReconsiderResetDataService.findReconsiderResetByApplyDates(ybReconsiderRepayData.getBelongDateStr(), ybReconsiderRepayData.getDataType());
+            List<YbReconsiderResetData> resetDataList = this.iYbReconsiderResetDataService.findReconsiderResetDataByApplyDates(ybReconsiderRepayData.getBelongDateStr(), ybReconsiderRepayData.getDataType());
             if (resetDataList.size() > 0) {
                 List<YbAppealResult> resultList = this.iYbAppealResultService.findAppealResulDataByRepays(ybReconsiderRepayData.getBelongDateStr(), ybReconsiderRepayData.getDataType());
                 if (resultList.size() == 0) {

@@ -33,6 +33,13 @@ public class YbAppealResultDeductimplementView implements Serializable, Comparab
     private static final long serialVersionUID = 1L;
 
     /**
+     * pid
+     */
+    @TableField("pid")
+    @ExcelField(value = "pid")
+    private String pid;
+
+    /**
      * 交易流水号
      */
     @TableField("serialNo")
@@ -59,12 +66,6 @@ public class YbAppealResultDeductimplementView implements Serializable, Comparab
     @TableField("projectName")
     @ExcelField(value = "项目名称")
     private String projectName;
-
-//    /**
-//     * 数量
-//     */
-//    @ExcelField(value = "数量")
-//    private BigDecimal num;
 
     /**
      * 医保内金额
@@ -330,7 +331,7 @@ public class YbAppealResultDeductimplementView implements Serializable, Comparab
     @ExcelField(value = "扣款落实ID")
     private String deductImplementId;
 
-
+    public static final String PID = "pid";
     public static final String SERIALNO = "serialNo";
     public static final String BILLNO = "billNo";
     public static final String PROJECTCODE = "projectCode";

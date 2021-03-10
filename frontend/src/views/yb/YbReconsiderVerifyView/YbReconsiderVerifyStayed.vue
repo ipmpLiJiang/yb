@@ -661,7 +661,7 @@ export default {
         params.pageNum = this.pagination.defaultCurrent
       }
       // applyDateStr asc,orderNum
-      params.sortField = 'orderNum'
+      params.sortField = 'ad.orderNum'
       params.sortOrder = 'ascend'
 
       this.$get('ybReconsiderVerifyView/findVerifyViewNull', {
@@ -689,3 +689,4 @@ export default {
 .editable-row-operations a {
   margin-right: 8px;
 }
+</style>

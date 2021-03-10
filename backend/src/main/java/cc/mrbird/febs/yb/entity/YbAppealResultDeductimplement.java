@@ -107,6 +107,7 @@ private static final long serialVersionUID=1L;
     //@ExcelField(value ="数据类型")
     private Integer dataType;
 
+
     /**
      * 备注
      */

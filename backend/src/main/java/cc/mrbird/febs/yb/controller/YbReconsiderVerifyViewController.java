@@ -90,7 +90,7 @@ public class YbReconsiderVerifyViewController extends BaseController {
     public void addYbReconsiderVerifyView(@Valid YbReconsiderVerifyView ybReconsiderVerifyView) throws FebsException {
         try {
             User currentUser = FebsUtil.getCurrentUser();
-            ybReconsiderVerifyView.setCreateUserId(currentUser.getUserId());
+//            ybReconsiderVerifyView.setCreateUserId(currentUser.getUserId());
             this.iYbReconsiderVerifyViewService.createYbReconsiderVerifyView(ybReconsiderVerifyView);
         } catch (Exception e) {
             message = "新增/按钮失败";
@@ -111,7 +111,7 @@ public class YbReconsiderVerifyViewController extends BaseController {
     public void updateYbReconsiderVerifyView(@Valid YbReconsiderVerifyView ybReconsiderVerifyView) throws FebsException {
         try {
             User currentUser = FebsUtil.getCurrentUser();
-            ybReconsiderVerifyView.setModifyUserId(currentUser.getUserId());
+//            ybReconsiderVerifyView.setModifyUserId(currentUser.getUserId());
             this.iYbReconsiderVerifyViewService.updateYbReconsiderVerifyView(ybReconsiderVerifyView);
         } catch (Exception e) {
             message = "修改失败";
@@ -160,6 +160,7 @@ public class YbReconsiderVerifyViewController extends BaseController {
                         state == YbDefaultValue.APPLYSTATE_4 || state == YbDefaultValue.APPLYSTATE_5 ? 2 : 0;
                 if (typeno != 0) {
                     ybReconsiderVerifyView.setTypeno(typeno);
+                    ybReconsiderVerifyView.setPid(reconsiderApply.getId());
                     List<YbReconsiderVerifyView> list = this.iYbReconsiderVerifyViewService.findReconsiderVerifyViewLists(ybReconsiderVerifyView);
                     list = list.stream().sorted(Comparator.comparing(YbReconsiderVerifyView::getOrderNum)).collect(Collectors.toList());
                     if (ybReconsiderVerifyView.getDataType().equals(YbDefaultValue.DATATYPE_0)) {

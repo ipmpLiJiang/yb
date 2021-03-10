@@ -18,15 +18,11 @@
                     <result column="doctorName" property="doctorName"/>
                     <result column="deptCode" property="deptCode"/>
                     <result column="deptName" property="deptName"/>
-                    <result column="enterHospitalDate" property="enterHospitalDate"/>
-                    <result column="outHospitalDate" property="outHospitalDate"/>
-                    <result column="costDate" property="costDate"/>
                     <result column="enterHospitalDateStr" property="enterHospitalDateStr"/>
                     <result column="outHospitalDateStr" property="outHospitalDateStr"/>
                     <result column="costDateStr" property="costDateStr"/>
                     <result column="hospitalizedNo" property="hospitalizedNo"/>
                     <result column="treatmentMode" property="treatmentMode"/>
-                    <result column="settlementDate" property="settlementDate"/>
                     <result column="settlementDateStr" property="settlementDateStr"/>
                     <result column="personalNo" property="personalNo"/>
                     <result column="insuredName" property="insuredName"/>
@@ -39,8 +35,7 @@
                     <result column="dataType" property="dataType"/>
                     <result column="orderNumber" property="orderNumber"/>
             <result column="orderNum" property="orderNum"/>
-                    <result column="applyDate" property="applyDate"/>
-                    <result column="applyDateStr" property="applyDateStr"/>
+            <result column="applyDateStr" property="applyDateStr"/>
                     <result column="id" property="id"/>
                     <result column="pid" property="pid"/>
                     <result column="applyDataId" property="applyDataId"/>
@@ -56,69 +51,17 @@
                     <result column="operateReason" property="operateReason"/>
                     <result column="operateDate" property="operateDate"/>
                     <result column="STATE" property="state"/>
-                    <result column="IS_DELETEMARK" property="isDeletemark"/>
                     <result column="currencyField" property="currencyField"/>
         </resultMap>
 
         <!-- 通用查询结果列 -->
         <sql id="Base_Column_List">
-        serialNo, billNo, proposalCode, projectCode, projectName, num, medicalPrice, ruleName, deductPrice, deductReason, repaymentReason, doctorName, deptCode, deptName, enterHospitalDate, outHospitalDate, costDate, enterHospitalDateStr, outHospitalDateStr, costDateStr, hospitalizedNo, treatmentMode, settlementDate, settlementDateStr, personalNo, insuredName, cardNumber, areaName, versionNumber, backAppeal, typeno, insuredType, dataType, orderNumber,orderNum, applyDate, applyDateStr, id, pid, applyDataId, verifyId, manageId, resultId,relatelDataId, hvDoctorCode, hvDoctorName, hvDeptCode, hvDeptName, operateReason, operateDate, STATE, IS_DELETEMARK, currencyField
+        serialNo, billNo, proposalCode, projectCode, projectName, num, medicalPrice, ruleName, deductPrice, deductReason, repaymentReason, doctorName, deptCode, deptName, enterHospitalDateStr, outHospitalDateStr, costDateStr, hospitalizedNo, treatmentMode, settlementDateStr, personalNo, insuredName, cardNumber, areaName, versionNumber, backAppeal, typeno, insuredType, dataType, orderNumber,orderNum,applyDateStr, id, pid, applyDataId, verifyId, manageId, resultId,relatelDataId, hvDoctorCode, hvDoctorName, hvDeptCode, hvDeptName, operateReason, operateDate, STATE, currencyField
     </sql>
     <update id="updateYbHandleVerifyDataView" parameterType="cc.mrbird.febs.yb.entity.YbHandleVerifyDataView">
         update yb_handle_verify_data_view
         <trim prefix="set" suffixOverrides=",">
 <if test="serialNo != null">serialNo=#{serialNo},</if>
-<if test="billNo != null">billNo=#{billNo},</if>
-<if test="proposalCode != null">proposalCode=#{proposalCode},</if>
-<if test="projectCode != null">projectCode=#{projectCode},</if>
-<if test="projectName != null">projectName=#{projectName},</if>
-<if test="num != null">num=#{num},</if>
-<if test="medicalPrice != null">medicalPrice=#{medicalPrice},</if>
-<if test="ruleName != null">ruleName=#{ruleName},</if>
-<if test="deductPrice != null">deductPrice=#{deductPrice},</if>
-<if test="deductReason != null">deductReason=#{deductReason},</if>
-<if test="repaymentReason != null">repaymentReason=#{repaymentReason},</if>
-<if test="doctorName != null">doctorName=#{doctorName},</if>
-<if test="deptCode != null">deptCode=#{deptCode},</if>
-<if test="deptName != null">deptName=#{deptName},</if>
-<if test="enterHospitalDate != null">enterHospitalDate=#{enterHospitalDate},</if>
-<if test="outHospitalDate != null">outHospitalDate=#{outHospitalDate},</if>
-<if test="costDate != null">costDate=#{costDate},</if>
-<if test="enterHospitalDateStr != null">enterHospitalDateStr=#{enterHospitalDateStr},</if>
-<if test="outHospitalDateStr != null">outHospitalDateStr=#{outHospitalDateStr},</if>
-<if test="costDateStr != null">costDateStr=#{costDateStr},</if>
-<if test="hospitalizedNo != null">hospitalizedNo=#{hospitalizedNo},</if>
-<if test="treatmentMode != null">treatmentMode=#{treatmentMode},</if>
-<if test="settlementDate != null">settlementDate=#{settlementDate},</if>
-<if test="settlementDateStr != null">settlementDateStr=#{settlementDateStr},</if>
-<if test="personalNo != null">personalNo=#{personalNo},</if>
-<if test="insuredName != null">insuredName=#{insuredName},</if>
-<if test="cardNumber != null">cardNumber=#{cardNumber},</if>
-<if test="areaName != null">areaName=#{areaName},</if>
-<if test="versionNumber != null">versionNumber=#{versionNumber},</if>
-<if test="backAppeal != null">backAppeal=#{backAppeal},</if>
-<if test="typeno != null">typeno=#{typeno},</if>
-<if test="insuredType != null">insuredType=#{insuredType},</if>
-<if test="dataType != null">dataType=#{dataType},</if>
-<if test="orderNumber != null">orderNumber=#{orderNumber},</if>
-<if test="applyDate != null">applyDate=#{applyDate},</if>
-<if test="applyDateStr != null">applyDateStr=#{applyDateStr},</if>
-<if test="id != null">id=#{id},</if>
-<if test="pid != null">pid=#{pid},</if>
-<if test="applyDataId != null">applyDataId=#{applyDataId},</if>
-<if test="verifyId != null">verifyId=#{verifyId},</if>
-<if test="manageId != null">manageId=#{manageId},</if>
-<!--<if test="resetId != null">resetId=#{resetId},</if>-->
-<if test="resultId != null">resultId=#{resultId},</if>
-<if test="hvDoctorCode != null">hvDoctorCode=#{hvDoctorCode},</if>
-<if test="hvDoctorName != null">hvDoctorName=#{hvDoctorName},</if>
-<if test="hvDeptCode != null">hvDeptCode=#{hvDeptCode},</if>
-<if test="hvDeptName != null">hvDeptName=#{hvDeptName},</if>
-<if test="operateReason != null">operateReason=#{operateReason},</if>
-<if test="operateDate != null">operateDate=#{operateDate},</if>
-<if test="state != null">STATE=#{state},</if>
-<if test="isDeletemark != null">IS_DELETEMARK=#{isDeletemark},</if>
-<if test="currencyField != null">currencyField=#{currencyField},</if>
         </trim>
 
     </update>
@@ -127,82 +70,143 @@
         where  1=1
             <if test="ybHandleVerifyDataView.serialNo != null and ybHandleVerifyDataView.serialNo != ''"> and serialNo like concat('%', #{ ybHandleVerifyDataView.serialNo} ,'%')</if>
             <if test="ybHandleVerifyDataView.billNo != null and ybHandleVerifyDataView.billNo != ''"> and billNo like concat('%', #{ ybHandleVerifyDataView.billNo} ,'%')</if>
-            <if test="ybHandleVerifyDataView.proposalCode != null and ybHandleVerifyDataView.proposalCode != ''"> and proposalCode like concat('%', #{ ybHandleVerifyDataView.proposalCode} ,'%')</if>
-            <if test="ybHandleVerifyDataView.projectCode != null and ybHandleVerifyDataView.projectCode != ''"> and projectCode like concat('%', #{ ybHandleVerifyDataView.projectCode} ,'%')</if>
-            <if test="ybHandleVerifyDataView.projectName != null and ybHandleVerifyDataView.projectName != ''"> and projectName like concat('%', #{ ybHandleVerifyDataView.projectName} ,'%')</if>
-            <if test="ybHandleVerifyDataView.ruleName != null and ybHandleVerifyDataView.ruleName != ''"> and ruleName like concat('%', #{ ybHandleVerifyDataView.ruleName} ,'%')</if>
-            <if test="ybHandleVerifyDataView.deductReason != null and ybHandleVerifyDataView.deductReason != ''"> and deductReason like concat('%', #{ ybHandleVerifyDataView.deductReason} ,'%')</if>
-            <if test="ybHandleVerifyDataView.repaymentReason != null and ybHandleVerifyDataView.repaymentReason != ''"> and repaymentReason like concat('%', #{ ybHandleVerifyDataView.repaymentReason} ,'%')</if>
-            <if test="ybHandleVerifyDataView.doctorName != null and ybHandleVerifyDataView.doctorName != ''"> and doctorName like concat('%', #{ ybHandleVerifyDataView.doctorName} ,'%')</if>
-            <if test="ybHandleVerifyDataView.deptCode != null and ybHandleVerifyDataView.deptCode != ''"> and deptCode like concat('%', #{ ybHandleVerifyDataView.deptCode} ,'%')</if>
-            <if test="ybHandleVerifyDataView.deptName != null and ybHandleVerifyDataView.deptName != ''"> and deptName like concat('%', #{ ybHandleVerifyDataView.deptName} ,'%')</if>
-        <if test="ybHandleVerifyDataView.enterHospitalDateFrom!= null">
-            AND ybHandleVerifyDataView.enterHospitalDate <![CDATA[ >= ]]>  enterHospitalDateFrom}
+    </select>
+
+    <select id="findHandleVerifyDataView" resultType="cc.mrbird.febs.yb.entity.YbHandleVerifyDataView" parameterType="cc.mrbird.febs.yb.entity.YbHandleVerifyDataView">
+        select
+            ad.serialNo,
+            ad.billNo,
+            ad.proposalCode,
+            ad.projectCode,
+            ad.projectName,
+            ad.num,
+            ad.medicalPrice,
+            ad.ruleName,
+            ad.deductPrice,
+            ad.deductReason,
+            ad.repaymentReason,
+            ad.doctorName,
+            ad.deptCode,
+            ad.deptName,
+            ad.enterHospitalDate,
+            ad.outHospitalDate,
+            ad.costDate,
+            ad.enterHospitalDateStr,
+            ad.outHospitalDateStr,
+            ad.costDateStr,
+            ad.hospitalizedNo,
+            ad.treatmentMode,
+            ad.settlementDate,
+            ad.settlementDateStr,
+            ad.personalNo,
+            ad.insuredName,
+            ad.cardNumber,
+            ad.areaName,
+            ad.versionNumber,
+            ad.backAppeal,
+            ad.typeno,
+            ad.insuredType,
+            ad.dataType,
+            ad.orderNumber,
+            ad.orderNum,
+        #{ybHandleVerifyDataView.applyDateStr} applyDateStr,
+          hvd.id,
+            hvd.pid,
+            hvd.applyDataId,
+          hvd.verifyId,
+            hvd.manageId,
+            hvd.resultId,
+            hvd.doctorCode hvDoctorCode,
+            hvd.doctorName hvDoctorName,
+            hvd.deptCode hvDeptCode,
+            hvd.deptName hvDeptName,
+            hvd.operateReason,
+            hvd.operateDate,
+            hvd.STATE,
+            hvd.relatelDataId,
+            hvd.currencyField
+        from
+            yb_handle_verify_data hvd
+            INNER JOIN yb_reconsider_apply_data ad ON
+                ad.id = hvd.applyDataId
+        WHERE
+        <if test="ybHandleVerifyDataView.pid != null and ybHandleVerifyDataView.pid != ''">
+            hvd.pid= #{ybHandleVerifyDataView.pid}
         </if>
-        <if test="ybHandleVerifyDataView.enterHospitalDateTo!= null">
-            AND ybHandleVerifyDataView.enterHospitalDate <![CDATA[ <= ]]>  enterHospitalDateTo}
+        <if test="ybHandleVerifyDataView.pid == null">
+            1=2
         </if>
-        <if test="ybHandleVerifyDataView.outHospitalDateFrom!= null">
-            AND ybHandleVerifyDataView.outHospitalDate <![CDATA[ >= ]]>  outHospitalDateFrom}
+        <if test="ybHandleVerifyDataView.state != null">
+            and hvd.state= #{ybHandleVerifyDataView.state}
         </if>
-        <if test="ybHandleVerifyDataView.outHospitalDateTo!= null">
-            AND ybHandleVerifyDataView.outHospitalDate <![CDATA[ <= ]]>  outHospitalDateTo}
+        <if test="ybHandleVerifyDataView.dataType != null">
+            and hvd.dataType= #{ybHandleVerifyDataView.dataType}
         </if>
-        <if test="ybHandleVerifyDataView.costDateFrom!= null">
-            AND ybHandleVerifyDataView.costDate <![CDATA[ >= ]]>  costDateFrom}
+        <if test="ybHandleVerifyDataView.dataType == 0 and ybHandleVerifyDataView.currencyField!= null and ybHandleVerifyDataView.currencyField!= ''">
+            and (ad.serialNo like concat('%', #{ ybHandleVerifyDataView.currencyField} ,'%')
+            or ad.proposalCode like concat('%', #{ ybHandleVerifyDataView.currencyField} ,'%')
+            or ad.billNo like concat('%', #{ ybHandleVerifyDataView.currencyField} ,'%')
+            or ad.projectCode like concat('%', #{ ybHandleVerifyDataView.currencyField} ,'%')
+            or ad.projectName like concat('%', #{ ybHandleVerifyDataView.currencyField} ,'%')
+            or ad.ruleName like concat('%', #{ ybHandleVerifyDataView.currencyField} ,'%'))
         </if>
-        <if test="ybHandleVerifyDataView.costDateTo!= null">
-            AND ybHandleVerifyDataView.costDate <![CDATA[ <= ]]>  costDateTo}
+        <if test="ybHandleVerifyDataView.dataType == 1 and ybHandleVerifyDataView.currencyField!= null and ybHandleVerifyDataView.currencyField!= ''">
+            and (ad.serialNo like concat('%', #{ ybHandleVerifyDataView.currencyField} ,'%')
+            or ad.proposalCode like concat('%', #{ ybHandleVerifyDataView.currencyField} ,'%')
+            or ad.billNo like concat('%', #{ ybHandleVerifyDataView.currencyField} ,'%')
+            or ad.ruleName like concat('%', #{ ybHandleVerifyDataView.currencyField} ,'%'))
         </if>
-            <if test="ybHandleVerifyDataView.enterHospitalDateStr != null and ybHandleVerifyDataView.enterHospitalDateStr != ''"> and enterHospitalDateStr like concat('%', #{ ybHandleVerifyDataView.enterHospitalDateStr} ,'%')</if>
-            <if test="ybHandleVerifyDataView.outHospitalDateStr != null and ybHandleVerifyDataView.outHospitalDateStr != ''"> and outHospitalDateStr like concat('%', #{ ybHandleVerifyDataView.outHospitalDateStr} ,'%')</if>
-            <if test="ybHandleVerifyDataView.costDateStr != null and ybHandleVerifyDataView.costDateStr != ''"> and costDateStr like concat('%', #{ ybHandleVerifyDataView.costDateStr} ,'%')</if>
-            <if test="ybHandleVerifyDataView.hospitalizedNo != null and ybHandleVerifyDataView.hospitalizedNo != ''"> and hospitalizedNo like concat('%', #{ ybHandleVerifyDataView.hospitalizedNo} ,'%')</if>
-            <if test="ybHandleVerifyDataView.treatmentMode != null and ybHandleVerifyDataView.treatmentMode != ''"> and treatmentMode like concat('%', #{ ybHandleVerifyDataView.treatmentMode} ,'%')</if>
-        <if test="ybHandleVerifyDataView.settlementDateFrom!= null">
-            AND ybHandleVerifyDataView.settlementDate <![CDATA[ >= ]]>  settlementDateFrom}
+        <if test="ybHandleVerifyDataView.dataType == null and ybHandleVerifyDataView.currencyField!= null and ybHandleVerifyDataView.currencyField!= ''">
+            and (ad.serialNo like concat('%', #{ ybHandleVerifyDataView.currencyField} ,'%')
+            or ad.proposalCode like concat('%', #{ ybHandleVerifyDataView.currencyField} ,'%')
+            or ad.billNo like concat('%', #{ ybHandleVerifyDataView.currencyField} ,'%')
+            or ad.projectCode like concat('%', #{ ybHandleVerifyDataView.currencyField} ,'%')
+            or ad.projectName like concat('%', #{ ybHandleVerifyDataView.currencyField} ,'%')
+            or ad.ruleName like concat('%', #{ ybHandleVerifyDataView.currencyField} ,'%'))
         </if>
-        <if test="ybHandleVerifyDataView.settlementDateTo!= null">
-            AND ybHandleVerifyDataView.settlementDate <![CDATA[ <= ]]>  settlementDateTo}
+    </select>
+    <select id="findHandleVerifyDataCount" resultType="Integer" parameterType="cc.mrbird.febs.yb.entity.YbHandleVerifyDataView">
+        select
+        count(1)
+        from
+        yb_handle_verify_data hvd
+        INNER JOIN yb_reconsider_apply_data ad ON
+        ad.id = hvd.applyDataId
+        WHERE
+        <if test="ybHandleVerifyDataView.pid != null and ybHandleVerifyDataView.pid != ''">
+            hvd.pid= #{ybHandleVerifyDataView.pid}
         </if>
-            <if test="ybHandleVerifyDataView.settlementDateStr != null and ybHandleVerifyDataView.settlementDateStr != ''"> and settlementDateStr like concat('%', #{ ybHandleVerifyDataView.settlementDateStr} ,'%')</if>
-            <if test="ybHandleVerifyDataView.personalNo != null and ybHandleVerifyDataView.personalNo != ''"> and personalNo like concat('%', #{ ybHandleVerifyDataView.personalNo} ,'%')</if>
-            <if test="ybHandleVerifyDataView.insuredName != null and ybHandleVerifyDataView.insuredName != ''"> and insuredName like concat('%', #{ ybHandleVerifyDataView.insuredName} ,'%')</if>
-            <if test="ybHandleVerifyDataView.cardNumber != null and ybHandleVerifyDataView.cardNumber != ''"> and cardNumber like concat('%', #{ ybHandleVerifyDataView.cardNumber} ,'%')</if>
-            <if test="ybHandleVerifyDataView.areaName != null and ybHandleVerifyDataView.areaName != ''"> and areaName like concat('%', #{ ybHandleVerifyDataView.areaName} ,'%')</if>
-            <if test="ybHandleVerifyDataView.versionNumber != null and ybHandleVerifyDataView.versionNumber != ''"> and versionNumber like concat('%', #{ ybHandleVerifyDataView.versionNumber} ,'%')</if>
-            <if test="ybHandleVerifyDataView.backAppeal != null and ybHandleVerifyDataView.backAppeal != ''"> and backAppeal like concat('%', #{ ybHandleVerifyDataView.backAppeal} ,'%')</if>
-        <if test="ybHandleVerifyDataView.typeno != null"> and typeno =#{ ybHandleVerifyDataView.typeno} </if>
-            <if test="ybHandleVerifyDataView.insuredType != null and ybHandleVerifyDataView.insuredType != ''"> and insuredType like concat('%', #{ ybHandleVerifyDataView.insuredType} ,'%')</if>
-        <if test="ybHandleVerifyDataView.dataType != null"> and dataType =#{ ybHandleVerifyDataView.dataType} </if>
-            <if test="ybHandleVerifyDataView.orderNumber != null and ybHandleVerifyDataView.orderNumber != ''"> and orderNumber like concat('%', #{ ybHandleVerifyDataView.orderNumber} ,'%')</if>
-        <if test="ybHandleVerifyDataView.applyDateFrom!= null">
-            AND ybHandleVerifyDataView.applyDate <![CDATA[ >= ]]>  applyDateFrom}
+        <if test="ybHandleVerifyDataView.pid == null">
+            1=2
         </if>
-        <if test="ybHandleVerifyDataView.applyDateTo!= null">
-            AND ybHandleVerifyDataView.applyDate <![CDATA[ <= ]]>  applyDateTo}
+        <if test="ybHandleVerifyDataView.state != null">
+            and hvd.state= #{ybHandleVerifyDataView.state}
         </if>
-            <if test="ybHandleVerifyDataView.applyDateStr != null and ybHandleVerifyDataView.applyDateStr != ''"> and applyDateStr like concat('%', #{ ybHandleVerifyDataView.applyDateStr} ,'%')</if>
-            <if test="ybHandleVerifyDataView.id != null and ybHandleVerifyDataView.id != ''"> and id like concat('%', #{ ybHandleVerifyDataView.id} ,'%')</if>
-            <if test="ybHandleVerifyDataView.pid != null and ybHandleVerifyDataView.pid != ''"> and pid like concat('%', #{ ybHandleVerifyDataView.pid} ,'%')</if>
-            <if test="ybHandleVerifyDataView.applyDataId != null and ybHandleVerifyDataView.applyDataId != ''"> and applyDataId like concat('%', #{ ybHandleVerifyDataView.applyDataId} ,'%')</if>
-            <if test="ybHandleVerifyDataView.verifyId != null and ybHandleVerifyDataView.verifyId != ''"> and verifyId like concat('%', #{ ybHandleVerifyDataView.verifyId} ,'%')</if>
-            <if test="ybHandleVerifyDataView.manageId != null and ybHandleVerifyDataView.manageId != ''"> and manageId like concat('%', #{ ybHandleVerifyDataView.manageId} ,'%')</if>
-            <if test="ybHandleVerifyDataView.resultId != null and ybHandleVerifyDataView.resultId != ''"> and resultId like concat('%', #{ ybHandleVerifyDataView.resultId} ,'%')</if>
-            <if test="ybHandleVerifyDataView.hvDoctorCode != null and ybHandleVerifyDataView.hvDoctorCode != ''"> and hvDoctorCode like concat('%', #{ ybHandleVerifyDataView.hvDoctorCode} ,'%')</if>
-            <if test="ybHandleVerifyDataView.hvDoctorName != null and ybHandleVerifyDataView.hvDoctorName != ''"> and hvDoctorName like concat('%', #{ ybHandleVerifyDataView.hvDoctorName} ,'%')</if>
-            <if test="ybHandleVerifyDataView.hvDeptCode != null and ybHandleVerifyDataView.hvDeptCode != ''"> and hvDeptCode like concat('%', #{ ybHandleVerifyDataView.hvDeptCode} ,'%')</if>
-            <if test="ybHandleVerifyDataView.hvDeptName != null and ybHandleVerifyDataView.hvDeptName != ''"> and hvDeptName like concat('%', #{ ybHandleVerifyDataView.hvDeptName} ,'%')</if>
-            <if test="ybHandleVerifyDataView.operateReason != null and ybHandleVerifyDataView.operateReason != ''"> and operateReason like concat('%', #{ ybHandleVerifyDataView.operateReason} ,'%')</if>
-        <if test="ybHandleVerifyDataView.operateDateFrom!= null">
-            AND ybHandleVerifyDataView.operateDate <![CDATA[ >= ]]>  operateDateFrom}
+        <if test="ybHandleVerifyDataView.dataType != null">
+            and hvd.dataType= #{ybHandleVerifyDataView.dataType}
         </if>
-        <if test="ybHandleVerifyDataView.operateDateTo!= null">
-            AND ybHandleVerifyDataView.operateDate <![CDATA[ <= ]]>  operateDateTo}
+        <if test="ybHandleVerifyDataView.dataType == 0 and ybHandleVerifyDataView.currencyField!= null and ybHandleVerifyDataView.currencyField!= ''">
+            and (ad.serialNo like concat('%', #{ ybHandleVerifyDataView.currencyField} ,'%')
+            or ad.proposalCode like concat('%', #{ ybHandleVerifyDataView.currencyField} ,'%')
+            or ad.billNo like concat('%', #{ ybHandleVerifyDataView.currencyField} ,'%')
+            or ad.projectCode like concat('%', #{ ybHandleVerifyDataView.currencyField} ,'%')
+            or ad.projectName like concat('%', #{ ybHandleVerifyDataView.currencyField} ,'%')
+            or ad.ruleName like concat('%', #{ ybHandleVerifyDataView.currencyField} ,'%'))
         </if>
-        <if test="ybHandleVerifyDataView.state != null"> and STATE =#{ ybHandleVerifyDataView.state} </if>
-        <if test="ybHandleVerifyDataView.isDeletemark != null"> and IS_DELETEMARK =#{ ybHandleVerifyDataView.isDeletemark} </if>
-            <if test="ybHandleVerifyDataView.currencyField != null and ybHandleVerifyDataView.currencyField != ''"> and currencyField like concat('%', #{ ybHandleVerifyDataView.currencyField} ,'%')</if>
-</select>
+        <if test="ybHandleVerifyDataView.dataType == 1 and ybHandleVerifyDataView.currencyField!= null and ybHandleVerifyDataView.currencyField!= ''">
+            and (ad.serialNo like concat('%', #{ ybHandleVerifyDataView.currencyField} ,'%')
+            or ad.proposalCode like concat('%', #{ ybHandleVerifyDataView.currencyField} ,'%')
+            or ad.billNo like concat('%', #{ ybHandleVerifyDataView.currencyField} ,'%')
+            or ad.ruleName like concat('%', #{ ybHandleVerifyDataView.currencyField} ,'%'))
+        </if>
+        <if test="ybHandleVerifyDataView.dataType == null and ybHandleVerifyDataView.currencyField!= null and ybHandleVerifyDataView.currencyField!= ''">
+            and (ad.serialNo like concat('%', #{ ybHandleVerifyDataView.currencyField} ,'%')
+            or ad.proposalCode like concat('%', #{ ybHandleVerifyDataView.currencyField} ,'%')
+            or ad.billNo like concat('%', #{ ybHandleVerifyDataView.currencyField} ,'%')
+            or ad.projectCode like concat('%', #{ ybHandleVerifyDataView.currencyField} ,'%')
+            or ad.projectName like concat('%', #{ ybHandleVerifyDataView.currencyField} ,'%')
+            or ad.ruleName like concat('%', #{ ybHandleVerifyDataView.currencyField} ,'%'))
+        </if>
+    </select>
 
 </mapper>

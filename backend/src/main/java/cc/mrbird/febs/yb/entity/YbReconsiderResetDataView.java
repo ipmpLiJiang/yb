@@ -124,15 +124,6 @@ public class YbReconsiderResetDataView implements Serializable, Comparable<YbRec
     private String deptName;
 
     /**
-     * 费用日期
-     */
-    @TableField("costDate")
-    @ExcelField(value = "费用日期")
-    private Date costDate;
-    private transient String costDateFrom;
-    private transient String costDateTo;
-
-    /**
      * 费用日期str
      */
     @TableField("costDateStr")
@@ -153,14 +144,6 @@ public class YbReconsiderResetDataView implements Serializable, Comparable<YbRec
     @ExcelField(value = "就医方式")
     private String treatmentMode;
 
-    /**
-     * 结算日期
-     */
-    @TableField("settlementDate")
-    @ExcelField(value = "结算日期")
-    private Date settlementDate;
-    private transient String settlementDateFrom;
-    private transient String settlementDateTo;
 
     /**
      * 结算日期Str
@@ -279,26 +262,6 @@ public class YbReconsiderResetDataView implements Serializable, Comparable<YbRec
     @ExcelField(value = "还款金额")
     private BigDecimal repaymentPrice;
 
-//    /**
-//     * 复议申请明细
-//     */
-//    @TableField("applyDataId")
-//    @ExcelField(value ="复议申请明细")
-//    private String applyDataId;
-
-//    /**
-//     * 申请序号
-//     */
-//    @TableField("applyOrderNumber")
-//    @ExcelField(value ="申请序号")
-//    private String applyOrderNumber;
-
-//    /**
-//     * 复议上传Id
-//     */
-//    @TableField("resultId")
-//    @ExcelField(value ="复议上传Id")
-//    private String resultId;
 
     /**
      * 剔除类型
@@ -359,11 +322,9 @@ public class YbReconsiderResetDataView implements Serializable, Comparable<YbRec
     public static final String DOCTORNAME = "doctorName";
     public static final String DEPTCODE = "deptCode";
     public static final String DEPTNAME = "deptName";
-    public static final String COSTDATE = "costDate";
     public static final String COSTDATESTR = "costDateStr";
     public static final String HOSPITALIZEDNO = "hospitalizedNo";
     public static final String TREATMENTMODE = "treatmentMode";
-    public static final String SETTLEMENTDATE = "settlementDate";
     public static final String SETTLEMENTDATESTR = "settlementDateStr";
     public static final String PERSONALNO = "personalNo";
     public static final String INSUREDNAME = "insuredName";
@@ -380,16 +341,12 @@ public class YbReconsiderResetDataView implements Serializable, Comparable<YbRec
     public static final String APPLYDATESTR = "applyDateStr";
     public static final String CURRENCYFIELD = "currencyField";
     public static final String SEEKSTATE = "seekState";
-//    public static final String APPLYDATAID ="applyDataId" ;
-//    public static final String APPLYORDERNUMBER = "applyOrderNumber";
 
     public static final String RELATELDATAID = "relatelDataId";
 
     public static final String RESETPERSONID = "resetPersonId";
 
     public static final String RESETPERSONNAME = "resetPersonName";
-
-//    public static final String RESULTID = "resultId";
 
     public static final String RESETDATE = "resetDate";
 

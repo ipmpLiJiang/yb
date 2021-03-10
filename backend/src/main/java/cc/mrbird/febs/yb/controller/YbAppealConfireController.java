@@ -120,8 +120,8 @@ public class YbAppealConfireController extends BaseController {
                     YbAppealConfireData createData = new YbAppealConfireData();
                     createData.setId(UUID.randomUUID().toString());
                     createData.setPid(id);
-                    createData.setDeptCode(item.getDeptCode());
-                    String strDeptName = DataTypeHelpers.stringReplaceSetString(item.getDeptName(), item.getDeptCode() + "-");
+                    createData.setDeptId(item.getDeptId());
+                    String strDeptName = DataTypeHelpers.stringReplaceSetString(item.getDeptName(), item.getDeptId() + "-");
                     createData.setDeptName(strDeptName);
                     createData.setIsDeletemark(1);
                     createDataList.add(createData);
@@ -166,8 +166,8 @@ public class YbAppealConfireController extends BaseController {
                 YbAppealConfireData updateData = new YbAppealConfireData();
                 updateData.setId(item.getId());
                 updateData.setPid(appealConfireJson.getId());
-                updateData.setDeptCode(item.getDeptCode());
-                String strDeptName = DataTypeHelpers.stringReplaceSetString(item.getDeptName(), item.getDeptCode() + "-");
+                updateData.setDeptId(item.getDeptId());
+                String strDeptName = DataTypeHelpers.stringReplaceSetString(item.getDeptName(), item.getDeptId() + "-");
                 updateData.setDeptName(strDeptName);
                 if (updateData.getId() == null) {
                     updateData.setIsDeletemark(1);
@@ -182,14 +182,14 @@ public class YbAppealConfireController extends BaseController {
                 success = 1;
             } else {
                 YbAppealConfireData quertAcd = new YbAppealConfireData();
-                quertAcd.setId(appealConfireJson.getId());
-                quertAcd.setDeptCode(createDataList.get(0).getDeptCode());
+                quertAcd.setPid(appealConfireJson.getId());
+                quertAcd.setDeptId(createDataList.get(0).getDeptId());
                 List<YbAppealConfireData> queryAcdList = iYbAppealConfireDataService.findAppealConfireDataList(quertAcd);
                 if (queryAcdList.size() == 0) {
                     this.iYbAppealConfireService.updateAppealConfire(update, createDataList, updateDataList);
                     success = 1;
                 } else {
-                    message = createDataList.get(0).getDeptCode() + "-" + createDataList.get(0).getDeptName() + " 科室已存在!";
+                    message = createDataList.get(0).getDeptId() + "-" + createDataList.get(0).getDeptName() + " 科室已存在!";
                 }
             }
         } catch (Exception e) {

@@ -214,17 +214,4 @@
         </if>
     </select>
 
-    <select id="findReconsiderInpatientfeesList" resultType="cc.mrbird.febs.yb.entity.YbReconsiderInpatientfees">
-        SELECT
-            yb_reconsider_inpatientfees.*
-        FROM
-            yb_reconsider_inpatientfees
-            INNER JOIN yb_reconsider_data_date ON
-                yb_reconsider_inpatientfees.pid = yb_reconsider_data_date.id AND
-                yb_reconsider_data_date.IS_DELETEMARK = 1
-        WHERE
-            yb_reconsider_inpatientfees.IS_DELETEMARK = 1 AND
-            yb_reconsider_data_date.applyDateStr = #{applyDateStr}
-    </select>
-
 </mapper>

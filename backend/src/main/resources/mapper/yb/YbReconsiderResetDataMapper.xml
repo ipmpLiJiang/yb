@@ -173,30 +173,14 @@
         </if>
 </select>
 
-    <select id="findReconsiderResetByApplyDate" resultType="cc.mrbird.febs.yb.entity.YbReconsiderResetData">
-        SELECT
-        yb_reconsider_reset_data.*
-        FROM
-        yb_reconsider_reset_data
-        INNER JOIN yb_reconsider_reset on
-        yb_reconsider_reset.id = yb_reconsider_reset_data.pid AND
-        yb_reconsider_reset.IS_DELETEMARK = 1
-        where
-        yb_reconsider_reset_data.IS_DELETEMARK = 1 AND
-        yb_reconsider_reset.applyDateStr = #{ applyDateStr}
-        <if test="dataType != null"> and yb_reconsider_reset_data.dataType =#{ dataType} </if>
-    </select>
-
     <select id="findResetNotExistsRepayByApplyDate" resultType="cc.mrbird.febs.yb.entity.YbReconsiderResetData">
         SELECT
             yb_reconsider_reset_data.*
         FROM
             yb_reconsider_reset_data
         INNER JOIN yb_reconsider_reset ON
-            yb_reconsider_reset.id = yb_reconsider_reset_data.pid AND
-            yb_reconsider_reset.IS_DELETEMARK = 1
+            yb_reconsider_reset.id = yb_reconsider_reset_data.pid
         WHERE
-            yb_reconsider_reset_data.IS_DELETEMARK = 1 AND
             yb_reconsider_reset.applyDateStr = #{ applyDateStr} AND
             NOT EXISTS (
                 SELECT yb_reconsider_repay_data.id FROM

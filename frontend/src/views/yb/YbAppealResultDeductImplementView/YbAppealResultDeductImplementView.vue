@@ -20,7 +20,7 @@
               />
             </a-form-item>
           </a-col>
-          <a-col :span=4>
+          <a-col :span=4 v-show="isJx">
             <a-form-item
               label="至"
               v-bind="formItemLayout"
@@ -86,7 +86,6 @@
             <ybAppealResultDeductImplement-stayed
               ref="ybAppealResultDeductImplementStayed"
               :applyDateStr="searchApplyDate"
-              :applyDateToStr="searchToApplyDate"
               :defaultFormatDate="defaultApplyDate"
               :searchDataType="searchDataType"
               :searchText="searchText"
@@ -114,7 +113,7 @@
     </template>
     <template>
       <div>
-        <a-modal width="85%" :maskClosable="false" :footer="null" v-model="editVisible" title="录入扣款方案" @ok="handleOk">
+        <a-modal width="85%" :maskClosable="false" :footer="null" v-model="editVisible" title="录入扣款方案" @cancel="handleOk">
           <ybAppealResultDeductImplement-edit
           ref="ybAppealResultDeductImplementEdit"
           @close="handleOk"
@@ -156,6 +155,7 @@ export default {
       searchApplyDate: this.formatDate(),
       searchToApplyDate: this.formatDate(),
       defaultApplyDate: this.formatDate(),
+      isJx: false,
       selectDataTypeDataSource: [
         {text: '全部', value: 2},
         {text: '明细扣款', value: 0},
@@ -247,16 +247,18 @@ export default {
     },
     handleDataTypeChange (value) {
       this.searchDataType = value
-      setTimeout(() => {
-        this.searchTable()
-      }, 200)
+      // setTimeout(() => {
+      //   this.searchTable()
+      // }, 200)
     },
     callback (key) {
       this.tableSelectKey = key
       if (key === '1') {
+        this.isJx = false
         this.applyDateText = '复议年月'
         this.$refs.ybAppealResultDeductImplementStayed.searchPage()
       } else if (key === '2') {
+        this.isJx = true
         this.applyDateText = '绩效落实年月'
         this.$refs.ybAppealResultDeductImplementComplete.searchPage()
       } else {

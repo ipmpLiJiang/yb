@@ -34,7 +34,7 @@ public interface IYbReconsiderResetDataService extends IService<YbReconsiderRese
 
     String updateHandleResetDatas(String resultIds, String resetIds, Long uid, String uname);
 
-    List<YbReconsiderResetData> findReconsiderResetByApplyDates(String applyDateStr, Integer dataType);
+    List<YbReconsiderResetData> findReconsiderResetDataByApplyDates(String applyDateStr, Integer dataType);
 
     List<YbReconsiderResetData> findResetNotExistsRepayByApplyDates(String applyDateStr, Integer dataType);
 

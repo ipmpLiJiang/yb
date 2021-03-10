@@ -103,8 +103,18 @@ public class YbReconsiderResetDataServiceImpl extends ServiceImpl<YbReconsiderRe
     }
 
     @Override
-    public List<YbReconsiderResetData> findReconsiderResetByApplyDates(String applyDateStr, Integer dataType) {
-        return this.baseMapper.findReconsiderResetByApplyDate(applyDateStr, dataType);
+    public List<YbReconsiderResetData> findReconsiderResetDataByApplyDates(String applyDateStr, Integer dataType) {
+        List<YbReconsiderResetData> list = new ArrayList<>();
+        YbReconsiderReset reconsiderReset = iYbReconsiderResetService.findReconsiderResetByApplyDateStr(applyDateStr);
+        if (reconsiderReset != null) {
+            LambdaQueryWrapper<YbReconsiderResetData> wrapper = new LambdaQueryWrapper<>();
+            wrapper.eq(YbReconsiderResetData::getPid,reconsiderReset.getId());
+            if(dataType !=null){
+                wrapper.eq(YbReconsiderResetData::getDataType,dataType);
+            }
+            list = this.list(wrapper);
+        }
+        return  list;
     }
 
     @Override
@@ -248,11 +258,16 @@ public class YbReconsiderResetDataServiceImpl extends ServiceImpl<YbReconsiderRe
         int amCheckCount = iYbAppealManageService.findAppealManageResetCheckCounts(applyDateStr);
         if (rvCheckCount == 0) {
             if (amCheckCount == 0) {
-                LambdaQueryWrapper<YbReconsiderResetDataView> queryWrapperRdv = new LambdaQueryWrapper<>();
-                queryWrapperRdv.eq(YbReconsiderResetDataView::getApplyDateStr, applyDateStr);
-                queryWrapperRdv.eq(YbReconsiderResetDataView::getDataType, dataType);
-                queryWrapperRdv.eq(YbReconsiderResetDataView::getSeekState, YbDefaultValue.SEEKSTATE_0);
-                List<YbReconsiderResetDataView> resetDataList = this.iYbReconsiderResetDataViewService.list(queryWrapperRdv);
+                YbReconsiderResetDataView queryRrd = new YbReconsiderResetDataView();
+                queryRrd.setApplyDateStr(applyDateStr);
+                queryRrd.setDataType(dataType);
+                queryRrd.setSeekState(YbDefaultValue.SEEKSTATE_0);
+//                LambdaQueryWrapper<YbReconsiderResetDataView> queryWrapperRdv = new LambdaQueryWrapper<>();
+//                queryWrapperRdv.eq(YbReconsiderResetDataView::getApplyDateStr, applyDateStr);
+//                queryWrapperRdv.eq(YbReconsiderResetDataView::getDataType, dataType);
+//                queryWrapperRdv.eq(YbReconsiderResetDataView::getSeekState, YbDefaultValue.SEEKSTATE_0);
+//                List<YbReconsiderResetDataView> resetDataList = this.iYbReconsiderResetDataViewService.list(queryWrapperRdv);
+                List<YbReconsiderResetDataView> resetDataList = this.iYbReconsiderResetDataViewService.findYbReconsiderResetDataList(queryRrd);
                 if (resetDataList.size() > 0) {
                     List<YbReconsiderApplyData> applyDataList = this.iYbReconsiderApplyDataService.findReconsiderApplyDataByApplyDates(applyDateStr, dataType);
                     if (applyDataList.size() > 0) {

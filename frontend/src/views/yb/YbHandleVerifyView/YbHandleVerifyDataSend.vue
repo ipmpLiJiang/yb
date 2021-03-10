@@ -51,6 +51,9 @@ export default {
     },
     searchText: {
       default: ''
+    },
+    searchDataType: {
+      default: 0
     }
   },
   data () {
@@ -307,6 +310,9 @@ export default {
       this.loading = true
       params.applyDateStr = this.applyDate
       params.state = 1
+      if (this.searchDataType !== 2) {
+        params.dataType = this.searchDataType
+      }
       params.currencyField = this.searchText
       if (this.paginationInfo) {
         // 如果分页信息不为空，则设置表格当前第几页，每页条数，并设置查询分页参数
@@ -319,7 +325,7 @@ export default {
         params.pageSize = this.pagination.defaultPageSize
         params.pageNum = this.pagination.defaultCurrent
       }
-      params.sortField = 'orderNum'
+      params.sortField = 'hvd.typeno,hvd.dataType,hvd.orderNum '
       params.sortOrder = 'ascend'
       this.$get('ybHandleVerifyDataView', {
         ...params

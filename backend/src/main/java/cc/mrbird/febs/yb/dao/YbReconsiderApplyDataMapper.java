@@ -24,19 +24,15 @@ public interface YbReconsiderApplyDataMapper extends BaseMapper<YbReconsiderAppl
 
     void createBatchData(@Param("listReconsiderApplyData") List<YbReconsiderApplyData> listReconsiderApplyData);
 
-    List<YbReconsiderApplyData> findReconsiderApplyDataByApplyDate(@Param("applyDateStr") String applyDateStr, @Param("dataType") Integer dataType);
+    List<YbReconsiderApplyData> findReconsiderApplyDataByNotVerify(@Param("pid") String pid,@Param("applyDateStr") String applyDateStr, @Param("dataType") Integer dataType, @Param("typeno") Integer typeno);
 
-    List<YbReconsiderApplyData> findReconsiderApplyDataByNotVerify(@Param("applyDateStr") String applyDateStr, @Param("dataType") Integer dataType, @Param("typeno") Integer typeno);
+    List<YbReconsiderApplyData> findReconsiderApplyDataBetween(@Param("pid") String pid, @Param("dataType") Integer dataType, @Param("typeno") Integer typeno, @Param("startNum") Integer startNum, @Param("endNum") Integer endNum);
 
-    List<YbReconsiderApplyData> findReconsiderApplyDataBetween(@Param("applyDateStr") String applyDateStr, @Param("dataType") Integer dataType, @Param("typeno") Integer typeno, @Param("startNum") Integer startNum, @Param("endNum") Integer endNum);
+    List<YbReconsiderApplyData> findReconsiderApplyDataNotBetween(@Param("pid") String pid, @Param("dataType") Integer dataType, @Param("typeno") Integer typeno, @Param("startNum") Integer startNum, @Param("endNum") Integer endNum);
 
+    List<YbReconsiderApplyData> findReconsiderApplyDataNotInpatientfees(@Param("pid") String pid,@Param("applyDateStr") String applyDateStr, @Param("dataType") Integer dataType, @Param("typeno") Integer typeno);
 
-    List<YbReconsiderApplyData> findReconsiderApplyDataNotBetween(@Param("applyDateStr") String applyDateStr, @Param("dataType") Integer dataType, @Param("typeno") Integer typeno, @Param("startNum") Integer startNum, @Param("endNum") Integer endNum);
+    int findReconsiderApplyDataCount(@Param("pid") String pid, @Param("dataType") Integer dataType, @Param("typeno") Integer typeno);
 
-
-    List<YbReconsiderApplyData> findReconsiderApplyDataNotInpatientfees(@Param("applyDateStr") String applyDateStr, @Param("dataType") Integer dataType, @Param("typeno") Integer typeno);
-
-    int findReconsiderApplyDataCount(@Param("applyDateStr") String applyDateStr, @Param("dataType") Integer dataType, @Param("typeno") Integer typeno);
-
-    int findReconsiderApplyDataNotCount(@Param("applyDateStr") String applyDateStr, @Param("dataType") Integer dataType, @Param("typeno") Integer typeno);
+    int findReconsiderApplyDataNotCount(@Param("pid") String pid,@Param("applyDateStr") String applyDateStr, @Param("dataType") Integer dataType, @Param("typeno") Integer typeno);
 }

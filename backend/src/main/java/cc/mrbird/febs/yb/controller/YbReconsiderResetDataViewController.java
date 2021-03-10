@@ -300,13 +300,9 @@ public class YbReconsiderResetDataViewController extends BaseController {
                 writer.autoSizeColumnAll();
                 //标题Row高度
                 writer.setRowHeight(0,25);
-                //内容Row高度
-                for (int i = 1; i <= dataList.size(); i++) {
-                    writer.setRowHeight(i,20);
-                }
-                //设置遍历单个列为自动宽度
-//                for (int i = 0; i < YbReconsiderResetUnknownDataExport.class.getDeclaredFields().length; i++) {
-//                    writer.autoSizeColumn(i);
+                //内容Row高度 有效 慢
+//                for (int i = 1; i <= dataList.size(); i++) {
+//                    writer.setRowHeight(i,20);
 //                }
 
                 ExcelMapping excelMappingMain = ExcelMappingFactory.get(YbReconsiderResetMainExport.class);
@@ -330,13 +326,9 @@ public class YbReconsiderResetDataViewController extends BaseController {
                 writer.autoSizeColumnAll();
                 //标题Row高度
                 writer.setRowHeight(0,25);
-                //内容Row高度
-                for (int i = 1; i <= mainList.size(); i++) {
-                    writer.setRowHeight(i,20);
-                }
-                //设置遍历单个列为自动宽度
-//                for (int i = 0; i < YbReconsiderResetMainExport.class.getDeclaredFields().length; i++) {
-//                    writer.autoSizeColumn(i);
+                //内容Row高度 有效 慢
+//                for (int i = 1; i <= mainList.size(); i++) {
+//                    writer.setRowHeight(i,20);
 //                }
 
                 StyleSet style = writer.getStyleSet();
@@ -551,14 +543,11 @@ public class YbReconsiderResetDataViewController extends BaseController {
                 writer.autoSizeColumnAll();
                 //标题Row高度
                 writer.setRowHeight(0,25);
-                //内容Row高度
+                //内容Row高度 有效 慢
+                /*
                 for (int i = 1; i <= dataList.size(); i++) {
                     writer.setRowHeight(i,20);
-                }
-                //设置遍历单个列为自动宽度
-//                for (int i = 0; i < YbReconsiderResetDeductimplementDataExport.class.getDeclaredFields().length; i++) {
-//                    writer.autoSizeColumn(i);
-//                }
+                }*/
 
                 ExcelMapping excelMappingMain = ExcelMappingFactory.get(YbReconsiderResetDeductimplementMainExport.class);
                 sheetColumnCountMap.put(sheetName2,excelMappingMain.getPropertyList().size());
@@ -581,14 +570,11 @@ public class YbReconsiderResetDataViewController extends BaseController {
                 writer.autoSizeColumnAll();
                 //标题Row高度
                 writer.setRowHeight(0,25);
-                //内容Row高度
+                //内容Row高度 有效 慢
+                /*
                 for (int i = 1; i <= mainList.size(); i++) {
                     writer.setRowHeight(i,20);
-                }
-                //设置遍历单个列为自动宽度
-//                for (int i = 0; i < YbReconsiderResetDeductimplementMainExport.class.getDeclaredFields().length; i++) {
-//                    writer.autoSizeColumn(i);
-//                }
+                }*/
 
                 StyleSet style = writer.getStyleSet();
                 CellStyle cellStyle = style.getHeadCellStyle();

@@ -300,39 +300,10 @@ public class YbAppealResultReportView implements Serializable, Comparable<YbAppe
     private String applyDateStr;
 
     /**
-     * 操作员代码
+     * pid
      */
-    @TableField("operatorId")
-    @ExcelField(value = "操作员代码")
-    private Long operatorId;
-
-    /**
-     * 操作员名称
-     */
-    @TableField("operatorName")
-    @ExcelField(value = "操作员名称")
-    private String operatorName;
-
-    /**
-     * 剔除状态
-     */
-    @TableField("raResetState")
-    @ExcelField(value = "剔除状态")
-    private Integer raResetState;
-
-    /**
-     * 申诉状态
-     */
-    @TableField("raResultState")
-    @ExcelField(value = "申诉状态")
-    private Integer raResultState;
-
-    /**
-     * 还款状态
-     */
-    @TableField("raRepayState")
-    @ExcelField(value = "还款状态")
-    private Integer raRepayState;
+    @ExcelField(value = "pid")
+    private String pid;
 
     /**
      * 复议结果
@@ -389,28 +360,24 @@ public class YbAppealResultReportView implements Serializable, Comparable<YbAppe
     @ExcelField(value = "科室")
     private String arDeptName;
 
-    /**
-     * 理由
-     */
-    @TableField("operateReason")
-    @ExcelField(value = "理由")
-    private String operateReason;
 
     /**
-     * 操作日期
+     * 申诉原因
+     */
+    @TableField("operateReason")
+    @ExcelField(value = "申诉原因")
+    private String operateReason;
+
+
+    /**
+     * 申诉日期
      */
     @TableField("operateDate")
-    @ExcelField(value = "操作日期")
+    @ExcelField(value = "申诉日期")
     private Date operateDate;
     private transient String operateDateFrom;
     private transient String operateDateTo;
 
-    /**
-     * 备注
-     */
-    @TableField("COMMENTS")
-    @ExcelField(value = "备注")
-    private String comments;
 
     /**
      * 状态
@@ -420,57 +387,11 @@ public class YbAppealResultReportView implements Serializable, Comparable<YbAppe
     private Integer state;
 
     /**
-     * 是否删除
-     */
-    @TableField("IS_DELETEMARK")
-    @ExcelField(value = "是否删除")
-    private Integer isDeletemark;
-
-    /**
-     * 修改时间
-     */
-    @TableField("MODIFY_TIME")
-    @ExcelField(value = "修改时间")
-    private Date modifyTime;
-    private transient String modifyTimeFrom;
-    private transient String modifyTimeTo;
-
-    /**
-     * 创建时间
-     */
-    @TableField("CREATE_TIME")
-    @ExcelField(value = "创建时间")
-    private Date createTime;
-    private transient String createTimeFrom;
-    private transient String createTimeTo;
-
-    /**
-     * 创建人
-     */
-    @TableField("CREATE_USER_ID")
-    @ExcelField(value = "创建人")
-    private Long createUserId;
-
-    /**
-     * 修改人
-     */
-    @TableField("MODIFY_USER_ID")
-    @ExcelField(value = "修改人")
-    private Long modifyUserId;
-
-    /**
      * 来源类型
      */
     @TableField("sourceType")
     @ExcelField(value = "来源类型")
     private Integer sourceType;
-
-//    /**
-//     * 剔除明细扣款Id
-//     */
-//    @TableField("resetDataId")
-//            @ExcelField(value ="剔除明细扣款Id")
-//    private String resetDataId;
 
     /**
      * 还款状态
@@ -585,9 +506,6 @@ public class YbAppealResultReportView implements Serializable, Comparable<YbAppe
 
     public static final String APPLYDATESTR = "applyDateStr";
 
-    public static final String OPERATORID = "operatorId";
-
-    public static final String OPERATORNAME = "operatorName";
 
     public static final String RARESETSTATE = "raResetState";
 
@@ -615,23 +533,9 @@ public class YbAppealResultReportView implements Serializable, Comparable<YbAppe
 
     public static final String OPERATEDATE = "operateDate";
 
-    public static final String COMMENTS = "COMMENTS";
-
     public static final String STATE = "STATE";
 
-    public static final String IS_DELETEMARK = "IS_DELETEMARK";
-
-    public static final String MODIFY_TIME = "MODIFY_TIME";
-
-    public static final String CREATE_TIME = "CREATE_TIME";
-
-    public static final String CREATE_USER_ID = "CREATE_USER_ID";
-
-    public static final String MODIFY_USER_ID = "MODIFY_USER_ID";
-
     public static final String SOURCETYPE = "sourceType";
-
-//    public static final String RESETDATAID ="resetDataId" ;
 
     public static final String REPAYSTATE = "repayState";
 

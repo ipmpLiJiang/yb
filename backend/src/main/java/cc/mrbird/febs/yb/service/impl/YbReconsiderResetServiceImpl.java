@@ -5,6 +5,7 @@ import cc.mrbird.febs.com.service.IComSmsService;
 import cc.mrbird.febs.common.domain.QueryRequest;
 import cc.mrbird.febs.common.properties.FebsProperties;
 import cc.mrbird.febs.common.utils.SortUtil;
+import cc.mrbird.febs.system.domain.User;
 import cc.mrbird.febs.yb.entity.*;
 import cc.mrbird.febs.yb.dao.YbReconsiderResetMapper;
 import cc.mrbird.febs.yb.service.*;
@@ -128,8 +129,15 @@ public class YbReconsiderResetServiceImpl extends ServiceImpl<YbReconsiderResetM
     }
 
     @Override
+    public List<YbReconsiderReset> findReconsiderResetByApplyDateStr(List<String> applyDateStrList) {
+        LambdaQueryWrapper<YbReconsiderReset> wrapper = new LambdaQueryWrapper<>();
+        wrapper.in(YbReconsiderReset::getApplyDateStr, applyDateStrList);
+        return this.list(wrapper);
+    }
+
+    @Override
     @Transactional
-    public String updateReconsiderApplyState(YbReconsiderReset ybReconsiderReset) {
+    public String updateReconsiderApplyState(YbReconsiderReset ybReconsiderReset, User currentUser) {
         String message = "";
         LambdaQueryWrapper<YbReconsiderApply> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(YbReconsiderApply::getApplyDateStr, ybReconsiderReset.getApplyDateStr());
@@ -153,25 +161,29 @@ public class YbReconsiderResetServiceImpl extends ServiceImpl<YbReconsiderResetM
                                 s.getSeekState() == YbDefaultValue.SEEKSTATE_0).count();
 
                         if (count == 0) {
-//                            List<ComSms> createSmsList = new ArrayList<>();
-//                            int nOpenSms = febsProperties.getOpenSms();
-//                            String sendContent = "";
-//                            boolean isOpenSms = nOpenSms == 1 ? true : false;
-//                            if (isOpenSms) {
-//                                List<YbPerson> personList = iYbPersonService.findPersonResultList(ybReconsiderReset.getApplyDateStr());
-//                                for(YbPerson person : personList) {
-//                                    ComSms sms = new ComSms();
-//                                    sms.setSendcode(person.getPersonCode());
-//                                    sms.setSendname(person.getPersonName());
-//                                    sms.setMobile(person.getTel());
-//                                    sms.setSendcontent(sendContent);
-//                                    sms.setState(ComSms.STATE_0);
-//                                    sms.setSendType(ComSms.SENDTYPE_5);
-//                                    sms.setCreateTime(thisDate);
-//                                    sms.setIsDeletemark(1);
-//                                    createSmsList.add(sms);
-//                                }
-//                            }
+                            List<ComSms> createSmsList = new ArrayList<>();
+                            int nOpenSms = febsProperties.getOpenSms();
+                            String sendContent = iYbReconsiderApplyService.getSendMessage(ybReconsiderReset.getApplyDateStr());
+                            boolean isOpenSms = nOpenSms == 1 ? true : false;
+                            if (isOpenSms) {
+                                List<YbPerson> personList = iYbPersonService.findPersonResultList(ybReconsiderReset.getApplyDateStr());
+                                for(YbPerson person : personList) {
+                                    ComSms sms = new ComSms();
+                                    sms.setId(UUID.randomUUID().toString());
+                                    sms.setSendcode(person.getPersonCode());
+                                    sms.setSendname(person.getPersonName());
+                                    sms.setMobile(person.getTel());
+                                    sms.setSendcontent(sendContent);
+                                    sms.setState(ComSms.STATE_0);
+                                    sms.setSendType(ComSms.SENDTYPE_5);
+                                    sms.setOperatorId(currentUser.getUserId());
+                                    sms.setOperatorName(currentUser.getXmname());
+                                    sms.setCreateUserId(currentUser.getUserId());
+                                    sms.setCreateTime(thisDate);
+                                    sms.setIsDeletemark(1);
+                                    createSmsList.add(sms);
+                                }
+                            }
 
                             YbReconsiderReset updateReset  = new YbReconsiderReset();
                             updateReset.setId(searchReconsiderReset.getId());
@@ -185,9 +197,9 @@ public class YbReconsiderResetServiceImpl extends ServiceImpl<YbReconsiderResetM
                                 updateApply.setResetState(1);
                                 bl = this.iYbReconsiderApplyService.updateById(updateApply);
                                 if (bl) {
-//                                    if(createSmsList.size()>0) {
-//                                        this.iComSmsService.saveBatch(createSmsList);
-//                                    }
+                                    if(createSmsList.size()>0) {
+                                        this.iComSmsService.saveBatch(createSmsList);
+                                    }
                                     message = "ok";
                                 }
                             } else {

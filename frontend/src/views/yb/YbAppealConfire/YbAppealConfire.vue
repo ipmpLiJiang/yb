@@ -8,7 +8,7 @@
         <a-row>
           <div :class="advanced ? null: 'fold'">
             <a-col
-              :md="8"
+              :md="6"
               :sm="24"
             >
               <a-form-item
@@ -19,7 +19,7 @@
               </a-form-item>
             </a-col>
             <a-col
-              :md="8"
+              :md="6"
               :sm="24"
             >
               <a-form-item
@@ -37,10 +37,10 @@
                 label="管理员类型"
                 v-bind="formItemLayout"
               >
-                <a-select v-model="queryParams.adminType" style="width: 100px" @change="handleAdminTypeChange"
+                <a-select v-model="queryParams.adminType" style="width: 150px" @change="handleAdminTypeChange"
                 >
                   <a-select-option
-                  v-for="d in selectAdminTypeDataSource"
+                  v-for="d in queryAdminTypeDataSource"
                   :key="d.value"
                   >
                   {{ d.text }}
@@ -191,7 +191,10 @@ export default {
       queryParams: {
         adminType: 0
       },
-      selectAdminTypeDataSource: [{text: '全部', value: 0}, {text: '联络员', value: 1}, {text: '科主任', value: 2}, {text: '护士长', value: 3}],
+      // queryAdminTypeDataSource: [{text: '全部', value: 0}, {text: '联络员', value: 1}, {text: '科主任', value: 2}, {text: '护士长', value: 3}],
+      queryAdminTypeDataSource: [],
+      selectAdminTypeDataSource: [],
+      ctType: 1,
       editVisiable: false,
       loading: false,
       bordered: true
@@ -221,15 +224,11 @@ export default {
         title: '管理员类型',
         dataIndex: 'adminType',
         customRender: (text, row, index) => {
-          switch (text) {
-            case 1:
-              return '联络员'
-            case 2:
-              return '科主任'
-            case 3:
-              return '护士长'
-            default:
-              return text
+          let target = this.selectAdminTypeDataSource.filter(item => text === item.value)[0]
+          if (target) {
+            return target.text
+          } else {
+            return text
           }
         },
         width: 120
@@ -248,12 +247,30 @@ export default {
     }
   },
   mounted () {
+    this.findComType()
     this.fetch()
   },
   methods: {
     rowNo (index) {
       return (this.pagination.defaultCurrent - 1) *
             this.pagination.defaultPageSize + index + 1
+    },
+    findComType () {
+      let ctParams = {ctType: this.ctType}
+      this.queryAdminTypeDataSource = [{text: '全部', value: 0}]
+      this.selectAdminTypeDataSource = []
+      this.$get('comType/findList', {
+        ...ctParams
+      }).then((r) => {
+        if (r.data.data.length > 0) {
+          for (var i in r.data.data) {
+            var at = {text: r.data.data[i].ctName, value: r.data.data[i].id}
+            this.queryAdminTypeDataSource.push(at)
+            this.selectAdminTypeDataSource.push(at)
+          }
+        }
+      }
+      )
     },
     onSelectChange (selectedRowKeys) {
       this.selectedRowKeys = selectedRowKeys
@@ -273,7 +290,7 @@ export default {
     },
     add () {
       this.editVisiable = true
-      this.$refs.ybAppealConfireEdit.setFormValues()
+      this.$refs.ybAppealConfireEdit.setFormValues(null, this.selectAdminTypeDataSource)
     },
     handleEditSuccess () {
       this.editVisiable = false
@@ -283,7 +300,7 @@ export default {
       this.editVisiable = false
     },
     edit (record) {
-      this.$refs.ybAppealConfireEdit.setFormValues(record)
+      this.$refs.ybAppealConfireEdit.setFormValues(record, this.selectAdminTypeDataSource)
       this.editVisiable = true
     },
     del (record) {
@@ -371,7 +388,9 @@ export default {
       this.sortedInfo = null
       this.paginationInfo = null
       // 重置查询参数
-      this.queryParams = {}
+      this.queryParams = {
+        adminType: 0
+      }
       this.fetch()
     },
     handleTableChange (pagination, filters, sorter) {

@@ -147,12 +147,42 @@ public class YbReconsiderApplyDataServiceImpl extends ServiceImpl<YbReconsiderAp
 
     @Override
     public List<YbReconsiderApplyData> findReconsiderApplyDataByApplyDates(String applyDateStr, Integer dataType) {
-        return this.baseMapper.findReconsiderApplyDataByApplyDate(applyDateStr, dataType);
+        List<YbReconsiderApplyData> list = new ArrayList<>();
+        YbReconsiderApply reconsiderApply = iYbReconsiderApplyService.findReconsiderApplyByApplyDateStrs(applyDateStr);
+        if(reconsiderApply!=null) {
+            YbReconsiderApplyData reconsiderApplyData = new YbReconsiderApplyData();
+            reconsiderApplyData.setPid(reconsiderApply.getId());
+            reconsiderApplyData.setDataType(dataType);
+            return  this.findList(reconsiderApplyData);
+        }
+        return  list;
+    }
+    private List<YbReconsiderApplyData> findList(YbReconsiderApplyData reconsiderApplyData){
+        LambdaQueryWrapper<YbReconsiderApplyData> wrapper = new LambdaQueryWrapper<>();
+        if(reconsiderApplyData.getId() !=null){
+            wrapper.eq(YbReconsiderApplyData::getId,reconsiderApplyData.getId());
+        }
+        if(reconsiderApplyData.getPid() !=null){
+            wrapper.eq(YbReconsiderApplyData::getPid,reconsiderApplyData.getPid());
+        }
+        if(reconsiderApplyData.getTypeno() !=null){
+            wrapper.eq(YbReconsiderApplyData::getTypeno,reconsiderApplyData.getTypeno());
+        }
+        if(reconsiderApplyData.getDataType() !=null){
+            wrapper.eq(YbReconsiderApplyData::getDataType,reconsiderApplyData.getDataType());
+        }
+        return this.list(wrapper);
+
     }
 
     @Override
-    public List<YbReconsiderApplyData> findReconsiderApplyDataByNotVerifys(String applyDateStr, Integer dataType, Integer typeno) {
-        return this.baseMapper.findReconsiderApplyDataByNotVerify(applyDateStr, dataType, typeno);
+    public List<YbReconsiderApplyData> findReconsiderApplyDataList(YbReconsiderApplyData reconsiderApplyData){
+        return  this.findList(reconsiderApplyData);
+    }
+
+    @Override
+    public List<YbReconsiderApplyData> findReconsiderApplyDataByNotVerifys(String pid,String applyDateStr, Integer dataType, Integer typeno) {
+        return this.baseMapper.findReconsiderApplyDataByNotVerify(pid,applyDateStr, dataType, typeno);
     }
 
     @Override
@@ -257,12 +287,12 @@ public class YbReconsiderApplyDataServiceImpl extends ServiceImpl<YbReconsiderAp
 
     //    @Override
     @Transactional
-    public void findReconsiderApplyDataNotTask(String applyDateStr, int typeno) {
+    public void findReconsiderApplyDataNotTask(YbReconsiderApply reconsiderApply, int typeno) {
         int dataType = 0;
         String msg = "";
         int state = 1;
         YbReconsiderApplyTask ybReconsiderApplyTask = new YbReconsiderApplyTask();
-        ybReconsiderApplyTask.setApplyDateStr(applyDateStr);
+        ybReconsiderApplyTask.setApplyDateStr(reconsiderApply.getApplyDateStr());
         ybReconsiderApplyTask.setTypeno(typeno);
         ybReconsiderApplyTask.setState(state);
         List<YbReconsiderApplyTask> raTaskList = this.iYbReconsiderApplyTaskService.findReconsiderApplyTaskList(ybReconsiderApplyTask);
@@ -273,13 +303,13 @@ public class YbReconsiderApplyDataServiceImpl extends ServiceImpl<YbReconsiderAp
         boolean noUpdate = false;
         YbReconsiderApplyTask createTask = new YbReconsiderApplyTask();
         if (raTaskList.size() == 0) {
-            totalRow = this.baseMapper.findReconsiderApplyDataNotCount(applyDateStr, dataType, typeno);
+            totalRow = this.baseMapper.findReconsiderApplyDataNotCount(reconsiderApply.getId(),reconsiderApply.getApplyDateStr(), dataType, typeno);
             if (totalRow == 0) {
                 noUpdate = true;
             } else {
-                createTask = createReconsiderApplyTask(applyDateStr, 1, dataType, typeno, currentPage, totalRow);
+                createTask = createReconsiderApplyTask(reconsiderApply.getApplyDateStr(), 1, dataType, typeno, currentPage, totalRow);
 
-                List<YbReconsiderApplyData> reconsiderApplyDataList = this.baseMapper.findReconsiderApplyDataNotInpatientfees(applyDateStr, dataType, typeno);
+                List<YbReconsiderApplyData> reconsiderApplyDataList = this.baseMapper.findReconsiderApplyDataNotInpatientfees(reconsiderApply.getId(),reconsiderApply.getApplyDateStr(), dataType, typeno);
                 if (reconsiderApplyDataList.size() > 0) {
                     List<YbReconsiderApplyData> updateList = new ArrayList<>();
                     int i = 1;
@@ -305,7 +335,7 @@ public class YbReconsiderApplyDataServiceImpl extends ServiceImpl<YbReconsiderAp
                 currentPage = reconsiderApplyTask.getCurrentPage() + 1;
                 totalRow = reconsiderApplyTask.getTotalRow();
                 dataType = reconsiderApplyTask.getDataType();
-                createTask = createReconsiderApplyTask(applyDateStr, state, dataType, typeno, currentPage, totalRow);
+                createTask = createReconsiderApplyTask(reconsiderApply.getApplyDateStr(), state, dataType, typeno, currentPage, totalRow);
             }
         }
         if (!noUpdate) {
@@ -318,14 +348,14 @@ public class YbReconsiderApplyDataServiceImpl extends ServiceImpl<YbReconsiderAp
             //从orderNum结束
             int endNum = createTask.getEndNum();
 
-            List<YbReconsiderApplyData> reconsiderApplyDataList = this.baseMapper.findReconsiderApplyDataNotBetween(applyDateStr, dataType, typeno, startNum, endNum);
+            List<YbReconsiderApplyData> reconsiderApplyDataList = this.baseMapper.findReconsiderApplyDataNotBetween(reconsiderApply.getId(), dataType, typeno, startNum, endNum);
             if (reconsiderApplyDataList.size() > 0) {
                 String hisSql = "";
                 String hisWhere = "";
 
                 //String[] dateArr = hisTaskDate(reconsiderApplyDataList);
                 //查询his日期区间 开始
-                String dateStrForm = applyDateStr + "-01";
+                String dateStrForm = reconsiderApply.getApplyDateStr() + "-01";
 //                String dateStrForm = dateArr[0];
                 //查询his日期区间 结束
                 String dateStrTo = DataTypeHelpers.stringDateFormatAddMonth(1, dateStrForm, "", false);
@@ -457,7 +487,7 @@ public class YbReconsiderApplyDataServiceImpl extends ServiceImpl<YbReconsiderAp
 
                                             reconsiderInpatientfees.setApplyDataId(item.getId());
                                             reconsiderInpatientfees.setOrderNumber(item.getOrderNumber());//序号
-                                            reconsiderInpatientfees.setApplyDateStr(applyDateStr);
+                                            reconsiderInpatientfees.setApplyDateStr(reconsiderApply.getApplyDateStr());
                                             reconsiderInpatientfees.setDataType(dataType);
                                             reconsiderInpatientfees.setTypeno(typeno);
                                             reconsiderInpatientfees.setIsDeletemark(1);
@@ -531,10 +561,10 @@ public class YbReconsiderApplyDataServiceImpl extends ServiceImpl<YbReconsiderAp
         boolean noUpdate = false;
         YbReconsiderApplyTask createTask = new YbReconsiderApplyTask();
         if (raTaskList.size() == 0) {
-            totalRow = this.baseMapper.findReconsiderApplyDataCount(applyDateStr, dataType, typeno);
+            totalRow = this.baseMapper.findReconsiderApplyDataCount(reconsiderApply.getId(), dataType, typeno);
             if (totalRow == 0) {
                 dataType = 1;
-                totalRow = this.baseMapper.findReconsiderApplyDataCount(applyDateStr, dataType, typeno);
+                totalRow = this.baseMapper.findReconsiderApplyDataCount(reconsiderApply.getId(), dataType, typeno);
             }
             if (totalRow == 0) {
                 noUpdate = true;
@@ -546,15 +576,15 @@ public class YbReconsiderApplyDataServiceImpl extends ServiceImpl<YbReconsiderAp
             if (reconsiderApplyTask.getCurrentPage().equals(reconsiderApplyTask.getTotalPage())) {
                 if (reconsiderApplyTask.getDataType() == 0) {
                     dataType = 1;
-                    totalRow = this.baseMapper.findReconsiderApplyDataCount(applyDateStr, dataType, typeno);
+                    totalRow = this.baseMapper.findReconsiderApplyDataCount(reconsiderApply.getId(), dataType, typeno);
                     if (totalRow == 0) {
-                        this.findReconsiderApplyDataNotTask(applyDateStr, typeno);
+                        this.findReconsiderApplyDataNotTask(reconsiderApply, typeno);
                         noUpdate = true;
                     } else {
                         createTask = createReconsiderApplyTask(applyDateStr, state, dataType, typeno, currentPage, totalRow);
                     }
                 } else {
-                    this.findReconsiderApplyDataNotTask(applyDateStr, typeno);
+                    this.findReconsiderApplyDataNotTask(reconsiderApply, typeno);
                     noUpdate = true;
                 }
             } else {
@@ -574,7 +604,7 @@ public class YbReconsiderApplyDataServiceImpl extends ServiceImpl<YbReconsiderAp
             //从orderNum结束
             int endNum = createTask.getEndNum();
 
-            List<YbReconsiderApplyData> reconsiderApplyDataList = this.baseMapper.findReconsiderApplyDataBetween(applyDateStr, dataType, typeno, startNum, endNum);
+            List<YbReconsiderApplyData> reconsiderApplyDataList = this.baseMapper.findReconsiderApplyDataBetween(reconsiderApply.getId(), dataType, typeno, startNum, endNum);
             if (reconsiderApplyDataList.size() > 0) {
                 String hisSql = "";
                 String hisWhere = "";

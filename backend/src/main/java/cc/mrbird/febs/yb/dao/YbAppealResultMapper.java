@@ -29,7 +29,7 @@ public interface YbAppealResultMapper extends BaseMapper<YbAppealResult> {
 
     List<YbAppealResult> findAppealResulDataByRepay(@Param("applyDateStr") String applyDateStr,@Param("dataType") Integer dataType);
 
-    List<YbAppealResult> findAppealResulDataHandle(@Param("applyDateStr") String applyDateStr);
+    List<YbAppealResult> findAppealResulDataHandle(@Param("applyDateStr") String applyDateStr,@Param("hvId") String hvId);
 
     void updateAppealResulResetData(@Param("applyDateStr") String applyDateStr,@Param("resetPersonId") Long resetPersonId,@Param("resetPersonName") String resetPersonName,@Param("resetDate") Date resetDate);
 

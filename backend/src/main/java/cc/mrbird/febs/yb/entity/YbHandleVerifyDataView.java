@@ -129,32 +129,6 @@ public class YbHandleVerifyDataView implements Serializable {
     @ExcelField(value = "科室名称")
     private String deptName;
 
-    /**
-     * 入院日期
-     */
-    @TableField("enterHospitalDate")
-    @ExcelField(value = "入院日期")
-    private Date enterHospitalDate;
-    private transient String enterHospitalDateFrom;
-    private transient String enterHospitalDateTo;
-
-    /**
-     * 出院日期
-     */
-    @TableField("outHospitalDate")
-    @ExcelField(value = "出院日期")
-    private Date outHospitalDate;
-    private transient String outHospitalDateFrom;
-    private transient String outHospitalDateTo;
-
-    /**
-     * 费用日期
-     */
-    @TableField("costDate")
-    @ExcelField(value = "费用日期")
-    private Date costDate;
-    private transient String costDateFrom;
-    private transient String costDateTo;
 
     /**
      * 入院日期str
@@ -190,15 +164,6 @@ public class YbHandleVerifyDataView implements Serializable {
     @TableField("treatmentMode")
     @ExcelField(value = "就医方式")
     private String treatmentMode;
-
-    /**
-     * 结算日期
-     */
-    @TableField("settlementDate")
-    @ExcelField(value = "结算日期")
-    private Date settlementDate;
-    private transient String settlementDateFrom;
-    private transient String settlementDateTo;
 
     /**
      * 结算日期Str
@@ -282,15 +247,6 @@ public class YbHandleVerifyDataView implements Serializable {
     @TableField("orderNum")
     @ExcelField(value = "排序")
     private Integer orderNum;
-
-    /**
-     * 复议年月
-     */
-    @TableField("applyDate")
-    @ExcelField(value = "复议年月")
-    private Date applyDate;
-    private transient String applyDateFrom;
-    private transient String applyDateTo;
 
     /**
      * 复议年月Str
@@ -397,12 +353,6 @@ public class YbHandleVerifyDataView implements Serializable {
     @ExcelField(value = "状态")
     private Integer state;
 
-    /**
-     * 是否删除
-     */
-    @TableField("IS_DELETEMARK")
-    @ExcelField(value = "是否删除")
-    private Integer isDeletemark;
 
     /**
      * 通用
@@ -447,12 +397,6 @@ public class YbHandleVerifyDataView implements Serializable {
 
     public static final String DEPTNAME = "deptName";
 
-    public static final String ENTERHOSPITALDATE = "enterHospitalDate";
-
-    public static final String OUTHOSPITALDATE = "outHospitalDate";
-
-    public static final String COSTDATE = "costDate";
-
     public static final String ENTERHOSPITALDATESTR = "enterHospitalDateStr";
 
     public static final String OUTHOSPITALDATESTR = "outHospitalDateStr";
@@ -462,8 +406,6 @@ public class YbHandleVerifyDataView implements Serializable {
     public static final String HOSPITALIZEDNO = "hospitalizedNo";
 
     public static final String TREATMENTMODE = "treatmentMode";
-
-    public static final String SETTLEMENTDATE = "settlementDate";
 
     public static final String SETTLEMENTDATESTR = "settlementDateStr";
 
@@ -488,8 +430,6 @@ public class YbHandleVerifyDataView implements Serializable {
     public static final String ORDERNUMBER = "orderNumber";
 
     public static final String ORDERNUM = "orderNum";
-
-    public static final String APPLYDATE = "applyDate";
 
     public static final String APPLYDATESTR = "applyDateStr";
 
@@ -522,8 +462,6 @@ public class YbHandleVerifyDataView implements Serializable {
     public static final String OPERATEDATE = "operateDate";
 
     public static final String STATE = "STATE";
-
-    public static final String IS_DELETEMARK = "IS_DELETEMARK";
 
     public static final String CURRENCYFIELD = "currencyField";
 

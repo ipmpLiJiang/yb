@@ -6,12 +6,12 @@
     <template>
       <a-spin tip="Loading..." :spinning="spinning" :delay="delayTime">
       <div>
-        <div style="text-align:center;margin-bottom:20px">
+        <div style="text-align:center;">
           <a-row
             justify="center"
             align="middle"
           >
-            <a-col :span=7>
+            <a-col :span=6>
               复议年月：
               <a-month-picker
                 placeholder="请输入复议年月"
@@ -20,10 +20,29 @@
                 :format="monthFormat"
               />
             </a-col>
+            <a-col :span=4>
+              <a-form-item
+                label="扣款类型"
+                v-bind="formItemLayout"
+              >
+                <a-select
+                  :value="searchDataType"
+                   @change="handleDataTypeChange"
+                  style="width: 100px"
+                >
+                  <a-select-option
+                    v-for="d in searchDataTypeSource"
+                    :key="d.value"
+                  >
+                    {{ d.text }}
+                  </a-select-option>
+                </a-select>
+              </a-form-item>
+          </a-col>
             <a-col :span=5>
               <a-input-search placeholder="请输入关键字" v-model="searchText" style="width: 200px" enter-button @search="searchTable" />
             </a-col>
-            <a-col :span=3 v-show="tableSelectKey==1?true:false">
+            <a-col :span=2 v-show="tableSelectKey==1?true:false">
               <a-popconfirm
               title="确定获取剔除数据剔除？"
               @confirm="importData"
@@ -33,7 +52,7 @@
               <a-button type="primary">获取剔除数据</a-button>
             </a-popconfirm>
             </a-col>
-            <a-col :span=3 v-show="tableSelectKey==1?true:false">
+            <a-col :span=2 v-show="tableSelectKey==1?true:false">
               <a-popconfirm
                 title="确定批量发送？"
                 @confirm="batchSend"
@@ -43,7 +62,7 @@
                 <a-button type="primary">批量发送</a-button>
               </a-popconfirm>
             </a-col>
-            <a-col :span=3 v-show="tableSelectKey==1?true:false">
+            <a-col :span=2 v-show="tableSelectKey==1?true:false">
               <a-popconfirm
                 title="确定全部发送？"
                 @confirm="batchSendA"
@@ -78,6 +97,7 @@
             <ybHandleVerifyData-send
               ref="ybHandleVerifyDataSend"
               :applyDate="searchApplyDate"
+              :searchDataType="searchDataType"
               :searchText = "searchText"
             >
             </ybHandleVerifyData-send>
@@ -90,6 +110,7 @@
             <ybHandleVerifyData-end
               ref="ybHandleVerifyDataEnd"
               :applyDate="searchApplyDate"
+              :searchDataType="searchDataType"
               :searchText = "searchText"
             >
             </ybHandleVerifyData-end>
@@ -105,8 +126,8 @@ import moment from 'moment'
 import YbHandleVerifyDataSend from './YbHandleVerifyDataSend'
 import YbHandleVerifyDataEnd from './YbHandleVerifyDataEnd'
 const formItemLayout = {
-  labelCol: { span: 5 },
-  wrapperCol: { span: 15, offset: 1 }
+  labelCol: { span: 7 },
+  wrapperCol: { span: 13 }
 }
 export default {
   name: 'YbHandleVerifyView',
@@ -119,6 +140,12 @@ export default {
       searchText: '',
       searchApplyDate: this.formatDate(),
       defaultApplyDate: this.formatDate(),
+      searchDataTypeSource: [
+        { text: '全部', value: 2 },
+        { text: '明细扣款', value: 0 },
+        { text: '主单扣款', value: 1 }
+      ],
+      searchDataType: 0,
       spinning: false,
       delayTime: 500,
       tableSelectKey: '1'
@@ -136,6 +163,9 @@ export default {
     },
     monthChange (date, dateString) {
       this.searchApplyDate = dateString
+    },
+    handleDataTypeChange (value) {
+      this.searchDataType = value
     },
     importData () {
       this.spinning = true

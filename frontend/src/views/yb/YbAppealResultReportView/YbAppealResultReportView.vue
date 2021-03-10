@@ -6,7 +6,7 @@
     <div :class="advanced ? 'search' : null">
       <a-form layout="horizontal">
         <a-row>
-          <a-col :span=4>
+          <a-col :span=8>
             <a-form-item
               label="复议年月："
               v-bind="formItemLayout"
@@ -14,19 +14,6 @@
               <a-month-picker
                 placeholder="请选择复议年月"
                 @change="monthChange"
-                :default-value="defaultApplyDate"
-                :format="monthFormat"
-              />
-            </a-form-item>
-          </a-col>
-          <a-col :span=4>
-            <a-form-item
-              label="至"
-              v-bind="formItemLayout"
-            >
-              <a-month-picker
-                placeholder="请选择复议年月"
-                @change="monthToChange"
                 :default-value="defaultApplyDate"
                 :format="monthFormat"
               />
@@ -132,7 +119,7 @@
     </ybAppealManage-history>
     <template>
       <div>
-        <a-modal width="85%" :maskClosable="false" :footer="null" v-model="lookVisiable" title="查看申诉材料" @ok="handleOk">
+        <a-modal width="85%" :maskClosable="false" :footer="null" v-model="lookVisiable" title="查看申诉材料" @cancel="handleOk">
           <ybAppealManageResultLook-module
           ref="ybAppealManageResultLookModule"
           @close="lookClose"
@@ -146,7 +133,6 @@
 
 <script>
 import moment from 'moment'
-import { custom } from '../../js/custom'
 import YbAppealManageResultLookModule from '../ybFunModule/YbAppealManageResultLookModule'
 import YbAppealManageHistory from '../ybFunModule/YbAppealManageHistoryReportModule'
 const formItemLayout = {
@@ -194,7 +180,7 @@ export default {
       delayTime: 500,
       bordered: true,
       selectApplyDateStr: this.formatDate(),
-      selectToApplyDateStr: this.formatDate(),
+      // selectToApplyDateStr: this.formatDate(),
       defaultApplyDate: this.formatDate(),
       searchText: '',
       historyVisiable: false,
@@ -227,7 +213,7 @@ export default {
         title: '项目名称',
         dataIndex: 'projectName',
         fixed: 'left',
-        width: 160
+        width: 180
       },
       {
         title: '数量',
@@ -242,7 +228,7 @@ export default {
       {
         title: '规则名称',
         dataIndex: 'ruleName',
-        width: 140
+        width: 160
       },
       {
         title: '扣除原因',
@@ -258,12 +244,22 @@ export default {
       {
         title: '科室名称',
         dataIndex: 'arDeptName',
-        width: 120
+        customRender: (text, row, index) => {
+          if (text !== '' && text !== null) {
+            return row.arDeptCode + '-' + row.arDeptName
+          }
+        },
+        width: 150
       },
       {
         title: '医生姓名',
         dataIndex: 'arDoctorName',
-        width: 110
+        customRender: (text, row, index) => {
+          if (text !== '' && text !== null) {
+            return row.arDoctorCode + '-' + row.arDoctorName
+          }
+        },
+        width: 130
       },
       {
         title: '状态',
@@ -302,9 +298,9 @@ export default {
     monthChange (date, dateString) {
       this.selectApplyDateStr = dateString
     },
-    monthToChange (date, dateString) {
-      this.selectToApplyDateStr = dateString
-    },
+    // monthToChange (date, dateString) {
+    //   this.selectToApplyDateStr = dateString
+    // },
     handleHistoryClose () {
       this.historyVisiable = false
     },
@@ -321,9 +317,7 @@ export default {
     importExcel () {
       if (this.dataSource.length > 0) {
         let queryParams = {}
-
-        queryParams.applyDateFrom = this.selectApplyDateStr
-        queryParams.applyDateTo = this.selectToApplyDateStr
+        queryParams.applyDateStr = this.selectApplyDateStr
         queryParams.state = this.selectResultState
         if (this.selectDataType !== 2) {
           queryParams.dataType = this.selectDataType
@@ -402,51 +396,43 @@ export default {
       })
     },
     fetch (params = {}) {
-      let arrDateStr = custom.resetApplyDateStr(this.selectApplyDateStr, this.selectToApplyDateStr, this.defaultApplyDate)
-      this.selectApplyDateStr = arrDateStr[0]
-      this.selectToApplyDateStr = arrDateStr[1]
-
-      let msg = custom.checkApplyDateStr(this.selectApplyDateStr, this.selectToApplyDateStr, 3)
-      if (msg === '') {
-        params.applyDateFrom = this.selectApplyDateStr
-        params.applyDateTo = this.selectToApplyDateStr
-        params.state = this.selectResultState
-        if (this.selectDataType !== 2) {
-          params.dataType = this.selectDataType
-        }
-        params.sourceType = 0
-        if (this.searchText !== '') {
-          params.currencyField = this.searchText
-        }
-        this.loading = true
-        if (this.paginationInfo) {
-          // 如果分页信息不为空，则设置表格当前第几页，每页条数，并设置查询分页参数
-          this.$refs.TableInfo.pagination.current = this.paginationInfo.current
-          this.$refs.TableInfo.pagination.pageSize = this.paginationInfo.pageSize
-          params.pageSize = this.paginationInfo.pageSize
-          params.pageNum = this.paginationInfo.current
-        } else {
-          // 如果分页信息为空，则设置为默认值
-          params.pageSize = this.pagination.defaultPageSize
-          params.pageNum = this.pagination.defaultCurrent
-        }
-        params.sortField = 'applyDateStr asc,typeno asc,orderNum'
-        // params.sortOrder = 'descend'
-        params.sortOrder = 'ascend'
-        this.$get('ybAppealResultReportView', {
-          ...params
-        }).then((r) => {
-          let data = r.data
-          const pagination = { ...this.pagination }
-          pagination.total = data.total
-          this.loading = false
-          this.dataSource = data.rows
-          this.pagination = pagination
-        }
-        )
-      } else {
-        this.$message.error(msg)
+      params.applyDateStr = this.selectApplyDateStr
+      params.state = this.selectResultState
+      if (this.selectDataType !== 2) {
+        params.dataType = this.selectDataType
       }
+      params.sourceType = 0
+      if (this.searchText !== '') {
+        params.currencyField = this.searchText
+      }
+      this.loading = true
+      if (this.paginationInfo) {
+        // 如果分页信息不为空，则设置表格当前第几页，每页条数，并设置查询分页参数
+        this.$refs.TableInfo.pagination.current = this.paginationInfo.current
+        this.$refs.TableInfo.pagination.pageSize = this.paginationInfo.pageSize
+        params.pageSize = this.paginationInfo.pageSize
+        params.pageNum = this.paginationInfo.current
+      } else {
+        // 如果分页信息为空，则设置为默认值
+        params.pageSize = this.pagination.defaultPageSize
+        params.pageNum = this.pagination.defaultCurrent
+      }
+      // params.sortField = 'art.applyDateStr,art.typeno,art.dataType,art.orderNum'
+      // params.sortField = 'applyDateStr asc,typeno asc,orderNum'
+      // params.sortOrder = 'descend'
+      // params.sortOrder = 'ascend'
+
+      this.$get('ybAppealResultReportView', {
+        ...params
+      }).then((r) => {
+        let data = r.data
+        const pagination = { ...this.pagination }
+        pagination.total = data.total
+        this.loading = false
+        this.dataSource = data.rows
+        this.pagination = pagination
+      }
+      )
     }
   }
 }

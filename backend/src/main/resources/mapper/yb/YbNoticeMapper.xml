@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cc.mrbird.febs.yb.dao.YbNoticeMapper">
+
+        <!-- 通用查询映射结果 -->
+        <resultMap id="BaseResultMap" type="cc.mrbird.febs.yb.entity.YbNotice">
+                    <id column="id" property="id"/>
+                    <result column="ntTitle" property="ntTitle"/>
+                    <result column="ntExplain" property="ntExplain"/>
+                    <result column="ntDetail" property="ntDetail"/>
+                    <result column="sendType" property="sendType"/>
+                    <result column="releaseDate" property="releaseDate"/>
+                    <result column="operatorId" property="operatorId"/>
+                    <result column="operatorName" property="operatorName"/>
+                    <result column="clickNum" property="clickNum"/>
+                    <result column="smsState" property="smsState"/>
+                    <result column="currencyField" property="currencyField"/>
+                    <result column="COMMENTS" property="comments"/>
+                    <result column="STATE" property="state"/>
+                    <result column="IS_DELETEMARK" property="isDeletemark"/>
+                    <result column="MODIFY_TIME" property="modifyTime"/>
+                    <result column="CREATE_TIME" property="createTime"/>
+                    <result column="CREATE_USER_ID" property="createUserId"/>
+                    <result column="MODIFY_USER_ID" property="modifyUserId"/>
+        </resultMap>
+
+        <!-- 通用查询结果列 -->
+        <sql id="Base_Column_List">
+        id, ntTitle, ntExplain, ntDetail, sendType, releaseDate, operatorId, operatorName, clickNum, smsState, currencyField, COMMENTS, STATE, IS_DELETEMARK, MODIFY_TIME, CREATE_TIME, CREATE_USER_ID, MODIFY_USER_ID
+    </sql>
+    <update id="updateYbNotice" parameterType="cc.mrbird.febs.yb.entity.YbNotice">
+        update yb_notice
+        <trim prefix="set" suffixOverrides=",">
+<if test="ntTitle != null">ntTitle=#{ntTitle},</if>
+<if test="ntExplain != null">ntExplain=#{ntExplain},</if>
+<if test="ntDetail != null">ntDetail=#{ntDetail},</if>
+<if test="sendType != null">sendType=#{sendType},</if>
+<if test="releaseDate != null">releaseDate=#{releaseDate},</if>
+<if test="operatorId != null">operatorId=#{operatorId},</if>
+<if test="operatorName != null">operatorName=#{operatorName},</if>
+<if test="clickNum != null">clickNum=#{clickNum},</if>
+<if test="smsState != null">smsState=#{smsState},</if>
+<if test="currencyField != null">currencyField=#{currencyField},</if>
+<if test="comments != null">COMMENTS=#{comments},</if>
+<if test="state != null">STATE=#{state},</if>
+<if test="isDeletemark != null">IS_DELETEMARK=#{isDeletemark},</if>
+<if test="modifyTime != null">MODIFY_TIME=#{modifyTime},</if>
+<if test="createTime != null">CREATE_TIME=#{createTime},</if>
+<if test="createUserId != null">CREATE_USER_ID=#{createUserId},</if>
+<if test="modifyUserId != null">MODIFY_USER_ID=#{modifyUserId},</if>
+        </trim>
+                where id=#{id}
+
+    </update>
+    <select id="findYbNotice" resultType="cc.mrbird.febs.yb.entity.YbNotice" parameterType="cc.mrbird.febs.yb.entity.YbNotice">
+        select  *  from yb_notice
+        where  1=1
+        <if test="ybNotice.id != null"> and id =#{ ybNotice.id} </if>
+            <if test="ybNotice.ntTitle != null and ybNotice.ntTitle != ''"> and ntTitle like concat('%', #{ ybNotice.ntTitle} ,'%')</if>
+            <if test="ybNotice.ntExplain != null and ybNotice.ntExplain != ''"> and ntExplain like concat('%', #{ ybNotice.ntExplain} ,'%')</if>
+            <if test="ybNotice.ntDetail != null and ybNotice.ntDetail != ''"> and ntDetail like concat('%', #{ ybNotice.ntDetail} ,'%')</if>
+        <if test="ybNotice.sendType != null"> and sendType =#{ ybNotice.sendType} </if>
+        <if test="ybNotice.releaseDateFrom!= null">
+            AND ybNotice.releaseDate <![CDATA[ >= ]]>  releaseDateFrom}
+        </if>
+        <if test="ybNotice.releaseDateTo!= null">
+            AND ybNotice.releaseDate <![CDATA[ <= ]]>  releaseDateTo}
+        </if>
+            <if test="ybNotice.operatorName != null and ybNotice.operatorName != ''"> and operatorName like concat('%', #{ ybNotice.operatorName} ,'%')</if>
+        <if test="ybNotice.clickNum != null"> and clickNum =#{ ybNotice.clickNum} </if>
+        <if test="ybNotice.smsState != null"> and smsState =#{ ybNotice.smsState} </if>
+            <if test="ybNotice.currencyField != null and ybNotice.currencyField != ''"> and currencyField like concat('%', #{ ybNotice.currencyField} ,'%')</if>
+            <if test="ybNotice.comments != null and ybNotice.comments != ''"> and COMMENTS like concat('%', #{ ybNotice.comments} ,'%')</if>
+        <if test="ybNotice.state != null"> and STATE =#{ ybNotice.state} </if>
+        <if test="ybNotice.isDeletemark != null"> and IS_DELETEMARK =#{ ybNotice.isDeletemark} </if>
+        <if test="ybNotice.modifyTimeFrom!= null">
+            AND ybNotice.MODIFY_TIME <![CDATA[ >= ]]>  modifyTimeFrom}
+        </if>
+        <if test="ybNotice.modifyTimeTo!= null">
+            AND ybNotice.MODIFY_TIME <![CDATA[ <= ]]>  modifyTimeTo}
+        </if>
+        <if test="ybNotice.createTimeFrom!= null">
+            AND ybNotice.CREATE_TIME <![CDATA[ >= ]]>  createTimeFrom}
+        </if>
+        <if test="ybNotice.createTimeTo!= null">
+            AND ybNotice.CREATE_TIME <![CDATA[ <= ]]>  createTimeTo}
+        </if>
+</select>
+
+</mapper>

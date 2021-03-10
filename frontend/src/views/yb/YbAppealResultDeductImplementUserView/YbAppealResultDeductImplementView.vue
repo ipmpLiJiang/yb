@@ -153,9 +153,9 @@ export default {
     },
     handleDataTypeChange (value) {
       this.searchDataType = value
-      setTimeout(() => {
-        this.searchTable()
-      }, 200)
+      // setTimeout(() => {
+      //   this.searchTable()
+      // }, 200)
     },
     callback (key) {
       this.tableSelectKey = key

@@ -33,14 +33,10 @@
 
 <script>
 import moment from 'moment'
-import { custom } from '../../js/custom'
 export default {
   name: 'YbAppealResultDeductImplementStayed',
   props: {
     applyDateStr: {
-      default: ''
-    },
-    applyDateToStr: {
       default: ''
     },
     defaultFormatDate: {
@@ -133,12 +129,22 @@ export default {
       {
         title: '科室名称',
         dataIndex: 'arDeptName',
-        width: 120
+        customRender: (text, row, index) => {
+          if (text !== '' && text !== null) {
+            return row.arDeptCode + '-' + row.arDeptName
+          }
+        },
+        width: 150
       },
       {
         title: '医生姓名',
         dataIndex: 'arDoctorName',
-        width: 110
+        customRender: (text, row, index) => {
+          if (text !== '' && text !== null) {
+            return row.arDoctorCode + '-' + row.arDoctorName
+          }
+        },
+        width: 130
       },
       {
         title: '扣款类型',
@@ -154,7 +160,7 @@ export default {
           }
         },
         fixed: 'right',
-        width: 90
+        width: 95
       },
       {
         title: '操作',
@@ -229,50 +235,37 @@ export default {
       })
     },
     fetch (params = {}) {
-      let dateStr = this.applyDateStr
-      let dateToStr = this.applyDateToStr
-
-      let arrDateStr = custom.resetApplyDateStr(dateStr, dateToStr, this.defaultFormatDate)
-      dateStr = arrDateStr[0]
-      dateToStr = arrDateStr[1]
-
-      let msg = custom.checkApplyDateStr(dateStr, dateToStr, 3)
-      if (msg === '') {
-        this.loading = true
-        params.applyDateFrom = dateStr
-        params.applyDateTo = dateToStr
-        params.currencyField = this.searchText
-        if (this.searchDataType !== 2) {
-          params.dataType = this.searchDataType
-        }
-        if (this.paginationInfo) {
-          // 如果分页信息不为空，则设置表格当前第几页，每页条数，并设置查询分页参数
-          this.$refs.TableInfo.pagination.current = this.paginationInfo.current
-          this.$refs.TableInfo.pagination.pageSize = this.paginationInfo.pageSize
-          params.pageSize = this.paginationInfo.pageSize
-          params.pageNum = this.paginationInfo.current
-        } else {
-          // 如果分页信息为空，则设置为默认值
-          params.pageSize = this.pagination.defaultPageSize
-          params.pageNum = this.pagination.defaultCurrent
-        }
-        params.sortField = 'applyDateStr asc,orderNum'
-        // params.sortOrder = 'descend'
-        params.sortOrder = 'ascend'
-        this.$get('ybAppealResultDeductimplementView', {
-          ...params
-        }).then((r) => {
-          let data = r.data
-          const pagination = { ...this.pagination }
-          pagination.total = data.total
-          this.loading = false
-          this.dataSource = data.rows
-          this.pagination = pagination
-        })
-        this.selectedRowKeys = []
-      } else {
-        this.$message.error(msg)
+      this.loading = true
+      params.applyDateStr = this.applyDateStr
+      params.currencyField = this.searchText
+      if (this.searchDataType !== 2) {
+        params.dataType = this.searchDataType
       }
+      if (this.paginationInfo) {
+        // 如果分页信息不为空，则设置表格当前第几页，每页条数，并设置查询分页参数
+        this.$refs.TableInfo.pagination.current = this.paginationInfo.current
+        this.$refs.TableInfo.pagination.pageSize = this.paginationInfo.pageSize
+        params.pageSize = this.paginationInfo.pageSize
+        params.pageNum = this.paginationInfo.current
+      } else {
+        // 如果分页信息为空，则设置为默认值
+        params.pageSize = this.pagination.defaultPageSize
+        params.pageNum = this.pagination.defaultCurrent
+      }
+      params.sortField = 'rr.applyDateStr,rrd.dataType,rrd.orderNum'
+      // params.sortOrder = 'descend'
+      params.sortOrder = 'ascend'
+      this.$get('ybAppealResultDeductimplementView/findAppealResultView', {
+        ...params
+      }).then((r) => {
+        let data = r.data
+        const pagination = { ...this.pagination }
+        pagination.total = data.total
+        this.loading = false
+        this.dataSource = data.rows
+        this.pagination = pagination
+      })
+      this.selectedRowKeys = []
     }
   }
 }

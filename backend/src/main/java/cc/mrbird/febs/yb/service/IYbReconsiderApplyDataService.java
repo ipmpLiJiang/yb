@@ -36,7 +36,9 @@ public interface IYbReconsiderApplyDataService extends IService<YbReconsiderAppl
 
         List<YbReconsiderApplyData> findReconsiderApplyDataByApplyDates(String applyDateStr, Integer dataType);
 
-        List<YbReconsiderApplyData> findReconsiderApplyDataByNotVerifys(String applyDateStr, Integer dataType,Integer typeno);
+        List<YbReconsiderApplyData> findReconsiderApplyDataList(YbReconsiderApplyData reconsiderApplyData);
+
+        List<YbReconsiderApplyData> findReconsiderApplyDataByNotVerifys(String pid,String applyDateStr, Integer dataType,Integer typeno);
 
         void createBatchDatas(List<YbReconsiderApplyData> listReconsiderApplyData);
 

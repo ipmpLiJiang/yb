@@ -117,8 +117,8 @@ public class YbAppealConfireDataServiceImpl extends ServiceImpl<YbAppealConfireD
             wrapper.eq(YbAppealConfireData::getPid,appealConfireData.getPid());
         }
 
-        if(appealConfireData.getDeptCode() !=null){
-            wrapper.eq(YbAppealConfireData::getDeptCode,appealConfireData.getDeptCode());
+        if(appealConfireData.getDeptId() !=null){
+            wrapper.eq(YbAppealConfireData::getDeptId,appealConfireData.getDeptId());
         }
 
         if(appealConfireData.getDeptName() !=null){

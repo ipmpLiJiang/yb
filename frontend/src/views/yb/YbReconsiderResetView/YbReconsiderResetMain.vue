@@ -236,7 +236,7 @@ export default {
         params.pageSize = this.pagination.defaultPageSize
         params.pageNum = this.pagination.defaultCurrent
       }
-      params.sortField = 'orderNum'
+      params.sortField = 'rrd.orderNum'
       params.sortOrder = 'ascend'
       this.$get('ybReconsiderResetDataView', {
         ...params

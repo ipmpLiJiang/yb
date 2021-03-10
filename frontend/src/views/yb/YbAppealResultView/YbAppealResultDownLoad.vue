@@ -94,7 +94,6 @@ export default {
       this.queryParams.sourceType = this.appealResultDownLoad.sourceType
 
       if (this.tableSelectKey === '1' || this.tableSelectKey === '2') {
-        this.queryParams.state = 12
         this.queryParams.sourceType = 0
       } else {
         this.queryParams.state = 1

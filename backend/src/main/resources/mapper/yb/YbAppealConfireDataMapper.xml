@@ -6,7 +6,7 @@
         <resultMap id="BaseResultMap" type="cc.mrbird.febs.yb.entity.YbAppealConfireData">
                     <id column="id" property="id"/>
                     <result column="pid" property="pid"/>
-                    <result column="deptCode" property="deptCode"/>
+                    <result column="deptId" property="deptId"/>
                     <result column="deptName" property="deptName"/>
                     <result column="COMMENTS" property="comments"/>
                     <result column="STATE" property="state"/>
@@ -19,13 +19,13 @@
 
         <!-- 通用查询结果列 -->
         <sql id="Base_Column_List">
-        id, pid, deptCode, deptName, COMMENTS, STATE, IS_DELETEMARK, MODIFY_TIME, CREATE_TIME, CREATE_USER_ID, MODIFY_USER_ID
+        id, pid, deptId, deptName, COMMENTS, STATE, IS_DELETEMARK, MODIFY_TIME, CREATE_TIME, CREATE_USER_ID, MODIFY_USER_ID
     </sql>
     <update id="updateYbAppealConfireData" parameterType="cc.mrbird.febs.yb.entity.YbAppealConfireData">
         update yb_appeal_confire_data
         <trim prefix="set" suffixOverrides=",">
 <if test="pid != null">pid=#{pid},</if>
-<if test="deptCode != null">deptCode=#{deptCode},</if>
+<if test="deptId != null">deptId=#{deptId},</if>
 <if test="deptName != null">deptName=#{deptName},</if>
 <if test="comments != null">COMMENTS=#{comments},</if>
 <if test="state != null">STATE=#{state},</if>
@@ -43,7 +43,7 @@
         where  1=1
             <if test="ybAppealConfireData.id != null and ybAppealConfireData.id != ''"> and id =#{ ybAppealConfireData.id} </if>
             <if test="ybAppealConfireData.pid != null and ybAppealConfireData.pid != ''"> and pid like concat('%', #{ ybAppealConfireData.pid} ,'%')</if>
-            <if test="ybAppealConfireData.deptCode != null and ybAppealConfireData.deptCode != ''"> and deptCode like concat('%', #{ ybAppealConfireData.deptCode} ,'%')</if>
+            <if test="ybAppealConfireData.deptId != null and ybAppealConfireData.deptId != ''"> and deptId like concat('%', #{ ybAppealConfireData.deptId} ,'%')</if>
             <if test="ybAppealConfireData.deptName != null and ybAppealConfireData.deptName != ''"> and deptName like concat('%', #{ ybAppealConfireData.deptName} ,'%')</if>
             <if test="ybAppealConfireData.comments != null and ybAppealConfireData.comments != ''"> and COMMENTS like concat('%', #{ ybAppealConfireData.comments} ,'%')</if>
         <if test="ybAppealConfireData.state != null"> and STATE =#{ ybAppealConfireData.state} </if>

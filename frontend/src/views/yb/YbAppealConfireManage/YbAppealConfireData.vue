@@ -86,7 +86,7 @@ export default {
         dataIndex: 'deptName',
         customRender: (text, row, index) => {
           if (text !== '' && text !== null) {
-            return row.deptCode + '-' + row.deptName
+            return row.deptId + '-' + row.deptName
           }
         }
       },

@@ -132,7 +132,7 @@
     </ybAppealManage-history>
     <template>
       <div>
-        <a-modal width="85%" :maskClosable="false" :footer="null" v-model="lookVisiable" title="查看申诉材料" @ok="handleOk">
+        <a-modal width="85%" :maskClosable="false" :footer="null" v-model="lookVisiable" title="查看申诉材料" @cancel="handleOk">
           <ybAppealManageResultLook-module
           ref="ybAppealManageResultLookModule"
           @close="lookClose"
@@ -227,7 +227,7 @@ export default {
         title: '项目名称',
         dataIndex: 'projectName',
         fixed: 'left',
-        width: 160
+        width: 180
       },
       {
         title: '数量',
@@ -242,7 +242,7 @@ export default {
       {
         title: '规则名称',
         dataIndex: 'ruleName',
-        width: 140
+        width: 160
       },
       {
         title: '扣除原因',
@@ -420,9 +420,10 @@ export default {
           params.pageSize = this.pagination.defaultPageSize
           params.pageNum = this.pagination.defaultCurrent
         }
-        params.sortField = 'applyDateStr asc,typeno asc,orderNum'
+        // params.sortField = 'art.applyDateStr,art.typeno,art.dataType,art.orderNum'
+        // params.sortField = 'applyDateStr asc,typeno asc,orderNum'
         // params.sortOrder = 'descend'
-        params.sortOrder = 'ascend'
+        // params.sortOrder = 'ascend'
         this.$get('ybAppealResultReportView/findAppealResultReportUserView', {
           ...params
         }).then((r) => {

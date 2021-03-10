@@ -160,17 +160,13 @@
 
     <select id="findHandleVerifyDataList" resultType="cc.mrbird.febs.yb.entity.YbHandleVerifyData">
         SELECT
-            yb_handle_verify_data.*
+            *
         FROM
             yb_handle_verify_data
-            INNER JOIN yb_handle_verify ON
-                yb_handle_verify_data.pid = yb_handle_verify.id AND
-                yb_handle_verify.IS_DELETEMARK = 1
         WHERE
-        yb_handle_verify_data.IS_DELETEMARK = 1
-        <if test="state != null"> and yb_handle_verify_data.state =#{ state } </if>
-        <if test="dataType != null"> and yb_handle_verify_data.dataType =#{ dataType } </if>
-        <if test="applyDateStr != null and applyDateStr != ''"> and yb_handle_verify.applyDateStr = #{ applyDateStr }</if>
+        pid = #{ pid }
+        <if test="state != null"> and state =#{ state } </if>
+        <if test="dataType != null"> and dataType =#{ dataType } </if>
     </select>
 
 </mapper>

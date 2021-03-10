@@ -121,12 +121,22 @@ export default {
       {
         title: '科室名称',
         dataIndex: 'arDeptName',
-        width: 120
+        customRender: (text, row, index) => {
+          if (text !== '' && text !== null) {
+            return row.arDeptCode + '-' + row.arDeptName
+          }
+        },
+        width: 150
       },
       {
         title: '医生姓名',
         dataIndex: 'arDoctorName',
-        width: 110
+        customRender: (text, row, index) => {
+          if (text !== '' && text !== null) {
+            return row.arDoctorCode + '-' + row.arDoctorName
+          }
+        },
+        width: 130
       },
       {
         title: '扣款类型',
@@ -142,13 +152,13 @@ export default {
           }
         },
         fixed: 'right',
-        width: 90
+        width: 95
       },
       {
         title: '落实年月',
         dataIndex: 'implementDateStr',
         fixed: 'right',
-        width: 90
+        width: 95
       },
       {
         title: '分摊方式',
@@ -166,7 +176,7 @@ export default {
           }
         },
         fixed: 'right',
-        width: 90
+        width: 95
       },
       {
         title: '分摊方案',
@@ -251,7 +261,6 @@ export default {
         if (this.searchDataType !== 2) {
           params.dataType = this.searchDataType
         }
-        params.deductImplementId = '1' // 随便传一个值，代表已经填过扣款落实表
         if (this.paginationInfo) {
           // 如果分页信息不为空，则设置表格当前第几页，每页条数，并设置查询分页参数
           this.$refs.TableInfo.pagination.current = this.paginationInfo.current
@@ -263,7 +272,7 @@ export default {
           params.pageSize = this.pagination.defaultPageSize
           params.pageNum = this.pagination.defaultCurrent
         }
-        params.sortField = 'applyDateStr asc,orderNum'
+        params.sortField = 'ardi.applyDateStr asc,rrd.orderNum'
         // params.sortOrder = 'descend'
         params.sortOrder = 'ascend'
         this.$get('ybAppealResultDeductimplementView', {

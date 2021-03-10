@@ -113,12 +113,22 @@ export default {
       {
         title: '科室名称',
         dataIndex: 'arDeptName',
-        width: 130
+        customRender: (text, row, index) => {
+          if (text !== '' && text !== null) {
+            return row.arDeptCode + '-' + row.arDeptName
+          }
+        },
+        width: 150
       },
       {
         title: '医生姓名',
         dataIndex: 'arDoctorName',
-        width: 110
+        customRender: (text, row, index) => {
+          if (text !== '' && text !== null) {
+            return row.arDoctorCode + '-' + row.arDoctorName
+          }
+        },
+        width: 130
       },
       {
         title: '扣款类型',

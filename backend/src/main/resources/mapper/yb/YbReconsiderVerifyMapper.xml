@@ -206,21 +206,14 @@
 
     <select id="findReconsiderVerifyList" resultType="cc.mrbird.febs.yb.entity.YbReconsiderVerify" >
         SELECT
-            yb_reconsider_verify.*
+            *
         FROM
             yb_reconsider_verify
-            INNER JOIN yb_reconsider_apply_data ON
-                yb_reconsider_apply_data.id = yb_reconsider_verify.applyDataId AND
-                yb_reconsider_apply_data.IS_DELETEMARK = 1
-            INNER JOIN yb_reconsider_apply ON
-                yb_reconsider_apply.id = yb_reconsider_apply_data.pid AND
-                yb_reconsider_apply.IS_DELETEMARK = 1
         WHERE
-            yb_reconsider_verify.IS_DELETEMARK = 1
-            <if test="state != null"> and yb_reconsider_verify.state =#{ state } </if>
-            <if test="dataType != null"> and yb_reconsider_verify.dataType =#{ dataType } </if>
-            <if test="typeno != null"> and yb_reconsider_verify.typeno =#{ typeno } </if>
-            <if test="applyDateStr != null and applyDateStr != ''"> and yb_reconsider_apply.applyDateStr = #{ applyDateStr }</if>
+            applyDateStr = #{ applyDateStr }
+        <if test="state != null"> and state =#{ state } </if>
+        <if test="typeno != null"> and typeno =#{ typeno } </if>
+        <if test="dataType != null"> and dataType =#{ dataType } </if>
     </select>
 
     <insert id="insertReconsiderVerifyImport">
@@ -314,18 +307,11 @@ from
     <!--State in(1,2) 1待审核、2已审核-->
     <select id="findReconsiderVerifyResetCheckCount" resultType="Integer">
         SELECT
-        count(1)
-    FROM
-        yb_reconsider_verify
-        INNER join yb_reconsider_apply_data on
-            yb_reconsider_verify.applyDataId = yb_reconsider_apply_data.id and
-            yb_reconsider_apply_data.IS_DELETEMARK = 1
-        inner join yb_reconsider_apply on
-            yb_reconsider_apply.id = yb_reconsider_apply_data.pid and
-            yb_reconsider_apply.IS_DELETEMARK = 1
-    where
-        yb_reconsider_verify.IS_DELETEMARK = 1 and
-        yb_reconsider_verify.state in(1,2) and
-        yb_reconsider_apply.applyDateStr = #{applyDateStr}
+            count(1)
+        FROM
+            yb_reconsider_verify
+        where
+            applyDateStr = #{applyDateStr} and
+            state in(1,2)
 </select>
 </mapper>

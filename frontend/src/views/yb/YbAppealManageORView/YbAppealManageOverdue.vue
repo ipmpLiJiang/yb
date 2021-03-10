@@ -309,8 +309,8 @@ export default {
         params.pageSize = this.pagination.defaultPageSize
         params.pageNum = this.pagination.defaultCurrent
       }
-      params.sortField = 'orderNum'
-      params.sortOrder = 'ascend'
+      // params.sortField = 'ad.orderNum'
+      // params.sortOrder = 'ascend'
       this.$get('ybAppealManageView/appealManageOperateRoomView', {
         ...params
       }).then((r) => {

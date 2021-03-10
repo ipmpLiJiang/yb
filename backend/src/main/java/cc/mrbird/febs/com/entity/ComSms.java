@@ -51,6 +51,11 @@ private static final long serialVersionUID=1L;
     public static final int SENDTYPE_5 = 5 ;
 
     /**
+     * 6 人工复议
+     */
+    public static final int SENDTYPE_6 = 6 ;
+
+    /**
      * 0 未发送
      */
     public static final int STATE_0 = 0 ;

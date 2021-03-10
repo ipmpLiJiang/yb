@@ -32,4 +32,6 @@ public class FebsProperties {
     private String in3;
 
     private Integer taskInpatientCount;
+
+    private String smsWebsite;
 }

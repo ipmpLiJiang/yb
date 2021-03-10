@@ -20,9 +20,13 @@ public interface IYbAppealResultDeductimplementViewService extends IService<YbAp
 
         IPage<YbAppealResultDeductimplementView> findYbAppealResultDeductimplementViews(QueryRequest request, YbAppealResultDeductimplementView ybAppealResultDeductimplementView);
 
+        IPage<YbAppealResultDeductimplementView> findAppealResultDeductimplementViews(QueryRequest request, YbAppealResultDeductimplementView ybAppealResultDeductimplementView,boolean isUser);
+
         IPage<YbAppealResultDeductimplementView> findYbAppealResultDeductimplementViewList(QueryRequest request, YbAppealResultDeductimplementView ybAppealResultDeductimplementView);
 
-        IPage<YbAppealResultDeductimplementView> findAppealResultDeductimplementView(QueryRequest request, YbAppealResultDeductimplementView ybAppealResultDeductimplementView);
+        IPage<YbAppealResultDeductimplementView> findAppealResultDmtView(QueryRequest request, YbAppealResultDeductimplementView ybAppealResultDeductimplementView);
+
+        IPage<YbAppealResultDeductimplementView> findAppealResultDmtUserView(QueryRequest request, YbAppealResultDeductimplementView ybAppealResultDeductimplementView);
 
         void createYbAppealResultDeductimplementView(YbAppealResultDeductimplementView ybAppealResultDeductimplementView);
 

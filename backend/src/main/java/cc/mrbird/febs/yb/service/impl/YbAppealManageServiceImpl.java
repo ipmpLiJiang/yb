@@ -359,7 +359,8 @@ public class YbAppealManageServiceImpl extends ServiceImpl<YbAppealManageMapper,
             newAppealManage.setVerifySendId(ybAppealManage.getVerifyId());
             newAppealManage.setDataType(ybAppealManage.getDataType());
             int day = iComConfiguremanageService.getConfigDay();
-            Date enableDate = this.addDateMethod(thisDate, day);
+            //变更日期不变 this.addDateMethod(thisDate, day);
+            Date enableDate = entity.getEnableDate();
             newAppealManage.setEnableDate(enableDate);
             newAppealManage.setOperateProcess("变更申请-创建");
 
@@ -458,6 +459,10 @@ public class YbAppealManageServiceImpl extends ServiceImpl<YbAppealManageMapper,
         if (entity != null && (entity.getAcceptState() == YbDefaultValue.ACCEPTSTATE_0 || entity.getAcceptState() == YbDefaultValue.ACCEPTSTATE_1 || entity.getAcceptState() == YbDefaultValue.ACCEPTSTATE_2)) {
             YbAppealManage updateAppealManage = new YbAppealManage();
             updateAppealManage.setId(ybAppealManage.getId());
+            updateAppealManage.setChangeDoctorCode(ybAppealManage.getReadyDoctorCode());
+            updateAppealManage.setChangeDoctorName(ybAppealManage.getReadyDoctorName());
+            updateAppealManage.setChangeDeptCode(ybAppealManage.getReadyDeptCode());
+            updateAppealManage.setChangeDeptName(ybAppealManage.getReadyDeptName());
             updateAppealManage.setAcceptState(YbDefaultValue.ACCEPTSTATE_3);
             //updateAppealManage.setOperateReason("管理员更改");
             ybAppealManage.setOperateProcess("管理员更改");
@@ -466,6 +471,8 @@ public class YbAppealManageServiceImpl extends ServiceImpl<YbAppealManageMapper,
             updateAppealManage.setAdminPersonName(Uname);
             updateAppealManage.setAdminReason("管理员更改");
             updateAppealManage.setAdminChangeDate(thisDate);
+            updateAppealManage.setModifyTime(thisDate);
+            updateAppealManage.setModifyUserId(uId);
             //方法 更改状态为0的数据 业务更改 管理员更改状态为1的数据 所有不调用该方法
             //方法 更改状态为1的数据
             LambdaQueryWrapper<YbAppealManage> queryWrapper = new LambdaQueryWrapper<>();
@@ -481,7 +488,8 @@ public class YbAppealManageServiceImpl extends ServiceImpl<YbAppealManageMapper,
             newAppealManage.setVerifyId(ybAppealManage.getVerifyId());
 
             int day = iComConfiguremanageService.getConfigDay();
-            Date enableDate = this.addDateMethod(thisDate, day);
+            ////变更日期不变 this.addDateMethod(thisDate, day);
+            Date enableDate = entity.getEnableDate();
             newAppealManage.setEnableDate(enableDate);
             //赋值 新增状态为0的数据 业务更改 管理员更改状态为1的数据 所有不赋值为0
             //newAppealManage.setAcceptState(0);

@@ -17,9 +17,17 @@ import java.sql.Date;
  * @since 2020-09-24
  */
 public interface YbAppealResultDeductimplementViewMapper extends BaseMapper<YbAppealResultDeductimplementView> {
-        void updateYbAppealResultDeductimplementView(YbAppealResultDeductimplementView ybAppealResultDeductimplementView);
-        IPage<YbAppealResultDeductimplementView> findYbAppealResultDeductimplementView(Page page, @Param("ybAppealResultDeductimplementView") YbAppealResultDeductimplementView ybAppealResultDeductimplementView);
+    void updateYbAppealResultDeductimplementView(YbAppealResultDeductimplementView ybAppealResultDeductimplementView);
 
-        IPage<YbAppealResultDeductimplementView> findAppealResultDeductimplementView(Page page, @Param("ybAppealResultDeductimplementView") YbAppealResultDeductimplementView ybAppealResultDeductimplementView);
+    IPage<YbAppealResultDeductimplementView> findAppealResultDeductimplementView(Page page, @Param("ybAppealResultDeductimplementView") YbAppealResultDeductimplementView ybAppealResultDeductimplementView);
 
+    int findAppealResultDeductimplementCount(@Param("ybAppealResultDeductimplementView") YbAppealResultDeductimplementView ybAppealResultDeductimplementView);
+
+    IPage<YbAppealResultDeductimplementView> findAppealResultDmtView(Page page, @Param("ybAppealResultDeductimplementView") YbAppealResultDeductimplementView ybAppealResultDeductimplementView);
+
+    int findAppealResultDmtCount(@Param("ybAppealResultDeductimplementView") YbAppealResultDeductimplementView ybAppealResultDeductimplementView);
+
+    IPage<YbAppealResultDeductimplementView> findAppealResultDmtUserView(Page page, @Param("ybAppealResultDeductimplementView") YbAppealResultDeductimplementView ybAppealResultDeductimplementView);
+
+    int findAppealResultDmtUserCount(@Param("ybAppealResultDeductimplementView") YbAppealResultDeductimplementView ybAppealResultDeductimplementView);
 }

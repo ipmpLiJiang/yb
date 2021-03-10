@@ -78,7 +78,7 @@
         p.CREATE_TIME,
         p.CREATE_USER_ID,
         p.MODIFY_USER_ID,
-        GROUP_CONCAT(CONCAT(d.deptCode,'-',d.deptName)) currencyField
+        GROUP_CONCAT(CONCAT(d.deptId,'-',d.deptName)) currencyField
        FROM yb_appeal_confire p
          left join yb_appeal_confire_data d on
             p.id = d.pid and
@@ -111,7 +111,7 @@
         p.CREATE_TIME,
         p.CREATE_USER_ID,
         p.MODIFY_USER_ID,
-        GROUP_CONCAT(CONCAT(d.deptCode,'-',d.deptName)) currencyField
+        GROUP_CONCAT(CONCAT(d.deptId,'-',d.deptName)) currencyField
         FROM yb_appeal_confire p
         left join yb_appeal_confire_data d on
         p.id = d.pid and

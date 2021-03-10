@@ -17,4 +17,8 @@ import org.apache.ibatis.annotations.Param;
 public interface YbHandleVerifyDataViewMapper extends BaseMapper<YbHandleVerifyDataView> {
         void updateYbHandleVerifyDataView(YbHandleVerifyDataView ybHandleVerifyDataView);
         IPage<YbHandleVerifyDataView> findYbHandleVerifyDataView(Page page, @Param("ybHandleVerifyDataView") YbHandleVerifyDataView ybHandleVerifyDataView);
+
+        IPage<YbHandleVerifyDataView> findHandleVerifyDataView(Page page, @Param("ybHandleVerifyDataView") YbHandleVerifyDataView ybHandleVerifyDataView);
+
+        int findHandleVerifyDataCount(@Param("ybHandleVerifyDataView") YbHandleVerifyDataView ybHandleVerifyDataView);
         }

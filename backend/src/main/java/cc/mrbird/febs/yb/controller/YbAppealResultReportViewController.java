@@ -67,7 +67,7 @@ public class YbAppealResultReportViewController extends BaseController {
     @GetMapping
     @RequiresPermissions("ybAppealResultReportView:view")
     public Map<String, Object> List(QueryRequest request, YbAppealResultReportView ybAppealResultReportView) {
-        return getDataTable(this.iYbAppealResultReportViewService.findYbAppealResultReportViews(request, ybAppealResultReportView));
+        return getDataTable(this.iYbAppealResultReportViewService.findAppealResultReportViews(request, ybAppealResultReportView,false));
     }
 
     @GetMapping("findAppealResultReportUserView")
@@ -75,7 +75,7 @@ public class YbAppealResultReportViewController extends BaseController {
     public Map<String, Object> userList(QueryRequest request, YbAppealResultReportView ybAppealResultReportView) {
         User currentUser = FebsUtil.getCurrentUser();
         ybAppealResultReportView.setArDoctorCode(currentUser.getUsername());
-        return getDataTable(this.iYbAppealResultReportViewService.findYbAppealResultReportViews(request, ybAppealResultReportView));
+        return getDataTable(this.iYbAppealResultReportViewService.findAppealResultReportViews(request, ybAppealResultReportView,true));
     }
 
     /**
@@ -90,7 +90,6 @@ public class YbAppealResultReportViewController extends BaseController {
     public void addYbAppealResultReportView(@Valid YbAppealResultReportView ybAppealResultReportView) throws FebsException {
         try {
             User currentUser = FebsUtil.getCurrentUser();
-            ybAppealResultReportView.setCreateUserId(currentUser.getUserId());
             this.iYbAppealResultReportViewService.createYbAppealResultReportView(ybAppealResultReportView);
         } catch (Exception e) {
             message = "新增/按钮失败";
@@ -111,7 +110,6 @@ public class YbAppealResultReportViewController extends BaseController {
     public void updateYbAppealResultReportView(@Valid YbAppealResultReportView ybAppealResultReportView) throws FebsException {
         try {
             User currentUser = FebsUtil.getCurrentUser();
-            ybAppealResultReportView.setModifyUserId(currentUser.getUserId());
             this.iYbAppealResultReportViewService.updateYbAppealResultReportView(ybAppealResultReportView);
         } catch (Exception e) {
             message = "修改失败";
@@ -156,21 +154,21 @@ public class YbAppealResultReportViewController extends BaseController {
 
     @PostMapping("reportExcel")
     @RequiresPermissions("ybAppealResultReportView:exportData")
-    public void reportExcel(QueryRequest request, YbAppealResultReportView ybAppealResultReportView, HttpServletResponse response) throws FebsException {
+    public void reportExcel(QueryRequest request, YbAppealResultReportView ybAppealResultReportView,HttpServletResponse response) throws FebsException {
         try {
-            List<YbAppealResultReportView> appealResultReportList = this.iYbAppealResultReportViewService.findYbAppealResultReportLists(ybAppealResultReportView);
+            List<YbAppealResultReportView> appealResultReportList = this.iYbAppealResultReportViewService.findYbAppealResultReportLists(ybAppealResultReportView,false);
 
             if (appealResultReportList.size() > 0) {
                 List<YbAppealResultReportView> appealResultReportDataList = new ArrayList<>();
                 List<YbAppealResultReportView> appealResultReportMainList = new ArrayList<>();
                 appealResultReportDataList = appealResultReportList.stream().filter(
-                        s -> s.getDataType().equals(YbDefaultValue.DATATYPE_0)).sorted(Comparator.comparing(YbAppealResultReportView::getOrderNum)
+                        s -> s.getDataType().equals(YbDefaultValue.DATATYPE_0)).sorted(Comparator.comparing(YbAppealResultReportView::getTypeno).thenComparing(YbAppealResultReportView::getOrderNum)
                 ).collect(Collectors.toList());
 //                if (appealResultReportDataList.size() > 0) {
 //                    Collections.sort(appealResultReportDataList);
 //                }
                 appealResultReportMainList = appealResultReportList.stream().filter(
-                        s -> s.getDataType().equals(YbDefaultValue.DATATYPE_1)).sorted(Comparator.comparing(YbAppealResultReportView::getOrderNum)
+                        s -> s.getDataType().equals(YbDefaultValue.DATATYPE_1)).sorted(Comparator.comparing(YbAppealResultReportView::getTypeno).thenComparing(YbAppealResultReportView::getOrderNum)
                 ).collect(Collectors.toList());
 //                if (appealResultReportMainList.size() > 0) {
 //                    Collections.sort(appealResultReportMainList);
@@ -269,6 +267,11 @@ public class YbAppealResultReportViewController extends BaseController {
                     are.setVersionNumber(item.getVersionNumber());
                     //反馈申诉
                     are.setBackAppeal(item.getOperateReason());
+
+                    are.setArDoctorCode(item.getArDoctorCode());
+                    are.setArDoctorName(item.getArDoctorName());
+                    are.setArDeptCode(item.getArDeptCode());
+                    are.setArDeptName(item.getArDeptName());
                     dataList.add(are);
 
                 }
@@ -337,6 +340,11 @@ public class YbAppealResultReportViewController extends BaseController {
                     are.setVersionNumber(item.getVersionNumber());
                     //反馈申诉
                     are.setBackAppeal(item.getOperateReason());
+
+                    are.setArDoctorCode(item.getArDoctorCode());
+                    are.setArDoctorName(item.getArDoctorName());
+                    are.setArDeptCode(item.getArDeptCode());
+                    are.setArDeptName(item.getArDeptName());
                     mainList.add(are);
 
                 }
@@ -384,16 +392,13 @@ public class YbAppealResultReportViewController extends BaseController {
 
                 //设置所有列为自动宽度，不考虑合并单元格
                 writer.autoSizeColumnAll();
-
                 //标题Row高度
                 writer.setRowHeight(0,25);
-
                 int rowHeightCount = dataList.size() + mxApplyDateStrList.size();
-
-                //内容Row高度
-                for (int i = 1; i <= rowHeightCount; i++) {
-                    writer.setRowHeight(i,20);
-                }
+                //内容Row高度 有效 慢
+//                for (int i = 1; i <= rowHeightCount; i++) {
+//                    writer.setRowHeight(i,20);
+//                }
 
 
                 rowHead.clear();
@@ -423,15 +428,13 @@ public class YbAppealResultReportViewController extends BaseController {
 
                 //设置所有列为自动宽度，不考虑合并单元格
                 writer.autoSizeColumnAll();
-
                 //标题Row高度
                 writer.setRowHeight(0,25);
-
                 rowHeightCount = mainList.size() + zdApplyDateStrList.size();
-                //内容Row高度
-                for (int i = 1; i <= rowHeightCount; i++) {
-                    writer.setRowHeight(i,20);
-                }
+                //内容Row高度 有效 慢
+//                for (int i = 1; i <= rowHeightCount; i++) {
+//                    writer.setRowHeight(i,20);
+//                }
 
                 StyleSet style = writer.getStyleSet();
                 CellStyle cellStyle = style.getHeadCellStyle();
@@ -476,19 +479,19 @@ public class YbAppealResultReportViewController extends BaseController {
         try {
             User currentUser = FebsUtil.getCurrentUser();
             ybAppealResultReportView.setArDoctorCode(currentUser.getUsername());
-            List<YbAppealResultReportView> appealResultReportList = this.iYbAppealResultReportViewService.findYbAppealResultReportLists(ybAppealResultReportView);
+            List<YbAppealResultReportView> appealResultReportList = this.iYbAppealResultReportViewService.findYbAppealResultReportLists(ybAppealResultReportView,true);
 
             if (appealResultReportList.size() > 0) {
                 List<YbAppealResultReportView> appealResultReportDataList = new ArrayList<>();
                 List<YbAppealResultReportView> appealResultReportMainList = new ArrayList<>();
                 appealResultReportDataList = appealResultReportList.stream().filter(
-                        s -> s.getDataType().equals(YbDefaultValue.DATATYPE_0)).sorted(Comparator.comparing(YbAppealResultReportView::getOrderNum)
+                        s -> s.getDataType().equals(YbDefaultValue.DATATYPE_0)).sorted(Comparator.comparing(YbAppealResultReportView::getApplyDateStr).thenComparing(YbAppealResultReportView::getTypeno).thenComparing(YbAppealResultReportView::getOrderNum)
                 ).collect(Collectors.toList());
 //                if (appealResultReportDataList.size() > 0) {
 //                    Collections.sort(appealResultReportDataList);
 //                }
                 appealResultReportMainList = appealResultReportList.stream().filter(
-                        s -> s.getDataType().equals(YbDefaultValue.DATATYPE_1)).sorted(Comparator.comparing(YbAppealResultReportView::getOrderNum)
+                        s -> s.getDataType().equals(YbDefaultValue.DATATYPE_1)).sorted(Comparator.comparing(YbAppealResultReportView::getApplyDateStr).thenComparing(YbAppealResultReportView::getTypeno).thenComparing(YbAppealResultReportView::getOrderNum)
                 ).collect(Collectors.toList());
 //                if (appealResultReportMainList.size() > 0) {
 //                    Collections.sort(appealResultReportMainList);
@@ -587,6 +590,10 @@ public class YbAppealResultReportViewController extends BaseController {
                     are.setVersionNumber(item.getVersionNumber());
                     //反馈申诉
                     are.setBackAppeal(item.getOperateReason());
+                    are.setArDoctorCode(item.getArDoctorCode());
+                    are.setArDoctorName(item.getArDoctorName());
+                    are.setArDeptCode(item.getArDeptCode());
+                    are.setArDeptName(item.getArDeptName());
                     dataList.add(are);
 
                 }
@@ -654,6 +661,10 @@ public class YbAppealResultReportViewController extends BaseController {
                     are.setVersionNumber(item.getVersionNumber());
                     //反馈申诉
                     are.setBackAppeal(item.getOperateReason());
+                    are.setArDoctorCode(item.getArDoctorCode());
+                    are.setArDoctorName(item.getArDoctorName());
+                    are.setArDeptCode(item.getArDeptCode());
+                    are.setArDeptName(item.getArDeptName());
                     mainList.add(are);
 
                 }
@@ -701,16 +712,13 @@ public class YbAppealResultReportViewController extends BaseController {
 
                 //设置所有列为自动宽度，不考虑合并单元格
                 writer.autoSizeColumnAll();
-
                 //标题Row高度
                 writer.setRowHeight(0,25);
-
                 int rowHeightCount = dataList.size() + mxApplyDateStrList.size();
-
-                //内容Row高度
-                for (int i = 1; i <= rowHeightCount; i++) {
-                    writer.setRowHeight(i,20);
-                }
+                //内容Row高度 有效 慢
+//                for (int i = 1; i <= rowHeightCount; i++) {
+//                    writer.setRowHeight(i,20);
+//                }
 
 
                 rowHead.clear();
@@ -740,15 +748,13 @@ public class YbAppealResultReportViewController extends BaseController {
 
                 //设置所有列为自动宽度，不考虑合并单元格
                 writer.autoSizeColumnAll();
-
                 //标题Row高度
                 writer.setRowHeight(0,25);
-
                 rowHeightCount = mainList.size() + zdApplyDateStrList.size();
-                //内容Row高度
-                for (int i = 1; i <= rowHeightCount; i++) {
-                    writer.setRowHeight(i,20);
-                }
+                //内容Row高度 有效 慢
+//                for (int i = 1; i <= rowHeightCount; i++) {
+//                    writer.setRowHeight(i,20);
+//                }
 
                 StyleSet style = writer.getStyleSet();
                 CellStyle cellStyle = style.getHeadCellStyle();

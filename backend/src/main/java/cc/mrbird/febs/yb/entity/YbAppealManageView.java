@@ -33,6 +33,12 @@ public class YbAppealManageView implements Serializable {
     private static final long serialVersionUID = 1L;
 
     /**
+     * pid
+     */
+    @TableField("pid")
+    @ExcelField(value = "pid")
+    private String pid;
+    /**
      * 交易流水号
      */
     @TableField("serialNo")
@@ -132,33 +138,6 @@ public class YbAppealManageView implements Serializable {
     /**
      * 入院日期
      */
-    @TableField("enterHospitalDate")
-    @ExcelField(value = "入院日期")
-    private Date enterHospitalDate;
-    private transient String enterHospitalDateFrom;
-    private transient String enterHospitalDateTo;
-
-    /**
-     * 出院日期
-     */
-    @TableField("outHospitalDate")
-    @ExcelField(value = "出院日期")
-    private Date outHospitalDate;
-    private transient String outHospitalDateFrom;
-    private transient String outHospitalDateTo;
-
-    /**
-     * 费用日期
-     */
-    @TableField("costDate")
-    @ExcelField(value = "费用日期")
-    private Date costDate;
-    private transient String costDateFrom;
-    private transient String costDateTo;
-
-    /**
-     * 入院日期
-     */
     @TableField("enterHospitalDateStr")
     @ExcelField(value = "入院日期Str")
     private String enterHospitalDateStr;
@@ -191,14 +170,6 @@ public class YbAppealManageView implements Serializable {
     @ExcelField(value = "就医方式")
     private String treatmentMode;
 
-    /**
-     * 结算日期
-     */
-    @TableField("settlementDate")
-    @ExcelField(value = "结算日期")
-    private Date settlementDate;
-    private transient String settlementDateFrom;
-    private transient String settlementDateTo;
 
     /**
      * 结算日期
@@ -255,14 +226,6 @@ public class YbAppealManageView implements Serializable {
     @ExcelField(value = "版本类型")
     private Integer typeno;
 
-    /**
-     * 复议年月
-     */
-    @TableField("applyDate")
-    @ExcelField(value = "复议年月")
-    private Date applyDate;
-    private transient String applyDateFrom;
-    private transient String applyDateTo;
 
     /**
      * 复议年月Str
@@ -270,20 +233,6 @@ public class YbAppealManageView implements Serializable {
     @TableField("applyDateStr")
     @ExcelField(value = "复议年月Str")
     private String applyDateStr;
-
-    /**
-     * 操作员代码
-     */
-    @TableField("operatorId")
-    @ExcelField(value = "操作员代码")
-    private Long operatorId;
-
-    /**
-     * 操作员名称
-     */
-    @TableField("operatorName")
-    @ExcelField(value = "操作员名称")
-    private String operatorName;
 
     /**
      * 核对申请
@@ -544,12 +493,6 @@ public class YbAppealManageView implements Serializable {
     @ExcelField(value = "是否截止")
     private Integer isEnd;
 
-    /**
-     * 备注
-     */
-    @TableField("COMMENTS")
-    @ExcelField(value = "备注")
-    private String comments;
 
     /**
      * 状态
@@ -557,45 +500,6 @@ public class YbAppealManageView implements Serializable {
     @TableField("STATE")
     @ExcelField(value = "状态")
     private Integer state;
-
-    /**
-     * 是否删除
-     */
-    @TableField("IS_DELETEMARK")
-    @ExcelField(value = "是否删除")
-    private Integer isDeletemark;
-
-    /**
-     * 修改时间
-     */
-    @TableField("MODIFY_TIME")
-    @ExcelField(value = "修改时间")
-    private Date modifyTime;
-    private transient String modifyTimeFrom;
-    private transient String modifyTimeTo;
-
-    /**
-     * 创建时间
-     */
-    @TableField("CREATE_TIME")
-    @ExcelField(value = "创建时间")
-    private Date createTime;
-    private transient String createTimeFrom;
-    private transient String createTimeTo;
-
-    /**
-     * 创建人
-     */
-    @TableField("CREATE_USER_ID")
-    @ExcelField(value = "创建人")
-    private Long createUserId;
-
-    /**
-     * 修改人
-     */
-    @TableField("MODIFY_USER_ID")
-    @ExcelField(value = "修改人")
-    private Long modifyUserId;
 
     /**
      * 通用
@@ -619,163 +523,74 @@ public class YbAppealManageView implements Serializable {
     private Integer approvalState;
 
 
+
+
+    public static final String PID = "pid";
     public static final String SERIALNO = "serialNo";
-
     public static final String BILLNO = "billNo";
-
     public static final String PROPOSALCODE = "proposalCode";
-
     public static final String PROJECTCODE = "projectCode";
-
     public static final String PROJECTNAME = "projectName";
-
     public static final String NUM = "num";
-
     public static final String MEDICALPRICE = "medicalPrice";
-
     public static final String RULENAME = "ruleName";
-
     public static final String DEDUCTPRICE = "deductPrice";
-
     public static final String DEDUCTREASON = "deductReason";
-
     public static final String REPAYMENTREASON = "repaymentReason";
-
     public static final String DOCTORNAME = "doctorName";
-
     public static final String DEPTCODE = "deptCode";
-
     public static final String DEPTNAME = "deptName";
-
-    public static final String ENTERHOSPITALDATE = "enterHospitalDate";
-
-    public static final String OUTHOSPITALDATE = "outHospitalDate";
-
-    public static final String COSTDATE = "costDate";
-
     public static final String ENTERHOSPITALDATESTR ="enterHospitalDateStr" ;
-
     public static final String OUTHOSPITALDATESTR ="outHospitalDateStr" ;
-
     public static final String COSTDATESTR ="costDateStr" ;
-
     public static final String HOSPITALIZEDNO = "hospitalizedNo";
-
     public static final String TREATMENTMODE = "treatmentMode";
-
-    public static final String SETTLEMENTDATE = "settlementDate";
-
     public static final String SETTLEMENTDATESTR ="settlementDateStr" ;
-
     public static final String PERSONALNO = "personalNo";
-
     public static final String INSUREDNAME = "insuredName";
-
     public static final String CARDNUMBER = "cardNumber";
-
     public static final String AREANAME = "areaName";
-
     public static final String VERSIONNUMBER = "versionNumber";
-
     public static final String BACKAPPEAL = "backAppeal";
-
     public static final String TYPENO = "typeno";
-
-    public static final String APPLYDATE = "applyDate";
-
     public static final String APPLYDATESTR = "applyDateStr";
-
-    public static final String OPERATORID = "operatorId";
-
-    public static final String OPERATORNAME = "operatorName";
-
     public static final String ORDERDOCTORCODE = "orderDoctorCode";
-
     public static final String ORDERDOCTORNAME = "orderDoctorName";
-
     public static final String ORDERDEPTCODE = "orderDeptCode";
-
     public static final String ORDERDEPTNAME = "orderDeptName";
-
     public static final String ISEND = "isEnd";
-
     public static final String OPERATEPROCESS = "operateProcess";
-
     public static final String ID = "id";
-
     public static final String APPLYDATAID = "applyDataId";
-
     public static final String VERIFYID = "verifyId";
-
     public static final String READYDOCTORCODE = "readyDoctorCode";
-
     public static final String READYDOCTORNAME = "readyDoctorName";
-
     public static final String READYDEPTCODE = "readyDeptCode";
-
     public static final String READYDEPTNAME = "readyDeptName";
-
     public static final String CHANGEDOCTORCODE = "changeDoctorCode";
-
     public static final String CHANGEDOCTORNAME = "changeDoctorName";
-
     public static final String CHANGEDEPTCODE = "changeDeptCode";
-
     public static final String APPLYENDDATE = "applyEndDate";
-
     public static final String CHANGEDEPTNAME = "changeDeptName";
-
     public static final String OPERATEREASON = "operateReason";
-
     public static final String OPERATEDATE = "operateDate";
-
     public static final String ACCEPTSTATE = "acceptState";
-
     public static final String REFUSEID = "refuseId";
-
     public static final String REFUSENAME = "refuseName";
-
     public static final String REFUSEREASON = "refuseReason";
-
     public static final String REFUSEDATE = "refuseDate";
-
     public static final String ADMINPERSONID = "adminPersonId";
-
     public static final String ADMINPERSONNAME = "adminPersonName";
-
     public static final String ADMINCHANGEDATE = "adminChangeDate";
-
     public static final String ADMINREASON = "adminReason";
-
     public static final String ENABLEDATE = "enableDate";
-
     public static final String ENABLETYPE = "enableType";
-
     public static final String SOURCETYPE ="sourceType";
-
     public static final String DATATYPE ="dataType" ;
-
     public static final String ORDERNUMBER ="orderNumber";
-
     public static final String ORDERNUM ="orderNum";
-
-    public static final String COMMENTS = "COMMENTS";
-
     public static final String STATE = "STATE";
-
-    public static final String IS_DELETEMARK = "IS_DELETEMARK";
-
-    public static final String MODIFY_TIME = "MODIFY_TIME";
-
-    public static final String CREATE_TIME = "CREATE_TIME";
-
-    public static final String CREATE_USER_ID = "CREATE_USER_ID";
-
-    public static final String MODIFY_USER_ID = "MODIFY_USER_ID";
-
     public static final String CURRENCYFIELD = "currencyField";
-
     public static final String VERIFYSENDID = "verifySendId";
-
     public static final String APPROVALSTATE = "approvalState";
 }

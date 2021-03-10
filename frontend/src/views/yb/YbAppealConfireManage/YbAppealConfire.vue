@@ -8,7 +8,7 @@
         <a-row>
           <div :class="advanced ? null: 'fold'">
             <a-col
-              :md="8"
+              :md="6"
               :sm="24"
             >
               <a-form-item
@@ -19,7 +19,7 @@
               </a-form-item>
             </a-col>
             <a-col
-              :md="8"
+              :md="6"
               :sm="24"
             >
               <a-form-item
@@ -37,16 +37,25 @@
                 label="管理员类型"
                 v-bind="formItemLayout"
               >
-                <a-select v-model="queryParams.adminType" style="width: 100px" @change="handleAdminTypeChange"
+                <a-select v-model="queryParams.adminType" style="width: 150px" @change="handleAdminTypeChange"
                 >
                   <a-select-option
-                  v-for="d in selectAdminTypeDataSource"
+                  v-for="d in queryAdminTypeDataSource"
                   :key="d.value"
                   >
                   {{ d.text }}
                   </a-select-option>
                 </a-select>
               </a-form-item>
+            </a-col>
+            <a-col
+              :md="3"
+              :sm="24"
+            >
+              <a-button
+                type="primary"
+                @click="showModal"
+              >管理员类型维护</a-button>
             </a-col>
           </div>
           <span style="float: right; margin-top: 3px;">
@@ -155,19 +164,30 @@
       :editVisiable="editVisiable"
     >
     </ybAppealConfire-edit>
+    <template>
+      <div>
+        <a-modal width="60%" :maskClosable="false" :footer="null" v-model="adminTypeVisible" title="管理员类型维护" @cancel="handleOk">
+          <comType-data
+          ref="comTypeData"
+          @close="handleOk"
+          >
+          </comType-data>
+        </a-modal>
+      </div>
+    </template>
   </a-card>
 </template>
 
 <script>
 import YbAppealConfireEdit from './YbAppealConfireEdit'
-
+import ComTypeData from '../../com/ComType/ComTypeData'
 const formItemLayout = {
   labelCol: { span: 8 },
   wrapperCol: { span: 15, offset: 1 }
 }
 export default {
   name: 'YbAppealConfire',
-  components: { YbAppealConfireEdit },
+  components: { YbAppealConfireEdit, ComTypeData },
   data () {
     return {
       advanced: false,
@@ -191,9 +211,13 @@ export default {
       queryParams: {
         adminType: 0
       },
-      selectAdminTypeDataSource: [{text: '全部', value: 0}, {text: '联络员', value: 1}, {text: '科主任', value: 2}, {text: '护士长', value: 3}],
+      // queryAdminTypeDataSource: [{text: '全部', value: 0}, {text: '联络员', value: 1}, {text: '科主任', value: 2}, {text: '护士长', value: 3}],
+      queryAdminTypeDataSource: [],
+      selectAdminTypeDataSource: [],
       editVisiable: false,
+      adminTypeVisible: false,
       loading: false,
+      ctType: 1,
       bordered: true
     }
   },
@@ -221,15 +245,11 @@ export default {
         title: '管理员类型',
         dataIndex: 'adminType',
         customRender: (text, row, index) => {
-          switch (text) {
-            case 1:
-              return '联络员'
-            case 2:
-              return '科主任'
-            case 3:
-              return '护士长'
-            default:
-              return text
+          let target = this.selectAdminTypeDataSource.filter(item => text === item.value)[0]
+          if (target) {
+            return target.text
+          } else {
+            return text
           }
         },
         width: 120
@@ -248,6 +268,7 @@ export default {
     }
   },
   mounted () {
+    this.findComType()
     this.fetch()
   },
   methods: {
@@ -273,7 +294,7 @@ export default {
     },
     add () {
       this.editVisiable = true
-      this.$refs.ybAppealConfireEdit.setFormValues()
+      this.$refs.ybAppealConfireEdit.setFormValues(null, this.selectAdminTypeDataSource)
     },
     handleEditSuccess () {
       this.editVisiable = false
@@ -283,7 +304,7 @@ export default {
       this.editVisiable = false
     },
     edit (record) {
-      this.$refs.ybAppealConfireEdit.setFormValues(record)
+      this.$refs.ybAppealConfireEdit.setFormValues(record, this.selectAdminTypeDataSource)
       this.editVisiable = true
     },
     del (record) {
@@ -330,6 +351,33 @@ export default {
     handleAdminTypeChange (value) {
       this.queryParams.adminType = value
     },
+    showModal () {
+      this.adminTypeVisible = true
+      setTimeout(() => {
+        this.$refs.comTypeData.searchPage(this.ctType)
+      }, 200)
+    },
+    handleOk (e) {
+      this.adminTypeVisible = false
+      this.findComType()
+    },
+    findComType () {
+      let ctParams = {ctType: this.ctType}
+      this.queryAdminTypeDataSource = [{text: '全部', value: 0}]
+      this.selectAdminTypeDataSource = []
+      this.$get('comType/findList', {
+        ...ctParams
+      }).then((r) => {
+        if (r.data.data.length > 0) {
+          for (var i in r.data.data) {
+            var at = {text: r.data.data[i].ctName, value: r.data.data[i].id}
+            this.queryAdminTypeDataSource.push(at)
+            this.selectAdminTypeDataSource.push(at)
+          }
+        }
+      }
+      )
+    },
     exportExcel () {
       let { sortedInfo } = this
       let sortField, sortOrder
@@ -371,7 +419,9 @@ export default {
       this.sortedInfo = null
       this.paginationInfo = null
       // 重置查询参数
-      this.queryParams = {}
+      this.queryParams = {
+        adminType: 0
+      }
       this.fetch()
     },
     handleTableChange (pagination, filters, sorter) {

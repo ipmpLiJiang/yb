@@ -132,13 +132,13 @@ export default {
           }
         },
         fixed: 'right',
-        width: 90
+        width: 95
       },
       {
         title: '落实年月',
         dataIndex: 'implementDateStr',
         fixed: 'right',
-        width: 90
+        width: 95
       },
       {
         title: '分摊方式',
@@ -156,7 +156,7 @@ export default {
           }
         },
         fixed: 'right',
-        width: 90
+        width: 95
       },
       {
         title: '分摊方案',
@@ -241,7 +241,6 @@ export default {
         if (this.searchDataType !== 2) {
           params.dataType = this.searchDataType
         }
-        params.deductImplementId = '1' // 随便传一个值，代表已经填过扣款落实表
         if (this.paginationInfo) {
           // 如果分页信息不为空，则设置表格当前第几页，每页条数，并设置查询分页参数
           this.$refs.TableInfo.pagination.current = this.paginationInfo.current
@@ -253,7 +252,7 @@ export default {
           params.pageSize = this.pagination.defaultPageSize
           params.pageNum = this.pagination.defaultCurrent
         }
-        params.sortField = 'applyDateStr asc,orderNum'
+        params.sortField = 'ardi.applyDateStr asc,rrd.orderNum'
         // params.sortOrder = 'descend'
         params.sortOrder = 'ascend'
         this.$get('ybAppealResultDeductimplementView/findAppealResultDeductimplementUserView', {

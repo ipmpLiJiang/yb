@@ -156,7 +156,8 @@ public class YbReconsiderResetController extends BaseController {
     public FebsResponse updateReconsiderResetApplyState(@Valid YbReconsiderReset ybReconsiderReset) {
         int success = 0;
         try {
-            message = this.iYbReconsiderResetService.updateReconsiderApplyState(ybReconsiderReset);
+            User currentUser = FebsUtil.getCurrentUser();
+            message = this.iYbReconsiderResetService.updateReconsiderApplyState(ybReconsiderReset,currentUser);
             if (message.equals("ok")) {
                 success = 1;
                 message = "完成剔除成功";

@@ -253,7 +253,7 @@ export default {
         params.pageSize = this.pagination.defaultPageSize
         params.pageNum = this.pagination.defaultCurrent
       }
-      params.sortField = 'resetDate'
+      params.sortField = 'rrd.resetDate'
       params.sortOrder = 'descend'
       this.$get('ybReconsiderResetDataView', {
         ...params

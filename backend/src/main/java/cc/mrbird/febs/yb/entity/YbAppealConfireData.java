@@ -42,9 +42,9 @@ private static final long serialVersionUID=1L;
     /**
      * 科室编码
      */
-    @TableField("deptCode")
+    @TableField("deptId")
             @ExcelField(value ="科室编码")
-    private String deptCode;
+    private String deptId;
 
     /**
      * 科室名称
@@ -112,7 +112,7 @@ private static final long serialVersionUID=1L;
 
     public static final String PID ="pid" ;
 
-    public static final String DEPTCODE ="deptCode" ;
+    public static final String DEPTID ="deptId" ;
 
     public static final String DEPTNAME ="deptName" ;
 

@@ -3,6 +3,7 @@ package cc.mrbird.febs.yb.service.impl;
 import cc.mrbird.febs.com.controller.DataTypeHelpers;
 import cc.mrbird.febs.com.service.IComConfiguremanageService;
 import cc.mrbird.febs.common.domain.QueryRequest;
+import cc.mrbird.febs.common.properties.FebsProperties;
 import cc.mrbird.febs.common.utils.SortUtil;
 import cc.mrbird.febs.job.domain.Job;
 import cc.mrbird.febs.job.service.JobService;
@@ -51,6 +52,9 @@ public class YbReconsiderApplyServiceImpl extends ServiceImpl<YbReconsiderApplyM
 
     @Autowired
     private JobService jobService;
+
+    @Autowired
+    FebsProperties febsProperties;
 
     @Override
     public IPage<YbReconsiderApply> findYbReconsiderApplys(QueryRequest request, YbReconsiderApply ybReconsiderApply) {
@@ -275,6 +279,7 @@ public class YbReconsiderApplyServiceImpl extends ServiceImpl<YbReconsiderApplyM
         YbAppealManageView queryAppealManage = new YbAppealManageView();
         queryAppealManage.setAcceptState(YbDefaultValue.ACCEPTSTATE_7);
         queryAppealManage.setApplyDateStr(yra.getApplyDateStr());
+        queryAppealManage.setPid(yra.getId());
 
         SimpleDateFormat f = new SimpleDateFormat("yyyy-MM-dd");
         Date aEndDateOne = null;
@@ -405,7 +410,8 @@ public class YbReconsiderApplyServiceImpl extends ServiceImpl<YbReconsiderApplyM
             endDate = entity.getEndDateTwo();
         }
         String date1 = sdf1.format(endDate);
-        String wangz = "登录网址：http://192.168.78.136:3086/#/login，用户名为工号，密码为身份证后6位。";
+
+        String wangz = febsProperties.getSmsWebsite();
         applyDateStr = applyDateStr.replace("-", "年");
         if (!isChange) {
             Calendar cal = Calendar.getInstance();//使用默认时区和语言环境获得一个日历。
@@ -421,6 +427,16 @@ public class YbReconsiderApplyServiceImpl extends ServiceImpl<YbReconsiderApplyM
         } else {
             ssm = "您有其他医生转发的医保违规项目需复议，此次复议截止时间是" + date1 + "，请及时登录医保管理系统处理。" + wangz;
         }
+        return ssm;
+    }
+
+    @Override
+    public String getSendMessage(String applyDateStr) {
+//        YbReconsiderApply entity = this.findReconsiderApplyByApplyDateStrs(applyDateStr);
+        applyDateStr = applyDateStr.replace("-", "年");
+        String wangz = febsProperties.getSmsWebsite();
+        String ssm = "武汉市医保" + applyDateStr + "月复议结果已反馈，请登录医保管理系统-复议结果查询界面进行查看。" + wangz;
+
         return ssm;
     }
 

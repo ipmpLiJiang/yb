@@ -35,7 +35,7 @@ public interface IComSmsService extends IService<ComSms> {
 
         List<ComSms> findSmsTopLists(ComSms comSms);
 
-        void sendSms();
+        void sendSms(int sendType);
 
         void sendSmsService(ArrayList<String> personCodeList, int sendType, String sendContent, Long uId, String Uname);
 

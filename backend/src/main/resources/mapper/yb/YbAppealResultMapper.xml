@@ -17,9 +17,9 @@
         <result column="currencyField" property="currencyField"/>
         <result column="sourceType" property="sourceType"/>
         <result column="relatelDataId" property="relatelDataId"/>
-<!--        <result column="resetDataId" property="resetDataId"/>-->
-<!--        <result column="resetPersonId" property="resetPersonId"/>-->
-<!--        <result column="resetPersonName" property="resetPersonName"/>-->
+        <!--        <result column="resetDataId" property="resetDataId"/>-->
+        <!--        <result column="resetPersonId" property="resetPersonId"/>-->
+        <!--        <result column="resetPersonName" property="resetPersonName"/>-->
         <result column="resetDate" property="resetDate"/>
         <result column="dataType" property="dataType"/>
         <result column="orderDoctorCode" property="orderDoctorCode"/>
@@ -44,7 +44,7 @@
     <sql id="Base_Column_List">
         id, applyDataId, verifyId, manageId, doctorCode, doctorName, deptCode, deptName, operateReason, operateDate, currencyField,sourceType,relatelDataId,resetDate,dataType,orderDoctorCode,orderDoctorName,orderDeptCode,orderDeptName,repayState,applyDateStr,typeno,orderNumber,orderNum, COMMENTS, STATE, IS_DELETEMARK, MODIFY_TIME, CREATE_TIME, CREATE_USER_ID, MODIFY_USER_ID
     </sql>
-<!--    resetDataId,resetPersonId,resetPersonName,-->
+    <!--    resetDataId,resetPersonId,resetPersonName,-->
     <update id="updateYbAppealResult" parameterType="cc.mrbird.febs.yb.entity.YbAppealResult">
         update yb_appeal_result
         <trim prefix="set" suffixOverrides=",">
@@ -60,9 +60,9 @@
             <if test="currencyField != null">currencyField=#{currencyField},</if>
             <if test="sourceType != null">sourceType=#{sourceType},</if>
             <if test="relatelDataId != null">relatelDataId=#{relatelDataId},</if>
-<!--            <if test="resetDataId != null">resetDataId=#{resetDataId},</if>-->
-<!--            <if test="resetPersonId != null">resetPersonId=#{resetPersonId},</if>-->
-<!--            <if test="resetPersonName != null">resetPersonName=#{resetPersonName},</if>-->
+            <!--            <if test="resetDataId != null">resetDataId=#{resetDataId},</if>-->
+            <!--            <if test="resetPersonId != null">resetPersonId=#{resetPersonId},</if>-->
+            <!--            <if test="resetPersonName != null">resetPersonName=#{resetPersonName},</if>-->
             <if test="resetDate != null">resetDate=#{resetDate},</if>
             <if test="dataType != null">dataType=#{dataType},</if>
             <if test="orderDoctorCode != null">orderDoctorCode=#{orderDoctorCode},</if>
@@ -135,7 +135,6 @@
             #{ ybAppealResult.comments} ,'%')
         </if>
         <if test="ybAppealResult.state != null">and STATE =#{ ybAppealResult.state}</if>
-        <if test="ybAppealResult.isDeletemark != null">and IS_DELETEMARK =#{ ybAppealResult.isDeletemark}</if>
         <if test="ybAppealResult.modifyTimeFrom!= null">
             AND ybAppealResult.MODIFY_TIME <![CDATA[ >= ]]>  modifyTimeFrom}
         </if>
@@ -156,106 +155,73 @@
         FROM
         yb_appeal_result
         INNER JOIN com_file ON
-        com_file.REF_TAB_ID = yb_appeal_result.id and
-        com_file.IS_DELETEMARK = 1
+        com_file.REF_TAB_ID = yb_appeal_result.id
         INNER JOIN yb_reconsider_apply_data ON
         yb_reconsider_apply_data.id = yb_appeal_result.applyDataId
-        INNER JOIN yb_reconsider_apply ON
-        yb_reconsider_apply.id = yb_reconsider_apply_data.pid
         WHERE
-        yb_appeal_result.IS_DELETEMARK = 1
+        yb_reconsider_apply_data.pid = #{ybAppealResultView.pid}
         <if test="ybAppealResultView.sourceType != null">and yb_appeal_result.sourceType =
             #{ybAppealResultView.sourceType}
         </if>
-        <if test="ybAppealResultView.dataType != null">and yb_appeal_result.dataType = #{ybAppealResultView.dataType}
+        <if test="ybAppealResultView.typeno != null">and yb_appeal_result.typeno =
+            #{ybAppealResultView.typeno}
         </if>
-        <if test="ybAppealResultView.state != null and ybAppealResultView.state==12">and yb_appeal_result.STATE IN
-            (1,2)
+        <if test="ybAppealResultView.dataType != null">and yb_appeal_result.dataType = #{ybAppealResultView.dataType}
         </if>
         <if test="ybAppealResultView.state != null and ybAppealResultView.state==1">and yb_appeal_result.STATE = 1</if>
         <if test="ybAppealResultView.state != null and ybAppealResultView.state==2">and yb_appeal_result.STATE = 2</if>
-        <if test="ybAppealResultView.applyDateStr != null">and yb_reconsider_apply.applyDateStr =
-            #{ybAppealResultView.applyDateStr}
-        </if>
-        <if test="ybAppealResultView.typeno != null">and yb_reconsider_apply_data.typeno =
-            #{ybAppealResultView.typeno}
-        </if>
         group BY
         yb_appeal_result.deptName
     </select>
     <select id="findAppealResulDataByReset" resultType="cc.mrbird.febs.yb.entity.YbAppealResult">
         SELECT
-        yb_appeal_result.*
+        *
         FROM
         yb_appeal_result
-        INNER JOIN yb_reconsider_apply_data on
-        yb_reconsider_apply_data.IS_DELETEMARK = 1 AND
-        yb_reconsider_apply_data.id = yb_appeal_result.applyDataId
-        INNER JOIN yb_reconsider_apply on
-        yb_reconsider_apply.id = yb_reconsider_apply_data.pid AND
-        yb_reconsider_apply.IS_DELETEMARK = 1
         where
-        yb_appeal_result.IS_DELETEMARK = 1 AND
-        yb_appeal_result.STATE = 1 AND
-        yb_appeal_result.sourceType = 0 AND
-        yb_reconsider_apply.applyDateStr = #{ applyDateStr}
-        <if test="dataType != null">and yb_appeal_result.dataType =#{ dataType}</if>
+        applyDateStr = #{ applyDateStr} AND
+        sourceType = 0 AND
+        state = 1
+        <if test="dataType != null">and dataType =#{ dataType}</if>
     </select>
     <select id="findAppealResulDataByRepay" resultType="cc.mrbird.febs.yb.entity.YbAppealResult">
         SELECT
-        yb_appeal_result.*
+        *
         FROM
         yb_appeal_result
-        INNER JOIN yb_reconsider_apply_data on
-        yb_reconsider_apply_data.IS_DELETEMARK = 1 AND
-        yb_reconsider_apply_data.id = yb_appeal_result.applyDataId
-        INNER JOIN yb_reconsider_apply on
-        yb_reconsider_apply.id = yb_reconsider_apply_data.pid AND
-        yb_reconsider_apply.IS_DELETEMARK = 1
         where
-        yb_appeal_result.IS_DELETEMARK = 1 AND
-        yb_appeal_result.STATE = 2 AND
-        yb_appeal_result.sourceType = 0 AND
-        yb_appeal_result.repayState in (2,3) AND
-        yb_reconsider_apply.applyDateStr = #{ applyDateStr}
-        <if test="dataType != null">and yb_appeal_result.dataType =#{ dataType}</if>
+        applyDateStr = #{ applyDateStr} AND
+        sourceType = 0 AND
+        state = 2
+        <if test="dataType != null">and dataType =#{ dataType}</if>
+        AND repayState in (2,3)
     </select>
     <select id="findAppealResulDataHandle" resultType="cc.mrbird.febs.yb.entity.YbAppealResult">
         SELECT
-            yb_appeal_result.*
+            *
         FROM
             yb_appeal_result
-        INNER JOIN yb_reconsider_apply_data ON
-            yb_reconsider_apply_data.id = yb_appeal_result.applyDataId AND
-            yb_reconsider_apply_data.IS_DELETEMARK = 1
-        INNER JOIN yb_reconsider_apply ON
-            yb_reconsider_apply.id = yb_reconsider_apply_data.pid AND
-            yb_reconsider_apply.IS_DELETEMARK = 1
         WHERE
-            yb_reconsider_apply.applyDateStr = #{applyDateStr} AND
-            yb_appeal_result.IS_DELETEMARK = 1 AND
-            yb_appeal_result.STATE = 2 AND
-            NOT EXISTS (
+            applyDateStr = #{applyDateStr} AND
+            STATE = 2
+        <if test="hvId != null">
+            AND id NOT IN (
                 SELECT
-                    yb_handle_verify_data.ID
+                    resultId
                 FROM
                     yb_handle_verify_data
-                INNER JOIN yb_handle_verify ON yb_handle_verify.ID = yb_handle_verify_data.pid
-                AND yb_handle_verify.applyDateStr = #{applyDateStr}
-                AND yb_handle_verify.IS_DELETEMARK = 1
                 WHERE
-                    yb_handle_verify_data.IS_DELETEMARK = 1
-                AND yb_reconsider_apply.applyDateStr = yb_handle_verify.applyDateStr
-                AND yb_appeal_result.id = yb_handle_verify_data.resultId
+                    pid = #{hvId}
             )
+        </if>
 </select>
     <update id="updateAppealResultCancelData">
         update yb_appeal_result
         set
-            relatelDataId = null,
-            resetDate = null,
-            repayState = 1,
-            state = 1
+        relatelDataId = null,
+        resetDate = null,
+        repayState = 1,
+        state = 1
         where id in (
         <foreach item="item" index="index" collection="resultList" separator=",">
             #{item.id}
@@ -265,10 +231,8 @@
     <update id="updateAppealResulResetData">
         UPDATE yb_appeal_result
         INNER JOIN yb_reconsider_apply_data ON
-            yb_reconsider_apply_data.IS_DELETEMARK = 1 AND
             yb_reconsider_apply_data.id = yb_appeal_result.applyDataId
         INNER JOIN yb_reconsider_apply ON
-            yb_reconsider_apply.IS_DELETEMARK = 1 AND
             yb_reconsider_apply.id = yb_reconsider_apply_data.pid
         INNER JOIN (
             SELECT
@@ -282,10 +246,8 @@
             FROM
                 yb_reconsider_reset_data
                 INNER JOIN yb_reconsider_reset ON
-                    yb_reconsider_reset.IS_DELETEMARK = 1 AND
                     yb_reconsider_reset_data.pid = yb_reconsider_reset.id
             WHERE
-                yb_reconsider_reset_data.IS_DELETEMARK = 1 AND
                 yb_reconsider_reset.applyDateStr = #{applyDateStr}
         ) rrd ON rrd.billNo = yb_reconsider_apply_data.billNo AND
                     rrd.serialNo = yb_reconsider_apply_data.serialNo AND
@@ -299,7 +261,6 @@
             yb_appeal_result.resetPersonName = #{resetPersonName},
             yb_appeal_result.resetDate = #{resetDate}
         WHERE
-            yb_appeal_result.IS_DELETEMARK = 1 AND
             yb_appeal_result.STATE = 1 AND
             yb_appeal_result.resetDataId IS NULL AND
             yb_reconsider_apply.applyDateStr = #{applyDateStr}

@@ -90,7 +90,7 @@ public class YbAppealManageViewController extends BaseController {
     public void addYbAppealManageView(@Valid YbAppealManageView ybAppealManageView) throws FebsException {
         try {
             User currentUser = FebsUtil.getCurrentUser();
-            ybAppealManageView.setCreateUserId(currentUser.getUserId());
+//            ybAppealManageView.setCreateUserId(currentUser.getUserId());
             this.iYbAppealManageViewService.createYbAppealManageView(ybAppealManageView);
         } catch (Exception e) {
             message = "新增/按钮失败";
@@ -111,7 +111,7 @@ public class YbAppealManageViewController extends BaseController {
     public void updateYbAppealManageView(@Valid YbAppealManageView ybAppealManageView) throws FebsException {
         try {
             User currentUser = FebsUtil.getCurrentUser();
-            ybAppealManageView.setModifyUserId(currentUser.getUserId());
+//            ybAppealManageView.setModifyUserId(currentUser.getUserId());
             this.iYbAppealManageViewService.updateYbAppealManageView(ybAppealManageView);
         } catch (Exception e) {
             message = "修改失败";

@@ -92,13 +92,13 @@ export default {
         title: '项目编码',
         dataIndex: 'projectCode',
         fixed: 'left',
-        width: 120
+        width: 130
       },
       {
         title: '项目名称',
         dataIndex: 'projectName',
         fixed: 'left',
-        width: 160
+        width: 180
       },
       {
         title: '数量',
@@ -113,7 +113,7 @@ export default {
       {
         title: '规则名称',
         dataIndex: 'ruleName',
-        width: 140
+        width: 160
       },
       {
         title: '扣除金额',
@@ -145,7 +145,7 @@ export default {
       {
         title: '科室名称',
         dataIndex: 'arDeptName',
-        width: 120
+        width: 130
       },
       {
         title: '操作',
@@ -267,7 +267,7 @@ export default {
       params.currencyField = this.searchText
       params.dataType = this.searchDataType
       params.typeno = 1
-      params.state = 12 // IN(1,2)
+      // params.state = 12 // IN(1,2)
       params.sourceType = 0
       if (this.paginationInfo) {
         // 如果分页信息不为空，则设置表格当前第几页，每页条数，并设置查询分页参数
@@ -280,8 +280,9 @@ export default {
         params.pageSize = this.pagination.defaultPageSize
         params.pageNum = this.pagination.defaultCurrent
       }
-      params.sortField = 'orderNum'
+      params.sortField = 'art.orderNum'
       params.sortOrder = 'ascend'
+
       this.$get('ybAppealResultView', {
         ...params
       }).then((r) => {

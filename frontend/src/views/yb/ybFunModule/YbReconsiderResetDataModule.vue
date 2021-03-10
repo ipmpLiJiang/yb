@@ -343,8 +343,8 @@ export default {
         params.pageSize = this.pagination.defaultPageSize
         params.pageNum = this.pagination.defaultCurrent
       }
-      params.sortField = 'create_Time'
-      params.sortOrder = 'descend'
+      // params.sortField = 'create_Time'
+      // params.sortOrder = 'descend'
       this.$get('ybAppealResultView/findAppealResultViewReset', {
         ...params
       }).then((r) => {

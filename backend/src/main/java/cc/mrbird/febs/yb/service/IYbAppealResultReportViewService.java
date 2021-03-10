@@ -23,11 +23,13 @@ public interface IYbAppealResultReportViewService extends IService<YbAppealResul
 
         IPage<YbAppealResultReportView> findYbAppealResultReportViewList(QueryRequest request, YbAppealResultReportView ybAppealResultReportView);
 
+        IPage<YbAppealResultReportView> findAppealResultReportViews(QueryRequest request, YbAppealResultReportView ybAppealResultReportView,boolean isUser);
+
         void createYbAppealResultReportView(YbAppealResultReportView ybAppealResultReportView);
 
         void updateYbAppealResultReportView(YbAppealResultReportView ybAppealResultReportView);
 
         void deleteYbAppealResultReportViews(String[]Ids);
 
-        List<YbAppealResultReportView> findYbAppealResultReportLists(YbAppealResultReportView ybAppealResultReportView);
+        List<YbAppealResultReportView> findYbAppealResultReportLists(YbAppealResultReportView ybAppealResultReportView,boolean isUser);
         }

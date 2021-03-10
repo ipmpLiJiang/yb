@@ -37,17 +37,15 @@
             label="管理员类型"
             v-bind="formItemLayout"
           >
-            <a-radio-group v-decorator="['adminType']">
-              <a-radio value="1">
-                联络员
-              </a-radio>
-              <a-radio value="2">
-                科主任
-              </a-radio>
-              <a-radio value="3">
-                护士长
-              </a-radio>
-            </a-radio-group>
+            <a-select v-decorator="['adminType']" style="width: 150px" @change="handleAdminTypeChange"
+              >
+                <a-select-option
+                v-for="d in selectAdminTypeDataSource"
+                :key="d.value"
+                >
+                {{ d.text }}
+                </a-select-option>
+              </a-select>
           </a-form-item>
         </a-col>
       </a-row>
@@ -76,7 +74,7 @@
         </a-col>
         <a-col :span=11>
           <a-popconfirm
-            title="确定放弃编辑？"
+            title="确定取消？"
             @confirm="onClose"
             okText="确定"
             cancelText="取消"
@@ -120,6 +118,7 @@ export default {
       isUpdate: false,
       isEdit: false,
       txtValue: '',
+      selectAdminTypeDataSource: [],
       ybAppealConfire: {}
     }
   },
@@ -145,24 +144,32 @@ export default {
       this.ybAppealConfire.doctorCode = item.value
       this.ybAppealConfire.doctorName = item.text
     },
+    handleAdminTypeChange (value) {
+      this.ybAppealConfire.adminType = value
+    },
     selectDeptChange (item) {
-      this.ybAcData.deptCode = item.value
+      this.ybAcData.deptId = item.value
       this.ybAcData.deptName = item.text
     },
-    setFormValues (obj) {
+    setFormValues (obj, atDataSource) {
       this.isUpdate = false
+      this.selectAdminTypeDataSource = atDataSource
       this.form.getFieldDecorator('adminType')
       if (obj === undefined || obj === null || obj === '') {
         this.isEdit = false
-        this.form.setFieldsValue({
-          adminType: '1'
-        })
-        this.$refs.ybAppealConfireData.searchPage('')
+        if (this.selectAdminTypeDataSource.length > 0) {
+          this.form.setFieldsValue({
+            adminType: this.selectAdminTypeDataSource[0].value
+          })
+        }
+        setTimeout(() => {
+          this.$refs.ybAppealConfireData.searchPage('')
+        }, 200)
       } else {
         this.txtValue = obj.doctorCode + '-' + obj.doctorName
         this.isEdit = true
         this.form.setFieldsValue({
-          adminType: obj.adminType.toString()
+          adminType: obj.adminType
         })
         setTimeout(() => {
           if (obj.doctorCode !== '' && obj.doctorCode !== null) {
@@ -194,9 +201,9 @@ export default {
           doctorName: this.ybAppealConfire.doctorName
         })
       }
-      if (this.ybAcData.deptCode !== '' && this.ybAcData.deptCode !== undefined) {
+      if (this.ybAcData.deptId !== '' && this.ybAcData.deptId !== undefined) {
         this.ybAppealConfire.child = [
-          { deptCode: this.ybAcData.deptCode, deptName: this.ybAcData.deptName }
+          { deptId: this.ybAcData.deptId, deptName: this.ybAcData.deptName }
         ]
         isData = true
       } else {
@@ -243,7 +250,7 @@ export default {
         }
         this.$refs.inputSelectDept.dataSource = []
         this.$refs.inputSelectDept.value = ''
-        this.ybAcData.deptCode = ''
+        this.ybAcData.deptId = ''
         this.ybAcData.deptName = ''
       })
     },

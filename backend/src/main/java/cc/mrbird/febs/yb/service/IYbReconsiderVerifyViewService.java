@@ -34,7 +34,7 @@ public interface IYbReconsiderVerifyViewService extends IService<YbReconsiderVer
 
     void deleteYbReconsiderVerifyViews(String[] Ids);
 
-    int findReconsiderVerifyApplyDateCounts(String applyDate,Integer dataType,Integer typeno);
+    int findReconsiderVerifyApplyDateCounts(YbReconsiderVerifyView ybReconsiderVerifyView);
 
     IPage<YbReconsiderVerifyView> findYbReconsiderVerifyViewNulls(QueryRequest request, YbReconsiderVerifyView ybReconsiderVerifyView,String[] searchType);
 }

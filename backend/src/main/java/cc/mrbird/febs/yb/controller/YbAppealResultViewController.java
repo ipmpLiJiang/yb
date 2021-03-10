@@ -66,7 +66,7 @@ public class YbAppealResultViewController extends BaseController {
     @GetMapping
     @RequiresPermissions("ybAppealResultView:view")
     public Map<String, Object> List(QueryRequest request, YbAppealResultView ybAppealResultView) {
-        return getDataTable(this.iYbAppealResultViewService.findYbAppealResultViews(request, ybAppealResultView));
+        return getDataTable(this.iYbAppealResultViewService.findAppealResultViews(request, ybAppealResultView));
     }
 
     //数据剔除详情明细
@@ -95,7 +95,7 @@ public class YbAppealResultViewController extends BaseController {
     public void addYbAppealResultView(@Valid YbAppealResultView ybAppealResultView) throws FebsException {
         try {
             User currentUser = FebsUtil.getCurrentUser();
-            ybAppealResultView.setCreateUserId(currentUser.getUserId());
+//            ybAppealResultView.setCreateUserId(currentUser.getUserId());
             this.iYbAppealResultViewService.createYbAppealResultView(ybAppealResultView);
         } catch (Exception e) {
             message = "新增/按钮失败";
@@ -116,7 +116,7 @@ public class YbAppealResultViewController extends BaseController {
     public void updateYbAppealResultView(@Valid YbAppealResultView ybAppealResultView) throws FebsException {
         try {
             User currentUser = FebsUtil.getCurrentUser();
-            ybAppealResultView.setModifyUserId(currentUser.getUserId());
+//            ybAppealResultView.setModifyUserId(currentUser.getUserId());
             this.iYbAppealResultViewService.updateYbAppealResultView(ybAppealResultView);
         } catch (Exception e) {
             message = "修改失败";
@@ -369,7 +369,6 @@ public class YbAppealResultViewController extends BaseController {
 
                 Map<String, Integer> sheetColumnCountMap = new LinkedHashMap<>();
                 sheetColumnCountMap.put(sheetName1, excelMappingData.getPropertyList().size());
-
                 ExcelWriter writer = ExcelUtil.getWriterWithSheet(sheetName1);
 
                 List<String> rowHead = new ArrayList<>();
@@ -388,20 +387,18 @@ public class YbAppealResultViewController extends BaseController {
 
                 //设置所有列为自动宽度，不考虑合并单元格
                 writer.autoSizeColumnAll();
-
                 //标题Row高度
                 writer.setRowHeight(0, 25);
-                //内容Row高度
-                for (int i = 1; i <= dataList.size(); i++) {
-                    writer.setRowHeight(i, 20);
-                }
+                //内容Row高度 有效 慢
+//                for (int i = 1; i <= dataList.size(); i++) {
+//                    writer.setRowHeight(i, 20);
+//                }
 
                 ExcelMapping excelMappingMain = ExcelMappingFactory.get(YbAppealResultMainExport.class);
                 sheetColumnCountMap.put(sheetName2, excelMappingMain.getPropertyList().size());
-
                 rowHead.clear();
-                writer.setSheet(sheetName2);
 
+                writer.setSheet(sheetName2);
                 Map<String, String> headerAliasMain = new LinkedHashMap<>();
                 for (ExcelProperty item : excelMappingMain.getPropertyList()) {
                     rowHead.add(item.getColumn());
@@ -417,13 +414,12 @@ public class YbAppealResultViewController extends BaseController {
 
                 //设置所有列为自动宽度，不考虑合并单元格
                 writer.autoSizeColumnAll();
-
                 //标题Row高度
                 writer.setRowHeight(0, 25);
-                //内容Row高度
-                for (int i = 1; i <= mainList.size(); i++) {
-                    writer.setRowHeight(i, 20);
-                }
+                //内容Row高度 有效 慢
+//                for (int i = 1; i <= mainList.size(); i++) {
+//                    writer.setRowHeight(i, 20);
+//                }
 
                 StyleSet style = writer.getStyleSet();
                 CellStyle cellStyle = style.getHeadCellStyle();
@@ -680,13 +676,10 @@ public class YbAppealResultViewController extends BaseController {
 
                 //设置所有列为自动宽度，不考虑合并单元格
                 writer.autoSizeColumnAll();
-
                 //标题Row高度
                 writer.setRowHeight(0,25);
-
                 int rowHeightCount = dataList.size() + mxApplyDateStrList.size();
-
-                //内容Row高度
+                //内容Row高度 有效 慢
                 for (int i = 1; i <= rowHeightCount; i++) {
                     writer.setRowHeight(i,20);
                 }
@@ -719,12 +712,11 @@ public class YbAppealResultViewController extends BaseController {
 
                 //设置所有列为自动宽度，不考虑合并单元格
                 writer.autoSizeColumnAll();
-
                 //标题Row高度
                 writer.setRowHeight(0,25);
 
                 rowHeightCount = mainList.size() + zdApplyDateStrList.size();
-                //内容Row高度
+                //内容Row高度 有效 慢
                 for (int i = 1; i <= rowHeightCount; i++) {
                     writer.setRowHeight(i,20);
                 }

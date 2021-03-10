@@ -1,5 +1,6 @@
 package cc.mrbird.febs.yb.service;
 
+import cc.mrbird.febs.system.domain.User;
 import cc.mrbird.febs.yb.entity.YbReconsiderReset;
 import cc.mrbird.febs.yb.entity.YbReconsiderResetData;
 import com.baomidou.mybatisplus.extension.service.IService;
@@ -33,5 +34,7 @@ public interface IYbReconsiderResetService extends IService<YbReconsiderReset> {
 
     YbReconsiderReset findReconsiderResetByApplyDateStr(String applyDateStr);
 
-    String updateReconsiderApplyState(YbReconsiderReset ybReconsiderReset);
+    List<YbReconsiderReset> findReconsiderResetByApplyDateStr(List<String> applyDateStrList);
+
+    String updateReconsiderApplyState(YbReconsiderReset ybReconsiderReset, User currentUser);
 }

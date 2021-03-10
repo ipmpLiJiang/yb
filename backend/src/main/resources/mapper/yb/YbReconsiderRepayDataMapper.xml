@@ -186,7 +186,6 @@
         WHERE
             pid= #{ pid }
         GROUP BY belongDateStr
-        ORDER BY belongDateStr
     </select>
 
 </mapper>

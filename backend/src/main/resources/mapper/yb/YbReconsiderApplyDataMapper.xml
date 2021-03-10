@@ -175,106 +175,70 @@
             (#{orderNumber},#{item.pid},#{item.serialNo},#{item.billNo},#{item.proposalCode},#{item.projectCode},#{item.projectName},#{item.num},#{item.medicalPrice},#{item.ruleName},#{item.deductPrice},#{item.deductReason},#{item.repaymentReason},#{item.doctorName},#{item.deptCode},#{item.deptName},#{item.enterHospitalDate},#{item.enterHospitalDateStr},#{item.outHospitalDate},#{item.outHospitalDateStr},#{item.costDate},#{item.costDateStr},#{item.hospitalizedNo},#{item.treatmentMode},#{item.settlementDate},#{item.settlementDateStr},#{item.personalNo},#{item.insuredName},#{item.cardNumber},#{item.areaName},#{item.versionNumber},#{item.backAppeal},#{item.typeno},#{insuredType},#{dataType},#{item.isDeletemark},#{item.createTime},#{item.createUserId})
         </foreach>
     </insert>
-    <select id="findReconsiderApplyDataByApplyDate" resultType="cc.mrbird.febs.yb.entity.YbReconsiderApplyData">
-        SELECT
-        yb_reconsider_apply_data.*
-        FROM
-        yb_reconsider_apply_data
-        INNER JOIN yb_reconsider_apply on
-        yb_reconsider_apply.id = yb_reconsider_apply_data.pid AND
-        yb_reconsider_apply.IS_DELETEMARK = 1
-        where
-        yb_reconsider_apply_data.IS_DELETEMARK = 1 AND
-        yb_reconsider_apply.applyDateStr = #{ applyDateStr}
-        <if test="dataType != null"> and yb_reconsider_apply_data.dataType =#{ dataType} </if>
-    </select>
     <select id="findReconsiderApplyDataByNotVerify" resultType="cc.mrbird.febs.yb.entity.YbReconsiderApplyData">
         select
-          rda.*
+          *
         from
-            yb_reconsider_apply_data rda
-            INNER JOIN yb_reconsider_apply ra ON
-                rda.pid = ra.id and ra.IS_DELETEMARK = 1
+            yb_reconsider_apply_data
             WHERE
-            ra.applyDateStr= #{applyDateStr} and rda.dataType = #{dataType} and rda.typeno = #{typeno} and rda.IS_DELETEMARK = 1
-            AND NOT EXISTS(
-                select vv.* from yb_reconsider_verify vv INNER JOIN yb_reconsider_apply_data dd ON vv.applyDataId = dd.id
-                and dd.typeno = #{typeno} and dd.IS_DELETEMARK = 1 INNER JOIN yb_reconsider_apply pp on pp.id = dd.pid
-                and pp.IS_DELETEMARK = 1 where vv.IS_DELETEMARK = 1 and pp.applyDateStr=ra.applyDateStr and vv.applyDataId= rda.id
-                and vv.dataType = #{dataType}
+            pid= #{pid} and typeno = #{typeno} and dataType = #{dataType}
+            AND id not in(
+                select applyDataId from yb_reconsider_verify where
+                applyDateStr = #{applyDateStr} and typeno = #{typeno} and dataType = #{dataType}
             )
     </select>
     <select id="findReconsiderApplyDataBetween" resultType="cc.mrbird.febs.yb.entity.YbReconsiderApplyData">
         SELECT
-            yb_reconsider_apply_data.*
+            *
         FROM
             yb_reconsider_apply_data
-        INNER JOIN yb_reconsider_apply on
-            yb_reconsider_apply_data.pid = yb_reconsider_apply.id and
-            yb_reconsider_apply.IS_DELETEMARK = 1
         where
-            yb_reconsider_apply.applyDateStr = #{applyDateStr} and
-            yb_reconsider_apply_data.IS_DELETEMARK = 1 and
-            yb_reconsider_apply_data.dataType = #{dataType} and
-            yb_reconsider_apply_data.typeno = #{typeno} and
-            yb_reconsider_apply_data.orderSettlementNum between #{startNum} and #{endNum}
+            pid = #{pid} and
+            typeno = #{typeno} and
+            dataType = #{dataType} and
+            orderSettlementNum between #{startNum} and #{endNum}
         ORDER BY
-            dataType,orderNum
+            orderNum
     </select>
     <select id="findReconsiderApplyDataNotBetween" resultType="cc.mrbird.febs.yb.entity.YbReconsiderApplyData">
         SELECT
-            yb_reconsider_apply_data.*
+            *
         FROM
             yb_reconsider_apply_data
-        INNER JOIN yb_reconsider_apply on
-            yb_reconsider_apply_data.pid = yb_reconsider_apply.id and
-            yb_reconsider_apply.IS_DELETEMARK = 1
         where
-            yb_reconsider_apply.applyDateStr = #{applyDateStr} and
-            yb_reconsider_apply_data.IS_DELETEMARK = 1 and
-            yb_reconsider_apply_data.dataType = #{dataType} and
-            yb_reconsider_apply_data.typeno = #{typeno} and
-            yb_reconsider_apply_data.state = 1 and
-            yb_reconsider_apply_data.orderSettlementNum between #{startNum} and #{endNum}
+            pid = #{pid} and
+            typeno = #{typeno} and
+            dataType = #{dataType} and
+            state = 1 and
+            orderSettlementNum between #{startNum} and #{endNum}
         ORDER BY
-            dataType,orderNum
+            orderNum
     </select>
     <select id="findReconsiderApplyDataNotInpatientfees" resultType="cc.mrbird.febs.yb.entity.YbReconsiderApplyData">
         SELECT
-            yb_reconsider_apply_data.*
+            *
         FROM
             yb_reconsider_apply_data
-        INNER JOIN yb_reconsider_apply on
-            yb_reconsider_apply_data.pid = yb_reconsider_apply.id and
-            yb_reconsider_apply.IS_DELETEMARK = 1
         where
-            yb_reconsider_apply.applyDateStr = #{applyDateStr} and
-            yb_reconsider_apply_data.IS_DELETEMARK = 1 and
-            yb_reconsider_apply_data.dataType = #{dataType} and
-            yb_reconsider_apply_data.typeno = #{typeno} and
-            not exists(
-                select yri.id from yb_reconsider_inpatientfees yri where
-                    yri.applyDateStr = #{applyDateStr} and
-                    yri.IS_DELETEMARK = 1 and yri.dataType = #{dataType} and
-                    yri.typeno = #{typeno} and
-                    yri.applyDataId = yb_reconsider_apply_data.id
+            pid = #{pid} and
+            typeno = #{typeno} and
+            dataType = #{dataType} and
+            id not in(
+                select applyDataId from yb_reconsider_inpatientfees where
+                applyDateStr = #{applyDateStr} and typeno = #{typeno} and dataType = #{dataType}
             )
         ORDER BY
-            dataType,orderNum
+            orderNum
     </select>
     <select id="findReconsiderApplyDataCount"  resultType="Integer">
         SELECT
             count(1)
         FROM
             yb_reconsider_apply_data
-        INNER JOIN yb_reconsider_apply on
-            yb_reconsider_apply_data.pid = yb_reconsider_apply.id and
-            yb_reconsider_apply.IS_DELETEMARK = 1
         where
-            yb_reconsider_apply_data.IS_DELETEMARK = 1 and
-            yb_reconsider_apply.applyDateStr = #{applyDateStr}
-            <if test="typeno != null"> and yb_reconsider_apply_data.typeno =#{ typeno} </if>
-            <if test="dataType != null"> and yb_reconsider_apply_data.dataType =#{ dataType} </if>
+            pid = #{pid}
+            <if test="typeno != null"> and typeno =#{ typeno} </if>
+            <if test="dataType != null"> and dataType =#{ dataType} </if>
     </select>
 
     <select id="findReconsiderApplyDataNotCount" resultType="Integer">
@@ -282,20 +246,13 @@
             count(1)
         FROM
             yb_reconsider_apply_data
-        INNER JOIN yb_reconsider_apply on
-            yb_reconsider_apply_data.pid = yb_reconsider_apply.id and
-            yb_reconsider_apply.IS_DELETEMARK = 1
         where
-            yb_reconsider_apply.applyDateStr = #{applyDateStr} and
-            yb_reconsider_apply_data.IS_DELETEMARK = 1 and
-            yb_reconsider_apply_data.dataType = #{dataType} and
-            yb_reconsider_apply_data.typeno = #{typeno} and
-            not exists(
-                select yri.id from yb_reconsider_inpatientfees yri where
-                    yri.applyDateStr = #{applyDateStr} and
-                    yri.IS_DELETEMARK = 1 and yri.dataType = #{dataType} and
-                    yri.typeno = #{typeno} and
-                    yri.applyDataId = yb_reconsider_apply_data.id
+            pid = #{pid} and
+            typeno = #{typeno} and
+            dataType = #{dataType} and
+            id not in(
+                select applyDataId from yb_reconsider_inpatientfees  where
+                applyDateStr = #{applyDateStr} and typeno = #{typeno} and dataType = #{dataType}
             )
     </select>
 

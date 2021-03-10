@@ -278,10 +278,11 @@ public class ComSmsServiceImpl extends ServiceImpl<ComSmsMapper, ComSms> impleme
     }
 
     @Override
-    public void sendSms() {
+    public void sendSms(int sendType) {
         String msg = "";
         ComSms comSms = new ComSms();
         comSms.setState(ComSms.STATE_0);
+        comSms.setSendType(sendType);
         List<ComSms> list = this.baseMapper.findSmsTopList(comSms);
         int nOpenSms = febsProperties.getOpenSms();
         boolean isOpenSms = nOpenSms == 1 ? true : false;

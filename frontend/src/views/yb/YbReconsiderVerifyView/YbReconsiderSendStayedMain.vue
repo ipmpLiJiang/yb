@@ -439,7 +439,7 @@ export default {
         params.pageNum = this.pagination.defaultCurrent
       }
 
-      params.sortField = 'orderNum'
+      params.sortField = 'ad.orderNum'
       params.sortOrder = 'ascend'
 
       this.$get('ybReconsiderVerifyView/findVerifyViewNull', {

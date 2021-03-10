@@ -6,6 +6,7 @@ import cc.mrbird.febs.yb.entity.YbAppealResult;
 import cc.mrbird.febs.yb.dao.YbAppealResultMapper;
 import cc.mrbird.febs.yb.entity.YbAppealResultView;
 import cc.mrbird.febs.yb.service.IYbAppealResultService;
+import cc.mrbird.febs.yb.service.IYbHandleVerifyService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -15,6 +16,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -39,13 +41,13 @@ import java.time.LocalDate;
 @Transactional(propagation = Propagation.SUPPORTS, readOnly = true, rollbackFor = Exception.class)
 public class YbAppealResultServiceImpl extends ServiceImpl<YbAppealResultMapper, YbAppealResult> implements IYbAppealResultService {
 
-
+@Autowired
+    IYbHandleVerifyService iYbHandleVerifyService;
     @Override
     public IPage<YbAppealResult> findYbAppealResults(QueryRequest request, YbAppealResult ybAppealResult) {
         try {
             LambdaQueryWrapper<YbAppealResult> queryWrapper = new LambdaQueryWrapper<>();
             queryWrapper.eq(YbAppealResult::getIsDeletemark, 1);//1是未删 0是已删
-
 
             Page<YbAppealResult> page = new Page<>();
             SortUtil.handlePageSort(request, page, false);//true 是属性  false是数据库字段可两个
@@ -145,14 +147,13 @@ public class YbAppealResultServiceImpl extends ServiceImpl<YbAppealResultMapper,
 
     //手动剔除业务
     @Override
-    public List<YbAppealResult> findAppealResulDataHandles(String applyDateStr) {
-        return this.baseMapper.findAppealResulDataHandle(applyDateStr);
+    public List<YbAppealResult> findAppealResulDataHandles(String applyDateStr,String hvId) {
+        return this.baseMapper.findAppealResulDataHandle(applyDateStr,hvId);
     }
 
     @Override
     public List<YbAppealResult> findAppealResultList(YbAppealResult appealResult) {
         LambdaQueryWrapper<YbAppealResult> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(YbAppealResult::getIsDeletemark, 1);
         if (appealResult.getApplyDateStr() != null) {
             wrapper.eq(YbAppealResult::getApplyDateStr, appealResult.getApplyDateStr());
         }

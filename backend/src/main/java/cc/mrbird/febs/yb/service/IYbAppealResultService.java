@@ -42,7 +42,7 @@ public interface IYbAppealResultService extends IService<YbAppealResult> {
 
     List<YbAppealResult> findAppealResulDataByRepays(String applyDateStr, Integer dataType);
 
-    List<YbAppealResult> findAppealResulDataHandles(String applyDateStr);
+    List<YbAppealResult> findAppealResulDataHandles(String applyDateStr,String hvId);
 
     List<YbAppealResult> findAppealResultList(YbAppealResult appealResult);
 

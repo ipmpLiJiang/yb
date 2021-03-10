@@ -17,10 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.time.LocalDate;
 
 /**
@@ -63,6 +60,18 @@ public class YbHandleVerifyServiceImpl extends ServiceImpl<YbHandleVerifyMapper,
             log.error("获取失败", e);
             return null;
         }
+    }
+
+    @Override
+    public YbHandleVerify findYbHandleVerifyApplyDateStr(String applyDateStr) {
+        LambdaQueryWrapper<YbHandleVerify> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(YbHandleVerify::getIsDeletemark, 1);
+        queryWrapper.eq(YbHandleVerify::getApplyDateStr, applyDateStr);
+        List<YbHandleVerify> list = this.list(queryWrapper);
+        if (list.size() > 0) {
+            return list.get(0);
+        }
+        return null;
     }
 
     @Override

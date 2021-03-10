@@ -92,13 +92,13 @@ export default {
         title: '项目编码',
         dataIndex: 'projectCode',
         fixed: 'left',
-        width: 120
+        width: 130
       },
       {
         title: '项目名称',
         dataIndex: 'projectName',
         fixed: 'left',
-        width: 160
+        width: 180
       },
       {
         title: '数量',
@@ -113,7 +113,7 @@ export default {
       {
         title: '规则名称',
         dataIndex: 'ruleName',
-        width: 140
+        width: 160
       },
       {
         title: '扣除金额',
@@ -145,7 +145,7 @@ export default {
       {
         title: '科室名称',
         dataIndex: 'arDeptName',
-        width: 120
+        width: 130
       },
       {
         title: '操作',
@@ -276,8 +276,9 @@ export default {
         params.pageSize = this.pagination.defaultPageSize
         params.pageNum = this.pagination.defaultCurrent
       }
-      params.sortField = 'typeno asc,orderNum'
+      params.sortField = 'art.typeno,art.dataType,art.orderNum'
       params.sortOrder = 'ascend'
+
       this.$get('ybAppealResultView', {
         ...params
       }).then((r) => {

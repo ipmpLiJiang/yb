@@ -104,14 +104,13 @@ public class Test {
             }
             //设置所有列为自动宽度，不考虑合并单元格
             writer.autoSizeColumnAll();
-
             //标题Row高度
             writer.setRowHeight(0, 25);
 
-            //内容Row高度
-            for (int i = 1; i <= rowCount; i++) {
-                writer.setRowHeight(i, 20);
-            }
+            //内容Row高度 有效 慢
+//            for (int i = 1; i <= rowCount; i++) {
+//                writer.setRowHeight(i, 20);
+//            }
 
             StyleSet style = writer.getStyleSet();
             CellStyle cellStyle = style.getHeadCellStyle();

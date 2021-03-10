@@ -6,6 +6,8 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.List;
+
 /**
  * <p>
  * VIEW Mapper 接口
@@ -15,6 +17,15 @@ import org.apache.ibatis.annotations.Param;
  * @since 2020-08-18
  */
 public interface YbReconsiderResetDataViewMapper extends BaseMapper<YbReconsiderResetDataView> {
-        void updateYbReconsiderResetDataView(YbReconsiderResetDataView ybReconsiderResetDataView);
-        IPage<YbReconsiderResetDataView> findYbReconsiderResetDataView(Page page, @Param("ybReconsiderResetDataView") YbReconsiderResetDataView ybReconsiderResetDataView);
-        }
+    void updateYbReconsiderResetDataView(YbReconsiderResetDataView ybReconsiderResetDataView);
+
+    IPage<YbReconsiderResetDataView> findReconsiderResetDataView(Page page, @Param("ybReconsiderResetDataView") YbReconsiderResetDataView ybReconsiderResetDataView);
+
+    int findReconsiderResetDataCount(@Param("ybReconsiderResetDataView") YbReconsiderResetDataView ybReconsiderResetDataView);
+
+    IPage<YbReconsiderResetDataView> findReconsiderResetDataNotView(Page page, @Param("ybReconsiderResetDataView") YbReconsiderResetDataView ybReconsiderResetDataView);
+
+    int findReconsiderResetDataNotCount(@Param("ybReconsiderResetDataView") YbReconsiderResetDataView ybReconsiderResetDataView);
+
+    List<YbReconsiderResetDataView> findReconsiderResetDataList(@Param("ybReconsiderResetDataView") YbReconsiderResetDataView ybReconsiderResetDataView);
+}

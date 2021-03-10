@@ -78,7 +78,7 @@ export default {
       {
         title: '项目名称',
         dataIndex: 'projectName',
-        width: 160
+        width: 180
       },
       {
         title: '扣除金额',

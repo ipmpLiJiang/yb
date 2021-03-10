@@ -1,5 +1,6 @@
 package cc.mrbird.febs.yb.entity;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.wuwenze.poi.annotation.Excel;
 import com.wuwenze.poi.annotation.ExcelField;
 import lombok.Data;
@@ -151,5 +152,28 @@ public class YbAppealResultDataReportExport {
     @ExcelField(value ="反馈申诉")
     private String backAppeal;
 
+    /**
+     * 复议医生编码
+     */
+    @ExcelField(value = "复议医生编码")
+    private String arDoctorCode;
+
+    /**
+     * 复议医生姓名
+     */
+    @ExcelField(value = "复议医生姓名")
+    private String arDoctorName;
+
+    /**
+     * 复议科室编码
+     */
+    @ExcelField(value = "复议科室编码")
+    private String arDeptCode;
+
+    /**
+     * 复议科室名称
+     */
+    @ExcelField(value = "复议科室名称")
+    private String arDeptName;
 
 }

@@ -1,21 +1,13 @@
 package cc.mrbird.febs.yb.entity;
 
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
-
-import cc.mrbird.febs.com.entity.ComFile;
 import com.baomidou.mybatisplus.annotation.TableField;
-
-import java.io.Serializable;
-
-
+import com.wuwenze.poi.annotation.Excel;
+import com.wuwenze.poi.annotation.ExcelField;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
+import java.math.BigDecimal;
 import java.util.Date;
-
-import com.wuwenze.poi.annotation.Excel;
-import com.wuwenze.poi.annotation.ExcelField;
 
 /**
  * <p>
@@ -130,32 +122,6 @@ public class YbAppealResultView implements Comparable<YbAppealResultView> {
     @ExcelField(value = "科室名称")
     private String deptName;
 
-    /**
-     * 入院日期
-     */
-    @TableField("enterHospitalDate")
-    @ExcelField(value = "入院日期")
-    private Date enterHospitalDate;
-    private transient String enterHospitalDateFrom;
-    private transient String enterHospitalDateTo;
-
-    /**
-     * 出院日期
-     */
-    @TableField("outHospitalDate")
-    @ExcelField(value = "出院日期")
-    private Date outHospitalDate;
-    private transient String outHospitalDateFrom;
-    private transient String outHospitalDateTo;
-
-    /**
-     * 费用日期
-     */
-    @TableField("costDate")
-    @ExcelField(value = "费用日期")
-    private Date costDate;
-    private transient String costDateFrom;
-    private transient String costDateTo;
 
     /**
      * 入院日期
@@ -191,15 +157,6 @@ public class YbAppealResultView implements Comparable<YbAppealResultView> {
     @TableField("treatmentMode")
     @ExcelField(value = "就医方式")
     private String treatmentMode;
-
-    /**
-     * 结算日期
-     */
-    @TableField("settlementDate")
-    @ExcelField(value = "结算日期")
-    private Date settlementDate;
-    private transient String settlementDateFrom;
-    private transient String settlementDateTo;
 
     /**
      * 结算日期
@@ -264,14 +221,6 @@ public class YbAppealResultView implements Comparable<YbAppealResultView> {
     @ExcelField(value = "版本类型")
     private Integer typeno;
 
-    /**
-     * 复议年月
-     */
-    @TableField("applyDate")
-    @ExcelField(value = "复议年月")
-    private Date applyDate;
-    private transient String applyDateFrom;
-    private transient String applyDateTo;
 
     /**
      * 复议年月Str
@@ -281,18 +230,25 @@ public class YbAppealResultView implements Comparable<YbAppealResultView> {
     private String applyDateStr;
 
     /**
-     * 操作员代码
+     * 数据类型
      */
-    @TableField("operatorId")
-    @ExcelField(value = "操作员代码")
-    private Long operatorId;
+    @TableField("dataType")
+    //@ExcelField(value ="数据类型")
+    private Integer dataType;
 
     /**
-     * 操作员名称
+     * 序号
      */
-    @TableField("operatorName")
-    @ExcelField(value = "操作员名称")
-    private String operatorName;
+    @TableField("orderNumber")
+    @ExcelField(value = "序号")
+    private String orderNumber;
+
+    /**
+     * 排序
+     */
+    @TableField("orderNum")
+    @ExcelField(value = "排序")
+    private Integer orderNum;
 
     /**
      * 复议结果
@@ -364,48 +320,6 @@ public class YbAppealResultView implements Comparable<YbAppealResultView> {
     @TableField("sourceType")
     @ExcelField(value = "来源类型")
     private Integer sourceType;
-
-    /**
-     * 序号
-     */
-    @TableField("orderNumber")
-    @ExcelField(value = "序号")
-    private String orderNumber;
-
-    /**
-     * 排序
-     */
-    @TableField("orderNum")
-    @ExcelField(value = "排序")
-    private Integer orderNum;
-
-//    /**
-//     * 剔除明细扣款
-//     */
-//    @TableField("resetDataId")
-//    @ExcelField(value = "剔除明细扣款")
-//    private String resetDataId;
-
-    /**
-     * 剔除状态
-     */
-    @TableField("raResetState")
-    @ExcelField(value = "剔除状态")
-    private Integer raResetState;
-
-    /**
-     * 申诉状态
-     */
-    @TableField("raResultState")
-    @ExcelField(value = "申诉状态")
-    private Integer raResultState;
-
-    /**
-     * 还款状态
-     */
-    @TableField("raRepayState")
-    @ExcelField(value = "还款状态")
-    private Integer raRepayState;
 
 
     /**
@@ -534,41 +448,34 @@ public class YbAppealResultView implements Comparable<YbAppealResultView> {
     private String feeDeptName;
 
 
-
     /**
      * 开方医生编码
      */
     @TableField("arOrderDoctorCode")
-    @ExcelField(value ="开方医生编码")
+    @ExcelField(value = "开方医生编码")
     private String arOrderDoctorCode;
 
     /**
      * 开方医生名称
      */
     @TableField("arOrderDoctorName")
-    @ExcelField(value ="开方医生名称")
+    @ExcelField(value = "开方医生名称")
     private String arOrderDoctorName;
 
     /**
      * 开方科室编码
      */
     @TableField("arOrderDeptCode")
-    @ExcelField(value ="开方科室编码")
+    @ExcelField(value = "开方科室编码")
     private String arOrderDeptCode;
 
     /**
      * 开方科室名称
      */
     @TableField("arOrderDeptName")
-    @ExcelField(value ="开方科室名称")
+    @ExcelField(value = "开方科室名称")
     private String arOrderDeptName;
 
-    /**
-     * 备注
-     */
-    @TableField("COMMENTS")
-    @ExcelField(value = "备注")
-    private String comments;
 
     /**
      * 状态
@@ -578,43 +485,11 @@ public class YbAppealResultView implements Comparable<YbAppealResultView> {
     private Integer state;
 
     /**
-     * 是否删除
+     * 还款状态
      */
-    @TableField("IS_DELETEMARK")
-    @ExcelField(value = "是否删除")
-    private Integer isDeletemark;
-
-    /**
-     * 修改时间
-     */
-    @TableField("MODIFY_TIME")
-    @ExcelField(value = "修改时间")
-    private Date modifyTime;
-    private transient String modifyTimeFrom;
-    private transient String modifyTimeTo;
-
-    /**
-     * 创建时间
-     */
-    @TableField("CREATE_TIME")
-    @ExcelField(value = "创建时间")
-    private Date createTime;
-    private transient String createTimeFrom;
-    private transient String createTimeTo;
-
-    /**
-     * 创建人
-     */
-    @TableField("CREATE_USER_ID")
-    @ExcelField(value = "创建人")
-    private Long createUserId;
-
-    /**
-     * 修改人
-     */
-    @TableField("MODIFY_USER_ID")
-    @ExcelField(value = "修改人")
-    private Long modifyUserId;
+    @TableField("repayState")
+    @ExcelField(value = "还款状态")
+    private Integer repayState;
 
     /**
      * 通用
@@ -623,12 +498,6 @@ public class YbAppealResultView implements Comparable<YbAppealResultView> {
     @ExcelField(value = "通用")
     private String currencyField;
 
-    /**
-     * 数据类型
-     */
-    @TableField("dataType")
-    //@ExcelField(value ="数据类型")
-    private Integer dataType;
 
     /**
      * 关联Id
@@ -637,128 +506,59 @@ public class YbAppealResultView implements Comparable<YbAppealResultView> {
     @ExcelField(value = "关联Id")
     private String relatelDataId;
 
+    /**
+     * pid
+     */
+    @TableField("pid")
+    @ExcelField(value = "pid")
+    private String pid;
+
+    public static final String PID = "pid";
     public static final String SERIALNO = "serialNo";
-
     public static final String BILLNO = "billNo";
-
     public static final String PROPOSALCODE = "proposalCode";
-
     public static final String PROJECTCODE = "projectCode";
-
     public static final String PROJECTNAME = "projectName";
-
     public static final String NUM = "num";
-
     public static final String MEDICALPRICE = "medicalPrice";
-
     public static final String RULENAME = "ruleName";
-
     public static final String DEDUCTPRICE = "deductPrice";
-
     public static final String DEDUCTREASON = "deductReason";
-
     public static final String REPAYMENTREASON = "repaymentReason";
-
     public static final String DOCTORNAME = "doctorName";
-
     public static final String DEPTCODE = "deptCode";
-
     public static final String DEPTNAME = "deptName";
-
-    public static final String ENTERHOSPITALDATE = "enterHospitalDate";
-
-    public static final String OUTHOSPITALDATE = "outHospitalDate";
-
-    public static final String COSTDATE = "costDate";
-
     public static final String ENTERHOSPITALDATESTR = "enterHospitalDateStr";
-
     public static final String OUTHOSPITALDATESTR = "outHospitalDateStr";
-
     public static final String COSTDATESTR = "costDateStr";
-
     public static final String HOSPITALIZEDNO = "hospitalizedNo";
-
     public static final String TREATMENTMODE = "treatmentMode";
-
-    public static final String SETTLEMENTDATE = "settlementDate";
-
     public static final String SETTLEMENTDATESTR = "settlementDateStr";
-
     public static final String PERSONALNO = "personalNo";
-
     public static final String INSUREDNAME = "insuredName";
-
     public static final String INSUREDTYPE = "insuredType";
-
     public static final String CARDNUMBER = "cardNumber";
-
     public static final String AREANAME = "areaName";
-
     public static final String VERSIONNUMBER = "versionNumber";
-
     public static final String BACKAPPEAL = "backAppeal";
-
     public static final String TYPENO = "typeno";
-
-    public static final String APPLYDATE = "applyDate";
-
     public static final String APPLYDATESTR = "applyDateStr";
-
-    public static final String OPERATORID = "operatorId";
-
-    public static final String OPERATORNAME = "operatorName";
-
     public static final String ID = "id";
-
     public static final String APPLYDATAID = "applyDataId";
-
     public static final String VERIFYID = "verifyId";
-
     public static final String ARDOCTORCODE = "arDoctorCode";
-
     public static final String ARDOCTORNAME = "arDoctorName";
-
     public static final String ARDEPTCODE = "arDeptCode";
-
     public static final String ARDEPTNAME = "arDeptName";
-
     public static final String OPERATEREASON = "operateReason";
-
-    public static final String OPERATEDATE = "operateDate结算日期";
-
+    public static final String OPERATEDATE = "operateDate";
     public static final String SOURCETYPE = "sourceType";
-
-//    public static final String RESETDATAID = "resetDataId";
-
-    public static final String RARESETSTATE = "raResetState";
-
-    public static final String RARESULTSTATE = "raResultState";
-
-    public static final String RAREPAYSTATE = "raRepayState ";
-
     public static final String DATATYPE = "dataType";
-
     public static final String ORDERNUMBER = "orderNumber";
-
-    public static final String ORDERNUM ="orderNum";
-
-    public static final String COMMENTS = "COMMENTS";
-
+    public static final String ORDERNUM = "orderNum";
     public static final String STATE = "STATE";
-
-    public static final String IS_DELETEMARK = "IS_DELETEMARK";
-
-    public static final String MODIFY_TIME = "MODIFY_TIME";
-
-    public static final String CREATE_TIME = "CREATE_TIME";
-
-    public static final String CREATE_USER_ID = "CREATE_USER_ID";
-
-    public static final String MODIFY_USER_ID = "MODIFY_USER_ID";
-
+    public static final String REPAYSTATE = "repayState";
     public static final String CURRENCYFIELD = "currencyField";
-
     public static final String RELATELDATAID = "relatelDataId";
 
     @Override

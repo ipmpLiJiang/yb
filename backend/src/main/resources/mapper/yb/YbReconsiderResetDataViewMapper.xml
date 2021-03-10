@@ -2,134 +2,373 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cc.mrbird.febs.yb.dao.YbReconsiderResetDataViewMapper">
 
-        <!-- 通用查询映射结果 -->
-        <resultMap id="BaseResultMap" type="cc.mrbird.febs.yb.entity.YbReconsiderResetDataView">
-                    <result column="id" property="id"/>
-                    <result column="serialNo" property="serialNo"/>
-                    <result column="billNo" property="billNo"/>
-                    <result column="projectCode" property="projectCode"/>
-                    <result column="projectName" property="projectName"/>
-                    <result column="medicalPrice" property="medicalPrice"/>
-                    <result column="ruleName" property="ruleName"/>
-                    <result column="deductPrice" property="deductPrice"/>
-                    <result column="deductReason" property="deductReason"/>
-                    <result column="repaymentReason" property="repaymentReason"/>
-                    <result column="doctorName" property="doctorName"/>
-                    <result column="deptCode" property="deptCode"/>
-                    <result column="deptName" property="deptName"/>
-                    <result column="costDate" property="costDate"/>
-                    <result column="costDateStr" property="costDateStr"/>
-                    <result column="hospitalizedNo" property="hospitalizedNo"/>
-                    <result column="treatmentMode" property="treatmentMode"/>
-                    <result column="settlementDate" property="settlementDate"/>
-                    <result column="settlementDateStr" property="settlementDateStr"/>
-                    <result column="personalNo" property="personalNo"/>
-                    <result column="insuredName" property="insuredName"/>
-                    <result column="cardNumber" property="cardNumber"/>
-                    <result column="areaName" property="areaName"/>
-                    <result column="insuredType" property="insuredType"/>
-            <result column="dataType" property="dataType"/>
-            <result column="orderNumber" property="orderNumber"/>
-            <result column="orderNum" property="orderNum"/>
-            <result column="repaymentPrice" property="repaymentPrice"/>
-            <result column="state" property="state"/>
-            <result column="seekState" property="seekState"/>
-            <result column="resetId" property="resetId"/>
-                    <result column="applyDate" property="applyDate"/>
-                    <result column="applyDateStr" property="applyDateStr"/>
-            <result column="currencyField" property="currencyField"/>
-<!--            <result column="applyDataId" property="applyDataId"/>-->
-<!--            <result column="applyOrderNumber" property="applyOrderNumber"/>-->
-<!--            <result column="resultId" property="resultId"/>-->
-            <result column="resetType" property="resetType"/>
-            <result column="relatelDataId" property="relatelDataId"/>
-            <result column="resetPersonId" property="resetPersonId"/>
-            <result column="resetPersonName" property="resetPersonName"/>
-            <result column="resetDate" property="resetDate"/>
-            <result column="resetState" property="resetState"/>
-        </resultMap>
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="cc.mrbird.febs.yb.entity.YbReconsiderResetDataView">
+        <result column="id" property="id"/>
+        <result column="serialNo" property="serialNo"/>
+        <result column="billNo" property="billNo"/>
+        <result column="projectCode" property="projectCode"/>
+        <result column="projectName" property="projectName"/>
+        <result column="medicalPrice" property="medicalPrice"/>
+        <result column="ruleName" property="ruleName"/>
+        <result column="deductPrice" property="deductPrice"/>
+        <result column="deductReason" property="deductReason"/>
+        <result column="repaymentReason" property="repaymentReason"/>
+        <result column="doctorName" property="doctorName"/>
+        <result column="deptCode" property="deptCode"/>
+        <result column="deptName" property="deptName"/>
+        <result column="costDateStr" property="costDateStr"/>
+        <result column="hospitalizedNo" property="hospitalizedNo"/>
+        <result column="treatmentMode" property="treatmentMode"/>
+        <result column="settlementDateStr" property="settlementDateStr"/>
+        <result column="personalNo" property="personalNo"/>
+        <result column="insuredName" property="insuredName"/>
+        <result column="cardNumber" property="cardNumber"/>
+        <result column="areaName" property="areaName"/>
+        <result column="insuredType" property="insuredType"/>
+        <result column="dataType" property="dataType"/>
+        <result column="orderNumber" property="orderNumber"/>
+        <result column="orderNum" property="orderNum"/>
+        <result column="repaymentPrice" property="repaymentPrice"/>
+        <result column="state" property="state"/>
+        <result column="seekState" property="seekState"/>
+        <result column="resetId" property="resetId"/>
+        <result column="applyDate" property="applyDate"/>
+        <result column="applyDateStr" property="applyDateStr"/>
+        <result column="currencyField" property="currencyField"/>
+        <result column="resetType" property="resetType"/>
+        <result column="relatelDataId" property="relatelDataId"/>
+        <result column="resetPersonId" property="resetPersonId"/>
+        <result column="resetPersonName" property="resetPersonName"/>
+        <result column="resetDate" property="resetDate"/>
+        <result column="resetState" property="resetState"/>
+    </resultMap>
 
-        <!-- 通用查询结果列 -->
-        <sql id="Base_Column_List">
-        id,serialNo,billNo,projectCode,projectName,medicalPrice,ruleName,deductPrice,deductReason,repaymentReason,doctorName ,deptCode,deptName,costDate,costDateStr,hospitalizedNo,treatmentMode,settlementDate,settlementDateStr,personalNo,insuredName,cardNumber,areaName,insuredType,dataType,orderNumber,orderNum,repaymentPrice,STATE,seekState,resetDate,resetType,relatelDataId,resetPersonId,resetPersonName,resetId,applyDate,applyDateStr,currencyField,resetState
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id,serialNo,billNo,projectCode,projectName,medicalPrice,ruleName,deductPrice,deductReason,repaymentReason,doctorName ,deptCode,deptName,costDateStr,hospitalizedNo,treatmentMode,settlementDateStr,personalNo,insuredName,cardNumber,areaName,insuredType,dataType,orderNumber,orderNum,repaymentPrice,STATE,seekState,resetDate,resetType,relatelDataId,resetPersonId,resetPersonName,resetId,applyDate,applyDateStr,currencyField,resetState
     </sql>
     <update id="updateYbReconsiderResetDataView" parameterType="cc.mrbird.febs.yb.entity.YbReconsiderResetDataView">
         update yb_reconsider_reset_data_view
         <trim prefix="set" suffixOverrides=",">
-<if test="id != null">id=#{id},</if>
-<if test="serialNo != null">serialNo=#{serialNo},</if>
-<if test="billNo != null">billNo=#{billNo},</if>
-<if test="projectCode != null">projectCode=#{projectCode},</if>
-<if test="projectName != null">projectName=#{projectName},</if>
-<if test="medicalPrice != null">medicalPrice=#{medicalPrice},</if>
-<if test="ruleName != null">ruleName=#{ruleName},</if>
-<if test="deductPrice != null">deductPrice=#{deductPrice},</if>
-<if test="deductReason != null">deductReason=#{deductReason},</if>
-<if test="repaymentReason != null">repaymentReason=#{repaymentReason},</if>
-<if test="doctorName != null">doctorName=#{doctorName},</if>
-<if test="deptCode != null">deptCode=#{deptCode},</if>
-<if test="deptName != null">deptName=#{deptName},</if>
-<if test="costDate != null">costDate=#{costDate},</if>
-<if test="costDateStr != null">costDateStr=#{costDateStr},</if>
-<if test="hospitalizedNo != null">hospitalizedNo=#{hospitalizedNo},</if>
-<if test="treatmentMode != null">treatmentMode=#{treatmentMode},</if>
-<if test="settlementDate != null">settlementDate=#{settlementDate},</if>
-<if test="settlementDateStr != null">settlementDateStr=#{settlementDateStr},</if>
-<if test="personalNo != null">personalNo=#{personalNo},</if>
-<if test="insuredName != null">insuredName=#{insuredName},</if>
-<if test="cardNumber != null">cardNumber=#{cardNumber},</if>
-<if test="areaName != null">areaName=#{areaName},</if>
-<if test="resetId != null">resetId=#{resetId},</if>
-<if test="applyDate != null">applyDate=#{applyDate},</if>
-<if test="applyDateStr != null">applyDateStr=#{applyDateStr},</if>
+            <if test="id != null">id=#{id},</if>
+            <if test="serialNo != null">serialNo=#{serialNo},</if>
         </trim>
 
     </update>
-    <select id="findYbReconsiderResetDataView" resultType="cc.mrbird.febs.yb.entity.YbReconsiderResetDataView" parameterType="cc.mrbird.febs.yb.entity.YbReconsiderResetDataView">
-        select  *  from yb_reconsider_reset_data_view
-        where  1=1
-            <if test="ybReconsiderResetDataView.id != null and ybReconsiderResetDataView.id != ''"> and id like concat('%', #{ ybReconsiderResetDataView.id} ,'%')</if>
-            <if test="ybReconsiderResetDataView.serialNo != null and ybReconsiderResetDataView.serialNo != ''"> and serialNo like concat('%', #{ ybReconsiderResetDataView.serialNo} ,'%')</if>
-            <if test="ybReconsiderResetDataView.billNo != null and ybReconsiderResetDataView.billNo != ''"> and billNo like concat('%', #{ ybReconsiderResetDataView.billNo} ,'%')</if>
-            <if test="ybReconsiderResetDataView.projectCode != null and ybReconsiderResetDataView.projectCode != ''"> and projectCode like concat('%', #{ ybReconsiderResetDataView.projectCode} ,'%')</if>
-            <if test="ybReconsiderResetDataView.projectName != null and ybReconsiderResetDataView.projectName != ''"> and projectName like concat('%', #{ ybReconsiderResetDataView.projectName} ,'%')</if>
-            <if test="ybReconsiderResetDataView.ruleName != null and ybReconsiderResetDataView.ruleName != ''"> and ruleName like concat('%', #{ ybReconsiderResetDataView.ruleName} ,'%')</if>
-            <if test="ybReconsiderResetDataView.deductReason != null and ybReconsiderResetDataView.deductReason != ''"> and deductReason like concat('%', #{ ybReconsiderResetDataView.deductReason} ,'%')</if>
-            <if test="ybReconsiderResetDataView.repaymentReason != null and ybReconsiderResetDataView.repaymentReason != ''"> and repaymentReason like concat('%', #{ ybReconsiderResetDataView.repaymentReason} ,'%')</if>
-            <if test="ybReconsiderResetDataView.doctorName != null and ybReconsiderResetDataView.doctorName != ''"> and doctorName like concat('%', #{ ybReconsiderResetDataView.doctorName} ,'%')</if>
-            <if test="ybReconsiderResetDataView.deptCode != null and ybReconsiderResetDataView.deptCode != ''"> and deptCode like concat('%', #{ ybReconsiderResetDataView.deptCode} ,'%')</if>
-            <if test="ybReconsiderResetDataView.deptName != null and ybReconsiderResetDataView.deptName != ''"> and deptName like concat('%', #{ ybReconsiderResetDataView.deptName} ,'%')</if>
-        <if test="ybReconsiderResetDataView.costDateFrom!= null">
-            AND ybReconsiderResetDataView.costDate <![CDATA[ >= ]]>  costDateFrom}
+    <select id="findReconsiderResetDataView" resultType="cc.mrbird.febs.yb.entity.YbReconsiderResetDataView"
+            parameterType="cc.mrbird.febs.yb.entity.YbReconsiderResetDataView">
+        SELECT
+        rrd.id,
+        rrd.serialNo ,
+        rrd.billNo ,
+        rrd.projectCode ,
+        rrd.projectName ,
+        rrd.medicalPrice ,
+        rrd.ruleName ,
+        rrd.deductPrice ,
+        rrd.deductReason ,
+        rrd.repaymentReason ,
+        rrd.doctorName ,
+        rrd.deptCode ,
+        rrd.deptName ,
+        rrd.costDateStr ,
+        rrd.hospitalizedNo ,
+        rrd.treatmentMode ,
+        rrd.settlementDateStr ,
+        rrd.personalNo ,
+        rrd.insuredName ,
+        rrd.cardNumber ,
+        rrd.areaName ,
+        rrd.insuredType,
+        rrd.dataType,
+        rrd.orderNumber,
+        rrd.orderNum,
+        rrd.repaymentPrice,
+        rrd.STATE,
+        rrd.seekState,
+        rrd.relatelDataId,
+        rrd.resetPersonId,
+        rrd.resetPersonName,
+        rrd.resetType,
+        rrd.resetDate,
+        rr.id resetId,
+        rr.state resetState,
+        rr.applyDate,
+        rr.applyDateStr,
+        rr.currencyField
+    FROM
+         yb_reconsider_reset_data rrd
+        INNER JOIN yb_reconsider_reset rr ON
+            rrd.pid = rr.id
+    WHERE
+        rrd.pid = #{ ybReconsiderResetDataView.resetId}
+        <if test="ybReconsiderResetDataView.dataType != null">
+        and rrd.dataType = #{ ybReconsiderResetDataView.dataType}
         </if>
-        <if test="ybReconsiderResetDataView.costDateTo!= null">
-            AND ybReconsiderResetDataView.costDate <![CDATA[ <= ]]>  costDateTo}
+        <if test="ybReconsiderResetDataView.state != null">
+        and rrd.STATE = #{ ybReconsiderResetDataView.state}
         </if>
-            <if test="ybReconsiderResetDataView.costDateStr != null and ybReconsiderResetDataView.costDateStr != ''"> and costDateStr like concat('%', #{ ybReconsiderResetDataView.costDateStr} ,'%')</if>
-            <if test="ybReconsiderResetDataView.hospitalizedNo != null and ybReconsiderResetDataView.hospitalizedNo != ''"> and hospitalizedNo like concat('%', #{ ybReconsiderResetDataView.hospitalizedNo} ,'%')</if>
-            <if test="ybReconsiderResetDataView.treatmentMode != null and ybReconsiderResetDataView.treatmentMode != ''"> and treatmentMode like concat('%', #{ ybReconsiderResetDataView.treatmentMode} ,'%')</if>
-        <if test="ybReconsiderResetDataView.settlementDateFrom!= null">
-            AND ybReconsiderResetDataView.settlementDate <![CDATA[ >= ]]>  settlementDateFrom}
+        <if test="ybReconsiderResetDataView.seekState != null">
+        and rrd.seekState = #{ ybReconsiderResetDataView.seekState}
         </if>
-        <if test="ybReconsiderResetDataView.settlementDateTo!= null">
-            AND ybReconsiderResetDataView.settlementDate <![CDATA[ <= ]]>  settlementDateTo}
+        <if test="ybReconsiderResetDataView.resetType != null">
+        and rrd.resetType = #{ ybReconsiderResetDataView.resetType}
         </if>
-            <if test="ybReconsiderResetDataView.settlementDateStr != null and ybReconsiderResetDataView.settlementDateStr != ''"> and settlementDateStr like concat('%', #{ ybReconsiderResetDataView.settlementDateStr} ,'%')</if>
-            <if test="ybReconsiderResetDataView.personalNo != null and ybReconsiderResetDataView.personalNo != ''"> and personalNo like concat('%', #{ ybReconsiderResetDataView.personalNo} ,'%')</if>
-            <if test="ybReconsiderResetDataView.insuredName != null and ybReconsiderResetDataView.insuredName != ''"> and insuredName like concat('%', #{ ybReconsiderResetDataView.insuredName} ,'%')</if>
-            <if test="ybReconsiderResetDataView.cardNumber != null and ybReconsiderResetDataView.cardNumber != ''"> and cardNumber like concat('%', #{ ybReconsiderResetDataView.cardNumber} ,'%')</if>
-            <if test="ybReconsiderResetDataView.areaName != null and ybReconsiderResetDataView.areaName != ''"> and areaName like concat('%', #{ ybReconsiderResetDataView.areaName} ,'%')</if>
-            <if test="ybReconsiderResetDataView.resetId != null and ybReconsiderResetDataView.resetId != ''"> and resetId like concat('%', #{ ybReconsiderResetDataView.resetId} ,'%')</if>
-        <if test="ybReconsiderResetDataView.applyDateFrom!= null">
-            AND ybReconsiderResetDataView.applyDate <![CDATA[ >= ]]>  applyDateFrom}
+        <if test="ybReconsiderResetDataView.dataType != null and ybReconsiderResetDataView.dataType == 0 and ybReconsiderResetDataView.currencyField!= null and ybReconsiderResetDataView.currencyField != ''">
+            and (rrd.serialNo like concat('%', #{ ybReconsiderResetDataView.currencyField} ,'%')
+            or rrd.billNo like concat('%', #{ ybReconsiderResetDataView.currencyField} ,'%')
+            or rrd.projectCode like concat('%', #{ ybReconsiderResetDataView.currencyField} ,'%')
+            or rrd.projectName like concat('%', #{ ybReconsiderResetDataView.currencyField} ,'%')
+            or rrd.ruleName like concat('%', #{ ybReconsiderResetDataView.currencyField} ,'%'))
         </if>
-        <if test="ybReconsiderResetDataView.applyDateTo!= null">
-            AND ybReconsiderResetDataView.applyDate <![CDATA[ <= ]]>  applyDateTo}
+        <if test="ybReconsiderResetDataView.dataType != null and ybReconsiderResetDataView.dataType == 1 and ybReconsiderResetDataView.currencyField!= null and ybReconsiderResetDataView.currencyField != ''">
+            and (rrd.serialNo like concat('%', #{ ybReconsiderResetDataView.currencyField} ,'%')
+            or rrd.billNo like concat('%', #{ ybReconsiderResetDataView.currencyField} ,'%')
+            or rrd.ruleName like concat('%', #{ ybReconsiderResetDataView.currencyField} ,'%'))
         </if>
-            <if test="ybReconsiderResetDataView.applyDateStr != null and ybReconsiderResetDataView.applyDateStr != ''"> and applyDateStr like concat('%', #{ ybReconsiderResetDataView.applyDateStr} ,'%')</if>
-            <if test="ybReconsiderResetDataView.applyDataId != null and ybReconsiderResetDataView.applyDataId != ''"> and applyDataId like concat('%', #{ ybReconsiderResetDataView.applyDataId} ,'%')</if>
-      <if test="ybReconsiderResetDataView.resultId != null and ybReconsiderResetDataView.resultId != ''"> and resultId like concat('%', #{ ybReconsiderResetDataView.resultId} ,'%')</if>
-        <if test="ybReconsiderResetDataView.applyDataId != null and ybReconsiderResetDataView.applyDataId != ''"> and applyDataId like concat('%', #{ ybReconsiderResetDataView.applyDataId} ,'%')</if>
-</select>
-
+        <if test="ybReconsiderResetDataView.dataType == null and ybReconsiderResetDataView.currencyField!= null and ybReconsiderResetDataView.currencyField != ''">
+            and (rrd.serialNo like concat('%', #{ ybReconsiderResetDataView.currencyField} ,'%')
+            or rrd.billNo like concat('%', #{ ybReconsiderResetDataView.currencyField} ,'%')
+            or rrd.projectCode like concat('%', #{ ybReconsiderResetDataView.currencyField} ,'%')
+            or rrd.projectName like concat('%', #{ ybReconsiderResetDataView.currencyField} ,'%')
+            or rrd.ruleName like concat('%', #{ ybReconsiderResetDataView.currencyField} ,'%'))
+        </if>
+    </select>
+    <select id="findReconsiderResetDataCount" resultType="Integer"
+            parameterType="cc.mrbird.febs.yb.entity.YbReconsiderResetDataView">
+        SELECT
+        count(1)
+        FROM
+        yb_reconsider_reset_data rrd
+        INNER JOIN yb_reconsider_reset rr ON
+        rrd.pid = rr.id
+        WHERE
+        rrd.pid = #{ ybReconsiderResetDataView.resetId}
+        <if test="ybReconsiderResetDataView.dataType != null">
+            and rrd.dataType = #{ ybReconsiderResetDataView.dataType}
+        </if>
+        <if test="ybReconsiderResetDataView.state != null">
+            and rrd.STATE = #{ ybReconsiderResetDataView.state}
+        </if>
+        <if test="ybReconsiderResetDataView.seekState != null">
+            and rrd.seekState = #{ ybReconsiderResetDataView.seekState}
+        </if>
+        <if test="ybReconsiderResetDataView.resetType != null">
+            and rrd.resetType = #{ ybReconsiderResetDataView.resetType}
+        </if>
+        <if test="ybReconsiderResetDataView.dataType != null and ybReconsiderResetDataView.dataType == 0 and ybReconsiderResetDataView.currencyField!= null and ybReconsiderResetDataView.currencyField != ''">
+            and (rrd.serialNo like concat('%', #{ ybReconsiderResetDataView.currencyField} ,'%')
+            or rrd.billNo like concat('%', #{ ybReconsiderResetDataView.currencyField} ,'%')
+            or rrd.projectCode like concat('%', #{ ybReconsiderResetDataView.currencyField} ,'%')
+            or rrd.projectName like concat('%', #{ ybReconsiderResetDataView.currencyField} ,'%')
+            or rrd.ruleName like concat('%', #{ ybReconsiderResetDataView.currencyField} ,'%'))
+        </if>
+        <if test="ybReconsiderResetDataView.dataType != null and ybReconsiderResetDataView.dataType == 1 and ybReconsiderResetDataView.currencyField!= null and ybReconsiderResetDataView.currencyField != ''">
+            and (rrd.serialNo like concat('%', #{ ybReconsiderResetDataView.currencyField} ,'%')
+            or rrd.billNo like concat('%', #{ ybReconsiderResetDataView.currencyField} ,'%')
+            or rrd.ruleName like concat('%', #{ ybReconsiderResetDataView.currencyField} ,'%'))
+        </if>
+        <if test="ybReconsiderResetDataView.dataType == null and ybReconsiderResetDataView.currencyField!= null and ybReconsiderResetDataView.currencyField != ''">
+            and (rrd.serialNo like concat('%', #{ ybReconsiderResetDataView.currencyField} ,'%')
+            or rrd.billNo like concat('%', #{ ybReconsiderResetDataView.currencyField} ,'%')
+            or rrd.projectCode like concat('%', #{ ybReconsiderResetDataView.currencyField} ,'%')
+            or rrd.projectName like concat('%', #{ ybReconsiderResetDataView.currencyField} ,'%')
+            or rrd.ruleName like concat('%', #{ ybReconsiderResetDataView.currencyField} ,'%'))
+        </if>
+    </select>
+    <select id="findReconsiderResetDataNotView" resultType="cc.mrbird.febs.yb.entity.YbReconsiderResetDataView"
+            parameterType="cc.mrbird.febs.yb.entity.YbReconsiderResetDataView">
+    SELECT
+        rrd.id,
+        rrd.serialNo ,
+        rrd.billNo ,
+        rrd.projectCode ,
+        rrd.projectName ,
+        rrd.medicalPrice ,
+        rrd.ruleName ,
+        rrd.deductPrice ,
+        rrd.deductReason ,
+        rrd.repaymentReason ,
+        rrd.doctorName ,
+        rrd.deptCode ,
+        rrd.deptName ,
+        rrd.costDateStr ,
+        rrd.hospitalizedNo ,
+        rrd.treatmentMode ,
+        rrd.settlementDateStr ,
+        rrd.personalNo ,
+        rrd.insuredName ,
+        rrd.cardNumber ,
+        rrd.areaName ,
+        rrd.insuredType,
+        rrd.dataType,
+        rrd.orderNumber,
+        rrd.orderNum,
+        rrd.repaymentPrice,
+        rrd.STATE,
+        rrd.seekState,
+        rrd.relatelDataId,
+        rrd.resetPersonId,
+        rrd.resetPersonName,
+        rrd.resetType,
+        rrd.resetDate,
+        rr.id resetId,
+        rr.state resetState,
+        rr.applyDate,
+        rr.applyDateStr,
+        rr.currencyField
+    FROM
+         yb_reconsider_reset_data rrd
+        INNER JOIN yb_reconsider_reset rr ON
+            rrd.pid = rr.id
+    WHERE
+        rrd.pid = #{ ybReconsiderResetDataView.resetId}
+        <if test="ybReconsiderResetDataView.dataType != null">
+            and rrd.dataType = #{ ybReconsiderResetDataView.dataType}
+        </if>
+        <if test="ybReconsiderResetDataView.state != null">
+            and rrd.STATE = #{ ybReconsiderResetDataView.state}
+        </if>
+        <if test="ybReconsiderResetDataView.seekState != null">
+            and rrd.seekState = #{ ybReconsiderResetDataView.seekState}
+        </if>
+        <if test="ybReconsiderResetDataView.resetType != null">
+            and rrd.resetType = #{ ybReconsiderResetDataView.resetType}
+        </if>
+        <if test="ybReconsiderResetDataView.orderNumber != null">
+            and rrd.orderNumber = #{ ybReconsiderResetDataView.orderNumber}
+        </if>
+        <if test="ybReconsiderResetDataView.serialNo != null">
+            and rrd.serialNo = #{ ybReconsiderResetDataView.serialNo}
+        </if>
+        <if test="ybReconsiderResetDataView.billNo != null">
+            and rrd.billNo = #{ ybReconsiderResetDataView.billNo}
+        </if>
+        <if test="ybReconsiderResetDataView.projectCode != null">
+            and rrd.projectCode = #{ ybReconsiderResetDataView.projectCode}
+        </if>
+        <if test="ybReconsiderResetDataView.projectName != null">
+            and rrd.projectName = #{ ybReconsiderResetDataView.projectName}
+        </if>
+        <if test="ybReconsiderResetDataView.ruleName != null">
+            and rrd.ruleName = #{ ybReconsiderResetDataView.ruleName}
+        </if>
+        <if test="ybReconsiderResetDataView.personalNo != null">
+            and rrd.personalNo = #{ ybReconsiderResetDataView.personalNo}
+        </if>
+        <if test="ybReconsiderResetDataView.id != null">
+            and rrd.id != #{ ybReconsiderResetDataView.id}
+        </if>
+    </select>
+    <select id="findReconsiderResetDataNotCount" resultType="Integer"
+            parameterType="cc.mrbird.febs.yb.entity.YbReconsiderResetDataView">
+        SELECT
+        count(1)
+        FROM
+        yb_reconsider_reset_data rrd
+        INNER JOIN yb_reconsider_reset rr ON
+        rrd.pid = rr.id
+        WHERE
+        rrd.pid = #{ ybReconsiderResetDataView.resetId}
+        <if test="ybReconsiderResetDataView.dataType != null">
+            and rrd.dataType = #{ ybReconsiderResetDataView.dataType}
+        </if>
+        <if test="ybReconsiderResetDataView.state != null">
+            and rrd.STATE = #{ ybReconsiderResetDataView.state}
+        </if>
+        <if test="ybReconsiderResetDataView.seekState != null">
+            and rrd.seekState = #{ ybReconsiderResetDataView.seekState}
+        </if>
+        <if test="ybReconsiderResetDataView.resetType != null">
+            and rrd.resetType = #{ ybReconsiderResetDataView.resetType}
+        </if>
+        <if test="ybReconsiderResetDataView.orderNumber != null">
+            and rrd.orderNumber = #{ ybReconsiderResetDataView.orderNumber}
+        </if>
+        <if test="ybReconsiderResetDataView.serialNo != null">
+            and rrd.serialNo = #{ ybReconsiderResetDataView.serialNo}
+        </if>
+        <if test="ybReconsiderResetDataView.billNo != null">
+            and rrd.billNo = #{ ybReconsiderResetDataView.billNo}
+        </if>
+        <if test="ybReconsiderResetDataView.projectCode != null">
+            and rrd.projectCode = #{ ybReconsiderResetDataView.projectCode}
+        </if>
+        <if test="ybReconsiderResetDataView.projectName != null">
+            and rrd.projectName = #{ ybReconsiderResetDataView.projectName}
+        </if>
+        <if test="ybReconsiderResetDataView.ruleName != null">
+            and rrd.ruleName = #{ ybReconsiderResetDataView.ruleName}
+        </if>
+        <if test="ybReconsiderResetDataView.personalNo != null">
+            and rrd.personalNo = #{ ybReconsiderResetDataView.personalNo}
+        </if>
+        <if test="ybReconsiderResetDataView.id != null">
+            and rrd.id != #{ ybReconsiderResetDataView.id}
+        </if>
+    </select>
+    <select id="findReconsiderResetDataList" resultType="cc.mrbird.febs.yb.entity.YbReconsiderResetDataView"
+            parameterType="cc.mrbird.febs.yb.entity.YbReconsiderResetDataView">
+        SELECT
+        rrd.id,
+        rrd.serialNo ,
+        rrd.billNo ,
+        rrd.projectCode ,
+        rrd.projectName ,
+        rrd.medicalPrice ,
+        rrd.ruleName ,
+        rrd.deductPrice ,
+        rrd.deductReason ,
+        rrd.repaymentReason ,
+        rrd.doctorName ,
+        rrd.deptCode ,
+        rrd.deptName ,
+        rrd.costDateStr ,
+        rrd.hospitalizedNo ,
+        rrd.treatmentMode ,
+        rrd.settlementDateStr ,
+        rrd.personalNo ,
+        rrd.insuredName ,
+        rrd.cardNumber ,
+        rrd.areaName ,
+        rrd.insuredType,
+        rrd.dataType,
+        rrd.orderNumber,
+        rrd.orderNum,
+        rrd.repaymentPrice,
+        rrd.STATE,
+        rrd.seekState,
+        rrd.relatelDataId,
+        rrd.resetPersonId,
+        rrd.resetPersonName,
+        rrd.resetType,
+        rrd.resetDate,
+        rr.id resetId,
+        rr.state resetState,
+        rr.applyDate,
+        rr.applyDateStr,
+        rr.currencyField
+        FROM
+        yb_reconsider_reset_data rrd
+        INNER JOIN yb_reconsider_reset rr ON
+        rrd.pid = rr.id
+        WHERE
+        rrd.pid = #{ ybReconsiderResetDataView.resetId}
+        <if test="ybReconsiderResetDataView.dataType != null">
+            and rrd.dataType = #{ ybReconsiderResetDataView.dataType}
+        </if>
+        <if test="ybReconsiderResetDataView.state != null">
+            and rrd.STATE = #{ ybReconsiderResetDataView.state}
+        </if>
+        <if test="ybReconsiderResetDataView.seekState != null">
+            and rrd.seekState = #{ ybReconsiderResetDataView.seekState}
+        </if>
+        <if test="ybReconsiderResetDataView.orderNumber != null and ybReconsiderResetDataView.orderNumber != ''">
+            and rrd.orderNumber = #{ ybReconsiderResetDataView.orderNumber}
+        </if>
+        <if test="ybReconsiderResetDataView.id != null and ybReconsiderResetDataView.id != ''">
+            and rrd.id = #{ ybReconsiderResetDataView.id}
+        </if>
+    </select>
 </mapper>
