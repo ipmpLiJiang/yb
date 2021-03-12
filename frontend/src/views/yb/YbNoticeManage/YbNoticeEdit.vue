@@ -188,6 +188,7 @@
         <a-col :span=14>
           <ybNotice-file
             ref="ybNoticeFile"
+            @delFile="delFile"
             :pid="ybNotice.id"
           >
           </ybNotice-file>
@@ -226,6 +227,7 @@ export default {
       defaultPerson: [],
       defaultAdminType: [],
       selectAdminTypeDataSource: [],
+      defaultFile: [],
       fileList: [],
       spinning: false,
       ybNotice: {}
@@ -244,9 +246,9 @@ export default {
       this.defaultAdminType = []
       this.selectAdminTypeDataSource = []
       this.fileList = []
+      this.defaultFile = []
       this.selectPersonDataSource = [] // 搜索事件
       this.selectPersonValue = undefined
-      this.isUpdate = false
       this.adminTypeDisabled = true
       this.personDisabled = true
       this.fileDisabled = true
@@ -288,11 +290,19 @@ export default {
       // 点击删除文件调用removeUpload后会自动调用本方法handleUpload 待解决
       const formData = new FormData()
       formData.append('file', file)
-      formData.append('pid', this.ybNotice.id)
+      formData.append('id', this.ybNotice.id)
+      formData.append('fileName', 'NoticeDoc')
+      formData.append('refTab', 'ybNotice')
 
-      this.$upload('ybReconsiderApplyData/importReconsiderApplyData', formData).then((r) => {
+      this.$upload('comFile/uploadFile', formData).then((r) => {
         if (r.data.data.success === 1) {
           this.spinning = false
+          let fileData = {
+            id: r.data.data.uid,
+            clientName: r.data.data.name
+          }
+          this.$refs.ybNoticeFile.add(fileData)
+          this.defaultFile.push(fileData)
           this.$message.success('文件上传成功.')
         } else {
           this.spinning = false
@@ -339,8 +349,7 @@ export default {
           id: '',
           pid: '',
           personCode: this.selectPerson.personCode,
-          personName: this.selectPerson.personName,
-          ndType: 2
+          personName: this.selectPerson.personName
         }
         this.defaultPerson.push(item)
         this.selectPersonValue = undefined
@@ -353,6 +362,13 @@ export default {
       const newData = this.defaultPerson.slice()
       newData.splice(index, 1)
       this.defaultPerson = newData
+    },
+    delFile (id) {
+      let target = this.defaultFile.filter(item => id === item.id)[0]
+      const index = this.defaultFile.indexOf(target)
+      const newData = this.defaultFile.slice()
+      newData.splice(index, 1)
+      this.defaultFile = newData
     },
     ajaxPerson (keyword) {
       let dataSource = []
@@ -400,30 +416,63 @@ export default {
     },
     findData (type) {
       let params = {
-        pid: this.ybNotice.id,
-        sendType: this.ybNotice.sendType
+        pid: this.ybNotice.id
       }
+      let ntData = []
       if (type === '2') {
         this.$get('ybNoticeData/findList', {
           ...params
         }).then((r) => {
-          console.log(r)
+          if (r.data.data.length > 0) {
+            ntData = r.data.data
+            for (var i in ntData) {
+              this.defaultAdminType.push(ntData[i].cmId)
+            }
+          }
         })
       } else {
         this.$get('ybNoticeData/findList', {
           ...params
         }).then((r) => {
-          console.log(r)
-          // let item = {
-          //   id: this.dataSource[i].id,
-          //   pid: this.dataSource[i].pid,
-          //   personCode: this.dataSource[i].personCode,
-          //   personName: this.dataSource[i].personName,
-          //   ndType: this.dataSource[i].ndType
-          // }
-          this.defaultPerson = []
+          if (r.data.data.length > 0) {
+            ntData = r.data.data
+            for (var i in ntData) {
+              let item = {
+                id: ntData[i].id,
+                pid: ntData[i].pid,
+                personCode: ntData[i].personCode,
+                personName: ntData[i].personName
+              }
+              this.defaultPerson.push(item)
+            }
+            this.$refs.ybNoticePerson.searchPage(this.defaultPerson)
+          } else {
+            this.$refs.ybNoticePerson.searchPage(undefined)
+          }
         })
       }
+    },
+    findFileData () {
+      let params = {
+        refTabId: this.ybNotice.id
+      }
+      this.$get('comFile/findFileList', {
+        ...params
+      }).then((r) => {
+        if (r.data.data.length > 0) {
+          let ntData = r.data.data
+          for (var i in ntData) {
+            let item = {
+              id: ntData[i].uid,
+              clientName: ntData[i].name
+            }
+            this.defaultFile.push(item)
+          }
+          this.$refs.ybNoticeFile.searchPage(this.defaultFile)
+        } else {
+          this.$refs.ybNoticeFile.searchPage(undefined)
+        }
+      })
     },
     setFormValues (obj, atDataSource) {
       this.defaultSet()
@@ -452,20 +501,24 @@ export default {
           this.ybNotice.ntDetail = obj.ntDetail
           this.ybNotice.id = obj.id
           this.ybNotice.sendType = obj.sendType
-          if (obj.sendType === '2') {
+          let sendType = obj.sendType.toString()
+          if (sendType === '2') {
             this.adminTypeDisabled = false
             this.personDisabled = true
-            this.findData(obj.sendType)
-          } else {
+            this.findData(sendType)
+          }
+          if (sendType === '3') {
             this.adminTypeDisabled = true
             this.personDisabled = false
-            this.findData(obj.sendType)
-            this.$refs.ybNoticePerson.searchPage(this.defaultPerson)
+            this.findData(sendType)
           }
+          this.findFileData()
         }, 200)
+        this.fileDisabled = false
       }
     },
     handleSubmit () {
+      this.isUpdate = false
       this.form.validateFields((err, values) => {
         if (!err) {
           this.setFields()
@@ -489,7 +542,7 @@ export default {
                 id: '',
                 pid: '',
                 personCode: this.defaultPerson[j].personCode,
-                personName: this.defaultPerson[j].personCode,
+                personName: this.defaultPerson[j].personName,
                 ndType: 2
               }
               this.ybNotice.child.push(item)
@@ -502,11 +555,9 @@ export default {
               dataJson: jsonString
             }).then((r) => {
               if (r.data.data.success === 1) {
+                this.isUpdate = true
                 this.ybNotice.id = r.data.data.data
                 this.fileDisabled = false
-                // if (isData) {
-                //   this.$refs.ybNoticeData.searchPage(this.ybNotice.id)
-                // }
                 this.$message.success('保存成功')
               } else {
                 this.$message.error(r.data.data.message)
@@ -520,9 +571,7 @@ export default {
               dataJson: jsonString
             }).then((r) => {
               if (r.data.data.success === 1) {
-                // if (isData) {
-                //   this.$refs.ybNoticeData.searchPage(this.ybNotice.id)
-                // }
+                this.isUpdate = true
                 this.$message.success('保存成功')
               } else {
                 this.$message.error(r.data.data.message)

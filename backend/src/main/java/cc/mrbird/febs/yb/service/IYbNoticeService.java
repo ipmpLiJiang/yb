@@ -33,5 +33,5 @@ public interface IYbNoticeService extends IService<YbNotice> {
 
     void createNotice(YbNotice ybNotice, List<YbNoticeData> createDataList);
 
-    void updateNotice(YbNotice ybNotice, List<YbNoticeData> createDataList, List<YbNoticeData> updateDataList);
+    void updateNotice(YbNotice ybNotice, List<YbNoticeData> dataList);
 }

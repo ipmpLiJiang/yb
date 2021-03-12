@@ -1,40 +1,24 @@
 <template>
   <div>
-    <!-- 表格区域 -->
-    <a-table
-      ref="TableInfo"
-      :columns="columns"
-      :rowKey="record => record.id"
-      :dataSource="dataSource"
-      :pagination="pagination"
-      :loading="loading"
-      :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
-      @change="handleTableChange"
-      :bordered="bordered"
-      :scroll="{ x: 500 }"
-    >
+    <a-table :columns="columns" :data-source="dataSource" :rowKey="record => record.id" :pagination="pagination" bordered :scroll="{ x: 500 }">
       <template
-        slot="remark"
+        slot="operation"
         slot-scope="text, record"
       >
-        <a-popover placement="topLeft">
-          <template slot="content">
-            <div style="max-width: 200px">{{text}}</div>
-          </template>
-          <p style="width: 200px;margin-bottom: 0">{{text}}</p>
-        </a-popover>
-      </template>
-      <template
-          slot="operation"
-          slot-scope="text, record"
+        <a-popconfirm
+        title="确定下载？"
+        @confirm="() => download(record)"
         >
-          <a-popconfirm
-          title="确定删除？"
-          @confirm="() => del(record)"
-          >
-          <a>删除</a>
-          </a-popconfirm>
-        </template>
+        <a>下载</a>
+        </a-popconfirm>
+        <a-divider type="vertical" />
+        <a-popconfirm
+        title="确定删除？"
+        @confirm="() => del(record)"
+        >
+        <a>删除</a>
+        </a-popconfirm>
+      </template>
     </a-table>
   </div>
 </template>
@@ -47,9 +31,6 @@ export default {
   data () {
     return {
       dataSource: [],
-      selectedRowKeys: [],
-      sortedInfo: null,
-      paginationInfo: null,
       pagination: {
         pageSizeOptions: ['10', '20', '30', '40', '100'],
         defaultCurrent: 1,
@@ -64,9 +45,7 @@ export default {
       },
       queryParams: {
       },
-      pid: '',
       loading: false,
-      bordered: true,
       ybNoticeFile: {}
     }
   },
@@ -81,7 +60,7 @@ export default {
         dataIndex: 'operation',
         scopedSlots: { customRender: 'operation' },
         fixed: 'right',
-        width: 120
+        width: 150
       }]
     }
   },
@@ -90,94 +69,84 @@ export default {
   },
   methods: {
     reset () {
-      // 取消选中
-      this.selectedRowKeys = []
-      // 重置分页
-      this.pagination.defaultCurrent = 1
-      this.$refs.TableInfo.pagination.current = this.pagination.defaultCurrent
-      if (this.paginationInfo) {
-        this.paginationInfo.current = this.pagination.defaultCurrent
-        this.paginationInfo.pageSize = this.pagination.defaultPageSize
-      }
-      // 重置列排序规则
-      this.sortedInfo = null
-      this.paginationInfo = null
       // 重置查询参数
       this.queryParams = {}
       this.dataSource = []
-      this.form.resetFields()
     },
-    onSelectChange (selectedRowKeys) {
-      this.selectedRowKeys = selectedRowKeys
+    download (record) {
+      let formData = {}
+      formData.id = record.id
+      formData.folderName = 'NoticeDoc'
+      this.$download('comFile/downloadFile', {
+        ...formData
+      })
     },
     del (record) {
-      this.$delete('comFile/' + record.id).then(() => {
-        this.$message.success('删除成功')
-        this.selectedRowKeys = []
-        this.search()
-      }
-      )
+      let formData = {}
+      formData.id = record.id
+      formData.fileName = 'NoticeDoc'
+      this.$post('comFile/delFile', {
+        ...formData
+      }).then((r) => {
+        this.uploading = false
+        if (r.data.data.success === 1) {
+          this.$message.success('删除成功')
+          let target = this.dataSource.filter(item => record.id === item.id)[0]
+          const index = this.dataSource.indexOf(target)
+          const newData = this.dataSource.slice()
+          newData.splice(index, 1)
+          const pagination = { ...this.pagination }
+          pagination.total = newData.length
+          this.dataSource = newData
+          this.pagination = pagination
+          this.$emit('delFile', record.id)
+        } else {
+          this.$message.error(r.data.data.message)
+        }
+      }).catch(() => {
+        this.$message.error('删除失败.')
+      })
     },
-    searchPage (id) {
+    searchPage (data) {
       this.pagination.defaultCurrent = 1
       if (this.paginationInfo) {
         this.paginationInfo.current = this.pagination.defaultCurrent
       }
-      if (id === '') {
+      const pagination = { ...this.pagination }
+      if (data === undefined) {
+        pagination.total = 0
         this.dataSource = []
       } else {
-        this.pid = id
-        this.search()
+        let ds = []
+        for (var i in data) {
+          let item = {
+            id: data[i].id,
+            clientName: data[i].clientName
+          }
+          ds.push(item)
+        }
+        pagination.total = ds.length
+        this.dataSource = ds
       }
+      this.pagination = pagination
     },
-    search () {
-      let { sortedInfo } = this
-      let sortField, sortOrder
-      // 获取当前列的排序和列的过滤规则
-      if (sortedInfo) {
-        sortField = sortedInfo.field
-        sortOrder = sortedInfo.order
-      }
-      this.fetch({
-        sortField: sortField,
-        sortOrder: sortOrder,
-        ...this.queryParams
-      })
-    },
-    handleTableChange (pagination, filters, sorter) {
-      this.sortedInfo = sorter
-      this.paginationInfo = pagination
-      this.fetch({
-        sortField: sorter.field,
-        sortOrder: sorter.order,
-        ...this.queryParams
-      })
-    },
-    fetch (params = {}) {
-      params.pid = this.pid
-      this.loading = true
+    add (obj) {
+      this.pagination.defaultCurrent = 1
       if (this.paginationInfo) {
-        // 如果分页信息不为空，则设置表格当前第几页，每页条数，并设置查询分页参数
-        this.$refs.TableInfo.pagination.current = this.paginationInfo.current
-        this.$refs.TableInfo.pagination.pageSize = this.paginationInfo.pageSize
-        params.pageSize = this.paginationInfo.pageSize
-        params.pageNum = this.paginationInfo.current
-      } else {
-        // 如果分页信息为空，则设置为默认值
-        params.pageSize = this.pagination.defaultPageSize
-        params.pageNum = this.pagination.defaultCurrent
+        this.paginationInfo.current = this.pagination.defaultCurrent
       }
-
-      this.$get('comFile', {
-        ...params
-      }).then((r) => {
-        let data = r.data
-        const pagination = { ...this.pagination }
-        pagination.total = data.total
-        this.loading = false
-        this.dataSource = data.rows
-        this.pagination = pagination
-      })
+      const pagination = { ...this.pagination }
+      let ds = [{id: obj.id, clientName: obj.clientName}]
+      for (var i in this.dataSource) {
+        let item = {
+          id: this.dataSource[i].id,
+          clientName: this.dataSource[i].clientName
+        }
+        ds.push(item)
+      }
+      pagination.total = ds.length
+      this.dataSource = ds
+      this.pagination = pagination
     }
   }
 }

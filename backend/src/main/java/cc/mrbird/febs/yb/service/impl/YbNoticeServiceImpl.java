@@ -22,11 +22,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.time.LocalDate;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -104,13 +102,104 @@ public class YbNoticeServiceImpl extends ServiceImpl<YbNoticeMapper, YbNotice> i
         iYbNoticeDataService.saveBatch(createDataList);
     }
 
-    @Override
-    @Transactional
-    public void updateNotice(YbNotice ybNotice, List<YbNoticeData> createDataList, List<YbNoticeData> updateDataList) {
-        this.updateById(ybNotice);
-        iYbNoticeDataService.saveBatch(createDataList);
-        iYbNoticeDataService.updateBatchById(updateDataList);
+    private List<YbNoticeData> createData(YbNotice ybNotice, List<YbNoticeData> dataList) {
+        List<YbNoticeData> createDataList = new ArrayList<>();
+        for (YbNoticeData item : dataList) {
+            YbNoticeData create = new YbNoticeData();
+            create.setId(UUID.randomUUID().toString());
+            create.setPid(ybNotice.getId());
+            create.setPersonCode(item.getPersonCode());
+            create.setPersonName(item.getPersonName());
+            create.setCmId(item.getCmId());
+            create.setCmName(item.getCmName());
+            create.setNdType(item.getNdType());
+            createDataList.add(create);
+        }
+        return createDataList;
     }
 
+    @Override
+    @Transactional
+    public void updateNotice(YbNotice ybNotice, List<YbNoticeData> dataList) {
+        YbNoticeData query = new YbNoticeData();
+        query.setPid(ybNotice.getId());
+        List<YbNoticeData> list = iYbNoticeDataService.findNoticeDataList(query);
+        List<String> delDataList = new ArrayList<>();
+        List<YbNoticeData> createDataList = new ArrayList<>();
+        if (dataList.size() == 0) {
+            for (YbNoticeData item : list) {
+                delDataList.add(item.getId());
+            }
+        }
+        else {
+            if (list.size() == 0) {
+                createDataList = this.createData(ybNotice, dataList);
+            } else {
+                if (list.get(0).getNdType() != dataList.get(0).getNdType()) {
+                    for (YbNoticeData item : list) {
+                        delDataList.add(item.getId());
+                    }
+                    createDataList = this.createData(ybNotice, dataList);
+                } else {
+                    long count = 0;
+                    if (list.get(0).getNdType() == 1) {
+                        List<Integer> existCmList = new ArrayList<>();
+                        for (YbNoticeData item : list) {
+                            count = dataList.stream().filter(s -> s.getCmId().equals(item.getCmId())).count();
+                            if (count == 0) {
+                                delDataList.add(item.getId());
+                            } else {
+                                existCmList.add(item.getCmId());
+                            }
+                        }
+                        for (YbNoticeData item : dataList) {
+                            if (!existCmList.contains(item.getCmId())) {
+                                YbNoticeData create = new YbNoticeData();
+                                create.setId(UUID.randomUUID().toString());
+                                create.setPid(ybNotice.getId());
+                                create.setCmId(item.getCmId());
+                                create.setCmName(item.getCmName());
+                                create.setNdType(item.getNdType());
+                                createDataList.add(create);
+                            }
+                        }
+                    } else {
+                        List<String> existPersonList = new ArrayList<>();
+                        for (YbNoticeData item : list) {
+                            count = dataList.stream().filter(s -> s.getPersonCode().equals(item.getPersonCode())).count();
+                            if (count == 0) {
+                                delDataList.add(item.getId());
+                            } else {
+                                existPersonList.add(item.getPersonCode());
+                            }
+                        }
+                        for (YbNoticeData item : dataList) {
+                            if (!existPersonList.contains(item.getPersonCode())) {
+                                YbNoticeData create = new YbNoticeData();
+                                create.setId(UUID.randomUUID().toString());
+                                create.setPid(ybNotice.getId());
+                                create.setPersonCode(item.getPersonCode());
+                                create.setPersonName(item.getPersonName());
+                                create.setNdType(item.getNdType());
+                                createDataList.add(create);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        this.updateById(ybNotice);
+        if (createDataList.size() > 0) {
+            iYbNoticeDataService.saveBatch(createDataList);
+        }
+        if (delDataList.size() > 0) {
+            String[] strArray = new String[delDataList.size()];
+            for(int i = 0;i<delDataList.size();i++){
+                strArray[i] = delDataList.get(i);
+            }
+            iYbNoticeDataService.deleteYbNoticeDatas(strArray);
+        }
+    }
 
 }

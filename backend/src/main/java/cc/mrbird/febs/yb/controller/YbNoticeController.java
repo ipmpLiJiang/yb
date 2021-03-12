@@ -117,11 +117,12 @@ public class YbNoticeController extends BaseController {
             id = UUID.randomUUID().toString();
             create.setId(id);
             create.setOperatorId(currentUser.getUserId());
-            create.setOperatorName(currentUser.getUsername() + "-" +currentUser.getXmname());
+            create.setOperatorName(currentUser.getUsername() + "-" + currentUser.getXmname());
             create.setNtTitle(noticeJson.getNtTitle());
             create.setNtExplain(noticeJson.getNtExplain());
             create.setNtDetail(noticeJson.getNtDetail());
             create.setSendType(noticeJson.getSendType());
+            create.setState(0);
             create.setIsDeletemark(1);
             create.setCreateTime(new Date());
             create.setCreateUserId(currentUser.getUserId());
@@ -130,7 +131,8 @@ public class YbNoticeController extends BaseController {
                 createData.setId(UUID.randomUUID().toString());
                 createData.setPid(id);
                 createData.setPersonCode(item.getPersonCode());
-                createData.setPersonName(item.getPersonName());
+                String strPersonName = DataTypeHelpers.stringReplaceSetString(item.getPersonName(), item.getPersonCode() + "-");
+                createData.setPersonName(strPersonName);
                 createData.setCmId(item.getCmId());
                 createData.setCmName(item.getCmName());
                 createData.setNdType(item.getNdType());
@@ -162,7 +164,6 @@ public class YbNoticeController extends BaseController {
             YbNoticeJson noticeJson = JSON.parseObject(dataJson, new TypeReference<YbNoticeJson>() {
             });
             List<YbNoticeData> updateDataList = new ArrayList<>();
-            List<YbNoticeData> createDataList = new ArrayList<>();
             YbNotice update = new YbNotice();
             update.setId(noticeJson.getId());
             update.setNtTitle(noticeJson.getNtTitle());
@@ -173,21 +174,17 @@ public class YbNoticeController extends BaseController {
             update.setModifyUserId(currentUser.getUserId());
             for (YbNoticeDataJson item : noticeJson.getChild()) {
                 YbNoticeData updateData = new YbNoticeData();
-                updateData.setId(item.getId());
-                updateData.setPid(noticeJson.getId());
+//                updateData.setId(item.getId());
+//                updateData.setPid(noticeJson.getId());
                 updateData.setPersonCode(item.getPersonCode());
-                updateData.setPersonName(item.getPersonName());
+                String strPersonName = DataTypeHelpers.stringReplaceSetString(item.getPersonName(), item.getPersonCode() + "-");
+                updateData.setPersonName(strPersonName);
                 updateData.setCmId(item.getCmId());
                 updateData.setCmName(item.getCmName());
                 updateData.setNdType(item.getNdType());
-                if (updateData.getId() == null) {
-                    updateData.setId(UUID.randomUUID().toString());
-                    createDataList.add(updateData);
-                } else {
-                    updateDataList.add(updateData);
-                }
+                updateDataList.add(updateData);
             }
-            this.iYbNoticeService.updateNotice(update, createDataList, updateDataList);
+            this.iYbNoticeService.updateNotice(update, updateDataList);
             success = 1;
         } catch (Exception e) {
             message = "修改失败";

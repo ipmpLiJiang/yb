@@ -87,8 +87,19 @@ export default {
         pagination.total = 0
         this.dataSource = []
       } else {
-        pagination.total = data.length
-        this.dataSource = data
+        debugger
+        let ds = []
+        for (var i in data) {
+          let item = {
+            id: data[i].id,
+            pid: data[i].pid,
+            personCode: data[i].personCode,
+            personName: data[i].personCode + '-' + data[i].personName
+          }
+          ds.push(item)
+        }
+        pagination.total = ds.length
+        this.dataSource = ds
       }
       this.pagination = pagination
     },
@@ -98,14 +109,13 @@ export default {
         this.paginationInfo.current = this.pagination.defaultCurrent
       }
       const pagination = { ...this.pagination }
-      let ds = [{id: '', pid: '', personCode: obj.personCode, personName: obj.personName, ndType: 2}]
+      let ds = [{id: '', pid: '', personCode: obj.personCode, personName: obj.personName}]
       for (var i in this.dataSource) {
         let item = {
           id: this.dataSource[i].id,
           pid: this.dataSource[i].pid,
           personCode: this.dataSource[i].personCode,
-          personName: this.dataSource[i].personName,
-          ndType: this.dataSource[i].ndType
+          personName: this.dataSource[i].personName
         }
         ds.push(item)
       }

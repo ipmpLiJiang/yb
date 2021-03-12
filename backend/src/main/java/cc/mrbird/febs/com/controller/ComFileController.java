@@ -28,6 +28,7 @@ import cn.hutool.poi.excel.ExcelWriter;
 import com.baomidou.mybatisplus.core.toolkit.StringPool;
 import com.wuwenze.poi.ExcelKit;
 import lombok.extern.slf4j.Slf4j;
+import net.bytebuddy.implementation.bytecode.Throw;
 import org.apache.commons.io.FileUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -212,7 +213,7 @@ public class ComFileController extends BaseController {
                 }
                 ZipUtil.zip(FileUtil.file(filePath), false, fileUtils);
                 //ZipUtil.zip(address, filePath);
-                this.downFile(response, filePath, fileName);
+                this.downFile(response, filePath, fileName, true);
             }
         } catch (Exception e) {
             message = "导出失败";
@@ -221,7 +222,8 @@ public class ComFileController extends BaseController {
         }
     }
 
-    public void downFile(HttpServletResponse response, String filePath, String fileName) {
+
+    private void downFile(HttpServletResponse response, String filePath, String fileName, boolean isDel) {
         try {
             File file = new File(filePath);
             if (file.exists()) {
@@ -249,8 +251,72 @@ public class ComFileController extends BaseController {
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
-            this.deleteFile(filePath);
+            if (isDel) {
+                this.deleteFile(filePath);
+            }
         }
+    }
+
+    @PostMapping("downloadFile")
+    public void findFiles(QueryRequest request, String id, String folderName, HttpServletResponse response) throws FebsException {
+        try {
+            ComFile comFile = this.iComFileService.findComFileById(id);
+            if (comFile != null) {
+                String filePath = febsProperties.getUploadPath(); // 上传后的路径
+                String fileUrl = filePath + folderName + "/" + comFile.getServerName();
+                this.downFile(response, fileUrl, comFile.getClientName(), false);
+            } else {
+                throw new FebsException("文件不存在下载失败.");
+            }
+        } catch (Exception e) {
+            message = "下载失败.";
+            log.error(message, e);
+            throw new FebsException(message);
+        }
+    }
+
+    @Log("删除")
+    @PostMapping("delFile")
+    public FebsResponse deleteComFile(InUploadFile inUploadFile) {
+        int success = 0;
+        try {
+            ComFile comFile = this.iComFileService.findComFileById(inUploadFile.getId());
+            if (comFile != null) {
+                String filePath = febsProperties.getUploadPath(); // 上传后的路径
+                String fileUrl = filePath + inUploadFile.getFileName() + "/" + comFile.getServerName();
+                boolean blFile = deleteFile(fileUrl);
+                if (blFile) {
+                    int count = this.iComFileService.deleteComFile(inUploadFile.getId());
+                    if (count > 0) {
+                        success = 1;
+                        message = "删除文件成功.";
+                    } else {
+                        message = "删除文件失败.";
+                    }
+                }
+            } else {
+                message = "不存在文件数据.";
+            }
+        } catch (Exception e) {
+            message = "删除文件异常.";
+        }
+        ResponseResult rr = new ResponseResult();
+        rr.setMessage(message);
+        rr.setSuccess(success);
+        return new FebsResponse().data(rr);
+    }
+
+    @GetMapping("findFileList")
+    public FebsResponse findFileList(String refTabId) {
+        List<OutComFile> outList = new ArrayList<>();
+        List<ComFile> list = this.iComFileService.findListComFile(refTabId);
+        for (ComFile item : list) {
+            OutComFile outComFile = new OutComFile();
+            outComFile.setUid(item.getId());
+            outComFile.setName(item.getClientName());
+            outList.add(outComFile);
+        }
+        return new FebsResponse().data(outList);
     }
 
 
@@ -280,6 +346,45 @@ public class ComFileController extends BaseController {
             log.error(message, e);
         }
         return new FebsResponse().data(outList);
+    }
+
+    @PostMapping("uploadFile")
+    public FebsResponse uploadPubFile(@RequestParam("file") MultipartFile file, InUploadFile inUploadFile) throws FebsException {
+        if (file.isEmpty()) {
+            throw new FebsException("空文件");
+        }
+        Date thisDate = new Date();
+        OutComFile outComFile = new OutComFile();
+//        User currentUser = FebsUtil.getCurrentUser();
+        String upFileName = file.getOriginalFilename();  // 文件名
+        String suffixName = upFileName.substring(upFileName.lastIndexOf("."));  // 后缀名
+        String filePath = febsProperties.getUploadPath(); // 上传后的路径
+        String SerFileName = UUID.randomUUID().toString() + suffixName; // 新文件名
+        File dest = new File(filePath + inUploadFile.getFileName() + "/" + SerFileName);
+        if (!dest.getParentFile().exists()) {
+            dest.getParentFile().mkdirs();
+        }
+        String Id = UUID.randomUUID().toString();
+        try {
+            file.transferTo(dest);
+            ComFile cf = new ComFile();
+            cf.setId(Id);
+            cf.setCreateTime(thisDate);
+            cf.setClientName(upFileName);//客户端的名称
+            cf.setServerName(SerFileName);
+            cf.setRefTabId(inUploadFile.getId());
+            cf.setRefTabTable(inUploadFile.getRefTab());
+            iComFileService.createComFile(cf);
+        } catch (IOException e) {
+            throw new FebsException(e.getMessage());
+        }
+//        String fileUrl = febsProperties.getBaseUrl() + "/uploadFile/" + inUploadFile.getFileName() + "/" + SerFileName;
+
+        outComFile.setSuccess(1);
+        outComFile.setUid(Id);
+        outComFile.setName(upFileName);
+
+        return new FebsResponse().data(outComFile);
     }
 
     @PostMapping("uploadImg")
@@ -330,24 +435,23 @@ public class ComFileController extends BaseController {
             String filePath = febsProperties.getUploadPath(); // 上传后的路径
             String fileName = newFileName + suffixName; // 新文件名
             File dest = new File(filePath + inUploadFile.getApplyDateStr() + "/" + deptName + "/" + fileName);
+            String Id = UUID.randomUUID().toString();
             if (!dest.getParentFile().exists()) {
                 dest.getParentFile().mkdirs();
+                ComFile cf = new ComFile();
+                cf.setId(Id);
+                cf.setCreateTime(thisDate);
+                cf.setClientName(fileName2);//客户端的名称
+                cf.setServerName(fileName);
+                cf.setRefTabId(strId);
+                cf.setRefTabTable(currentUser.getUsername());
+                iComFileService.createComFile(cf);
             }
             try {
                 file.transferTo(dest);
             } catch (IOException e) {
                 throw new FebsException(e.getMessage());
             }
-
-            String Id = UUID.randomUUID().toString();
-            ComFile cf = new ComFile();
-            cf.setId(Id);
-            cf.setCreateTime(thisDate);
-            cf.setClientName(fileName2);//客户端的名称
-            cf.setServerName(fileName);
-            cf.setRefTabId(strId);
-            cf.setRefTabTable(currentUser.getUsername());
-            iComFileService.createComFile(cf);
             String fileUrl = febsProperties.getBaseUrl() + "/uploadFile/" + inUploadFile.getApplyDateStr() + "/" + deptName + "/" + fileName;
 
             outComFile.setSuccess(1);
@@ -386,7 +490,7 @@ public class ComFileController extends BaseController {
                 String strId = inUploadFile.getId();
                 ComFile comFile = this.iComFileService.findComFileById(strId);
                 if (comFile != null) {
-                    String strRefId = comFile.getRefTabId();
+//                    String strRefId = comFile.getRefTabId();
                     int sourceType = inUploadFile.getSourceType();
                     String strSourceType = sourceType == 0 ? "In" : "Out";
                     User currentUser = FebsUtil.getCurrentUser();

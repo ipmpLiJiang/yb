@@ -52,16 +52,16 @@ public class TestSend {
 
     public static void main(String[] args) throws IOException {
 
-        String dataJson = "{'id':'1','doctorCode':'zhangsan','doctorName':'张三','adminType':1,'comments':'2222','state':0,'isDeletemark':0," +
-                "'child':[{'id':'11','pid':'1','deptCode':'111','deptName':'内科'},{'id':'22','pid':'1','deptCode':'222','deptName':'外科'}]}";
+//        String dataJson = "{'id':'1','doctorCode':'zhangsan','doctorName':'张三','adminType':1,'comments':'2222','state':0,'isDeletemark':0," +
+//                "'child':[{'id':'11','pid':'1','deptCode':'111','deptName':'内科'},{'id':'22','pid':'1','deptCode':'222','deptName':'外科'}]}";
 
 //        JSONObject josn = JSONUtil.parseObj(dataJson);
         //id,pid,deptCode,deptName
-        YbAppealConfireJson yac = getAppealConfireJson(dataJson);
-
-        dataJson = JSONUtil.toJsonStr(yac);
-
-        System.out.println(dataJson);
+//        YbAppealConfireJson yac = getAppealConfireJson(dataJson);
+//
+//        dataJson = JSONUtil.toJsonStr(yac);
+//
+//        System.out.println(dataJson);
         //id,doctorCode,doctorName,adminType,comments,state,isDeletemark,child
 
 //        String dateStr = "2010-03-11";
@@ -88,13 +88,13 @@ public class TestSend {
 //            d1 = new Date();
 //            d2 = cal.getTime();
 
-            double d = (double)9000000 / 3600000;//;new BigDecimal((float)9000000 / 3600000).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
-
-            if (d > 2) {
-                System.out.println(d);
-            } else {
-                System.out.println("333");
-            }
+//            double d = (double)9000000 / 3600000;//;new BigDecimal((float)9000000 / 3600000).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
+//
+//            if (d > 2) {
+//                System.out.println(d);
+//            } else {
+//                System.out.println("333");
+//            }
             //毫秒ms
 //            long diff = d1.getTime() - d2.getTime();
 

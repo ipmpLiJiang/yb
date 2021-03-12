@@ -77,7 +77,7 @@
       <a-table
         ref="TableInfo"
         :columns="columns"
-        :rowKey="record => record. id                        "
+        :rowKey="record => record.id"
         :dataSource="dataSource"
         :pagination="pagination"
         :loading="loading"
@@ -149,6 +149,7 @@
 </template>
 
 <script>
+import moment from 'moment'
 import YbNoticeEdit from './YbNoticeEdit'
 import ComTypeData from '../../com/ComType/ComTypeData'
 const formItemLayout = {
@@ -185,6 +186,7 @@ export default {
       adminTypeVisible: false,
       loading: false,
       ctType: 1,
+      tableFormat: 'YYYY-MM-DD',
       bordered: true
     }
   },
@@ -211,17 +213,28 @@ export default {
       {
         title: '发布时间',
         dataIndex: 'releaseDate',
-        width: 100
+        customRender: (text, row, index) => {
+          if (text !== '' && text !== null) {
+            if (isNaN(text) && !isNaN(Date.parse(text))) {
+              return moment(text).format(this.tableFormat)
+            } else {
+              return text
+            }
+          } else {
+            return text
+          }
+        },
+        width: 90
       },
       {
         title: '访问量',
         dataIndex: 'clickNum',
-        width: 70
+        width: 60
       },
       {
         title: '操作员',
         dataIndex: 'operatorName',
-        width: 70
+        width: 100
       },
       {
         title: '操作',
@@ -237,6 +250,7 @@ export default {
     this.fetch()
   },
   methods: {
+    moment,
     rowNo (index) {
       return (this.pagination.defaultCurrent - 1) *
             this.pagination.defaultPageSize + index + 1
