@@ -513,6 +513,13 @@ public class YbAppealResultView implements Comparable<YbAppealResultView> {
     @ExcelField(value = "pid")
     private String pid;
 
+    /**
+     * 院区
+     */
+    @TableField("areaType")
+    @ExcelField(value = "院区")
+    private Integer areaType;
+
     public static final String PID = "pid";
     public static final String SERIALNO = "serialNo";
     public static final String BILLNO = "billNo";
@@ -560,6 +567,8 @@ public class YbAppealResultView implements Comparable<YbAppealResultView> {
     public static final String REPAYSTATE = "repayState";
     public static final String CURRENCYFIELD = "currencyField";
     public static final String RELATELDATAID = "relatelDataId";
+
+    public static final String AREATYPE = "areaType";
 
     @Override
     public int compareTo(YbAppealResultView o) {

@@ -406,18 +406,19 @@ export default {
         rule: {type: 'LIKE', ruleName: ''},
         dept: {type: 'LIKE', deptName: ''},
         order: {type: 'LIKE', orderNumber: ''}
-      }
+      },
+      user: this.$store.state.account.user
     }
   },
   computed: {
   },
   mounted () {
+    this.initTypeno(this.searchApplyDate)
   },
   methods: {
     moment,
     formatDate () {
       let datemonth = moment().subtract(1, 'months').format('YYYY-MM')
-      this.initTypeno(datemonth)
       return datemonth
     },
     monthChange (date, dateString) {
@@ -426,7 +427,7 @@ export default {
     },
     initTypeno (applyDateStr) {
       this.$get('ybReconsiderApply/getTypeno', {
-        applyDateStr: applyDateStr
+        applyDateStr: applyDateStr, areaType: this.user.areaType
       }).then((r) => {
         if (r.data.data.success === 1) {
           this.searchTypeno = parseInt(r.data.data.data)
@@ -548,6 +549,7 @@ export default {
       formData.append('applyDateStr', this.searchApplyDate)
       let dataType = this.tableSelectKey === '1' ? 0 : 1
       formData.append('dataType', dataType)
+      formData.append('areaType', this.user.areaType)
 
       this.$upload('ybReconsiderVerify/importReconsiderDataVerify', formData).then((r) => {
         if (r.data.data.success === 1) {
@@ -574,6 +576,7 @@ export default {
       queryParams.state = 1
       let dataType = this.tableSelectKey === '1' ? 0 : 1
       queryParams.dataType = dataType
+      queryParams.areaType = this.user.areaType
       this.$export('ybReconsiderVerifyView/exportVerify', {
         ...queryParams
       })
@@ -586,7 +589,7 @@ export default {
       }
 
       this.$post('ybReconsiderVerify/' + url, {
-        applyDate: this.searchApplyDate
+        applyDate: this.searchApplyDate, areaType: this.user.areaType
       }).then(() => {
         this.spinning = false
         this.$message.success('匹配完成')

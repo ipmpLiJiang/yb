@@ -154,13 +154,13 @@ public class YbReconsiderResetDataController extends BaseController {
     @Log("修改")
     @PutMapping("updateResetData")
     @RequiresPermissions("ybReconsiderResetData:updateResetData")
-    public FebsResponse updateAppealResulResetData(String applyDateStr, Integer dataType) {
+    public FebsResponse updateAppealResulResetData(String applyDateStr,Integer areaType, Integer dataType) {
         int success = 0;
         try {
             User currentUser = FebsUtil.getCurrentUser();
             Long uid = currentUser.getUserId();
             String uname = currentUser.getUsername();
-            message = this.iYbReconsiderResetDataService.updateResetDatas(applyDateStr, uid, uname, dataType);
+            message = this.iYbReconsiderResetDataService.updateResetDatas(applyDateStr,areaType, uid, uname, dataType);
             if ("".equals(message)) {
                 message = "剔除数据成功.";
                 success = 1;

@@ -67,14 +67,11 @@
         FROM
             com_file
         INNER JOIN yb_appeal_result ON
-            com_file.REF_TAB_ID = yb_appeal_result.id and
-            yb_appeal_result.IS_DELETEMARK = 1
+            com_file.REF_TAB_ID = yb_appeal_result.id
         INNER JOIN yb_reconsider_apply_data ON
-            yb_reconsider_apply_data.id = yb_appeal_result.applyDataId and
-            yb_reconsider_apply_data.IS_DELETEMARK = 1
+            yb_reconsider_apply_data.id = yb_appeal_result.applyDataId
         INNER JOIN yb_reconsider_apply ON
-            yb_reconsider_apply.id = yb_reconsider_apply_data.pid and
-            yb_reconsider_apply.IS_DELETEMARK = 1
+            yb_reconsider_apply.id = yb_reconsider_apply_data.pid
         WHERE
             com_file.IS_DELETEMARK = 1
             <if test="inUploadFile.sourceType != null"> and yb_appeal_result.sourceType = #{inUploadFile.sourceType} </if>
@@ -82,10 +79,36 @@
             <if test="inUploadFile.state != null and inUploadFile.state==12"> and yb_appeal_result.STATE IN (1,2) </if>
             <if test="inUploadFile.state != null and inUploadFile.state==1"> and yb_appeal_result.STATE = 1 </if>
             <if test="inUploadFile.state != null and inUploadFile.state==2"> and yb_appeal_result.STATE = 2 </if>
+            <if test="inUploadFile.areaType != null"> and yb_appeal_result.areaType = #{inUploadFile.areaType} </if>
             <if test="inUploadFile.id != null"> and com_file.REF_TAB_ID = #{inUploadFile.id} </if>
             <if test="inUploadFile.applyDateStr != null"> and yb_reconsider_apply.applyDateStr = #{inUploadFile.applyDateStr} </if>
-            <if test="inUploadFile.typeno != null"> and yb_reconsider_apply_data.typeno = #{inUploadFile.typeno} </if>
-            <if test="inUploadFile.deptName != null"> and yb_appeal_result.deptName = #{inUploadFile.deptName} </if>
+            <if test="inUploadFile.typeno != null and inUploadFile.typeno != 3"> and yb_reconsider_apply_data.typeno = #{inUploadFile.typeno} </if>
+            <if test="inUploadFile.deptId != null"> and yb_appeal_result.deptCode = #{inUploadFile.deptId} </if>
+    </select>
+
+    <select id="findAppealResultSumComFile" resultType="cc.mrbird.febs.com.entity.ComFile" parameterType="cc.mrbird.febs.com.entity.InUploadFile">
+        SELECT
+        com_file.*
+        FROM
+        com_file
+        INNER JOIN yb_appeal_result ON
+        com_file.REF_TAB_ID = yb_appeal_result.id
+        INNER JOIN yb_reconsider_apply_data ON
+        yb_reconsider_apply_data.id = yb_appeal_result.applyDataId
+        INNER JOIN yb_reconsider_apply ON
+        yb_reconsider_apply.id = yb_reconsider_apply_data.pid
+        WHERE
+        com_file.IS_DELETEMARK = 1
+        <if test="inUploadFile.sourceType != null"> and yb_appeal_result.sourceType = #{inUploadFile.sourceType} </if>
+        <if test="inUploadFile.dataType != null"> and yb_appeal_result.dataType = #{inUploadFile.dataType} </if>
+        <if test="inUploadFile.state != null and inUploadFile.state==12"> and yb_appeal_result.STATE IN (1,2) </if>
+        <if test="inUploadFile.state != null and inUploadFile.state==1"> and yb_appeal_result.STATE = 1 </if>
+        <if test="inUploadFile.state != null and inUploadFile.state==2"> and yb_appeal_result.STATE = 2 </if>
+        <if test="inUploadFile.areaType != null"> and yb_appeal_result.areaType = #{inUploadFile.areaType} </if>
+        <if test="inUploadFile.id != null"> and com_file.REF_TAB_ID = #{inUploadFile.id} </if>
+        <if test="inUploadFile.applyDateStr != null"> and yb_reconsider_apply.applyDateStr = #{inUploadFile.applyDateStr} </if>
+        <if test="inUploadFile.typeno != null and inUploadFile.typeno != 3"> and yb_reconsider_apply_data.typeno = #{inUploadFile.typeno} </if>
+        <if test="inUploadFile.deptId != null"> and yb_appeal_result.deptCode in (select deptId from yb_appeal_sumdept_data where pid =  #{inUploadFile.sumId}) </if>
     </select>
 
 </mapper>

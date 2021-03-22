@@ -24,15 +24,15 @@ public interface YbReconsiderApplyDataMapper extends BaseMapper<YbReconsiderAppl
 
     void createBatchData(@Param("listReconsiderApplyData") List<YbReconsiderApplyData> listReconsiderApplyData);
 
-    List<YbReconsiderApplyData> findReconsiderApplyDataByNotVerify(@Param("pid") String pid,@Param("applyDateStr") String applyDateStr, @Param("dataType") Integer dataType, @Param("typeno") Integer typeno);
+    List<YbReconsiderApplyData> findReconsiderApplyDataByNotVerify(@Param("pid") String pid,@Param("applyDateStr") String applyDateStr,@Param("areaType") Integer areaType,@Param("dataType") Integer dataType, @Param("typeno") Integer typeno);
 
     List<YbReconsiderApplyData> findReconsiderApplyDataBetween(@Param("pid") String pid, @Param("dataType") Integer dataType, @Param("typeno") Integer typeno, @Param("startNum") Integer startNum, @Param("endNum") Integer endNum);
 
     List<YbReconsiderApplyData> findReconsiderApplyDataNotBetween(@Param("pid") String pid, @Param("dataType") Integer dataType, @Param("typeno") Integer typeno, @Param("startNum") Integer startNum, @Param("endNum") Integer endNum);
 
-    List<YbReconsiderApplyData> findReconsiderApplyDataNotInpatientfees(@Param("pid") String pid,@Param("applyDateStr") String applyDateStr, @Param("dataType") Integer dataType, @Param("typeno") Integer typeno);
+    List<YbReconsiderApplyData> findReconsiderApplyDataNotInpatientfees(@Param("pid") String pid,@Param("applyDateStr") String applyDateStr,@Param("areaType") Integer areaType, @Param("dataType") Integer dataType, @Param("typeno") Integer typeno);
 
     int findReconsiderApplyDataCount(@Param("pid") String pid, @Param("dataType") Integer dataType, @Param("typeno") Integer typeno);
 
-    int findReconsiderApplyDataNotCount(@Param("pid") String pid,@Param("applyDateStr") String applyDateStr, @Param("dataType") Integer dataType, @Param("typeno") Integer typeno);
+    int findReconsiderApplyDataNotCount(@Param("pid") String pid,@Param("applyDateStr") String applyDateStr,@Param("areaType") Integer areaType, @Param("dataType") Integer dataType, @Param("typeno") Integer typeno);
 }

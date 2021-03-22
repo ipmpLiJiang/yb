@@ -72,12 +72,12 @@
         <result column="currencyField" property="currencyField"/>
         <result column="verifySendId" property="verifySendId"/>
         <result column="approvalState" property="approvalState"/>
-
+        <result column="areaType" property="areaType"/>
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        pid, serialNo, billNo, proposalCode, projectCode, projectName, num, medicalPrice, ruleName, deductPrice, deductReason, repaymentReason, doctorName, deptCode, deptName, enterHospitalDateStr,outHospitalDateStr,costDateStr, hospitalizedNo, treatmentMode, settlementDateStr, personalNo, insuredName, cardNumber, areaName, versionNumber, backAppeal, typeno, applyDateStr, id, applyDataId, verifyId, readyDoctorCode, readyDoctorName, readyDeptCode, readyDeptName, changeDoctorCode, changeDoctorName, changeDeptCode, changeDeptName,applyEndDate, operateReason, operateDate, acceptState, refuseId, refuseName, refuseReason, refuseDate, adminPersonId, adminPersonName, adminChangeDate, adminReason,enableDate,isEnableDate,enableType,sourceType, dataType,orderNumber,orderNum,orderDoctorCode,orderDoctorName,orderDeptCode,orderDeptName,isEnd,STATE, currencyField,approvalState, verifySendId
+        pid, serialNo, billNo, proposalCode, projectCode, projectName, num, medicalPrice, ruleName, deductPrice, deductReason, repaymentReason, doctorName, deptCode, deptName, enterHospitalDateStr,outHospitalDateStr,costDateStr, hospitalizedNo, treatmentMode, settlementDateStr, personalNo, insuredName, cardNumber, areaName, versionNumber, backAppeal, typeno, applyDateStr, id, applyDataId, verifyId, readyDoctorCode, readyDoctorName, readyDeptCode, readyDeptName, changeDoctorCode, changeDoctorName, changeDeptCode, changeDeptName,applyEndDate, operateReason, operateDate, acceptState, refuseId, refuseName, refuseReason, refuseDate, adminPersonId, adminPersonName, adminChangeDate, adminReason,enableDate,isEnableDate,enableType,sourceType, dataType,orderNumber,orderNum,orderDoctorCode,orderDoctorName,orderDeptCode,orderDeptName,isEnd,STATE, currencyField,approvalState, verifySendId,areaType
     </sql>
     <update id="updateYbAppealManageView" parameterType="cc.mrbird.febs.yb.entity.YbAppealManageView">
         update yb_appeal_manage_view
@@ -227,6 +227,7 @@
             like concat('%', #{ ybAppealManageView.currencyField} ,'%')
         </if>
     </select>
+
     <select id="findAppealManageView" resultType="cc.mrbird.febs.yb.entity.YbAppealManageView"
             parameterType="cc.mrbird.febs.yb.entity.YbAppealManageView">
         select
@@ -313,7 +314,8 @@
         case when (UNIX_TIMESTAMP(ra.endDateTwo)-UNIX_TIMESTAMP(sysdate()))/(60*60*24) > 0 then 0 else 1 end
         END
         ELSE 0 END isEnd,
-        case when (UNIX_TIMESTAMP(am.enableDate)-UNIX_TIMESTAMP(sysdate()))/(60*60*24) > 0 then 1 else 0 end enableType
+        case when (UNIX_TIMESTAMP(am.enableDate)-UNIX_TIMESTAMP(sysdate()))/(60*60*24) > 0 then 1 else 0 end enableType,
+        am.areaType
         from
         yb_appeal_manage am
         STRAIGHT_JOIN yb_reconsider_apply_data ad ON
@@ -342,6 +344,15 @@
         </if>
         <if test="ybAppealManageView.typeno != null and ybAppealManageView.typeno != 0 and ybAppealManageView.typeno!=3">
             and am.typeno =#{ ybAppealManageView.typeno}
+        </if>
+        <if test="ybAppealManageView.orderDoctorCode != null and ybAppealManageView.orderDoctorCode != ''">
+            and am.orderDoctorCode = #{ybAppealManageView.orderDoctorCode}
+        </if>
+        <if test="ybAppealManageView.areaType != null">
+            and am.areaType = #{ybAppealManageView.areaType}
+        </if>
+        <if test="appealConfireId != null">
+            and am.readyDeptCode in(SELECT deptId FROM yb_appeal_confire_data where pid = #{ appealConfireId})
         </if>
         order by am.typeno,am.dataType,am.orderNum asc
     </select>
@@ -376,6 +387,15 @@
         </if>
         <if test="ybAppealManageView.typeno != null and ybAppealManageView.typeno != 0 and ybAppealManageView.typeno!=3">
             and am.typeno =#{ ybAppealManageView.typeno}
+        </if>
+        <if test="ybAppealManageView.orderDoctorCode != null and ybAppealManageView.orderDoctorCode != ''">
+            and am.orderDoctorCode = #{ybAppealManageView.orderDoctorCode}
+        </if>
+        <if test="ybAppealManageView.areaType != null">
+            and am.areaType = #{ybAppealManageView.areaType}
+        </if>
+        <if test="appealConfireId != null">
+            and am.readyDeptCode in(SELECT deptId FROM yb_appeal_confire_data where pid = #{ appealConfireId})
         </if>
     </select>
 
@@ -465,7 +485,8 @@
         case when (UNIX_TIMESTAMP(ra.endDateTwo)-UNIX_TIMESTAMP(sysdate()))/(60*60*24) > 0 then 0 else 1 end
         END
         ELSE 0 END isEnd,
-        case when (UNIX_TIMESTAMP(am.enableDate)-UNIX_TIMESTAMP(sysdate()))/(60*60*24) > 0 then 1 else 0 end enableType
+        case when (UNIX_TIMESTAMP(am.enableDate)-UNIX_TIMESTAMP(sysdate()))/(60*60*24) > 0 then 1 else 0 end enableType,
+        am.areaType
         from
         yb_reconsider_apply_data ad
         inner join yb_appeal_manage am  ON
@@ -491,6 +512,15 @@
         </if>
         <if test="ybAppealManageView.typeno != null and ybAppealManageView.typeno != 0 and ybAppealManageView.typeno!=3">
             and am.typeno =#{ ybAppealManageView.typeno}
+        </if>
+        <if test="ybAppealManageView.orderDoctorCode != null and ybAppealManageView.orderDoctorCode != ''">
+            and am.orderDoctorCode = #{ybAppealManageView.orderDoctorCode}
+        </if>
+        <if test="ybAppealManageView.areaType != null">
+            and am.areaType = #{ybAppealManageView.areaType}
+        </if>
+        <if test="appealConfireId != null">
+            and am.readyDeptCode in(SELECT deptId FROM yb_appeal_confire_data where pid = #{ appealConfireId})
         </if>
         inner join yb_reconsider_apply ra ON ra.id = ad.pid
         where
@@ -540,6 +570,15 @@
         </if>
         <if test="ybAppealManageView.typeno != null and ybAppealManageView.typeno != 0 and ybAppealManageView.typeno!=3">
             and am.typeno =#{ ybAppealManageView.typeno}
+        </if>
+        <if test="ybAppealManageView.orderDoctorCode != null and ybAppealManageView.orderDoctorCode != ''">
+            and am.orderDoctorCode = #{ybAppealManageView.orderDoctorCode}
+        </if>
+        <if test="ybAppealManageView.areaType != null">
+            and am.areaType = #{ybAppealManageView.areaType}
+        </if>
+        <if test="appealConfireId != null">
+            and am.readyDeptCode in(SELECT deptId FROM yb_appeal_confire_data where pid = #{ appealConfireId})
         </if>
         inner join yb_reconsider_apply ra ON ra.id = ad.pid
         where
@@ -646,7 +685,8 @@
         case when (UNIX_TIMESTAMP(ra.endDateTwo)-UNIX_TIMESTAMP(sysdate()))/(60*60*24) > 0 then 0 else 1 end
         END
         ELSE 0 END isEnd,
-        case when (UNIX_TIMESTAMP(am.enableDate)-UNIX_TIMESTAMP(sysdate()))/(60*60*24) > 0 then 1 else 0 end enableType
+        case when (UNIX_TIMESTAMP(am.enableDate)-UNIX_TIMESTAMP(sysdate()))/(60*60*24) > 0 then 1 else 0 end enableType,
+        am.areaType
         from
         yb_appeal_manage am
         STRAIGHT_JOIN yb_reconsider_apply_data ad ON
@@ -666,6 +706,9 @@
         </if>
         <if test="ybAppealManageView.dataType != null">
             and am.dataType = #{ybAppealManageView.dataType}
+        </if>
+        <if test="ybAppealManageView.areaType != null">
+            and am.areaType = #{ybAppealManageView.areaType}
         </if>
     </select>
 </mapper>

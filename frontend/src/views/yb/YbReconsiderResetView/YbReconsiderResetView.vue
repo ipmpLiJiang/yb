@@ -221,6 +221,7 @@ export default {
       delayTime: 500,
       exceptResetVisiable: false,
       unknownResetVisiable: false,
+      user: this.$store.state.account.user,
       tableSelectKey: '1'
     }
   },
@@ -247,7 +248,8 @@ export default {
     update () {
       let updateParam = {
         applyDateStr: this.searchApplyDate,
-        dataType: 0
+        dataType: 0,
+        areaType: this.user.areaType
       }
       if (this.tableSelectKey === '2') {
         updateParam.dataType = 1

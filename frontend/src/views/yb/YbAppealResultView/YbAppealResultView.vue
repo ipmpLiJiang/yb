@@ -38,11 +38,16 @@
             style="margin-right:15px"
             @click="exportExcel"
             >导出表格</a-button>
-            <a-button
-            type="primary"
-            style="margin-right:15px"
-            @click="showModal"
-            >导出图片</a-button>
+            <a-popconfirm
+              title="请选择导出类型"
+              okText="单个科室"
+              cancelText="汇总科室"
+              style="margin-right:15px"
+              @cancel="() => showModal(1)"
+              @confirm="() => showModal(0)">
+              <a-icon slot="icon" type="question-circle-o" style="color: orangered" />
+              <a-button type="primary">导出图片</a-button>
+            </a-popconfirm>
             <a-button
             type="primary"
             style="margin-right:15px"
@@ -186,7 +191,7 @@ export default {
     monthChange (date, dateString) {
       this.searchApplyDate = dateString
     },
-    showModal () {
+    showModal (type) {
       this.downLoadVisible = true
       let appealResultDownLoad = {}
       appealResultDownLoad.applyDateStr = this.searchApplyDate
@@ -201,6 +206,7 @@ export default {
         appealResultDownLoad.sourceType = 1
       }
       appealResultDownLoad.dataType = this.searchDataType
+      appealResultDownLoad.type = type
       setTimeout(() => {
         this.$refs.ybAppealResultDownload.setFormValues(appealResultDownLoad)
       }, 200)

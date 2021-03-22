@@ -195,6 +195,7 @@ export default {
       queryAdminTypeDataSource: [],
       selectAdminTypeDataSource: [],
       ctType: 1,
+      user: this.$store.state.account.user,
       editVisiable: false,
       loading: false,
       bordered: true
@@ -290,7 +291,7 @@ export default {
     },
     add () {
       this.editVisiable = true
-      this.$refs.ybAppealConfireEdit.setFormValues(null, this.selectAdminTypeDataSource)
+      this.$refs.ybAppealConfireEdit.setFormValues(null, this.user.areaType, this.selectAdminTypeDataSource)
     },
     handleEditSuccess () {
       this.editVisiable = false
@@ -300,7 +301,7 @@ export default {
       this.editVisiable = false
     },
     edit (record) {
-      this.$refs.ybAppealConfireEdit.setFormValues(record, this.selectAdminTypeDataSource)
+      this.$refs.ybAppealConfireEdit.setFormValues(record, this.user.areaType, this.selectAdminTypeDataSource)
       this.editVisiable = true
     },
     del (record) {
@@ -407,6 +408,7 @@ export default {
       if (params.adminType === 0 || params.adminType === undefined) {
         params.adminType = null
       }
+      params.areaType = this.user.areaType
       if (this.paginationInfo) {
         // 如果分页信息不为空，则设置表格当前第几页，每页条数，并设置查询分页参数
         this.$refs.TableInfo.pagination.current = this.paginationInfo.current

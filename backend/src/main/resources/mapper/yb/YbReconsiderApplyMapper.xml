@@ -24,12 +24,12 @@
         <result column="uploadFileNameTwo" property="uploadFileNameTwo"/>
         <result column="endDateOne" property="endDateOne"/>
         <result column="endDateTwo" property="endDateTwo"/>
-
+        <result column="areaType" property="areaType"/>
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, applyDate, operatorId, operatorName, COMMENTS, STATE, IS_DELETEMARK, MODIFY_TIME, CREATE_TIME, CREATE_USER_ID, MODIFY_USER_ID, applyDateStr,resultState,repayState,resetState,taskState,uploadFileNameOne,uploadFileNameTwo,endDateOne,endDateTwo
+        id, applyDate, operatorId, operatorName, COMMENTS, STATE, IS_DELETEMARK, MODIFY_TIME, CREATE_TIME, CREATE_USER_ID, MODIFY_USER_ID, applyDateStr,resultState,repayState,resetState,taskState,uploadFileNameOne,uploadFileNameTwo,endDateOne,endDateTwo,areaType
     </sql>
     <update id="updateYbReconsiderApply" parameterType="cc.mrbird.febs.yb.entity.YbReconsiderApply">
         update yb_reconsider_apply
@@ -53,7 +53,7 @@
             <if test="uploadFileNameTwo != null">uploadFileNameTwo=#{uploadFileNameTwo},</if>
             <if test="endDateOne != null">endDateOne=#{endDateOne},</if>
             <if test="endDateTwo != null">endDateTwo=#{endDateTwo},</if>
-
+            <if test="areaType != null">areaType=#{areaType},</if>
         </trim>
         where id=#{id}
 
@@ -92,6 +92,7 @@
         <if test="ybReconsiderApply.applyDateStr != null and ybReconsiderApply.applyDateStr != ''">and applyDateStr like
             concat('%', #{ ybReconsiderApply.applyDateStr} ,'%')
         </if>
+        <if test="ybReconsiderApply.areaType != null">and ybReconsiderApply.areaType =#{ ybReconsiderApply.areaType}</if>
     </select>
     <delete id="deleteBatchStateIdsYbReconsiderApply">
         delete from yb_reconsider_apply where id in
@@ -102,7 +103,7 @@
     </delete>
 
     <select id="findReconsiderApplyByApplyDateStr" resultType="cc.mrbird.febs.yb.entity.YbReconsiderApply">
-        select *  from yb_reconsider_apply where applyDateStr = #{applyDateStr}  order by CREATE_TIME asc  limit 1
+        select *  from yb_reconsider_apply where applyDateStr = #{applyDateStr} and areaType = #{areaType}  order by CREATE_TIME asc  limit 1
     </select>
 
     <select id="getAdd" parameterType="java.util.Map" statementType="CALLABLE">

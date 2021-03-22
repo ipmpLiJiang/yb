@@ -1,6 +1,7 @@
 package cc.mrbird.febs.yb.service;
 
 import cc.mrbird.febs.yb.entity.YbAppealManageView;
+import cc.mrbird.febs.yb.entity.YbAppealResult;
 import cc.mrbird.febs.yb.entity.YbAppealResultDownLoad;
 import cc.mrbird.febs.yb.entity.YbAppealResultView;
 import com.baomidou.mybatisplus.extension.service.IService;
@@ -42,5 +43,7 @@ public interface IYbAppealResultViewService extends IService<YbAppealResultView>
     List<YbAppealResultView> findAppealResultHandleViewLists(YbAppealResultView ybAppealResultView);
 
     List<YbAppealResultDownLoad> findYbAppealResultDownLoadList(YbAppealResultView ybAppealResultView);
+
+    List<YbAppealResultDownLoad> findAppealResultDownLoadSumList(YbAppealResultView ybAppealResultView);
 
 }

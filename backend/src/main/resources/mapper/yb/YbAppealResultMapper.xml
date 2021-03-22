@@ -38,11 +38,12 @@
         <result column="CREATE_TIME" property="createTime"/>
         <result column="CREATE_USER_ID" property="createUserId"/>
         <result column="MODIFY_USER_ID" property="modifyUserId"/>
+        <result column="areaType" property="areaType"/>
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, applyDataId, verifyId, manageId, doctorCode, doctorName, deptCode, deptName, operateReason, operateDate, currencyField,sourceType,relatelDataId,resetDate,dataType,orderDoctorCode,orderDoctorName,orderDeptCode,orderDeptName,repayState,applyDateStr,typeno,orderNumber,orderNum, COMMENTS, STATE, IS_DELETEMARK, MODIFY_TIME, CREATE_TIME, CREATE_USER_ID, MODIFY_USER_ID
+        id, applyDataId, verifyId, manageId, doctorCode, doctorName, deptCode, deptName, operateReason, operateDate, currencyField,sourceType,relatelDataId,resetDate,dataType,orderDoctorCode,orderDoctorName,orderDeptCode,orderDeptName,repayState,applyDateStr,typeno,orderNumber,orderNum, COMMENTS, STATE, IS_DELETEMARK, MODIFY_TIME, CREATE_TIME, CREATE_USER_ID, MODIFY_USER_ID,areaType
     </sql>
     <!--    resetDataId,resetPersonId,resetPersonName,-->
     <update id="updateYbAppealResult" parameterType="cc.mrbird.febs.yb.entity.YbAppealResult">
@@ -81,6 +82,7 @@
             <if test="createTime != null">CREATE_TIME=#{createTime},</if>
             <if test="createUserId != null">CREATE_USER_ID=#{createUserId},</if>
             <if test="modifyUserId != null">MODIFY_USER_ID=#{modifyUserId},</if>
+            <if test="areaType != null">areaType=#{areaType},</if>
         </trim>
         where id=#{id}
 
@@ -147,11 +149,54 @@
         <if test="ybAppealResult.createTimeTo!= null">
             AND ybAppealResult.CREATE_TIME <![CDATA[ <= ]]>  createTimeTo}
         </if>
+        <if test="ybAppealResult.areaType != null">and ybAppealResult.areaType =#{ ybAppealResult.areaType}</if>
     </select>
-    <select id="findAppealResultGroupDept" resultType="String"
+    <select id="findAppealResultGroupSumDept" resultType="cc.mrbird.febs.yb.entity.YbResultDownLoad"
             parameterType="cc.mrbird.febs.yb.entity.YbAppealResultView">
         SELECT
-        yb_appeal_result.deptName
+            id,asCode deptId,asName deptName
+        FROM
+        yb_appeal_sumdept
+        WHERE
+        IS_DELETEMARK = 1 and
+        <if test="ybAppealResultView.repayState != null">and areaType =#{ ybAppealResultView.repayState}</if>
+        ID IN(
+        select DISTINCT pid from yb_appeal_sumdept_data where deptId in (
+            SELECT DISTINCT
+                yb_appeal_result.deptCode
+            FROM
+                yb_appeal_result
+                INNER JOIN com_file ON
+            com_file.REF_TAB_ID = yb_appeal_result.id
+                INNER JOIN yb_reconsider_apply_data ON
+            yb_reconsider_apply_data.id = yb_appeal_result.applyDataId
+            WHERE
+                yb_appeal_result.applyDateStr = #{ybAppealResultView.applyDateStr}
+                <if test="ybAppealResultView.sourceType != null">
+                    and yb_appeal_result.sourceType = #{ybAppealResultView.sourceType}
+                </if>
+                <if test="ybAppealResultView.typeno != null">
+                    and yb_appeal_result.typeno = #{ybAppealResultView.typeno}
+                </if>
+                <if test="ybAppealResultView.dataType != null">
+                    and yb_appeal_result.dataType = #{ybAppealResultView.dataType}
+                </if>
+                <if test="ybAppealResultView.state != null and ybAppealResultView.state==1">
+                    and yb_appeal_result.STATE = 1
+                </if>
+                <if test="ybAppealResultView.state != null and ybAppealResultView.state==2">
+                    and yb_appeal_result.STATE = 2
+                </if>
+                <if test="ybAppealResultView.areaType != null">
+                    and yb_appeal_result.areaType =  #{ybAppealResultView.areaType}
+                </if>
+            )
+        )
+    </select>
+    <select id="findAppealResultGroupDept" resultType="cc.mrbird.febs.yb.entity.YbResultDownLoad"
+            parameterType="cc.mrbird.febs.yb.entity.YbAppealResultView">
+        SELECT
+        uuid() id,yb_appeal_result.deptCode deptId,yb_appeal_result.deptName
         FROM
         yb_appeal_result
         INNER JOIN com_file ON
@@ -170,8 +215,11 @@
         </if>
         <if test="ybAppealResultView.state != null and ybAppealResultView.state==1">and yb_appeal_result.STATE = 1</if>
         <if test="ybAppealResultView.state != null and ybAppealResultView.state==2">and yb_appeal_result.STATE = 2</if>
+        <if test="ybAppealResultView.areaType != null">
+            and yb_appeal_result.areaType =  #{ybAppealResultView.areaType}
+        </if>
         group BY
-        yb_appeal_result.deptName
+        yb_appeal_result.deptCode,yb_appeal_result.deptName
     </select>
     <select id="findAppealResulDataByReset" resultType="cc.mrbird.febs.yb.entity.YbAppealResult">
         SELECT

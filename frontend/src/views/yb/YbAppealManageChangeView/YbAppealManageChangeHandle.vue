@@ -188,6 +188,7 @@ export default {
       formItemLayout2,
       spinning: false,
       delayTime: 500,
+      user: this.$store.state.account.user,
       ybAppealManageChangeHandle: {}
     }
   },
@@ -264,7 +265,7 @@ export default {
           ybAppealManage.readyDeptName = this.ybAppealManageChangeHandle.readyDeptName
           ybAppealManage.readyDoctorCode = this.ybAppealManageChangeHandle.readyDoctorCode
           ybAppealManage.readyDoctorName = this.ybAppealManageChangeHandle.readyDoctorName
-
+          ybAppealManage.areaType = this.user.areaType
           this.$put('ybAppealManage/updateCreateAppealManage', {
             ...ybAppealManage, type: 2
           }).then(() => {
@@ -297,7 +298,7 @@ export default {
           ybAppealManage.readyDeptName = this.ybAppealManageChangeHandle.readyDeptName
           ybAppealManage.readyDoctorCode = this.ybAppealManageChangeHandle.readyDoctorCode
           ybAppealManage.readyDoctorName = this.ybAppealManageChangeHandle.readyDoctorName
-
+          ybAppealManage.areaType = this.user.areaType
           this.$put('ybAppealManage/updateCreateAppealManage', {
             ...ybAppealManage, type: 1
           }).then(() => {

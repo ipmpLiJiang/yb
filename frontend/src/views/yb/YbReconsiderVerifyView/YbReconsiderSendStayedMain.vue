@@ -85,6 +85,7 @@ export default {
       },
       loading: false,
       bordered: true,
+      user: this.$store.state.account.user,
       ybReconsiderVerify: {}
     }
   },
@@ -229,7 +230,8 @@ export default {
               applyDateStr: target.applyDateStr,
               orderNumber: target.orderNumber,
               orderNum: target.orderNum,
-              typeno: target.typeno}
+              typeno: target.typeno,
+              areaType: this.user.areaType}
 
             data.push(arrData)
           }
@@ -285,7 +287,8 @@ export default {
             applyDateStr: target.applyDateStr,
             orderNumber: target.orderNumber,
             orderNum: target.orderNum,
-            typeno: target.typeno
+            typeno: target.typeno,
+            areaType: this.user.areaType
           }
           data.push(arrData)
         }
@@ -322,7 +325,8 @@ export default {
           applyDateStr: target.applyDateStr,
           orderNumber: target.orderNumber,
           orderNum: target.orderNum,
-          typeno: target.typeno
+          typeno: target.typeno,
+          areaType: this.user.areaType
         }]
         this.sendService(data)
       } else {
@@ -332,7 +336,7 @@ export default {
     sendService (data) {
       let jsonString = JSON.stringify(data)
       this.$put('ybReconsiderVerify/updateSendState', {
-        dataJson: jsonString, dataType: 1
+        dataJson: jsonString, areaType: this.user.areaType, dataType: 1
       }).then(() => {
         this.$message.success('发送成功')
         this.$emit('verifySpin')
@@ -345,7 +349,7 @@ export default {
     batchSendA () {
       if (this.dataSource.length > 0) {
         this.$put('ybReconsiderVerify/updateASendState', {
-          applyDateStr: this.applyDate, state: 1, dataType: 1
+          applyDateStr: this.applyDate, areaType: this.user.areaType, state: 1, dataType: 1
         }).then(() => {
           this.$message.success('发送成功')
           this.$emit('verifySpin')
@@ -414,6 +418,7 @@ export default {
       params.applyDateStr = this.applyDate
       params.state = 1
       params.dataType = 1
+      params.areaType = this.user.areaType
       let searchType = [this.searchItem.project.type, this.searchItem.rule.type, this.searchItem.dept.type, this.searchItem.order.type]
       params.searchType = searchType
       if (this.searchItem !== undefined) {

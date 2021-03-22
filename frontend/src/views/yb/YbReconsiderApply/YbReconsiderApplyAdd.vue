@@ -86,6 +86,7 @@ export default {
       formItemLayout,
       form: this.$form.createForm(this),
       ybReconsiderApply: {},
+      user: this.$store.state.account.user,
       monthFormat: 'YYYY-MM',
       dayFormat: 'YYYY-MM-DD HH:mm:ss'
     }
@@ -105,6 +106,7 @@ export default {
       this.form.validateFields((err, values) => {
         if (!err) {
           this.setFields()
+          this.ybReconsiderApply.areaType = this.user.areaType
           this.$post('ybReconsiderApply/addYbReconsiderApplyCheck', {
             ...this.ybReconsiderApply
           }).then((r) => {

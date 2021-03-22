@@ -56,6 +56,11 @@ private static final long serialVersionUID=1L;
     public static final int SENDTYPE_6 = 6 ;
 
     /**
+     * 7 培训通知
+     */
+    public static final int SENDTYPE_7 = 7 ;
+
+    /**
      * 0 未发送
      */
     public static final int STATE_0 = 0 ;

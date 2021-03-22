@@ -436,6 +436,13 @@ public class YbReconsiderVerifyView implements Serializable {
     @ExcelField(value = "状态")
     private Integer state;
 
+    /**
+     * 院区
+     */
+    @TableField("areaType")
+    @ExcelField(value = "院区")
+    private Integer areaType;
+
     public static final String PID = "pid";
 
     public static final String SERIALNO = "serialNo";
@@ -549,6 +556,8 @@ public class YbReconsiderVerifyView implements Serializable {
     public static final String ORDERDEPTNAME = "orderDeptName";
 
     public static final String STATE = "STATE";
+
+    public static final String AREATYPE = "areaType";
 
 
 }

@@ -121,8 +121,8 @@ public class YbHandleVerifyDataServiceImpl extends ServiceImpl<YbHandleVerifyDat
     //获取state=2 已剔除数据
     @Override
     @Transactional
-    public void importCreateHandleVerifyData(String applyDateStr, Long uid, String uname) {
-        YbReconsiderApply ybReconsiderApply = this.iYbReconsiderApplyService.findReconsiderApplyByApplyDateStrs(applyDateStr);
+    public void importCreateHandleVerifyData(String applyDateStr,Integer areaType, Long uid, String uname) {
+        YbReconsiderApply ybReconsiderApply = this.iYbReconsiderApplyService.findReconsiderApplyByApplyDateStrs(applyDateStr,areaType);
         if (ybReconsiderApply != null) {
             if (ybReconsiderApply.getResetState() == 1) {
                 Date thisDate = new java.sql.Timestamp(new Date().getTime());

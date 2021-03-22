@@ -1,14 +1,18 @@
 package cc.mrbird.febs.yb.service.impl;
 
+import cc.mrbird.febs.com.entity.ComSms;
+import cc.mrbird.febs.com.service.IComSmsService;
 import cc.mrbird.febs.common.domain.QueryRequest;
+import cc.mrbird.febs.common.properties.FebsProperties;
 import cc.mrbird.febs.common.utils.SortUtil;
-import cc.mrbird.febs.yb.entity.YbAppealConfire;
-import cc.mrbird.febs.yb.entity.YbAppealConfireData;
-import cc.mrbird.febs.yb.entity.YbNotice;
+import cc.mrbird.febs.system.domain.User;
+import cc.mrbird.febs.yb.entity.*;
 import cc.mrbird.febs.yb.dao.YbNoticeMapper;
-import cc.mrbird.febs.yb.entity.YbNoticeData;
+import cc.mrbird.febs.yb.service.IYbAppealConfireService;
 import cc.mrbird.febs.yb.service.IYbNoticeDataService;
 import cc.mrbird.febs.yb.service.IYbNoticeService;
+import cc.mrbird.febs.yb.service.IYbPersonService;
+import cn.hutool.core.lang.Validator;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -42,16 +46,56 @@ public class YbNoticeServiceImpl extends ServiceImpl<YbNoticeMapper, YbNotice> i
     @Autowired
     IYbNoticeDataService iYbNoticeDataService;
 
+    @Autowired
+    IYbPersonService iYbPersonService;
+
+    @Autowired
+    IComSmsService iComSmsService;
+
+    @Autowired
+    IYbAppealConfireService iYbAppealConfireService;
+
+    @Autowired
+    FebsProperties febsProperties;
+
     @Override
     public IPage<YbNotice> findYbNotices(QueryRequest request, YbNotice ybNotice) {
         try {
             LambdaQueryWrapper<YbNotice> queryWrapper = new LambdaQueryWrapper<>();
-            queryWrapper.eq(YbNotice::getIsDeletemark, 1);//1是未删 0是已删
 
-            if (StringUtils.isNotBlank(ybNotice.getCurrencyField())) {
-                queryWrapper.like(YbNotice::getCurrencyField, ybNotice.getCurrencyField());
+            String sql = "IS_DELETEMARK = 1";
+
+            if(ybNotice.getAreaType() != null){
+                sql+=" and areaType = " + ybNotice.getAreaType();
             }
 
+            if (StringUtils.isNotBlank(ybNotice.getCurrencyField())) {
+                sql += " and (ntTitle LIKE '%" + ybNotice.getCurrencyField() + "%' or ntExplain LIKE '%" + ybNotice.getCurrencyField() + "%' or ntDetail LIKE '%" + ybNotice.getCurrencyField() + "%')";
+            }
+            queryWrapper.apply(sql);
+            Page<YbNotice> page = new Page<>();
+            SortUtil.handlePageSort(request, page, false);//true 是属性  false是数据库字段可两个
+            return this.page(page, queryWrapper);
+        } catch (Exception e) {
+            log.error("获取字典信息失败", e);
+            return null;
+        }
+    }
+
+    @Override
+    public IPage<YbNotice> findNoticeView(QueryRequest request, YbNotice ybNotice, String usercode) {
+        try {
+            LambdaQueryWrapper<YbNotice> queryWrapper = new LambdaQueryWrapper<>();
+
+            String sql = "IS_DELETEMARK = 1 and STATE =  " + YbNotice.STATE_2;
+            if(ybNotice.getAreaType() != null){
+                sql+=" and areaType = " + ybNotice.getAreaType();
+            }
+            sql += " and (sendType = " + YbNotice.SENDTYPE_1 + " or (sendType = " + YbNotice.SENDTYPE_2 + " and id in(SELECT yb_notice_data.pid FROM yb_notice_data inner join yb_appeal_confire on yb_notice_data.cmId = yb_appeal_confire.adminType and yb_appeal_confire.doctorCode = '" + usercode + "' WHERE yb_notice_data.ndType = " + YbNoticeData.NDTYPE_1 + ")) or (sendType = " + YbNotice.SENDTYPE_3 + " and id in(select pid from yb_notice_data where ndType = " + YbNoticeData.NDTYPE_2 + " and personCode = '" + usercode + "')))";
+            if (StringUtils.isNotBlank(ybNotice.getCurrencyField())) {
+                sql += " and (ntTitle LIKE '%" + ybNotice.getCurrencyField() + "%' or ntExplain LIKE '%" + ybNotice.getCurrencyField() + "%' or ntDetail LIKE '%" + ybNotice.getCurrencyField() + "%')";
+            }
+            queryWrapper.apply(sql);
             Page<YbNotice> page = new Page<>();
             SortUtil.handlePageSort(request, page, false);//true 是属性  false是数据库字段可两个
             return this.page(page, queryWrapper);
@@ -97,6 +141,27 @@ public class YbNoticeServiceImpl extends ServiceImpl<YbNoticeMapper, YbNotice> i
 
     @Override
     @Transactional
+    public void deleteUpdateNotices(String[] Ids) {
+        List<String> list = Arrays.asList(Ids);
+        LambdaQueryWrapper<YbNotice> wrapper = new LambdaQueryWrapper<>();
+        wrapper.in(YbNotice::getId, list);
+        List<YbNotice> queryList = this.baseMapper.selectList(wrapper);
+        List<YbNotice> noticeList = new ArrayList<>();
+        for (YbNotice item : queryList) {
+            if (item.getState() == YbNotice.STATE_0) {
+                YbNotice notice = new YbNotice();
+                notice.setId(item.getId());
+                notice.setIsDeletemark(0);
+                noticeList.add(notice);
+            }
+        }
+        if (noticeList.size() > 0) {
+            this.updateBatchById(noticeList);
+        }
+    }
+
+    @Override
+    @Transactional
     public void createNotice(YbNotice ybNotice, List<YbNoticeData> createDataList) {
         this.save(ybNotice);
         iYbNoticeDataService.saveBatch(createDataList);
@@ -120,6 +185,61 @@ public class YbNoticeServiceImpl extends ServiceImpl<YbNoticeMapper, YbNotice> i
 
     @Override
     @Transactional
+    public int updateNoticeClickNum(YbNotice ybNotice) {
+        YbNotice query = new YbNotice();
+        query.setId(ybNotice.getId());
+        int clickNum = 0;
+        YbNotice notice = this.findNotice(query);
+        if (notice != null) {
+            clickNum = notice.getClickNum();
+            if (notice.getState() == YbNotice.STATE_2) {
+                YbNotice update = new YbNotice();
+                update.setId(notice.getId());
+                update.setClickNum(clickNum + 1);
+                boolean isTrue = this.updateById(update);
+                if (isTrue) {
+                    return clickNum + 1;
+                }
+            }
+        }
+        return clickNum;
+    }
+
+    @Override
+    public YbNotice findNotice(YbNotice ybNotice) {
+        LambdaQueryWrapper<YbNotice> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(YbNotice::getIsDeletemark, 1);//1是未删 0是已删
+        if (ybNotice.getId() != null) {
+            queryWrapper.eq(YbNotice::getId, ybNotice.getId());
+        }
+        if (ybNotice.getNtTitle() != null) {
+            queryWrapper.eq(YbNotice::getNtTitle, ybNotice.getNtTitle());
+        }
+        if (ybNotice.getNtExplain() != null) {
+            queryWrapper.eq(YbNotice::getNtExplain, ybNotice.getNtExplain());
+        }
+        if (ybNotice.getNtDetail() != null) {
+            queryWrapper.eq(YbNotice::getNtDetail, ybNotice.getNtDetail());
+        }
+        if (ybNotice.getSmsState() != null) {
+            queryWrapper.eq(YbNotice::getSmsState, ybNotice.getSmsState());
+        }
+        if (ybNotice.getSendType() != null) {
+            queryWrapper.eq(YbNotice::getSendType, ybNotice.getSendType());
+        }
+        if (ybNotice.getState() != null) {
+            queryWrapper.eq(YbNotice::getState, ybNotice.getState());
+        }
+        List<YbNotice> list = this.list(queryWrapper);
+        if (list.size() > 0) {
+            return list.get(0);
+        } else {
+            return null;
+        }
+    }
+
+    @Override
+    @Transactional
     public void updateNotice(YbNotice ybNotice, List<YbNoticeData> dataList) {
         YbNoticeData query = new YbNoticeData();
         query.setPid(ybNotice.getId());
@@ -130,8 +250,7 @@ public class YbNoticeServiceImpl extends ServiceImpl<YbNoticeMapper, YbNotice> i
             for (YbNoticeData item : list) {
                 delDataList.add(item.getId());
             }
-        }
-        else {
+        } else {
             if (list.size() == 0) {
                 createDataList = this.createData(ybNotice, dataList);
             } else {
@@ -142,7 +261,7 @@ public class YbNoticeServiceImpl extends ServiceImpl<YbNoticeMapper, YbNotice> i
                     createDataList = this.createData(ybNotice, dataList);
                 } else {
                     long count = 0;
-                    if (list.get(0).getNdType() == 1) {
+                    if (list.get(0).getNdType() == YbNoticeData.NDTYPE_1) {
                         List<Integer> existCmList = new ArrayList<>();
                         for (YbNoticeData item : list) {
                             count = dataList.stream().filter(s -> s.getCmId().equals(item.getCmId())).count();
@@ -195,10 +314,87 @@ public class YbNoticeServiceImpl extends ServiceImpl<YbNoticeMapper, YbNotice> i
         }
         if (delDataList.size() > 0) {
             String[] strArray = new String[delDataList.size()];
-            for(int i = 0;i<delDataList.size();i++){
+            for (int i = 0; i < delDataList.size(); i++) {
                 strArray[i] = delDataList.get(i);
             }
             iYbNoticeDataService.deleteYbNoticeDatas(strArray);
+        }
+    }
+
+    @Override
+    @Transactional
+    public void updateReleaseNotice(YbNotice ybNotice, User currentUser) {
+        List<YbPerson> personList = iYbPersonService.findPersonList(new YbPerson(), 0);
+
+        List<ComSms> createSms = new ArrayList<>();
+        int nOpenSms = febsProperties.getOpenSms();
+        boolean isOpenSms = nOpenSms == 1 ? true : false;
+        String sendContent = ybNotice.getNtTitle();
+        if (ybNotice.getSendType() == YbNotice.SENDTYPE_1) {
+            for(YbPerson person : personList) {
+                this.addSms(personList, createSms, person.getPersonCode(), sendContent, currentUser);
+            }
+        } else if (ybNotice.getSendType() == YbNotice.SENDTYPE_2) {
+            if (isOpenSms) {
+                YbNoticeData query = new YbNoticeData();
+                query.setPid(ybNotice.getId());
+                query.setNdType(YbNoticeData.NDTYPE_1);
+                List<YbNoticeData> noticeDatalist = iYbNoticeDataService.findNoticeDataList(query);
+                List<Integer> atIds = new ArrayList<>();
+                for (YbNoticeData item : noticeDatalist) {
+                    atIds.add(item.getCmId());
+                }
+                List<YbAppealConfire> acList = iYbAppealConfireService.findAppealConfireATList(atIds);
+                for (YbAppealConfire obj : acList) {
+                    this.addSms(personList, createSms, obj.getDoctorCode(), sendContent, currentUser);
+                }
+            }
+        } else {
+            if (isOpenSms) {
+                YbNoticeData query = new YbNoticeData();
+                query.setPid(ybNotice.getId());
+                query.setNdType(YbNoticeData.NDTYPE_2);
+                List<YbNoticeData> noticeDatalist = iYbNoticeDataService.findNoticeDataList(query);
+                for (YbNoticeData obj : noticeDatalist) {
+                    this.addSms(personList, createSms, obj.getPersonCode(), sendContent, currentUser);
+                }
+            }
+        }
+        if (createSms.size() > 0) {
+            iComSmsService.saveBatch(createSms);
+        }
+        ybNotice.setReleaseDate(new Date());
+        this.updateById(ybNotice);
+
+    }
+
+    private void addSms(List<YbPerson> personList, List<ComSms> createSms, String personCode, String sendContent, User currentUser) {
+        Date thisDate = new Date();
+        List<YbPerson> queryPersonList = new ArrayList<>();
+        queryPersonList = personList.stream().filter(s -> s.getPersonCode().equals(personCode)).collect(Collectors.toList());
+        long count = 0;
+        if (queryPersonList.size() > 0) {
+            count = createSms.stream().filter(s -> s.getSendcode().equals(personCode)).count();
+            if (count == 0) {
+                if (queryPersonList.get(0).getTel() != null && queryPersonList.get(0).getTel() != "") {
+                    if (Validator.isMobile(queryPersonList.get(0).getTel())) {
+                        ComSms comSms = new ComSms();
+                        comSms.setId(UUID.randomUUID().toString());
+                        comSms.setSendcode(queryPersonList.get(0).getPersonCode());
+                        comSms.setSendname(queryPersonList.get(0).getPersonName());
+                        comSms.setMobile(queryPersonList.get(0).getTel());
+                        comSms.setSendType(ComSms.SENDTYPE_7);
+                        comSms.setState(ComSms.STATE_0);
+                        comSms.setSendcontent(sendContent);
+                        comSms.setOperatorId(currentUser.getUserId());
+                        comSms.setOperatorName(currentUser.getUsername());
+                        comSms.setIsDeletemark(1);
+                        comSms.setCreateUserId(currentUser.getUserId());
+                        comSms.setCreateTime(thisDate);
+                        createSms.add(comSms);
+                    }
+                }
+            }
         }
     }
 

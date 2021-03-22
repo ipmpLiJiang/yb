@@ -2,11 +2,8 @@ package cc.mrbird.febs.yb.service.impl;
 
 import cc.mrbird.febs.common.domain.QueryRequest;
 import cc.mrbird.febs.common.utils.SortUtil;
-import cc.mrbird.febs.yb.entity.YbAppealConfire;
-import cc.mrbird.febs.yb.entity.YbAppealConfireData;
-import cc.mrbird.febs.yb.entity.YbAppealSumdept;
+import cc.mrbird.febs.yb.entity.*;
 import cc.mrbird.febs.yb.dao.YbAppealSumdeptMapper;
-import cc.mrbird.febs.yb.entity.YbAppealSumdeptData;
 import cc.mrbird.febs.yb.service.IYbAppealSumdeptDataService;
 import cc.mrbird.febs.yb.service.IYbAppealSumdeptService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -41,8 +38,8 @@ import java.time.LocalDate;
 @Transactional(propagation = Propagation.SUPPORTS, readOnly = true, rollbackFor = Exception.class)
 public class YbAppealSumdeptServiceImpl extends ServiceImpl<YbAppealSumdeptMapper, YbAppealSumdept> implements IYbAppealSumdeptService {
 
-        @Autowired
-        IYbAppealSumdeptDataService iYbAppealSumdeptDataService;
+    @Autowired
+    IYbAppealSumdeptDataService iYbAppealSumdeptDataService;
 
     @Override
     public IPage<YbAppealSumdept> findYbAppealSumdepts(QueryRequest request, YbAppealSumdept ybAppealSumdept) {
@@ -64,11 +61,18 @@ public class YbAppealSumdeptServiceImpl extends ServiceImpl<YbAppealSumdeptMappe
     }
 
     @Override
-    public IPage<YbAppealSumdept> findAppealSumdeptView(QueryRequest request, String currencyField) {
+    public IPage<YbAppealSumdept> findAppealSumdeptView(QueryRequest request, YbAppealSumdept ybAppealSumdept) {
         try {
             Page<YbAppealSumdept> page = new Page<>();
-            SortUtil.handlePageSort(request, page, true);//true 是属性  false是数据库字段可两个
-            return this.baseMapper.findAppealSumdeptView(page, currencyField);
+            int count = this.baseMapper.findAppealSumdeptCount(ybAppealSumdept);
+            if (count > 0) {
+                page.setSearchCount(false);
+                SortUtil.handlePageSort(request, page, false);//true 是属性  false是数据库字段可两个
+                IPage<YbAppealSumdept> pg = this.baseMapper.findAppealSumdeptView(page, ybAppealSumdept);
+                pg.setTotal(count);
+                return pg;
+            }
+            return page;
         } catch (Exception e) {
             log.error("获取失败", e);
             return null;
@@ -110,40 +114,42 @@ public class YbAppealSumdeptServiceImpl extends ServiceImpl<YbAppealSumdeptMappe
         this.baseMapper.deleteBatchIds(list);
     }
 
-        @Override
-        @Transactional
-        public void createAppealSumdept(YbAppealSumdept ybAppealSumdept, List<YbAppealSumdeptData> createDataList) {
-                this.save(ybAppealSumdept);
-                iYbAppealSumdeptDataService.saveBatch(createDataList);
-        }
+    @Override
+    @Transactional
+    public void createAppealSumdept(YbAppealSumdept ybAppealSumdept, List<YbAppealSumdeptData> createDataList) {
+        this.save(ybAppealSumdept);
+        iYbAppealSumdeptDataService.saveBatch(createDataList);
+    }
 
-        @Override
-        @Transactional
-        public void updateAppealSumdept(YbAppealSumdept ybAppealSumdept, List<YbAppealSumdeptData> createDataList, List<YbAppealSumdeptData> updateDataList) {
-                this.updateById(ybAppealSumdept);
-                iYbAppealSumdeptDataService.saveBatch(createDataList);
+    @Override
+    @Transactional
+    public void updateAppealSumdept(YbAppealSumdept ybAppealSumdept, List<YbAppealSumdeptData> createDataList, List<YbAppealSumdeptData> updateDataList) {
+        this.updateById(ybAppealSumdept);
+        if (createDataList.size() > 0) {
+            iYbAppealSumdeptDataService.saveBatch(createDataList);
         }
+    }
 
-        @Override
-        public YbAppealSumdept findAppealSumdept(YbAppealSumdept appealSumdept) {
-                LambdaQueryWrapper<YbAppealSumdept> wrapper = new LambdaQueryWrapper<>();
-                wrapper.eq(YbAppealSumdept::getIsDeletemark,1);
-                if(appealSumdept.getId() != null){
-                        wrapper.eq(YbAppealSumdept::getId,appealSumdept.getId());
-                }
-                if(appealSumdept.getAsCode() != null){
-                        wrapper.eq(YbAppealSumdept::getAsCode,appealSumdept.getAsCode());
-                }
-                if(appealSumdept.getAsName() != null){
-                        wrapper.eq(YbAppealSumdept::getAsName,appealSumdept.getAsName());
-                }
-                List<YbAppealSumdept> list = this.baseMapper.selectList(wrapper);
-                if(list.size()>0) {
-                        return list.get(0);
-                }else{
-                        return null;
-                }
+    @Override
+    public YbAppealSumdept findAppealSumdept(YbAppealSumdept appealSumdept) {
+        LambdaQueryWrapper<YbAppealSumdept> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(YbAppealSumdept::getIsDeletemark, 1);
+        if (appealSumdept.getId() != null) {
+            wrapper.eq(YbAppealSumdept::getId, appealSumdept.getId());
         }
+        if (appealSumdept.getAsCode() != null) {
+            wrapper.eq(YbAppealSumdept::getAsCode, appealSumdept.getAsCode());
+        }
+        if (appealSumdept.getAsName() != null) {
+            wrapper.eq(YbAppealSumdept::getAsName, appealSumdept.getAsName());
+        }
+        List<YbAppealSumdept> list = this.baseMapper.selectList(wrapper);
+        if (list.size() > 0) {
+            return list.get(0);
+        } else {
+            return null;
+        }
+    }
 
 
 }

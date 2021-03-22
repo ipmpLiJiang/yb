@@ -178,6 +178,7 @@ export default {
       previewImage: '',
       isShow: false,
       fileList: [],
+      user: this.$store.state.account.user,
       form: this.$form.createForm(this)
     }
   },
@@ -222,6 +223,7 @@ export default {
       formData.append('sourceType', this.ybAppealManageUpload.sourceType)
       formData.append('typeno', this.ybAppealManageUpload.typeno)
       formData.append('isCheck', 1)
+      formData.append('areaType', this.user.areaType)
       this.uploading = true
       let that = this
       this.$upload('comFile/uploadImg', formData).then((r) => {
@@ -248,6 +250,7 @@ export default {
       formData.applyDateStr = this.ybAppealManageUpload.applyDateStr
       formData.sourceType = this.ybAppealManageUpload.sourceType
       formData.serName = file.serName
+      formData.areaType = this.user.areaType
       this.$post('comFile/deleteImg', {
         ...formData
       }).then((r) => {
@@ -406,7 +409,7 @@ export default {
     findFileList (id) {
       let formData = {}
       formData.id = id
-      formData.deptName = this.ybAppealManageUpload.readyDeptName
+      formData.deptId = this.ybAppealManageUpload.readyDeptCode
       formData.applyDateStr = this.ybAppealManageUpload.applyDateStr
       formData.sourceType = this.ybAppealManageUpload.sourceType
       this.$post('comFile/listImgComFile', {

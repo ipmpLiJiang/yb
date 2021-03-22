@@ -21,11 +21,12 @@
                     <result column="CREATE_TIME" property="createTime"/>
                     <result column="CREATE_USER_ID" property="createUserId"/>
                     <result column="MODIFY_USER_ID" property="modifyUserId"/>
+            <result column="areaType" property="areaType"/>
         </resultMap>
 
         <!-- 通用查询结果列 -->
         <sql id="Base_Column_List">
-        id, applyDateStr, dataType,typeno, startNum, endNum, totalRow, currentPage, pageSize, totalPage, COMMENTS, STATE, IS_DELETEMARK, MODIFY_TIME, CREATE_TIME, CREATE_USER_ID, MODIFY_USER_ID
+        id, applyDateStr, dataType,typeno, startNum, endNum, totalRow, currentPage, pageSize, totalPage, COMMENTS, STATE, IS_DELETEMARK, MODIFY_TIME, CREATE_TIME, CREATE_USER_ID, MODIFY_USER_ID,areaType
     </sql>
     <update id="updateYbReconsiderApplyTask" parameterType="cc.mrbird.febs.yb.entity.YbReconsiderApplyTask">
         update yb_reconsider_apply_task
@@ -46,6 +47,7 @@
 <if test="createTime != null">CREATE_TIME=#{createTime},</if>
 <if test="createUserId != null">CREATE_USER_ID=#{createUserId},</if>
 <if test="modifyUserId != null">MODIFY_USER_ID=#{modifyUserId},</if>
+            <if test="areaType != null">areaType=#{areaType},</if>
         </trim>
                 where id=#{id}
 
@@ -78,6 +80,7 @@
         <if test="ybReconsiderApplyTask.createTimeTo!= null">
             AND ybReconsiderApplyTask.CREATE_TIME <![CDATA[ <= ]]>  createTimeTo}
         </if>
+        <if test="ybReconsiderApplyTask.areaType != null">and ybReconsiderApplyTask.areaType =#{ ybReconsiderApplyTask.areaType}</if>
 </select>
 
 </mapper>

@@ -779,4 +779,20 @@ public class YbAppealResultViewController extends BaseController {
         }
         return new FebsResponse().data(result);
     }
+
+    @GetMapping("fileDownLoadSumList")
+    //@RequiresPermissions("ybAppealResultView:view")
+    public FebsResponse fileDownLoadSumList(YbAppealResultView ybAppealResultView) {
+        List<YbAppealResultDownLoad> list = this.iYbAppealResultViewService.findAppealResultDownLoadSumList(ybAppealResultView);
+        Map<String, Object> result = new HashMap<>();
+        if (list.size() > 0) {
+            result.put("data", list);
+            result.put("success", 1);
+        } else {
+            result.put("data", null);
+            result.put("error", "无数据");
+            result.put("success", 1);
+        }
+        return new FebsResponse().data(result);
+    }
 }

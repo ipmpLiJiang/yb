@@ -237,7 +237,7 @@ export default {
     findFileList (ybAppealManageLook) {
       let formData = {}
       formData.id = ybAppealManageLook.id
-      formData.deptName = ybAppealManageLook.readyDeptName
+      formData.deptId = ybAppealManageLook.readyDeptCode
       formData.applyDateStr = ybAppealManageLook.applyDateStr
       formData.sourceType = ybAppealManageLook.sourceType
       this.$post('comFile/listImgComFile', {

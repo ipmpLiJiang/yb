@@ -92,37 +92,35 @@ public class YbAppealManageViewServiceImpl extends ServiceImpl<YbAppealManageVie
                 return page;
             }*/
 
-            YbReconsiderApply reconsiderApply = iYbReconsiderApplyService.findReconsiderApplyByApplyDateStrs(ybAppealManageView.getApplyDateStr());
+            YbReconsiderApply reconsiderApply = iYbReconsiderApplyService.findReconsiderApplyByApplyDateStrs(ybAppealManageView.getApplyDateStr(),ybAppealManageView.getAreaType());
             Page<YbAppealManageView> page = new Page<>();
             if (reconsiderApply != null) {
                 ybAppealManageView.setPid(reconsiderApply.getId());
                 boolean isLike = false;
-                if(ybAppealManageView.getCurrencyField() != null && ybAppealManageView.getCurrencyField() !=""){
+                if (ybAppealManageView.getCurrencyField() != null && ybAppealManageView.getCurrencyField() != "") {
                     isLike = true;
                 }
                 int count = 0;
-                if(isLike){
-                    count = this.baseMapper.findAppealManageLikeCount(ybAppealManageView);
-                }else {
-                    count = this.baseMapper.findAppealManageCount(ybAppealManageView);
+                if (isLike) {
+                    count = this.baseMapper.findAppealManageLikeCount(ybAppealManageView, null);
+                } else {
+                    count = this.baseMapper.findAppealManageCount(ybAppealManageView, null);
                 }
                 if (count > 0) {
                     page.setSearchCount(false);
                     SortUtil.handlePageSort(request, page, false);//true 是属性  false是数据库字段可两个
                     IPage<YbAppealManageView> pg = null;
-                    if(isLike){
-                        pg = this.baseMapper.findAppealManageLikeView(page, ybAppealManageView);
-                    }else {
-                        pg = this.baseMapper.findAppealManageView(page, ybAppealManageView);
+                    if (isLike) {
+                        pg = this.baseMapper.findAppealManageLikeView(page, ybAppealManageView, null);
+                    } else {
+                        pg = this.baseMapper.findAppealManageView(page, ybAppealManageView, null);
                     }
                     pg.setTotal(count);
                     return pg;
-                } else {
-                    return page;
                 }
-            } else {
-                return page;
             }
+            return page;
+
         } catch (Exception e) {
             log.error("获取字典信息失败", e);
             return null;
@@ -171,37 +169,35 @@ public class YbAppealManageViewServiceImpl extends ServiceImpl<YbAppealManageVie
             } else {
                 return page;
             }*/
-            YbReconsiderApply reconsiderApply = iYbReconsiderApplyService.findReconsiderApplyByApplyDateStrs(ybAppealManageView.getApplyDateStr());
+            YbReconsiderApply reconsiderApply = iYbReconsiderApplyService.findReconsiderApplyByApplyDateStrs(ybAppealManageView.getApplyDateStr(),ybAppealManageView.getAreaType());
             Page<YbAppealManageView> page = new Page<>();
             if (reconsiderApply != null) {
                 ybAppealManageView.setPid(reconsiderApply.getId());
                 boolean isLike = false;
-                if(ybAppealManageView.getCurrencyField() != null && ybAppealManageView.getCurrencyField() !=""){
+                if (ybAppealManageView.getCurrencyField() != null && ybAppealManageView.getCurrencyField() != "") {
                     isLike = true;
                 }
                 int count = 0;
-                if(isLike){
-                    count = this.baseMapper.findAppealManageLikeCount(ybAppealManageView);
-                }else {
-                    count = this.baseMapper.findAppealManageCount(ybAppealManageView);
+                if (isLike) {
+                    count = this.baseMapper.findAppealManageLikeCount(ybAppealManageView, null);
+                } else {
+                    count = this.baseMapper.findAppealManageCount(ybAppealManageView, null);
                 }
                 if (count > 0) {
                     page.setSearchCount(false);
                     SortUtil.handlePageSort(request, page, false);//true 是属性  false是数据库字段可两个
                     IPage<YbAppealManageView> pg = null;
-                    if(isLike){
-                        pg = this.baseMapper.findAppealManageLikeView(page, ybAppealManageView);
-                    }else {
-                        pg = this.baseMapper.findAppealManageView(page, ybAppealManageView);
+                    if (isLike) {
+                        pg = this.baseMapper.findAppealManageLikeView(page, ybAppealManageView, null);
+                    } else {
+                        pg = this.baseMapper.findAppealManageView(page, ybAppealManageView, null);
                     }
                     pg.setTotal(count);
                     return pg;
-                } else {
-                    return page;
                 }
-            }else{
-                return page;
             }
+            return page;
+
         } catch (Exception e) {
             log.error("获取字典信息失败", e);
             return null;
@@ -251,38 +247,36 @@ public class YbAppealManageViewServiceImpl extends ServiceImpl<YbAppealManageVie
             } else {
                 return page;
             }*/
-            YbReconsiderApply reconsiderApply = iYbReconsiderApplyService.findReconsiderApplyByApplyDateStrs(ybAppealManageView.getApplyDateStr());
+            YbReconsiderApply reconsiderApply = iYbReconsiderApplyService.findReconsiderApplyByApplyDateStrs(ybAppealManageView.getApplyDateStr(),ybAppealManageView.getAreaType());
             Page<YbAppealManageView> page = new Page<>();
             if (reconsiderApply != null) {
                 ybAppealManageView.setPid(reconsiderApply.getId());
+//                未完成
                 ybAppealManageView.setReadyDeptName("手术室");
                 boolean isLike = false;
-                if(ybAppealManageView.getCurrencyField() != null && ybAppealManageView.getCurrencyField() !=""){
+                if (ybAppealManageView.getCurrencyField() != null && ybAppealManageView.getCurrencyField() != "") {
                     isLike = true;
                 }
                 int count = 0;
-                if(isLike){
-                    count = this.baseMapper.findAppealManageLikeCount(ybAppealManageView);
-                }else {
-                    count = this.baseMapper.findAppealManageCount(ybAppealManageView);
+                if (isLike) {
+                    count = this.baseMapper.findAppealManageLikeCount(ybAppealManageView, null);
+                } else {
+                    count = this.baseMapper.findAppealManageCount(ybAppealManageView, null);
                 }
                 if (count > 0) {
                     page.setSearchCount(false);
                     SortUtil.handlePageSort(request, page, false);//true 是属性  false是数据库字段可两个
                     IPage<YbAppealManageView> pg = null;
-                    if(isLike){
-                        pg = this.baseMapper.findAppealManageLikeView(page, ybAppealManageView);
-                    }else {
-                        pg = this.baseMapper.findAppealManageView(page, ybAppealManageView);
+                    if (isLike) {
+                        pg = this.baseMapper.findAppealManageLikeView(page, ybAppealManageView, null);
+                    } else {
+                        pg = this.baseMapper.findAppealManageView(page, ybAppealManageView, null);
                     }
                     pg.setTotal(count);
                     return pg;
-                } else {
-                    return page;
                 }
-            }else{
-                return page;
             }
+            return page;
         } catch (Exception e) {
             log.error("获取字典信息失败", e);
             return null;
@@ -292,6 +286,7 @@ public class YbAppealManageViewServiceImpl extends ServiceImpl<YbAppealManageVie
     @Override
     public IPage<YbAppealManageView> findAppealManageConfireViews(QueryRequest request, YbAppealManageView ybAppealManageView, User currentUser) {
         try {
+            /*
             Page<YbAppealManageView> page = new Page<>();
             YbReconsiderApply reconsiderApply = iYbReconsiderApplyService.findReconsiderApplyByApplyDateStrs(ybAppealManageView.getApplyDateStr());
             if (reconsiderApply != null) {
@@ -346,7 +341,39 @@ public class YbAppealManageViewServiceImpl extends ServiceImpl<YbAppealManageVie
                 }
             } else {
                 return page;
+            }*/
+            YbReconsiderApply reconsiderApply = iYbReconsiderApplyService.findReconsiderApplyByApplyDateStrs(ybAppealManageView.getApplyDateStr(),ybAppealManageView.getAreaType());
+            Page<YbAppealManageView> page = new Page<>();
+            if (reconsiderApply != null) {
+                List<YbAppealConfireData> acdlist = iYbAppealConfireDataService.findAppealConfireDataByInDoctorCodeList(currentUser.getUsername());
+                if (acdlist.size() > 0) {
+                    String appealConfireId = acdlist.get(0).getPid();
+                    ybAppealManageView.setPid(reconsiderApply.getId());
+                    boolean isLike = false;
+                    if (ybAppealManageView.getCurrencyField() != null && ybAppealManageView.getCurrencyField() != "") {
+                        isLike = true;
+                    }
+                    int count = 0;
+                    if (isLike) {
+                        count = this.baseMapper.findAppealManageLikeCount(ybAppealManageView, appealConfireId);
+                    } else {
+                        count = this.baseMapper.findAppealManageCount(ybAppealManageView, appealConfireId);
+                    }
+                    if (count > 0) {
+                        page.setSearchCount(false);
+                        SortUtil.handlePageSort(request, page, false);//true 是属性  false是数据库字段可两个
+                        IPage<YbAppealManageView> pg = null;
+                        if (isLike) {
+                            pg = this.baseMapper.findAppealManageLikeView(page, ybAppealManageView, appealConfireId);
+                        } else {
+                            pg = this.baseMapper.findAppealManageView(page, ybAppealManageView, appealConfireId);
+                        }
+                        pg.setTotal(count);
+                        return pg;
+                    }
+                }
             }
+            return page;
         } catch (Exception e) {
             log.error("获取字典信息失败", e);
             return null;
@@ -390,7 +417,7 @@ public class YbAppealManageViewServiceImpl extends ServiceImpl<YbAppealManageVie
             }
             return this.list(wrapper);
              */
-            return  this.baseMapper.findAppealManageList(ybAppealManageView);
+            return this.baseMapper.findAppealManageList(ybAppealManageView);
         } else {
             return list;
         }

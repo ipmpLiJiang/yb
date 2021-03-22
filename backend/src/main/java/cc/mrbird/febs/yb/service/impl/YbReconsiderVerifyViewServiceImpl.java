@@ -44,7 +44,7 @@ public class YbReconsiderVerifyViewServiceImpl extends ServiceImpl<YbReconsiderV
     public IPage<YbReconsiderVerifyView> findYbReconsiderVerifyViews(QueryRequest request, YbReconsiderVerifyView ybReconsiderVerifyView) {
         try {
             Page<YbReconsiderVerifyView> page = new Page<>();
-            YbReconsiderApply reconsiderApply = iYbReconsiderApplyService.findReconsiderApplyByApplyDateStrs(ybReconsiderVerifyView.getApplyDateStr());
+            YbReconsiderApply reconsiderApply = iYbReconsiderApplyService.findReconsiderApplyByApplyDateStrs(ybReconsiderVerifyView.getApplyDateStr(),ybReconsiderVerifyView.getAreaType());
             if (reconsiderApply != null) {
                 /*
                 LambdaQueryWrapper<YbReconsiderVerifyView> queryWrapper = new LambdaQueryWrapper<>();
@@ -89,7 +89,7 @@ public class YbReconsiderVerifyViewServiceImpl extends ServiceImpl<YbReconsiderV
     public IPage<YbReconsiderVerifyView> findYbReconsiderVerifyViews(QueryRequest request, YbReconsiderVerifyView ybReconsiderVerifyView, String[] searchType) {
         try {
             Page<YbReconsiderVerifyView> page = new Page<>();
-            YbReconsiderApply reconsiderApply = iYbReconsiderApplyService.findReconsiderApplyByApplyDateStrs(ybReconsiderVerifyView.getApplyDateStr());
+            YbReconsiderApply reconsiderApply = iYbReconsiderApplyService.findReconsiderApplyByApplyDateStrs(ybReconsiderVerifyView.getApplyDateStr(),ybReconsiderVerifyView.getAreaType());
             if (reconsiderApply != null) {
                 /*
                 LambdaQueryWrapper<YbReconsiderVerifyView> queryWrapper = new LambdaQueryWrapper<>();
@@ -214,7 +214,7 @@ public class YbReconsiderVerifyViewServiceImpl extends ServiceImpl<YbReconsiderV
     public IPage<YbReconsiderVerifyView> findYbReconsiderVerifyViewNulls(QueryRequest request, YbReconsiderVerifyView ybReconsiderVerifyView, String[] searchType) {
         try {
             Page<YbReconsiderVerifyView> page = new Page<>();
-            YbReconsiderApply reconsiderApply = iYbReconsiderApplyService.findReconsiderApplyByApplyDateStrs(ybReconsiderVerifyView.getApplyDateStr());
+            YbReconsiderApply reconsiderApply = iYbReconsiderApplyService.findReconsiderApplyByApplyDateStrs(ybReconsiderVerifyView.getApplyDateStr(),ybReconsiderVerifyView.getAreaType());
             if (reconsiderApply != null) {
                 ybReconsiderVerifyView.setPid(reconsiderApply.getId());
                 int applyState = reconsiderApply.getState();
@@ -225,6 +225,7 @@ public class YbReconsiderVerifyViewServiceImpl extends ServiceImpl<YbReconsiderV
                     rvvQv.setApplyDateStr(reconsiderApply.getApplyDateStr());
                     rvvQv.setPid(reconsiderApply.getId());
                     rvvQv.setDataType(ybReconsiderVerifyView.getDataType());
+                    rvvQv.setAreaType(ybReconsiderVerifyView.getAreaType());
                     rvvQv.setTypeno(typeno);
                     int count = this.findReconsiderVerifyApplyDateCounts(rvvQv);
                     if (count > 0) {

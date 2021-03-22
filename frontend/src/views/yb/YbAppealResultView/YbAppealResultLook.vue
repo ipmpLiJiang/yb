@@ -120,6 +120,7 @@ export default {
       previewVisible: false,
       previewImage: '',
       showDownLoad: true,
+      user: this.$store.state.account.user,
       ybAppealResult: {}
     }
   },
@@ -153,12 +154,13 @@ export default {
     downloadFile () {
       let formData = {}
       formData.id = this.ybAppealResult.id
+      formData.deptId = this.ybAppealResult.arDeptCode
       formData.deptName = this.ybAppealResult.arDeptName
       formData.applyDateStr = this.ybAppealResult.applyDateStr
       formData.typeno = this.ybAppealResult.typeno
       formData.sourceType = this.ybAppealResult.sourceType
       formData.fileName = formData.applyDateStr + formData.deptName + '-' + this.ybAppealResult.typeno
-
+      formData.areaType = this.user.areaType
       this.$download('comFile/fileImgZip', {
         ...formData
       }, formData.fileName + '.zip')
@@ -166,7 +168,7 @@ export default {
     findFileList (ybAppealResult) {
       let formData = {}
       formData.id = ybAppealResult.id
-      formData.deptName = ybAppealResult.arDeptName
+      formData.deptId = ybAppealResult.arDeptCode
       formData.applyDateStr = ybAppealResult.applyDateStr
       formData.sourceType = ybAppealResult.sourceType
       this.$post('comFile/listImgComFile', {

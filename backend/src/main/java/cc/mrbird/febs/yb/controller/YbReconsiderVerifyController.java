@@ -156,10 +156,10 @@ public class YbReconsiderVerifyController extends BaseController {
 
     @PostMapping("importReconsiderVerify")
     @RequiresPermissions("ybReconsiderVerify:addImport")
-    public void importReconsiderVerifys(String applyDate) throws FebsException {
+    public void importReconsiderVerifys(String applyDate, Integer areaType) throws FebsException {
         try {
             User currentUser = FebsUtil.getCurrentUser();
-            this.iYbReconsiderVerifyService.insertReconsiderVerifyImports(applyDate, currentUser.getUserId(), currentUser.getUsername());
+            this.iYbReconsiderVerifyService.insertReconsiderVerifyImports(applyDate,areaType, currentUser.getUserId(), currentUser.getUsername());
         } catch (Exception e) {
             message = "匹配失败";
             log.error(message, e);
@@ -169,10 +169,10 @@ public class YbReconsiderVerifyController extends BaseController {
 
     @PostMapping("importMainReconsiderVerify")
     @RequiresPermissions("ybReconsiderVerify:addImport")
-    public void importMainReconsiderVerifys(String applyDate) throws FebsException {
+    public void importMainReconsiderVerifys(String applyDate, Integer areaType) throws FebsException {
         try {
             User currentUser = FebsUtil.getCurrentUser();
-            this.iYbReconsiderVerifyService.insertMainReconsiderVerifyImports(applyDate, currentUser.getUserId(), currentUser.getUsername());
+            this.iYbReconsiderVerifyService.insertMainReconsiderVerifyImports(applyDate,areaType, currentUser.getUserId(), currentUser.getUsername());
         } catch (Exception e) {
             message = "匹配失败";
             log.error(message, e);
@@ -201,7 +201,7 @@ public class YbReconsiderVerifyController extends BaseController {
     @Log("修改")
     @PutMapping("updateSendState")
     @RequiresPermissions("ybReconsiderVerify:stateUpdate")
-    public void updateSendState(String dataJson, Integer dataType) throws FebsException {
+    public void updateSendState(String dataJson, Integer areaType,Integer dataType) throws FebsException {
         try {
             User currentUser = FebsUtil.getCurrentUser();
             Long uid = currentUser.getUserId();
@@ -210,7 +210,7 @@ public class YbReconsiderVerifyController extends BaseController {
             List<YbReconsiderVerify> list = JSON.parseObject(dataJson, new TypeReference<List<YbReconsiderVerify>>() {
             });
 
-            this.iYbReconsiderVerifyService.updateSendStates(list, dataType, uid, uname);
+            this.iYbReconsiderVerifyService.updateSendStates(list,areaType, dataType, uid, uname);
         } catch (Exception e) {
             message = "发送失败";
             log.error(message, e);
@@ -221,13 +221,13 @@ public class YbReconsiderVerifyController extends BaseController {
     @Log("修改")
     @PutMapping("updateASendState")
     @RequiresPermissions("ybReconsiderVerify:stateUpdate")
-    public void updateASendState(String applyDateStr, Integer state, Integer dataType) throws FebsException {
+    public void updateASendState(String applyDateStr,Integer areaType, Integer state, Integer dataType) throws FebsException {
         try {
             User currentUser = FebsUtil.getCurrentUser();
             Long uid = currentUser.getUserId();
             String uname = currentUser.getUsername();
 
-            this.iYbReconsiderVerifyService.updateAllSendStates(applyDateStr, state, dataType, uid, uname);
+            this.iYbReconsiderVerifyService.updateAllSendStates(applyDateStr,areaType, state, dataType, uid, uname);
         } catch (Exception e) {
             message = "发送失败";
             log.error(message, e);
@@ -258,13 +258,13 @@ public class YbReconsiderVerifyController extends BaseController {
     @Log("修改")
     @PutMapping("updateAReviewerState")
     @RequiresPermissions("ybReconsiderVerify:stateUpdate")
-    public void updateAReviewerState(String applyDateStr, Integer state, Integer dataType) throws FebsException {
+    public void updateAReviewerState(String applyDateStr,Integer areaType, Integer state, Integer dataType) throws FebsException {
         try {
             User currentUser = FebsUtil.getCurrentUser();
             Long uid = currentUser.getUserId();
             String uname = currentUser.getUsername();
 
-            this.iYbReconsiderVerifyService.updateAllReviewerStates(applyDateStr, state, dataType, uid, uname);
+            this.iYbReconsiderVerifyService.updateAllReviewerStates(applyDateStr,areaType, state, dataType, uid, uname);
         } catch (Exception e) {
             message = "核对审核失败";
             log.error(message, e);
@@ -274,14 +274,14 @@ public class YbReconsiderVerifyController extends BaseController {
 
     @PostMapping("importReconsiderDataVerify")
     @RequiresPermissions("ybReconsiderVerify:addImport")
-    public FebsResponse importReconsiderApplyData(@RequestParam MultipartFile file, @RequestParam String applyDateStr, @RequestParam Integer dataType) {
+    public FebsResponse importReconsiderApplyData(@RequestParam MultipartFile file, @RequestParam String applyDateStr, @RequestParam Integer areaType, @RequestParam Integer dataType) {
         int success = 0;
         String uploadFileName = "";
         String ssm = "";
         if (file.isEmpty()) {
             message = "空文件";
         } else {
-            YbReconsiderApply reconsiderApply = iYbReconsiderApplyService.findReconsiderApplyByApplyDateStrs(applyDateStr);
+            YbReconsiderApply reconsiderApply = iYbReconsiderApplyService.findReconsiderApplyByApplyDateStrs(applyDateStr,areaType);
 
             if (reconsiderApply != null) {
                 int state = reconsiderApply.getState();
@@ -293,6 +293,7 @@ public class YbReconsiderVerifyController extends BaseController {
                     wrapper.eq(YbReconsiderApplyData::getPid, reconsiderApply.getId());
                     wrapper.eq(YbReconsiderApplyData::getTypeno, typeno);
                     wrapper.eq(YbReconsiderApplyData::getDataType, dataType);
+                    wrapper.eq(YbReconsiderApplyData::getAreaType, areaType);
                     List<YbReconsiderApplyData> applyDataList = this.iYbReconsiderApplyDataService.list(wrapper);
 
                     if (applyDataList.size() > 0) {
@@ -333,9 +334,10 @@ public class YbReconsiderVerifyController extends BaseController {
                                                 queryRif.setApplyDateStr(applyDateStr);
                                                 queryRif.setDataType(dataType);
                                                 queryRif.setTypeno(typeno);
+                                                queryRif.setAreaType(areaType);
                                                 List<YbReconsiderInpatientfees> rifList = this.iYbReconsiderInpatientfeesService.findReconsiderInpatientfeesList(queryRif);
                                                 for (int i = 1; i < objMx.size(); i++) {
-                                                    YbReconsiderVerify rv = this.getReconsiderVerify(objMx, i, applyDateStr, currentUser, dataType, applyDataList, rifList);
+                                                    YbReconsiderVerify rv = this.getReconsiderVerify(objMx, i, applyDateStr,areaType, currentUser, dataType, applyDataList, rifList);
                                                     if (rv != null) {
                                                         verifyList.add(rv);
                                                     }
@@ -348,7 +350,7 @@ public class YbReconsiderVerifyController extends BaseController {
                                         if (objZd.size() > 1) {
                                             if (objZd.get(0).length >= 22) {
                                                 for (int i = 1; i < objZd.size(); i++) {
-                                                    YbReconsiderVerify rv = this.getReconsiderVerify(objZd, i, applyDateStr, currentUser, dataType, applyDataList, null);
+                                                    YbReconsiderVerify rv = this.getReconsiderVerify(objZd, i, applyDateStr,areaType, currentUser, dataType, applyDataList, null);
                                                     if (rv != null) {
                                                         verifyList.add(rv);
                                                     }
@@ -408,7 +410,7 @@ public class YbReconsiderVerifyController extends BaseController {
         return new FebsResponse().data(rrd);
     }
 
-    private YbReconsiderVerify getReconsiderVerify(List<Object[]> obj, int i, String applyDateStr,
+    private YbReconsiderVerify getReconsiderVerify(List<Object[]> obj, int i, String applyDateStr,int areaType,
                                                    User currentUser, int dataType, List<YbReconsiderApplyData> applyDataList,
                                                    List<YbReconsiderInpatientfees> rifList) {
         YbReconsiderVerify ybReconsiderVerify = null;
@@ -483,6 +485,7 @@ public class YbReconsiderVerifyController extends BaseController {
                     ybReconsiderVerify.setOrderDeptName(strOrderDeptName);
                     ybReconsiderVerify.setOrderDoctorCode(strOrderDoctorCode);
                     ybReconsiderVerify.setOrderDoctorName(strOrderDoctorName);
+                    ybReconsiderVerify.setAreaType(areaType);
 
                     ybReconsiderVerify.setState(YbDefaultValue.VERIFYSTATE_1);//1 待审核、2已审核、3已发送
                     ybReconsiderVerify.setIsDeletemark(1);

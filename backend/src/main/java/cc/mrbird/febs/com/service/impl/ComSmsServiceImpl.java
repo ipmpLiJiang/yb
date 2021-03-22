@@ -289,7 +289,7 @@ public class ComSmsServiceImpl extends ServiceImpl<ComSmsMapper, ComSms> impleme
         if (list.size() > 0 && isOpenSms) {
             List<ComSms> sendList = new ArrayList<>();
             ComSms t1 = list.get(0);
-            sendList = list.stream().filter(s -> s.getSendType() == t1.getSendType()).collect(Collectors.toList());
+            sendList = list.stream().filter(s -> s.getSendType() == t1.getSendType() && s.getSendcontent().equals(t1.getSendcontent())).collect(Collectors.toList());
             String mobiles = "";
             List<String> mobList = new ArrayList<>();
             if (sendList.size() > 0) {

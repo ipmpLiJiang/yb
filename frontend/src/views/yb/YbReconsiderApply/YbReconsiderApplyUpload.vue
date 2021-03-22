@@ -151,6 +151,7 @@ export default {
       spinning: false,
       delayTime: 500,
       uploadFileName: '',
+      user: this.$store.state.account.user,
       searchApplyDate: this.formatDate()
     }
   },
@@ -170,7 +171,8 @@ export default {
     },
     startUp () {
       this.$put('ybReconsiderApply/startJob', {
-        applyDateStr: this.ybReconsiderApply.applyDateStr
+        applyDateStr: this.ybReconsiderApply.applyDateStr,
+        areaType: this.ybReconsiderApply.areaType
       }).then((r) => {
         if (r.data.data.success === 1) {
           this.$message.success('启动Job成功')
@@ -285,7 +287,7 @@ export default {
       formData.append('file', file)
       formData.append('pid', this.ybReconsiderApply.id)
       formData.append('typeno', this.typeno)
-
+      formData.append('areaType', this.ybReconsiderApply.areaType)
       this.$upload('ybReconsiderApplyData/importReconsiderApplyData', formData).then((r) => {
         if (r.data.data.success === 1) {
           this.uploadFileName = r.data.data.fileName

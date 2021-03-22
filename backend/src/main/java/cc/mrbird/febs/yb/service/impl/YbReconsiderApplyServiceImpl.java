@@ -1,6 +1,7 @@
 package cc.mrbird.febs.yb.service.impl;
 
 import cc.mrbird.febs.com.controller.DataTypeHelpers;
+import cc.mrbird.febs.com.entity.ComConfiguremanage;
 import cc.mrbird.febs.com.service.IComConfiguremanageService;
 import cc.mrbird.febs.common.domain.QueryRequest;
 import cc.mrbird.febs.common.properties.FebsProperties;
@@ -30,6 +31,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -56,12 +58,15 @@ public class YbReconsiderApplyServiceImpl extends ServiceImpl<YbReconsiderApplyM
     @Autowired
     FebsProperties febsProperties;
 
+    @Autowired
+    IComConfiguremanageService iComConfiguremanageService;
+
     @Override
     public IPage<YbReconsiderApply> findYbReconsiderApplys(QueryRequest request, YbReconsiderApply ybReconsiderApply) {
         try {
             LambdaQueryWrapper<YbReconsiderApply> queryWrapper = new LambdaQueryWrapper<>();
             queryWrapper.eq(YbReconsiderApply::getIsDeletemark, 1);//1是未删 0是已删
-
+            queryWrapper.eq(YbReconsiderApply::getAreaType, ybReconsiderApply.getAreaType());
             if (StringUtils.isNotBlank(ybReconsiderApply.getCreateTimeFrom()) && StringUtils.isNotBlank(ybReconsiderApply.getCreateTimeTo())) {
                 queryWrapper
                         .ge(YbReconsiderApply::getCreateTime, ybReconsiderApply.getCreateTimeFrom())
@@ -104,7 +109,7 @@ public class YbReconsiderApplyServiceImpl extends ServiceImpl<YbReconsiderApplyM
     @Transactional
     public String createReconsiderApplyCheck(YbReconsiderApply ybReconsiderApply) {
         String message = "";
-        YbReconsiderApply reconsiderApply = this.findReconsiderApplyByApplyDateStrs(ybReconsiderApply.getApplyDateStr());
+        YbReconsiderApply reconsiderApply = this.findReconsiderApplyByApplyDateStrs(ybReconsiderApply.getApplyDateStr(), ybReconsiderApply.getAreaType());
         if (reconsiderApply == null) {
             ybReconsiderApply.setCreateTime(new Date());
             if (ybReconsiderApply.getId() == null || "".equals(ybReconsiderApply.getId())) {
@@ -116,7 +121,16 @@ public class YbReconsiderApplyServiceImpl extends ServiceImpl<YbReconsiderApplyM
                 message = "ok";
             }
         } else {
-            message = "该年月 " + ybReconsiderApply.getApplyDateStr() + " 已创建过复议申请记录";
+            List<Integer> atList = new ArrayList<>();
+            atList.add(5);
+            List<ComConfiguremanage> ccsList = iComConfiguremanageService.getConfigLists(atList);
+            if (ccsList.size() > 0) {
+                ccsList = ccsList.stream().filter(s->s.getIntField().equals(ybReconsiderApply.getAreaType())).collect(Collectors.toList());
+                message = ccsList.get(0).getStringField() + " 该年月 " + ybReconsiderApply.getApplyDateStr() + " 已创建过复议申请记录";
+            } else {
+                message = "该年月 " + ybReconsiderApply.getApplyDateStr() + " 已创建过复议申请记录";
+            }
+
         }
         return message;
     }
@@ -204,9 +218,9 @@ public class YbReconsiderApplyServiceImpl extends ServiceImpl<YbReconsiderApplyM
 
     @Override
     @Transactional
-    public boolean updateYbReconsiderApplyState(String applyDateStr, Integer state) {
+    public boolean updateYbReconsiderApplyState(String applyDateStr, Integer areaType, Integer state) {
         boolean bl = false;
-        YbReconsiderApply reconsiderApply = this.findReconsiderApplyByApplyDateStrs(applyDateStr);
+        YbReconsiderApply reconsiderApply = this.findReconsiderApplyByApplyDateStrs(applyDateStr, areaType);
         if (reconsiderApply != null) {
             YbReconsiderApply update = new YbReconsiderApply();
             update.setId(reconsiderApply.getId());
@@ -248,13 +262,13 @@ public class YbReconsiderApplyServiceImpl extends ServiceImpl<YbReconsiderApplyM
     }
 
     @Override
-    public YbReconsiderApply findReconsiderApplyByApplyDateStrs(String appltDateStr) {
-        return this.baseMapper.findReconsiderApplyByApplyDateStr(appltDateStr);
+    public YbReconsiderApply findReconsiderApplyByApplyDateStrs(String appltDateStr, Integer areaType) {
+        return this.baseMapper.findReconsiderApplyByApplyDateStr(appltDateStr, areaType);
     }
 
     @Override
-    public boolean findReconsiderApplyCheckEndDate(String appltDateStr, int typeno) {
-        YbReconsiderApply reconsiderApply = this.findReconsiderApplyByApplyDateStrs(appltDateStr);
+    public boolean findReconsiderApplyCheckEndDate(String appltDateStr, Integer areaType, int typeno) {
+        YbReconsiderApply reconsiderApply = this.findReconsiderApplyByApplyDateStrs(appltDateStr, areaType);
         boolean isUpdate = false;
         Date thisDate = new Date();
         Date compareDate = new Date();
@@ -280,6 +294,7 @@ public class YbReconsiderApplyServiceImpl extends ServiceImpl<YbReconsiderApplyM
         queryAppealManage.setAcceptState(YbDefaultValue.ACCEPTSTATE_7);
         queryAppealManage.setApplyDateStr(yra.getApplyDateStr());
         queryAppealManage.setPid(yra.getId());
+        queryAppealManage.setAreaType(ybReconsiderApply.getAreaType());
 
         SimpleDateFormat f = new SimpleDateFormat("yyyy-MM-dd");
         Date aEndDateOne = null;
@@ -320,9 +335,9 @@ public class YbReconsiderApplyServiceImpl extends ServiceImpl<YbReconsiderApplyM
     }
 
     @Override
-    public String createJobState(String applyDateStr) {
+    public String createJobState(String applyDateStr, Integer areaType) {
         String msg = "";
-        YbReconsiderApply ybReconsiderApply = this.findReconsiderApplyByApplyDateStrs(applyDateStr);
+        YbReconsiderApply ybReconsiderApply = this.findReconsiderApplyByApplyDateStrs(applyDateStr, areaType);
         boolean isTrue = false;
         //无任务并且状态是上传一
         if (ybReconsiderApply.getTaskState() == YbReconsiderApply.TASK_STATE_0 && ybReconsiderApply.getState() == YbDefaultValue.APPLYSTATE_2) {
@@ -351,7 +366,13 @@ public class YbReconsiderApplyServiceImpl extends ServiceImpl<YbReconsiderApplyM
             // Job state 0.正常    1.暂停
             Job job = new Job();
             job.setBeanName("reconsiderApplyTask");
-            job.setMethodName("applyTask");
+            if (areaType == YbDefaultValue.AREATYPE_0) {
+                job.setMethodName("applyTask");
+            } else if (areaType == YbDefaultValue.AREATYPE_1) {
+                job.setMethodName("applyTaskWest");
+            } else {
+                job.setMethodName("applyTaskOther");
+            }
             job.setParams(applyDateStr);
             //查询当前正在运行的任务
             List<Job> findList = jobService.jobList(job);
@@ -396,8 +417,8 @@ public class YbReconsiderApplyServiceImpl extends ServiceImpl<YbReconsiderApplyM
 
 
     @Override
-    public String getSendMessage(String applyDateStr, Date enableDate, int typeno, boolean isChange) {
-        YbReconsiderApply entity = this.findReconsiderApplyByApplyDateStrs(applyDateStr);
+    public String getSendMessage(String applyDateStr, Date enableDate, Integer areaType, int typeno, boolean isChange) {
+        YbReconsiderApply entity = this.findReconsiderApplyByApplyDateStrs(applyDateStr, areaType);
         Date endDate = new Date();
         SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy年MM月dd日 E HH:mm点");//HH时mm分ss秒
         SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy年MM月dd日 E");
@@ -435,15 +456,15 @@ public class YbReconsiderApplyServiceImpl extends ServiceImpl<YbReconsiderApplyM
 //        YbReconsiderApply entity = this.findReconsiderApplyByApplyDateStrs(applyDateStr);
         applyDateStr = applyDateStr.replace("-", "年");
         String wangz = febsProperties.getSmsWebsite();
-        String ssm = "武汉市医保" + applyDateStr + "月复议结果已反馈，请登录医保管理系统-复议结果查询界面进行查看。" + wangz;
-
+//        String ssm = "武汉市医保" + applyDateStr + "月复议结果已反馈，请登录医保管理系统-复议结果查询界面进行查看。" + wangz;
+        String ssm = "医保中心已反馈武汉市医保" + applyDateStr + "复议结果，请登录医保管理系统-复议结果查询界面进行查看，" + wangz + "选择时间，点搜索即可。";
         return ssm;
     }
 
     @Override
-    public int getReconsiderApplyTypeno(String applyDateStr) {
+    public int getReconsiderApplyTypeno(String applyDateStr, Integer areaType) {
         int typeno = 1;
-        YbReconsiderApply reconsiderApply = this.findReconsiderApplyByApplyDateStrs(applyDateStr);
+        YbReconsiderApply reconsiderApply = this.findReconsiderApplyByApplyDateStrs(applyDateStr, areaType);
         if (reconsiderApply != null) {
             int state = reconsiderApply.getState() != null ? reconsiderApply.getState() : 1;
             typeno = state == YbDefaultValue.APPLYSTATE_2 || state == YbDefaultValue.APPLYSTATE_3 ? YbDefaultValue.TYPENO_1 :

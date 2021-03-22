@@ -19,5 +19,8 @@ public interface YbAppealSumdeptMapper extends BaseMapper<YbAppealSumdept> {
 
     IPage<YbAppealSumdept> findYbAppealSumdept(Page page, @Param("ybAppealSumdept") YbAppealSumdept ybAppealSumdept);
 
-        IPage<YbAppealSumdept> findAppealSumdeptView(Page page, @Param("currencyField") String currencyField);
+        IPage<YbAppealSumdept> findAppealSumdeptView(Page page, @Param("ybAppealSumdept") YbAppealSumdept ybAppealSumdept);
+
+
+    int findAppealSumdeptCount( @Param("ybAppealSumdept") YbAppealSumdept ybAppealSumdept);
 }

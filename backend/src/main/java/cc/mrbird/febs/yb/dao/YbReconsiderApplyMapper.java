@@ -24,7 +24,7 @@ public interface YbReconsiderApplyMapper extends BaseMapper<YbReconsiderApply> {
 
     void deleteBatchStateIdsYbReconsiderApply(@Param("listString") List<String> listString, @Param("state") Integer state);
 
-    YbReconsiderApply findReconsiderApplyByApplyDateStr(@Param("applyDateStr") String applyDateStr);
+    YbReconsiderApply findReconsiderApplyByApplyDateStr(@Param("applyDateStr") String applyDateStr,@Param("areaType") Integer areaType);
 
     void getAdd(Map<String,Object> map);
 

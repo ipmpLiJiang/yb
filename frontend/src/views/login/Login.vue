@@ -37,6 +37,23 @@
           </a-form-item>
         </a-tab-pane> -->
       </a-tabs>
+      <a-form-item
+          v-bind="{
+            labelCol: { span: 6 },
+            wrapperCol: { span: 17 }
+          }"
+          label="院区"
+        >
+      <a-select v-model="logAreaType" style="width: 150px" @change="handleAreaTypeChange"
+      >
+        <a-select-option
+        v-for="d in areaTypeDataSource"
+        :key="d.value"
+        >
+        {{ d.text }}
+        </a-select-option>
+      </a-select>
+      </a-form-item>
       <a-form-item>
         <a-button :loading="loading" style="width: 100%; margin-top: 4px" size="large" htmlType="submit" type="primary">
           登录
@@ -61,6 +78,8 @@ export default {
     return {
       loading: false,
       error: '',
+      areaTypeDataSource: [{value: 0, text: '本部'}, {value: 1, text: '西院'}],
+      logAreaType: 0,
       activeKey: '1'
     }
   },
@@ -77,6 +96,9 @@ export default {
     this.$router.options.routes = []
   },
   methods: {
+    handleAreaTypeChange (value) {
+      this.logAreaType = value
+    },
     doLogin () {
       if (this.activeKey === '1') {
         // 用户名密码登录
@@ -90,6 +112,7 @@ export default {
               password: password
             }).then((r) => {
               let data = r.data.data
+              data.user.areaType = this.logAreaType
               this.saveLoginData(data)
               setTimeout(() => {
                 this.loading = false

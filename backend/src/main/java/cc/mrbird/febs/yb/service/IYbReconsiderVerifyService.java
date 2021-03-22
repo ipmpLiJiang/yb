@@ -30,21 +30,21 @@ public interface IYbReconsiderVerifyService extends IService<YbReconsiderVerify>
 
     void deleteYbReconsiderVerifys(String[] Ids);
 
-    void insertReconsiderVerifyImports(String applyDateStr, Long matchPersonId, String matchPersonName);
+    void insertReconsiderVerifyImports(String applyDateStr, Integer areaType, Long matchPersonId, String matchPersonName);
 
-    void insertMainReconsiderVerifyImports(String applyDateStr, Long matchPersonId, String matchPersonName);
+    void insertMainReconsiderVerifyImports(String applyDateStr, Integer areaType, Long matchPersonId, String matchPersonName);
 
     void updateReviewerStates(List<YbReconsiderVerify> list, Long uId, String Uname);
 
-    void  updateAllReviewerStates(String applyDateStr,int state,int dataType, Long uId, String Uname);
+    void  updateAllReviewerStates(String applyDateStr,Integer areaType,int state,int dataType, Long uId, String Uname);
 
     void updateReconsiderVerifyImports(List<YbReconsiderVerify> list, Long uId, String Uname);
 
-    void updateSendStates(List<YbReconsiderVerify> list,Integer dataType, Long uId, String Uname);
+    void updateSendStates(List<YbReconsiderVerify> list, Integer areaType,Integer dataType, Long uId, String Uname);
 
-    void updateAllSendStates(String applyDateStr,Integer state,Integer dataType, Long uId, String Uname);
+    void updateAllSendStates(String applyDateStr,Integer areaType,Integer state,Integer dataType, Long uId, String Uname);
 
-    int findReconsiderVerifyResetCheckCounts(String applyDateStr);
+    int findReconsiderVerifyResetCheckCounts(String applyDateStr,Integer areaType);
 
     void importReconsiderDataVerifys(YbReconsiderApply reconsiderApply, int dataType, int typeno, List<YbReconsiderVerify> verifyList);
 }

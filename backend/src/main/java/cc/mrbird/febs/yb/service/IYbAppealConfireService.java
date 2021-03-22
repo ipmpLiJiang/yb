@@ -4,6 +4,7 @@ import cc.mrbird.febs.yb.entity.YbAppealConfire;
 import cc.mrbird.febs.yb.entity.YbAppealConfireData;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
+
 import java.util.List;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -13,7 +14,7 @@ import org.apache.ibatis.annotations.Param;
 
 /**
  * <p>
- *  服务类
+ * 服务类
  * </p>
  *
  * @author viki
@@ -21,23 +22,25 @@ import org.apache.ibatis.annotations.Param;
  */
 public interface IYbAppealConfireService extends IService<YbAppealConfire> {
 
-        IPage<YbAppealConfire> findYbAppealConfires(QueryRequest request, YbAppealConfire ybAppealConfire);
+    IPage<YbAppealConfire> findYbAppealConfires(QueryRequest request, YbAppealConfire ybAppealConfire);
 
-        IPage<YbAppealConfire> findYbAppealConfireList(QueryRequest request, YbAppealConfire ybAppealConfire);
+    IPage<YbAppealConfire> findYbAppealConfireList(QueryRequest request, YbAppealConfire ybAppealConfire);
 
-        IPage<YbAppealConfire>  findAppealConfireView(QueryRequest request, String doctorContent, Integer adminType, String deptContent);
+    IPage<YbAppealConfire> findAppealConfireView(QueryRequest request, String doctorContent, Integer adminType,Integer areaType, String deptContent);
 
-        IPage<YbAppealConfire> findAppealConfireUserView(QueryRequest request, String doctorContent, Integer adminType, String deptContent,Long uid);
+    IPage<YbAppealConfire> findAppealConfireUserView(QueryRequest request, String doctorContent, Integer adminType,Integer areaType, String deptContent, Long uid);
 
-        void createYbAppealConfire(YbAppealConfire ybAppealConfire);
+    void createYbAppealConfire(YbAppealConfire ybAppealConfire);
 
-        void updateYbAppealConfire(YbAppealConfire ybAppealConfire);
+    void updateYbAppealConfire(YbAppealConfire ybAppealConfire);
 
-        void deleteYbAppealConfires(String[]Ids);
+    void deleteYbAppealConfires(String[] Ids);
 
-        void updateAppealConfire(YbAppealConfire ybAppealConfire, List<YbAppealConfireData> createDataList, List<YbAppealConfireData> updateDataList);
+    void updateAppealConfire(YbAppealConfire ybAppealConfire, List<YbAppealConfireData> createDataList, List<YbAppealConfireData> updateDataList);
 
-        void createAppealConfire(YbAppealConfire ybAppealConfire, List<YbAppealConfireData> createDataList);
+    void createAppealConfire(YbAppealConfire ybAppealConfire, List<YbAppealConfireData> createDataList);
 
-        YbAppealConfire findAppealConfire(YbAppealConfire appealConfire);
-        }
+    YbAppealConfire findAppealConfire(YbAppealConfire appealConfire);
+
+    List<YbAppealConfire> findAppealConfireATList(List<Integer> atIds);
+}

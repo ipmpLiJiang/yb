@@ -39,17 +39,17 @@ public interface IYbReconsiderApplyService extends IService<YbReconsiderApply> {
 
     void deleteBatchStateIdsYbReconsiderApplys(String[] Ids, Integer state);
 
-    boolean updateYbReconsiderApplyState(String applyDateStr, Integer state);
+    boolean updateYbReconsiderApplyState(String applyDateStr,Integer areaType, Integer state);
 
     String createReconsiderApplyCheck(YbReconsiderApply ybReconsiderApply);
 
-    YbReconsiderApply findReconsiderApplyByApplyDateStrs(String applyDateStr);
+    YbReconsiderApply findReconsiderApplyByApplyDateStrs(String applyDateStr,Integer areaType);
 
     List<YbReconsiderApply> findReconsiderApplyList(YbReconsiderApply ybReconsiderApply);
 
-    boolean findReconsiderApplyCheckEndDate(String appltDateStr, int typeno);
+    boolean findReconsiderApplyCheckEndDate(String appltDateStr,Integer areaType, int typeno);
 
-    String getSendMessage(String applyDateStr, Date enableDate, int typeno,boolean isChange);
+    String getSendMessage(String applyDateStr, Date enableDate,Integer areaType, int typeno,boolean isChange);
 
     String getSendMessage(String applyDateStr);
 
@@ -59,7 +59,7 @@ public interface IYbReconsiderApplyService extends IService<YbReconsiderApply> {
 
     void updateApplyEndDateTwo(String applyDateStr);
 
-    String createJobState(String applyDateStr);
+    String createJobState(String applyDateStr,Integer areaType);
 
-    int getReconsiderApplyTypeno(String applyDateStr);
+    int getReconsiderApplyTypeno(String applyDateStr,Integer areaType);
 }

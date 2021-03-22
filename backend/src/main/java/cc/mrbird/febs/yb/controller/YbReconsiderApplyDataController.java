@@ -245,7 +245,7 @@ public class YbReconsiderApplyDataController extends BaseController {
 
     @PostMapping("importReconsiderApplyData")
     @RequiresPermissions("ybReconsiderApplyData:add")
-    public FebsResponse importReconsiderApplyData(@RequestParam MultipartFile file, @RequestParam String pid, @RequestParam Integer typeno) {
+    public FebsResponse importReconsiderApplyData(@RequestParam MultipartFile file, @RequestParam String pid, @RequestParam Integer areaType, @RequestParam Integer typeno) {
         int success = 0;
         String uploadFileName = "";
         if (file.isEmpty()) {
@@ -291,8 +291,8 @@ public class YbReconsiderApplyDataController extends BaseController {
                                     }
                                 }
                                 if (objMx.size() > 1 || objZd.size() > 1) {
-                                    List<YbReconsiderApplyData> ListData = new ArrayList<YbReconsiderApplyData>();
-                                    List<YbReconsiderApplyData> ListMain = new ArrayList<YbReconsiderApplyData>();
+                                    List<YbReconsiderApplyData> ListData = new ArrayList<>();
+                                    List<YbReconsiderApplyData> ListMain = new ArrayList<>();
                                     String guid = pid;
 
                                     if (objMx.size() > 1) {
@@ -384,6 +384,7 @@ public class YbReconsiderApplyDataController extends BaseController {
                                                     rrData.setCardNumber(strCardNumber);
                                                     String strAreaName = DataTypeHelpers.importTernaryOperate(objMx.get(i), 24);//'统筹区名称',
                                                     rrData.setAreaName(strAreaName);
+                                                    rrData.setAreaType(areaType);
 
                                                     rrData.setVersionNumber(strVersionNumber);
                                                     String strBackAppeal = DataTypeHelpers.importTernaryOperate(objMx.get(i), 26);//'反馈申诉',
@@ -459,7 +460,7 @@ public class YbReconsiderApplyDataController extends BaseController {
                                                         rrMain.setInsuredType(strInsuredType);
                                                         String strAreaName = DataTypeHelpers.importTernaryOperate(objZd.get(i), 15);//'统筹区名称',
                                                         rrMain.setAreaName(strAreaName);
-
+                                                        rrMain.setAreaType(areaType);
                                                         rrMain.setVersionNumber(strVersionNumber);
                                                         String strBackAppeal = DataTypeHelpers.importTernaryOperate(objZd.get(i), 17);//'反馈申诉',
                                                         rrMain.setBackAppeal(strBackAppeal);

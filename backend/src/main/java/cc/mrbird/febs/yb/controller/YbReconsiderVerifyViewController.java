@@ -153,7 +153,7 @@ public class YbReconsiderVerifyViewController extends BaseController {
     public void exportVerify(QueryRequest request, YbReconsiderVerifyView ybReconsiderVerifyView, HttpServletResponse response) throws FebsException {
         boolean isError = false;
         try {
-            YbReconsiderApply reconsiderApply = this.iYbReconsiderApplyService.findReconsiderApplyByApplyDateStrs(ybReconsiderVerifyView.getApplyDateStr());
+            YbReconsiderApply reconsiderApply = this.iYbReconsiderApplyService.findReconsiderApplyByApplyDateStrs(ybReconsiderVerifyView.getApplyDateStr(),ybReconsiderVerifyView.getAreaType());
             if (reconsiderApply != null) {
                 int state = reconsiderApply.getState();
                 int typeno = state == YbDefaultValue.APPLYSTATE_2 || state == YbDefaultValue.APPLYSTATE_3 ? 1 :
@@ -161,12 +161,14 @@ public class YbReconsiderVerifyViewController extends BaseController {
                 if (typeno != 0) {
                     ybReconsiderVerifyView.setTypeno(typeno);
                     ybReconsiderVerifyView.setPid(reconsiderApply.getId());
+                    ybReconsiderVerifyView.setAreaType(ybReconsiderVerifyView.getAreaType());
                     List<YbReconsiderVerifyView> list = this.iYbReconsiderVerifyViewService.findReconsiderVerifyViewLists(ybReconsiderVerifyView);
                     list = list.stream().sorted(Comparator.comparing(YbReconsiderVerifyView::getOrderNum)).collect(Collectors.toList());
                     if (ybReconsiderVerifyView.getDataType().equals(YbDefaultValue.DATATYPE_0)) {
                         YbReconsiderInpatientfees queryRif = new YbReconsiderInpatientfees();
                         queryRif.setApplyDateStr(ybReconsiderVerifyView.getApplyDateStr());
                         queryRif.setDataType(YbDefaultValue.DATATYPE_0);
+                        queryRif.setAreaType(ybReconsiderVerifyView.getAreaType());
                         queryRif.setTypeno(typeno);
                         List<YbReconsiderInpatientfees> rifList = this.iYbReconsiderInpatientfeesService.findReconsiderInpatientfeesList(queryRif);
                         List<YbReconsiderInpatientfees> queryRifList = new ArrayList<>();

@@ -171,12 +171,12 @@ public class YbAppealResultDeductimplementController extends BaseController {
 
     @PostMapping("importDeductimplement")
     @RequiresPermissions("ybAppealResultDeductimplement:import")
-    public FebsResponse importDeductimplementReset(@RequestParam MultipartFile file, @RequestParam String applyDateStr) {
+    public FebsResponse importDeductimplementReset(@RequestParam MultipartFile file, @RequestParam String applyDateStr,@RequestParam Integer areaType) {
         int success = 0;
         if (file.isEmpty()) {
             message = "空文件";
         } else {
-            YbReconsiderApply ybReconsiderApply = this.iYbReconsiderApplyService.findReconsiderApplyByApplyDateStrs(applyDateStr);
+            YbReconsiderApply ybReconsiderApply = this.iYbReconsiderApplyService.findReconsiderApplyByApplyDateStrs(applyDateStr,areaType);
             if (ybReconsiderApply != null) {
                 if (ybReconsiderApply.getResetState() == 1) {
                     boolean blError = false;

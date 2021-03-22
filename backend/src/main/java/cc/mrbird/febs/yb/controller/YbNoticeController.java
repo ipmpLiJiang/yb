@@ -59,6 +59,13 @@ public class YbNoticeController extends BaseController {
         return getDataTable(this.iYbNoticeService.findYbNotices(request, ybNotice));
     }
 
+    @GetMapping("findNoticeView")
+    @RequiresPermissions("ybNotice:userView")
+    public Map<String, Object> userList(QueryRequest request, YbNotice ybNotice) {
+        User currentUser = FebsUtil.getCurrentUser();
+        return getDataTable(this.iYbNoticeService.findNoticeView(request, ybNotice,currentUser.getUsername()));
+    }
+
     /**
      * 添加
      *
@@ -105,7 +112,7 @@ public class YbNoticeController extends BaseController {
     @Log("新增/按钮")
     @PostMapping("addNotice")
     @RequiresPermissions("ybNotice:add")
-    public FebsResponse addNotice(String dataJson) {
+    public FebsResponse addNotices(String dataJson) {
         int success = 0;
         String id = "";
         try {
@@ -121,8 +128,9 @@ public class YbNoticeController extends BaseController {
             create.setNtTitle(noticeJson.getNtTitle());
             create.setNtExplain(noticeJson.getNtExplain());
             create.setNtDetail(noticeJson.getNtDetail());
+            create.setAreaType(noticeJson.getAreaType());
             create.setSendType(noticeJson.getSendType());
-            create.setState(0);
+            create.setState(YbNotice.STATE_0);
             create.setIsDeletemark(1);
             create.setCreateTime(new Date());
             create.setCreateUserId(currentUser.getUserId());
@@ -157,33 +165,17 @@ public class YbNoticeController extends BaseController {
     @Log("修改")
     @PutMapping("updateNotice")
     @RequiresPermissions("ybNotice:update")
-    public FebsResponse updateNotice(String dataJson) {
+    public FebsResponse updateNotices(String dataJson) {
         int success = 0;
         try {
             User currentUser = FebsUtil.getCurrentUser();
             YbNoticeJson noticeJson = JSON.parseObject(dataJson, new TypeReference<YbNoticeJson>() {
             });
-            List<YbNoticeData> updateDataList = new ArrayList<>();
-            YbNotice update = new YbNotice();
-            update.setId(noticeJson.getId());
-            update.setNtTitle(noticeJson.getNtTitle());
-            update.setNtExplain(noticeJson.getNtExplain());
-            update.setNtDetail(noticeJson.getNtDetail());
-            update.setSendType(noticeJson.getSendType());
-            update.setModifyTime(new Date());
-            update.setModifyUserId(currentUser.getUserId());
-            for (YbNoticeDataJson item : noticeJson.getChild()) {
-                YbNoticeData updateData = new YbNoticeData();
-//                updateData.setId(item.getId());
-//                updateData.setPid(noticeJson.getId());
-                updateData.setPersonCode(item.getPersonCode());
-                String strPersonName = DataTypeHelpers.stringReplaceSetString(item.getPersonName(), item.getPersonCode() + "-");
-                updateData.setPersonName(strPersonName);
-                updateData.setCmId(item.getCmId());
-                updateData.setCmName(item.getCmName());
-                updateData.setNdType(item.getNdType());
-                updateDataList.add(updateData);
-            }
+
+            YbNotice update = this.getUpdateNotice(noticeJson, currentUser.getUserId());
+
+            List<YbNoticeData> updateDataList = this.getUpdateNoticeData(noticeJson);
+
             this.iYbNoticeService.updateNotice(update, updateDataList);
             success = 1;
         } catch (Exception e) {
@@ -198,6 +190,76 @@ public class YbNoticeController extends BaseController {
         return new FebsResponse().data(rrd);
     }
 
+    @Log("修改")
+    @PostMapping("updateClickNum")
+    public FebsResponse updateNotices(YbNotice ybNotice) {
+        int success = 0;
+        int clickNum = 0;
+        try {
+            clickNum = this.iYbNoticeService.updateNoticeClickNum(ybNotice);
+            success = 1;
+        } catch (Exception e) {
+            message = "修改失败";
+            log.error(message, e);
+        }
+
+        ResponseResultData rrd = new ResponseResultData();
+        rrd.setSuccess(success);
+        rrd.setMessage(message);
+        rrd.setData(String.valueOf(clickNum));
+        return new FebsResponse().data(rrd);
+    }
+
+    private YbNotice getUpdateNotice(YbNoticeJson noticeJson, long uid) {
+        YbNotice update = new YbNotice();
+        update.setId(noticeJson.getId());
+        update.setNtTitle(noticeJson.getNtTitle());
+        update.setNtExplain(noticeJson.getNtExplain());
+        update.setNtDetail(noticeJson.getNtDetail());
+        update.setSendType(noticeJson.getSendType());
+        update.setState(noticeJson.getState());
+        update.setModifyTime(new Date());
+        update.setModifyUserId(uid);
+        return update;
+    }
+
+    private List<YbNoticeData> getUpdateNoticeData(YbNoticeJson noticeJson) {
+        List<YbNoticeData> updateDataList = new ArrayList<>();
+        for (YbNoticeDataJson item : noticeJson.getChild()) {
+            YbNoticeData updateData = new YbNoticeData();
+//                updateData.setId(item.getId());
+//                updateData.setPid(noticeJson.getId());
+            updateData.setPersonCode(item.getPersonCode());
+            String strPersonName = DataTypeHelpers.stringReplaceSetString(item.getPersonName(), item.getPersonCode() + "-");
+            updateData.setPersonName(strPersonName);
+            updateData.setCmId(item.getCmId());
+            updateData.setCmName(item.getCmName());
+            updateData.setNdType(item.getNdType());
+            updateDataList.add(updateData);
+        }
+        return updateDataList;
+    }
+
+    @Log("修改")
+    @PutMapping("updateReleaseNotice")
+    @RequiresPermissions("ybNotice:update")
+    public FebsResponse updateReleaseNotices(YbNotice ybNotice) {
+        int success = 0;
+        try {
+            User currentUser = FebsUtil.getCurrentUser();
+            this.iYbNoticeService.updateReleaseNotice(ybNotice,currentUser);
+            success = 1;
+        } catch (Exception e) {
+            message = "修改失败";
+            log.error(message, e);
+        }
+
+        ResponseResultData rrd = new ResponseResultData();
+        rrd.setSuccess(success);
+        rrd.setMessage(message);
+        rrd.setData("");
+        return new FebsResponse().data(rrd);
+    }
 
     @Log("删除")
     @DeleteMapping("/{ids}")
@@ -205,7 +267,7 @@ public class YbNoticeController extends BaseController {
     public void deleteYbNotices(@NotBlank(message = "{required}") @PathVariable String ids) throws FebsException {
         try {
             String[] arr_ids = ids.split(StringPool.COMMA);
-            this.iYbNoticeService.deleteYbNotices(arr_ids);
+            this.iYbNoticeService.deleteUpdateNotices(arr_ids);
         } catch (Exception e) {
             message = "删除失败";
             log.error(message, e);

@@ -19,6 +19,7 @@ export default {
       },
       appealResultDownLoad: {
       },
+      user: this.$store.state.account.user,
       loading: false
     }
   },
@@ -29,8 +30,17 @@ export default {
         dataIndex: 'fileName'
       },
       {
-        title: '科室',
+        title: this.appealResultDownLoad.type === 0 ? '科室' : '汇总科室',
         dataIndex: 'deptName',
+        customRender: (text, row, index) => {
+          if (text !== '' && text !== null) {
+            if (row.deptId !== '' && row.deptId !== null) {
+              return row.deptId + '-' + row.deptName
+            } else {
+              return row.deptName
+            }
+          }
+        },
         width: 250
       },
       {
@@ -48,6 +58,8 @@ export default {
     downloadFile (record) {
       let formData = {}
       formData.deptName = record.deptName
+      formData.deptId = record.deptId
+      formData.sumId = record.key
       formData.applyDateStr = this.appealResultDownLoad.applyDateStr
       if (this.appealResultDownLoad.typeno !== undefined) {
         if (this.tableSelectKey === '1' || this.tableSelectKey === '2') {
@@ -70,10 +82,14 @@ export default {
         formData.state = 1
         formData.sourceType = 1
       }
-
+      formData.areaType = this.user.areaType
       formData.dataType = this.appealResultDownLoad.dataType
       formData.fileName = formData.applyDateStr + '_' + f + '_' + formData.deptName
-      this.$download('comFile/fileImgZip', {
+      let methods = 'fileSumImgZip'
+      if (this.appealResultDownLoad.type === 0) {
+        methods = 'fileImgZip'
+      }
+      this.$download('comFile/' + methods, {
         ...formData
       }, formData.fileName + '.zip')
     },
@@ -101,9 +117,13 @@ export default {
       }
 
       this.queryParams.dataType = this.appealResultDownLoad.dataType
-
+      this.queryParams.areaType = this.user.areaType
       this.loading = true
-      this.$get('ybAppealResultView/fileDownLoadList', {
+      let methods = 'fileDownLoadSumList'
+      if (this.appealResultDownLoad.type === 0) {
+        methods = 'fileDownLoadList'
+      }
+      this.$get('ybAppealResultView/' + methods, {
         ...this.queryParams
       }).then((r) => {
         this.loading = false

@@ -38,11 +38,12 @@
                     <result column="CREATE_TIME" property="createTime"/>
                     <result column="CREATE_USER_ID" property="createUserId"/>
                     <result column="MODIFY_USER_ID" property="modifyUserId"/>
+            <result column="areaType" property="areaType"/>
         </resultMap>
 
         <!-- 通用查询结果列 -->
         <sql id="Base_Column_List">
-        id, applyDataId, verifyDoctorCode, verifyDoctorName, verifyDeptCode, verifyDeptName, operateReason, operateDate, matchPersonId, matchPersonName, matchDate, reviewerId, reviewerName, reviewerDate, sendPersonId, sendPersonName, sendDate, currencyField,dataType,applyDateStr,typeno,orderNumber,orderNum,orderDoctorCode,orderDoctorName,orderDeptCode,orderDeptName, COMMENTS, STATE, IS_DELETEMARK, MODIFY_TIME, CREATE_TIME, CREATE_USER_ID, MODIFY_USER_ID
+        id, applyDataId, verifyDoctorCode, verifyDoctorName, verifyDeptCode, verifyDeptName, operateReason, operateDate, matchPersonId, matchPersonName, matchDate, reviewerId, reviewerName, reviewerDate, sendPersonId, sendPersonName, sendDate, currencyField,dataType,applyDateStr,typeno,orderNumber,orderNum,orderDoctorCode,orderDoctorName,orderDeptCode,orderDeptName, COMMENTS, STATE, IS_DELETEMARK, MODIFY_TIME, CREATE_TIME, CREATE_USER_ID, MODIFY_USER_ID,areaType
     </sql>
     <update id="updateYbReconsiderVerify" parameterType="cc.mrbird.febs.yb.entity.YbReconsiderVerify">
         update yb_reconsider_verify
@@ -80,6 +81,7 @@
 <if test="createTime != null">CREATE_TIME=#{createTime},</if>
 <if test="createUserId != null">CREATE_USER_ID=#{createUserId},</if>
 <if test="modifyUserId != null">MODIFY_USER_ID=#{modifyUserId},</if>
+            <if test="areaType != null">areaType=#{areaType},</if>
         </trim>
                 where id=#{id}
 
@@ -137,6 +139,7 @@
         <if test="ybReconsiderVerify.createTimeTo!= null">
             AND ybReconsiderVerify.CREATE_TIME <![CDATA[ <= ]]>  createTimeTo}
         </if>
+        <if test="ybReconsiderVerify.areaType != null">and ybReconsiderVerify.areaType =#{ ybReconsiderVerify.areaType}</if>
 </select>
 
     <update id="updateReviewerState" parameterType="cc.mrbird.febs.yb.entity.YbReconsiderVerify">
@@ -214,6 +217,7 @@
         <if test="state != null"> and state =#{ state } </if>
         <if test="typeno != null"> and typeno =#{ typeno } </if>
         <if test="dataType != null"> and dataType =#{ dataType } </if>
+        <if test="areaType != null"> and areaType =#{ areaType } </if>
     </select>
 
     <insert id="insertReconsiderVerifyImport">
@@ -253,11 +257,11 @@ from
 	INNER JOIN yb_reconsider_apply ra ON
 		rda.pid = ra.id and ra.IS_DELETEMARK = 1
     WHERE
-    ra.applyDateStr= #{applyDate} and rda.dataType = 0 and rda.IS_DELETEMARK = 1
+    ra.applyDateStr= #{applyDate} and ra.areaType = #{areaType} and rda.dataType = 0 and rda.IS_DELETEMARK = 1
     AND NOT EXISTS(
         select vv.* from yb_reconsider_verify vv INNER JOIN yb_reconsider_apply_data dd ON vv.applyDataId = dd.id
         and dd.IS_DELETEMARK = 1 INNER JOIN yb_reconsider_apply pp on pp.id = dd.pid and pp.IS_DELETEMARK = 1 where vv.IS_DELETEMARK = 1
-        and pp.applyDateStr=ra.applyDateStr and vv.applyDataId= rda.id and vv.dataType = 0
+        and pp.applyDateStr=ra.applyDateStr and vv.applyDataId= rda.id and vv.areaType = #{areaType} and vv.dataType = 0
     )
 </insert>
     <insert id="insertMainReconsiderVerifyImport">
@@ -297,11 +301,11 @@ from
             INNER JOIN yb_reconsider_apply ra ON
                 rda.pid = ra.id and ra.IS_DELETEMARK = 1
             WHERE
-            ra.applyDateStr= #{applyDate} and rda.dataType = 1 and rda.IS_DELETEMARK = 1
+            ra.applyDateStr= #{applyDate} and ra.areaType = #{areaType} and  rda.dataType = 1 and rda.IS_DELETEMARK = 1
             AND NOT EXISTS(
                 select vv.* from yb_reconsider_verify vv INNER JOIN yb_reconsider_apply_data dd ON vv.applyDataId = dd.id
                 and dd.IS_DELETEMARK = 1 INNER JOIN yb_reconsider_apply pp on pp.id = dd.pid and pp.IS_DELETEMARK = 1 where vv.IS_DELETEMARK = 1
-                and pp.applyDateStr=ra.applyDateStr and vv.applyDataId= rda.id and vv.dataType = 1
+                and pp.applyDateStr=ra.applyDateStr and vv.applyDataId= rda.id and vv.areaType = #{areaType} and vv.dataType = 1
             )
     </insert>
     <!--State in(1,2) 1待审核、2已审核-->
@@ -312,6 +316,7 @@ from
             yb_reconsider_verify
         where
             applyDateStr = #{applyDateStr} and
+            areaType = #{areaType}
             state in(1,2)
 </select>
 </mapper>

@@ -1,5 +1,6 @@
 package cc.mrbird.febs.job.task;
 
+import cc.mrbird.febs.yb.entity.YbDefaultValue;
 import cc.mrbird.febs.yb.service.IYbReconsiderApplyDataService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,14 +23,21 @@ public class ReconsiderApplyTask {
         if(params == null || params.equals("no")){
             params = "";
         }
-        iYbReconsiderApplyService.findReconsiderApplyDataTask(params);
+        iYbReconsiderApplyService.findReconsiderApplyDataTask(params, YbDefaultValue.AREATYPE_0);
     }
 
-    public void applyNotTask(String params) {
+    public void applyTaskWest(String params) {
         if(params == null || params.equals("no")){
             params = "";
         }
-//        iYbReconsiderApplyService.findReconsiderApplyDataNotTask(params);
+        iYbReconsiderApplyService.findReconsiderApplyDataTask(params, YbDefaultValue.AREATYPE_1);
+    }
+
+    public void applyTaskOther(String params) {
+        if(params == null || params.equals("no")){
+            params = "";
+        }
+        iYbReconsiderApplyService.findReconsiderApplyDataTask(params, YbDefaultValue.AREATYPE_2);
     }
 
 }

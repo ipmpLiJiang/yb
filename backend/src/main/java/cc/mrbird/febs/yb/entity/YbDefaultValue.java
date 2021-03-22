@@ -276,4 +276,19 @@ public  class YbDefaultValue {
      */
     public static final Integer RESETTYPE_2 = 2;
 
+
+
+    /**
+     * 院区  0 本部
+     */
+    public static final Integer AREATYPE_0 = 0;
+    /**
+     * 院区 1 西院
+     */
+    public static final Integer AREATYPE_1 = 1;
+    /**
+     * 院区 2 其他
+     */
+    public static final Integer AREATYPE_2 = 2;
+
 }

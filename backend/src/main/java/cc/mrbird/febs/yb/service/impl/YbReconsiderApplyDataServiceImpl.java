@@ -146,9 +146,9 @@ public class YbReconsiderApplyDataServiceImpl extends ServiceImpl<YbReconsiderAp
     }
 
     @Override
-    public List<YbReconsiderApplyData> findReconsiderApplyDataByApplyDates(String applyDateStr, Integer dataType) {
+    public List<YbReconsiderApplyData> findReconsiderApplyDataByApplyDates(String applyDateStr,Integer areaType, Integer dataType) {
         List<YbReconsiderApplyData> list = new ArrayList<>();
-        YbReconsiderApply reconsiderApply = iYbReconsiderApplyService.findReconsiderApplyByApplyDateStrs(applyDateStr);
+        YbReconsiderApply reconsiderApply = iYbReconsiderApplyService.findReconsiderApplyByApplyDateStrs(applyDateStr,areaType);
         if(reconsiderApply!=null) {
             YbReconsiderApplyData reconsiderApplyData = new YbReconsiderApplyData();
             reconsiderApplyData.setPid(reconsiderApply.getId());
@@ -181,8 +181,8 @@ public class YbReconsiderApplyDataServiceImpl extends ServiceImpl<YbReconsiderAp
     }
 
     @Override
-    public List<YbReconsiderApplyData> findReconsiderApplyDataByNotVerifys(String pid,String applyDateStr, Integer dataType, Integer typeno) {
-        return this.baseMapper.findReconsiderApplyDataByNotVerify(pid,applyDateStr, dataType, typeno);
+    public List<YbReconsiderApplyData> findReconsiderApplyDataByNotVerifys(String pid,String applyDateStr,Integer areaType, Integer dataType, Integer typeno) {
+        return this.baseMapper.findReconsiderApplyDataByNotVerify(pid,applyDateStr,areaType, dataType, typeno);
     }
 
     @Override
@@ -239,6 +239,7 @@ public class YbReconsiderApplyDataServiceImpl extends ServiceImpl<YbReconsiderAp
             rrData.setOrderSettlementNum(i);
             rrData.setIsDeletemark(1);
             rrData.setState(item.getState());
+            rrData.setAreaType(item.getAreaType());
             createDataList.add(rrData);
             i++;
         }
@@ -272,6 +273,7 @@ public class YbReconsiderApplyDataServiceImpl extends ServiceImpl<YbReconsiderAp
             rrMain.setOrderSettlementNum(i);//结算日期排序
             rrMain.setIsDeletemark(item.getIsDeletemark());
             rrMain.setState(item.getState());
+            rrMain.setAreaType(item.getAreaType());
             createMainList.add(rrMain);
             i++;
         }
@@ -295,6 +297,7 @@ public class YbReconsiderApplyDataServiceImpl extends ServiceImpl<YbReconsiderAp
         ybReconsiderApplyTask.setApplyDateStr(reconsiderApply.getApplyDateStr());
         ybReconsiderApplyTask.setTypeno(typeno);
         ybReconsiderApplyTask.setState(state);
+        ybReconsiderApplyTask.setAreaType(reconsiderApply.getAreaType());
         List<YbReconsiderApplyTask> raTaskList = this.iYbReconsiderApplyTaskService.findReconsiderApplyTaskList(ybReconsiderApplyTask);
         //总数
         int totalRow = 0;
@@ -303,13 +306,13 @@ public class YbReconsiderApplyDataServiceImpl extends ServiceImpl<YbReconsiderAp
         boolean noUpdate = false;
         YbReconsiderApplyTask createTask = new YbReconsiderApplyTask();
         if (raTaskList.size() == 0) {
-            totalRow = this.baseMapper.findReconsiderApplyDataNotCount(reconsiderApply.getId(),reconsiderApply.getApplyDateStr(), dataType, typeno);
+            totalRow = this.baseMapper.findReconsiderApplyDataNotCount(reconsiderApply.getId(),reconsiderApply.getApplyDateStr(),reconsiderApply.getAreaType(), dataType, typeno);
             if (totalRow == 0) {
                 noUpdate = true;
             } else {
-                createTask = createReconsiderApplyTask(reconsiderApply.getApplyDateStr(), 1, dataType, typeno, currentPage, totalRow);
+                createTask = createReconsiderApplyTask(reconsiderApply.getApplyDateStr(), reconsiderApply.getAreaType(),1, dataType, typeno, currentPage, totalRow);
 
-                List<YbReconsiderApplyData> reconsiderApplyDataList = this.baseMapper.findReconsiderApplyDataNotInpatientfees(reconsiderApply.getId(),reconsiderApply.getApplyDateStr(), dataType, typeno);
+                List<YbReconsiderApplyData> reconsiderApplyDataList = this.baseMapper.findReconsiderApplyDataNotInpatientfees(reconsiderApply.getId(),reconsiderApply.getApplyDateStr(),reconsiderApply.getAreaType(), dataType, typeno);
                 if (reconsiderApplyDataList.size() > 0) {
                     List<YbReconsiderApplyData> updateList = new ArrayList<>();
                     int i = 1;
@@ -335,7 +338,7 @@ public class YbReconsiderApplyDataServiceImpl extends ServiceImpl<YbReconsiderAp
                 currentPage = reconsiderApplyTask.getCurrentPage() + 1;
                 totalRow = reconsiderApplyTask.getTotalRow();
                 dataType = reconsiderApplyTask.getDataType();
-                createTask = createReconsiderApplyTask(reconsiderApply.getApplyDateStr(), state, dataType, typeno, currentPage, totalRow);
+                createTask = createReconsiderApplyTask(reconsiderApply.getApplyDateStr(), reconsiderApply.getAreaType(), state, dataType, typeno, currentPage, totalRow);
             }
         }
         if (!noUpdate) {
@@ -493,6 +496,7 @@ public class YbReconsiderApplyDataServiceImpl extends ServiceImpl<YbReconsiderAp
                                             reconsiderInpatientfees.setIsDeletemark(1);
                                             reconsiderInpatientfees.setCreateTime(new Date());
                                             reconsiderInpatientfees.setState(state);
+                                            reconsiderInpatientfees.setAreaType(reconsiderApply.getAreaType());
                                             createList.add(reconsiderInpatientfees);
                                         }
                                     }
@@ -529,14 +533,14 @@ public class YbReconsiderApplyDataServiceImpl extends ServiceImpl<YbReconsiderAp
 
     @Override
     @Transactional
-    public void findReconsiderApplyDataTask(String applyDateStr) {
+    public void findReconsiderApplyDataTask(String applyDateStr,Integer areaType) {
         int dataType = 0;
         int typeno = 1;
         //当前复议年月
         if (applyDateStr == null || "".equals(applyDateStr)) {
             applyDateStr = DataTypeHelpers.getUpNianYue();
         }
-        YbReconsiderApply reconsiderApply = iYbReconsiderApplyService.findReconsiderApplyByApplyDateStrs(applyDateStr);
+        YbReconsiderApply reconsiderApply = iYbReconsiderApplyService.findReconsiderApplyByApplyDateStrs(applyDateStr,areaType);
         if (reconsiderApply == null) {
             return;
         }
@@ -553,6 +557,7 @@ public class YbReconsiderApplyDataServiceImpl extends ServiceImpl<YbReconsiderAp
         ybReconsiderApplyTask.setApplyDateStr(applyDateStr);
         ybReconsiderApplyTask.setTypeno(typeno);
         ybReconsiderApplyTask.setState(state);
+        ybReconsiderApplyTask.setAreaType(areaType);
         List<YbReconsiderApplyTask> raTaskList = this.iYbReconsiderApplyTaskService.findReconsiderApplyTaskList(ybReconsiderApplyTask);
         //总数
         int totalRow = 0;
@@ -569,7 +574,7 @@ public class YbReconsiderApplyDataServiceImpl extends ServiceImpl<YbReconsiderAp
             if (totalRow == 0) {
                 noUpdate = true;
             } else {
-                createTask = createReconsiderApplyTask(applyDateStr, state, dataType, typeno, currentPage, totalRow);
+                createTask = createReconsiderApplyTask(applyDateStr, areaType, state, dataType, typeno, currentPage, totalRow);
             }
         } else {
             YbReconsiderApplyTask reconsiderApplyTask = maxReconsiderApplyTask(raTaskList);
@@ -581,7 +586,7 @@ public class YbReconsiderApplyDataServiceImpl extends ServiceImpl<YbReconsiderAp
                         this.findReconsiderApplyDataNotTask(reconsiderApply, typeno);
                         noUpdate = true;
                     } else {
-                        createTask = createReconsiderApplyTask(applyDateStr, state, dataType, typeno, currentPage, totalRow);
+                        createTask = createReconsiderApplyTask(applyDateStr,areaType, state, dataType, typeno, currentPage, totalRow);
                     }
                 } else {
                     this.findReconsiderApplyDataNotTask(reconsiderApply, typeno);
@@ -591,7 +596,7 @@ public class YbReconsiderApplyDataServiceImpl extends ServiceImpl<YbReconsiderAp
                 currentPage = reconsiderApplyTask.getCurrentPage() + 1;
                 totalRow = reconsiderApplyTask.getTotalRow();
                 dataType = reconsiderApplyTask.getDataType();
-                createTask = createReconsiderApplyTask(applyDateStr, state, dataType, typeno, currentPage, totalRow);
+                createTask = createReconsiderApplyTask(applyDateStr,areaType, state, dataType, typeno, currentPage, totalRow);
             }
         }
         if (!noUpdate) {
@@ -765,6 +770,7 @@ public class YbReconsiderApplyDataServiceImpl extends ServiceImpl<YbReconsiderAp
                                             reconsiderInpatientfees.setIsDeletemark(1);
                                             reconsiderInpatientfees.setCreateTime(new Date());
                                             reconsiderInpatientfees.setState(state);
+                                            reconsiderInpatientfees.setAreaType(reconsiderApply.getAreaType());
                                             createList.add(reconsiderInpatientfees);
                                         }
                                     }
@@ -866,7 +872,7 @@ public class YbReconsiderApplyDataServiceImpl extends ServiceImpl<YbReconsiderAp
     }
 
     //创建定时任务Task数据
-    private YbReconsiderApplyTask createReconsiderApplyTask(String applyDateStr, int state, int dataType, int typeno, int currentPage, int totalRow) {
+    private YbReconsiderApplyTask createReconsiderApplyTask(String applyDateStr,int areaType, int state, int dataType, int typeno, int currentPage, int totalRow) {
         YbReconsiderApplyTask createTask = new YbReconsiderApplyTask();
         //从orderNum开始
         int startNum = 0;
@@ -917,6 +923,7 @@ public class YbReconsiderApplyDataServiceImpl extends ServiceImpl<YbReconsiderAp
         createTask.setPageSize(pageSize);
         createTask.setTotalPage(totalPage);
         createTask.setState(state);
+        createTask.setAreaType(areaType);
 //        createTask.setIsDeletemark(1);
 //        createTask.setCreateTime(new Date());
         return createTask;

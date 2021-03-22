@@ -164,7 +164,7 @@ public class YbReconsiderRepayServiceImpl extends ServiceImpl<YbReconsiderRepayM
     @Transactional
     public String updateReconsiderApplyState(YbReconsiderRepay ybReconsiderRepay) {
         String message = "";
-        YbReconsiderApply reconsiderApply = this.iYbReconsiderApplyService.findReconsiderApplyByApplyDateStrs(ybReconsiderRepay.getApplyDateStr());
+        YbReconsiderApply reconsiderApply = this.iYbReconsiderApplyService.findReconsiderApplyByApplyDateStrs(ybReconsiderRepay.getApplyDateStr(),ybReconsiderRepay.getAreaType());
         if (reconsiderApply !=null) {
             //剔除完成
             if (reconsiderApply.getResetState() == 1) {

@@ -30,7 +30,7 @@ public interface IYbReconsiderResetDataService extends IService<YbReconsiderRese
 
     void deleteYbReconsiderResetDatas(String[] Ids);
 
-    String updateResetDatas(String applyDateStr, Long uid, String uname, Integer dataType);
+    String updateResetDatas(String applyDateStr,Integer areaType, Long uid, String uname, Integer dataType);
 
     String updateHandleResetDatas(String resultIds, String resetIds, Long uid, String uname);
 

@@ -162,6 +162,7 @@ export default {
       selectDoctorDataSource: [], // 搜索事件
       selectDoctorValue: undefined,
       ybReconsiderVerify: {},
+      user: this.$store.state.account.user,
       tableFormat: 'YYYY-MM-DD'
     }
   },
@@ -263,7 +264,7 @@ export default {
         dataIndex: 'operation',
         scopedSlots: { customRender: 'operation' },
         fixed: 'right',
-        width: 145
+        width: 150
       }]
     }
   },
@@ -335,7 +336,8 @@ export default {
             applyDateStr: target.applyDateStr,
             orderNumber: target.orderNumber,
             orderNum: target.orderNum,
-            typeno: target.typeno
+            typeno: target.typeno,
+            areaType: this.user.areaType
           }
           data.push(arrData)
         }
@@ -376,7 +378,8 @@ export default {
             applyDateStr: target.applyDateStr,
             orderNumber: target.orderNumber,
             orderNum: target.orderNum,
-            typeno: target.typeno
+            typeno: target.typeno,
+            areaType: this.user.areaType
           }
           data.push(arrData)
         }
@@ -394,7 +397,7 @@ export default {
     batchVerifyA () {
       if (this.dataSource.length > 0) {
         this.$put('ybReconsiderVerify/updateAReviewerState', {
-          applyDateStr: this.applyDate, state: 1, dataType: 0
+          applyDateStr: this.applyDate, areaType: this.user.areaType, state: 1, dataType: 0
         }).then(() => {
           this.$message.success('全部核对审核')
           this.$emit('verifySpin')
@@ -411,7 +414,7 @@ export default {
     verifyService (data) {
       let jsonString = JSON.stringify(data)
       this.$put('ybReconsiderVerify/updateReviewerState', {
-        dataJson: jsonString
+        dataJson: jsonString, areaType: this.user.areaType
       }).then(() => {
         this.$message.success('核对成功')
         this.$emit('verifySpin')
@@ -633,6 +636,7 @@ export default {
       params.applyDateStr = this.applyDate
       params.state = 1
       params.dataType = 0
+      params.areaType = this.user.areaType
       let searchType = [this.searchItem.project.type, this.searchItem.rule.type, this.searchItem.dept.type, this.searchItem.order.type]
       params.searchType = searchType
       if (this.searchItem !== undefined) {

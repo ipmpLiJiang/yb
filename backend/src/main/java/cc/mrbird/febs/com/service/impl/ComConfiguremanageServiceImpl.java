@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 import java.time.LocalDate;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -89,6 +90,20 @@ public class ComConfiguremanageServiceImpl extends ServiceImpl<ComConfiguremanag
         queryWrapper.in(ComConfiguremanage::getConfigureType,ctypeList);
         List<ComConfiguremanage> configList = this.list(queryWrapper);
         return configList;
+    }
+
+    @Override
+    public String getConfigAreaName(int areaType){
+        LambdaQueryWrapper<ComConfiguremanage> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(ComConfiguremanage::getConfigureType,5);
+        List<ComConfiguremanage> configList = this.list(queryWrapper);
+        if (configList.size() > 0) {
+            configList = configList.stream().filter(s->s.getIntField().equals(areaType)).collect(Collectors.toList());
+            if (configList.size() > 0) {
+                return configList.get(0).getStringField() + " ";
+            }
+        }
+        return "";
     }
 
     @Override

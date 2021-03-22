@@ -18,7 +18,11 @@ public interface YbAppealConfireMapper extends BaseMapper<YbAppealConfire> {
         void updateYbAppealConfire(YbAppealConfire ybAppealConfire);
         IPage<YbAppealConfire> findYbAppealConfire(Page page, @Param("ybAppealConfire") YbAppealConfire ybAppealConfire);
 
-        IPage<YbAppealConfire>  findAppealConfireView(Page page, @Param("doctorContent") String doctorContent, @Param("adminType") Integer adminType, @Param("deptContent") String deptContent);
+        IPage<YbAppealConfire>  findAppealConfireView(Page page, @Param("doctorContent") String doctorContent, @Param("adminType") Integer adminType,@Param("areaType") Integer areaType, @Param("deptContent") String deptContent);
 
-        IPage<YbAppealConfire>  findAppealConfireUserView(Page page, @Param("doctorContent") String doctorContent, @Param("adminType") Integer adminType, @Param("deptContent") String deptContent, @Param("uid") Long uid);
+        IPage<YbAppealConfire>  findAppealConfireUserView(Page page, @Param("doctorContent") String doctorContent, @Param("adminType") Integer adminType,@Param("areaType") Integer areaType, @Param("deptContent") String deptContent, @Param("uid") Long uid);
+
+        int  findAppealConfireCount(@Param("doctorContent") String doctorContent, @Param("adminType") Integer adminType,@Param("areaType") Integer areaType, @Param("deptContent") String deptContent);
+
+        int  findAppealConfireUserCount(@Param("doctorContent") String doctorContent, @Param("adminType") Integer adminType,@Param("areaType") Integer areaType, @Param("deptContent") String deptContent, @Param("uid") Long uid);
         }

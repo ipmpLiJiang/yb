@@ -43,6 +43,11 @@ public class YbNoticeJson {
     private Integer sendType;
 
     /**
+     * 院区
+     */
+    private Integer areaType;
+
+    /**
      * 备注
      */
     private String comments;

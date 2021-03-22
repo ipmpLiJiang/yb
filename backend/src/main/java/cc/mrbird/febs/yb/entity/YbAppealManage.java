@@ -350,7 +350,12 @@ private static final long serialVersionUID=1L;
             @ExcelField(value ="修改人")
     private Long modifyUserId;
 
-
+    /**
+     * 院区
+     */
+    @TableField("areaType")
+    @ExcelField(value = "院区")
+    private Integer areaType;
 
     public static final String ID ="id" ;
 
@@ -436,5 +441,7 @@ private static final long serialVersionUID=1L;
     public static final String CREATE_USER_ID ="CREATE_USER_ID" ;
 
     public static final String MODIFY_USER_ID ="MODIFY_USER_ID" ;
+
+    public static final String AREATYPE = "areaType";
 
         }

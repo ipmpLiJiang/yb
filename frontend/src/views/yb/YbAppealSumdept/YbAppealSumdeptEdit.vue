@@ -123,9 +123,11 @@ export default {
       this.ybAcData.deptId = item.value
       this.ybAcData.deptName = item.text
     },
-    setFormValues (obj) {
+    setFormValues (obj, areaType) {
+      debugger
       this.isUpdate = false
       this.form.getFieldDecorator('asName')
+      this.ybAppealSumdept.areaType = areaType
       if (obj === undefined || obj === null || obj === '') {
         this.isEdit = false
         setTimeout(() => {

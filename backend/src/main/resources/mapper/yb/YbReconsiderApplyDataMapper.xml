@@ -49,11 +49,12 @@
                     <result column="CREATE_TIME" property="createTime"/>
                     <result column="CREATE_USER_ID" property="createUserId"/>
                     <result column="MODIFY_USER_ID" property="modifyUserId"/>
+            <result column="areaType" property="areaType"/>
         </resultMap>
 
         <!-- 通用查询结果列 -->
         <sql id="Base_Column_List">
-        id, pid, serialNo, billNo, proposalCode, projectCode, projectName, num, medicalPrice, ruleName, deductPrice, deductReason, repaymentReason, doctorName, deptCode, deptName, enterHospitalDate,enterHospitalDateStr, outHospitalDate,outHospitalDateStr, costDate,costDateStr, hospitalizedNo, treatmentMode, settlementDate,settlementDateStr, personalNo, insuredName, cardNumber, areaName, versionNumber, backAppeal, typeno,insuredType,dataType,orderNumber,orderNum,orderSettlementNum, COMMENTS, STATE, IS_DELETEMARK, MODIFY_TIME, CREATE_TIME, CREATE_USER_ID, MODIFY_USER_ID
+        id, pid, serialNo, billNo, proposalCode, projectCode, projectName, num, medicalPrice, ruleName, deductPrice, deductReason, repaymentReason, doctorName, deptCode, deptName, enterHospitalDate,enterHospitalDateStr, outHospitalDate,outHospitalDateStr, costDate,costDateStr, hospitalizedNo, treatmentMode, settlementDate,settlementDateStr, personalNo, insuredName, cardNumber, areaName, versionNumber, backAppeal, typeno,insuredType,dataType,orderNumber,orderNum,orderSettlementNum, COMMENTS, STATE, IS_DELETEMARK, MODIFY_TIME, CREATE_TIME, CREATE_USER_ID, MODIFY_USER_ID, areaType
     </sql>
     <update id="updateYbReconsiderApplyData" parameterType="cc.mrbird.febs.yb.entity.YbReconsiderApplyData">
         update yb_reconsider_apply_data
@@ -97,6 +98,7 @@
 <if test="createTime != null">CREATE_TIME=#{createTime},</if>
 <if test="createUserId != null">CREATE_USER_ID=#{createUserId},</if>
 <if test="modifyUserId != null">MODIFY_USER_ID=#{modifyUserId},</if>
+            <if test="areaType != null">areaType=#{areaType},</if>
         </trim>
                 where id=#{id}
 
@@ -166,13 +168,14 @@
         <if test="ybReconsiderApplyData.createTimeTo!= null">
             AND CREATE_TIME <![CDATA[ <= ]]>  #{ybReconsiderApplyData.createTimeTo}
         </if>
+        <if test="ybReconsiderApplyData.areaType != null">and ybReconsiderApplyData.areaType =#{ ybReconsiderApplyData.areaType}</if>
 </select>
     <insert id="createBatchData">
         insert into yb_reconsider_apply_data
-        (orderNumber,pid,serialNo,billNo,proposalCode,projectCode,projectName,num,medicalPrice,ruleName,deductPrice,deductReason,repaymentReason,doctorName,deptCode,deptName,enterHospitalDate,enterHospitalDateStr,outHospitalDate,outHospitalDateStr,costDate,costDateStr,hospitalizedNo,treatmentMode,settlementDate,settlementDateStr,personalNo,insuredName,cardNumber,areaName,versionNumber,backAppeal,typeno,insuredType,dataType,IS_DELETEMARK,CREATE_TIME,CREATE_USER_ID)
+        (orderNumber,pid,serialNo,billNo,proposalCode,projectCode,projectName,num,medicalPrice,ruleName,deductPrice,deductReason,repaymentReason,doctorName,deptCode,deptName,enterHospitalDate,enterHospitalDateStr,outHospitalDate,outHospitalDateStr,costDate,costDateStr,hospitalizedNo,treatmentMode,settlementDate,settlementDateStr,personalNo,insuredName,cardNumber,areaName,versionNumber,backAppeal,typeno,insuredType,dataType,IS_DELETEMARK,CREATE_TIME,CREATE_USER_ID,areaType)
         values
         <foreach item="item" index="index" collection="listReconsiderApplyData" separator=",">
-            (#{orderNumber},#{item.pid},#{item.serialNo},#{item.billNo},#{item.proposalCode},#{item.projectCode},#{item.projectName},#{item.num},#{item.medicalPrice},#{item.ruleName},#{item.deductPrice},#{item.deductReason},#{item.repaymentReason},#{item.doctorName},#{item.deptCode},#{item.deptName},#{item.enterHospitalDate},#{item.enterHospitalDateStr},#{item.outHospitalDate},#{item.outHospitalDateStr},#{item.costDate},#{item.costDateStr},#{item.hospitalizedNo},#{item.treatmentMode},#{item.settlementDate},#{item.settlementDateStr},#{item.personalNo},#{item.insuredName},#{item.cardNumber},#{item.areaName},#{item.versionNumber},#{item.backAppeal},#{item.typeno},#{insuredType},#{dataType},#{item.isDeletemark},#{item.createTime},#{item.createUserId})
+            (#{orderNumber},#{item.pid},#{item.serialNo},#{item.billNo},#{item.proposalCode},#{item.projectCode},#{item.projectName},#{item.num},#{item.medicalPrice},#{item.ruleName},#{item.deductPrice},#{item.deductReason},#{item.repaymentReason},#{item.doctorName},#{item.deptCode},#{item.deptName},#{item.enterHospitalDate},#{item.enterHospitalDateStr},#{item.outHospitalDate},#{item.outHospitalDateStr},#{item.costDate},#{item.costDateStr},#{item.hospitalizedNo},#{item.treatmentMode},#{item.settlementDate},#{item.settlementDateStr},#{item.personalNo},#{item.insuredName},#{item.cardNumber},#{item.areaName},#{item.versionNumber},#{item.backAppeal},#{item.typeno},#{insuredType},#{dataType},#{item.isDeletemark},#{item.createTime},#{item.createUserId},#{areaType})
         </foreach>
     </insert>
     <select id="findReconsiderApplyDataByNotVerify" resultType="cc.mrbird.febs.yb.entity.YbReconsiderApplyData">
@@ -184,7 +187,7 @@
             pid= #{pid} and typeno = #{typeno} and dataType = #{dataType}
             AND id not in(
                 select applyDataId from yb_reconsider_verify where
-                applyDateStr = #{applyDateStr} and typeno = #{typeno} and dataType = #{dataType}
+                applyDateStr = #{applyDateStr} and areaType = #{areaType} and typeno = #{typeno} and dataType = #{dataType}
             )
     </select>
     <select id="findReconsiderApplyDataBetween" resultType="cc.mrbird.febs.yb.entity.YbReconsiderApplyData">
@@ -225,7 +228,7 @@
             dataType = #{dataType} and
             id not in(
                 select applyDataId from yb_reconsider_inpatientfees where
-                applyDateStr = #{applyDateStr} and typeno = #{typeno} and dataType = #{dataType}
+                applyDateStr = #{applyDateStr} and areaType = #{areaType} and typeno = #{typeno} and dataType = #{dataType}
             )
         ORDER BY
             orderNum
@@ -252,7 +255,7 @@
             dataType = #{dataType} and
             id not in(
                 select applyDataId from yb_reconsider_inpatientfees  where
-                applyDateStr = #{applyDateStr} and typeno = #{typeno} and dataType = #{dataType}
+                applyDateStr = #{applyDateStr} and areaType = #{areaType} and typeno = #{typeno} and dataType = #{dataType}
             )
     </select>
 

@@ -36,6 +36,11 @@ public class YbAppealSumdeptJson {
     private String comments;
 
     /**
+     * 院区
+     */
+    private Integer areaType;
+
+    /**
      * 状态
      */
     private Integer state;

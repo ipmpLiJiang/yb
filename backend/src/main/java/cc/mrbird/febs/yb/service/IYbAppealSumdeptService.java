@@ -23,7 +23,7 @@ public interface IYbAppealSumdeptService extends IService<YbAppealSumdept> {
 
         IPage<YbAppealSumdept> findYbAppealSumdeptList(QueryRequest request, YbAppealSumdept ybAppealSumdept);
 
-        IPage<YbAppealSumdept> findAppealSumdeptView(QueryRequest request, String currencyField);
+        IPage<YbAppealSumdept> findAppealSumdeptView(QueryRequest request, YbAppealSumdept ybAppealSumdept);
 
         void createYbAppealSumdept(YbAppealSumdept ybAppealSumdept);
 

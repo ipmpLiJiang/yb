@@ -35,9 +35,12 @@ public interface IComFileService extends IService<ComFile> {
 
     List<ComFile> findListComFile(String Id);
 
+
     ComFile findComFileById(String Id);
 
     List<ComFile> findAppealResultComFiles(InUploadFile inUploadFile);
+
+    List<ComFile> findAppealResultSumComFiles(InUploadFile inUploadFile);
 
     boolean loadLastComFiles(List<ComFile> listComFile);
 }

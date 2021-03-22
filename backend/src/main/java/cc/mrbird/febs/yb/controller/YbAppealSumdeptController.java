@@ -1,6 +1,8 @@
 package cc.mrbird.febs.yb.controller;
 
 import cc.mrbird.febs.com.controller.DataTypeHelpers;
+import cc.mrbird.febs.com.entity.ComConfiguremanage;
+import cc.mrbird.febs.com.service.IComConfiguremanageService;
 import cc.mrbird.febs.common.annotation.Log;
 import cc.mrbird.febs.common.controller.BaseController;
 import cc.mrbird.febs.common.domain.FebsResponse;
@@ -29,6 +31,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author viki
@@ -48,6 +51,9 @@ public class YbAppealSumdeptController extends BaseController {
     @Autowired
     public IYbAppealSumdeptDataService iYbAppealSumdeptDataService;
 
+    @Autowired
+    IComConfiguremanageService iComConfiguremanageService;
+
     /**
      * 分页查询数据
      *
@@ -58,7 +64,7 @@ public class YbAppealSumdeptController extends BaseController {
     @GetMapping
     @RequiresPermissions("ybAppealSumdept:view")
     public Map<String, Object> List(QueryRequest request, YbAppealSumdept ybAppealSumdept) {
-        return getDataTable(this.iYbAppealSumdeptService.findAppealSumdeptView(request, ybAppealSumdept.getCurrencyField()));
+        return getDataTable(this.iYbAppealSumdeptService.findAppealSumdeptView(request, ybAppealSumdept));
     }
 
     @Log("新增/按钮")
@@ -72,14 +78,16 @@ public class YbAppealSumdeptController extends BaseController {
             YbAppealSumdeptJson appealSumdeptJson = JSON.parseObject(dataJson, new TypeReference<YbAppealSumdeptJson>() {
             });
             YbAppealSumdept appealSumdept = new YbAppealSumdept();
+            appealSumdept.setAreaType(appealSumdeptJson.getAreaType());
             appealSumdept.setAsName(appealSumdeptJson.getAsName());
             appealSumdept = this.iYbAppealSumdeptService.findAppealSumdept(appealSumdept);
             if (appealSumdept == null) {
-                id =UUID.randomUUID().toString();
+                id = UUID.randomUUID().toString();
                 List<YbAppealSumdeptData> createDataList = new ArrayList<>();
                 YbAppealSumdept create = new YbAppealSumdept();
                 create.setId(id);
                 create.setAsName(appealSumdeptJson.getAsName());
+                create.setAreaType(appealSumdeptJson.getAreaType());
                 create.setIsDeletemark(1);
                 create.setCreateTime(new Date());
                 create.setCreateUserId(currentUser.getUserId());
@@ -95,7 +103,8 @@ public class YbAppealSumdeptController extends BaseController {
                 this.iYbAppealSumdeptService.createAppealSumdept(create, createDataList);
                 success = 1;
             } else {
-                message = "当前汇总科室 " + appealSumdeptJson.getAsName() + " 已经维护过数据了";
+                message = iComConfiguremanageService.getConfigAreaName(appealSumdeptJson.getAreaType());
+                message = message + "当前汇总科室 " + appealSumdeptJson.getAsName() + " 已经维护过数据了";
             }
             //dataJson = JSONUtil.toJsonStr(AppealSumdeptJson);
         } catch (Exception e) {
@@ -121,41 +130,51 @@ public class YbAppealSumdeptController extends BaseController {
             User currentUser = FebsUtil.getCurrentUser();
             YbAppealSumdeptJson appealSumdeptJson = JSON.parseObject(dataJson, new TypeReference<YbAppealSumdeptJson>() {
             });
-            List<YbAppealSumdeptData> updateDataList = new ArrayList<>();
-            List<YbAppealSumdeptData> createDataList = new ArrayList<>();
-            YbAppealSumdept update = new YbAppealSumdept();
-            update.setId(appealSumdeptJson.getId());
-            update.setAsName(appealSumdeptJson.getAsName());
-            update.setModifyTime(new Date());
-            update.setModifyUserId(currentUser.getUserId());
-            for (YbAppealSumdeptDataJson item : appealSumdeptJson.getChild()) {
-                YbAppealSumdeptData updateData = new YbAppealSumdeptData();
-                updateData.setId(item.getId());
-                updateData.setPid(appealSumdeptJson.getId());
-                updateData.setDeptId(item.getDeptId());
-                String strDeptName = DataTypeHelpers.stringReplaceSetString(item.getDeptName(), item.getDeptId() + "-");
-                updateData.setDeptName(strDeptName);
-                if (updateData.getId() == null) {
-                    updateData.setId(UUID.randomUUID().toString());
-                    createDataList.add(updateData);
-                } else {
-                    updateDataList.add(updateData);
+            YbAppealSumdept appealSumdept = new YbAppealSumdept();
+            appealSumdept.setAsName(appealSumdeptJson.getAsName());
+            appealSumdept.setAreaType(appealSumdeptJson.getAreaType());
+            appealSumdept = this.iYbAppealSumdeptService.findAppealSumdept(appealSumdept);
+            if (appealSumdept == null || (appealSumdeptJson.getId().equals(appealSumdept.getId()) && appealSumdeptJson.getAsName().equals(appealSumdept.getAsName()))) {
+                List<YbAppealSumdeptData> updateDataList = new ArrayList<>();
+                List<YbAppealSumdeptData> createDataList = new ArrayList<>();
+                YbAppealSumdept update = new YbAppealSumdept();
+                update.setId(appealSumdeptJson.getId());
+                update.setAsName(appealSumdeptJson.getAsName());
+                update.setModifyTime(new Date());
+                update.setModifyUserId(currentUser.getUserId());
+                for (YbAppealSumdeptDataJson item : appealSumdeptJson.getChild()) {
+                    YbAppealSumdeptData updateData = new YbAppealSumdeptData();
+                    updateData.setId(item.getId());
+                    updateData.setPid(appealSumdeptJson.getId());
+                    updateData.setDeptId(item.getDeptId());
+                    String strDeptName = DataTypeHelpers.stringReplaceSetString(item.getDeptName(), item.getDeptId() + "-");
+                    updateData.setDeptName(strDeptName);
+                    if (updateData.getId() == null) {
+                        updateData.setId(UUID.randomUUID().toString());
+                        createDataList.add(updateData);
+                    } else {
+                        updateDataList.add(updateData);
+                    }
                 }
-            }
-            if (appealSumdeptJson.getChild().size() == 0) {
-                this.iYbAppealSumdeptService.updateAppealSumdept(update, createDataList, updateDataList);
-                success = 1;
-            } else {
-                YbAppealSumdeptData quertAcd = new YbAppealSumdeptData();
-                quertAcd.setPid(appealSumdeptJson.getId());
-                quertAcd.setDeptId(createDataList.get(0).getDeptId());
-                List<YbAppealSumdeptData> queryAcdList = iYbAppealSumdeptDataService.findAppealSumdeptDataList(quertAcd);
-                if (queryAcdList.size() == 0) {
+                if (appealSumdeptJson.getChild().size() == 0) {
                     this.iYbAppealSumdeptService.updateAppealSumdept(update, createDataList, updateDataList);
                     success = 1;
                 } else {
-                    message = createDataList.get(0).getDeptId() + "-" + createDataList.get(0).getDeptName() + " 科室已存在!";
+                    YbAppealSumdeptData quertAcd = new YbAppealSumdeptData();
+                    quertAcd.setPid(appealSumdeptJson.getId());
+                    quertAcd.setDeptId(createDataList.get(0).getDeptId());
+                    List<YbAppealSumdeptData> queryAcdList = iYbAppealSumdeptDataService.findAppealSumdeptDataList(quertAcd);
+                    if (queryAcdList.size() == 0) {
+                        this.iYbAppealSumdeptService.updateAppealSumdept(update, createDataList, updateDataList);
+                        success = 1;
+                    } else {
+                        message = iComConfiguremanageService.getConfigAreaName(appealSumdeptJson.getAreaType());
+                        message = message +createDataList.get(0).getDeptId() + "-" + createDataList.get(0).getDeptName() + " 科室已存在!";
+                    }
                 }
+            }else {
+                message = iComConfiguremanageService.getConfigAreaName(appealSumdeptJson.getAreaType());
+                message = message + "当前汇总科室 " + appealSumdeptJson.getAsName() + " 已经维护过数据了";
             }
         } catch (Exception e) {
             message = "修改失败";
@@ -168,6 +187,7 @@ public class YbAppealSumdeptController extends BaseController {
         rrd.setData("");
         return new FebsResponse().data(rrd);
     }
+
 
 
     /**

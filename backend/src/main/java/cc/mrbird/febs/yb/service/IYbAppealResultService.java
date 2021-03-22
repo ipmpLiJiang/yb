@@ -2,6 +2,7 @@ package cc.mrbird.febs.yb.service;
 
 import cc.mrbird.febs.yb.entity.YbAppealResult;
 import cc.mrbird.febs.yb.entity.YbAppealResultView;
+import cc.mrbird.febs.yb.entity.YbResultDownLoad;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.util.Date;
@@ -34,7 +35,9 @@ public interface IYbAppealResultService extends IService<YbAppealResult> {
 
     YbAppealResult findCreateAppealResult(YbAppealResult ybAppealResult, Long uId, String Uname);
 
-    List<String> findAppealResultGroupDepts(YbAppealResultView ybAppealResultView);
+    List<YbResultDownLoad> findAppealResultGroupDepts(YbAppealResultView ybAppealResultView);
+
+    List<YbResultDownLoad> findAppealResultGroupSumDepts(YbAppealResultView ybAppealResultView);
 
     void updateAppealResulResetDatas(String applyDateStr, Long resetPersonId, String resetPersonName);
 

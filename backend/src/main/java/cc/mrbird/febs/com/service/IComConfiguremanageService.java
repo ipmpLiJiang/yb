@@ -31,4 +31,6 @@ public interface IComConfiguremanageService extends IService<ComConfiguremanage>
         List<ComConfiguremanage> getConfigLists(List<Integer> ctypeList);
 
         int getConfigDay();
+
+        String getConfigAreaName(int areaType);
         }

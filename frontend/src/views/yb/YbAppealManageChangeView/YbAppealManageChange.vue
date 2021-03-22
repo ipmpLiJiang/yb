@@ -71,6 +71,7 @@ export default {
       loading: false,
       bordered: true,
       ybAppealManage: {},
+      user: this.$store.state.account.user,
       tableFormat1: 'YYYY-MM-DD HH:mm:ss',
       tableFormat: 'YYYY-MM-DD'
     }
@@ -237,7 +238,7 @@ export default {
       }
     },
     initSearch () {
-      let params = { applyDateStr: this.applyDate }
+      let params = { applyDateStr: this.applyDate, areaType: this.user.areaType }
       this.$get('ybReconsiderApply/getTypeno', {
         ...params
       }).then((r) => {
@@ -325,6 +326,7 @@ export default {
       params.acceptState = 2
       params.currencyField = this.searchText
       params.typeno = this.searchTypeno
+      params.areaType = this.user.areaType
       if (this.paginationInfo) {
         // 如果分页信息不为空，则设置表格当前第几页，每页条数，并设置查询分页参数
         this.$refs.TableInfo.pagination.current = this.paginationInfo.current

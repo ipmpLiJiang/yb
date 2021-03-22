@@ -68,11 +68,12 @@
         <result column="arOrderDeptCode" property="arOrderDeptCode"/>
         <result column="arOrderDeptName" property="arOrderDeptName"/>
         <result column="relatelDataId" property="relatelDataId"/>
+        <result column="areaType" property="areaType"/>
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        pid, serialNo, billNo, proposalCode, projectCode, projectName, num, medicalPrice, ruleName, deductPrice, deductReason, repaymentReason, doctorName, deptCode, deptName,enterHospitalDateStr,outHospitalDateStr,costDateStr, hospitalizedNo, treatmentMode, settlementDateStr, personalNo, insuredName, cardNumber, areaName, versionNumber, backAppeal, typeno, applyDateStr, id, applyDataId, verifyId, arDoctorCode, arDoctorName, arDeptCode, arDeptName, operateReason, operateDate, STATE,  currencyField,sourceType,dataType,orderNumber,orderNum,repayState,attendDocId,attendDocName,orderDeptId,orderDeptName,orderDocId,orderDocName,excuteDeptId,excuteDeptName,excuteDocId,excuteDocName,itemTypeName,feeOperatorId,feeOperatorName,feeDeptId,feeDeptName,arOrderDoctorCode,arOrderDoctorName,arOrderDeptCode,arOrderDeptName,relatelDataId
+        pid, serialNo, billNo, proposalCode, projectCode, projectName, num, medicalPrice, ruleName, deductPrice, deductReason, repaymentReason, doctorName, deptCode, deptName,enterHospitalDateStr,outHospitalDateStr,costDateStr, hospitalizedNo, treatmentMode, settlementDateStr, personalNo, insuredName, cardNumber, areaName, versionNumber, backAppeal, typeno, applyDateStr, id, applyDataId, verifyId, arDoctorCode, arDoctorName, arDeptCode, arDeptName, operateReason, operateDate, STATE,  currencyField,sourceType,dataType,orderNumber,orderNum,repayState,attendDocId,attendDocName,orderDeptId,orderDeptName,orderDocId,orderDocName,excuteDeptId,excuteDeptName,excuteDocId,excuteDocName,itemTypeName,feeOperatorId,feeOperatorName,feeDeptId,feeDeptName,arOrderDoctorCode,arOrderDoctorName,arOrderDeptCode,arOrderDeptName,relatelDataId,areaType
     </sql>
     <update id="updateYbAppealResultView" parameterType="cc.mrbird.febs.yb.entity.YbAppealResultView">
         update yb_appeal_result_view
@@ -140,7 +141,8 @@
             art.STATE,
             art.repayState,
             art.currencyField,
-            art.relatelDataId
+            art.relatelDataId,
+            art.areaType
         from
         yb_appeal_result art
         STRAIGHT_JOIN yb_reconsider_apply_data ad ON
@@ -161,6 +163,9 @@
         </if>
         <if test="ybAppealResultView.relatelDataId!= null">
             and art.relatelDataId = #{ybAppealResultView.relatelDataId}
+        </if>
+        <if test="ybAppealResultView.areaType!= null">
+            and art.areaType = #{ybAppealResultView.areaType}
         </if>
         <if test="ybAppealResultView.billNo!= null">
             and ad.billNo = #{ybAppealResultView.billNo}
@@ -228,6 +233,9 @@
         </if>
         <if test="ybAppealResultView.relatelDataId!= null">
             and art.relatelDataId = #{ybAppealResultView.relatelDataId}
+        </if>
+        <if test="ybAppealResultView.areaType!= null">
+            and art.areaType = #{ybAppealResultView.areaType}
         </if>
         <if test="ybAppealResultView.billNo!= null">
             and ad.billNo = #{ybAppealResultView.billNo}
@@ -325,7 +333,8 @@
         art.STATE,
         art.repayState,
         art.currencyField,
-        art.relatelDataId
+        art.relatelDataId,
+        art.areaType
         from
         yb_reconsider_apply_data ad
         inner join yb_appeal_result art ON
@@ -344,6 +353,9 @@
         </if>
         <if test="ybAppealResultView.relatelDataId!= null">
             and art.relatelDataId = #{ybAppealResultView.relatelDataId}
+        </if>
+        <if test="ybAppealResultView.areaType!= null">
+            and art.areaType = #{ybAppealResultView.areaType}
         </if>
         where
         ad.pid = #{ ybAppealResultView.pid }
@@ -395,6 +407,9 @@
         </if>
         <if test="ybAppealResultView.relatelDataId!= null">
             and art.relatelDataId = #{ybAppealResultView.relatelDataId}
+        </if>
+        <if test="ybAppealResultView.areaType!= null">
+            and art.areaType = #{ybAppealResultView.areaType}
         </if>
         where
         ad.pid = #{ ybAppealResultView.pid }
@@ -492,7 +507,8 @@
             null feeOperatorId,
             null feeOperatorName,
             null feeDeptId,
-            null feeDeptName
+            null feeDeptName,
+            art.areaType
         from
         yb_reconsider_apply_data ad
         LEFT JOIN yb_appeal_result art ON
@@ -503,6 +519,9 @@
             </if>
             <if test="ybAppealResultView.state != null and ybAppealResultView.state != 12 ">
                 and art.state = #{ ybAppealResultView.state}
+            </if>
+            <if test="ybAppealResultView.areaType!= null">
+                and art.areaType = #{ybAppealResultView.areaType}
             </if>
         where
             ad.pid = #{ ybAppealResultView.pid}
@@ -579,7 +598,8 @@
             null feeOperatorId,
             null feeOperatorName,
             null feeDeptId,
-            null feeDeptName
+            null feeDeptName,
+            art.areaType
         from
             yb_appeal_result art
         STRAIGHT_JOIN yb_reconsider_apply_data ad ON
@@ -592,6 +612,9 @@
         <if test="ybAppealResultView.typeno != null ">and art.typeno = #{ ybAppealResultView.typeno}</if>
         <if test="ybAppealResultView.state != null and ybAppealResultView.state != 12 ">
             and art.state = #{ ybAppealResultView.state}
+        </if>
+        <if test="ybAppealResultView.areaType!= null">
+            and art.areaType = #{ybAppealResultView.areaType}
         </if>
     </select>
 

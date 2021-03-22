@@ -121,7 +121,7 @@
           <a-icon
             type="delete"
             theme="outlined"
-            twoToneColor="record.state==1?#4a9ff5:#C0C0C0"
+            twoToneColor="record.state==1?#4a9ff5:#D3D3D3"
           ></a-icon>
           </a>
           <a-divider type="vertical" />
@@ -216,6 +216,7 @@ export default {
       uploadTitle: '上传第一版',
       tableFormat: 'YYYY-MM-DD',
       tableFormat1: 'YYYY-MM-DD HH:mm:ss',
+      user: this.$store.state.account.user,
       gotoVisiable: false
     }
   },
@@ -233,12 +234,12 @@ export default {
       {
         title: '复议年月',
         dataIndex: 'applyDateStr',
-        width: 90
+        width: 100
       },
       {
         title: '操作员',
         dataIndex: 'operatorName',
-        width: 100
+        width: 130
       },
       {
         title: '第一版结束日期',
@@ -254,7 +255,7 @@ export default {
             return text
           }
         },
-        width: 140
+        width: 145
       },
       {
         title: '第二版结束日期',
@@ -270,7 +271,7 @@ export default {
             return text
           }
         },
-        width: 140
+        width: 145
       },
       {
         title: '操作时间',
@@ -286,7 +287,7 @@ export default {
             return text
           }
         },
-        width: 110
+        width: 115
       },
       {
         title: '状态',
@@ -311,7 +312,7 @@ export default {
               return text
           }
         },
-        width: 90
+        width: 100
       },
       {
         title: '操作',
@@ -499,6 +500,7 @@ export default {
       params.sortField = 'create_Time'
       params.sortOrder = 'descend'
       // params.sortOrder = 'ascend'
+      params.areaType = this.user.areaType
       this.$get('ybReconsiderApply', {
         ...params
       }).then((r) => {

@@ -189,7 +189,11 @@ public class ComFileController extends BaseController {
     public void fileImgZip(QueryRequest request, InUploadFile inUploadFile, HttpServletResponse response) throws FebsException {
         int sourceType = inUploadFile.getSourceType();
         String strSourceType = sourceType == 0 ? "In" : "Out";
+        if(sourceType==1){
+            inUploadFile.setTypeno(3);
+        }
         String deptName = inUploadFile.getDeptName();
+
         String path = febsProperties.getUploadPath();
         //String address = path + inUploadFile.getApplyDateStr() + "/" + deptName;
         String address = path + inUploadFile.getApplyDateStr() + "/";
@@ -203,6 +207,47 @@ public class ComFileController extends BaseController {
         String filePath = address + deptName + "-" + inUploadFile.getTypeno() + ".zip";
         try {
             List<ComFile> list = this.iComFileService.findAppealResultComFiles(inUploadFile);
+            if (list.size() > 0) {
+                File[] fileUtils = new File[list.size()];
+                for (int i = 0; i < list.size(); i++) {
+                    ComFile comFile = list.get(i);
+                    String t = comFile.getRefTabTable();
+                    File file = new File(address + t + "/" + strSourceType + "/" + comFile.getServerName());
+                    fileUtils[i] = file;
+                }
+                ZipUtil.zip(FileUtil.file(filePath), false, fileUtils);
+                //ZipUtil.zip(address, filePath);
+                this.downFile(response, filePath, fileName, true);
+            }
+        } catch (Exception e) {
+            message = "导出失败";
+            log.error(message, e);
+            throw new FebsException(message);
+        }
+    }
+
+    @PostMapping("fileSumImgZip")
+//    @RequiresPermissions("comFile:imgExport")
+    public void fileSumImgZip(QueryRequest request, InUploadFile inUploadFile, HttpServletResponse response) throws FebsException {
+        int sourceType = inUploadFile.getSourceType();
+        String strSourceType = sourceType == 0 ? "In" : "Out";
+        if(sourceType==1){
+            inUploadFile.setTypeno(3);
+        }
+        String deptName = inUploadFile.getDeptName();
+        String path = febsProperties.getUploadPath();
+        //String address = path + inUploadFile.getApplyDateStr() + "/" + deptName;
+        String address = path + inUploadFile.getApplyDateStr() + "/";
+        String fileName = "";
+        if (inUploadFile.getFileName() != null && inUploadFile.getFileName() != "") {
+            fileName = inUploadFile.getFileName() + ".zip";
+        } else {
+            fileName = UUID.randomUUID().toString() + ".zip";
+        }
+
+        String filePath = address + deptName + "-" + inUploadFile.getTypeno() + ".zip";
+        try {
+            List<ComFile> list = this.iComFileService.findAppealResultSumComFiles(inUploadFile);
             if (list.size() > 0) {
                 File[] fileUtils = new File[list.size()];
                 for (int i = 0; i < list.size(); i++) {
@@ -397,7 +442,7 @@ public class ComFileController extends BaseController {
         Date thisDate = new Date();
         OutComFile outComFile = new OutComFile();
         if (inUploadFile.getIsCheck() == 1) {
-            isUpdate = iYbReconsiderApplyService.findReconsiderApplyCheckEndDate(inUploadFile.getApplyDateStr(), inUploadFile.getTypeno());
+            isUpdate = iYbReconsiderApplyService.findReconsiderApplyCheckEndDate(inUploadFile.getApplyDateStr(),inUploadFile.getAreaType(), inUploadFile.getTypeno());
             if (inUploadFile.getTypeno() == YbDefaultValue.TYPENO_1) {
                 mms = "第一版";
             } else {
@@ -438,6 +483,9 @@ public class ComFileController extends BaseController {
             String Id = UUID.randomUUID().toString();
             if (!dest.getParentFile().exists()) {
                 dest.getParentFile().mkdirs();
+            }
+            try {
+                file.transferTo(dest);
                 ComFile cf = new ComFile();
                 cf.setId(Id);
                 cf.setCreateTime(thisDate);
@@ -446,9 +494,7 @@ public class ComFileController extends BaseController {
                 cf.setRefTabId(strId);
                 cf.setRefTabTable(currentUser.getUsername());
                 iComFileService.createComFile(cf);
-            }
-            try {
-                file.transferTo(dest);
+
             } catch (IOException e) {
                 throw new FebsException(e.getMessage());
             }
@@ -477,7 +523,7 @@ public class ComFileController extends BaseController {
             boolean isUpdate = false;
             String mms = "";
             if (inUploadFile.getIsCheck() == 1) {
-                isUpdate = iYbReconsiderApplyService.findReconsiderApplyCheckEndDate(inUploadFile.getApplyDateStr(), inUploadFile.getTypeno());
+                isUpdate = iYbReconsiderApplyService.findReconsiderApplyCheckEndDate(inUploadFile.getApplyDateStr(),inUploadFile.getAreaType(), inUploadFile.getTypeno());
                 if (inUploadFile.getTypeno() == YbDefaultValue.TYPENO_1) {
                     mms = "第一版";
                 } else {

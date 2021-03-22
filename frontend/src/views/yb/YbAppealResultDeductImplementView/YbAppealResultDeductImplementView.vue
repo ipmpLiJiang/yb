@@ -165,6 +165,7 @@ export default {
       fileList: [],
       spinning: false,
       delayTime: 500,
+      user: this.$store.state.account.user,
       tableSelectKey: '1'
     }
   },
@@ -212,6 +213,7 @@ export default {
       const formData = new FormData()
       formData.append('file', file)
       formData.append('applyDateStr', this.searchApplyDate)
+      formData.append('areaType', this.user.areaType)
       this.spinning = true
       this.$upload('ybAppealResultDeductimplement/importDeductimplement', formData).then((r) => {
         // r.data.data.message

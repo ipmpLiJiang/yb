@@ -160,6 +160,7 @@ export default {
       searchText: '',
       tableSelectKey: '1',
       searchTypeno: 1,
+      user: this.$store.state.account.user,
       selectTypenoDataSource: [{text: '全部', value: 0}, {text: '版本一', value: 1}, {text: '版本二', value: 2}, {text: '人工复议', value: 3}]
     }
   },
@@ -179,7 +180,7 @@ export default {
     },
     initTypeno (applyDateStr) {
       this.$get('ybReconsiderApply/getTypeno', {
-        applyDateStr: applyDateStr
+        applyDateStr: applyDateStr, areaType: this.user.areaType
       }).then((r) => {
         if (r.data.data.success === 1) {
           this.searchTypeno = parseInt(r.data.data.data)

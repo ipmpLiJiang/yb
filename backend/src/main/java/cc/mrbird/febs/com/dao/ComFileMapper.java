@@ -23,4 +23,7 @@ public interface ComFileMapper extends BaseMapper<ComFile> {
     IPage<ComFile> findComFile(Page page, @Param("comFile") ComFile comFile);
 
     List<ComFile> findAppealResultComFile(@Param("inUploadFile") InUploadFile inUploadFile);
+
+    List<ComFile> findAppealResultSumComFile(@Param("inUploadFile") InUploadFile inUploadFile);
+
 }

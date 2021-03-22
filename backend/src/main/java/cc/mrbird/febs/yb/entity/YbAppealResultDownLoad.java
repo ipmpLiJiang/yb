@@ -7,7 +7,12 @@ import java.math.BigDecimal;
 @Data
 public class YbAppealResultDownLoad {
 
-    private  int key;
+    private  String key;
+
+    /**
+     * 部门
+     */
+    private String deptId;
     /**
      * 部门
      */

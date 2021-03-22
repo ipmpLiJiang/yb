@@ -98,6 +98,7 @@ export default {
       form: this.$form.createForm(this),
       ybReconsiderApply: {},
       checked: false,
+      user: this.$store.state.account.user,
       monthFormat: 'YYYY-MM',
       dayFormat: 'YYYY-MM-DD HH:mm:ss'
     }
@@ -144,6 +145,7 @@ export default {
           let ybReconsiderApply = this.form.getFieldsValue()
           ybReconsiderApply.id = this.ybReconsiderApply.id
           ybReconsiderApply.isUpOverdue = this.checked
+          ybReconsiderApply.areaType = this.user.areaType
           this.$put('ybReconsiderApply', {
             ...ybReconsiderApply
           }).then((r) => {

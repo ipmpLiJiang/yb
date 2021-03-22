@@ -5,6 +5,7 @@ import cc.mrbird.febs.common.utils.SortUtil;
 import cc.mrbird.febs.yb.entity.YbAppealConfire;
 import cc.mrbird.febs.yb.dao.YbAppealConfireMapper;
 import cc.mrbird.febs.yb.entity.YbAppealConfireData;
+import cc.mrbird.febs.yb.entity.YbAppealSumdept;
 import cc.mrbird.febs.yb.service.IYbAppealConfireDataService;
 import cc.mrbird.febs.yb.service.IYbAppealConfireService;
 import cc.mrbird.febs.yb.service.IYbReconsiderApplyDataService;
@@ -40,8 +41,8 @@ import java.time.LocalDate;
 @Transactional(propagation = Propagation.SUPPORTS, readOnly = true, rollbackFor = Exception.class)
 public class YbAppealConfireServiceImpl extends ServiceImpl<YbAppealConfireMapper, YbAppealConfire> implements IYbAppealConfireService {
 
-        @Autowired
-        public IYbAppealConfireDataService iYbAppealConfireDataService;
+    @Autowired
+    public IYbAppealConfireDataService iYbAppealConfireDataService;
 
     @Override
     public IPage<YbAppealConfire> findYbAppealConfires(QueryRequest request, YbAppealConfire ybAppealConfire) {
@@ -64,11 +65,18 @@ public class YbAppealConfireServiceImpl extends ServiceImpl<YbAppealConfireMappe
 
 
     @Override
-    public IPage<YbAppealConfire> findAppealConfireView(QueryRequest request, String doctorContent, Integer adminType, String deptContent) {
+    public IPage<YbAppealConfire> findAppealConfireView(QueryRequest request, String doctorContent, Integer adminType, Integer areaType, String deptContent) {
         try {
             Page<YbAppealConfire> page = new Page<>();
-            SortUtil.handlePageSort(request, page, true);//true 是属性  false是数据库字段可两个
-            return this.baseMapper.findAppealConfireView(page, doctorContent,adminType,deptContent);
+            int count = this.baseMapper.findAppealConfireCount(doctorContent, adminType, areaType, deptContent);
+            if (count > 0) {
+                page.setSearchCount(false);
+                SortUtil.handlePageSort(request, page, false);//true 是属性  false是数据库字段可两个
+                IPage<YbAppealConfire> pg = this.baseMapper.findAppealConfireView(page, doctorContent, adminType, areaType, deptContent);
+                pg.setTotal(count);
+                return pg;
+            }
+            return page;
         } catch (Exception e) {
             log.error("获取失败", e);
             return null;
@@ -76,11 +84,18 @@ public class YbAppealConfireServiceImpl extends ServiceImpl<YbAppealConfireMappe
     }
 
     @Override
-    public IPage<YbAppealConfire> findAppealConfireUserView(QueryRequest request, String doctorContent, Integer adminType, String deptContent,Long uid) {
+    public IPage<YbAppealConfire> findAppealConfireUserView(QueryRequest request, String doctorContent, Integer adminType, Integer areaType, String deptContent, Long uid) {
         try {
             Page<YbAppealConfire> page = new Page<>();
-            SortUtil.handlePageSort(request, page, true);//true 是属性  false是数据库字段可两个
-            return this.baseMapper.findAppealConfireUserView(page, doctorContent,adminType,deptContent,uid);
+            int count = this.baseMapper.findAppealConfireUserCount(doctorContent, adminType, areaType, deptContent, uid);
+            if (count > 0) {
+                page.setSearchCount(false);
+                SortUtil.handlePageSort(request, page, false);//true 是属性  false是数据库字段可两个
+                IPage<YbAppealConfire> pg = this.baseMapper.findAppealConfireUserView(page, doctorContent, adminType, areaType, deptContent, uid);
+                pg.setTotal(count);
+                return pg;
+            }
+            return page;
         } catch (Exception e) {
             log.error("获取失败", e);
             return null;
@@ -100,7 +115,6 @@ public class YbAppealConfireServiceImpl extends ServiceImpl<YbAppealConfireMappe
     }
 
 
-
     @Override
     @Transactional
     public void createYbAppealConfire(YbAppealConfire ybAppealConfire) {
@@ -117,19 +131,21 @@ public class YbAppealConfireServiceImpl extends ServiceImpl<YbAppealConfireMappe
         this.baseMapper.updateYbAppealConfire(ybAppealConfire);
     }
 
-        @Override
-        @Transactional
-        public void createAppealConfire(YbAppealConfire ybAppealConfire, List<YbAppealConfireData> createDataList) {
-                this.save(ybAppealConfire);
-                iYbAppealConfireDataService.saveBatch(createDataList);
+    @Override
+    @Transactional
+    public void createAppealConfire(YbAppealConfire ybAppealConfire, List<YbAppealConfireData> createDataList) {
+        this.save(ybAppealConfire);
+        if (createDataList.size() > 0) {
+            iYbAppealConfireDataService.saveBatch(createDataList);
         }
+    }
 
-        @Override
-        @Transactional
-        public void updateAppealConfire(YbAppealConfire ybAppealConfire, List<YbAppealConfireData> createDataList, List<YbAppealConfireData> updateDataList) {
-                this.updateById(ybAppealConfire);
-                iYbAppealConfireDataService.saveBatch(createDataList);
-        }
+    @Override
+    @Transactional
+    public void updateAppealConfire(YbAppealConfire ybAppealConfire, List<YbAppealConfireData> createDataList, List<YbAppealConfireData> updateDataList) {
+        this.updateById(ybAppealConfire);
+        iYbAppealConfireDataService.saveBatch(createDataList);
+    }
 
     @Override
     @Transactional
@@ -143,20 +159,30 @@ public class YbAppealConfireServiceImpl extends ServiceImpl<YbAppealConfireMappe
     @Override
     public YbAppealConfire findAppealConfire(YbAppealConfire appealConfire) {
         LambdaQueryWrapper<YbAppealConfire> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(YbAppealConfire::getIsDeletemark,1);
-        if(appealConfire.getId() != null){
-            wrapper.eq(YbAppealConfire::getId,appealConfire.getId());
+        wrapper.eq(YbAppealConfire::getIsDeletemark, 1);
+        if (appealConfire.getId() != null) {
+            wrapper.eq(YbAppealConfire::getId, appealConfire.getId());
         }
-        if(appealConfire.getDoctorCode() != null){
-            wrapper.eq(YbAppealConfire::getDoctorCode,appealConfire.getDoctorCode());
+        if (appealConfire.getDoctorCode() != null) {
+            wrapper.eq(YbAppealConfire::getDoctorCode, appealConfire.getDoctorCode());
+        }
+        if (appealConfire.getAreaType() != null) {
+            wrapper.eq(YbAppealConfire::getAreaType, appealConfire.getAreaType());
         }
         List<YbAppealConfire> list = this.baseMapper.selectList(wrapper);
-        if(list.size()>0) {
+        if (list.size() > 0) {
             return list.get(0);
-        }else{
+        } else {
             return null;
         }
     }
 
+    @Override
+    public List<YbAppealConfire> findAppealConfireATList(List<Integer> atIds) {
+        LambdaQueryWrapper<YbAppealConfire> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(YbAppealConfire::getIsDeletemark, 1);
+        wrapper.in(YbAppealConfire::getAdminType, atIds);
+        return this.list(wrapper);
+    }
 
 }

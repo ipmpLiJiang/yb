@@ -30,6 +30,7 @@ public class SmsTask {
         iComSmsService.sendSms(ComSms.SENDTYPE_1);
         iComSmsService.sendSms(ComSms.SENDTYPE_5);
 //        iComSmsService.sendSms(ComSms.SENDTYPE_6);
+        iComSmsService.sendSms(ComSms.SENDTYPE_7);
     }
 
 }

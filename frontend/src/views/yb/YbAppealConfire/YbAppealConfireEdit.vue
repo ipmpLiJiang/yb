@@ -151,10 +151,11 @@ export default {
       this.ybAcData.deptId = item.value
       this.ybAcData.deptName = item.text
     },
-    setFormValues (obj, atDataSource) {
+    setFormValues (obj, areaType, atDataSource) {
       this.isUpdate = false
       this.selectAdminTypeDataSource = atDataSource
       this.form.getFieldDecorator('adminType')
+      this.ybAppealConfire.areaType = areaType
       if (obj === undefined || obj === null || obj === '') {
         this.isEdit = false
         if (this.selectAdminTypeDataSource.length > 0) {

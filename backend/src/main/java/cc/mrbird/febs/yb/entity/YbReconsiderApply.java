@@ -201,6 +201,14 @@ public class YbReconsiderApply implements Serializable {
     private transient String endDateTwoFrom;
     private transient String endDateTwoTo;
 
+    /**
+     * 院区
+     */
+    @TableField("areaType")
+    @ExcelField(value = "院区")
+    private Integer areaType;
+
+
     public static final String ID = "id";
 
     public static final String APPLYDATE = "applyDate";
@@ -241,5 +249,7 @@ public class YbReconsiderApply implements Serializable {
     public static final String ENDDATEONE = "endDateOne";
 
     public static final String ENDDATETWO = "endDateTwo";
+
+    public static final String AREATYPE = "areaType";
 
 }

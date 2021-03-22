@@ -5,6 +5,7 @@ import cc.mrbird.febs.common.utils.SortUtil;
 import cc.mrbird.febs.yb.entity.YbAppealResult;
 import cc.mrbird.febs.yb.dao.YbAppealResultMapper;
 import cc.mrbird.febs.yb.entity.YbAppealResultView;
+import cc.mrbird.febs.yb.entity.YbResultDownLoad;
 import cc.mrbird.febs.yb.service.IYbAppealResultService;
 import cc.mrbird.febs.yb.service.IYbHandleVerifyService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -121,9 +122,16 @@ public class YbAppealResultServiceImpl extends ServiceImpl<YbAppealResultMapper,
 
     //打包下载 查找部门
     @Override
-    public List<String> findAppealResultGroupDepts(YbAppealResultView ybAppealResultView) {
+    public List<YbResultDownLoad> findAppealResultGroupDepts(YbAppealResultView ybAppealResultView) {
         return this.baseMapper.findAppealResultGroupDept(ybAppealResultView);
     }
+
+    //打包下载 查找部门
+    @Override
+    public List<YbResultDownLoad> findAppealResultGroupSumDepts(YbAppealResultView ybAppealResultView) {
+        return this.baseMapper.findAppealResultGroupSumDept(ybAppealResultView);
+    }
+
 
     //sql 语句更新剔除相关数据 已有方法代替 此方法先留着
     @Override

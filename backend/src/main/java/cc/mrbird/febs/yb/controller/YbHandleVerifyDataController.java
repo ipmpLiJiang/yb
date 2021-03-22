@@ -173,13 +173,13 @@ public class YbHandleVerifyDataController extends BaseController {
     }
 
     @PostMapping("importCreateHandleVerifyData")
-    public FebsResponse importCreateHandleVerifyDatas(String applyDateStr) {
+    public FebsResponse importCreateHandleVerifyDatas(String applyDateStr,Integer areaType) {
         int success = 0;
         try {
             User currentUser = FebsUtil.getCurrentUser();
             Long uid = currentUser.getUserId();
             String uname = currentUser.getUsername();
-            this.iYbHandleVerifyDataService.importCreateHandleVerifyData(applyDateStr,uid,uname);
+            this.iYbHandleVerifyDataService.importCreateHandleVerifyData(applyDateStr,areaType,uid,uname);
             message = "获得剔除操作成功,如未获取到数据，请检查是否剔除完成操作.";
             success = 1;
         } catch (Exception e) {

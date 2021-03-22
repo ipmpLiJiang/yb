@@ -43,6 +43,11 @@ public class YbAppealConfireJson{
     private Integer adminType;
 
     /**
+     * 院区
+     */
+    private Integer areaType;
+
+    /**
      * 备注
      */
     private String comments;

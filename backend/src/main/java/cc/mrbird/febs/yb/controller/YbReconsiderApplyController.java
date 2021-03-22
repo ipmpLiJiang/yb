@@ -89,10 +89,10 @@ public class YbReconsiderApplyController extends BaseController {
     @Log("创建Job")
     @PutMapping("startJob")
     @RequiresPermissions("ybReconsiderApply:add")
-    public FebsResponse cStartJob(String applyDateStr) {
+    public FebsResponse cStartJob(String applyDateStr,Integer areaType) {
         int success = 0;
         try {
-            String msg = this.iYbReconsiderApplyService.createJobState(applyDateStr);
+            String msg = this.iYbReconsiderApplyService.createJobState(applyDateStr,areaType);
             if(msg.equals("")){
                 success = 1;
             }else{
@@ -218,7 +218,7 @@ public class YbReconsiderApplyController extends BaseController {
         try {
             String applyDateStr = ybReconsiderApply.getApplyDateStr();
             Integer state = ybReconsiderApply.getState();
-            boolean bl = this.iYbReconsiderApplyService.updateYbReconsiderApplyState(applyDateStr,state);
+            boolean bl = this.iYbReconsiderApplyService.updateYbReconsiderApplyState(applyDateStr,ybReconsiderApply.getAreaType(),state);
             if(bl){
                 message = "状态修改成功.";
                 success = 1;
@@ -236,11 +236,11 @@ public class YbReconsiderApplyController extends BaseController {
     }
 
     @GetMapping("getTypeno")
-    public FebsResponse getTypeno(String applyDateStr) {
+    public FebsResponse getTypeno(String applyDateStr,Integer areaType) {
         int success = 0;
         int typeno = 0;
         try {
-            typeno = this.iYbReconsiderApplyService.getReconsiderApplyTypeno(applyDateStr);
+            typeno = this.iYbReconsiderApplyService.getReconsiderApplyTypeno(applyDateStr,areaType);
             success = 1;
         }catch (Exception e) {
             message = "获取状态值失败";

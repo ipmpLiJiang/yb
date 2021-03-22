@@ -11,6 +11,7 @@
         <i-menu style="height: 64px; line-height: 64px;" class="system-top-menu" :theme="theme" mode="horizontal" :menuData="menuData" @select="onSelect"/>
       </div>
       <div :class="['global-header-right', theme]">
+        <b>院区：&nbsp;&nbsp;{{$store.state.account.user.areaType === 0 ? '本院' : '西院'}}</b>
           <header-avatar class="header-item"/>
       </div>
     </div>

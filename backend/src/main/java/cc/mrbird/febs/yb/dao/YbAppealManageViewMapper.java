@@ -22,13 +22,13 @@ public interface YbAppealManageViewMapper extends BaseMapper<YbAppealManageView>
 
     IPage<YbAppealManageView> findYbAppealManageView(Page page, @Param("ybAppealManageView") YbAppealManageView ybAppealManageView);
 
-    IPage<YbAppealManageView> findAppealManageView(Page page, @Param("ybAppealManageView") YbAppealManageView ybAppealManageView);
+    IPage<YbAppealManageView> findAppealManageView(Page page, @Param("ybAppealManageView") YbAppealManageView ybAppealManageView,@Param("appealConfireId") String appealConfireId);
 
-    int findAppealManageCount(@Param("ybAppealManageView") YbAppealManageView ybAppealManageView);
+    int findAppealManageCount(@Param("ybAppealManageView") YbAppealManageView ybAppealManageView,@Param("appealConfireId") String appealConfireId);
 
-    IPage<YbAppealManageView> findAppealManageLikeView(Page page, @Param("ybAppealManageView") YbAppealManageView ybAppealManageView);
+    IPage<YbAppealManageView> findAppealManageLikeView(Page page, @Param("ybAppealManageView") YbAppealManageView ybAppealManageView,@Param("appealConfireId") String appealConfireId);
 
-    int findAppealManageLikeCount(@Param("ybAppealManageView") YbAppealManageView ybAppealManageView);
+    int findAppealManageLikeCount(@Param("ybAppealManageView") YbAppealManageView ybAppealManageView,@Param("appealConfireId") String appealConfireId);
 
     List<YbAppealManageView> findAppealManageList(@Param("ybAppealManageView") YbAppealManageView ybAppealManageView);
 }

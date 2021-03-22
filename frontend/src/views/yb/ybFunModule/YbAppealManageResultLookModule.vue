@@ -142,6 +142,7 @@ export default {
     downloadFile () {
       let formData = {}
       formData.id = this.ybAppealManage.id
+      formData.deptId = this.ybAppealManage.readyDeptCode
       formData.deptName = this.ybAppealManage.readyDeptName
       formData.applyDateStr = this.ybAppealManage.applyDateStr
       formData.typeno = this.ybAppealManage.typeno
@@ -155,7 +156,7 @@ export default {
     findFileList (ybAppealManage) {
       let formData = {}
       formData.id = ybAppealManage.id
-      formData.deptName = ybAppealManage.readyDeptName
+      formData.deptId = ybAppealManage.readyDeptCode
       formData.applyDateStr = ybAppealManage.applyDateStr
       formData.sourceType = ybAppealManage.sourceType
       this.$post('comFile/listImgComFile', {

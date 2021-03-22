@@ -19,5 +19,5 @@ public interface YbAppealManageMapper extends BaseMapper<YbAppealManage> {
     void updateYbAppealManage(YbAppealManage ybAppealManage);
 
     IPage<YbAppealManage> findYbAppealManage(Page page, @Param("ybAppealManage") YbAppealManage ybAppealManage);
-    int findAppealManageResetCheckCount(@Param("applyDateStr") String applyDateStr);
+    int findAppealManageResetCheckCount(@Param("applyDateStr") String applyDateStr,@Param("areaType")  Integer areaType);
 }

@@ -45,5 +45,5 @@ public interface IYbAppealManageService extends IService<YbAppealManage> {
 
     List<YbAppealManage> getUpdateAppealManageList(List<YbAppealManageView> appealManageList, Date endDateOne);
 
-    int findAppealManageResetCheckCounts(String applyDateStr);
+    int findAppealManageResetCheckCounts(String applyDateStr,Integer areaType);
 }

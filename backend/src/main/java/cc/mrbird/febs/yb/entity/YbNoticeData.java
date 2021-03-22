@@ -29,6 +29,16 @@ public class YbNoticeData implements Serializable , Comparable<YbNoticeData>{
 private static final long serialVersionUID=1L;
 
     /**
+     * 人员类型 1 医管人员类型
+     */
+    public static final Integer NDTYPE_1 = 1;
+
+    /**
+     * 人员类型 2 人员
+     */
+    public static final Integer NDTYPE_2 = 2;
+
+    /**
      * 培训通知明细
      */
                     @TableId(value = "id" )

@@ -111,6 +111,10 @@ public class YbReconsiderApplyTaskServiceImpl extends ServiceImpl<YbReconsiderAp
             queryWrapper.eq(YbReconsiderApplyTask::getState, ybReconsiderApplyTask.getState());
         }
 
+        if (ybReconsiderApplyTask.getAreaType() != null) {
+            queryWrapper.eq(YbReconsiderApplyTask::getAreaType, ybReconsiderApplyTask.getAreaType());
+        }
+
         return this.list(queryWrapper);
     }
 

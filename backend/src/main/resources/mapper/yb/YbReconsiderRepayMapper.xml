@@ -20,11 +20,12 @@
                     <result column="CREATE_TIME" property="createTime"/>
                     <result column="CREATE_USER_ID" property="createUserId"/>
                     <result column="MODIFY_USER_ID" property="modifyUserId"/>
+            <result column="areaType" property="areaType"/>
         </resultMap>
 
         <!-- 通用查询结果列 -->
         <sql id="Base_Column_List">
-        id, operatorId, operatorName, uploadFileName, repayType,dataType,applyDate,applyDateStr, currencyField, COMMENTS, STATE, IS_DELETEMARK, MODIFY_TIME, CREATE_TIME, CREATE_USER_ID, MODIFY_USER_ID
+        id, operatorId, operatorName, uploadFileName, repayType,dataType,applyDate,applyDateStr, currencyField, COMMENTS, STATE, IS_DELETEMARK, MODIFY_TIME, CREATE_TIME, CREATE_USER_ID, MODIFY_USER_ID,areaType
     </sql>
     <update id="updateYbReconsiderRepay" parameterType="cc.mrbird.febs.yb.entity.YbReconsiderRepay">
         update yb_reconsider_repay
@@ -44,6 +45,7 @@
 <if test="createTime != null">CREATE_TIME=#{createTime},</if>
 <if test="createUserId != null">CREATE_USER_ID=#{createUserId},</if>
 <if test="modifyUserId != null">MODIFY_USER_ID=#{modifyUserId},</if>
+            <if test="areaType != null">areaType=#{areaType},</if>
         </trim>
                 where id=#{id}
 
@@ -79,6 +81,7 @@
         <if test="ybReconsiderRepay.createTimeTo!= null">
             AND ybReconsiderRepay.CREATE_TIME <![CDATA[ <= ]]>  createTimeTo}
         </if>
+        <if test="ybReconsiderRepay.areaType != null">and ybReconsiderRepay.areaType =#{ ybReconsiderRepay.areaType}</if>
 </select>
 
 </mapper>

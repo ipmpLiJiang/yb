@@ -61,11 +61,12 @@
         <result column="orderDeptCode" property="orderDeptCode"/>
         <result column="orderDeptName" property="orderDeptName"/>
         <result column="STATE" property="state"/>
+        <result column="areaType" property="areaType"/>
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        pid, serialNo, billNo, proposalCode, projectCode, projectName, num, medicalPrice, ruleName, deductPrice, deductReason, repaymentReason, doctorName, deptCode, deptName,enterHospitalDateStr,outHospitalDateStr,costDateStr, hospitalizedNo, treatmentMode, settlementDateStr, personalNo, insuredName, cardNumber, areaName, versionNumber, backAppeal, typeno, applyDateStr, id, applyDataId, verifyDoctorCode, verifyDoctorName, verifyDeptCode, verifyDeptName, operateReason, operateDate, matchPersonId, matchPersonName, matchDate, reviewerId, reviewerName, reviewerDate, sendPersonId, sendPersonName, sendDate,insuredType,dataType,orderNumber,orderNum,isVerify,isPerson,orderDoctorCode,orderDoctorName,orderDeptCode,orderDeptName, STATE
+        pid, serialNo, billNo, proposalCode, projectCode, projectName, num, medicalPrice, ruleName, deductPrice, deductReason, repaymentReason, doctorName, deptCode, deptName,enterHospitalDateStr,outHospitalDateStr,costDateStr, hospitalizedNo, treatmentMode, settlementDateStr, personalNo, insuredName, cardNumber, areaName, versionNumber, backAppeal, typeno, applyDateStr, id, applyDataId, verifyDoctorCode, verifyDoctorName, verifyDeptCode, verifyDeptName, operateReason, operateDate, matchPersonId, matchPersonName, matchDate, reviewerId, reviewerName, reviewerDate, sendPersonId, sendPersonName, sendDate,insuredType,dataType,orderNumber,orderNum,isVerify,isPerson,orderDoctorCode,orderDoctorName,orderDeptCode,orderDeptName, STATE, areaType
     </sql>
     <update id="updateYbReconsiderVerifyView" parameterType="cc.mrbird.febs.yb.entity.YbReconsiderVerifyView">
         update yb_reconsider_verify_view
@@ -476,13 +477,16 @@
         case when rv.id is null then '' else rv.orderDeptCode end orderDeptCode,
         case when rv.id is null then '' else rv.orderDeptName end orderDeptName,
         case when rv.id is null then 0 else 1 end isVerify,
-        case when yp.id is null then 0 else 1 end isPerson
+        case when yp.id is null then 0 else 1 end isPerson,
+        rv.areaType
         from
         yb_reconsider_apply_data ad
         INNER JOIN yb_reconsider_apply ra ON
         ra.id = ad.pid
         LEFT JOIN yb_reconsider_verify rv ON
-        ad.id = rv.applyDataId and rv.applyDateStr=#{ ybReconsiderVerifyView.applyDateStr}
+        ad.id = rv.applyDataId and
+        rv.applyDateStr=#{ ybReconsiderVerifyView.applyDateStr} and
+        rv.areaType = #{ ybReconsiderVerifyView.areaType}
         LEFT join yb_person yp on
         rv.verifyDoctorCode = yp.personCode
         where
@@ -491,8 +495,11 @@
         <if test="ybReconsiderVerifyView.typeno != null">and ad.typeno =#{ ybReconsiderVerifyView.typeno}</if>
         <if test="ybReconsiderVerifyView.dataType != null">and ad.dataType =#{ ybReconsiderVerifyView.dataType}</if>
         <if test="ybReconsiderVerifyView.isVerify == null ">and rv.id is null</if>
-        <if test="ybReconsiderVerifyView.isVerify != null and ybReconsiderVerifyView.isVerify != 0">and 1=2</if>
-        <if test="ybReconsiderVerifyView.isVerify != null and ybReconsiderVerifyView.isVerify == 0">and rv.id is null
+        <if test="ybReconsiderVerifyView.isVerify != null and ybReconsiderVerifyView.isVerify != 0">
+            and 1=2
+        </if>
+        <if test="ybReconsiderVerifyView.isVerify != null and ybReconsiderVerifyView.isVerify == 0">
+            and rv.id is null
         </if>
         <if test="searchType[2] == 'LIKE' and ybReconsiderVerifyView.verifyDeptName != null and ybReconsiderVerifyView.verifyDeptName != ''">
             and rv.verifyDeptName like concat('%', #{ ybReconsiderVerifyView.verifyDeptName} ,'%')
@@ -538,8 +545,8 @@
         <if test="ybReconsiderVerifyView.state != null">and rv.state =#{ ybReconsiderVerifyView.state}</if>
         <if test="ybReconsiderVerifyView.isVerify == null ">and rv.id is not null</if>
         <if test="ybReconsiderVerifyView.isVerify != null and ybReconsiderVerifyView.isVerify != 1">and 1=2</if>
-        <if test="ybReconsiderVerifyView.isVerify != null and ybReconsiderVerifyView.isVerify == 1">and rv.id is not
-            null
+        <if test="ybReconsiderVerifyView.isVerify != null and ybReconsiderVerifyView.isVerify == 1">
+            and rv.id is not null
         </if>
         <if test="searchType[2] == 'LIKE' and ybReconsiderVerifyView.verifyDeptName != null and ybReconsiderVerifyView.verifyDeptName != ''">
             and rv.verifyDeptName like concat('%', #{ ybReconsiderVerifyView.verifyDeptName} ,'%')
@@ -588,7 +595,9 @@
         from
         yb_reconsider_apply_data ad
         LEFT JOIN yb_reconsider_verify rv ON
-        ad.id = rv.applyDataId and rv.applyDateStr=#{ ybReconsiderVerifyView.applyDateStr}
+        ad.id = rv.applyDataId and
+        rv.applyDateStr=#{ ybReconsiderVerifyView.applyDateStr} and
+        rv.areaType = #{ ybReconsiderVerifyView.areaType}
         where
         (
         ad.pid = #{ ybReconsiderVerifyView.pid}
@@ -744,7 +753,8 @@
         case when rv.id is null then '' else rv.orderDeptCode end orderDeptCode,
         case when rv.id is null then '' else rv.orderDeptName end orderDeptName,
         case when rv.id is null then 0 else 1 end isVerify,
-        case when yp.id is null then 0 else 1 end isPerson
+        case when yp.id is null then 0 else 1 end isPerson,
+        rv.areaType
         from
         yb_reconsider_verify rv
         inner JOIN yb_reconsider_apply_data ad ON
@@ -775,6 +785,9 @@
         <if test="ybReconsiderVerifyView.state != null">and rv.state =#{ ybReconsiderVerifyView.state}</if>
         <if test="ybReconsiderVerifyView.typeno != null">and rv.typeno =#{ ybReconsiderVerifyView.typeno}</if>
         <if test="ybReconsiderVerifyView.dataType != null">and rv.dataType =#{ ybReconsiderVerifyView.dataType}</if>
+        <if test="ybReconsiderVerifyView.areaType != null">
+            and rv.areaType = #{ ybReconsiderVerifyView.areaType}
+        </if>
         <if test="searchType[2] == 'LIKE' and ybReconsiderVerifyView.verifyDeptName != null and ybReconsiderVerifyView.verifyDeptName != ''">
             and rv.verifyDeptName like concat('%', #{ ybReconsiderVerifyView.verifyDeptName} ,'%')
         </if>
@@ -827,6 +840,9 @@
         <if test="ybReconsiderVerifyView.state != null">and rv.state =#{ ybReconsiderVerifyView.state}</if>
         <if test="ybReconsiderVerifyView.typeno != null">and rv.typeno =#{ ybReconsiderVerifyView.typeno}</if>
         <if test="ybReconsiderVerifyView.dataType != null">and rv.dataType =#{ ybReconsiderVerifyView.dataType}</if>
+        <if test="ybReconsiderVerifyView.areaType != null">
+            and rv.areaType = #{ ybReconsiderVerifyView.areaType}
+        </if>
         <if test="searchType[2] == 'LIKE' and ybReconsiderVerifyView.verifyDeptName != null and ybReconsiderVerifyView.verifyDeptName != ''">
             and rv.verifyDeptName like concat('%', #{ ybReconsiderVerifyView.verifyDeptName} ,'%')
         </if>
@@ -905,13 +921,16 @@
             case when rv.id is null then '' else rv.orderDeptCode end orderDeptCode,
             case when rv.id is null then '' else rv.orderDeptName end orderDeptName,
             case when rv.id is null then 0 else 1 end isVerify,
-            null isPerson
+            null isPerson,
+            rv.areaType
         from
             yb_reconsider_apply_data ad
             INNER JOIN yb_reconsider_apply ra ON
                 ra.id = ad.pid
             LEFT JOIN yb_reconsider_verify rv ON
-                ad.id = rv.applyDataId and rv.applyDateStr=#{ ybReconsiderVerifyView.applyDateStr}
+                ad.id = rv.applyDataId and
+                rv.applyDateStr=#{ ybReconsiderVerifyView.applyDateStr} and
+                rv.areaType=#{ ybReconsiderVerifyView.areaType}
         where
             ad.pid = #{ybReconsiderVerifyView.pid} and
             ad.typeno =  #{ybReconsiderVerifyView.typeno} and
@@ -927,6 +946,7 @@
         yb_reconsider_verify
     WHERE
         applyDateStr= #{ybReconsiderVerifyView.applyDateStr} and
+        areaType = #{ ybReconsiderVerifyView.areaType} and
         typeno = #{ybReconsiderVerifyView.typeno} and
         dataType = #{ybReconsiderVerifyView.dataType}
 </select>

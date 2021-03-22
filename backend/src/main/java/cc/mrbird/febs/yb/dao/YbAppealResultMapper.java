@@ -2,6 +2,7 @@ package cc.mrbird.febs.yb.dao;
 
 import cc.mrbird.febs.yb.entity.YbAppealResult;
 import cc.mrbird.febs.yb.entity.YbAppealResultView;
+import cc.mrbird.febs.yb.entity.YbResultDownLoad;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -23,7 +24,9 @@ public interface YbAppealResultMapper extends BaseMapper<YbAppealResult> {
 
     IPage<YbAppealResult> findYbAppealResult(Page page, @Param("ybAppealResult") YbAppealResult ybAppealResult);
 
-    List<String> findAppealResultGroupDept(@Param("ybAppealResultView") YbAppealResultView ybAppealResultView);
+    List<YbResultDownLoad> findAppealResultGroupDept(@Param("ybAppealResultView") YbAppealResultView ybAppealResultView);
+
+    List<YbResultDownLoad> findAppealResultGroupSumDept(@Param("ybAppealResultView") YbAppealResultView ybAppealResultView);
 
     List<YbAppealResult> findAppealResulDataByReset(@Param("applyDateStr") String applyDateStr,@Param("dataType") Integer dataType);
 

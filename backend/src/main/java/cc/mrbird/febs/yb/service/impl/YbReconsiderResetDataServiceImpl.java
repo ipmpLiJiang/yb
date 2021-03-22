@@ -252,10 +252,10 @@ public class YbReconsiderResetDataServiceImpl extends ServiceImpl<YbReconsiderRe
 
     @Override
     @Transactional
-    public String updateResetDatas(String applyDateStr, Long uid, String uname, Integer dataType) {
+    public String updateResetDatas(String applyDateStr,Integer areaType, Long uid, String uname, Integer dataType) {
         String message = "";
-        int rvCheckCount = iYbReconsiderVerifyService.findReconsiderVerifyResetCheckCounts(applyDateStr);
-        int amCheckCount = iYbAppealManageService.findAppealManageResetCheckCounts(applyDateStr);
+        int rvCheckCount = iYbReconsiderVerifyService.findReconsiderVerifyResetCheckCounts(applyDateStr,areaType);
+        int amCheckCount = iYbAppealManageService.findAppealManageResetCheckCounts(applyDateStr,areaType);
         if (rvCheckCount == 0) {
             if (amCheckCount == 0) {
                 YbReconsiderResetDataView queryRrd = new YbReconsiderResetDataView();
@@ -269,7 +269,7 @@ public class YbReconsiderResetDataServiceImpl extends ServiceImpl<YbReconsiderRe
 //                List<YbReconsiderResetDataView> resetDataList = this.iYbReconsiderResetDataViewService.list(queryWrapperRdv);
                 List<YbReconsiderResetDataView> resetDataList = this.iYbReconsiderResetDataViewService.findYbReconsiderResetDataList(queryRrd);
                 if (resetDataList.size() > 0) {
-                    List<YbReconsiderApplyData> applyDataList = this.iYbReconsiderApplyDataService.findReconsiderApplyDataByApplyDates(applyDateStr, dataType);
+                    List<YbReconsiderApplyData> applyDataList = this.iYbReconsiderApplyDataService.findReconsiderApplyDataByApplyDates(applyDateStr,areaType, dataType);
                     if (applyDataList.size() > 0) {
                         List<YbAppealResult> resultList = this.iYbAppealResultService.findAppealResulDataByResets(applyDateStr, dataType);
                         if (resultList.size() == 0) {

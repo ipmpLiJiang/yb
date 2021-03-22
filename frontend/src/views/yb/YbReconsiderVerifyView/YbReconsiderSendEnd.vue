@@ -72,6 +72,7 @@ export default {
       loading: false,
       bordered: true,
       ybReconsiderVerify: {},
+      user: this.$store.state.account.user,
       tableFormat: 'YYYY-MM-DD'
     }
   },
@@ -255,6 +256,7 @@ export default {
       params.typeno = this.searchTypeno
       params.dataType = this.searchDataType
       params.state = 3
+      params.areaType = this.user.areaType
       let searchType = [this.searchItem.project.type, this.searchItem.rule.type, this.searchItem.dept.type, this.searchItem.order.type]
       params.searchType = searchType
       if (this.searchItem !== undefined) {

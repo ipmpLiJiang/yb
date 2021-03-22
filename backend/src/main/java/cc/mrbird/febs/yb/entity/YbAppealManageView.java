@@ -522,8 +522,12 @@ public class YbAppealManageView implements Serializable {
     //@ExcelField(value ="审批状态")
     private Integer approvalState;
 
-
-
+    /**
+     * 院区
+     */
+    @TableField("areaType")
+    @ExcelField(value = "院区")
+    private Integer areaType;
 
     public static final String PID = "pid";
     public static final String SERIALNO = "serialNo";
@@ -593,4 +597,5 @@ public class YbAppealManageView implements Serializable {
     public static final String CURRENCYFIELD = "currencyField";
     public static final String VERIFYSENDID = "verifySendId";
     public static final String APPROVALSTATE = "approvalState";
+    public static final String AREATYPE = "areaType";
 }

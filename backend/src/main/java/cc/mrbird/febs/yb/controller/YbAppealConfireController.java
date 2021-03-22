@@ -1,6 +1,8 @@
 package cc.mrbird.febs.yb.controller;
 
 import cc.mrbird.febs.com.controller.DataTypeHelpers;
+import cc.mrbird.febs.com.entity.ComConfiguremanage;
+import cc.mrbird.febs.com.service.IComConfiguremanageService;
 import cc.mrbird.febs.common.annotation.Log;
 import cc.mrbird.febs.common.controller.BaseController;
 import cc.mrbird.febs.common.domain.FebsResponse;
@@ -31,6 +33,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author viki
@@ -50,6 +53,8 @@ public class YbAppealConfireController extends BaseController {
     @Autowired
     public IYbAppealConfireDataService iYbAppealConfireDataService;
 
+    @Autowired
+    public IComConfiguremanageService iComConfiguremanageService;
 
     /**
      * 分页查询数据
@@ -59,15 +64,15 @@ public class YbAppealConfireController extends BaseController {
      */
     @GetMapping
     @RequiresPermissions("ybAppealConfire:view")
-    public Map<String, Object> List(QueryRequest request, String doctorContent, Integer adminType, String deptContent) {
-        return getDataTable(this.iYbAppealConfireService.findAppealConfireView(request, doctorContent, adminType, deptContent));
+    public Map<String, Object> List(QueryRequest request, String doctorContent, Integer adminType, Integer areaType, String deptContent) {
+        return getDataTable(this.iYbAppealConfireService.findAppealConfireView(request, doctorContent, adminType, areaType, deptContent));
     }
 
     @GetMapping("findAppealConfireView")
     @RequiresPermissions("ybAppealConfire:userView")
-    public Map<String, Object> findUserList(QueryRequest request, String doctorContent, Integer adminType, String deptContent) {
+    public Map<String, Object> findUserList(QueryRequest request, String doctorContent, Integer adminType, Integer areaType, String deptContent) {
         User currentUser = FebsUtil.getCurrentUser();
-        return getDataTable(this.iYbAppealConfireService.findAppealConfireUserView(request, doctorContent, adminType, deptContent,currentUser.getUserId()));
+        return getDataTable(this.iYbAppealConfireService.findAppealConfireUserView(request, doctorContent, adminType, areaType, deptContent, currentUser.getUserId()));
     }
 
     /**
@@ -103,6 +108,7 @@ public class YbAppealConfireController extends BaseController {
             });
             YbAppealConfire appealConfire = new YbAppealConfire();
             appealConfire.setDoctorCode(appealConfireJson.getDoctorCode());
+            appealConfire.setAreaType(appealConfireJson.getAreaType());
             appealConfire = this.iYbAppealConfireService.findAppealConfire(appealConfire);
             if (appealConfire == null) {
                 id = UUID.randomUUID().toString();
@@ -113,6 +119,7 @@ public class YbAppealConfireController extends BaseController {
                 String strDoctorName = DataTypeHelpers.stringReplaceSetString(appealConfireJson.getDoctorName(), appealConfireJson.getDoctorCode() + "-");
                 create.setDoctorName(strDoctorName);
                 create.setAdminType(appealConfireJson.getAdminType());
+                create.setAreaType(appealConfireJson.getAreaType());
                 create.setIsDeletemark(1);
                 create.setCreateTime(new Date());
                 create.setCreateUserId(currentUser.getUserId());
@@ -129,7 +136,8 @@ public class YbAppealConfireController extends BaseController {
                 this.iYbAppealConfireService.createAppealConfire(create, createDataList);
                 success = 1;
             } else {
-                message = "当前职工 " + appealConfireJson.getDoctorName() + " 已经维护过数据了";
+                message = iComConfiguremanageService.getConfigAreaName(appealConfireJson.getAreaType());
+                message = message + " 当前职工 " + appealConfireJson.getDoctorName() + " 已经维护过数据了";
             }
             //dataJson = JSONUtil.toJsonStr(appealConfireJson);
         } catch (Exception e) {
@@ -155,42 +163,54 @@ public class YbAppealConfireController extends BaseController {
             User currentUser = FebsUtil.getCurrentUser();
             YbAppealConfireJson appealConfireJson = JSON.parseObject(dataJson, new TypeReference<YbAppealConfireJson>() {
             });
-            List<YbAppealConfireData> updateDataList = new ArrayList<>();
-            List<YbAppealConfireData> createDataList = new ArrayList<>();
-            YbAppealConfire update = new YbAppealConfire();
-            update.setId(appealConfireJson.getId());
-            update.setAdminType(appealConfireJson.getAdminType());
-            update.setModifyTime(new Date());
-            update.setModifyUserId(currentUser.getUserId());
-            for (YbAppealConfireDataJson item : appealConfireJson.getChild()) {
-                YbAppealConfireData updateData = new YbAppealConfireData();
-                updateData.setId(item.getId());
-                updateData.setPid(appealConfireJson.getId());
-                updateData.setDeptId(item.getDeptId());
-                String strDeptName = DataTypeHelpers.stringReplaceSetString(item.getDeptName(), item.getDeptId() + "-");
-                updateData.setDeptName(strDeptName);
-                if (updateData.getId() == null) {
-                    updateData.setIsDeletemark(1);
-                    updateData.setId(UUID.randomUUID().toString());
-                    createDataList.add(updateData);
-                } else {
-                    updateDataList.add(updateData);
+            YbAppealConfire appealConfire = new YbAppealConfire();
+            appealConfire.setDoctorCode(appealConfireJson.getDoctorCode());
+            appealConfire.setAreaType(appealConfireJson.getAreaType());
+            appealConfire = this.iYbAppealConfireService.findAppealConfire(appealConfire);
+
+            if (appealConfire == null || (appealConfireJson.getId().equals(appealConfire.getId()) && appealConfireJson.getDoctorCode().equals(appealConfire.getDoctorCode()))) {
+                List<YbAppealConfireData> updateDataList = new ArrayList<>();
+                List<YbAppealConfireData> createDataList = new ArrayList<>();
+                YbAppealConfire update = new YbAppealConfire();
+                update.setId(appealConfireJson.getId());
+                update.setAdminType(appealConfireJson.getAdminType());
+                update.setModifyTime(new Date());
+                update.setModifyUserId(currentUser.getUserId());
+                for (YbAppealConfireDataJson item : appealConfireJson.getChild()) {
+                    YbAppealConfireData updateData = new YbAppealConfireData();
+                    updateData.setId(item.getId());
+                    updateData.setPid(appealConfireJson.getId());
+                    updateData.setDeptId(item.getDeptId());
+                    String strDeptName = DataTypeHelpers.stringReplaceSetString(item.getDeptName(), item.getDeptId() + "-");
+                    updateData.setDeptName(strDeptName);
+                    if (updateData.getId() == null) {
+                        updateData.setIsDeletemark(1);
+                        updateData.setId(UUID.randomUUID().toString());
+                        createDataList.add(updateData);
+                    } else {
+                        updateDataList.add(updateData);
+                    }
                 }
-            }
-            if (appealConfireJson.getChild().size() == 0) {
-                this.iYbAppealConfireService.updateAppealConfire(update, createDataList, updateDataList);
-                success = 1;
-            } else {
-                YbAppealConfireData quertAcd = new YbAppealConfireData();
-                quertAcd.setPid(appealConfireJson.getId());
-                quertAcd.setDeptId(createDataList.get(0).getDeptId());
-                List<YbAppealConfireData> queryAcdList = iYbAppealConfireDataService.findAppealConfireDataList(quertAcd);
-                if (queryAcdList.size() == 0) {
+                if (appealConfireJson.getChild().size() == 0) {
                     this.iYbAppealConfireService.updateAppealConfire(update, createDataList, updateDataList);
                     success = 1;
                 } else {
-                    message = createDataList.get(0).getDeptId() + "-" + createDataList.get(0).getDeptName() + " 科室已存在!";
+                    YbAppealConfireData quertAcd = new YbAppealConfireData();
+                    quertAcd.setPid(appealConfireJson.getId());
+                    quertAcd.setDeptId(createDataList.get(0).getDeptId());
+                    List<YbAppealConfireData> queryAcdList = iYbAppealConfireDataService.findAppealConfireDataList(quertAcd);
+                    if (queryAcdList.size() == 0) {
+                        this.iYbAppealConfireService.updateAppealConfire(update, createDataList, updateDataList);
+                        success = 1;
+                    } else {
+                        message = iComConfiguremanageService.getConfigAreaName(appealConfireJson.getAreaType());
+                        message = message + createDataList.get(0).getDeptId() + "-" + createDataList.get(0).getDeptName() + " 科室已存在!";
+
+                    }
                 }
+            } else {
+                message = iComConfiguremanageService.getConfigAreaName(appealConfireJson.getAreaType());
+                message = message + " 当前职工 " + appealConfireJson.getDoctorName() + " 已经维护过数据了";
             }
         } catch (Exception e) {
             message = "修改失败";

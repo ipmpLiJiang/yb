@@ -34,11 +34,11 @@ public interface IYbReconsiderApplyDataService extends IService<YbReconsiderAppl
 
         int deleteReconsiderApplyDataByPid(YbReconsiderApplyData ybReconsiderApplyData);
 
-        List<YbReconsiderApplyData> findReconsiderApplyDataByApplyDates(String applyDateStr, Integer dataType);
+        List<YbReconsiderApplyData> findReconsiderApplyDataByApplyDates(String applyDateStr,Integer areaType, Integer dataType);
 
         List<YbReconsiderApplyData> findReconsiderApplyDataList(YbReconsiderApplyData reconsiderApplyData);
 
-        List<YbReconsiderApplyData> findReconsiderApplyDataByNotVerifys(String pid,String applyDateStr, Integer dataType,Integer typeno);
+        List<YbReconsiderApplyData> findReconsiderApplyDataByNotVerifys(String pid,String applyDateStr,Integer areaType, Integer dataType,Integer typeno);
 
         void createBatchDatas(List<YbReconsiderApplyData> listReconsiderApplyData);
 
@@ -49,7 +49,7 @@ public interface IYbReconsiderApplyDataService extends IService<YbReconsiderAppl
 
 //        int findReconsiderApplyDataCount(String applyDateStr,Integer dataType);
 
-        void findReconsiderApplyDataTask(String applyDateStr);
+        void findReconsiderApplyDataTask(String applyDateStr,Integer areaType);
 
 
 //        void findReconsiderApplyDataNotTask(String applyDateStr);

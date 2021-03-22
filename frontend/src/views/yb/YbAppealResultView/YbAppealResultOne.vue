@@ -71,6 +71,7 @@ export default {
       loading: false,
       bordered: true,
       ybAppealResult: {},
+      user: this.$store.state.account.user,
       tableFormat: 'YYYY-MM-DD'
     }
   },
@@ -187,6 +188,7 @@ export default {
         queryParams.typeno = 1
         queryParams.state = 12 // IN(1,2)
         queryParams.sourceType = 0
+        queryParams.areaType = this.user.areaType
         this.$export('ybAppealResultView/excel1', {
           ...queryParams
         })
@@ -266,6 +268,7 @@ export default {
       params.applyDateStr = this.applyDate
       params.currencyField = this.searchText
       params.dataType = this.searchDataType
+      params.areaType = this.user.areaType
       params.typeno = 1
       // params.state = 12 // IN(1,2)
       params.sourceType = 0
