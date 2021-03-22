@@ -105,6 +105,11 @@
     lodash "^4.2.0"
     to-fast-properties "^2.0.0"
 
+"@tinymce/tinymce-vue@^4.0.0":
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/@tinymce/tinymce-vue/-/tinymce-vue-4.0.0.tgz#694e214f071370dfad1ac199056373048578e6ee"
+  integrity sha512-K6TaiE0uqyOSqOf4R1ZzqxaNsMAAq+d7xTCJGvIpoI29YzGPd23rnBwuW/90/UZWJyNlINGQD2VGzmFnbiqXRQ==
+
 "@types/strip-bom@^3.0.0":
   version "3.0.0"
   resolved "http://registry.npm.taobao.org/@types/strip-bom/download/@types/strip-bom-3.0.0.tgz#14a8ec3956c2e81edb7520790aecf21c290aebd2"
@@ -287,21 +292,17 @@ anymatch@^2.0.0:
     micromatch "^3.1.4"
     normalize-path "^2.1.1"
 
-apexcharts@^2.6.0:
-  version "2.6.0"
-  resolved "http://registry.npm.taobao.org/apexcharts/download/apexcharts-2.6.0.tgz#7e8682638a039d009918fddc9417f2c763e0ddcb"
-  integrity sha1-foaCY4oDnQCZGP3clBfyx2Pg3cs=
+apexcharts@^3.24.0:
+  version "3.24.0"
+  resolved "https://registry.yarnpkg.com/apexcharts/-/apexcharts-3.24.0.tgz#0fc513e940448524ae9702d39ec287567522d1eb"
+  integrity sha512-iT6czJCIVrmAtrcO90MZTQCvC+xi6R6Acf0jNH/d40FVTtCfcqECuKIh5iAMyOTtgUb7+fQ8rbadH2bm1kbL9Q==
   dependencies:
-    babel-polyfill "^6.26.0"
-    core-js "^2.5.7"
-    es6-promise-promise "^1.0.0"
-    svg.draggable.js "^2.2.1"
+    svg.draggable.js "^2.2.2"
     svg.easing.js "^2.0.0"
     svg.filter.js "^2.0.2"
-    svg.js "^2.6.6"
     svg.pathmorphing.js "^0.1.3"
-    svg.resize.js "^1.4.1"
-    svg.select.js "^2.1.2"
+    svg.resize.js "^1.4.3"
+    svg.select.js "^3.0.1"
 
 append-transform@^1.0.0:
   version "1.0.0"
@@ -1963,11 +1964,6 @@ core-js@^2.5.0:
   version "2.5.7"
   resolved "http://registry.npm.taobao.org/core-js/download/core-js-2.5.7.tgz#f972608ff0cead68b841a16a932d0b183791814e"
 
-core-js@^2.5.7:
-  version "2.6.1"
-  resolved "https://registry.yarnpkg.com/core-js/-/core-js-2.6.1.tgz#87416ae817de957a3f249b3b5ca475d4aaed6042"
-  integrity sha512-L72mmmEayPJBejKIWe2pYtGis5r0tQ5NaJekdhyXgeMQTpJoBsH0NL4ElY2LfSoV15xeQWKQ+XTTOZdyero5Xg==
-
 core-util-is@1.0.2, core-util-is@~1.0.0:
   version "1.0.2"
   resolved "http://registry.npm.taobao.org/core-util-is/download/core-util-is-1.0.2.tgz#b5fd54220aa2bc5ab57aab7140c940754503c1a7"
@@ -2629,18 +2625,6 @@ es6-map@^0.1.3:
     es6-symbol "~3.1.1"
     event-emitter "~0.3.5"
 
-es6-promise-promise@^1.0.0:
-  version "1.0.0"
-  resolved "http://registry.npm.taobao.org/es6-promise-promise/download/es6-promise-promise-1.0.0.tgz#3a91f235fdd2b08c4492b5734dfd1f417289b994"
-  integrity sha1-OpHyNf3SsIxEkrVzTf0fQXKJuZQ=
-  dependencies:
-    es6-promise "^3.2.1"
-
-es6-promise@^3.2.1:
-  version "3.3.1"
-  resolved "http://registry.npm.taobao.org/es6-promise/download/es6-promise-3.3.1.tgz#a08cdde84ccdbf34d027a1451bc91d4bcd28a613"
-  integrity sha1-oIzd6EzNvzTQJ6FFG8kdS80ophM=
-
 es6-set@~0.1.5:
   version "0.1.5"
   resolved "http://registry.npm.taobao.org/es6-set/download/es6-set-0.1.5.tgz#d2b3ec5d4d800ced818db538d28974db0a73ccb1"
@@ -3039,9 +3023,10 @@ extglob@^2.0.4:
     snapdragon "^0.8.1"
     to-regex "^3.0.1"
 
-extract-text-webpack-plugin@^3.0.0:
+extract-text-webpack-plugin@^3.0.2:
   version "3.0.2"
-  resolved "http://registry.npm.taobao.org/extract-text-webpack-plugin/download/extract-text-webpack-plugin-3.0.2.tgz#5f043eaa02f9750a9258b78c0a6e0dc1408fb2f7"
+  resolved "https://registry.yarnpkg.com/extract-text-webpack-plugin/-/extract-text-webpack-plugin-3.0.2.tgz#5f043eaa02f9750a9258b78c0a6e0dc1408fb2f7"
+  integrity sha512-bt/LZ4m5Rqt/Crl2HiKuAl/oqg0psx1tsTLkvWbJen1CtD+fftkZhMaQ9HOtY2gWsl2Wq+sABmMVi9z3DhKWQQ==
   dependencies:
     async "^2.4.1"
     loader-utils "^1.1.0"
@@ -4934,6 +4919,11 @@ lodash.uniq@^4.5.0:
 lodash@4.x, lodash@^4.13.1, lodash@^4.17.10, lodash@^4.17.2, lodash@^4.17.3, lodash@^4.17.4, lodash@^4.2.0, lodash@^4.3.0:
   version "4.17.10"
   resolved "http://registry.npm.taobao.org/lodash/download/lodash-4.17.10.tgz#1b7793cf7259ea38fb3661d4d38b3260af8ae4e7"
+
+lodash@^4.17.15:
+  version "4.17.21"
+  resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.21.tgz#679591c564c3bffaae8454cf0b3df370c3d6911c"
+  integrity sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==
 
 lodash@^4.17.5:
   version "4.17.11"
@@ -7381,10 +7371,10 @@ svg-tags@^1.0.0:
   version "1.0.0"
   resolved "http://registry.npm.taobao.org/svg-tags/download/svg-tags-1.0.0.tgz#58f71cee3bd519b59d4b2a843b6c7de64ac04764"
 
-svg.draggable.js@^2.2.1:
-  version "2.2.1"
-  resolved "http://registry.npm.taobao.org/svg.draggable.js/download/svg.draggable.js-2.2.1.tgz#83b00ff6b9babf10fbd1c6f86e83f1ddb0204cbf"
-  integrity sha1-g7AP9rm6vxD70cb4boPx3bAgTL8=
+svg.draggable.js@^2.2.2:
+  version "2.2.2"
+  resolved "https://registry.yarnpkg.com/svg.draggable.js/-/svg.draggable.js-2.2.2.tgz#c514a2f1405efb6f0263e7958f5b68fce50603ba"
+  integrity sha512-JzNHBc2fLQMzYCZ90KZHN2ohXL0BQJGQimK1kGk6AvSeibuKcIdDX9Kr0dT9+UJ5O8nYA0RB839Lhvk4CY4MZw==
   dependencies:
     svg.js "^2.0.1"
 
@@ -7402,7 +7392,7 @@ svg.filter.js@^2.0.2:
   dependencies:
     svg.js "^2.2.5"
 
-svg.js@>=2.3.x, svg.js@^2.0.1, svg.js@^2.2.5, svg.js@^2.4.0, svg.js@^2.6.5, svg.js@^2.6.6:
+svg.js@>=2.3.x, svg.js@^2.0.1, svg.js@^2.2.5, svg.js@^2.4.0, svg.js@^2.6.5:
   version "2.7.1"
   resolved "http://registry.npm.taobao.org/svg.js/download/svg.js-2.7.1.tgz#eb977ed4737001eab859949b4a398ee1bb79948d"
   integrity sha1-65d+1HNwAeq4WZSbSjmO4bt5lI0=
@@ -7414,10 +7404,10 @@ svg.pathmorphing.js@^0.1.3:
   dependencies:
     svg.js "^2.4.0"
 
-svg.resize.js@^1.4.1:
-  version "1.4.2"
-  resolved "http://registry.npm.taobao.org/svg.resize.js/download/svg.resize.js-1.4.2.tgz#57afd427fe3e57550c69660546b1cc4cb89ab2be"
-  integrity sha1-V6/UJ/4+V1UMaWYFRrHMTLiasr4=
+svg.resize.js@^1.4.3:
+  version "1.4.3"
+  resolved "https://registry.yarnpkg.com/svg.resize.js/-/svg.resize.js-1.4.3.tgz#885abd248e0cd205b36b973c4b578b9a36f23332"
+  integrity sha512-9k5sXJuPKp+mVzXNvxz7U0uC9oVMQrrf7cFsETznzUDDm0x8+77dtZkWdMfRlmbkEEYvUn9btKuZ3n41oNA+uw==
   dependencies:
     svg.js "^2.6.5"
     svg.select.js "^2.1.2"
@@ -7428,6 +7418,13 @@ svg.select.js@^2.1.2:
   integrity sha1-5BzhOxrP9Dp0Qfn4voeiMZyHvnM=
   dependencies:
     svg.js "^2.2.5"
+
+svg.select.js@^3.0.1:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/svg.select.js/-/svg.select.js-3.0.1.tgz#a4198e359f3825739226415f82176a90ea5cc917"
+  integrity sha512-h5IS/hKkuVCbKSieR9uQCj9w+zLHoPh+ce19bBYyqF53g6mnPB8sAtIbe1s9dh2S2fCmYX2xel1Ln3PJBbK4kw==
+  dependencies:
+    svg.js "^2.6.5"
 
 svgo@^0.7.0:
   version "0.7.2"
@@ -7523,6 +7520,11 @@ tinycolor2@^1.4.1:
   version "1.4.1"
   resolved "http://registry.npm.taobao.org/tinycolor2/download/tinycolor2-1.4.1.tgz#f4fad333447bc0b07d4dc8e9209d8f39a8ac77e8"
   integrity sha1-9PrTM0R7wLB9TcjpIJ2POaisd+g=
+
+tinymce@^5.7.0:
+  version "5.7.1"
+  resolved "https://registry.yarnpkg.com/tinymce/-/tinymce-5.7.1.tgz#658a6fb4c7d53a8496cc00f8da33f4b8290da06d"
+  integrity sha512-1gY8RClc734srSlkYwY0MQzmkS1j73PuPC+nYtNtrrQVPY9VNcZ4bOiRwzTbdjPPD8GOtv6BAk8Ww/H2RiqKpA==
 
 tmp@^0.0.33:
   version "0.0.33"
@@ -7915,9 +7917,10 @@ vue-style-loader@^3.0.0, vue-style-loader@^3.0.1:
     hash-sum "^1.0.2"
     loader-utils "^1.0.2"
 
-vue-template-compiler@2.5.17:
-  version "2.5.17"
-  resolved "http://registry.npm.taobao.org/vue-template-compiler/download/vue-template-compiler-2.5.17.tgz#52a4a078c327deb937482a509ae85c06f346c3cb"
+vue-template-compiler@^2.5.17:
+  version "2.6.12"
+  resolved "https://registry.yarnpkg.com/vue-template-compiler/-/vue-template-compiler-2.6.12.tgz#947ed7196744c8a5285ebe1233fe960437fcc57e"
+  integrity sha512-OzzZ52zS41YUbkCBfdXShQTe69j1gQDZ9HIX8miuC9C3rBCk9wIRjLiZZLrmX9V+Ftq/YEyv1JaVr5Y/hNtByg==
   dependencies:
     de-indent "^1.0.2"
     he "^1.1.0"
@@ -7951,6 +7954,11 @@ walker@~1.0.5:
   resolved "http://registry.npm.taobao.org/walker/download/walker-1.0.7.tgz#2f7f9b8fd10d677262b18a884e28d19618e028fb"
   dependencies:
     makeerror "1.0.x"
+
+wangeditor-antd@^1.0.7:
+  version "1.0.7"
+  resolved "https://registry.yarnpkg.com/wangeditor-antd/-/wangeditor-antd-1.0.7.tgz#5da7bfbdef34bfd1462aa33be584b6a2bf192006"
+  integrity sha512-vp/9vZTqbyQSd/1RkmLVdHk2h8BXeAEGPqeJ5WqnoTzOTA15J8RNVKoPLcEETYo69lXiZz6vnSV6vWGqnxxwug==
 
 warning@^3.0.0:
   version "3.0.0"
@@ -8043,11 +8051,12 @@ webpack-dev-server@^2.9.1:
     webpack-dev-middleware "1.12.2"
     yargs "6.6.0"
 
-webpack-merge@^4.1.0:
-  version "4.1.3"
-  resolved "http://registry.npm.taobao.org/webpack-merge/download/webpack-merge-4.1.3.tgz#8aaff2108a19c29849bc9ad2a7fd7fce68e87c4a"
+webpack-merge@^4.2.2:
+  version "4.2.2"
+  resolved "https://registry.yarnpkg.com/webpack-merge/-/webpack-merge-4.2.2.tgz#a27c52ea783d1398afd2087f547d7b9d2f43634d"
+  integrity sha512-TUE1UGoTX2Cd42j3krGYqObZbOD+xF7u28WB7tfUordytSjbWTIjK/8V0amkBfTYN4/pB/GIDlJZZ657BGG19g==
   dependencies:
-    lodash "^4.17.5"
+    lodash "^4.17.15"
 
 webpack-sources@^1.0.1, webpack-sources@^1.1.0:
   version "1.1.0"
@@ -8056,9 +8065,10 @@ webpack-sources@^1.0.1, webpack-sources@^1.1.0:
     source-list-map "^2.0.0"
     source-map "~0.6.1"
 
-webpack@^3.6.0:
+webpack@^3.12.0:
   version "3.12.0"
-  resolved "http://registry.npm.taobao.org/webpack/download/webpack-3.12.0.tgz#3f9e34360370602fcf639e97939db486f4ec0d74"
+  resolved "https://registry.yarnpkg.com/webpack/-/webpack-3.12.0.tgz#3f9e34360370602fcf639e97939db486f4ec0d74"
+  integrity sha512-Sw7MdIIOv/nkzPzee4o0EdvCuPmxT98+vVpIvwtcwcF1Q4SDSNp92vwcKc4REe7NItH9f1S4ra9FuQ7yuYZ8bQ==
   dependencies:
     acorn "^5.0.0"
     acorn-dynamic-import "^2.0.0"
