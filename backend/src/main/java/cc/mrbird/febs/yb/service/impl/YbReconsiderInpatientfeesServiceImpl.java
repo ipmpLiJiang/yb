@@ -127,7 +127,7 @@ public class YbReconsiderInpatientfeesServiceImpl extends ServiceImpl<YbReconsid
         if (ybReconsiderInpatientfees.getDataType() != null) {
             wrapper.eq(YbReconsiderInpatientfees::getDataType, ybReconsiderInpatientfees.getDataType());
         }
-        wrapper.eq(YbReconsiderInpatientfees::getIsDeletemark, 1);
+//        wrapper.eq(YbReconsiderInpatientfees::getIsDeletemark, 1);
         return this.list(wrapper);
     }
 

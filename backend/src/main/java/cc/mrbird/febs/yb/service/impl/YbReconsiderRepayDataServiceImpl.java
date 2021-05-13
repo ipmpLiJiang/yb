@@ -228,7 +228,8 @@ public class YbReconsiderRepayDataServiceImpl extends ServiceImpl<YbReconsiderRe
                                 if (repaymentPrice.compareTo(rAd.getDeductPrice()) >= 0) {
                                     updateResult.setRepayState(YbDefaultValue.RESULTREPAYSTATE_1);
                                 } else {
-                                    updateResult.setRepayState(YbDefaultValue.RESULTREPAYSTATE_3);
+                                    //调整
+//                                    updateResult.setRepayState(YbDefaultValue.RESULTREPAYSTATE_3);
                                 }
 
                                 updateResetData.setRepaymentPrice(repaymentPrice);
@@ -365,7 +366,8 @@ public class YbReconsiderRepayDataServiceImpl extends ServiceImpl<YbReconsiderRe
                                 if (repaymentPrice.compareTo(rAd.getDeductPrice()) >= 0) {
                                     updateResult.setRepayState(YbDefaultValue.RESULTREPAYSTATE_1);
                                 } else {
-                                    updateResult.setRepayState(YbDefaultValue.RESULTREPAYSTATE_3);
+                                    //调整
+//                                    updateResult.setRepayState(YbDefaultValue.RESULTREPAYSTATE_3);
                                 }
 
                                 updateResetData.setRepaymentPrice(repaymentPrice);
@@ -494,7 +496,8 @@ public class YbReconsiderRepayDataServiceImpl extends ServiceImpl<YbReconsiderRe
                         if (repaymentPrice.compareTo(reconsiderResetData.getDeductPrice()) >= 0) {
                             updateResult.setRepayState(YbDefaultValue.RESULTREPAYSTATE_1);
                         } else {
-                            updateResult.setRepayState(YbDefaultValue.RESULTREPAYSTATE_3);
+                            //调整
+//                            updateResult.setRepayState(YbDefaultValue.RESULTREPAYSTATE_3);
                         }
                         List<YbReconsiderRepayData> updateRepayDataList = new ArrayList<>();
                         if (repayData.getWarnType() == YbDefaultValue.WARNTYPE_3 && dataList != null) {

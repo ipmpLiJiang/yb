@@ -46,6 +46,9 @@ public class YbReconsiderPriorityLevelServiceImpl extends ServiceImpl<YbReconsid
             if (ybReconsiderPriorityLevel.getState() != null) {
                 sql += " and state = " + ybReconsiderPriorityLevel.getState();
             }
+            if (ybReconsiderPriorityLevel.getAreaType() != null) {
+                sql += " and areaType = " + ybReconsiderPriorityLevel.getAreaType();
+            }
             if (ybReconsiderPriorityLevel.getCurrencyField() != null) {
                 if (ybReconsiderPriorityLevel.getState() == 1 || ybReconsiderPriorityLevel.getState() == 2) {
                     sql += " and (rplName like '%" + ybReconsiderPriorityLevel.getCurrencyField() + "%' or deptCode like '%" + ybReconsiderPriorityLevel.getCurrencyField() + "%' or deptName like '%" + ybReconsiderPriorityLevel.getCurrencyField() + "%')";
@@ -109,7 +112,10 @@ public class YbReconsiderPriorityLevelServiceImpl extends ServiceImpl<YbReconsid
     }
 
     @Override
-    public List<YbReconsiderPriorityLevel> findReconsiderPriorityLevelList(){
-        return  this.list();
+    public List<YbReconsiderPriorityLevel> findReconsiderPriorityLevelList(int areaType){
+        LambdaQueryWrapper<YbReconsiderPriorityLevel> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(YbReconsiderPriorityLevel::getIsDeletemark,1);
+        queryWrapper.eq(YbReconsiderPriorityLevel::getAreaType,areaType);
+        return  this.list(queryWrapper);
     }
 }

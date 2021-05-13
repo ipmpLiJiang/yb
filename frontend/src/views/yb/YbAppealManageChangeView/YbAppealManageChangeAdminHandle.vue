@@ -132,6 +132,7 @@ export default {
       formItemLayout,
       formItemLayout1,
       spinning: false,
+      type: 0,
       delayTime: 500,
       changePersons: ''
     }
@@ -161,7 +162,8 @@ export default {
       this.ybAppealManage.readyDeptCode = item.value
       this.ybAppealManage.readyDeptName = item.text
     },
-    setFormValues (ybAppealManageChangeDetail) {
+    setFormValues (ybAppealManageChangeDetail, type) {
+      this.type = type
       this.ybAppealManageChangeDetail = ybAppealManageChangeDetail
       this.ybAppealManage.id = ybAppealManageChangeDetail.id
       this.ybAppealManage.sourceType = ybAppealManageChangeDetail.sourceType
@@ -219,7 +221,7 @@ export default {
         ...ybAppealManage
       }).then(() => {
         this.reset()
-        this.$emit('success')
+        this.$emit('success', this.type)
       }).catch(() => {
         this.loading = false
         this.spinning = false

@@ -116,12 +116,12 @@ export default {
       {
         title: '交易流水号',
         dataIndex: 'transNo',
-        width: 135
+        width: 150
       },
       {
         title: '项目代码',
         dataIndex: 'itemId',
-        width: 120
+        width: 130
       },
       {
         title: '项目医保编码',
@@ -131,7 +131,7 @@ export default {
       {
         title: '项目名称',
         dataIndex: 'itemName',
-        width: 160
+        width: 170
       },
       {
         title: '项目数量',

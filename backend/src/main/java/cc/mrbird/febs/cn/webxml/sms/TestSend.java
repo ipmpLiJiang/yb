@@ -1,22 +1,17 @@
 package cc.mrbird.febs.cn.webxml.sms;
 
-import cc.mrbird.febs.common.utils.OracleDB;
-import cc.mrbird.febs.yb.entity.*;
-import cn.hutool.core.date.DateUtil;
-import cn.hutool.core.util.NumberUtil;
-import cn.hutool.json.JSONObject;
-import cn.hutool.json.JSONUtil;
+import cc.mrbird.febs.com.entity.ComConfiguremanage;
+import cc.mrbird.febs.com.entity.OutComArea;
+import cc.mrbird.febs.yb.entity.YbAppealConfireJson;
+import cc.mrbird.febs.yb.entity.YbAppealManageView;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
-import lombok.ToString;
-import net.bytebuddy.implementation.bytecode.Throw;
 
 import java.io.Console;
 import java.io.IOException;
-import java.io.InputStream;
-import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 import java.util.stream.Collectors;
 
 /**
@@ -24,6 +19,7 @@ import java.util.stream.Collectors;
  * @createDate 2020/11/3
  */
 public class TestSend {
+
     private static String aa() throws Exception {
         String str = "ddd";
         boolean istr = false;
@@ -43,14 +39,42 @@ public class TestSend {
         return str;
     }
 
-    private static YbAppealConfireJson getAppealConfireJson(String dataJson){
-        YbAppealConfireJson appealConfireJson = JSON.parseObject(dataJson, new TypeReference<YbAppealConfireJson>() {
-        });
+    public static void main(String[] args) {
+//        testXc c = new testXc();
+//        new Thread(c).start();
+//        new Thread(c).start();
+//        new Thread(c).start();
+        List<OutComArea> outAreaList = new ArrayList<>();
+        List<OutComArea> queryList = new ArrayList<>();
 
-        return  appealConfireJson;
-    }
-
-    public static void main(String[] args) throws IOException {
+        for (int i = 1;i<=11;i++ ) {
+            OutComArea area = new OutComArea();
+            area.setAreaType(i);
+            area.setAreaName("1"+ i);
+            outAreaList.add(area);
+        }
+        //页数
+        int pageSize = 20;
+        //总页数
+        int totalPage = 0;
+        int totalRow = outAreaList.size();
+        //第一次进入时会进行判断，设置默认值，当查询总数小于页数时，页数等于 查询总数， 总页数等于1
+        if (totalRow <= pageSize) {
+            pageSize = totalRow;
+            totalPage = 1;
+        } else {
+            totalPage = (totalRow + pageSize - 1) / pageSize;
+        }
+        long current = 0;
+        for(int i= 1; i <= totalPage;i++) {
+            current = i == 1 ? 0 : (i - 1) * pageSize;
+            queryList = outAreaList.stream().sorted(Comparator.comparing(OutComArea::getAreaType)).skip(current).limit(pageSize).collect(Collectors.toList());
+            System.out.println(queryList);
+        }
+//
+//        List<OutComArea> query = outAreaList.stream().filter(s-> s.getAreaName().contains("122")).limit(3).collect(Collectors.toList());
+//        System.out.println(query.size());
+//        System.out.println(query);
 
 //        String dataJson = "{'id':'1','doctorCode':'zhangsan','doctorName':'张三','adminType':1,'comments':'2222','state':0,'isDeletemark':0," +
 //                "'child':[{'id':'11','pid':'1','deptCode':'111','deptName':'内科'},{'id':'22','pid':'1','deptCode':'222','deptName':'外科'}]}";

@@ -36,13 +36,20 @@ import java.time.LocalDate;
 @Transactional(propagation = Propagation.SUPPORTS, readOnly = true, rollbackFor = Exception.class)
 public class YbReconsiderApplyTaskServiceImpl extends ServiceImpl<YbReconsiderApplyTaskMapper, YbReconsiderApplyTask> implements IYbReconsiderApplyTaskService {
 
-
     @Override
     public IPage<YbReconsiderApplyTask> findYbReconsiderApplyTasks(QueryRequest request, YbReconsiderApplyTask ybReconsiderApplyTask) {
         try {
             LambdaQueryWrapper<YbReconsiderApplyTask> queryWrapper = new LambdaQueryWrapper<>();
-            queryWrapper.eq(YbReconsiderApplyTask::getIsDeletemark, 1);//1是未删 0是已删
-
+            if(ybReconsiderApplyTask.getApplyDateStr() != null) {
+                queryWrapper.eq(YbReconsiderApplyTask::getApplyDateStr,ybReconsiderApplyTask.getApplyDateStr());
+            }
+            if(ybReconsiderApplyTask.getAreaType() != null) {
+                queryWrapper.eq(YbReconsiderApplyTask::getAreaType,ybReconsiderApplyTask.getAreaType());
+            }
+            if(ybReconsiderApplyTask.getTypeno() != null) {
+                queryWrapper.eq(YbReconsiderApplyTask::getTypeno,ybReconsiderApplyTask.getTypeno());
+            }
+//            queryWrapper.eq(YbReconsiderApplyTask::getIsDeletemark, 1);//1是未删 0是已删
 
             Page<YbReconsiderApplyTask> page = new Page<>();
             SortUtil.handlePageSort(request, page, false);//true 是属性  false是数据库字段可两个

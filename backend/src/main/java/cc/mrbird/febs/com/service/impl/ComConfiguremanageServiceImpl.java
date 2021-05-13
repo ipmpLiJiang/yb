@@ -1,5 +1,6 @@
 package cc.mrbird.febs.com.service.impl;
 
+import cc.mrbird.febs.com.manager.ComConfigureManager;
 import cc.mrbird.febs.common.domain.QueryRequest;
 import cc.mrbird.febs.common.utils.SortUtil;
 import cc.mrbird.febs.com.entity.ComConfiguremanage;
@@ -13,6 +14,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,6 +36,8 @@ import java.util.stream.Collectors;
 @Transactional(propagation = Propagation.SUPPORTS, readOnly = true, rollbackFor = Exception.class)
 public class ComConfiguremanageServiceImpl extends ServiceImpl<ComConfiguremanageMapper, ComConfiguremanage> implements IComConfiguremanageService {
 
+    @Autowired
+    ComConfigureManager configureManager;
     @Override
     public IPage<ComConfiguremanage> findComConfiguremanages(QueryRequest request, ComConfiguremanage comConfiguremanage) {
         try {
@@ -93,10 +97,22 @@ public class ComConfiguremanageServiceImpl extends ServiceImpl<ComConfiguremanag
     }
 
     @Override
+    public List<ComConfiguremanage> getConfigLists(int cType) {
+        List<Integer> ctypeList = new ArrayList<>();
+        ctypeList.add(cType);
+        return this.getConfigLists(ctypeList);
+    }
+
+    @Override
     public String getConfigAreaName(int areaType){
-        LambdaQueryWrapper<ComConfiguremanage> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(ComConfiguremanage::getConfigureType,5);
-        List<ComConfiguremanage> configList = this.list(queryWrapper);
+        int ctype = 5;
+        List<ComConfiguremanage> configList = new ArrayList<>();
+        configList = configureManager.getConfigures(ctype,"area");
+        if (configList.size() == 0) {
+            LambdaQueryWrapper<ComConfiguremanage> queryWrapper = new LambdaQueryWrapper<>();
+            queryWrapper.eq(ComConfiguremanage::getConfigureType, ctype);
+            configList = this.list(queryWrapper);
+        }
         if (configList.size() > 0) {
             configList = configList.stream().filter(s->s.getIntField().equals(areaType)).collect(Collectors.toList());
             if (configList.size() > 0) {

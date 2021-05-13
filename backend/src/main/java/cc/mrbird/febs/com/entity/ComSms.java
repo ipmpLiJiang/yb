@@ -174,7 +174,34 @@ private static final long serialVersionUID=1L;
             @ExcelField(value ="修改人")
     private Long modifyUserId;
 
+    /**
+     * 院区
+     */
+    @TableField("areaType")
+    @ExcelField(value = "院区")
+    private Integer areaType;
 
+
+    /**
+     * 复议年月Str
+     */
+    @TableField("applyDateStr")
+    @ExcelField(value = "复议年月Str")
+    private String applyDateStr;
+
+    /**
+     * 版本类型
+     */
+    @TableField("typeno")
+    //@ExcelField(value ="版本类型")
+    private Integer typeno;
+
+    /**
+     * 记录ID
+     */
+    @TableField("refTableId")
+    @ExcelField(value ="记录ID")
+    private String refTableId;
 
     public static final String ID ="id" ;
 
@@ -205,6 +232,14 @@ private static final long serialVersionUID=1L;
     public static final String CREATE_USER_ID ="CREATE_USER_ID" ;
 
     public static final String MODIFY_USER_ID ="MODIFY_USER_ID" ;
+
+    public static final String AREATYPE ="areaType" ;
+
+    public static final String APPLYDATESTR = "applyDateStr";
+
+    public static final String TYPENO = "typeno";
+
+    public static final String REFTABLEID ="refTableId" ;
 
 @Override
 public int compareTo(ComSms o) {

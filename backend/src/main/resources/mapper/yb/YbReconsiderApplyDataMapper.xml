@@ -96,9 +96,9 @@
     </update>
     <select id="findYbReconsiderApplyData" resultType="cc.mrbird.febs.yb.entity.YbReconsiderApplyData" parameterType="cc.mrbird.febs.yb.entity.YbReconsiderApplyData">
         select  *  from yb_reconsider_apply_data
-        where  1=1
-        <if test="ybReconsiderApplyData.id != null"> and id =#{ ybReconsiderApplyData.id} </if>
-        <if test="ybReconsiderApplyData.pid != null"> and pid =#{ ybReconsiderApplyData.pid} </if>
+        where
+        <if test="ybReconsiderApplyData.pid != null"> pid =#{ ybReconsiderApplyData.pid} </if>
+        <if test="ybReconsiderApplyData.typeno != null"> and typeno =#{ ybReconsiderApplyData.typeno} </if>
         <if test="ybReconsiderApplyData.dataType != null"> and dataType =#{ ybReconsiderApplyData.dataType} </if>
             <if test="ybReconsiderApplyData.serialNo != null and ybReconsiderApplyData.serialNo != ''"> and serialNo like concat('%', #{ ybReconsiderApplyData.serialNo} ,'%')</if>
             <if test="ybReconsiderApplyData.billNo != null and ybReconsiderApplyData.billNo != ''"> and billNo like concat('%', #{ ybReconsiderApplyData.billNo} ,'%')</if>
@@ -143,7 +143,6 @@
             <if test="ybReconsiderApplyData.areaName != null and ybReconsiderApplyData.areaName != ''"> and areaName like concat('%', #{ ybReconsiderApplyData.areaName} ,'%')</if>
             <if test="ybReconsiderApplyData.versionNumber != null and ybReconsiderApplyData.versionNumber != ''"> and versionNumber like concat('%', #{ ybReconsiderApplyData.versionNumber} ,'%')</if>
             <if test="ybReconsiderApplyData.backAppeal != null and ybReconsiderApplyData.backAppeal != ''"> and backAppeal like concat('%', #{ ybReconsiderApplyData.backAppeal} ,'%')</if>
-        <if test="ybReconsiderApplyData.typeno != null"> and typeno =#{ ybReconsiderApplyData.typeno} </if>
             <if test="ybReconsiderApplyData.comments != null and ybReconsiderApplyData.comments != ''"> and COMMENTS like concat('%', #{ ybReconsiderApplyData.comments} ,'%')</if>
         <if test="ybReconsiderApplyData.state != null"> and STATE =#{ ybReconsiderApplyData.state} </if>
         <if test="ybReconsiderApplyData.isDeletemark != null"> and IS_DELETEMARK =#{ ybReconsiderApplyData.isDeletemark} </if>
@@ -166,7 +165,7 @@
             pid= #{pid} and typeno = #{typeno} and dataType = #{dataType}
             AND id not in(
                 select applyDataId from yb_reconsider_verify where
-                applyDateStr = #{applyDateStr} and typeno = #{typeno} and dataType = #{dataType} and areaType = #{areaType}
+                applyDateStr = #{applyDateStr} and areaType = #{areaType} and typeno = #{typeno} and dataType = #{dataType}
             )
     </select>
     <select id="findReconsiderApplyDataBetween" resultType="cc.mrbird.febs.yb.entity.YbReconsiderApplyData">
@@ -179,8 +178,6 @@
             typeno = #{typeno} and
             dataType = #{dataType} and
             orderSettlementNum between #{startNum} and #{endNum}
-        ORDER BY
-            orderNum
     </select>
     <select id="findReconsiderApplyDataNotBetween" resultType="cc.mrbird.febs.yb.entity.YbReconsiderApplyData">
         SELECT
@@ -193,8 +190,6 @@
             dataType = #{dataType} and
             state = 1 and
             orderSettlementNum between #{startNum} and #{endNum}
-        ORDER BY
-            orderNum
     </select>
     <select id="findReconsiderApplyDataNotInpatientfees" resultType="cc.mrbird.febs.yb.entity.YbReconsiderApplyData">
         SELECT
@@ -207,10 +202,8 @@
             dataType = #{dataType} and
             id not in(
                 select applyDataId from yb_reconsider_inpatientfees where
-                applyDateStr = #{applyDateStr} and typeno = #{typeno} and dataType = #{dataType} and areaType = #{areaType}
+                applyDateStr = #{applyDateStr} and areaType = #{areaType} and typeno = #{typeno} and dataType = #{dataType}
             )
-        ORDER BY
-            orderNum
     </select>
     <select id="findReconsiderApplyDataCount"  resultType="Integer">
         SELECT
@@ -234,7 +227,7 @@
             dataType = #{dataType} and
             id not in(
                 select applyDataId from yb_reconsider_inpatientfees  where
-                applyDateStr = #{applyDateStr} and typeno = #{typeno} and dataType = #{dataType} and areaType = #{areaType}
+                applyDateStr = #{applyDateStr} and areaType = #{areaType} and typeno = #{typeno} and dataType = #{dataType}
             )
     </select>
 

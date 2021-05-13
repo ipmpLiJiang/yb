@@ -111,6 +111,7 @@ export default {
       ybReconsiderVerify: {},
       spinning: false,
       delayTime: 500,
+      user: this.$store.state.account.user,
       form: this.$form.createForm(this)
     }
   },
@@ -143,7 +144,9 @@ export default {
         applyDateStr: this.ybReconsiderVerifyView.applyDateStr,
         orderNumber: this.ybReconsiderVerifyView.orderNumber,
         orderNum: this.ybReconsiderVerifyView.orderNum,
-        typeno: this.ybReconsiderVerifyView.typeno}]
+        typeno: this.ybReconsiderVerifyView.typeno,
+        areaType: this.user.areaType
+      }]
 
       let jsonString = JSON.stringify(arrData)
       this.ybReconsiderVerify = {}

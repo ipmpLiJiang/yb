@@ -169,6 +169,7 @@ export default {
       queryParams: {},
       addVisiable: false,
       editVisiable: false,
+      user: this.$store.state.account.user,
       loading: false,
       bordered: true
     }
@@ -187,7 +188,7 @@ export default {
       {
         title: '规则名称',
         dataIndex: 'rplName',
-        width: 350
+        width: 280
       },
       {
         title: '默认复议科室类型',
@@ -216,7 +217,7 @@ export default {
             return row.deptCode + '-' + row.deptName
           }
         },
-        width: 250
+        width: 200
       },
       {
         title: '默认复议医生类型',
@@ -250,7 +251,7 @@ export default {
       {
         title: '操作员',
         dataIndex: 'operatorName',
-        width: 150
+        width: 160
       },
       {
         title: '操作',
@@ -286,7 +287,7 @@ export default {
       this.addVisiable = false
     },
     add () {
-      this.$refs.ybReconsiderPriorityLevelAdd.setFormValues()
+      this.$refs.ybReconsiderPriorityLevelAdd.setFormValues(this.user.areaType)
       this.addVisiable = true
     },
     handleEditSuccess () {
@@ -404,6 +405,7 @@ export default {
       }
       params.sortField = 'create_Time'
       params.sortOrder = 'descend'
+      params.areaType = this.user.areaType
       params.state = 1
       this.$get('ybReconsiderPriorityLevel', {
         ...params

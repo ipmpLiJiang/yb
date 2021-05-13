@@ -89,143 +89,7 @@
     <select id="findYbAppealManageView" resultType="cc.mrbird.febs.yb.entity.YbAppealManageView"
             parameterType="cc.mrbird.febs.yb.entity.YbAppealManageView">
         select * from yb_appeal_manage_view
-        where 1=1
-        <if test="ybAppealManageView.pid != null and ybAppealManageView.pid != ''">and pid =#{ ybAppealManageView.pid}
-        </if>
-        <if test="ybAppealManageView.serialNo != null and ybAppealManageView.serialNo != ''">and serialNo like
-            concat('%', #{ ybAppealManageView.serialNo} ,'%')
-        </if>
-        <if test="ybAppealManageView.billNo != null and ybAppealManageView.billNo != ''">and billNo like concat('%',
-            #{ ybAppealManageView.billNo} ,'%')
-        </if>
-        <if test="ybAppealManageView.proposalCode != null and ybAppealManageView.proposalCode != ''">and proposalCode
-            like concat('%', #{ ybAppealManageView.proposalCode} ,'%')
-        </if>
-        <if test="ybAppealManageView.projectCode != null and ybAppealManageView.projectCode != ''">and projectCode like
-            concat('%', #{ ybAppealManageView.projectCode} ,'%')
-        </if>
-        <if test="ybAppealManageView.projectName != null and ybAppealManageView.projectName != ''">and projectName like
-            concat('%', #{ ybAppealManageView.projectName} ,'%')
-        </if>
-        <if test="ybAppealManageView.ruleName != null and ybAppealManageView.ruleName != ''">and ruleName like
-            concat('%', #{ ybAppealManageView.ruleName} ,'%')
-        </if>
-        <if test="ybAppealManageView.deductReason != null and ybAppealManageView.deductReason != ''">and deductReason
-            like concat('%', #{ ybAppealManageView.deductReason} ,'%')
-        </if>
-        <if test="ybAppealManageView.repaymentReason != null and ybAppealManageView.repaymentReason != ''">and
-            repaymentReason like concat('%', #{ ybAppealManageView.repaymentReason} ,'%')
-        </if>
-        <if test="ybAppealManageView.doctorName != null and ybAppealManageView.doctorName != ''">and doctorName like
-            concat('%', #{ ybAppealManageView.doctorName} ,'%')
-        </if>
-        <if test="ybAppealManageView.deptCode != null and ybAppealManageView.deptCode != ''">and deptCode like
-            concat('%', #{ ybAppealManageView.deptCode} ,'%')
-        </if>
-        <if test="ybAppealManageView.deptName != null and ybAppealManageView.deptName != ''">and deptName like
-            concat('%', #{ ybAppealManageView.deptName} ,'%')
-        </if>
-        <if test="ybAppealManageView.hospitalizedNo != null and ybAppealManageView.hospitalizedNo != ''">and
-            hospitalizedNo like concat('%', #{ ybAppealManageView.hospitalizedNo} ,'%')
-        </if>
-        <if test="ybAppealManageView.treatmentMode != null and ybAppealManageView.treatmentMode != ''">and treatmentMode
-            like concat('%', #{ ybAppealManageView.treatmentMode} ,'%')
-        </if>
-        <if test="ybAppealManageView.personalNo != null and ybAppealManageView.personalNo != ''">and personalNo like
-            concat('%', #{ ybAppealManageView.personalNo} ,'%')
-        </if>
-        <if test="ybAppealManageView.insuredName != null and ybAppealManageView.insuredName != ''">and insuredName like
-            concat('%', #{ ybAppealManageView.insuredName} ,'%')
-        </if>
-        <if test="ybAppealManageView.cardNumber != null and ybAppealManageView.cardNumber != ''">and cardNumber like
-            concat('%', #{ ybAppealManageView.cardNumber} ,'%')
-        </if>
-        <if test="ybAppealManageView.areaName != null and ybAppealManageView.areaName != ''">and areaName like
-            concat('%', #{ ybAppealManageView.areaName} ,'%')
-        </if>
-        <if test="ybAppealManageView.versionNumber != null and ybAppealManageView.versionNumber != ''">and versionNumber
-            like concat('%', #{ ybAppealManageView.versionNumber} ,'%')
-        </if>
-        <if test="ybAppealManageView.backAppeal != null and ybAppealManageView.backAppeal != ''">and backAppeal like
-            concat('%', #{ ybAppealManageView.backAppeal} ,'%')
-        </if>
-        <if test="ybAppealManageView.typeno != null">and typeno =#{ ybAppealManageView.typeno}</if>
-        <if test="ybAppealManageView.applyDateStr != null and ybAppealManageView.applyDateStr != ''">and applyDateStr
-            like concat('%', #{ ybAppealManageView.applyDateStr} ,'%')
-        </if>
-        <if test="ybAppealManageView.id != null">and id =#{ ybAppealManageView.id}</if>
-        <if test="ybAppealManageView.applyDataId != null">and applyDataId =#{ ybAppealManageView.applyDataId}</if>
-        <if test="ybAppealManageView.verifyId != null">and verifyId =#{ ybAppealManageView.verifyId}</if>
-        <if test="ybAppealManageView.readyDoctorCode != null and ybAppealManageView.readyDoctorCode != ''">and
-            readyDoctorCode like concat('%', #{ ybAppealManageView.readyDoctorCode} ,'%')
-        </if>
-        <if test="ybAppealManageView.readyDoctorName != null and ybAppealManageView.readyDoctorName != ''">and
-            readyDoctorName like concat('%', #{ ybAppealManageView.readyDoctorName} ,'%')
-        </if>
-        <if test="ybAppealManageView.readyDeptCode != null and ybAppealManageView.readyDeptCode != ''">and readyDeptCode
-            like concat('%', #{ ybAppealManageView.readyDeptCode} ,'%')
-        </if>
-        <if test="ybAppealManageView.readyDeptName != null and ybAppealManageView.readyDeptName != ''">and readyDeptName
-            like concat('%', #{ ybAppealManageView.readyDeptName} ,'%')
-        </if>
-        <if test="ybAppealManageView.changeDoctorCode != null and ybAppealManageView.changeDoctorCode != ''">and
-            changeDoctorCode like concat('%', #{ ybAppealManageView.changeDoctorCode} ,'%')
-        </if>
-        <if test="ybAppealManageView.changeDoctorName != null and ybAppealManageView.changeDoctorName != ''">and
-            changeDoctorName like concat('%', #{ ybAppealManageView.changeDoctorName} ,'%')
-        </if>
-        <if test="ybAppealManageView.changeDeptCode != null and ybAppealManageView.changeDeptCode != ''">and
-            changeDeptCode like concat('%', #{ ybAppealManageView.changeDeptCode} ,'%')
-        </if>
-        <if test="ybAppealManageView.changeDeptName != null and ybAppealManageView.changeDeptName != ''">and
-            changeDeptName like concat('%', #{ ybAppealManageView.changeDeptName} ,'%')
-        </if>
-        <if test="ybAppealManageView.operateReason != null and ybAppealManageView.operateReason != ''">and operateReason
-            like concat('%', #{ ybAppealManageView.operateReason} ,'%')
-        </if>
-        <if test="ybAppealManageView.operateDateFrom!= null">
-            AND ybAppealManageView.operateDate <![CDATA[ >= ]]>  operateDateFrom}
-        </if>
-        <if test="ybAppealManageView.operateDateTo!= null">
-            AND ybAppealManageView.operateDate <![CDATA[ <= ]]>  operateDateTo}
-        </if>
-        <if test="ybAppealManageView.acceptState != null">and acceptState =#{ ybAppealManageView.acceptState}</if>
-        <if test="ybAppealManageView.refuseName != null and ybAppealManageView.refuseName != ''">and refuseName like
-            concat('%', #{ ybAppealManageView.refuseName} ,'%')
-        </if>
-        <if test="ybAppealManageView.refuseReason != null and ybAppealManageView.refuseReason != ''">and refuseReason
-            like concat('%', #{ ybAppealManageView.refuseReason} ,'%')
-        </if>
-        <if test="ybAppealManageView.refuseDateFrom!= null">
-            AND ybAppealManageView.refuseDate <![CDATA[ >= ]]>  refuseDateFrom}
-        </if>
-        <if test="ybAppealManageView.refuseDateTo!= null">
-            AND ybAppealManageView.refuseDate <![CDATA[ <= ]]>  refuseDateTo}
-        </if>
-        <if test="ybAppealManageView.adminPersonName != null and ybAppealManageView.adminPersonName != ''">and
-            adminPersonName like concat('%', #{ ybAppealManageView.adminPersonName} ,'%')
-        </if>
-        <if test="ybAppealManageView.adminChangeDateFrom!= null">
-            AND ybAppealManageView.adminChangeDate <![CDATA[ >= ]]>  adminChangeDateFrom}
-        </if>
-        <if test="ybAppealManageView.adminChangeDateTo!= null">
-            AND ybAppealManageView.adminChangeDate <![CDATA[ <= ]]>  adminChangeDateTo}
-        </if>
-        <if test="ybAppealManageView.adminReason != null and ybAppealManageView.adminReason != ''">and adminReason like
-            concat('%', #{ ybAppealManageView.adminReason} ,'%')
-        </if>
-        <if test="ybAppealManageView.enableDateFrom!= null">
-            AND ybAppealManageView.enableDate <![CDATA[ >= ]]>  enableDateFrom}
-        </if>
-        <if test="ybAppealManageView.enableDateTo!= null">
-            AND ybAppealManageView.enableDate <![CDATA[ <= ]]>  enableDateTo}
-        </if>
-        <if test="ybAppealManageView.enableType != null">and enableType =#{ ybAppealManageView.enableType}</if>
-        <if test="ybAppealManageView.sourceType != null">and sourceType =#{ ybAppealManageView.sourceType}</if>
-        <if test="ybAppealManageView.state != null">and STATE =#{ ybAppealManageView.state}</if>
-        <if test="ybAppealManageView.currencyField != null and ybAppealManageView.currencyField != ''">and currencyField
-            like concat('%', #{ ybAppealManageView.currencyField} ,'%')
-        </if>
+        where 1=2
     </select>
 
     <select id="findAppealManageView" resultType="cc.mrbird.febs.yb.entity.YbAppealManageView"
@@ -325,38 +189,29 @@
         where
         am.applyDateStr = #{ybAppealManageView.applyDateStr}
         <if test="ybAppealManageView.areaType != null">
-            and am.areaType = #{ybAppealManageView.areaType}
-        </if>
+            and am.areaType = #{ybAppealManageView.areaType}</if>
         <if test="ybAppealManageView.readyDoctorCode != null and ybAppealManageView.readyDoctorCode != ''">
-            and am.readyDoctorCode = #{ybAppealManageView.readyDoctorCode}
-        </if>
+            and am.readyDoctorCode = #{ ybAppealManageView.readyDoctorCode}</if>
+        <if test="ybAppealManageView.readyDoctorName != null and ybAppealManageView.readyDoctorName != ''">
+            and am.readyDoctorCode in (select personCode from yb_person where personName = #{ ybAppealManageView.readyDoctorName})</if>
         <if test="ybAppealManageView.orderDoctorCode != null and ybAppealManageView.orderDoctorCode != ''">
-            and am.orderDoctorCode = #{ybAppealManageView.orderDoctorCode}
-        </if>
+            and am.orderDoctorCode = #{ybAppealManageView.orderDoctorCode}</if>
         <if test="ybAppealManageView.readyDeptName != null and ybAppealManageView.readyDeptName != ''">
-            and am.readyDeptName = #{ybAppealManageView.readyDeptName}
-        </if>
+            and am.readyDeptName = #{ybAppealManageView.readyDeptName}</if>
         <if test="ybAppealManageView.acceptState != null and ybAppealManageView.acceptState == 10">
-            and (am.acceptState = 1 or am.acceptState = 0)
-        </if>
+            and (am.acceptState = 1 or am.acceptState = 0)</if>
         <if test="ybAppealManageView.acceptState != null and ybAppealManageView.acceptState == 210">
-            and (am.acceptState = 1 or am.acceptState = 0 or am.acceptState = 2)
-        </if>
+            and (am.acceptState = 1 or am.acceptState = 0 or am.acceptState = 2)</if>
         <if test="ybAppealManageView.acceptState != null and ybAppealManageView.acceptState != 210 and ybAppealManageView.acceptState != 10">
-            and am.acceptState = #{ybAppealManageView.acceptState}
-        </if>
+            and am.acceptState = #{ybAppealManageView.acceptState}</if>
         <if test="ybAppealManageView.typeno != null and ybAppealManageView.typeno==3">
-            and am.sourceType = 1
-        </if>
+            and am.sourceType = 1</if>
         <if test="ybAppealManageView.typeno != null and ybAppealManageView.typeno != 0 and ybAppealManageView.typeno!=3">
-            and am.typeno =#{ ybAppealManageView.typeno}
-        </if>
+            and am.typeno =#{ ybAppealManageView.typeno}</if>
         <if test="appealConfireId != null">
-            and am.readyDeptCode in(SELECT deptId FROM yb_appeal_confire_data where pid = #{ appealConfireId})
-        </if>
+            and am.readyDeptCode in(SELECT deptId FROM yb_appeal_confire_data where pid = #{ appealConfireId})</if>
         order by am.typeno,am.dataType,am.orderNum asc
     </select>
-
     <select id="findAppealManageCount" resultType="Integer"
             parameterType="cc.mrbird.febs.yb.entity.YbAppealManageView">
         select
@@ -368,35 +223,27 @@
         where
         am.applyDateStr = #{ybAppealManageView.applyDateStr}
         <if test="ybAppealManageView.areaType != null">
-            and am.areaType = #{ybAppealManageView.areaType}
-        </if>
+            and am.areaType = #{ybAppealManageView.areaType}</if>
         <if test="ybAppealManageView.readyDoctorCode != null and ybAppealManageView.readyDoctorCode != ''">
-            and am.readyDoctorCode = #{ybAppealManageView.readyDoctorCode}
-        </if>
+            and am.readyDoctorCode = #{ ybAppealManageView.readyDoctorCode}</if>
+        <if test="ybAppealManageView.readyDoctorName != null and ybAppealManageView.readyDoctorName != ''">
+            and am.readyDoctorCode in (select personCode from yb_person where personName = #{ ybAppealManageView.readyDoctorName})</if>
         <if test="ybAppealManageView.orderDoctorCode != null and ybAppealManageView.orderDoctorCode != ''">
-            and am.orderDoctorCode = #{ybAppealManageView.orderDoctorCode}
-        </if>
+            and am.orderDoctorCode = #{ybAppealManageView.orderDoctorCode}</if>
         <if test="ybAppealManageView.readyDeptName != null and ybAppealManageView.readyDeptName != ''">
-            and am.readyDeptName = #{ybAppealManageView.readyDeptName}
-        </if>
+            and am.readyDeptName = #{ybAppealManageView.readyDeptName}</if>
         <if test="ybAppealManageView.acceptState != null and ybAppealManageView.acceptState == 10">
-            and (am.acceptState = 1 or am.acceptState = 0)
-        </if>
+            and (am.acceptState = 1 or am.acceptState = 0)</if>
         <if test="ybAppealManageView.acceptState != null and ybAppealManageView.acceptState == 210">
-            and (am.acceptState = 1 or am.acceptState = 0 or am.acceptState = 2)
-        </if>
+            and (am.acceptState = 1 or am.acceptState = 0 or am.acceptState = 2)</if>
         <if test="ybAppealManageView.acceptState != null and ybAppealManageView.acceptState != 210 and ybAppealManageView.acceptState != 10">
-            and am.acceptState = #{ybAppealManageView.acceptState}
-        </if>
+            and am.acceptState = #{ybAppealManageView.acceptState}</if>
         <if test="ybAppealManageView.typeno != null and ybAppealManageView.typeno==3">
-            and am.sourceType = 1
-        </if>
+            and am.sourceType = 1</if>
         <if test="ybAppealManageView.typeno != null and ybAppealManageView.typeno != 0 and ybAppealManageView.typeno!=3">
-            and am.typeno =#{ ybAppealManageView.typeno}
-        </if>
+            and am.typeno =#{ ybAppealManageView.typeno}</if>
         <if test="appealConfireId != null">
-            and am.readyDeptCode in(SELECT deptId FROM yb_appeal_confire_data where pid = #{ appealConfireId})
-        </if>
+            and am.readyDeptCode in(SELECT deptId FROM yb_appeal_confire_data where pid = #{ appealConfireId})</if>
     </select>
 
     <select id="findAppealManageLikeView" resultType="cc.mrbird.febs.yb.entity.YbAppealManageView"
@@ -496,7 +343,7 @@
             and am.areaType = #{ybAppealManageView.areaType}
         </if>
         <if test="ybAppealManageView.readyDoctorCode != null and ybAppealManageView.readyDoctorCode != ''">
-            and am.readyDoctorCode = #{ybAppealManageView.readyDoctorCode}
+            and am.readyDoctorCode = #{ ybAppealManageView.readyDoctorCode}
         </if>
         <if test="ybAppealManageView.orderDoctorCode != null and ybAppealManageView.orderDoctorCode != ''">
             and am.orderDoctorCode = #{ybAppealManageView.orderDoctorCode}
@@ -524,20 +371,27 @@
         </if>
         inner join yb_reconsider_apply ra ON ra.id = ad.pid
         where
-            (
             ad.pid = #{ ybAppealManageView.pid}
         <if test="ybAppealManageView.typeno != null and ybAppealManageView.typeno != 0 and ybAppealManageView.typeno!=3">
             and ad.typeno =#{ ybAppealManageView.typeno}
         </if>
-            )
-        <if test="ybAppealManageView.currencyField != null and ybAppealManageView.currencyField != ''">
-            and (ad.serialNo like concat('%', #{ ybAppealManageView.currencyField} ,'%')
-            or ad.billNo like concat('%', #{ ybAppealManageView.currencyField} ,'%')
-            or ad.orderNumber = #{ ybAppealManageView.currencyField}
-            or ad.proposalCode like concat('%', #{ ybAppealManageView.currencyField} ,'%')
-            or ad.projectCode like concat('%', #{ ybAppealManageView.currencyField} ,'%')
-            or ad.projectName like concat('%', #{ ybAppealManageView.currencyField} ,'%')
-            or ad.ruleName like concat('%', #{ ybAppealManageView.currencyField} ,'%'))
+        <if test="keyField == 'serialNo' and ybAppealManageView.currencyField != null and ybAppealManageView.currencyField != ''">
+            and ad.serialNo = #{ ybAppealManageView.currencyField}
+        </if>
+        <if test="keyField == 'proposalCode' and ybAppealManageView.currencyField != null and ybAppealManageView.currencyField != ''">
+            and ad.proposalCode = #{ ybAppealManageView.currencyField}
+        </if>
+        <if test="keyField == 'projectCode' and ybAppealManageView.currencyField != null and ybAppealManageView.currencyField != ''">
+            and ad.projectCode = #{ ybAppealManageView.currencyField}
+        </if>
+        <if test="keyField == 'projectName' and ybAppealManageView.currencyField != null and ybAppealManageView.currencyField != ''">
+            and ad.projectName = #{ ybAppealManageView.currencyField}
+        </if>
+        <if test="keyField == 'ruleName' and ybAppealManageView.currencyField != null and ybAppealManageView.currencyField != ''">
+            and ad.ruleName = #{ ybAppealManageView.currencyField}
+        </if>
+        <if test="keyField == 'orderNumber' and ybAppealManageView.currencyField != null and ybAppealManageView.currencyField != ''">
+            and ad.orderNumber = #{ ybAppealManageView.currencyField}
         </if>
     </select>
 
@@ -554,7 +408,7 @@
             and am.areaType = #{ybAppealManageView.areaType}
         </if>
         <if test="ybAppealManageView.readyDoctorCode != null and ybAppealManageView.readyDoctorCode != ''">
-            and am.readyDoctorCode = #{ybAppealManageView.readyDoctorCode}
+            and am.readyDoctorCode = #{ ybAppealManageView.readyDoctorCode}
         </if>
         <if test="ybAppealManageView.orderDoctorCode != null and ybAppealManageView.orderDoctorCode != ''">
             and am.orderDoctorCode = #{ybAppealManageView.orderDoctorCode}
@@ -575,27 +429,33 @@
             and am.sourceType = 1
         </if>
         <if test="ybAppealManageView.typeno != null and ybAppealManageView.typeno != 0 and ybAppealManageView.typeno!=3">
-            and am.typeno =#{ ybAppealManageView.typeno}
+            and am.sourceType = 0 and am.typeno =#{ ybAppealManageView.typeno}
         </if>
         <if test="appealConfireId != null">
             and am.readyDeptCode in(SELECT deptId FROM yb_appeal_confire_data where pid = #{ appealConfireId})
         </if>
-        inner join yb_reconsider_apply ra ON ra.id = ad.pid
         where
-        (
         ad.pid = #{ ybAppealManageView.pid}
         <if test="ybAppealManageView.typeno != null and ybAppealManageView.typeno != 0 and ybAppealManageView.typeno!=3">
             and ad.typeno =#{ ybAppealManageView.typeno}
         </if>
-        )
-        <if test="ybAppealManageView.currencyField != null and ybAppealManageView.currencyField != ''">
-            and (ad.serialNo like concat('%', #{ ybAppealManageView.currencyField} ,'%')
-            or ad.billNo like concat('%', #{ ybAppealManageView.currencyField} ,'%')
-            or ad.orderNumber = #{ ybAppealManageView.currencyField}
-            or ad.proposalCode like concat('%', #{ ybAppealManageView.currencyField} ,'%')
-            or ad.projectCode like concat('%', #{ ybAppealManageView.currencyField} ,'%')
-            or ad.projectName like concat('%', #{ ybAppealManageView.currencyField} ,'%')
-            or ad.ruleName like concat('%', #{ ybAppealManageView.currencyField} ,'%'))
+        <if test="keyField == 'serialNo' and ybAppealManageView.currencyField != null and ybAppealManageView.currencyField != ''">
+            and ad.serialNo = #{ ybAppealManageView.currencyField}
+        </if>
+        <if test="keyField == 'proposalCode' and ybAppealManageView.currencyField != null and ybAppealManageView.currencyField != ''">
+            and ad.proposalCode = #{ ybAppealManageView.currencyField}
+        </if>
+        <if test="keyField == 'projectCode' and ybAppealManageView.currencyField != null and ybAppealManageView.currencyField != ''">
+            and ad.projectCode = #{ ybAppealManageView.currencyField}
+        </if>
+        <if test="keyField == 'projectName' and ybAppealManageView.currencyField != null and ybAppealManageView.currencyField != ''">
+            and ad.projectName = #{ ybAppealManageView.currencyField}
+        </if>
+        <if test="keyField == 'ruleName' and ybAppealManageView.currencyField != null and ybAppealManageView.currencyField != ''">
+            and ad.ruleName = #{ ybAppealManageView.currencyField}
+        </if>
+        <if test="keyField == 'orderNumber' and ybAppealManageView.currencyField != null and ybAppealManageView.currencyField != ''">
+            and ad.orderNumber = #{ ybAppealManageView.currencyField}
         </if>
     </select>
 

@@ -189,6 +189,9 @@ public class ComFileController extends BaseController {
     public void fileImgZip(QueryRequest request, InUploadFile inUploadFile, HttpServletResponse response) throws FebsException {
         int sourceType = inUploadFile.getSourceType();
         String strSourceType = sourceType == 0 ? "In" : "Out";
+        if(inUploadFile.getAreaType() != 0){
+            strSourceType += inUploadFile.getAreaType();
+        }
         if(sourceType==1){
             inUploadFile.setTypeno(3);
         }
@@ -203,8 +206,9 @@ public class ComFileController extends BaseController {
         } else {
             fileName = UUID.randomUUID().toString() + ".zip";
         }
-
-        String filePath = address + deptName + "-" + inUploadFile.getTypeno() + ".zip";
+        Random r = new Random();
+        int nxt = r.nextInt(10000);
+        String filePath = address + deptName + "-" + inUploadFile.getTypeno()+ "-" + inUploadFile.getAreaType()+"-"+nxt + ".zip";
         try {
             List<ComFile> list = this.iComFileService.findAppealResultComFiles(inUploadFile);
             if (list.size() > 0) {
@@ -231,6 +235,9 @@ public class ComFileController extends BaseController {
     public void fileSumImgZip(QueryRequest request, InUploadFile inUploadFile, HttpServletResponse response) throws FebsException {
         int sourceType = inUploadFile.getSourceType();
         String strSourceType = sourceType == 0 ? "In" : "Out";
+        if(inUploadFile.getAreaType() != 0){
+            strSourceType += inUploadFile.getAreaType();
+        }
         if(sourceType==1){
             inUploadFile.setTypeno(3);
         }
@@ -244,8 +251,9 @@ public class ComFileController extends BaseController {
         } else {
             fileName = UUID.randomUUID().toString() + ".zip";
         }
-
-        String filePath = address + deptName + "-" + inUploadFile.getTypeno() + ".zip";
+        Random r = new Random();
+        int nxt = r.nextInt(10000);
+        String filePath = address + deptName + "-" + inUploadFile.getTypeno()+ "-" + inUploadFile.getAreaType()+"-"+nxt + ".zip";
         try {
             List<ComFile> list = this.iComFileService.findAppealResultSumComFiles(inUploadFile);
             if (list.size() > 0) {
@@ -373,6 +381,9 @@ public class ComFileController extends BaseController {
             String strId = inUploadFile.getId();
             int sourceType = inUploadFile.getSourceType();
             String strSourceType = sourceType == 0 ? "In" : "Out";
+            if(inUploadFile.getAreaType() != 0){
+                strSourceType += inUploadFile.getAreaType();
+            }
             //String deptName = inUploadFile.getDeptName() + strId + strSourceType;
             if (list.size() > 0) {
                 for (ComFile item : list) {
@@ -473,6 +484,9 @@ public class ComFileController extends BaseController {
             User currentUser = FebsUtil.getCurrentUser();
             int sourceType = inUploadFile.getSourceType();
             String strSourceType = sourceType == 0 ? "In" : "Out";
+            if(inUploadFile.getAreaType() != 0){
+                strSourceType += inUploadFile.getAreaType();
+            }
             // String deptName = inUploadFile.getDeptName() + strId + strSourceType;
             String deptName = currentUser.getUsername() + "/" + strSourceType;
             String fileName2 = file.getOriginalFilename();  // 文件名
@@ -539,6 +553,9 @@ public class ComFileController extends BaseController {
 //                    String strRefId = comFile.getRefTabId();
                     int sourceType = inUploadFile.getSourceType();
                     String strSourceType = sourceType == 0 ? "In" : "Out";
+                    if(inUploadFile.getAreaType() != 0){
+                        strSourceType += inUploadFile.getAreaType();
+                    }
                     User currentUser = FebsUtil.getCurrentUser();
                     //String deptName = inUploadFile.getDeptName() + strRefId + strSourceType;
                     String deptName = currentUser.getUsername() + "/" + strSourceType;

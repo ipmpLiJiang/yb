@@ -47,7 +47,7 @@ public class YbAppealResultDeductimplementServiceImpl extends ServiceImpl<YbAppe
     public IPage<YbAppealResultDeductimplement> findYbAppealResultDeductimplements(QueryRequest request, YbAppealResultDeductimplement ybAppealResultDeductimplement) {
         try {
             LambdaQueryWrapper<YbAppealResultDeductimplement> queryWrapper = new LambdaQueryWrapper<>();
-            queryWrapper.eq(YbAppealResultDeductimplement::getIsDeletemark, 1);//1是未删 0是已删
+//            queryWrapper.eq(YbAppealResultDeductimplement::getIsDeletemark, 1);//1是未删 0是已删
 
 
             Page<YbAppealResultDeductimplement> page = new Page<>();
@@ -74,11 +74,11 @@ public class YbAppealResultDeductimplementServiceImpl extends ServiceImpl<YbAppe
     @Override
     @Transactional
     public void createYbAppealResultDeductimplement(YbAppealResultDeductimplement ybAppealResultDeductimplement) {
-        ybAppealResultDeductimplement.setCreateTime(new Date());
+//        ybAppealResultDeductimplement.setCreateTime(new Date());
         if (ybAppealResultDeductimplement.getId() == null || "".equals(ybAppealResultDeductimplement.getId())) {
             ybAppealResultDeductimplement.setId(UUID.randomUUID().toString());
         }
-        ybAppealResultDeductimplement.setIsDeletemark(1);
+//        ybAppealResultDeductimplement.setIsDeletemark(1);
         this.save(ybAppealResultDeductimplement);
     }
 
@@ -90,11 +90,11 @@ public class YbAppealResultDeductimplementServiceImpl extends ServiceImpl<YbAppe
         wrapper.eq(YbAppealResultDeductimplement::getResetDataId, ybAppealResultDeductimplement.getResetDataId());
         List<YbAppealResultDeductimplement> list = this.list(wrapper);
         if (list.size() == 0) {
-            ybAppealResultDeductimplement.setCreateTime(new Date());
+//            ybAppealResultDeductimplement.setCreateTime(new Date());
             if (ybAppealResultDeductimplement.getId() == null || "".equals(ybAppealResultDeductimplement.getId())) {
                 ybAppealResultDeductimplement.setId(UUID.randomUUID().toString());
             }
-            ybAppealResultDeductimplement.setIsDeletemark(1);
+//            ybAppealResultDeductimplement.setIsDeletemark(1);
             boolean bl = this.save(ybAppealResultDeductimplement);
             if (bl) {
                 return "ok";
@@ -120,11 +120,11 @@ public class YbAppealResultDeductimplementServiceImpl extends ServiceImpl<YbAppe
         LambdaQueryWrapper<YbAppealResultDeductimplement> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(YbAppealResultDeductimplement::getApplyDateStr, applyDateStr);
         wrapper.eq(YbAppealResultDeductimplement::getAreaType, ybAppealResultDeductimplement.getAreaType());
-        wrapper.eq(YbAppealResultDeductimplement::getIsDeletemark, 1);
+//        wrapper.eq(YbAppealResultDeductimplement::getIsDeletemark, 1);
         List<YbAppealResultDeductimplement> ardList = this.list(wrapper);
 
         Date applyDate = ybAppealResultDeductimplement.getApplyDate();
-        Long userId = ybAppealResultDeductimplement.getCreateUserId();
+//        Long userId = ybAppealResultDeductimplement.getCreateUserId();
 
         for (YbReconsiderResetDeductimplement item : listResetDeductimplement) {
             queryList = resetDataViewList.stream().filter(
@@ -148,15 +148,17 @@ public class YbAppealResultDeductimplementServiceImpl extends ServiceImpl<YbAppe
                     createDeductimplement.setResetDataId(rrr.getId());
                     createDeductimplement.setImplementDate(item.getImplementDate());
                     createDeductimplement.setImplementDateStr(item.getImplementDateStr());
+                    createDeductimplement.setOrderNum(rrr.getOrderNum());
+                    createDeductimplement.setOrderNumber(rrr.getOrderNumber());
                     if(item.getShareProgramme()!=null && !item.getShareProgramme().equals("")) {
                         createDeductimplement.setShareProgramme(item.getShareProgramme());
                     }
                     createDeductimplement.setShareState(item.getShareState());
                     createDeductimplement.setDataType(item.getDataType());
 
-                    createDeductimplement.setCreateUserId(userId);
-                    createDeductimplement.setCreateTime(new Date());
-                    createDeductimplement.setIsDeletemark(1);
+//                    createDeductimplement.setCreateUserId(userId);
+//                    createDeductimplement.setCreateTime(new Date());
+//                    createDeductimplement.setIsDeletemark(1);
                     createList.add(createDeductimplement);
                 }
             }
@@ -170,7 +172,7 @@ public class YbAppealResultDeductimplementServiceImpl extends ServiceImpl<YbAppe
     @Override
     @Transactional
     public void updateYbAppealResultDeductimplement(YbAppealResultDeductimplement ybAppealResultDeductimplement) {
-        ybAppealResultDeductimplement.setModifyTime(new Date());
+//        ybAppealResultDeductimplement.setModifyTime(new Date());
         this.baseMapper.updateYbAppealResultDeductimplement(ybAppealResultDeductimplement);
     }
 
@@ -180,6 +182,26 @@ public class YbAppealResultDeductimplementServiceImpl extends ServiceImpl<YbAppe
         List<String> list = Arrays.asList(Ids);
         this.baseMapper.deleteBatchIds(list);
     }
+    @Override
+    public  List<YbAppealResultDeductimplement> findAppealResultDeductimplement(List<String> listStr,Integer areaType,Integer dataType){
+        List<YbAppealResultDeductimplement> resultDeductimplementList = new ArrayList<>();
+        if(listStr.size()>0){
+            LambdaQueryWrapper<YbAppealResultDeductimplement> wrapper = new LambdaQueryWrapper<>();
+            if(listStr.size() == 1) {
+                wrapper.eq(YbAppealResultDeductimplement::getApplyDateStr,listStr.get(0));
+            }else{
+                wrapper.in(YbAppealResultDeductimplement::getApplyDateStr,listStr);
+            }
+            if(areaType!=null){
+                wrapper.eq(YbAppealResultDeductimplement::getAreaType,areaType);
+            }
 
+            if(dataType!=null){
+                wrapper.eq(YbAppealResultDeductimplement::getDataType,dataType);
+            }
+            resultDeductimplementList = this.list(wrapper);
+        }
+        return resultDeductimplementList;
+    }
 
 }

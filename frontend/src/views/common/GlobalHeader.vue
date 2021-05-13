@@ -11,7 +11,17 @@
         <i-menu style="height: 64px; line-height: 64px;" class="system-top-menu" :theme="theme" mode="horizontal" :menuData="menuData" @select="onSelect"/>
       </div>
       <div :class="['global-header-right', theme]">
-        <b>院区：&nbsp;&nbsp;{{$store.state.account.user.areaType === 0 ? '本院' : '西院'}}</b>
+        <b>院区：&nbsp;&nbsp;{{hdAreaName}}</b>
+        <!-- <b>院区：&nbsp;&nbsp;{{$store.state.account.user.areaType === 0 ? '本院' : '西院'}}</b> -->
+        <!-- <b>院区：</b>
+        <a-select v-model="hdAreaType" style="width: 100px" @change="handleAreaTypeChange">
+          <a-select-option
+          v-for="d in areaTypeDataSource"
+          :key="d.value"
+          >
+          {{ d.text }}
+          </a-select-option>
+        </a-select> -->
           <header-avatar class="header-item"/>
       </div>
     </div>
@@ -26,6 +36,14 @@ import { mapState } from 'vuex'
 export default {
   name: 'GlobalHeader',
   components: {IMenu, HeaderAvatar},
+  data () {
+    return {
+      hdAreaName: ''
+      // hdAreaType: 0,
+      // areaTypeDataSource: []
+      // areaTypeDataSource: [{value: 0, text: '本部'}, {value: 1, text: '西院'}]
+    }
+  },
   props: ['collapsed', 'menuData'],
   computed: {
     ...mapState({
@@ -39,13 +57,43 @@ export default {
       return this.layout === 'side' ? 'light' : this.$store.state.setting.theme
     }
   },
+  mounted () {
+    this.findComArea()
+  },
   methods: {
+    findComArea () {
+      // this.areaTypeDataSource = []
+      this.$get('comConfiguremanage/getAreaList').then((r) => {
+        if (r.data.length > 0) {
+          let areaType = this.$store.state.account.user.areaType
+          for (var i in r.data) {
+            if (areaType === r.data[i].areaType) {
+              this.hdAreaName = r.data[i].areaName
+              break
+            }
+            // var at = {text: r.data[i].areaName, value: r.data[i].areaType}
+            // this.areaTypeDataSource.push(at)
+          }
+          // this.hdAreaType = this.$store.state.account.user.areaType
+        } else {
+          this.hdAreaName = '本部'
+        }
+      }).catch(() => {
+        this.hdAreaName = '本部'
+      })
+      // this.hdAreaName = this.$store.state.account.user.areaType === 0 ? '本院' : '西院'
+      // this.hdAreaType = this.$store.state.account.user.areaType
+    },
     toggleCollapse () {
       this.$emit('toggleCollapse')
     },
     onSelect (obj) {
       this.$emit('menuSelect', obj)
     }
+    // handleAreaTypeChange (value) {
+    //   this.hdAreaType = value
+    //   this.$store.state.account.user.areaType = value
+    // }
   }
 }
 </script>

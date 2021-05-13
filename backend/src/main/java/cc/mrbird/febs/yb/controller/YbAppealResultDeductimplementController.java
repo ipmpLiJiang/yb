@@ -83,7 +83,7 @@ public class YbAppealResultDeductimplementController extends BaseController {
         int success = 0;
         try {
             User currentUser = FebsUtil.getCurrentUser();
-            ybAppealResultDeductimplement.setCreateUserId(currentUser.getUserId());
+//            ybAppealResultDeductimplement.setCreateUserId(currentUser.getUserId());
             if (ybAppealResultDeductimplement.getApplyDateStr() != null) {
                 Date applyDate = DataTypeHelpers.stringDateFormat(ybAppealResultDeductimplement.getApplyDateStr() + "-15", "yyyy-MM-dd", true);
                 ybAppealResultDeductimplement.setApplyDate(applyDate);
@@ -126,7 +126,7 @@ public class YbAppealResultDeductimplementController extends BaseController {
     public void updateYbAppealResultDeductimplement(@Valid YbAppealResultDeductimplement ybAppealResultDeductimplement) throws FebsException {
         try {
             User currentUser = FebsUtil.getCurrentUser();
-            ybAppealResultDeductimplement.setModifyUserId(currentUser.getUserId());
+//            ybAppealResultDeductimplement.setModifyUserId(currentUser.getUserId());
             this.iYbAppealResultDeductimplementService.updateYbAppealResultDeductimplement(ybAppealResultDeductimplement);
         } catch (Exception e) {
             message = "修改失败";
@@ -410,7 +410,7 @@ public class YbAppealResultDeductimplementController extends BaseController {
                                             YbAppealResultDeductimplement ybAppealResultDeductimplement = new YbAppealResultDeductimplement();
                                             ybAppealResultDeductimplement.setApplyDateStr(applyDateStr);
                                             ybAppealResultDeductimplement.setApplyDate(applyDate);
-                                            ybAppealResultDeductimplement.setCreateUserId(currentUser.getUserId());
+//                                            ybAppealResultDeductimplement.setCreateUserId(currentUser.getUserId());
                                             ybAppealResultDeductimplement.setAreaType(areaType);
                                             this.iYbAppealResultDeductimplementService.importCreateAppealResultDeductimplement(ybAppealResultDeductimplement, resetDeductimplementList);
                                             success = 1;

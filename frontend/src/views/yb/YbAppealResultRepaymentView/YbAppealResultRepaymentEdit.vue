@@ -135,13 +135,13 @@ export default {
         title: '交易流水号',
         dataIndex: 'serialNo',
         fixed: 'left',
-        width: 140
+        width: 150
       },
       {
         title: '项目名称',
         dataIndex: 'projectName',
         fixed: 'left',
-        width: 160
+        width: 170
       },
       {
         title: '医保内金额',

@@ -31,8 +31,10 @@ export default {
     defaultFormatDate: {
       default: ''
     },
-    searchText: {
-      default: ''
+    searchItem: {
+      default () {
+        return {}
+      }
     },
     searchDataType: {
       default: 0
@@ -195,7 +197,8 @@ export default {
         this.loading = true
         params.applyDateFrom = dateStr
         params.applyDateTo = dateToStr
-        params.currencyField = this.searchText
+        params.currencyField = this.searchItem.value
+        params.keyField = this.searchItem.keyField
         params.areaType = this.user.areaType
         if (this.searchDataType !== 2) {
           params.dataType = this.searchDataType

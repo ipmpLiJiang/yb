@@ -1,9 +1,14 @@
 package cc.mrbird.febs.common.service;
 
+import cc.mrbird.febs.com.entity.ComConfiguremanage;
+import cc.mrbird.febs.com.entity.ComType;
+import cc.mrbird.febs.common.domain.FebsConstant;
 import cc.mrbird.febs.system.domain.Menu;
 import cc.mrbird.febs.system.domain.Role;
 import cc.mrbird.febs.system.domain.User;
 import cc.mrbird.febs.system.domain.UserConfig;
+import cc.mrbird.febs.yb.entity.*;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
 
@@ -110,4 +115,35 @@ public interface CacheService {
      */
     void deleteUserConfigs(String userId) throws Exception;
 
+    void saveConfigures(int ctType,String con) throws Exception;
+
+    List<ComConfiguremanage> getConfigures(int ctType,String con) throws Exception;
+
+    void deleteConfigures(String con) throws Exception;
+
+
+//    YbPerson getPerson(String personCode) throws Exception;
+//    void savePerson(YbPerson person) throws Exception;
+//    void savePerson(String personCode) throws Exception;
+//    void deletePerson(String personCode) throws Exception;
+
+    void savePersons(String con) throws Exception;
+    List<YbPerson> getPersons(String con) throws Exception;
+    void deletePersons(String con) throws Exception;
+
+    void saveDepts(String con) throws Exception;
+    List<YbDept> getDepts(String con) throws Exception;
+    void deleteDepts(String con) throws Exception;
+
+    void saveApplyDatas(String pid,String con) throws Exception;
+
+    void deleteApplyDatas(String con) throws Exception;
+
+    List<YbReconsiderApplyData> getApplyDatas(String con) throws Exception;
+
+    void saveApplyDatas(List<YbReconsiderApplyData> list,String con) throws Exception;
+
+    void saveResetDatas(List<YbReconsiderResetData> list, String con) throws Exception;
+    void deleteResetDatas(String con) throws Exception;
+    List<YbReconsiderResetData> getResetDatas(String con) throws Exception;
 }

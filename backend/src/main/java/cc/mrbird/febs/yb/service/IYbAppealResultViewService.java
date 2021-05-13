@@ -26,7 +26,9 @@ public interface IYbAppealResultViewService extends IService<YbAppealResultView>
 
     IPage<YbAppealResultView> findYbAppealResultViewList(QueryRequest request, YbAppealResultView ybAppealResultView);
 
-    IPage<YbAppealResultView> findAppealResultViews(QueryRequest request, YbAppealResultView ybAppealResultView);
+    IPage<YbAppealResultView> findAppealResultViews(QueryRequest request, YbAppealResultView ybAppealResultView,String keyField);
+
+    IPage<YbAppealResultView> findAppealResultViewNew(QueryRequest request, YbAppealResultView ybAppealResultView, String keyField);
 
     IPage<YbAppealResultView> findAppealResultViewResets(QueryRequest request, YbAppealResultView ybAppealResultView);
 
@@ -46,4 +48,5 @@ public interface IYbAppealResultViewService extends IService<YbAppealResultView>
 
     List<YbAppealResultDownLoad> findAppealResultDownLoadSumList(YbAppealResultView ybAppealResultView);
 
+    List<YbAppealResultDownLoad> findYbAppealResultNotDeptList(YbAppealResultView ybAppealResultView);
 }

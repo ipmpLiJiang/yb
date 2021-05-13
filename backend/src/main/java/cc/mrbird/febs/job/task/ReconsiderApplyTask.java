@@ -17,7 +17,7 @@ public class ReconsiderApplyTask {
 
     }
     @Autowired
-    IYbReconsiderApplyDataService iYbReconsiderApplyService;
+    IYbReconsiderApplyDataService iYbReconsiderApplyDataService;
 
     public void applyTask(String params) {
         if(params == null || params.equals("no")){
@@ -27,9 +27,23 @@ public class ReconsiderApplyTask {
             if(arr.length == 2) {
                 params = arr[0];
                 int areaType = Integer.parseInt(arr[1]);
-                iYbReconsiderApplyService.findReconsiderApplyDataTask(params, areaType);
+
+//                "","no","deptNo","getMessage","hisSqlNo","dataNo"
+//                hisDataNo,hisMainNo,
+                String msg = iYbReconsiderApplyDataService.findReconsiderApplyDataTask(params, areaType,null);
+                if(msg.equals("no")){
+                    msg = iYbReconsiderApplyDataService.findReconsiderApplyDataNotTask(params, areaType,null);
+                }
             }
         }
     }
 
+
+    public void deptTask(String params) {
+        if(params == null || params.equals("no")){
+            params = "";
+        } else {
+            iYbReconsiderApplyDataService.getHisDept();
+        }
+    }
 }

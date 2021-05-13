@@ -24,7 +24,7 @@
           </a-col>
         </a-row>
         <a-row justify='center'>
-          <a-col :span=16>
+          <a-col :span=14>
             <a-form-item
               v-bind="formItemLayout"
               label="上传文件名称"
@@ -50,7 +50,7 @@
               </a-upload>
             </template>
           </a-col>
-          <a-col :span=2 v-show="showDelBtn">
+          <a-col :span=2 v-show="tableSelectKey == '3' ? false:showDelBtn">
             <a-popconfirm
               title="确定删除明细？"
               @confirm="deleteData"
@@ -60,14 +60,15 @@
               <a-button type="primary" style="margin-right: .8rem">删除明细</a-button>
             </a-popconfirm>
           </a-col>
-          <a-col :span=2 v-show="showDelBtn">
+          <a-col :span=2 v-show="tableSelectKey == 3 ? true:false">
             <a-popconfirm
-              title="确定开启服务？"
-              @confirm="startUp"
+              title="确定获取His数据？"
+              @confirm="addHis"
               okText="确定"
+              style="margin-left: 8px"
               cancelText="取消"
             >
-              <a-button type="primary" style="margin-right: .8rem">开启服务</a-button>
+              <a-button type="primary">获取His数据</a-button>
             </a-popconfirm>
           </a-col>
           <a-col :span=2 v-show="showBtn">
@@ -76,6 +77,16 @@
               style="margin-left: 8px"
               @click="downloadFile"
             >模板</a-button>
+          </a-col>
+          <a-col :span=2>
+            <a-popconfirm
+              title="确定缓存明细？"
+              @confirm="updateCache"
+              okText="确定"
+              cancelText="取消"
+            >
+              <a-button type="primary" style="margin-right: .8rem">缓存明细</a-button>
+            </a-popconfirm>
           </a-col>
           <a-col :span=2>
             <a-button
@@ -118,6 +129,19 @@
             >
             </ybReconsiderApply-main>
           </a-tab-pane>
+          <a-tab-pane
+            key="3"
+            :forceRender="true"
+            tab="His数据"
+          >
+            <ybReconsiderApply-task
+              ref="ybReconsiderApplyTask"
+              :applyDateStr="ybReconsiderApply.applyDateStr"
+              :typeno="typeno"
+              :areaType="ybReconsiderApply.areaType"
+            >
+            </ybReconsiderApply-task>
+          </a-tab-pane>
         </a-tabs>
       </div>
     </template>
@@ -128,14 +152,14 @@
 import moment from 'moment'
 import YbReconsiderApplyData from './YbReconsiderApplyData'
 import YbReconsiderApplyMain from './YbReconsiderApplyMain'
-
+import YbReconsiderApplyTask from './YbReconsiderApplyTask'
 const formItemLayout = {
   labelCol: { span: 8 },
   wrapperCol: { span: 14, offset: 1 }
 }
 export default {
   name: 'YbReconsiderApplyUpload',
-  components: {YbReconsiderApplyData, YbReconsiderApplyMain},
+  components: {YbReconsiderApplyData, YbReconsiderApplyMain, YbReconsiderApplyTask},
   props: {
   },
   data () {
@@ -180,7 +204,7 @@ export default {
           this.$message.warning(r.data.data.message)
         }
       }).catch(() => {
-        this.$message.success('启动Job失败')
+        this.$message.error('启动Job失败')
       })
     },
     deleteData () {
@@ -200,6 +224,20 @@ export default {
         this.$message.warning('当前状态无法删除.')
       }
     },
+    updateCache () {
+      this.$put('ybReconsiderApplyData/updateCache', {
+        applyDateStr: this.ybReconsiderApply.applyDateStr,
+        areaType: this.ybReconsiderApply.areaType
+      }).then((r) => {
+        if (r.data.data.success === 1) {
+          this.$message.success('缓存成功')
+        } else {
+          this.$message.warning(r.data.data.message)
+        }
+      }).catch(() => {
+        this.$message.error('缓存失败')
+      })
+    },
     onClose () {
       this.ybReconsiderApply = {}
       this.showBtn = false
@@ -209,17 +247,45 @@ export default {
       this.fileList = []
       this.$emit('cancel')
     },
+    addHis () {
+      let key = '3'
+      if (this.tableSelectKey === key) {
+        this.spinning = true
+        this.$put('ybReconsiderApplyData/getHis', {
+          applyDateStr: this.ybReconsiderApply.applyDateStr,
+          areaType: this.ybReconsiderApply.areaType,
+          typeno: this.typeno
+        }).then((r) => {
+          if (r.data.data.success === 1) {
+            this.$message.success('His数据获取成功.')
+            if (this.tableSelectKey === key) {
+              this.callback(key)
+            }
+            this.spinning = false
+          } else {
+            this.$message.warning(r.data.data.message)
+            this.spinning = false
+          }
+        }).catch(() => {
+          this.$message.error('His数据获取失败.')
+          this.spinning = false
+        })
+      }
+    },
     callback (key) {
       this.tableSelectKey = key
       if (key === '1') {
         this.$refs.ybReconsiderApplyData.searchPage()
       } else if (key === '2') {
         this.$refs.ybReconsiderApplyMain.searchPage()
+      } else if (key === '3') {
+        this.$refs.ybReconsiderApplyTask.searchPage()
       } else {
         console.log('ok')
       }
     },
     setFormValues ({ ...ybReconsiderApply }, typeno) {
+      console.log(ybReconsiderApply)
       this.tableSelectKey = '1'
       this.ybReconsiderApply = ybReconsiderApply
       let pid = ybReconsiderApply.id
@@ -271,10 +337,10 @@ export default {
         })
         return
       }
-      const isLt2M = file.size / 1024 / 1024 < 5
+      const isLt2M = file.size / 1024 / 1024 < 10
       if (!isLt2M) {
         this.$error({
-          title: '超5M限制，不允许上传~'
+          title: '超10M限制，不允许上传~'
         })
         return
       }

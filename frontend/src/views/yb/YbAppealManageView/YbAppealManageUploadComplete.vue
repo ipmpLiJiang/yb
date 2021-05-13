@@ -27,7 +27,7 @@
           <a-col :span=12>
             <!--复议科室、医生-->
             <a-row>
-              <a-col :span=10>
+              <a-col :span=13>
                 <a-form-item
                   v-bind="formItemLayout"
                   label="复议科室"
@@ -35,7 +35,7 @@
                   {{ybAppealManageUpload.readyDeptCode}}-{{ybAppealManageUpload.readyDeptName}}
                 </a-form-item>
               </a-col>
-              <a-col :span=14>
+              <a-col :span=11>
                 <a-form-item
                   v-bind="formItemLayout"
                   label="复议医生"
@@ -129,8 +129,8 @@ import moment from 'moment'
 import AppealDataModule from '../ybFunModule/AppealDataModule'
 import InpatientfeesModule from '../ybFunModule/InpatientfeesModule'
 const formItemLayout = {
-  labelCol: { span: 10 },
-  wrapperCol: { span: 13, offset: 1 }
+  labelCol: { span: 8 },
+  wrapperCol: { span: 14, offset: 1 }
 }
 function getBase64 (file) {
   return new Promise((resolve, reject) => {
@@ -314,6 +314,7 @@ export default {
       formData.deptId = this.ybAppealManageUpload.readyDeptCode
       formData.applyDateStr = this.ybAppealManageUpload.applyDateStr
       formData.sourceType = this.ybAppealManageUpload.sourceType
+      formData.areaType = this.user.areaType
       this.$post('comFile/listImgComFile', {
         ...formData
       }).then((r) => {

@@ -47,11 +47,15 @@ public interface IYbReconsiderApplyService extends IService<YbReconsiderApply> {
 
     List<YbReconsiderApply> findReconsiderApplyList(YbReconsiderApply ybReconsiderApply);
 
+    List<YbReconsiderApply> findReconsiderApplyByApplyDateStrs(List<String> listStr, Integer areaType,Integer resetState);
+
     boolean findReconsiderApplyCheckEndDate(String appltDateStr,Integer areaType, int typeno);
 
     String getSendMessage(String applyDateStr, Date enableDate,Integer areaType, int typeno,boolean isChange);
 
-    String getSendMessage(String applyDateStr);
+    String getSendMessage(String applyDateStr,Integer areaType);
+
+    String getSendMessage(String applyDateStr, Date endDate, Integer typeno, Integer areaType);
 
     void updateEnableOverdue(String applyDateStr,int areaType);
 

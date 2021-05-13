@@ -42,8 +42,10 @@ export default {
     defaultFormatDate: {
       default: ''
     },
-    searchText: {
-      default: ''
+    searchItem: {
+      default () {
+        return {}
+      }
     },
     searchDataType: {
       default: 0
@@ -87,7 +89,7 @@ export default {
         title: '交易流水号',
         dataIndex: 'serialNo',
         fixed: 'left',
-        width: 140
+        width: 150
       },
       {
         title: '项目编码',
@@ -240,7 +242,8 @@ export default {
     fetch (params = {}) {
       this.loading = true
       params.applyDateStr = this.applyDateStr
-      params.currencyField = this.searchText
+      params.currencyField = this.searchItem.value
+      params.keyField = this.searchItem.keyField
       params.areaType = this.user.areaType
       if (this.searchDataType !== 2) {
         params.dataType = this.searchDataType
@@ -256,7 +259,8 @@ export default {
         params.pageSize = this.pagination.defaultPageSize
         params.pageNum = this.pagination.defaultCurrent
       }
-      params.sortField = 'rrd.dataType,rrd.orderNum'
+      // params.sortField = 'rrd.dataType,rrd.orderNum'
+      params.sortField = 'rrd.orderNum'
       // params.sortOrder = 'descend'
       params.sortOrder = 'ascend'
       this.$get('ybAppealResultDeductimplementView/findAppealResultView', {

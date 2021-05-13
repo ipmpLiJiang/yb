@@ -91,22 +91,22 @@ export default {
         width: 70
       },
       {
-        title: '意见书编码',
-        dataIndex: 'proposalCode',
+        title: '交易流水号',
+        dataIndex: 'serialNo',
         fixed: 'left',
-        width: 140
+        width: 150
       },
       {
         title: '项目编码',
         dataIndex: 'projectCode',
         fixed: 'left',
-        width: 120
+        width: 130
       },
       {
         title: '项目名称',
         dataIndex: 'projectName',
         fixed: 'left',
-        width: 160
+        width: 170
       },
       {
         title: '数量',
@@ -252,9 +252,11 @@ export default {
           this.sendService(data)
         } else {
           this.$message.warning('未找到对象')
+          this.$emit('verifySpin')
         }
       } else {
         this.$message.warning('未选择行')
+        this.$emit('verifySpin')
       }
       this.selectedRowKeys = []
       this.loading = false

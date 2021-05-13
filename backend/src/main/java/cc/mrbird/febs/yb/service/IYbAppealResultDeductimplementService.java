@@ -34,4 +34,6 @@ public interface IYbAppealResultDeductimplementService extends IService<YbAppeal
         String createAppealResultDeductimplement(YbAppealResultDeductimplement ybAppealResultDeductimplement);
 
         void importCreateAppealResultDeductimplement(YbAppealResultDeductimplement ybAppealResultDeductimplement, List<YbReconsiderResetDeductimplement> listResetDeductimplement);
-        }
+
+        List<YbAppealResultDeductimplement> findAppealResultDeductimplement(List<String> listStr,Integer areaType,Integer dataType);
+}

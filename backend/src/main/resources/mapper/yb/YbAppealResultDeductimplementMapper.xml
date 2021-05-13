@@ -15,20 +15,23 @@
                     <result column="applyDate" property="applyDate"/>
                     <result column="applyDateStr" property="applyDateStr"/>
                     <result column="dataType" property="dataType"/>
-                    <result column="COMMENTS" property="comments"/>
-                    <result column="STATE" property="state"/>
-                    <result column="IS_DELETEMARK" property="isDeletemark"/>
-                    <result column="MODIFY_TIME" property="modifyTime"/>
-                    <result column="CREATE_TIME" property="createTime"/>
-                    <result column="CREATE_USER_ID" property="createUserId"/>
-                    <result column="MODIFY_USER_ID" property="modifyUserId"/>
+            <result column="STATE" property="state"/>
+<!--                    <result column="COMMENTS" property="comments"/>-->
+<!--                    <result column="IS_DELETEMARK" property="isDeletemark"/>-->
+<!--                    <result column="MODIFY_TIME" property="modifyTime"/>-->
+<!--                    <result column="CREATE_TIME" property="createTime"/>-->
+<!--                    <result column="CREATE_USER_ID" property="createUserId"/>-->
+<!--                    <result column="MODIFY_USER_ID" property="modifyUserId"/>-->
             <result column="areaType" property="areaType"/>
+            <result column="orderNumber" property="orderNumber"/>
+            <result column="orderNum" property="orderNum"/>
         </resultMap>
 
         <!-- 通用查询结果列 -->
         <sql id="Base_Column_List">
-        id, resetDataId,relatelDataId, implementDate, implementDateStr, shareState, shareProgramme,applyDate,applyDateStr,dataType, COMMENTS, STATE, IS_DELETEMARK, MODIFY_TIME, CREATE_TIME, CREATE_USER_ID, MODIFY_USER_ID,areaType
+        id, resetDataId,relatelDataId, implementDate, implementDateStr, shareState, shareProgramme,applyDate,applyDateStr,dataType,STATE, areaType,orderNumber,orderNum
     </sql>
+<!--    COMMENTS, STATE, IS_DELETEMARK, MODIFY_TIME, CREATE_TIME, CREATE_USER_ID, MODIFY_USER_ID,-->
     <update id="updateYbAppealResultDeductimplement" parameterType="cc.mrbird.febs.yb.entity.YbAppealResultDeductimplement">
         update yb_appeal_result_deductimplement
         <trim prefix="set" suffixOverrides=",">
@@ -42,14 +45,16 @@
 <if test="applyDate != null">applyDate=#{applyDate},</if>
 <if test="applyDateStr != null">applyDateStr=#{applyDateStr},</if>
 <if test="dataType != null">dataType=#{dataType},</if>
-<if test="comments != null">COMMENTS=#{comments},</if>
-<if test="state != null">STATE=#{state},</if>
-<if test="isDeletemark != null">IS_DELETEMARK=#{isDeletemark},</if>
-<if test="modifyTime != null">MODIFY_TIME=#{modifyTime},</if>
-<if test="createTime != null">CREATE_TIME=#{createTime},</if>
-<if test="createUserId != null">CREATE_USER_ID=#{createUserId},</if>
-<if test="modifyUserId != null">MODIFY_USER_ID=#{modifyUserId},</if>
+            <if test="state != null">STATE=#{state},</if>
+<!--<if test="comments != null">COMMENTS=#{comments},</if>-->
+<!--<if test="isDeletemark != null">IS_DELETEMARK=#{isDeletemark},</if>-->
+<!--<if test="modifyTime != null">MODIFY_TIME=#{modifyTime},</if>-->
+<!--<if test="createTime != null">CREATE_TIME=#{createTime},</if>-->
+<!--<if test="createUserId != null">CREATE_USER_ID=#{createUserId},</if>-->
+<!--<if test="modifyUserId != null">MODIFY_USER_ID=#{modifyUserId},</if>-->
             <if test="areaType != null">areaType=#{areaType},</if>
+            <if test="orderNumber != null">orderNumber=#{orderNumber},</if>
+            <if test="orderNum != null">orderNum=#{orderNum},</if>
         </trim>
                 where id=#{id}
 
@@ -79,21 +84,7 @@
             concat('%', #{ ybAppealResultRepayment.applyDateStr} ,'%')
         </if>
         <if test="ybAppealResultDeductimplement.dataType != null"> and dataType =#{ ybAppealResultDeductimplement.dataType} </if>
-            <if test="ybAppealResultDeductimplement.comments != null and ybAppealResultDeductimplement.comments != ''"> and COMMENTS like concat('%', #{ ybAppealResultDeductimplement.comments} ,'%')</if>
         <if test="ybAppealResultDeductimplement.state != null"> and STATE =#{ ybAppealResultDeductimplement.state} </if>
-        <if test="ybAppealResultDeductimplement.isDeletemark != null"> and IS_DELETEMARK =#{ ybAppealResultDeductimplement.isDeletemark} </if>
-        <if test="ybAppealResultDeductimplement.modifyTimeFrom!= null">
-            AND ybAppealResultDeductimplement.MODIFY_TIME <![CDATA[ >= ]]>  modifyTimeFrom}
-        </if>
-        <if test="ybAppealResultDeductimplement.modifyTimeTo!= null">
-            AND ybAppealResultDeductimplement.MODIFY_TIME <![CDATA[ <= ]]>  modifyTimeTo}
-        </if>
-        <if test="ybAppealResultDeductimplement.createTimeFrom!= null">
-            AND ybAppealResultDeductimplement.CREATE_TIME <![CDATA[ >= ]]>  createTimeFrom}
-        </if>
-        <if test="ybAppealResultDeductimplement.createTimeTo!= null">
-            AND ybAppealResultDeductimplement.CREATE_TIME <![CDATA[ <= ]]>  createTimeTo}
-        </if>
         <if test="ybAppealResultDeductimplement.areaType != null">
         and ybAppealResultDeductimplement.areaType =#{ ybAppealResultDeductimplement.areaType}</if>
 </select>

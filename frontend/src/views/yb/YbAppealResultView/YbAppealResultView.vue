@@ -6,7 +6,7 @@
   >
     <template>
         <a-row justify="center" type="flex">
-          <a-col :span=6>
+          <a-col :span=5>
             <a-form-item
               v-bind="formItemLayout"
               label="复议年月"
@@ -29,10 +29,19 @@
               </a-select-option>
             </a-select>
           </a-col>
-          <a-col :span=5>
-            <a-input-search placeholder="请输入关键字" v-model="searchText" style="width: 200px" enter-button @search="searchTable" />
+          <a-col :span=7>
+            <a-select v-model="searchItem.keyField" style="width: 115px">
+              <a-select-option
+              v-for="d in searchDropDataSource"
+              :key="d.value"
+              >
+              {{ d.text }}
+              </a-select-option>
+            </a-select>
+            =
+            <a-input-search placeholder="请输入关键字" v-model="searchItem.value" style="width: 170px" enter-button @search="searchTable" />
           </a-col>
-          <a-col :span=9>
+          <a-col :span=8>
             <a-button
             type="primary"
             style="margin-right:15px"
@@ -74,7 +83,7 @@
             <ybAppealResult-one
               ref="ybAppealResultOne"
               :applyDate="searchApplyDate"
-              :searchText ="searchText"
+              :searchItem ="searchItem"
               :searchDataType="searchDataType"
               @look="look"
               @onHistoryLook="onHistoryLook"
@@ -89,7 +98,7 @@
             <ybAppealResult-two
               ref="ybAppealResultTwo"
               :applyDate="searchApplyDate"
-              :searchText ="searchText"
+              :searchItem ="searchItem"
               :searchDataType="searchDataType"
               @look="look"
               @onHistoryLook="onHistoryLook"
@@ -104,7 +113,7 @@
             <ybAppealResult-handle
               ref="ybAppealResultHandle"
               :applyDate="searchApplyDate"
-              :searchText ="searchText"
+              :searchItem ="searchItem"
               :searchDataType="searchDataType"
               @look="look"
               @onHistoryLook="onHistoryLook"
@@ -164,7 +173,15 @@ export default {
       formItemLayout,
       loading: false,
       monthFormat: 'YYYY-MM',
-      searchText: '',
+      searchItem: {keyField: 'serialNo', value: ''},
+      searchDropDataSource: [
+        {text: '交易流水号', value: 'serialNo'},
+        {text: '项目编码', value: 'projectCode'},
+        {text: '项目名称', value: 'projectName'},
+        {text: '医生工号', value: 'doctorCode'},
+        {text: '医生姓名', value: 'doctorName'},
+        {text: '序号', value: 'orderNumber'}
+      ],
       searchDataType: 0,
       historyVisiable: false,
       lookVisiable: false,

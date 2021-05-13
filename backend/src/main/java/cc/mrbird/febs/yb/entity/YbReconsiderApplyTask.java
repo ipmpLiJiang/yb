@@ -156,6 +156,14 @@ private static final long serialVersionUID=1L;
     @ExcelField(value = "院区")
     private Integer areaType;
 
+    /**
+     * 更新数量
+     */
+    @TableField("hisCount")
+    @ExcelField(value = "更新数量")
+    private Integer hisCount;
+
+
     public static final String ID ="id" ;
 
     public static final String APPLYDATESTR ="applyDateStr" ;
@@ -191,6 +199,8 @@ private static final long serialVersionUID=1L;
     public static final String MODIFY_USER_ID ="MODIFY_USER_ID" ;
 
     public static final String AREATYPE = "areaType";
+
+    public static final String HISCOUNT = "hisCount";
 
 @Override
 public int compareTo(YbReconsiderApplyTask o) {

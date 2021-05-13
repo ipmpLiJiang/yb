@@ -155,6 +155,8 @@ export default {
           this.ybAppealResultDeductImplement.dataType = this.ybAppealResult.dataType
           this.ybAppealResultDeductImplement.typeno = this.ybAppealResult.typeno
           this.ybAppealResultDeductImplement.areaType = this.ybAppealResult.areaType
+          this.ybAppealResultDeductImplement.orderNumber = this.ybAppealResult.orderNumber
+          this.ybAppealResultDeductImplement.orderNum = this.ybAppealResult.orderNum
           this.$post('ybAppealResultDeductimplement', {
             ...this.ybAppealResultDeductImplement
           }).then((r) => {

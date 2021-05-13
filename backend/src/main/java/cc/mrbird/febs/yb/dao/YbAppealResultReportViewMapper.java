@@ -21,9 +21,18 @@ public interface YbAppealResultReportViewMapper extends BaseMapper<YbAppealResul
 
     IPage<YbAppealResultReportView> findYbAppealResultReportView(Page page, @Param("ybAppealResultReportView") YbAppealResultReportView ybAppealResultReportView);
 
-    IPage<YbAppealResultReportView> findAppealResultReportView(Page page, @Param("ybAppealResultReportView") YbAppealResultReportView ybAppealResultReportView,@Param("pidList") List<String> pidList);
+    IPage<YbAppealResultReportView> findAppealResultReportView(Page page, @Param("ybAppealResultReportView") YbAppealResultReportView ybAppealResultReportView,@Param("pidList") List<String> pidList,@Param("keyField") String keyField);
 
-    List<YbAppealResultReportView> findAppealResultReportList(@Param("ybAppealResultReportView") YbAppealResultReportView ybAppealResultReportView,@Param("pidList") List<String> pidList);
+    int findAppealResultReportCount(@Param("ybAppealResultReportView") YbAppealResultReportView ybAppealResultReportView,@Param("pidList") List<String> pidList,@Param("keyField") String keyField);
 
-    int findAppealResultReportCount(@Param("ybAppealResultReportView") YbAppealResultReportView ybAppealResultReportView,@Param("pidList") List<String> pidList);
+    List<YbAppealResultReportView> findAppealResultReportList(@Param("ybAppealResultReportView") YbAppealResultReportView ybAppealResultReportView,@Param("pidList") List<String> pidList,@Param("keyField") String keyField);
+
+    IPage<YbAppealResultReportView> findAppealResultReportLikeView(Page page, @Param("ybAppealResultReportView") YbAppealResultReportView ybAppealResultReportView,@Param("pidList") List<String> pidList,@Param("keyField") String keyField);
+
+    int findAppealResultReportLikeCount(@Param("ybAppealResultReportView") YbAppealResultReportView ybAppealResultReportView,@Param("pidList") List<String> pidList,@Param("keyField") String keyField);
+
+    List<YbAppealResultReportView> findAppealResultReportLikeList(@Param("ybAppealResultReportView") YbAppealResultReportView ybAppealResultReportView,@Param("pidList") List<String> pidList,@Param("keyField") String keyField);
+
+
+
 }

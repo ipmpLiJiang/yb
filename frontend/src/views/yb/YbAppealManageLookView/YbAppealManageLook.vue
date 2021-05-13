@@ -195,6 +195,7 @@ export default {
       previewVisible: false,
       previewImage: '',
       ybAppealManageLook: {},
+      user: this.$store.state.account.user,
       ybAppealManage: {}
     }
   },
@@ -240,6 +241,7 @@ export default {
       formData.deptId = ybAppealManageLook.readyDeptCode
       formData.applyDateStr = ybAppealManageLook.applyDateStr
       formData.sourceType = ybAppealManageLook.sourceType
+      formData.areaType = this.user.areaType
       this.$post('comFile/listImgComFile', {
         ...formData
       }).then((r) => {

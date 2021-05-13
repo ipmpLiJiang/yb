@@ -180,7 +180,7 @@ export default {
       {
         title: '交易流水号',
         dataIndex: 'transNo',
-        width: 100
+        width: 120
       },
       {
         title: '项目代码',

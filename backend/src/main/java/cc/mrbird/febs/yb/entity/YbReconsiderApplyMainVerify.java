@@ -129,7 +129,59 @@ public class YbReconsiderApplyMainVerify {
     @ExcelField(value = "复议医生姓名")
     private String verifyDoctorName;
 
+    /**
+     * 入院责任科室代码
+     */
+    @ExcelField(value = "入院责任科室代码")
+    private String orderDeptId;
 
+    /**
+     * 入院责任科室名称
+     */
+    @ExcelField(value = "入院责任科室名称")
+    private String orderDeptName;
+
+
+    /**
+     * 入院责任人代码
+     */
+    @ExcelField(value = "入院责任人代码")
+    private String orderDocId;
+
+
+    /**
+     * 入院责任人名称
+     */
+    @ExcelField(value = "入院责任人名称")
+    private String orderDocName;
+
+
+    /**
+     * 办入院操作员科室代码
+     */
+    @ExcelField(value = "办入院操作员科室代码")
+    private String excuteDeptId;
+
+
+    /**
+     * 办入院操作员科室名称
+     */
+    @ExcelField(value = "办入院操作员科室名称")
+    private String excuteDeptName;
+
+
+    /**
+     * 办入院操作员代码
+     */
+    @ExcelField(value = "办入院操作员代码")
+    private String excuteDocId;
+
+
+    /**
+     * 办入院操作员名称
+     */
+    @ExcelField(value = "办入院操作员名称")
+    private String excuteDocName;
 
 
 }

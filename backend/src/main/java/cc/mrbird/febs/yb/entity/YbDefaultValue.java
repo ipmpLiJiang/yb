@@ -240,7 +240,7 @@ public  class YbDefaultValue {
 
 
     /**
-     * 数据剔除 明细状态 0 一对一
+     * 数据剔除 明细状态 0 上传/一对一
      */
     public static final Integer RESETDATA_STATE_0 = 0;
     /**

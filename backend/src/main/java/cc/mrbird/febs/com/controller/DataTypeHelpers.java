@@ -320,7 +320,7 @@ public class DataTypeHelpers {
         Calendar calendar = new GregorianCalendar();
         Date newDate = simpleDateFormat.parse(today, pos);
         calendar.setTime(newDate);
-        calendar.add(calendar.DATE, day + 1);
+        calendar.add(calendar.DATE, day);
         Date addDate = calendar.getTime();
 
         return addDate;

@@ -229,6 +229,29 @@ public class YbReconsiderVerifyView implements Serializable {
     private Integer typeno;
 
     /**
+     * 发送人代码
+     */
+    @TableField("sendPersonId")
+    @ExcelField(value ="发送人代码")
+    private Long sendPersonId;
+
+    /**
+     * 发送人
+     */
+    @TableField("sendPersonName")
+    @ExcelField(value ="发送人")
+    private String sendPersonName;
+
+    /**
+     * 发送日期
+     */
+    @TableField("sendDate")
+    @ExcelField(value ="发送日期")
+    private Date sendDate;
+    private transient String sendDateFrom;
+    private transient String sendDateTo;
+
+    /**
      * 复议年月Str
      */
     @TableField("applyDateStr")
@@ -413,6 +436,12 @@ public class YbReconsiderVerifyView implements Serializable {
     public static final String BACKAPPEAL = "backAppeal";
 
     public static final String TYPENO = "typeno";
+
+    public static final String SENDPERSONID ="sendPersonId" ;
+
+    public static final String SENDPERSONNAME ="sendPersonName" ;
+
+    public static final String SENDDATE ="sendDate" ;
 
     public static final String APPLYDATESTR = "applyDateStr";
 

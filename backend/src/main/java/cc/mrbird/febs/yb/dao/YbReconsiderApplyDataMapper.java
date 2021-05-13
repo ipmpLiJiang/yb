@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
 
@@ -35,4 +36,7 @@ public interface YbReconsiderApplyDataMapper extends BaseMapper<YbReconsiderAppl
     int findReconsiderApplyDataCount(@Param("pid") String pid, @Param("dataType") Integer dataType, @Param("typeno") Integer typeno);
 
     int findReconsiderApplyDataNotCount(@Param("pid") String pid,@Param("applyDateStr") String applyDateStr,@Param("areaType") Integer areaType, @Param("dataType") Integer dataType, @Param("typeno") Integer typeno);
+
+    @Select("select id from yb_reconsider_apply_data where pid = #{pid}")
+    List<String> findDataId(@Param("pid") String pid);
 }

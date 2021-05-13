@@ -53,6 +53,10 @@ export default {
       },
       queryParams: {
       },
+      orderDocTitle: '开方医生',
+      deptTitle: '住院科室',
+      excuteDocTitle: '执行医生',
+      excuteDeptTitle: '执行科室',
       loading: false,
       bordered: true
     }
@@ -92,12 +96,12 @@ export default {
       {
         title: '交易流水号',
         dataIndex: 'transNo',
-        width: 135
+        width: 150
       },
       {
         title: '项目代码',
         dataIndex: 'itemId',
-        width: 120
+        width: 130
       },
       {
         title: '项目医保编码',
@@ -107,7 +111,7 @@ export default {
       {
         title: '项目名称',
         dataIndex: 'itemName',
-        width: 160
+        width: 170
       },
       {
         title: '项目数量',
@@ -142,7 +146,7 @@ export default {
         width: 100
       },
       {
-        title: '住院科室',
+        title: this.deptTitle,
         dataIndex: 'deptName',
         customRender: (text, row, index) => {
           if (text !== '' && text !== null) {
@@ -162,7 +166,7 @@ export default {
         width: 130
       },
       {
-        title: '开方医生',
+        title: this.orderDocTitle,
         dataIndex: 'orderDocName',
         customRender: (text, row, index) => {
           if (text !== '' && text !== null) {
@@ -172,7 +176,7 @@ export default {
         width: 130
       },
       {
-        title: '执行科室',
+        title: this.excuteDeptTitle,
         dataIndex: 'excuteDeptName',
         customRender: (text, row, index) => {
           if (text !== '' && text !== null) {
@@ -182,7 +186,7 @@ export default {
         width: 150
       },
       {
-        title: '执行医生',
+        title: this.excuteDocTitle,
         dataIndex: 'excuteDocName',
         customRender: (text, row, index) => {
           if (text !== '' && text !== null) {
@@ -279,6 +283,17 @@ export default {
       })
     },
     fetch (params = {}) {
+      if (this.inpatientfeesModule.dataType === 0) {
+        this.orderDocTitle = '开方医生'
+        this.deptTitle = '住院科室'
+        this.excuteDocTitle = '执行医生'
+        this.excuteDeptTitle = '执行科室'
+      } else {
+        this.orderDocTitle = '入院责任人'
+        this.deptTitle = '入院责任科室'
+        this.excuteDocTitle = '办入院操作员'
+        this.excuteDeptTitle = '办入院操作员科室'
+      }
       this.dataSource = []
       params.applyDateStr = this.inpatientfeesModule.applyDateStr
       params.applyDataId = this.inpatientfeesModule.applyDataId

@@ -34,7 +34,9 @@ public interface IYbReconsiderApplyDataService extends IService<YbReconsiderAppl
 
         int deleteReconsiderApplyDataByPid(YbReconsiderApplyData ybReconsiderApplyData);
 
-        List<YbReconsiderApplyData> findReconsiderApplyDataByApplyDates(String applyDateStr,Integer areaType, Integer dataType);
+        List<YbReconsiderApplyData> findReconsiderApplyDataList(String pid,String com);
+
+        List<YbReconsiderApplyData> findReconsiderApplyDataByApplyDates(YbReconsiderApply reconsiderApply, Integer dataType);
 
         List<YbReconsiderApplyData> findReconsiderApplyDataList(YbReconsiderApplyData reconsiderApplyData);
 
@@ -44,13 +46,15 @@ public interface IYbReconsiderApplyDataService extends IService<YbReconsiderAppl
 
         void  importReconsiderApply(YbReconsiderApply ybReconsiderApply, List<YbReconsiderApplyData> listData, List<YbReconsiderApplyData> listMain);
 
-
+        String getHisDept();
 //        List<YbReconsiderApplyData> findReconsiderApplyDataBetween(String applyDateStr,Integer dataType,Integer startNum,Integer endNum);
 
 //        int findReconsiderApplyDataCount(String applyDateStr,Integer dataType);
 
-        void findReconsiderApplyDataTask(String applyDateStr,Integer areaType);
+        String findReconsiderApplyDataTask(String applyDateStr,Integer areaType,Integer typeno);
 
+        String findReconsiderApplyDataNotTask(String applyDateStr,Integer areaType,Integer typeno);
 
+        List<YbReconsiderApplyData> getApplyDataListView(List<YbReconsiderApplyData> applyDataList,String keyField,String value,Integer typeno,Integer dataType);
 //        void findReconsiderApplyDataNotTask(String applyDateStr);
 }

@@ -6,7 +6,7 @@
     <div :class="advanced ? 'search' : null">
       <a-form layout="horizontal">
         <a-row>
-          <a-col :span=8>
+          <a-col :span=5>
             <a-form-item
               label="复议年月："
               v-bind="formItemLayout"
@@ -57,8 +57,17 @@
               </a-select>
             </a-form-item>
           </a-col>
-          <a-col :span=5>
-            <a-input-search placeholder="请输入关键字" v-model="searchText" style="width: 200px" enter-button @search="searchPage" />
+          <a-col :span=7>
+            <a-select v-model="searchItem.keyField" style="width: 115px">
+              <a-select-option
+              v-for="d in searchDropDataSource"
+              :key="d.value"
+              >
+              {{ d.text }}
+              </a-select-option>
+            </a-select>
+            =
+            <a-input-search placeholder="请输入关键字" v-model="searchItem.value" style="width: 170px" enter-button @search="searchPage" />
           </a-col>
           <a-col :span=2>
             <a-button
@@ -182,7 +191,15 @@ export default {
       selectApplyDateStr: this.formatDate(),
       // selectToApplyDateStr: this.formatDate(),
       defaultApplyDate: this.formatDate(),
-      searchText: '',
+      searchItem: {keyField: 'serialNo', value: ''},
+      searchDropDataSource: [
+        {text: '交易流水号', value: 'serialNo'},
+        {text: '项目编码', value: 'projectCode'},
+        {text: '项目名称', value: 'projectName'},
+        {text: '医生工号', value: 'arDoctorCode'},
+        {text: '医生姓名', value: 'arDoctorName'},
+        {text: '序号', value: 'orderNumber'}
+      ],
       historyVisiable: false,
       lookVisiable: false,
       user: this.$store.state.account.user,
@@ -202,11 +219,11 @@ export default {
         title: '交易流水号',
         dataIndex: 'serialNo',
         fixed: 'left',
-        width: 135
+        width: 150
       },
       {
-        title: '意见书编码',
-        dataIndex: 'proposalCode',
+        title: '项目编码',
+        dataIndex: 'projectCode',
         fixed: 'left',
         width: 140
       },
@@ -214,7 +231,7 @@ export default {
         title: '项目名称',
         dataIndex: 'projectName',
         fixed: 'left',
-        width: 180
+        width: 170
       },
       {
         title: '数量',
@@ -327,9 +344,10 @@ export default {
           queryParams.dataType = this.selectDataType
         }
         queryParams.sourceType = 0
-        if (this.searchText !== '') {
-          queryParams.currencyField = this.searchText
+        if (this.searchItem.value !== '') {
+          queryParams.currencyField = this.searchItem.value
         }
+        queryParams.keyField = this.searchItem.keyField
         this.$export('ybAppealResultReportView/reportExcel', {
           ...queryParams
         })
@@ -407,9 +425,10 @@ export default {
         params.dataType = this.selectDataType
       }
       params.sourceType = 0
-      if (this.searchText !== '') {
-        params.currencyField = this.searchText
+      if (this.searchItem.value !== '') {
+        params.currencyField = this.searchItem.value
       }
+      params.keyField = this.searchItem.keyField
       this.loading = true
       if (this.paginationInfo) {
         // 如果分页信息不为空，则设置表格当前第几页，每页条数，并设置查询分页参数

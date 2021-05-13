@@ -132,6 +132,12 @@ public class YbAppealResultServiceImpl extends ServiceImpl<YbAppealResultMapper,
         return this.baseMapper.findAppealResultGroupSumDept(ybAppealResultView);
     }
 
+    //打包下载 汇总科室 未设置
+    @Override
+    public
+    List<YbResultDownLoad> findAppealResultNotDepts(YbAppealResultView ybAppealResultView){
+        return this.baseMapper.findAppealResultNotDept(ybAppealResultView);
+    }
 
     //sql 语句更新剔除相关数据 已有方法代替 此方法先留着
     @Override
@@ -169,6 +175,11 @@ public class YbAppealResultServiceImpl extends ServiceImpl<YbAppealResultMapper,
         if (appealResult.getAreaType() != null) {
             wrapper.eq(YbAppealResult::getAreaType, appealResult.getAreaType());
         }
+
+        if (appealResult.getSourceType() != null) {
+            wrapper.eq(YbAppealResult::getSourceType, appealResult.getSourceType());
+        }
+
         if (appealResult.getDataType() != null) {
             wrapper.eq(YbAppealResult::getDataType, appealResult.getDataType());
         }
@@ -179,10 +190,6 @@ public class YbAppealResultServiceImpl extends ServiceImpl<YbAppealResultMapper,
 
         if (appealResult.getState() != null) {
             wrapper.eq(YbAppealResult::getState, appealResult.getState());
-        }
-
-        if (appealResult.getSourceType() != null) {
-            wrapper.eq(YbAppealResult::getSourceType, appealResult.getSourceType());
         }
 
         if (appealResult.getRepayState() != null) {

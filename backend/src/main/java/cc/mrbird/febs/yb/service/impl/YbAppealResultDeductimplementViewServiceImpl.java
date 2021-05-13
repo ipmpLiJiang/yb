@@ -5,9 +5,8 @@ import cc.mrbird.febs.common.domain.QueryRequest;
 import cc.mrbird.febs.common.utils.SortUtil;
 import cc.mrbird.febs.yb.entity.*;
 import cc.mrbird.febs.yb.dao.YbAppealResultDeductimplementViewMapper;
-import cc.mrbird.febs.yb.service.IYbAppealResultDeductimplementViewService;
-import cc.mrbird.febs.yb.service.IYbAppealResultReportViewService;
-import cc.mrbird.febs.yb.service.IYbReconsiderResetService;
+import cc.mrbird.febs.yb.manager.YbApplyDataManager;
+import cc.mrbird.febs.yb.service.*;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -40,6 +39,21 @@ public class YbAppealResultDeductimplementViewServiceImpl extends ServiceImpl<Yb
 
     @Autowired
     IYbReconsiderResetService iYbReconsiderResetService;
+
+    @Autowired
+    IYbReconsiderResetDataService iYbReconsiderResetDataService;
+
+    @Autowired
+    IYbAppealResultDeductimplementService iYbAppealResultDeductimplementService;
+
+    @Autowired
+    IYbAppealResultService iYbAppealResultService;
+
+    @Autowired
+    YbApplyDataManager ybApplyDataManager;
+
+    @Autowired
+    IYbPersonService iYbPersonService;
 
     @Override
     public IPage<YbAppealResultDeductimplementView> findYbAppealResultDeductimplementViews(QueryRequest request, YbAppealResultDeductimplementView ybAppealResultDeductimplementView) {
@@ -156,7 +170,7 @@ public class YbAppealResultDeductimplementViewServiceImpl extends ServiceImpl<Yb
 
     //扣款落实 已扣款
     @Override
-    public IPage<YbAppealResultDeductimplementView> findAppealResultDeductimplementViews(QueryRequest request, YbAppealResultDeductimplementView ybAppealResultDeductimplementView, boolean isUser) {
+    public IPage<YbAppealResultDeductimplementView> findAppealResultDeductimplementViews(QueryRequest request, YbAppealResultDeductimplementView ybAppealResultDeductimplementView, String keyField, boolean isUser) {
         try {
             Page<YbAppealResultDeductimplementView> page = new Page<>();
             List<String> listStr = new ArrayList<>();
@@ -176,12 +190,19 @@ public class YbAppealResultDeductimplementViewServiceImpl extends ServiceImpl<Yb
                     ybAppealResultDeductimplementView.setImplementDateFrom(applyDateStrForm);
                     ybAppealResultDeductimplementView.setImplementDateTo(applyDateStrTo);
                 }
-
-                int count = this.baseMapper.findAppealResultDeductimplementCount(ybAppealResultDeductimplementView);
+                if (!isUser && ybAppealResultDeductimplementView.getCurrencyField() != null && ybAppealResultDeductimplementView.getCurrencyField() != "") {
+                    if (keyField.equals("arDoctorCode")) {
+                        ybAppealResultDeductimplementView.setArDoctorCode(ybAppealResultDeductimplementView.getCurrencyField());
+                    }
+                    if (keyField.equals("arDoctorName")) {
+                        ybAppealResultDeductimplementView.setArDoctorName(ybAppealResultDeductimplementView.getCurrencyField());
+                    }
+                }
+                int count = this.baseMapper.findAppealResultDeductimplementCount(ybAppealResultDeductimplementView, keyField);
                 if (count > 0) {
                     page.setSearchCount(false);
                     SortUtil.handlePageSort(request, page, false);//true 是属性  false是数据库字段可两个
-                    IPage<YbAppealResultDeductimplementView> pg = this.baseMapper.findAppealResultDeductimplementView(page, ybAppealResultDeductimplementView);
+                    IPage<YbAppealResultDeductimplementView> pg = this.baseMapper.findAppealResultDeductimplementView(page, ybAppealResultDeductimplementView, keyField);
                     pg.setTotal(count);
                     return pg;
                 }
@@ -197,18 +218,26 @@ public class YbAppealResultDeductimplementViewServiceImpl extends ServiceImpl<Yb
 
     //扣款落实 管理 待扣款
     @Override
-    public IPage<YbAppealResultDeductimplementView> findAppealResultDmtView(QueryRequest request, YbAppealResultDeductimplementView ybAppealResultDeductimplementView) {
+    public IPage<YbAppealResultDeductimplementView> findAppealResultDmtView(QueryRequest request, YbAppealResultDeductimplementView ybAppealResultDeductimplementView, String keyField) {
         try {
             Page<YbAppealResultDeductimplementView> page = new Page<>();
-            YbReconsiderReset reset = iYbReconsiderResetService.findReconsiderResetByApplyDateStr(ybAppealResultDeductimplementView.getApplyDateStr(),ybAppealResultDeductimplementView.getAreaType());
+            YbReconsiderReset reset = iYbReconsiderResetService.findReconsiderResetByApplyDateStr(ybAppealResultDeductimplementView.getApplyDateStr(), ybAppealResultDeductimplementView.getAreaType());
             if (reset != null && reset.getState() == 1) {
                 ybAppealResultDeductimplementView.setPid(reset.getId());
                 ybAppealResultDeductimplementView.setApplyDateStr(reset.getApplyDateStr());
-                int count = this.baseMapper.findAppealResultDmtCount(ybAppealResultDeductimplementView);
+                if (ybAppealResultDeductimplementView.getCurrencyField() != null && ybAppealResultDeductimplementView.getCurrencyField() != "") {
+                    if (keyField.equals("arDoctorCode")) {
+                        ybAppealResultDeductimplementView.setArDoctorCode(ybAppealResultDeductimplementView.getCurrencyField());
+                    }
+                    if (keyField.equals("arDoctorName")) {
+                        ybAppealResultDeductimplementView.setArDoctorName(ybAppealResultDeductimplementView.getCurrencyField());
+                    }
+                }
+                int count = this.baseMapper.findAppealResultDmtCount(ybAppealResultDeductimplementView, keyField);
                 if (count > 0) {
                     page.setSearchCount(false);
                     SortUtil.handlePageSort(request, page, false);//true 是属性  false是数据库字段可两个
-                    IPage<YbAppealResultDeductimplementView> pg = this.baseMapper.findAppealResultDmtView(page, ybAppealResultDeductimplementView);
+                    IPage<YbAppealResultDeductimplementView> pg = this.baseMapper.findAppealResultDmtView(page, ybAppealResultDeductimplementView, keyField);
                     pg.setTotal(count);
                     return pg;
                 }
@@ -221,9 +250,66 @@ public class YbAppealResultDeductimplementViewServiceImpl extends ServiceImpl<Yb
         }
     }
 
+
+    public List<YbReconsiderResetData> getResetDataListView(List<YbAppealResult> resultList, List<String> dateStrList, String keyField, String value, Integer areaType, Integer dataType) {
+        List<String> relatelDataList = new ArrayList<>();
+        String relatelDataStr = "";
+        String sql = "";
+        LambdaQueryWrapper<YbReconsiderResetData> wrapperResetData = new LambdaQueryWrapper<>();
+        for (YbAppealResult item : resultList) {
+            if (!relatelDataList.contains(item.getRelatelDataId())) {
+                relatelDataList.add(item.getRelatelDataId());
+                if (relatelDataStr.equals("")) {
+                    relatelDataStr = "'" + item.getRelatelDataId() + "'";
+                } else {
+                    relatelDataStr += ",'" + item.getRelatelDataId() + "'";
+                }
+            }
+        }
+        String sqlWhere1 = "";
+        if (dataType != null) {
+            sqlWhere1 = " and dataType = " + dataType;
+        }
+        if (dateStrList.size() == 1) {
+            sql = " id not in(select resetDataId from yb_appeal_result_deductimplement where applyDateStr = '" + dateStrList.get(0) + "' and areaType = " + areaType + sqlWhere1 + ")";
+        } else {
+            String dateStr = "";
+            for (String dae : dateStrList) {
+                if (dateStr.equals("")) {
+                    dateStr = "'" + dae + "'";
+                } else {
+                    dateStr += ",'" + dae + "'";
+                }
+            }
+            sql = " id not in(select resetDataId from yb_appeal_result_deductimplement where applyDateStr in(" + dateStr + ") and areaType = " + areaType + sqlWhere1 + ")";
+        }
+        sql += " and relatelDataId in(" + relatelDataStr + ")";
+        if (value != null && value != "" && !keyField.equals("readyDoctorCode") && !keyField.equals("readyDoctorName") && !keyField.equals("orderNumber")) {
+            if (keyField.equals("serialNo")) {
+                sql += " and serialNo = '" + value + "'";
+//                wrapperResetData.eq(YbReconsiderResetData::getSerialNo, value);
+            }
+            if (keyField.equals("projectCode")) {
+                sql += " and projectCode = '" + value + "'";
+//                wrapperResetData.eq(YbReconsiderResetData::getProjectCode, value);
+            }
+            if (keyField.equals("projectName")) {
+                sql += " and projectName = '" + value + "'";
+//                wrapperResetData.eq(YbReconsiderResetData::getProjectName, value);
+            }
+            if (keyField.equals("ruleName")) {
+                sql += " and ruleName = '" + value + "'";
+//                wrapperResetData.eq(YbReconsiderResetData::getRuleName, value);
+            }
+        }
+        wrapperResetData.apply(sql);
+        return this.iYbReconsiderResetDataService.list(wrapperResetData);
+    }
+
+
     //扣款落实 医生 待扣款
     @Override
-    public IPage<YbAppealResultDeductimplementView> findAppealResultDmtUserView(QueryRequest request, YbAppealResultDeductimplementView ybAppealResultDeductimplementView) {
+    public IPage<YbAppealResultDeductimplementView> findAppealResultDmtUserView(QueryRequest request, YbAppealResultDeductimplementView ybAppealResultDeductimplementView, String keyField) {
         try {
             Page<YbAppealResultDeductimplementView> page = new Page<>();
             List<String> listStr = new ArrayList<>();
@@ -234,12 +320,10 @@ public class YbAppealResultDeductimplementViewServiceImpl extends ServiceImpl<Yb
                 listStr = DataTypeHelpers.stringApplyDateStrToList(ybAppealResultDeductimplementView.getApplyDateFrom(), ybAppealResultDeductimplementView.getApplyDateTo());
             }
             if (listStr.size() > 0) {
-                List<YbReconsiderReset> resetList = iYbReconsiderResetService.findReconsiderResetByApplyDateStr(listStr,ybAppealResultDeductimplementView.getAreaType());
+                List<YbReconsiderReset> resetList = iYbReconsiderResetService.findReconsiderResetByApplyDateStr(listStr, ybAppealResultDeductimplementView.getAreaType(), 1);
                 listStr.clear();
                 for (YbReconsiderReset rs : resetList) {
-                    if (rs.getState() == 1) {
-                        listStr.add(rs.getId());
-                    }
+                    listStr.add(rs.getId());
                 }
                 if (listStr.size() > 0) {
                     if (listStr.size() > 1) {
@@ -253,23 +337,21 @@ public class YbAppealResultDeductimplementViewServiceImpl extends ServiceImpl<Yb
                         ybAppealResultDeductimplementView.setApplyDateFrom(applyDateStrForm);
                         ybAppealResultDeductimplementView.setApplyDateTo(applyDateStrTo);
                         listStr.clear();
-                        for(YbReconsiderReset item : orderResetList){
+                        for (YbReconsiderReset item : orderResetList) {
                             listStr.add(item.getId());
                         }
                     } else {
-//                        String idStr = listStr.get(0);
-//                        resetList = resetList.stream().filter(s->s.getId().equals(idStr)).collect(Collectors.toList());
                         ybAppealResultDeductimplementView.setApplyDateFrom(null);
                         ybAppealResultDeductimplementView.setApplyDateTo(null);
                         ybAppealResultDeductimplementView.setPid(resetList.get(0).getId());
                         ybAppealResultDeductimplementView.setApplyDateStr(resetList.get(0).getApplyDateStr());
                         listStr.clear();
                     }
-                    int count = this.baseMapper.findAppealResultDmtUserCount(ybAppealResultDeductimplementView,listStr);
+                    int count = this.baseMapper.findAppealResultDmtUserCount(ybAppealResultDeductimplementView, listStr, keyField);
                     if (count > 0) {
                         page.setSearchCount(false);
                         SortUtil.handlePageSort(request, page, false);//true 是属性  false是数据库字段可两个
-                        IPage<YbAppealResultDeductimplementView> pg = this.baseMapper.findAppealResultDmtUserView(page, ybAppealResultDeductimplementView,listStr);
+                        IPage<YbAppealResultDeductimplementView> pg = this.baseMapper.findAppealResultDmtUserView(page, ybAppealResultDeductimplementView, listStr, keyField);
                         pg.setTotal(count);
                         return pg;
                     }
@@ -282,6 +364,238 @@ public class YbAppealResultDeductimplementViewServiceImpl extends ServiceImpl<Yb
             return null;
         }
     }
+
+    @Override
+    public IPage<YbAppealResultDeductimplementView> findAppealResultDmtViewNew(QueryRequest request, YbAppealResultDeductimplementView ybAppealResultDeductimplementView, String keyField) {
+        try {
+            String applyDateStr = ybAppealResultDeductimplementView.getApplyDateStr();
+            Integer areaType = ybAppealResultDeductimplementView.getAreaType();
+            YbReconsiderReset reconsiderReset = iYbReconsiderResetService.findReconsiderResetByApplyDateStr(applyDateStr, areaType);
+            if (!reconsiderReset.getState().equals(1)) {
+                reconsiderReset = null;
+            }
+            Page<YbAppealResultDeductimplementView> page = new Page<>();
+            List<String> strList = new ArrayList<>();
+            if (reconsiderReset != null) {
+                String value = ybAppealResultDeductimplementView.getCurrencyField();
+                Integer dataType = ybAppealResultDeductimplementView.getDataType();
+                List<YbReconsiderResetData> resetDataList = new ArrayList<>();//ybApplyDataManager.getResetDatas(reconsiderReset.getId(), applyDateStr + "-" + areaType);
+                List<YbAppealResultDeductimplementView> list = new ArrayList<>();
+                List<YbAppealResult> resultList = new ArrayList<>();
+                String sql = "";
+                LambdaQueryWrapper<YbAppealResult> queryWrapper = new LambdaQueryWrapper<>();
+                sql = " applyDateStr = '" + applyDateStr + "' and areaType = " + areaType + " and state = 2 ";
+                if (value != null && value != "" && keyField.equals("arDoctorCode")) {
+                    queryWrapper.eq(YbAppealResult::getDoctorCode, value);
+                }
+                if (ybAppealResultDeductimplementView.getArDoctorCode() != null) {
+                    sql += " and doctorCode = '" + ybAppealResultDeductimplementView.getArDoctorCode() + "'";
+                }
+                if (dataType != null) {
+                    sql += " and dataType = " + dataType;
+                }
+                if (value != null && value != "" && keyField.equals("arDoctorName")) {
+                    strList = this.iYbPersonService.findPersonCodeList(value);
+                    if (strList.size() > 0) {
+                        String docIn = "";
+                        for (String code : strList) {
+                            if (docIn.equals("")) {
+                                docIn = "'" + code + "'";
+                            } else {
+                                docIn = ",'" + code + "'";
+                            }
+                        }
+                        sql += " and doctorCode in (" + docIn + ")";
+                    }
+                }
+                queryWrapper.apply(sql);
+                resultList = iYbAppealResultService.list(queryWrapper);
+                if (resultList.size() > 0) {
+                    strList.clear();
+                    strList.add(reconsiderReset.getApplyDateStr());
+                    resetDataList = this.getResetDataListView(resultList, strList, keyField, value, areaType, dataType);
+                }
+                if (resultList.size() > 0 && resetDataList.size() > 0) {
+                    if (resultList.size() > resetDataList.size()) {
+                        List<YbAppealResult> queryList = new ArrayList<>();
+                        for (YbReconsiderResetData item : resetDataList) {
+                            queryList = resultList.stream().filter(s -> s.getRelatelDataId().equals(item.getRelatelDataId())).collect(Collectors.toList());
+                            if (queryList.size() > 0) {
+                                YbAppealResultDeductimplementView arv = this.getYbResultView(queryList.get(0), item);
+                                list.add(arv);
+                            }
+                        }
+                    } else {
+                        for (YbAppealResult item : resultList) {
+                            List<YbReconsiderResetData> queryList = new ArrayList<>();
+                            queryList = resetDataList.stream().filter(s -> s.getRelatelDataId().equals(item.getRelatelDataId())).collect(Collectors.toList());
+                            if (queryList.size() > 0) {
+                                YbAppealResultDeductimplementView arv = this.getYbResultView(item, queryList.get(0));
+                                list.add(arv);
+                            }
+                        }
+                    }
+                }
+                if (list.size() > 0) {
+                    page.setSearchCount(false);
+                    SortUtil.handlePageSort(request, page, false);//true 是属性  false是数据库字段可两个
+                    page.setTotal(list.size());
+                    long current = page.getCurrent() == 1 ? 0 : (page.getCurrent() - 1) * page.getSize();
+                    list = list.stream().sorted(
+                            Comparator.comparing(YbAppealResultDeductimplementView::getOrderNum)
+                    ).skip(current).limit(page.getSize()).collect(Collectors.toList());
+                    page.setRecords(list);
+                }
+            }
+            return page;
+
+        } catch (Exception e) {
+            log.error("获取字典信息失败", e);
+            return null;
+        }
+    }
+
+    private YbAppealResultDeductimplementView getYbResultView(YbAppealResult ar, YbReconsiderResetData reconsiderResetData) {
+        YbAppealResultDeductimplementView appealResultDeductimplementView = new YbAppealResultDeductimplementView();
+        appealResultDeductimplementView.setPid(reconsiderResetData.getPid());
+        appealResultDeductimplementView.setResetDataId(reconsiderResetData.getId());
+        appealResultDeductimplementView.setRelatelDataId(ar.getRelatelDataId());
+//        appealResultDeductimplementView.setImplementDate();
+//        appealResultDeductimplementView.setImplementDateStr();
+//        appealResultDeductimplementView.setShareState();
+//        appealResultDeductimplementView.setShareProgramme();
+//        appealResultDeductimplementView.setDeductImplementId();
+        appealResultDeductimplementView.setSerialNo(reconsiderResetData.getSerialNo());
+        appealResultDeductimplementView.setBillNo(reconsiderResetData.getBillNo());
+        appealResultDeductimplementView.setProjectCode(reconsiderResetData.getProjectCode());
+        appealResultDeductimplementView.setProjectName(reconsiderResetData.getProjectName());
+        appealResultDeductimplementView.setMedicalPrice(reconsiderResetData.getMedicalPrice());
+        appealResultDeductimplementView.setRuleName(reconsiderResetData.getRuleName());
+        appealResultDeductimplementView.setDeductPrice(reconsiderResetData.getDeductPrice());
+        appealResultDeductimplementView.setDeductReason(reconsiderResetData.getDeductReason());
+        appealResultDeductimplementView.setRepaymentReason(reconsiderResetData.getRepaymentReason());
+        appealResultDeductimplementView.setDoctorName(reconsiderResetData.getDoctorName());
+        appealResultDeductimplementView.setDeptCode(reconsiderResetData.getDeptCode());
+        appealResultDeductimplementView.setDeptName(reconsiderResetData.getDeptName());
+        appealResultDeductimplementView.setCostDateStr(reconsiderResetData.getCostDateStr());
+        appealResultDeductimplementView.setHospitalizedNo(reconsiderResetData.getHospitalizedNo());
+        appealResultDeductimplementView.setTreatmentMode(reconsiderResetData.getTreatmentMode());
+        appealResultDeductimplementView.setSettlementDateStr(reconsiderResetData.getSettlementDateStr());
+        appealResultDeductimplementView.setPersonalNo(reconsiderResetData.getPersonalNo());
+        appealResultDeductimplementView.setInsuredName(reconsiderResetData.getInsuredName());
+        appealResultDeductimplementView.setInsuredType(reconsiderResetData.getInsuredType());
+        appealResultDeductimplementView.setCardNumber(reconsiderResetData.getCardNumber());
+        appealResultDeductimplementView.setAreaName(reconsiderResetData.getAreaName());
+
+        appealResultDeductimplementView.setDataType(reconsiderResetData.getDataType());
+        appealResultDeductimplementView.setOrderNumber(reconsiderResetData.getOrderNumber());
+        appealResultDeductimplementView.setOrderNum(reconsiderResetData.getOrderNum());
+        appealResultDeductimplementView.setId(ar.getId());
+        appealResultDeductimplementView.setApplyDateStr(ar.getApplyDateStr());
+        appealResultDeductimplementView.setApplyDataId(reconsiderResetData.getId());
+        appealResultDeductimplementView.setArDoctorCode(ar.getDoctorCode());
+        appealResultDeductimplementView.setArDoctorName(ar.getDoctorName());
+        appealResultDeductimplementView.setArDeptCode(ar.getDeptCode());
+        appealResultDeductimplementView.setArDeptName(ar.getDeptName());
+//        appealResultDeductimplementView.setCurrencyField();
+        appealResultDeductimplementView.setAreaType(ar.getAreaType());
+        return appealResultDeductimplementView;
+    }
+
+    @Override
+    public IPage<YbAppealResultDeductimplementView> findAppealResultDmtUserNew(QueryRequest request, YbAppealResultDeductimplementView ybAppealResultDeductimplementView, String keyField) {
+        try {
+            Integer areaType = ybAppealResultDeductimplementView.getAreaType();
+            List<String> listStr = new ArrayList<>();
+            if (ybAppealResultDeductimplementView.getApplyDateFrom().equals(ybAppealResultDeductimplementView.getApplyDateTo())) {
+                listStr.add(ybAppealResultDeductimplementView.getApplyDateFrom());
+            } else {
+                listStr = DataTypeHelpers.stringApplyDateStrToList(ybAppealResultDeductimplementView.getApplyDateFrom(), ybAppealResultDeductimplementView.getApplyDateTo());
+            }
+            List<YbReconsiderReset> reconsiderResetList = new ArrayList<>();
+            if (listStr.size() > 0) {
+                reconsiderResetList = this.iYbReconsiderResetService.findReconsiderResetByApplyDateStr(listStr, areaType, 1);
+            }
+            Page<YbAppealResultDeductimplementView> page = new Page<>();
+            if (reconsiderResetList.size() > 0) {
+                listStr.clear();
+                for (YbReconsiderReset item : reconsiderResetList) {
+                    listStr.add(item.getApplyDateStr());
+                }
+                String value = ybAppealResultDeductimplementView.getCurrencyField();
+                Integer dataType = ybAppealResultDeductimplementView.getDataType();
+                if (dataType != null && dataType == 2) {
+                    dataType = 0;
+                }
+                List<YbReconsiderResetData> resetDataList = new ArrayList<>();
+                List<YbAppealResultDeductimplementView> list = new ArrayList<>();
+                List<YbAppealResult> resultList = new ArrayList<>();
+                String sql = "";
+                LambdaQueryWrapper<YbAppealResult> queryWrapper = new LambdaQueryWrapper<>();
+                String dateStrIn = "";
+                for (String code : listStr) {
+                    if (dateStrIn.equals("")) {
+                        dateStrIn = "'" + code + "'";
+                    } else {
+                        dateStrIn += ",'" + code + "'";
+                    }
+                }
+                sql = " applyDateStr in(" + dateStrIn + ") and areaType = " + areaType + " and state = 2 ";
+                sql += " and doctorCode = '" + ybAppealResultDeductimplementView.getArDoctorCode() + "'";
+                if (dataType != null) {
+                    sql += " and dataType = " + dataType;
+                }
+
+                queryWrapper.apply(sql);
+                resultList = iYbAppealResultService.list(queryWrapper);
+
+                if (resultList.size() > 0) {
+                    resetDataList = this.getResetDataListView(resultList, listStr, keyField, value, areaType, dataType);
+                }
+
+                if (resultList.size() > 0 && resetDataList.size() > 0) {
+                    if (resultList.size() > resetDataList.size()) {
+                        List<YbAppealResult> queryList = new ArrayList<>();
+                        for (YbReconsiderResetData item : resetDataList) {
+                            queryList = resultList.stream().filter(s -> s.getRelatelDataId().equals(item.getRelatelDataId())).collect(Collectors.toList());
+                            if (queryList.size() > 0) {
+                                YbAppealResultDeductimplementView arv = this.getYbResultView(queryList.get(0), item);
+                                list.add(arv);
+                            }
+                        }
+                    } else {
+                        for (YbAppealResult item : resultList) {
+                            List<YbReconsiderResetData> queryList = new ArrayList<>();
+                            queryList = resetDataList.stream().filter(s -> s.getRelatelDataId().equals(item.getRelatelDataId())).collect(Collectors.toList());
+                            if (queryList.size() > 0) {
+                                YbAppealResultDeductimplementView arv = this.getYbResultView(item, queryList.get(0));
+                                list.add(arv);
+                            }
+                        }
+                    }
+                }
+                if (list.size() > 0) {
+                    page.setSearchCount(false);
+                    SortUtil.handlePageSort(request, page, false);//true 是属性  false是数据库字段可两个
+                    page.setTotal(list.size());
+                    long current = page.getCurrent() == 1 ? 0 : (page.getCurrent() - 1) * page.getSize();
+                    list = list.stream().sorted(
+                            Comparator.comparing(YbAppealResultDeductimplementView::getApplyDateStr)
+                                    .thenComparing(YbAppealResultDeductimplementView::getDataType)
+                                    .thenComparing(YbAppealResultDeductimplementView::getOrderNum)
+                    ).skip(current).limit(page.getSize()).collect(Collectors.toList());
+
+                    page.setRecords(list);
+                }
+            }
+            return page;
+
+        } catch (Exception e) {
+            log.error("获取字典信息失败", e);
+            return null;
+        }
+    }
+
 
     @Override
     @Transactional

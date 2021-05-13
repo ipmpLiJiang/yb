@@ -51,31 +51,51 @@ public class YbAppealManageViewController extends BaseController {
      */
     @GetMapping
     @RequiresPermissions("ybAppealManageView:view")
-    public Map<String, Object> List(QueryRequest request, YbAppealManageView ybAppealManageView) {
-        return getDataTable(this.iYbAppealManageViewService.findYbAppealManageViews(request, ybAppealManageView));
+    public Map<String, Object> List(QueryRequest request, YbAppealManageView ybAppealManageView, String keyField) {
+        if (ybAppealManageView.getCurrencyField() != null && ybAppealManageView.getCurrencyField() != "") {
+            System.out.println("View-New");
+            return getDataTable(this.iYbAppealManageViewService.findAppealManageViewNew(request, ybAppealManageView, keyField, false));
+        } else {
+            System.out.println("View-Old");
+            return getDataTable(this.iYbAppealManageViewService.findYbAppealManageViews(request, ybAppealManageView, keyField));
+        }
+    }
+
+    @GetMapping("appealManageCount")
+    @RequiresPermissions("ybAppealManageView:view")
+    public int viewCount(YbAppealManageView ybAppealManageView, String keyField) {
+        try {
+            return this.iYbAppealManageViewService.findYbAppealManageCounts(ybAppealManageView, keyField);
+        } catch (Exception e) {
+            return 0;
+        }
     }
 
     @GetMapping("appealManageUserView")
     @RequiresPermissions("ybAppealManageView:userView")
-    public Map<String, Object> userList(QueryRequest request, YbAppealManageView ybAppealManageView) {
+    public Map<String, Object> userList(QueryRequest request, YbAppealManageView ybAppealManageView, String keyField) {
         User currentUser = FebsUtil.getCurrentUser();
         ybAppealManageView.setReadyDoctorCode(currentUser.getUsername());
-        return getDataTable(this.iYbAppealManageViewService.findAppealManageUserViews(request, ybAppealManageView));
+        return getDataTable(this.iYbAppealManageViewService.findAppealManageViewNew(request, ybAppealManageView, keyField, false));
+//        return getDataTable(this.iYbAppealManageViewService.findAppealManageUserViews(request, ybAppealManageView,keyField));
     }
 
     @GetMapping("appealManageOperateRoomView")
     @RequiresPermissions("ybAppealManageView:operateRoomView")
-    public Map<String, Object> operateRoomList(QueryRequest request, YbAppealManageView ybAppealManageView) {
+    public Map<String, Object> operateRoomList(QueryRequest request, YbAppealManageView ybAppealManageView, String keyField) {
         User currentUser = FebsUtil.getCurrentUser();
         ybAppealManageView.setOrderDoctorCode(currentUser.getUsername());
-        return getDataTable(this.iYbAppealManageViewService.findAppealManageOperateRoomViews(request, ybAppealManageView));
+        return getDataTable(this.iYbAppealManageViewService.findAppealManageViewNew(request, ybAppealManageView, keyField, false));
+//        return getDataTable(this.iYbAppealManageViewService.findAppealManageOperateRoomViews(request, ybAppealManageView,keyField));
     }
 
     @GetMapping("appealManageConfireView")
     @RequiresPermissions("ybAppealManageView:confireView")
-    public Map<String, Object> confireList(QueryRequest request, YbAppealManageView ybAppealManageView) {
+    public Map<String, Object> confireList(QueryRequest request, YbAppealManageView ybAppealManageView, String keyField) {
         User currentUser = FebsUtil.getCurrentUser();
-        return getDataTable(this.iYbAppealManageViewService.findAppealManageConfireViews(request, ybAppealManageView,currentUser));
+        ybAppealManageView.setReadyDoctorCode(currentUser.getUsername());
+        return getDataTable(this.iYbAppealManageViewService.findAppealManageViewNew(request, ybAppealManageView, keyField, true));
+//        return getDataTable(this.iYbAppealManageViewService.findAppealManageConfireViews(request, ybAppealManageView,currentUser,keyField));
     }
 
     /**
@@ -139,7 +159,7 @@ public class YbAppealManageViewController extends BaseController {
     @RequiresPermissions("ybAppealManageView:export")
     public void export(QueryRequest request, YbAppealManageView ybAppealManageView, HttpServletResponse response) throws FebsException {
         try {
-            List<YbAppealManageView> ybAppealManageViews = this.iYbAppealManageViewService.findYbAppealManageViews(request, ybAppealManageView).getRecords();
+            List<YbAppealManageView> ybAppealManageViews = this.iYbAppealManageViewService.findYbAppealManageViews(request, ybAppealManageView, null).getRecords();
             ExcelKit.$Export(YbAppealManageView.class, response).downXlsx(ybAppealManageViews, false);
         } catch (Exception e) {
             message = "导出Excel失败";

@@ -21,8 +21,10 @@ public interface YbPersonMapper extends BaseMapper<YbPerson> {
 
     IPage<YbPerson> findYbPerson(Page page, @Param("ybPerson") YbPerson ybPerson);
 
-    List<YbPerson> findPersonList( @Param("type") Integer type);
+    List<YbPerson> findPersonList(@Param("type") Integer type);
+
+    List<YbPerson> findPersonWarnList(@Param("applyDateStr") String applyDateStr, @Param("areaType") Integer areaType, @Param("acceptState") Integer acceptState, @Param("typeno") Integer typeno, @Param("sourceType") Integer sourceType);
 
 
-    List<YbPerson> findPersonResultList( @Param("applyDateStr") String applyDateStr,@Param("areaType") Integer areaType);
+    List<YbPerson> findPersonResultList(@Param("applyDateStr") String applyDateStr, @Param("areaType") Integer areaType);
 }

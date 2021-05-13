@@ -133,10 +133,15 @@ public class YbReconsiderResetServiceImpl extends ServiceImpl<YbReconsiderResetM
     }
 
     @Override
-    public List<YbReconsiderReset> findReconsiderResetByApplyDateStr(List<String> applyDateStrList,Integer areaType) {
+    public List<YbReconsiderReset> findReconsiderResetByApplyDateStr(List<String> applyDateStrList,Integer areaType,Integer state) {
         LambdaQueryWrapper<YbReconsiderReset> wrapper = new LambdaQueryWrapper<>();
         wrapper.in(YbReconsiderReset::getApplyDateStr, applyDateStrList);
         wrapper.eq(YbReconsiderReset::getAreaType,areaType);
+        if(state !=null) {
+            wrapper.eq(YbReconsiderReset::getState, state);
+        }
+
+        wrapper.eq(YbReconsiderReset::getIsDeletemark, 1);
         return this.list(wrapper);
     }
 
@@ -162,7 +167,7 @@ public class YbReconsiderResetServiceImpl extends ServiceImpl<YbReconsiderResetM
                         if (count == 0) {
                             List<ComSms> createSmsList = new ArrayList<>();
                             int nOpenSms = febsProperties.getOpenSms();
-                            String sendContent = iYbReconsiderApplyService.getSendMessage(ybReconsiderReset.getApplyDateStr());
+                            String sendContent = iYbReconsiderApplyService.getSendMessage(ybReconsiderReset.getApplyDateStr(),reconsiderReset.getAreaType());
                             boolean isOpenSms = nOpenSms == 1 ? true : false;
                             if (isOpenSms) {
                                 List<YbPerson> personList = iYbPersonService.findPersonResultList(ybReconsiderReset.getApplyDateStr(),ybReconsiderReset.getAreaType());
@@ -175,11 +180,14 @@ public class YbReconsiderResetServiceImpl extends ServiceImpl<YbReconsiderResetM
                                     sms.setSendcontent(sendContent);
                                     sms.setState(ComSms.STATE_0);
                                     sms.setSendType(ComSms.SENDTYPE_5);
+                                    sms.setAreaType(reconsiderApply.getAreaType());
                                     sms.setOperatorId(currentUser.getUserId());
                                     sms.setOperatorName(currentUser.getXmname());
                                     sms.setCreateUserId(currentUser.getUserId());
                                     sms.setCreateTime(thisDate);
                                     sms.setIsDeletemark(1);
+                                    sms.setApplyDateStr(reconsiderApply.getApplyDateStr());
+//                                    sms.setTypeno(typeno);//剔除无
                                     createSmsList.add(sms);
                                 }
                             }

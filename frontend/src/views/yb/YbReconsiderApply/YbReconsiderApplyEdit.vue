@@ -40,6 +40,18 @@
       <a-row>
         <a-form-item
           v-bind="formItemLayout"
+          label="第一版确认日期"
+        >
+        <a-date-picker
+          placeholder="请输入第一版确认日期"
+          style="width:250px"
+          v-decorator="['enableDateOne', {rules: [{ required: true, message: '第一版确认日期不能为空' }] }]"
+          :format="enableFormat"/>
+        </a-form-item>
+      </a-row>
+      <a-row>
+        <a-form-item
+          v-bind="formItemLayout"
           label="第二版结束日期"
         >
         <a-date-picker
@@ -48,6 +60,18 @@
           v-decorator="['endDateTwo', {rules: [{ required: true, message: '第二版结束日期不能为空' }] }]"
           show-time
           :format="dayFormat"/>
+        </a-form-item>
+      </a-row>
+      <a-row>
+        <a-form-item
+          v-bind="formItemLayout"
+          label="第二版确认日期"
+        >
+        <a-date-picker
+          placeholder="请输入第二版确认日期"
+          style="width:250px"
+          v-decorator="['enableDateTwo', {rules: [{ required: true, message: '第二版确认日期不能为空' }] }]"
+          :format="enableFormat"/>
         </a-form-item>
       </a-row>
       <a-row>
@@ -100,6 +124,7 @@ export default {
       checked: false,
       user: this.$store.state.account.user,
       monthFormat: 'YYYY-MM',
+      enableFormat: 'YYYY-MM-DD',
       dayFormat: 'YYYY-MM-DD HH:mm:ss'
     }
   },
@@ -118,8 +143,8 @@ export default {
     },
     setFormValues ({ ...ybReconsiderApply }) {
       this.checked = false
-      let fields = ['applyDate', 'endDateOne', 'endDateTwo']
-      let fieldDates = ['applyDate', 'endDateOne', 'endDateTwo']
+      let fields = ['applyDate', 'endDateOne', 'endDateTwo', 'enableDateOne', 'enableDateTwo']
+      let fieldDates = ['applyDate', 'endDateOne', 'endDateTwo', 'enableDateOne', 'enableDateTwo']
       Object.keys(ybReconsiderApply).forEach((key) => {
         if (fields.indexOf(key) !== -1) {
           this.form.getFieldDecorator(key)
@@ -146,6 +171,7 @@ export default {
           ybReconsiderApply.id = this.ybReconsiderApply.id
           ybReconsiderApply.isUpOverdue = this.checked
           ybReconsiderApply.areaType = this.user.areaType
+          console.log(this.ybReconsiderApply)
           this.$put('ybReconsiderApply', {
             ...ybReconsiderApply
           }).then((r) => {
@@ -175,7 +201,7 @@ export default {
       })
     },
     setFields () {
-      let values = this.form.getFieldsValue(['endDateOne', 'endDateTwo'])
+      let values = this.form.getFieldsValue(['endDateOne', 'endDateTwo', 'enableDateOne', 'enableDateTwo'])
       if (typeof values !== 'undefined') {
         Object.keys(values).forEach(_key => { this.ybReconsiderApply[_key] = values[_key] })
       }

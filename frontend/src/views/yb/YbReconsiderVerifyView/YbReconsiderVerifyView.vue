@@ -24,13 +24,13 @@
               />
             </a-form-item>
           </a-col>
-          <a-col :span=2>
+          <a-col :span=2 v-show="tableSelectKey==5?false:true">
             <a-button
               type="primary"
               @click="showSearchModal"
             >筛选</a-button>
           </a-col>
-          <a-col :span=10>
+          <a-col :span=11>
             <a-popconfirm
               title="确定自动匹配？"
               @confirm="addImport"
@@ -101,7 +101,7 @@
               </a-select-option>
             </a-select>
             <a-select :value="searchTypeno" style="width: 100px" @change="handleTypenoChange"
-            v-show="tableSelectKey==4?true:false"
+            v-show="tableSelectKey==4 || tableSelectKey==5?true:false"
             >
               <a-select-option
               v-for="d in selectTypenoDataSource"
@@ -110,11 +110,80 @@
               {{ d.text }}
               </a-select-option>
             </a-select>
-            <a-button
+            <a-button  v-show="tableSelectKey==5?false:true"
               type="primary"
               style="margin-right: 15px"
               @click="searchTable"
             >刷新</a-button>
+            <a-button type="primary" @click.stop="hideJob"  v-show="tableSelectKey==4?true:false">
+              开启服务
+            </a-button>
+          <a-popover v-model="visibleJob" trigger="click" title="开启服务">
+            <a-popconfirm
+              slot="content"
+              title="确定开启复议截止服务？"
+              style="margin-right: 15px"
+              @confirm="startJob(1)"
+              okText="确定"
+              cancelText="取消"
+            >
+            <a>1.复议截止服务</a>
+            </a-popconfirm>
+            <a-popconfirm
+              slot="content"
+              title="确定开启确认截止服务？"
+              style="margin-right: 15px"
+              @confirm="startJob(2)"
+              okText="确定"
+              cancelText="取消"
+            >
+            <a>2.确认截止服务</a>
+            </a-popconfirm>
+            <a-popconfirm
+              slot="content"
+              title="确定开启截止提醒服务？"
+              style="margin-right: 15px"
+              @confirm="startJob(3)"
+              okText="确定"
+              cancelText="取消"
+            >
+            <a>3.截止提醒服务</a>
+            </a-popconfirm>
+            <a-popconfirm
+              slot="content"
+              title="确定开启1和2服务？"
+              style="margin-right: 15px"
+              @confirm="startJob(4)"
+              okText="确定"
+              cancelText="取消"
+            >
+            <a>1和2服务</a>
+            </a-popconfirm>
+            <a-popconfirm
+              slot="content"
+              title="确定开启全部服务？"
+              style="margin-right: 15px"
+              @confirm="startJob(5)"
+              okText="确定"
+              cancelText="取消"
+            >
+            <a>全部服务</a>
+            </a-popconfirm>
+          </a-popover>
+          <a-checkbox :checked="checked"  @change="onChange" v-show="tableSelectKey==5?true:false">
+            是否发送
+          </a-checkbox>
+          <a-input-search placeholder="请输入关键字" v-model="searchText" style="width: 200px" enter-button @search="searchTable" v-show="tableSelectKey==5?true:false" />
+          <a-popconfirm
+              title="确定发送短信？"
+              @confirm="sendSms"
+              okText="确定"
+              style="margin-left: 15px"
+              cancelText="取消"
+              v-show="tableSelectKey==5?true:false"
+            >
+              <a-button type="primary">发送短信</a-button>
+            </a-popconfirm>
           </a-col>
 
           <a-col :span=2 v-show="tableSelectKey==1||tableSelectKey==2?true:false">
@@ -210,6 +279,20 @@
             >
             </ybReconsiderSend-end>
           </a-tab-pane>
+          <a-tab-pane
+            key="5"
+            :forceRender="true"
+            tab="核对短信"
+          >
+            <ybReconsiderVerify-sms
+              ref="ybReconsiderVerifySms"
+              :applyDateStr="searchApplyDate"
+              :searchText="searchText"
+              :checked="checked"
+              :searchTypeno="searchTypeno"
+            >
+            </ybReconsiderVerify-sms>
+          </a-tab-pane>
         </a-tabs>
       </div>
       <!-- 修改字典 -->
@@ -251,7 +334,7 @@
               label="项目名称："
             >
             <a-input-group compact>
-              <a-select style="width: 85px" v-model="searchItem.project.type" default-value="LIKE">
+              <a-select style="width: 85px" v-model="searchItem.project.type">
                 <a-select-option v-for="item in handleQuerySymbol" :key="item.value" :value="item.value">
                   {{item.text}}
                 </a-select-option>
@@ -266,7 +349,7 @@
               label="规则名称："
             >
             <a-input-group compact>
-              <a-select style="width: 85px" v-model="searchItem.rule.type" default-value="LIKE">
+              <a-select style="width: 85px" v-model="searchItem.rule.type">
                 <a-select-option v-for="item in handleQuerySymbol" :key="item.value" :value="item.value">
                   {{item.text}}
                 </a-select-option>
@@ -281,7 +364,7 @@
               label="科室名称："
             >
             <a-input-group compact>
-              <a-select style="width: 85px" v-model="searchItem.dept.type" default-value="LIKE">
+              <a-select style="width: 85px" v-model="searchItem.dept.type">
                 <a-select-option v-for="item in handleQuerySymbol" :key="item.value" :value="item.value">
                   {{item.text}}
                 </a-select-option>
@@ -296,7 +379,7 @@
               label="序号编码："
             >
             <a-input-group compact>
-              <a-select style="width: 85px" v-model="searchItem.order.type" default-value="EQ">
+              <a-select style="width: 85px" v-model="searchItem.order.type">
                 <a-select-option v-for="item in handleQuerySymbol" :key="item.value" :value="item.value">
                   {{item.text}}
                 </a-select-option>
@@ -367,6 +450,7 @@ import YbReconsiderSendStayed from './YbReconsiderSendStayed'
 import YbReconsiderSendStayedMain from './YbReconsiderSendStayedMain'
 import YbReconsiderSendEnd from './YbReconsiderSendEnd'
 import YbReconsiderVerifyViewDetail from './YbReconsiderVerifyViewDetail'
+import YbReconsiderVerifySms from './YbReconsiderVerifySms'
 import InputSelect from '../../common/InputSelect'
 const formItemLayout = {
   labelCol: { span: 6 },
@@ -374,7 +458,7 @@ const formItemLayout = {
 }
 export default {
   name: 'YbReconsiderVerifyView',
-  components: { InputSelect, YbReconsiderVerifyViewDetail, YbReconsiderVerifyStayed, YbReconsiderSendStayed, YbReconsiderSendStayedMain, YbReconsiderSendEnd },
+  components: { InputSelect, YbReconsiderVerifyViewDetail, YbReconsiderVerifyStayed, YbReconsiderSendStayed, YbReconsiderSendStayedMain, YbReconsiderSendEnd, YbReconsiderVerifySms },
   data () {
     return {
       formItemLayout,
@@ -386,6 +470,7 @@ export default {
       searchApplyDate: this.formatDate(),
       visibleSearch: false,
       visibleUpdate: false,
+      visibleJob: false,
       pcmVisible: false,
       selectedPcmRowKeys: [],
       spinning: false,
@@ -394,6 +479,8 @@ export default {
       fileList: [],
       searchTypeno: 1,
       searchDataType: 0,
+      checked: false,
+      searchText: '',
       handleQuerySymbol: [
         {text: '等于', value: 'EQ'},
         {text: '包含', value: 'LIKE'},
@@ -405,7 +492,7 @@ export default {
         project: {type: 'LIKE', projectName: ''},
         rule: {type: 'LIKE', ruleName: ''},
         dept: {type: 'LIKE', deptName: ''},
-        order: {type: 'LIKE', orderNumber: ''}
+        order: {type: 'EQ', orderNumber: ''}
       },
       user: this.$store.state.account.user
     }
@@ -430,7 +517,8 @@ export default {
         applyDateStr: applyDateStr, areaType: this.user.areaType
       }).then((r) => {
         if (r.data.data.success === 1) {
-          this.searchTypeno = parseInt(r.data.data.data)
+          let typeno = parseInt(r.data.data.data)
+          this.searchTypeno = typeno === 3 ? 2 : typeno
         } else {
           this.searchTypeno = 1
         }
@@ -489,6 +577,31 @@ export default {
         this.$refs.ybReconsiderSendStayedMain.handImport(this.selectDate)
       }
     },
+    hideJob () {
+      this.visibleJob = true
+    },
+    startJob (type) {
+      let types = [type]
+      if (type === 4) {
+        types = [1, 2]
+      }
+      if (type === 5) {
+        types = [1, 2, 3]
+      }
+      this.$put('ybReconsiderVerify/startJob', {
+        applyDateStr: this.searchApplyDate,
+        areaType: this.user.areaType,
+        jobTypeList: types
+      }).then((r) => {
+        if (r.data.data.success === 1) {
+          this.$message.success('启动Job成功')
+        } else {
+          this.$message.warning(r.data.data.message)
+        }
+      }).catch(() => {
+        this.$message.error('启动Job失败')
+      })
+    },
     handImport () {
       this.selectDate = {}
       this.visibleUpdate = false
@@ -532,10 +645,10 @@ export default {
         })
         return
       }
-      const isLt2M = file.size / 1024 / 1024 < 5
+      const isLt2M = file.size / 1024 / 1024 < 10
       if (!isLt2M) {
         this.$error({
-          title: '超5M限制，不允许上传~'
+          title: '超10M限制，不允许上传~'
         })
         return
       }
@@ -569,6 +682,12 @@ export default {
         this.$message.error('Excel导入失败 或 该年月无数据导出.')
         this.spinning = false
       })
+    },
+    onChange () {
+      this.checked = !this.checked
+      setTimeout(() => {
+        this.searchTable()
+      }, 500)
     },
     exportExcel () {
       let queryParams = {}
@@ -650,6 +769,33 @@ export default {
       this.searchItem.dept.deptName = ''
       this.searchItem.order.orderNumber = ''
     },
+    sendSms () {
+      if (this.tableSelectKey === '5') {
+        this.spinning = true
+        let key = this.tableSelectKey
+        this.$put('comSms/sendSms', {
+          applyDateStr: this.searchApplyDate,
+          areaType: this.user.areaType,
+          typeno: this.searchTypeno,
+          sendType: 1,
+          state: 0
+        }).then((r) => {
+          if (r.data.data.success === 1) {
+            this.$message.success('发送成功.')
+            if (this.tableSelectKey === key) {
+              this.callback(key)
+            }
+            this.spinning = false
+          } else {
+            this.$message.warning(r.data.data.message)
+            this.spinning = false
+          }
+        }).catch(() => {
+          this.$message.error('发送失败.')
+          this.spinning = false
+        })
+      }
+    },
     callback (key) {
       this.tableSelectKey = key
       this.clearValue()
@@ -664,6 +810,8 @@ export default {
         this.$refs.ybReconsiderSendStayed.searchPage()
       } else if (key === '4') {
         this.$refs.ybReconsiderSendEnd.searchPage()
+      } else if (key === '5') {
+        this.$refs.ybReconsiderVerifySms.searchPage()
       } else {
         console.log('ok')
       }

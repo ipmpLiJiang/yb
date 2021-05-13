@@ -30,6 +30,8 @@ public interface IYbReconsiderResetDataService extends IService<YbReconsiderRese
 
     void deleteYbReconsiderResetDatas(String[] Ids);
 
+    List<YbReconsiderResetData> findReconsiderResetDataList(String pid,String com);
+
     String updateResetDatas(String applyDateStr,Integer areaType, Long uid, String uname, Integer dataType);
 
     String updateHandleResetDatas(String resultIds, String resetIds, Long uid, String uname);
@@ -37,6 +39,8 @@ public interface IYbReconsiderResetDataService extends IService<YbReconsiderRese
     List<YbReconsiderResetData> findReconsiderResetDataByApplyDates(String applyDateStr, Integer areaType, Integer dataType);
 
     List<YbReconsiderResetData> findResetNotExistsRepayByApplyDates(String applyDateStr,Integer areaType, Integer dataType);
+
+    List<YbReconsiderResetData> getResetDataListView(List<YbReconsiderResetData> resetDataList,String keyField,String value,Integer dataType);
 
     String updateHandleResetCancelData(String resetId,String applyDateStr,Integer areaType);
 }

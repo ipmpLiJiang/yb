@@ -32,6 +32,9 @@
         <result column="versionNumber" property="versionNumber"/>
         <result column="backAppeal" property="backAppeal"/>
         <result column="typeno" property="typeno"/>
+        <result column="sendPersonId" property="sendPersonId"/>
+        <result column="sendPersonName" property="sendPersonName"/>
+        <result column="sendDate" property="sendDate"/>
         <result column="applyDateStr" property="applyDateStr"/>
         <result column="id" property="id"/>
         <result column="applyDataId" property="applyDataId"/>
@@ -55,7 +58,7 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        pid, serialNo, billNo, proposalCode, projectCode, projectName, num, medicalPrice, ruleName, deductPrice, deductReason, repaymentReason, doctorName, deptCode, deptName,enterHospitalDateStr,outHospitalDateStr,costDateStr, hospitalizedNo, treatmentMode, settlementDateStr, personalNo, insuredName, cardNumber, areaName, versionNumber, backAppeal, typeno, applyDateStr, id, applyDataId, verifyDoctorCode, verifyDoctorName, verifyDeptCode, verifyDeptName, insuredType,dataType,orderNumber,orderNum,isVerify,isPerson,orderDoctorCode,orderDoctorName,orderDeptCode,orderDeptName, STATE, areaType
+        pid, serialNo, billNo, proposalCode, projectCode, projectName, num, medicalPrice, ruleName, deductPrice, deductReason, repaymentReason, doctorName, deptCode, deptName,enterHospitalDateStr,outHospitalDateStr,costDateStr, hospitalizedNo, treatmentMode, settlementDateStr, personalNo, insuredName, cardNumber, areaName, versionNumber, backAppeal, typeno, sendPersonId, sendPersonName, sendDate, applyDateStr, id, applyDataId, verifyDoctorCode, verifyDoctorName, verifyDeptCode, verifyDeptName, insuredType,dataType,orderNumber,orderNum,isVerify,isPerson,orderDoctorCode,orderDoctorName,orderDeptCode,orderDeptName, STATE, areaType
     </sql>
     <update id="updateYbReconsiderVerifyView" parameterType="cc.mrbird.febs.yb.entity.YbReconsiderVerifyView">
         update yb_reconsider_verify_view
@@ -384,6 +387,9 @@
         case when rv.id is null then '' else rv.orderDeptName end orderDeptName,
         case when rv.id is null then 0 else 1 end isVerify,
         case when yp.id is null then 0 else 1 end isPerson,
+        rv.sendPersonId,
+        rv.sendPersonName,
+        rv.sendDate,
         rv.areaType
         from
         yb_reconsider_apply_data ad
@@ -501,11 +507,7 @@
         from
         yb_reconsider_apply_data ad
         LEFT JOIN yb_reconsider_verify rv ON
-        ad.id = rv.applyDataId and
-        rv.applyDateStr=#{ ybReconsiderVerifyView.applyDateStr} and
-        rv.areaType = #{ ybReconsiderVerifyView.areaType}
-        <if test="ybReconsiderVerifyView.typeno != null">and rv.typeno =#{ ybReconsiderVerifyView.typeno}</if>
-        <if test="ybReconsiderVerifyView.dataType != null">and rv.dataType =#{ ybReconsiderVerifyView.dataType}</if>
+        ad.id = rv.applyDataId
         where
         (
         ad.pid = #{ ybReconsiderVerifyView.pid}
@@ -651,6 +653,9 @@
         case when rv.id is null then '' else rv.orderDeptName end orderDeptName,
         case when rv.id is null then 0 else 1 end isVerify,
         case when yp.id is null then 0 else 1 end isPerson,
+        rv.sendPersonId,
+        rv.sendPersonName,
+        rv.sendDate,
         rv.areaType
         from
         yb_reconsider_verify rv
@@ -808,6 +813,9 @@
             case when rv.id is null then '' else rv.orderDeptName end orderDeptName,
             case when rv.id is null then 0 else 1 end isVerify,
             null isPerson,
+            rv.sendPersonId,
+            rv.sendPersonName,
+            rv.sendDate,
             rv.areaType
         from
             yb_reconsider_apply_data ad

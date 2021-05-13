@@ -65,8 +65,14 @@ public class YbAppealResultViewController extends BaseController {
      */
     @GetMapping
     @RequiresPermissions("ybAppealResultView:view")
-    public Map<String, Object> List(QueryRequest request, YbAppealResultView ybAppealResultView) {
-        return getDataTable(this.iYbAppealResultViewService.findAppealResultViews(request, ybAppealResultView));
+    public Map<String, Object> List(QueryRequest request, YbAppealResultView ybAppealResultView, String keyField) {
+        if (ybAppealResultView.getCurrencyField() != null && ybAppealResultView.getCurrencyField() != "") {
+            System.out.println("View-New");
+            return getDataTable(this.iYbAppealResultViewService.findAppealResultViewNew(request, ybAppealResultView, keyField));
+        } else {
+            System.out.println("View-Old");
+            return getDataTable(this.iYbAppealResultViewService.findAppealResultViews(request, ybAppealResultView, keyField));
+        }
     }
 
     //数据剔除详情明细
@@ -157,16 +163,16 @@ public class YbAppealResultViewController extends BaseController {
     public void export1(QueryRequest request, YbAppealResultView ybAppealResultView, HttpServletResponse response) throws FebsException {
         try {
             List<YbAppealResultView> appealResultViewList = null;
-            if(ybAppealResultView.getSourceType()==0) {
+            if (ybAppealResultView.getSourceType() == 0) {
                 appealResultViewList = this.iYbAppealResultViewService.findAppealResultViewLists(ybAppealResultView);
-            }else{
+            } else {
                 appealResultViewList = this.iYbAppealResultViewService.findAppealResultHandleViewLists(ybAppealResultView);
             }
 
             if (appealResultViewList.size() > 0) {
                 List<YbAppealResultView> appealResultViewDataList = new ArrayList<>();
                 List<YbAppealResultView> appealResultViewMainList = new ArrayList<>();
-                if(ybAppealResultView.getSourceType()==0) {
+                if (ybAppealResultView.getSourceType() == 0) {
                     appealResultViewDataList = appealResultViewList.stream().filter(
                             s -> s.getDataType().equals(YbDefaultValue.DATATYPE_0)).
                             sorted(Comparator.comparing(YbAppealResultView::getOrderNum)).collect(Collectors.toList());
@@ -174,7 +180,7 @@ public class YbAppealResultViewController extends BaseController {
                     appealResultViewMainList = appealResultViewList.stream().filter(
                             s -> s.getDataType().equals(YbDefaultValue.DATATYPE_1)).
                             sorted(Comparator.comparing(YbAppealResultView::getOrderNum)).collect(Collectors.toList());
-                }else{
+                } else {
                     appealResultViewDataList = appealResultViewList.stream().filter(
                             s -> s.getDataType().equals(YbDefaultValue.DATATYPE_0)).
                             sorted(Comparator.comparing(YbAppealResultView::getTypeno).
@@ -266,28 +272,43 @@ public class YbAppealResultViewController extends BaseController {
                     //反馈申诉
                     are.setBackAppeal(item.getOperateReason());
 
+//                    if (item.getItemTypeCode() != null) {
                     are.setItemTypeCode(item.getItemTypeCode());
                     are.setItemTypeName(item.getItemTypeName());
+//                    }
 
                     are.setResultDeptCode(item.getArDeptCode());
                     are.setResultDeptName(item.getArDeptName());
                     are.setResultDoctorCode(item.getArDoctorCode());
                     are.setResultDoctorName(item.getArDoctorName());
+//                    if (item.getAttendDocId() != null) {
                     are.setAttendDocId(item.getAttendDocId());
                     are.setAttendDocName(item.getAttendDocName());
+//                    }
+//                    if (item.getOrderDeptId() != null) {
                     are.setOrderDeptId(item.getOrderDeptId());
                     are.setOrderDeptName(item.getOrderDeptName());
+//                    }
+//                    if (item.getOrderDocId() != null) {
                     are.setOrderDocId(item.getOrderDocId());
                     are.setOrderDocName(item.getOrderDocName());
+//                    }
+//                    if (item.getExcuteDeptId() != null) {
                     are.setExcuteDeptId(item.getExcuteDeptId());
                     are.setExcuteDeptName(item.getExcuteDeptName());
+//                    }
+//                    if (item.getExcuteDocId() != null) {
                     are.setExcuteDocId(item.getExcuteDocId());
                     are.setExcuteDocName(item.getExcuteDocName());
+//                    }
+//                    if (item.getFeeOperatorId() != null) {
                     are.setFeeOperatorId(item.getFeeOperatorId());
                     are.setFeeOperatorName(item.getFeeOperatorName());
+//                    }
+//                    if (item.getFeeDeptId() != null) {
                     are.setFeeDeptId(item.getFeeDeptId());
                     are.setFeeDeptName(item.getFeeDeptName());
-
+//                    }
                     if (item.getArOrderDeptCode() != null && !item.getArOrderDeptCode().equals(""))
                         are.setOrderDeptId(item.getArOrderDeptCode());
 
@@ -358,6 +379,31 @@ public class YbAppealResultViewController extends BaseController {
                     are.setVersionNumber(item.getVersionNumber());
                     //反馈申诉
                     are.setBackAppeal(item.getOperateReason());
+
+                    are.setResultDeptCode(item.getArDeptCode());
+                    are.setResultDeptName(item.getArDeptName());
+                    are.setResultDoctorCode(item.getArDoctorCode());
+                    are.setResultDoctorName(item.getArDoctorName());
+                    are.setOrderDeptId(item.getOrderDeptId());
+                    are.setOrderDeptName(item.getOrderDeptName());
+//                    if(item.getOrderDeptId() != null) {
+//                        are.setOrderDeptName(item.getOrderDeptId() + "-" + item.getOrderDeptName());
+//                    }
+                    are.setOrderDocId(item.getOrderDocId());
+                    are.setOrderDocName(item.getOrderDocName());
+//                    if(item.getOrderDocId() != null) {
+//                        are.setOrderDocName(item.getOrderDocId() + "-" + item.getOrderDocName());
+//                    }
+                    are.setExcuteDeptId(item.getExcuteDeptId());
+                    are.setExcuteDeptName(item.getExcuteDeptName());
+//                    if(item.getExcuteDeptId() != null) {
+//                        are.setExcuteDeptName(item.getExcuteDeptId() + "-" + item.getExcuteDeptName());
+//                    }
+                    are.setExcuteDocId(item.getExcuteDocId());
+                    are.setExcuteDocName(item.getExcuteDocName());
+//                    if(item.getExcuteDocId() != null) {
+//                        are.setExcuteDocName(item.getExcuteDocId() + "-" + item.getExcuteDocName());
+//                    }
                     mainList.add(are);
 
                 }
@@ -784,6 +830,22 @@ public class YbAppealResultViewController extends BaseController {
     //@RequiresPermissions("ybAppealResultView:view")
     public FebsResponse fileDownLoadSumList(YbAppealResultView ybAppealResultView) {
         List<YbAppealResultDownLoad> list = this.iYbAppealResultViewService.findAppealResultDownLoadSumList(ybAppealResultView);
+        Map<String, Object> result = new HashMap<>();
+        if (list.size() > 0) {
+            result.put("data", list);
+            result.put("success", 1);
+        } else {
+            result.put("data", null);
+            result.put("error", "无数据");
+            result.put("success", 1);
+        }
+        return new FebsResponse().data(result);
+    }
+
+    @GetMapping("fileNotDeptList")
+    //@RequiresPermissions("ybAppealResultView:view")
+    public FebsResponse fileNotDeptLists(YbAppealResultView ybAppealResultView) {
+        List<YbAppealResultDownLoad> list = this.iYbAppealResultViewService.findYbAppealResultNotDeptList(ybAppealResultView);
         Map<String, Object> result = new HashMap<>();
         if (list.size() > 0) {
             result.put("data", list);

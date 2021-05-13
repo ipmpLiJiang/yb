@@ -26,9 +26,9 @@ public interface IYbPersonService extends IService<YbPerson> {
 
     IPage<YbPerson> findYbPersonList(QueryRequest request, YbPerson ybPerson);
 
-    void createYbPerson(YbPerson ybPerson);
+    void createYbPerson(YbPerson ybPerson) throws Exception;
 
-    void updateYbPerson(YbPerson ybPerson);
+    void updateYbPerson(YbPerson ybPerson) throws Exception;
 
     List<YbPerson> findPersonList(YbPerson ybPerson,int type);
 
@@ -36,11 +36,15 @@ public interface IYbPersonService extends IService<YbPerson> {
 
     List<YbPerson> findPersonResultList(String applyDateStr,Integer areaType);
 
-    void deleteYbPersons(String[] Ids);
+    List<YbPerson> findPersonWarnLists(String applyDateStr,Integer areaType, Integer acceptState, Integer typeno, Integer sourceType);
+
+    List<String> findPersonCodeList(String value);
+
+    void deleteYbPersons(String[] Ids) throws Exception;
 
     String importUserRoles(Integer type) throws Exception;
 
-    boolean importPerson(User logUser);
+    boolean importPerson(User logUser) throws Exception;
 
     YbPerson findByName(String personCode);
 }

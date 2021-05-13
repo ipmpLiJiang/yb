@@ -24,12 +24,14 @@
         <result column="uploadFileNameTwo" property="uploadFileNameTwo"/>
         <result column="endDateOne" property="endDateOne"/>
         <result column="endDateTwo" property="endDateTwo"/>
+        <result column="enableDateOne" property="enableDateOne"/>
+        <result column="enableDateTwo" property="enableDateTwo"/>
         <result column="areaType" property="areaType"/>
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, applyDate, operatorId, operatorName, COMMENTS, STATE, IS_DELETEMARK, MODIFY_TIME, CREATE_TIME, CREATE_USER_ID, MODIFY_USER_ID, applyDateStr,resultState,repayState,resetState,taskState,uploadFileNameOne,uploadFileNameTwo,endDateOne,endDateTwo,areaType
+        id, applyDate, operatorId, operatorName, COMMENTS, STATE, IS_DELETEMARK, MODIFY_TIME, CREATE_TIME, CREATE_USER_ID, MODIFY_USER_ID, applyDateStr,resultState,repayState,resetState,taskState,uploadFileNameOne,uploadFileNameTwo,endDateOne,endDateTwo,enableDateOne,enableDateTwo,areaType
     </sql>
     <update id="updateYbReconsiderApply" parameterType="cc.mrbird.febs.yb.entity.YbReconsiderApply">
         update yb_reconsider_apply
@@ -53,6 +55,8 @@
             <if test="uploadFileNameTwo != null">uploadFileNameTwo=#{uploadFileNameTwo},</if>
             <if test="endDateOne != null">endDateOne=#{endDateOne},</if>
             <if test="endDateTwo != null">endDateTwo=#{endDateTwo},</if>
+            <if test="enableDateOne != null">enableDateOne=#{enableDateOne},</if>
+            <if test="enableDateTwo != null">enableDateTwo=#{enableDateTwo},</if>
             <if test="areaType != null">areaType=#{areaType},</if>
         </trim>
         where id=#{id}

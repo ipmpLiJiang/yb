@@ -2,7 +2,7 @@
   <a-drawer
     title="查看申诉材料"
     :maskClosable="false"
-    width=50%
+    width=60%
     placement="right"
     :closable="true"
     @close="onClose"
@@ -171,6 +171,7 @@ export default {
       formData.deptId = ybAppealResult.arDeptCode
       formData.applyDateStr = ybAppealResult.applyDateStr
       formData.sourceType = ybAppealResult.sourceType
+      formData.areaType = this.user.areaType
       this.$post('comFile/listImgComFile', {
         ...formData
       }).then((r) => {

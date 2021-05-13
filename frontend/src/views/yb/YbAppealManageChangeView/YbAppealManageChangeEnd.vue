@@ -41,8 +41,10 @@ export default {
     applyDate: {
       default: ''
     },
-    searchText: {
-      default: ''
+    searchItem: {
+      default () {
+        return {}
+      }
     },
     searchTypeno: {
       default: 1
@@ -85,22 +87,22 @@ export default {
         width: 70
       },
       {
-        title: '意见书编码',
-        dataIndex: 'proposalCode',
+        title: '交易流水号',
+        dataIndex: 'serialNo',
         fixed: 'left',
-        width: 140
+        width: 150
       },
       {
         title: '项目编码',
         dataIndex: 'projectCode',
         fixed: 'left',
-        width: 120
+        width: 130
       },
       {
         title: '项目名称',
         dataIndex: 'projectName',
         fixed: 'left',
-        width: 160
+        width: 170
       },
       {
         title: '数量',
@@ -174,7 +176,7 @@ export default {
           }
         },
         fixed: 'right',
-        width: 200
+        width: 160
       },
       {
         title: '申请人',
@@ -202,7 +204,7 @@ export default {
           }
         },
         fixed: 'right',
-        width: 130
+        width: 120
       },
       {
         title: '审核结果',
@@ -323,9 +325,10 @@ export default {
       this.loading = true
       params.applyDateStr = this.applyDate
       params.acceptState = 4
-      params.currencyField = this.searchText
+      params.currencyField = this.searchItem.value
       params.typeno = this.searchTypeno
       params.areaType = this.user.areaType
+      params.keyField = this.searchItem.keyField
       if (this.paginationInfo) {
         // 如果分页信息不为空，则设置表格当前第几页，每页条数，并设置查询分页参数
         this.$refs.TableInfo.pagination.current = this.paginationInfo.current
@@ -349,6 +352,13 @@ export default {
         this.dataSource = data.rows
         this.pagination = pagination
       })
+      // this.$get('ybAppealManageView/appealManageCount', {
+      //   ...params
+      // }).then((r) => {
+      //   const pagination = { ...this.pagination }
+      //   pagination.total = r.data
+      //   this.pagination = pagination
+      // })
       this.selectedRowKeys = []
     }
   }

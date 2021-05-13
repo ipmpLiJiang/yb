@@ -158,8 +158,23 @@
         WHERE
             yb_appeal_result.applyDateStr = #{ applyDateStr} AND
             yb_appeal_result.areaType = #{ areaType} AND
-            yb_appeal_result.state =2 and
-            yb_appeal_result.IS_DELETEMARK = 1
+            yb_appeal_result.state =2
+    </select>
+
+    <select id="findPersonWarnList" resultType="cc.mrbird.febs.yb.entity.YbPerson">
+        select * from yb_person where personCode in(
+		SELECT
+			readyDoctorCode
+		FROM
+			yb_appeal_manage
+		WHERE
+			applyDateStr = #{applyDateStr}
+			AND areaType = #{areaType}
+			AND acceptState = #{acceptState}
+			AND typeno = #{typeno}
+			AND sourceType = #{sourceType}
+			group by readyDoctorCode
+	)
     </select>
 
 </mapper>

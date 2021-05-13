@@ -22,16 +22,19 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
  */
 public interface IYbAppealManageViewService extends IService<YbAppealManageView> {
 
-    IPage<YbAppealManageView> findYbAppealManageViews(QueryRequest request, YbAppealManageView ybAppealManageView);
+    IPage<YbAppealManageView> findYbAppealManageViews(QueryRequest request, YbAppealManageView ybAppealManageView, String keyField);
+
+    int findYbAppealManageCounts(YbAppealManageView ybAppealManageView, String keyField);
 
     IPage<YbAppealManageView> findYbAppealManageViewList(QueryRequest request, YbAppealManageView ybAppealManageView);
 
-    IPage<YbAppealManageView> findAppealManageUserViews(QueryRequest request, YbAppealManageView ybAppealManageView);
+    IPage<YbAppealManageView> findAppealManageUserViews(QueryRequest request, YbAppealManageView ybAppealManageView, String keyField);
 
-    IPage<YbAppealManageView> findAppealManageOperateRoomViews(QueryRequest request, YbAppealManageView ybAppealManageView);
+    IPage<YbAppealManageView> findAppealManageOperateRoomViews(QueryRequest request, YbAppealManageView ybAppealManageView, String keyField);
 
+    IPage<YbAppealManageView> findAppealManageViewNew(QueryRequest request, YbAppealManageView ybAppealManageView, String keyField,boolean isConf);
 
-    IPage<YbAppealManageView> findAppealManageConfireViews(QueryRequest request, YbAppealManageView ybAppealManageView, User currentUser);
+    IPage<YbAppealManageView> findAppealManageConfireViews(QueryRequest request, YbAppealManageView ybAppealManageView, User currentUser, String keyField);
 
     void createYbAppealManageView(YbAppealManageView ybAppealManageView);
 

@@ -229,7 +229,7 @@ export default {
         title: '交易流水号',
         dataIndex: 'serialNo',
         fixed: 'left',
-        width: 135
+        width: 150
       },
       {
         title: '单据号',
@@ -241,7 +241,7 @@ export default {
         title: '项目名称',
         dataIndex: 'projectName',
         fixed: 'left',
-        width: 160
+        width: 170
       },
       {
         title: '数量',
@@ -347,7 +347,7 @@ export default {
         title: '交易流水号',
         dataIndex: 'serialNo',
         fixed: 'left',
-        width: 135
+        width: 150
       },
       {
         title: '单据号',
@@ -359,13 +359,13 @@ export default {
         title: '项目编码',
         dataIndex: 'projectCode',
         fixed: 'left',
-        width: 120
+        width: 130
       },
       {
         title: '项目名称',
         dataIndex: 'projectName',
         fixed: 'left',
-        width: 160
+        width: 170
       },
       {
         title: '医保内金额',
@@ -545,10 +545,10 @@ export default {
               ...updateParams
             }).then((r) => {
               if (r.data.data.success === 1) {
-                this.totalDeductPrice = this.deductPriceReset
-                this.resultDeductPrice = this.deductPriceResult
                 this.isUpdate = true
                 this.state = 2
+                this.totalDeductPrice = this.deductPriceReset
+                this.resultDeductPrice = this.deductPriceResult
                 this.search()
                 if (this.dataSource1.length > 0) {
                   this.seekState = 1
@@ -656,10 +656,11 @@ export default {
     fetch1 (params = {}) {
       params.id = this.ybReconsiderResetUnknownDetail.id
       params.applyDateStr = this.ybReconsiderResetUnknownDetail.applyDateStr
+      params.areaType = this.ybReconsiderResetUnknownDetail.areaType
       params.serialNo = this.ybReconsiderResetUnknownDetail.serialNo
-      params.billNo = this.ybReconsiderResetExceptDetail.billNo
-      params.projectCode = this.ybReconsiderResetUnknownDetail.projectCode
-      params.projectName = this.ybReconsiderResetUnknownDetail.projectName
+      params.billNo = this.ybReconsiderResetUnknownDetail.billNo
+      // params.projectCode = this.ybReconsiderResetUnknownDetail.projectCode
+      // params.projectName = this.ybReconsiderResetUnknownDetail.projectName
       params.dataType = this.ybReconsiderResetUnknownDetail.dataType
       params.seekState = this.seekState
       this.loading1 = true
@@ -687,14 +688,14 @@ export default {
     },
     fetch (params = {}) {
       params.applyDateStr = this.ybReconsiderResetUnknownDetail.applyDateStr
+      params.areaType = this.ybReconsiderResetUnknownDetail.areaType
       params.serialNo = this.ybReconsiderResetUnknownDetail.serialNo
-      params.billNo = this.ybReconsiderResetExceptDetail.billNo
-      params.projectCode = this.ybReconsiderResetUnknownDetail.projectCode
-      params.projectName = this.ybReconsiderResetUnknownDetail.projectName
+      params.billNo = this.ybReconsiderResetUnknownDetail.billNo
+      // params.projectCode = this.ybReconsiderResetUnknownDetail.projectCode
+      // params.projectName = this.ybReconsiderResetUnknownDetail.projectName
       params.dataType = this.ybReconsiderResetUnknownDetail.dataType
       params.sourceType = 0
       params.state = this.state
-      params.areaType = this.user.areaType
       this.loading = true
       if (this.paginationInfo) {
         // 如果分页信息不为空，则设置表格当前第几页，每页条数，并设置查询分页参数

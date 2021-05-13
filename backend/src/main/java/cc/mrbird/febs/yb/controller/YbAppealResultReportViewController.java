@@ -66,16 +66,28 @@ public class YbAppealResultReportViewController extends BaseController {
      */
     @GetMapping
     @RequiresPermissions("ybAppealResultReportView:view")
-    public Map<String, Object> List(QueryRequest request, YbAppealResultReportView ybAppealResultReportView) {
-        return getDataTable(this.iYbAppealResultReportViewService.findAppealResultReportViews(request, ybAppealResultReportView,false));
+    public Map<String, Object> List(QueryRequest request, YbAppealResultReportView ybAppealResultReportView, String keyField) {
+        if (ybAppealResultReportView.getCurrencyField() != null && ybAppealResultReportView.getCurrencyField() != "") {
+            System.out.println("View-New");
+            return getDataTable(this.iYbAppealResultReportViewService.findAppealResultReportViewNew(request, ybAppealResultReportView, keyField));
+        } else {
+            System.out.println("View-Old");
+            return getDataTable(this.iYbAppealResultReportViewService.findAppealResultReportViews(request, ybAppealResultReportView, keyField, false));
+        }
     }
 
     @GetMapping("findAppealResultReportUserView")
     @RequiresPermissions("ybAppealResultReportView:userView")
-    public Map<String, Object> userList(QueryRequest request, YbAppealResultReportView ybAppealResultReportView) {
+    public Map<String, Object> userList(QueryRequest request, YbAppealResultReportView ybAppealResultReportView, String keyField) {
         User currentUser = FebsUtil.getCurrentUser();
         ybAppealResultReportView.setArDoctorCode(currentUser.getUsername());
-        return getDataTable(this.iYbAppealResultReportViewService.findAppealResultReportViews(request, ybAppealResultReportView,true));
+//        return getDataTable(this.iYbAppealResultReportViewService.findAppealResultReportViews(request, ybAppealResultReportView,keyField,true));
+        if (ybAppealResultReportView.getApplyDateFrom().equals(ybAppealResultReportView.getApplyDateTo())) {
+            ybAppealResultReportView.setApplyDateStr(ybAppealResultReportView.getApplyDateFrom());
+            return getDataTable(this.iYbAppealResultReportViewService.findAppealResultReportViewNew(request, ybAppealResultReportView, keyField));
+        } else {
+            return getDataTable(this.iYbAppealResultReportViewService.findAppealResultReportViewUserNew(request, ybAppealResultReportView, keyField));
+        }
     }
 
     /**
@@ -154,9 +166,9 @@ public class YbAppealResultReportViewController extends BaseController {
 
     @PostMapping("reportExcel")
     @RequiresPermissions("ybAppealResultReportView:exportData")
-    public void reportExcel(QueryRequest request, YbAppealResultReportView ybAppealResultReportView,HttpServletResponse response) throws FebsException {
+    public void reportExcel(QueryRequest request, YbAppealResultReportView ybAppealResultReportView, HttpServletResponse response, String keyField) throws FebsException {
         try {
-            List<YbAppealResultReportView> appealResultReportList = this.iYbAppealResultReportViewService.findYbAppealResultReportLists(ybAppealResultReportView,false);
+            List<YbAppealResultReportView> appealResultReportList = this.iYbAppealResultReportViewService.findYbAppealResultReportLists(ybAppealResultReportView, keyField, false);
 
             if (appealResultReportList.size() > 0) {
                 List<YbAppealResultReportView> appealResultReportDataList = new ArrayList<>();
@@ -192,7 +204,7 @@ public class YbAppealResultReportViewController extends BaseController {
                     appDateStr = DataTypeHelpers.stringDate7Chang6(appDateStr);
                     item.setApplyDateStr(appDateStr);
 
-                    if(!mxApplyDateStrList.stream().anyMatch(task -> task.equals(item.getApplyDateStr()))){
+                    if (!mxApplyDateStrList.stream().anyMatch(task -> task.equals(item.getApplyDateStr()))) {
                         mxApplyDateStrList.add(item.getApplyDateStr());
                     }
 
@@ -283,7 +295,7 @@ public class YbAppealResultReportViewController extends BaseController {
                     appDateStr = DataTypeHelpers.stringDate7Chang6(appDateStr);
                     item.setApplyDateStr(appDateStr);
 
-                    if(!zdApplyDateStrList.stream().anyMatch(task -> task.equals(item.getApplyDateStr()))){
+                    if (!zdApplyDateStrList.stream().anyMatch(task -> task.equals(item.getApplyDateStr()))) {
                         zdApplyDateStrList.add(item.getApplyDateStr());
                     }
 
@@ -349,10 +361,10 @@ public class YbAppealResultReportViewController extends BaseController {
 
                 }
 
-                if(mxApplyDateStrList.size()>0) {
+                if (mxApplyDateStrList.size() > 0) {
                     mxApplyDateStrList = mxApplyDateStrList.stream().sorted(Comparator.naturalOrder()).collect(Collectors.toList());
                 }
-                if(zdApplyDateStrList.size()>0) {
+                if (zdApplyDateStrList.size() > 0) {
                     zdApplyDateStrList = zdApplyDateStrList.stream().sorted(Comparator.naturalOrder()).collect(Collectors.toList());
                 }
 
@@ -360,8 +372,8 @@ public class YbAppealResultReportViewController extends BaseController {
                 String sheetName2 = "主单扣款";
 
                 ExcelMapping excelMappingData = ExcelMappingFactory.get(YbAppealResultDataReportExport.class);
-                Map<String,Integer> sheetColumnCountMap =  new LinkedHashMap<>();
-                sheetColumnCountMap.put(sheetName1,excelMappingData.getPropertyList().size());
+                Map<String, Integer> sheetColumnCountMap = new LinkedHashMap<>();
+                sheetColumnCountMap.put(sheetName1, excelMappingData.getPropertyList().size());
 
                 ExcelWriter writer = ExcelUtil.getWriterWithSheet(sheetName1);
 
@@ -371,15 +383,15 @@ public class YbAppealResultReportViewController extends BaseController {
 
                 List<String> rowHead = new ArrayList<>();
                 Map<String, String> headerAliasData = new LinkedHashMap<>();
-                for(ExcelProperty item : excelMappingData.getPropertyList()){
+                for (ExcelProperty item : excelMappingData.getPropertyList()) {
                     rowHead.add(item.getColumn());
                     headerAliasData.put(item.getName(), item.getColumn());
                 }
                 boolean isHead = true;
 
-                if(mxApplyDateStrList.size()==0) {
+                if (mxApplyDateStrList.size() == 0) {
                     writer.writeHeadRow(rowHead);
-                }else {
+                } else {
                     writer.setHeaderAlias(headerAliasData);
                     for (String applyDateStr : mxApplyDateStrList) {
                         dataSearchList = dataList.stream().filter(s -> s.getApplyDateStr().equals(applyDateStr)).collect(Collectors.toList());
@@ -393,28 +405,27 @@ public class YbAppealResultReportViewController extends BaseController {
                 //设置所有列为自动宽度，不考虑合并单元格
                 writer.autoSizeColumnAll();
                 //标题Row高度
-                writer.setRowHeight(0,25);
+                writer.setRowHeight(0, 25);
                 int rowHeightCount = dataList.size() + mxApplyDateStrList.size();
                 //内容Row高度 有效 慢
 //                for (int i = 1; i <= rowHeightCount; i++) {
 //                    writer.setRowHeight(i,20);
 //                }
 
-
                 rowHead.clear();
                 ExcelMapping excelMappingMain = ExcelMappingFactory.get(YbAppealResultMainReportExport.class);
-                sheetColumnCountMap.put(sheetName2,excelMappingMain.getPropertyList().size());
+                sheetColumnCountMap.put(sheetName2, excelMappingMain.getPropertyList().size());
 
                 writer.setSheet(sheetName2);
                 Map<String, String> headerAliasMain = new LinkedHashMap<>();
-                for(ExcelProperty item : excelMappingMain.getPropertyList()){
+                for (ExcelProperty item : excelMappingMain.getPropertyList()) {
                     rowHead.add(item.getColumn());
                     headerAliasMain.put(item.getName(), item.getColumn());
                 }
 
-                if(zdApplyDateStrList.size()==0){
+                if (zdApplyDateStrList.size() == 0) {
                     writer.writeHeadRow(rowHead);
-                }else {
+                } else {
                     isHead = true;
                     writer.setHeaderAlias(headerAliasMain);
                     for (String applyDateStr : zdApplyDateStrList) {
@@ -429,7 +440,7 @@ public class YbAppealResultReportViewController extends BaseController {
                 //设置所有列为自动宽度，不考虑合并单元格
                 writer.autoSizeColumnAll();
                 //标题Row高度
-                writer.setRowHeight(0,25);
+                writer.setRowHeight(0, 25);
                 rowHeightCount = mainList.size() + zdApplyDateStrList.size();
                 //内容Row高度 有效 慢
 //                for (int i = 1; i <= rowHeightCount; i++) {
@@ -446,7 +457,7 @@ public class YbAppealResultReportViewController extends BaseController {
                 cellStyle.setFont(f1);
 
                 List<org.apache.poi.ss.usermodel.Sheet> sheetList = writer.getSheets();
-                for(org.apache.poi.ss.usermodel.Sheet sheet : sheetList){
+                for (org.apache.poi.ss.usermodel.Sheet sheet : sheetList) {
                     int count = sheetColumnCountMap.get(sheet.getSheetName());
                     for (int i = 0; i <= count; i++) {
                         sheet.autoSizeColumn(i);
@@ -475,11 +486,11 @@ public class YbAppealResultReportViewController extends BaseController {
 
     @PostMapping("reportUserExcel")
     @RequiresPermissions("ybAppealResultReportView:exportUserData")
-    public void reportUserExcel(QueryRequest request, YbAppealResultReportView ybAppealResultReportView, HttpServletResponse response) throws FebsException {
+    public void reportUserExcel(QueryRequest request, YbAppealResultReportView ybAppealResultReportView, HttpServletResponse response, String keyField) throws FebsException {
         try {
             User currentUser = FebsUtil.getCurrentUser();
             ybAppealResultReportView.setArDoctorCode(currentUser.getUsername());
-            List<YbAppealResultReportView> appealResultReportList = this.iYbAppealResultReportViewService.findYbAppealResultReportLists(ybAppealResultReportView,true);
+            List<YbAppealResultReportView> appealResultReportList = this.iYbAppealResultReportViewService.findYbAppealResultReportLists(ybAppealResultReportView, keyField, true);
 
             if (appealResultReportList.size() > 0) {
                 List<YbAppealResultReportView> appealResultReportDataList = new ArrayList<>();
@@ -515,7 +526,7 @@ public class YbAppealResultReportViewController extends BaseController {
                     appDateStr = DataTypeHelpers.stringDate7Chang6(appDateStr);
                     item.setApplyDateStr(appDateStr);
 
-                    if(!mxApplyDateStrList.stream().anyMatch(task -> task.equals(item.getApplyDateStr()))){
+                    if (!mxApplyDateStrList.stream().anyMatch(task -> task.equals(item.getApplyDateStr()))) {
                         mxApplyDateStrList.add(item.getApplyDateStr());
                     }
 
@@ -605,7 +616,7 @@ public class YbAppealResultReportViewController extends BaseController {
                     appDateStr = DataTypeHelpers.stringDate7Chang6(appDateStr);
                     item.setApplyDateStr(appDateStr);
 
-                    if(!zdApplyDateStrList.stream().anyMatch(task -> task.equals(item.getApplyDateStr()))){
+                    if (!zdApplyDateStrList.stream().anyMatch(task -> task.equals(item.getApplyDateStr()))) {
                         zdApplyDateStrList.add(item.getApplyDateStr());
                     }
                     are.setApplyDateStr(item.getApplyDateStr());
@@ -669,10 +680,10 @@ public class YbAppealResultReportViewController extends BaseController {
 
                 }
 
-                if(mxApplyDateStrList.size()>0) {
+                if (mxApplyDateStrList.size() > 0) {
                     mxApplyDateStrList = mxApplyDateStrList.stream().sorted(Comparator.naturalOrder()).collect(Collectors.toList());
                 }
-                if(zdApplyDateStrList.size()>0) {
+                if (zdApplyDateStrList.size() > 0) {
                     zdApplyDateStrList = zdApplyDateStrList.stream().sorted(Comparator.naturalOrder()).collect(Collectors.toList());
                 }
 
@@ -680,8 +691,8 @@ public class YbAppealResultReportViewController extends BaseController {
                 String sheetName2 = "主单扣款";
 
                 ExcelMapping excelMappingData = ExcelMappingFactory.get(YbAppealResultDataReportExport.class);
-                Map<String,Integer> sheetColumnCountMap =  new LinkedHashMap<>();
-                sheetColumnCountMap.put(sheetName1,excelMappingData.getPropertyList().size());
+                Map<String, Integer> sheetColumnCountMap = new LinkedHashMap<>();
+                sheetColumnCountMap.put(sheetName1, excelMappingData.getPropertyList().size());
 
                 ExcelWriter writer = ExcelUtil.getWriterWithSheet(sheetName1);
 
@@ -691,15 +702,15 @@ public class YbAppealResultReportViewController extends BaseController {
 
                 List<String> rowHead = new ArrayList<>();
                 Map<String, String> headerAliasData = new LinkedHashMap<>();
-                for(ExcelProperty item : excelMappingData.getPropertyList()){
+                for (ExcelProperty item : excelMappingData.getPropertyList()) {
                     rowHead.add(item.getColumn());
                     headerAliasData.put(item.getName(), item.getColumn());
                 }
                 boolean isHead = true;
 
-                if(mxApplyDateStrList.size()==0) {
+                if (mxApplyDateStrList.size() == 0) {
                     writer.writeHeadRow(rowHead);
-                }else {
+                } else {
                     writer.setHeaderAlias(headerAliasData);
                     for (String applyDateStr : mxApplyDateStrList) {
                         dataSearchList = dataList.stream().filter(s -> s.getApplyDateStr().equals(applyDateStr)).collect(Collectors.toList());
@@ -713,7 +724,7 @@ public class YbAppealResultReportViewController extends BaseController {
                 //设置所有列为自动宽度，不考虑合并单元格
                 writer.autoSizeColumnAll();
                 //标题Row高度
-                writer.setRowHeight(0,25);
+                writer.setRowHeight(0, 25);
                 int rowHeightCount = dataList.size() + mxApplyDateStrList.size();
                 //内容Row高度 有效 慢
 //                for (int i = 1; i <= rowHeightCount; i++) {
@@ -723,18 +734,18 @@ public class YbAppealResultReportViewController extends BaseController {
 
                 rowHead.clear();
                 ExcelMapping excelMappingMain = ExcelMappingFactory.get(YbAppealResultMainReportExport.class);
-                sheetColumnCountMap.put(sheetName2,excelMappingMain.getPropertyList().size());
+                sheetColumnCountMap.put(sheetName2, excelMappingMain.getPropertyList().size());
 
                 writer.setSheet(sheetName2);
                 Map<String, String> headerAliasMain = new LinkedHashMap<>();
-                for(ExcelProperty item : excelMappingMain.getPropertyList()){
+                for (ExcelProperty item : excelMappingMain.getPropertyList()) {
                     rowHead.add(item.getColumn());
                     headerAliasMain.put(item.getName(), item.getColumn());
                 }
 
-                if(zdApplyDateStrList.size()==0){
+                if (zdApplyDateStrList.size() == 0) {
                     writer.writeHeadRow(rowHead);
-                }else {
+                } else {
                     isHead = true;
                     writer.setHeaderAlias(headerAliasMain);
                     for (String applyDateStr : zdApplyDateStrList) {
@@ -749,7 +760,7 @@ public class YbAppealResultReportViewController extends BaseController {
                 //设置所有列为自动宽度，不考虑合并单元格
                 writer.autoSizeColumnAll();
                 //标题Row高度
-                writer.setRowHeight(0,25);
+                writer.setRowHeight(0, 25);
                 rowHeightCount = mainList.size() + zdApplyDateStrList.size();
                 //内容Row高度 有效 慢
 //                for (int i = 1; i <= rowHeightCount; i++) {
@@ -766,7 +777,7 @@ public class YbAppealResultReportViewController extends BaseController {
                 cellStyle.setFont(f1);
 
                 List<org.apache.poi.ss.usermodel.Sheet> sheetList = writer.getSheets();
-                for(org.apache.poi.ss.usermodel.Sheet sheet : sheetList){
+                for (org.apache.poi.ss.usermodel.Sheet sheet : sheetList) {
                     int count = sheetColumnCountMap.get(sheet.getSheetName());
                     for (int i = 0; i <= count; i++) {
                         sheet.autoSizeColumn(i);

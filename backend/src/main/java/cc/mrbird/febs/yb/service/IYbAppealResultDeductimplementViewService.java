@@ -20,14 +20,17 @@ public interface IYbAppealResultDeductimplementViewService extends IService<YbAp
 
         IPage<YbAppealResultDeductimplementView> findYbAppealResultDeductimplementViews(QueryRequest request, YbAppealResultDeductimplementView ybAppealResultDeductimplementView);
 
-        IPage<YbAppealResultDeductimplementView> findAppealResultDeductimplementViews(QueryRequest request, YbAppealResultDeductimplementView ybAppealResultDeductimplementView,boolean isUser);
+        IPage<YbAppealResultDeductimplementView> findAppealResultDeductimplementViews(QueryRequest request, YbAppealResultDeductimplementView ybAppealResultDeductimplementView,String keyField,boolean isUser);
 
         IPage<YbAppealResultDeductimplementView> findYbAppealResultDeductimplementViewList(QueryRequest request, YbAppealResultDeductimplementView ybAppealResultDeductimplementView);
 
-        IPage<YbAppealResultDeductimplementView> findAppealResultDmtView(QueryRequest request, YbAppealResultDeductimplementView ybAppealResultDeductimplementView);
+        IPage<YbAppealResultDeductimplementView> findAppealResultDmtView(QueryRequest request, YbAppealResultDeductimplementView ybAppealResultDeductimplementView,String keyField);
 
-        IPage<YbAppealResultDeductimplementView> findAppealResultDmtUserView(QueryRequest request, YbAppealResultDeductimplementView ybAppealResultDeductimplementView);
+        IPage<YbAppealResultDeductimplementView> findAppealResultDmtUserView(QueryRequest request, YbAppealResultDeductimplementView ybAppealResultDeductimplementView,String keyField);
 
+        IPage<YbAppealResultDeductimplementView> findAppealResultDmtViewNew(QueryRequest request, YbAppealResultDeductimplementView ybAppealResultDeductimplementView, String keyField);
+
+        IPage<YbAppealResultDeductimplementView> findAppealResultDmtUserNew(QueryRequest request, YbAppealResultDeductimplementView ybAppealResultDeductimplementView, String keyField);
         void createYbAppealResultDeductimplementView(YbAppealResultDeductimplementView ybAppealResultDeductimplementView);
 
         void updateYbAppealResultDeductimplementView(YbAppealResultDeductimplementView ybAppealResultDeductimplementView);

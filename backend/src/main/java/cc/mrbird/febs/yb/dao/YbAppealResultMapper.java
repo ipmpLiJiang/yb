@@ -26,6 +26,8 @@ public interface YbAppealResultMapper extends BaseMapper<YbAppealResult> {
 
     List<YbResultDownLoad> findAppealResultGroupDept(@Param("ybAppealResultView") YbAppealResultView ybAppealResultView);
 
+    List<YbResultDownLoad> findAppealResultNotDept(@Param("ybAppealResultView") YbAppealResultView ybAppealResultView);
+
     List<YbResultDownLoad> findAppealResultGroupSumDept(@Param("ybAppealResultView") YbAppealResultView ybAppealResultView);
 
     List<YbAppealResult> findAppealResulDataByReset(@Param("applyDateStr") String applyDateStr,@Param("areaType") Integer areaType,@Param("dataType") Integer dataType);

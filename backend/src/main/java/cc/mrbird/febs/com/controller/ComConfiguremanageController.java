@@ -1,7 +1,10 @@
 package cc.mrbird.febs.com.controller;
 
+import cc.mrbird.febs.com.entity.OutComArea;
+import cc.mrbird.febs.com.manager.ComConfigureManager;
 import cc.mrbird.febs.common.annotation.Log;
 import cc.mrbird.febs.common.controller.BaseController;
+import cc.mrbird.febs.common.domain.FebsResponse;
 import cc.mrbird.febs.common.domain.router.VueRouter;
 import cc.mrbird.febs.common.exception.FebsException;
 import cc.mrbird.febs.common.domain.QueryRequest;
@@ -11,6 +14,7 @@ import cc.mrbird.febs.com.entity.ComConfiguremanage;
 
 import cc.mrbird.febs.common.utils.FebsUtil;
 import cc.mrbird.febs.system.domain.User;
+import cc.mrbird.febs.yb.domain.ResponseResult;
 import com.baomidou.mybatisplus.core.toolkit.StringPool;
 import com.wuwenze.poi.ExcelKit;
 import lombok.extern.slf4j.Slf4j;
@@ -41,6 +45,8 @@ public class ComConfiguremanageController extends BaseController {
     @Autowired
     public IComConfiguremanageService iComConfiguremanageService;
 
+    @Autowired
+    ComConfigureManager configureManager;
 
     /**
      * 分页查询数据
@@ -55,6 +61,36 @@ public class ComConfiguremanageController extends BaseController {
         return getDataTable(this.iComConfiguremanageService.findComConfiguremanages(request, comConfiguremanage));
     }
 
+    @GetMapping("getAreaList")
+    public List<OutComArea> getAreaLists() {
+        List<ComConfiguremanage> list = configureManager.getConfigures(5,"area");
+        List<OutComArea> outAreaList = new ArrayList<>();
+        for (ComConfiguremanage item : list){
+            OutComArea area = new OutComArea();
+            area.setAreaType(item.getIntField());
+            area.setAreaName(item.getStringField());
+            outAreaList.add(area);
+        }
+        return outAreaList;
+    }
+
+    @GetMapping("saveAreaCache")
+    @RequiresPermissions("comConfiguremanage:add")
+    public FebsResponse addAreaCache()  {
+        int success = 0;
+        try {
+            configureManager.saveConfigureCache(5,"area");
+            success = 1;
+        } catch (Exception e) {
+            message = "更新Area缓存失败";
+            log.error(message, e);
+        }
+
+        ResponseResult rr = new ResponseResult();
+        rr.setSuccess(success);
+        rr.setMessage(message);
+        return new FebsResponse().data(rr);
+    }
     /**
      * 添加
      *
@@ -75,6 +111,7 @@ public class ComConfiguremanageController extends BaseController {
             throw new FebsException(message);
         }
     }
+
 
     /**
      * 修改

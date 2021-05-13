@@ -187,6 +187,10 @@ public class YbAppealResultController extends BaseController {
                         String filePath = febsProperties.getUploadPath(); // 上传后的路径
                         String oldDept = filePath + applyDateStr + "/" + currentUser.getUsername() + "/In";
                         String newDept = filePath + applyDateStr + "/" + currentUser.getUsername() + "/Out";
+                        if(ybAppealResult.getAreaType() != 0){
+                            oldDept += ybAppealResult.getAreaType();
+                            newDept += ybAppealResult.getAreaType();
+                        }
 
                         File f = new File(newDept);
                         if (!f.exists()) {

@@ -108,6 +108,7 @@ export default {
       previewVisible: false,
       previewImage: '',
       showDownLoad: true,
+      user: this.$store.state.account.user,
       ybAppealManage: {}
     }
   },
@@ -148,7 +149,7 @@ export default {
       formData.typeno = this.ybAppealManage.typeno
       formData.sourceType = this.ybAppealManage.sourceType
       formData.fileName = formData.applyDateStr + formData.deptName + '-' + this.ybAppealManage.typeno
-
+      formData.areaType = this.user.areaType
       this.$download('comFile/fileImgZip', {
         ...formData
       }, formData.fileName + '.zip')
@@ -159,6 +160,7 @@ export default {
       formData.deptId = ybAppealManage.readyDeptCode
       formData.applyDateStr = ybAppealManage.applyDateStr
       formData.sourceType = ybAppealManage.sourceType
+      formData.areaType = this.user.areaType
       this.$post('comFile/listImgComFile', {
         ...formData
       }).then((r) => {

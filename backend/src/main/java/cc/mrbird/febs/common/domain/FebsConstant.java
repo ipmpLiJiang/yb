@@ -16,6 +16,21 @@ public class FebsConstant {
     // token缓存前缀
     public static final String TOKEN_CACHE_PREFIX = "febs.cache.token.";
 
+    // com_configures缓存前缀
+    public static final String COM_CONF_PREFIX = "febs.cache.com.configure.";
+
+    // yb_person缓存前缀
+    public static final String YBPERSON_PREFIX= "febs.cache.yb.person.";
+
+    // yb_dept缓存前缀
+    public static final String YBDEPT_PREFIX= "febs.cache.yb.dept.";
+
+    // YbReconsiderApplyData缓存前缀
+    public static final String APPLYDATA_PREFIX= "febs.cache.yb.applyData.";
+
+    // YbReconsiderResetData缓存前缀
+    public static final String RESETDATA_PREFIX= "febs.cache.yb.resetData.";
+
     // 存储在线用户的 zset前缀
     public static final String ACTIVE_USERS_ZSET_PREFIX = "febs.user.active";
 

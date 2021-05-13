@@ -214,18 +214,30 @@ public class YbReconsiderVerifyViewController extends BaseController {
 
                             queryRifList = rifList.stream().filter(s -> s.getApplyDataId().equals(item.getApplyDataId())).collect(Collectors.toList());
                             if (queryRifList.size() > 0) {
-                                dataExport.setItemTypeCode(queryRifList.get(0).getItemTypeCode());
-                                dataExport.setItemTypeName(queryRifList.get(0).getItemTypeName());
-                                dataExport.setAttendDocId(queryRifList.get(0).getAttendDocId());
-                                dataExport.setAttendDocName(queryRifList.get(0).getAttendDocName());
-                                dataExport.setOrderDeptId(queryRifList.get(0).getDeptId());
-                                dataExport.setOrderDeptName(queryRifList.get(0).getDeptName());
-                                dataExport.setOrderDocId(queryRifList.get(0).getOrderDocId());
-                                dataExport.setOrderDocName(queryRifList.get(0).getOrderDocName());
-                                dataExport.setExcuteDeptId(queryRifList.get(0).getExcuteDeptId());
-                                dataExport.setExcuteDeptName(queryRifList.get(0).getExcuteDeptName());
+                                if(queryRifList.get(0).getItemTypeCode() !=null) {
+                                    dataExport.setItemTypeCode(queryRifList.get(0).getItemTypeCode());
+                                    dataExport.setItemTypeName(queryRifList.get(0).getItemTypeName());
+                                }
+                                if(queryRifList.get(0).getAttendDocId() !=null) {
+                                    dataExport.setAttendDocId(queryRifList.get(0).getAttendDocId());
+                                    dataExport.setAttendDocName(queryRifList.get(0).getAttendDocName());
+                                }
+                                if(queryRifList.get(0).getDeptId() !=null) {
+                                    dataExport.setOrderDeptId(queryRifList.get(0).getDeptId());
+                                    dataExport.setOrderDeptName(queryRifList.get(0).getDeptName());
+                                }
+                                if(queryRifList.get(0).getOrderDocId() !=null) {
+                                    dataExport.setOrderDocId(queryRifList.get(0).getOrderDocId());
+                                    dataExport.setOrderDocName(queryRifList.get(0).getOrderDocName());
+                                }
+                                if(queryRifList.get(0).getExcuteDeptId() !=null) {
+                                    dataExport.setExcuteDeptId(queryRifList.get(0).getExcuteDeptId());
+                                    dataExport.setExcuteDeptName(queryRifList.get(0).getExcuteDeptName());
+                                }
+                                if(queryRifList.get(0).getExcuteDeptId() !=null) {
                                 dataExport.setExcuteDocId(queryRifList.get(0).getExcuteDocId());
                                 dataExport.setExcuteDocName(queryRifList.get(0).getExcuteDocName());
+                                }
                                 dataExport.setFeeOperatorId(queryRifList.get(0).getFeeOperatorId());
                                 dataExport.setFeeOperatorName(queryRifList.get(0).getFeeOperatorName());
                                 dataExport.setFeeDeptId(queryRifList.get(0).getFeeDeptId());
@@ -252,6 +264,13 @@ public class YbReconsiderVerifyViewController extends BaseController {
                             ExportExcelUtils.exportExcel(response, YbReconsiderApplyDataVerify.class, exportList, "明细扣款");
                         }
                     } else {
+                        YbReconsiderInpatientfees queryRif = new YbReconsiderInpatientfees();
+                        queryRif.setApplyDateStr(ybReconsiderVerifyView.getApplyDateStr());
+                        queryRif.setAreaType(ybReconsiderVerifyView.getAreaType());
+                        queryRif.setDataType(YbDefaultValue.DATATYPE_1);
+                        queryRif.setTypeno(typeno);
+                        List<YbReconsiderInpatientfees> rifList = this.iYbReconsiderInpatientfeesService.findReconsiderInpatientfeesList(queryRif);
+                        List<YbReconsiderInpatientfees> queryRifList = new ArrayList<>();
                         List<YbReconsiderApplyMainVerify> exportList = new ArrayList<>();
                         for (YbReconsiderVerifyView item : list) {
                             YbReconsiderApplyMainVerify dataExport = new YbReconsiderApplyMainVerify();
@@ -277,6 +296,17 @@ public class YbReconsiderVerifyViewController extends BaseController {
                             dataExport.setVerifyDoctorName(item.getVerifyDoctorName());//复议医生姓名
                             dataExport.setVerifyDeptCode(item.getVerifyDeptCode());//复议科室编码
                             dataExport.setVerifyDeptName(item.getVerifyDeptName());//复议科室名称
+                            queryRifList = rifList.stream().filter(s -> s.getApplyDataId().equals(item.getApplyDataId())).collect(Collectors.toList());
+                            if (queryRifList.size() > 0) {
+                                dataExport.setOrderDeptId(queryRifList.get(0).getDeptId());
+                                dataExport.setOrderDeptName(queryRifList.get(0).getDeptName());
+                                dataExport.setOrderDocId(queryRifList.get(0).getOrderDocId());
+                                dataExport.setOrderDocName(queryRifList.get(0).getOrderDocName());
+                                dataExport.setExcuteDeptId(queryRifList.get(0).getExcuteDeptId());
+                                dataExport.setExcuteDeptName(queryRifList.get(0).getExcuteDeptName());
+                                dataExport.setExcuteDocId(queryRifList.get(0).getExcuteDocId());
+                                dataExport.setExcuteDocName(queryRifList.get(0).getExcuteDocName());
+                            }
                             exportList.add(dataExport);
                         }
                         if (exportList.size() == 0) {

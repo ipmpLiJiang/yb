@@ -229,7 +229,7 @@ export default {
         title: '交易流水号',
         dataIndex: 'serialNo',
         fixed: 'left',
-        width: 135
+        width: 150
       },
       {
         title: '单据号',
@@ -241,7 +241,7 @@ export default {
         title: '项目名称',
         dataIndex: 'projectName',
         fixed: 'left',
-        width: 160
+        width: 170
       },
       {
         title: '数量',
@@ -347,7 +347,7 @@ export default {
         title: '交易流水号',
         dataIndex: 'serialNo',
         fixed: 'left',
-        width: 135
+        width: 150
       },
       {
         title: '单据号',
@@ -359,13 +359,13 @@ export default {
         title: '项目编码',
         dataIndex: 'projectCode',
         fixed: 'left',
-        width: 120
+        width: 130
       },
       {
         title: '项目名称',
         dataIndex: 'projectName',
         fixed: 'left',
-        width: 160
+        width: 170
       },
       {
         title: '医保内金额',

@@ -5,10 +5,8 @@ import cc.mrbird.febs.common.domain.QueryRequest;
 import cc.mrbird.febs.common.utils.SortUtil;
 import cc.mrbird.febs.yb.dao.YbAppealResultViewMapper;
 import cc.mrbird.febs.yb.entity.*;
-import cc.mrbird.febs.yb.service.IYbAppealResultService;
-import cc.mrbird.febs.yb.service.IYbAppealResultViewService;
-import cc.mrbird.febs.yb.service.IYbReconsiderApplyService;
-import cc.mrbird.febs.yb.service.IYbReconsiderInpatientfeesService;
+import cc.mrbird.febs.yb.manager.YbApplyDataManager;
+import cc.mrbird.febs.yb.service.*;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -21,10 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -41,13 +36,25 @@ import java.util.stream.Collectors;
 public class YbAppealResultViewServiceImpl extends ServiceImpl<YbAppealResultViewMapper, YbAppealResultView> implements IYbAppealResultViewService {
 
     @Autowired
-    public IYbAppealResultService iYbAppealResultService;
+    IYbAppealResultService iYbAppealResultService;
 
     @Autowired
-    public IYbReconsiderApplyService iYbReconsiderApplyService;
+    IYbAppealManageService iYbAppealManageService;
+
+    @Autowired
+    IYbReconsiderApplyService iYbReconsiderApplyService;
+
+    @Autowired
+    IYbReconsiderApplyDataService iYbReconsiderApplyDataService;
 
     @Autowired
     public IYbReconsiderInpatientfeesService iYbReconsiderInpatientfeesService;
+
+    @Autowired
+    YbApplyDataManager ybApplyDataManager;
+
+    @Autowired
+    IYbPersonService iYbPersonService;
 
     //打包下载
     @Override
@@ -124,7 +131,7 @@ public class YbAppealResultViewServiceImpl extends ServiceImpl<YbAppealResultVie
     @Override
     public IPage<YbAppealResultView> findAppealResultViewResets(QueryRequest request, YbAppealResultView ybAppealResultView) {
         try {
-            YbReconsiderApply reconsiderApply = iYbReconsiderApplyService.findReconsiderApplyByApplyDateStrs(ybAppealResultView.getApplyDateStr(),ybAppealResultView.getAreaType());
+            YbReconsiderApply reconsiderApply = iYbReconsiderApplyService.findReconsiderApplyByApplyDateStrs(ybAppealResultView.getApplyDateStr(), ybAppealResultView.getAreaType());
             Page<YbAppealResultView> page = new Page<>();
             if (reconsiderApply != null) {
                 ybAppealResultView.setPid(reconsiderApply.getId());
@@ -138,7 +145,7 @@ public class YbAppealResultViewServiceImpl extends ServiceImpl<YbAppealResultVie
                 } else {
                     return page;
                 }
-            }else{
+            } else {
                 return page;
             }
         } catch (Exception e) {
@@ -190,17 +197,39 @@ public class YbAppealResultViewServiceImpl extends ServiceImpl<YbAppealResultVie
     }
 
     @Override
-    public IPage<YbAppealResultView> findAppealResultViews(QueryRequest request, YbAppealResultView ybAppealResultView) {
+    public IPage<YbAppealResultView> findAppealResultViews(QueryRequest request, YbAppealResultView ybAppealResultView, String keyField) {
         try {
-            YbReconsiderApply reconsiderApply = iYbReconsiderApplyService.findReconsiderApplyByApplyDateStrs(ybAppealResultView.getApplyDateStr(),ybAppealResultView.getAreaType());
+            YbReconsiderApply reconsiderApply = iYbReconsiderApplyService.findReconsiderApplyByApplyDateStrs(ybAppealResultView.getApplyDateStr(), ybAppealResultView.getAreaType());
             Page<YbAppealResultView> page = new Page<>();
             if (reconsiderApply != null) {
                 ybAppealResultView.setPid(reconsiderApply.getId());
-                int count = this.baseMapper.findAppealResultCount(ybAppealResultView);
+                boolean isLike = false;
+                if (ybAppealResultView.getCurrencyField() != null && ybAppealResultView.getCurrencyField() != "") {
+                    if (!keyField.equals("doctorCode") && !keyField.equals("doctorName")) {
+                        isLike = true;
+                    }
+                    if (keyField.equals("doctorCode")) {
+                        ybAppealResultView.setArDoctorCode(ybAppealResultView.getCurrencyField());
+                    }
+                    if (keyField.equals("doctorName")) {
+                        ybAppealResultView.setArDoctorName(ybAppealResultView.getCurrencyField());
+                    }
+                }
+                int count = 0;
+                if (isLike) {
+                    count = this.baseMapper.findAppealResultLikeCount(ybAppealResultView, keyField);
+                } else {
+                    count = this.baseMapper.findAppealResultCount(ybAppealResultView);
+                }
                 if (count > 0) {
                     page.setSearchCount(false);
                     SortUtil.handlePageSort(request, page, false);//true 是属性  false是数据库字段可两个
-                    IPage<YbAppealResultView> pg = this.baseMapper.findAppealResultView(page, ybAppealResultView);
+                    IPage<YbAppealResultView> pg = null;
+                    if (isLike) {
+                        pg = this.baseMapper.findAppealResultLikeView(page, ybAppealResultView, keyField);
+                    } else {
+                        pg = this.baseMapper.findAppealResultView(page, ybAppealResultView);
+                    }
                     pg.setTotal(count);
                     return pg;
                 } else {
@@ -214,6 +243,166 @@ public class YbAppealResultViewServiceImpl extends ServiceImpl<YbAppealResultVie
             return null;
         }
     }
+
+    @Override
+    public IPage<YbAppealResultView> findAppealResultViewNew(QueryRequest request, YbAppealResultView ybAppealResultView, String keyField) {
+        try {
+            String applyDateStr = ybAppealResultView.getApplyDateStr();
+            Integer areaType = ybAppealResultView.getAreaType();
+            YbReconsiderApply reconsiderApply = iYbReconsiderApplyService.findReconsiderApplyByApplyDateStrs(applyDateStr, areaType);
+            Page<YbAppealResultView> page = new Page<>();
+            if (reconsiderApply != null) {
+                String value = ybAppealResultView.getCurrencyField();
+                Integer typeno = ybAppealResultView.getTypeno();
+                Integer dataType = ybAppealResultView.getDataType();
+                Integer sourceType = ybAppealResultView.getSourceType();
+                List<YbReconsiderApplyData> applyDataList = ybApplyDataManager.getApplyDatas(reconsiderApply.getId(), applyDateStr + "-" + areaType);
+                List<YbAppealResultView> list = new ArrayList<>();
+                List<YbAppealResult> resultList = new ArrayList<>();
+                if (value != null && value != "" && keyField.equals("doctorName")) {
+                    LambdaQueryWrapper<YbAppealResult> queryWrapper = new LambdaQueryWrapper<>();
+                    queryWrapper.eq(YbAppealResult::getApplyDateStr, applyDateStr);
+                    queryWrapper.eq(YbAppealResult::getAreaType, areaType);
+                    List<String> strList = new ArrayList<>();
+                    strList = this.iYbPersonService.findPersonCodeList(value);
+                    if (strList.size() > 0) {
+                        queryWrapper.in(YbAppealResult::getDoctorCode, strList);
+                    }
+                    if (typeno != null) {
+                        queryWrapper.eq(YbAppealResult::getTypeno, typeno);
+                    }
+                    if (dataType != null) {
+                        queryWrapper.eq(YbAppealResult::getDataType, dataType);
+                    }
+                    if (sourceType != null) {
+                        queryWrapper.eq(YbAppealResult::getSourceType, sourceType);
+                    }
+                    resultList = iYbAppealResultService.list(queryWrapper);
+
+                } else{
+                    YbAppealResult queryResult = new YbAppealResult();
+                    queryResult.setApplyDateStr(applyDateStr);
+                    queryResult.setAreaType(areaType);
+                    if (value != null && value != "" && keyField.equals("doctorCode")) {
+                        queryResult.setDoctorCode(value);
+                    }
+                    if (ybAppealResultView.getArDoctorCode() != null) {
+                        queryResult.setDoctorCode(ybAppealResultView.getArDoctorCode());
+                    }
+                    if (value != null && value != "" && keyField.equals("orderNumber")) {
+                        queryResult.setOrderNumber(value);
+                    }
+                    if (typeno != null) {
+                        queryResult.setTypeno(typeno);
+                    }
+                    if (dataType != null) {
+                        queryResult.setDataType(dataType);
+                    }
+                    if (sourceType != null) {
+                        queryResult.setSourceType(sourceType);
+                    }
+                    resultList = iYbAppealResultService.findAppealResultList(queryResult);
+                }
+
+                applyDataList = this.iYbReconsiderApplyDataService.getApplyDataListView(applyDataList, keyField, value, typeno, dataType);
+
+                if (resultList.size() > 0 && applyDataList.size() > 0) {
+                    if (resultList.size() > applyDataList.size()) {
+                        List<YbAppealResult> queryList = new ArrayList<>();
+                        for (YbReconsiderApplyData item : applyDataList) {
+                            queryList = resultList.stream().filter(s -> s.getApplyDataId().equals(item.getId())).collect(Collectors.toList());
+                            if (queryList.size() > 0) {
+                                YbAppealResultView arv = this.getYbAppealResultView(queryList.get(0), item);
+                                list.add(arv);
+                            }
+                        }
+                    } else {
+                        for (YbAppealResult item : resultList) {
+                            List<YbReconsiderApplyData> queryList = new ArrayList<>();
+                            queryList = applyDataList.stream().filter(s -> s.getId().equals(item.getApplyDataId())).collect(Collectors.toList());
+                            if (queryList.size() > 0) {
+                                YbAppealResultView arv = this.getYbAppealResultView(item, queryList.get(0));
+                                list.add(arv);
+                            }
+                        }
+                    }
+                }
+                if (list.size() > 0) {
+                    page.setSearchCount(false);
+                    SortUtil.handlePageSort(request, page, false);//true 是属性  false是数据库字段可两个
+                    page.setTotal(list.size());
+                    long current = page.getCurrent() == 1 ? 0 : (page.getCurrent() - 1) * page.getSize();
+                    list = list.stream().sorted(Comparator.comparing(YbAppealResultView::getOrderNum)).skip(current).limit(page.getSize()).collect(Collectors.toList());
+                    page.setRecords(list);
+                }
+            }
+            return page;
+
+        } catch (Exception e) {
+            log.error("获取字典信息失败", e);
+            return null;
+        }
+    }
+
+    private YbAppealResultView getYbAppealResultView(YbAppealResult ar, YbReconsiderApplyData reconsiderApplyData) {
+        YbAppealResultView appealResultView = new YbAppealResultView();
+        appealResultView.setPid(reconsiderApplyData.getPid());
+        appealResultView.setSerialNo(reconsiderApplyData.getSerialNo());
+        appealResultView.setBillNo(reconsiderApplyData.getBillNo());
+        appealResultView.setProposalCode(reconsiderApplyData.getProposalCode());
+        appealResultView.setProjectCode(reconsiderApplyData.getProjectCode());
+        appealResultView.setProjectName(reconsiderApplyData.getProjectName());
+        appealResultView.setNum(reconsiderApplyData.getNum());
+        appealResultView.setMedicalPrice(reconsiderApplyData.getMedicalPrice());
+        appealResultView.setRuleName(reconsiderApplyData.getRuleName());
+        appealResultView.setDeductPrice(reconsiderApplyData.getDeductPrice());
+        appealResultView.setDeductReason(reconsiderApplyData.getDeductReason());
+        appealResultView.setRepaymentReason(reconsiderApplyData.getRepaymentReason());
+        appealResultView.setDoctorName(reconsiderApplyData.getDoctorName());
+        appealResultView.setDeptCode(reconsiderApplyData.getDeptCode());
+        appealResultView.setDeptName(reconsiderApplyData.getDeptName());
+        appealResultView.setEnterHospitalDateStr(reconsiderApplyData.getEnterHospitalDateStr());
+        appealResultView.setOutHospitalDateStr(reconsiderApplyData.getOutHospitalDateStr());
+        appealResultView.setCostDateStr(reconsiderApplyData.getCostDateStr());
+        appealResultView.setHospitalizedNo(reconsiderApplyData.getHospitalizedNo());
+        appealResultView.setTreatmentMode(reconsiderApplyData.getTreatmentMode());
+        appealResultView.setSettlementDateStr(reconsiderApplyData.getSettlementDateStr());
+        appealResultView.setPersonalNo(reconsiderApplyData.getPersonalNo());
+        appealResultView.setInsuredName(reconsiderApplyData.getInsuredName());
+        appealResultView.setInsuredType(reconsiderApplyData.getInsuredType());
+        appealResultView.setCardNumber(reconsiderApplyData.getCardNumber());
+        appealResultView.setAreaName(reconsiderApplyData.getAreaName());
+        appealResultView.setVersionNumber(reconsiderApplyData.getVersionNumber());
+        appealResultView.setBackAppeal(reconsiderApplyData.getBackAppeal());
+        appealResultView.setTypeno(reconsiderApplyData.getTypeno());
+        appealResultView.setApplyDateStr(ar.getApplyDateStr());
+        appealResultView.setDataType(reconsiderApplyData.getDataType());
+        appealResultView.setOrderNumber(reconsiderApplyData.getOrderNumber());
+        appealResultView.setOrderNum(reconsiderApplyData.getOrderNum());
+        appealResultView.setId(ar.getId());
+        appealResultView.setApplyDataId(reconsiderApplyData.getId());
+        appealResultView.setVerifyId(ar.getVerifyId());
+        appealResultView.setArDoctorCode(ar.getDoctorCode());
+        appealResultView.setArDoctorName(ar.getDoctorName());
+        appealResultView.setArDeptCode(ar.getDeptCode());
+        appealResultView.setArDeptName(ar.getDeptName());
+
+        appealResultView.setArOrderDoctorCode(ar.getOrderDoctorCode());
+        appealResultView.setArOrderDoctorName(ar.getOrderDoctorName());
+        appealResultView.setArOrderDeptCode(ar.getOrderDeptCode());
+        appealResultView.setArOrderDeptName(ar.getOrderDeptName());
+
+        appealResultView.setOperateReason(ar.getOperateReason());
+        appealResultView.setOperateDate(ar.getOperateDate());
+        appealResultView.setSourceType(ar.getSourceType());
+        appealResultView.setState(ar.getState());
+        appealResultView.setRepayState(ar.getRepayState());
+//        appealResultView.setCurrencyField();
+        appealResultView.setRelatelDataId(ar.getRelatelDataId());
+        appealResultView.setAreaType(ar.getAreaType());
+        return appealResultView;
+    }
+
 
     @Override
     @Transactional
@@ -242,7 +431,7 @@ public class YbAppealResultViewServiceImpl extends ServiceImpl<YbAppealResultVie
     public List<YbAppealResultView> findAppealResultHandleViewLists(@Param("ybAppealResultView") YbAppealResultView ybAppealResultView) {
         List<YbAppealResultView> list = new ArrayList<>();
         try {
-            YbReconsiderApply reconsiderApply = iYbReconsiderApplyService.findReconsiderApplyByApplyDateStrs(ybAppealResultView.getApplyDateStr(),ybAppealResultView.getAreaType());
+            YbReconsiderApply reconsiderApply = iYbReconsiderApplyService.findReconsiderApplyByApplyDateStrs(ybAppealResultView.getApplyDateStr(), ybAppealResultView.getAreaType());
             if (reconsiderApply != null) {
                 ybAppealResultView.setPid(reconsiderApply.getId());
                 YbReconsiderInpatientfees rif = new YbReconsiderInpatientfees();
@@ -250,11 +439,33 @@ public class YbAppealResultViewServiceImpl extends ServiceImpl<YbAppealResultVie
                 rif.setAreaType(reconsiderApply.getAreaType());
                 rif.setTypeno(ybAppealResultView.getTypeno());
                 List<YbReconsiderInpatientfees> rifList = iYbReconsiderInpatientfeesService.findReconsiderInpatientfeesList(rif);
+
+                LambdaQueryWrapper<YbAppealManage> wrapperManage = new LambdaQueryWrapper<>();
+                wrapperManage.eq(YbAppealManage::getApplyDateStr, ybAppealResultView.getApplyDateStr());
+                wrapperManage.eq(YbAppealManage::getAreaType, ybAppealResultView.getAreaType());
+                wrapperManage.eq(YbAppealManage::getSourceType, ybAppealResultView.getSourceType());
+                List<Integer> asList = new ArrayList<>();
+                asList.add(0);
+                asList.add(1);
+                asList.add(2);
+                wrapperManage.in(YbAppealManage::getAcceptState, asList);
+                List<YbAppealManage> manageList = iYbAppealManageService.list(wrapperManage);
+
                 List<YbReconsiderInpatientfees> queryRifList = new ArrayList<>();
-                list = this.baseMapper.findAppealResultList(ybAppealResultView);
+                List<YbAppealManage> queryManageList = new ArrayList<>();
+                list = this.baseMapper.findAppealResultHandleList(ybAppealResultView);
                 for (int i = 0; i < list.size(); i++) {
                     String applyDataId = list.get(i).getApplyDataId();
                     queryRifList = rifList.stream().filter(s -> s.getApplyDataId().equals(applyDataId)).collect(Collectors.toList());
+                    if (list.get(i).getArDoctorCode() == null) {
+                        queryManageList = manageList.stream().filter(s -> s.getApplyDataId().equals(applyDataId)).collect(Collectors.toList());
+                        if (queryManageList.size() > 0) {
+                            list.get(i).setArDoctorCode(queryManageList.get(0).getReadyDoctorCode());
+                            list.get(i).setArDoctorName(queryManageList.get(0).getReadyDoctorName());
+                            list.get(i).setArDeptCode(queryManageList.get(0).getReadyDeptCode());
+                            list.get(i).setArDeptName(queryManageList.get(0).getReadyDeptName());
+                        }
+                    }
                     if (queryRifList.size() > 0) {
                         list.get(i).setOrderDeptId(queryRifList.get(0).getDeptId());
                         list.get(i).setOrderDeptName(queryRifList.get(0).getDeptName());
@@ -287,7 +498,7 @@ public class YbAppealResultViewServiceImpl extends ServiceImpl<YbAppealResultVie
     public List<YbAppealResultView> findAppealResultViewLists(YbAppealResultView ybAppealResultView) {
         List<YbAppealResultView> list = new ArrayList<>();
         try {
-            YbReconsiderApply reconsiderApply = iYbReconsiderApplyService.findReconsiderApplyByApplyDateStrs(ybAppealResultView.getApplyDateStr(),ybAppealResultView.getAreaType());
+            YbReconsiderApply reconsiderApply = iYbReconsiderApplyService.findReconsiderApplyByApplyDateStrs(ybAppealResultView.getApplyDateStr(), ybAppealResultView.getAreaType());
             if (reconsiderApply != null) {
                 ybAppealResultView.setPid(reconsiderApply.getId());
                 YbReconsiderInpatientfees rif = new YbReconsiderInpatientfees();
@@ -296,10 +507,31 @@ public class YbAppealResultViewServiceImpl extends ServiceImpl<YbAppealResultVie
                 rif.setTypeno(ybAppealResultView.getTypeno());
                 List<YbReconsiderInpatientfees> rifList = iYbReconsiderInpatientfeesService.findReconsiderInpatientfeesList(rif);
                 List<YbReconsiderInpatientfees> queryRifList = new ArrayList<>();
+                List<YbAppealManage> queryManageList = new ArrayList<>();
+                LambdaQueryWrapper<YbAppealManage> wrapperManage = new LambdaQueryWrapper<>();
+                wrapperManage.eq(YbAppealManage::getApplyDateStr, ybAppealResultView.getApplyDateStr());
+                wrapperManage.eq(YbAppealManage::getAreaType, ybAppealResultView.getAreaType());
+                wrapperManage.eq(YbAppealManage::getSourceType, ybAppealResultView.getSourceType());
+                wrapperManage.eq(YbAppealManage::getTypeno, ybAppealResultView.getTypeno());
+                List<Integer> asList = new ArrayList<>();
+                asList.add(0);
+                asList.add(1);
+                asList.add(2);
+                wrapperManage.in(YbAppealManage::getAcceptState, asList);
+                List<YbAppealManage> manageList = iYbAppealManageService.list(wrapperManage);
                 list = this.baseMapper.findAppealResultList(ybAppealResultView);
                 for (int i = 0; i < list.size(); i++) {
                     String applyDataId = list.get(i).getApplyDataId();
                     queryRifList = rifList.stream().filter(s -> s.getApplyDataId().equals(applyDataId)).collect(Collectors.toList());
+                    if (list.get(i).getArDoctorCode() == null) {
+                        queryManageList = manageList.stream().filter(s -> s.getApplyDataId().equals(applyDataId)).collect(Collectors.toList());
+                        if (queryManageList.size() > 0) {
+                            list.get(i).setArDoctorCode(queryManageList.get(0).getReadyDoctorCode());
+                            list.get(i).setArDoctorName(queryManageList.get(0).getReadyDoctorName());
+                            list.get(i).setArDeptCode(queryManageList.get(0).getReadyDeptCode());
+                            list.get(i).setArDeptName(queryManageList.get(0).getReadyDeptName());
+                        }
+                    }
                     if (queryRifList.size() > 0) {
                         list.get(i).setOrderDeptId(queryRifList.get(0).getDeptId());
                         list.get(i).setOrderDeptName(queryRifList.get(0).getDeptName());
@@ -332,7 +564,7 @@ public class YbAppealResultViewServiceImpl extends ServiceImpl<YbAppealResultVie
     public List<YbAppealResultDownLoad> findYbAppealResultDownLoadList(YbAppealResultView ybAppealResultView) {
         List<YbAppealResultDownLoad> downLoadList = new ArrayList<>();
         try {
-            YbReconsiderApply reconsiderApply = iYbReconsiderApplyService.findReconsiderApplyByApplyDateStrs(ybAppealResultView.getApplyDateStr(),ybAppealResultView.getAreaType());
+            YbReconsiderApply reconsiderApply = iYbReconsiderApplyService.findReconsiderApplyByApplyDateStrs(ybAppealResultView.getApplyDateStr(), ybAppealResultView.getAreaType());
             if (reconsiderApply != null) {
                 ybAppealResultView.setPid(reconsiderApply.getId());
                 int typeNo = 0;
@@ -375,12 +607,37 @@ public class YbAppealResultViewServiceImpl extends ServiceImpl<YbAppealResultVie
         }
     }
 
+    //打包下载 汇总科室 未设置
+    @Override
+    public List<YbAppealResultDownLoad> findYbAppealResultNotDeptList(YbAppealResultView ybAppealResultView) {
+        List<YbAppealResultDownLoad> downLoadList = new ArrayList<>();
+        try {
+            YbReconsiderApply reconsiderApply = iYbReconsiderApplyService.findReconsiderApplyByApplyDateStrs(ybAppealResultView.getApplyDateStr(), ybAppealResultView.getAreaType());
+            if (reconsiderApply != null) {
+                // typeNo 可能为空
+                List<YbResultDownLoad> deptList = this.iYbAppealResultService.findAppealResultNotDepts(ybAppealResultView);
+
+                for (YbResultDownLoad item : deptList) {
+                    YbAppealResultDownLoad downLoad = new YbAppealResultDownLoad();
+                    downLoad.setKey(item.getId());
+                    downLoad.setDeptId(item.getDeptId());
+                    downLoad.setDeptName(item.getDeptName());
+                    downLoadList.add(downLoad);
+                }
+            }
+            return downLoadList;
+        } catch (Exception e) {
+            log.error("获取字典信息失败", e);
+            return downLoadList;
+        }
+    }
+
     //打包下载 查找部门
     @Override
     public List<YbAppealResultDownLoad> findAppealResultDownLoadSumList(YbAppealResultView ybAppealResultView) {
         List<YbAppealResultDownLoad> downLoadList = new ArrayList<>();
         try {
-            YbReconsiderApply reconsiderApply = iYbReconsiderApplyService.findReconsiderApplyByApplyDateStrs(ybAppealResultView.getApplyDateStr(),ybAppealResultView.getAreaType());
+            YbReconsiderApply reconsiderApply = iYbReconsiderApplyService.findReconsiderApplyByApplyDateStrs(ybAppealResultView.getApplyDateStr(), ybAppealResultView.getAreaType());
             if (reconsiderApply != null) {
                 ybAppealResultView.setApplyDateStr(reconsiderApply.getApplyDateStr());
                 int typeNo = 0;

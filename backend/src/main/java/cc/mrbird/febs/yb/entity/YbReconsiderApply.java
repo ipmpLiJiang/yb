@@ -183,6 +183,7 @@ public class YbReconsiderApply implements Serializable {
     @ExcelField(value = "第二版上传名称")
     private String uploadFileNameTwo;
 
+
     /**
      * 第一版结束时间
      */
@@ -200,6 +201,25 @@ public class YbReconsiderApply implements Serializable {
     private Date endDateTwo;
     private transient String endDateTwoFrom;
     private transient String endDateTwoTo;
+
+
+    /**
+     * 第一版确认时间
+     */
+    @TableField("enableDateOne")
+    @ExcelField(value = "第一版确认时间")
+    private Date enableDateOne;
+    private transient String enableDateOneFrom;
+    private transient String enableDateOneTo;
+
+    /**
+     * 第二版确认时间
+     */
+    @TableField("enableDateTwo")
+    @ExcelField(value = "第二版确认时间")
+    private Date enableDateTwo;
+    private transient String enableDateTwoFrom;
+    private transient String enableDateTwoTo;
 
     /**
      * 院区
@@ -249,6 +269,10 @@ public class YbReconsiderApply implements Serializable {
     public static final String ENDDATEONE = "endDateOne";
 
     public static final String ENDDATETWO = "endDateTwo";
+
+    public static final String ENABLEDATEONE = "enableDateOne";
+
+    public static final String ENABLEDATETWO = "enableDateTwo";
 
     public static final String AREATYPE = "areaType";
 

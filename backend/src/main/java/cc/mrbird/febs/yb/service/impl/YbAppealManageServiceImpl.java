@@ -2,6 +2,7 @@ package cc.mrbird.febs.yb.service.impl;
 
 import cc.mrbird.febs.com.controller.DataTypeHelpers;
 import cc.mrbird.febs.com.entity.ComSms;
+import cc.mrbird.febs.com.entity.OutComArea;
 import cc.mrbird.febs.com.service.IComConfiguremanageService;
 import cc.mrbird.febs.com.service.IComSmsService;
 import cc.mrbird.febs.common.domain.QueryRequest;
@@ -11,7 +12,9 @@ import cc.mrbird.febs.yb.dao.YbAppealManageMapper;
 import cc.mrbird.febs.yb.entity.*;
 import cc.mrbird.febs.yb.service.IYbAppealManageService;
 import cc.mrbird.febs.yb.service.IYbAppealResultService;
+import cc.mrbird.febs.yb.service.IYbPersonService;
 import cc.mrbird.febs.yb.service.IYbReconsiderApplyService;
+import cn.hutool.core.lang.Validator;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -51,6 +54,9 @@ public class YbAppealManageServiceImpl extends ServiceImpl<YbAppealManageMapper,
 
     @Autowired
     public IYbReconsiderApplyService iYbReconsiderApplyService;
+
+    @Autowired
+    public IYbPersonService iYbPersonService;
 
     @Autowired
     FebsProperties febsProperties;
@@ -128,7 +134,7 @@ public class YbAppealManageServiceImpl extends ServiceImpl<YbAppealManageMapper,
 
     @Override
     public int findAppealManageResetCheckCounts(String applyDateStr, Integer areaType) {
-        return this.baseMapper.findAppealManageResetCheckCount(applyDateStr,areaType);
+        return this.baseMapper.findAppealManageResetCheckCount(applyDateStr, areaType);
     }
 
     //批量接收或单个拒绝
@@ -229,7 +235,7 @@ public class YbAppealManageServiceImpl extends ServiceImpl<YbAppealManageMapper,
             Date thisDate = new Date();
             boolean isUpdate = false;
             String mms = "";
-            isUpdate = iYbReconsiderApplyService.findReconsiderApplyCheckEndDate(entity.getApplyDateStr(),entity.getAreaType(), entity.getTypeno());
+            isUpdate = iYbReconsiderApplyService.findReconsiderApplyCheckEndDate(entity.getApplyDateStr(), entity.getAreaType(), entity.getTypeno());
             if (entity.getTypeno() == YbDefaultValue.TYPENO_1) {
                 mms = "第一版";
             } else {
@@ -296,7 +302,7 @@ public class YbAppealManageServiceImpl extends ServiceImpl<YbAppealManageMapper,
             Date thisDate = new Date();
             boolean isUpdate = false;
             String mms = "";
-            isUpdate = iYbReconsiderApplyService.findReconsiderApplyCheckEndDate(entity.getApplyDateStr(),entity.getAreaType(), entity.getTypeno());
+            isUpdate = iYbReconsiderApplyService.findReconsiderApplyCheckEndDate(entity.getApplyDateStr(), entity.getAreaType(), entity.getTypeno());
             if (entity.getTypeno() == YbDefaultValue.TYPENO_1) {
                 mms = "第一版";
             } else {
@@ -428,8 +434,8 @@ public class YbAppealManageServiceImpl extends ServiceImpl<YbAppealManageMapper,
             int nOpenSms = febsProperties.getOpenSms();
             boolean isOpenSms = nOpenSms == 1 ? true : false;
             if (isOpenSms) {
-                String sendContent = this.iYbReconsiderApplyService.getSendMessage(entity.getApplyDateStr(), enableDate,entity.getAreaType() ,entity.getTypeno(),true);
-                iComSmsService.sendSmsService(personCode, ComSms.SENDTYPE_3, sendContent, uId, Uname);
+                String sendContent = this.iYbReconsiderApplyService.getSendMessage(entity.getApplyDateStr(), enableDate, entity.getAreaType(), entity.getTypeno(), true);
+                iComSmsService.sendSmsService(entity.getApplyDateStr(), entity.getTypeno(), personCode, ComSms.SENDTYPE_3, entity.getAreaType(), sendContent, uId, Uname);
             }
         }
     }
@@ -445,6 +451,36 @@ public class YbAppealManageServiceImpl extends ServiceImpl<YbAppealManageMapper,
         Date addDate = calendar.getTime();
 
         return addDate;
+    }
+
+    @Override
+    public List<YbAppealManage> findAppealManageList(YbAppealManage ybAppealManage) {
+        LambdaQueryWrapper<YbAppealManage> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(YbAppealManage::getApplyDateStr, ybAppealManage.getApplyDateStr());
+        queryWrapper.eq(YbAppealManage::getAreaType, ybAppealManage.getAreaType());
+        queryWrapper.eq(YbAppealManage::getAcceptState, ybAppealManage.getAcceptState());
+        if (ybAppealManage.getReadyDoctorCode() != null) {
+            queryWrapper.eq(YbAppealManage::getReadyDoctorCode, ybAppealManage.getReadyDoctorCode());
+        }
+        if (ybAppealManage.getReadyDeptName() != null) {
+            queryWrapper.eq(YbAppealManage::getReadyDeptName, ybAppealManage.getReadyDeptName());
+        }
+        if (ybAppealManage.getOrderDoctorCode() != null) {
+            queryWrapper.eq(YbAppealManage::getOrderDoctorCode, ybAppealManage.getOrderDoctorCode());
+        }
+        if (ybAppealManage.getOrderNumber() != null) {
+            queryWrapper.eq(YbAppealManage::getOrderNumber, ybAppealManage.getOrderNumber());
+        }
+        if (ybAppealManage.getTypeno() != null) {
+            queryWrapper.eq(YbAppealManage::getTypeno, ybAppealManage.getTypeno());
+        }
+        if (ybAppealManage.getDataType() != null) {
+            queryWrapper.eq(YbAppealManage::getDataType, ybAppealManage.getDataType());
+        }
+        if (ybAppealManage.getSourceType() != null) {
+            queryWrapper.eq(YbAppealManage::getSourceType, ybAppealManage.getSourceType());
+        }
+        return this.list(queryWrapper);
     }
 
     @Override
@@ -493,9 +529,9 @@ public class YbAppealManageServiceImpl extends ServiceImpl<YbAppealManageMapper,
 //        newAppealManage.setAcceptState(YbDefaultValue.ACCEPTSTATE_1);
 
             //因业务需求管理员更改状态传进来是什么就是什么
-            if(entity.getAcceptState() == YbDefaultValue.ACCEPTSTATE_2){
+            if (entity.getAcceptState() == YbDefaultValue.ACCEPTSTATE_2) {
                 newAppealManage.setAcceptState(YbDefaultValue.ACCEPTSTATE_0);
-            }else {
+            } else {
                 newAppealManage.setAcceptState(entity.getAcceptState());
             }
             newAppealManage.setIsDeletemark(1);
@@ -532,22 +568,23 @@ public class YbAppealManageServiceImpl extends ServiceImpl<YbAppealManageMapper,
             int nOpenSms = febsProperties.getOpenSms();
             boolean isOpenSms = nOpenSms == 1 ? true : false;
             if (isOpenSms) {
-                if(entity.getAcceptState() == YbDefaultValue.ACCEPTSTATE_1){
+                if (entity.getAcceptState() == YbDefaultValue.ACCEPTSTATE_1) {
                     enableDate = null;
                 }
-                String sendContent = this.iYbReconsiderApplyService.getSendMessage(entity.getApplyDateStr(), enableDate,entity.getAreaType(), entity.getTypeno(),true);
-                iComSmsService.sendSmsService(personCode, ComSms.SENDTYPE_4, sendContent, uId, Uname);
+                String sendContent = this.iYbReconsiderApplyService.getSendMessage(entity.getApplyDateStr(), enableDate, entity.getAreaType(), entity.getTypeno(), true);
+                iComSmsService.sendSmsService(entity.getApplyDateStr(), entity.getTypeno(), personCode, ComSms.SENDTYPE_4, entity.getAreaType(), sendContent, uId, Uname);
             }
         }
     }
 
-
+    //未使用
     @Override
     public List<YbAppealManage> getUpdateAppealManageList(List<YbAppealManageView> appealManageList, Date endDateOne) {
         List<YbAppealManage> updateAppealManageList = new ArrayList<>();
         Date thisDate = new java.sql.Timestamp(new Date().getTime());
         int day = iComConfiguremanageService.getConfigDay();
-        Date addDate = DataTypeHelpers.addDateMethod(thisDate, day);
+        //加1 表示忽略当前日期，从第二天开始
+        Date addDate = DataTypeHelpers.addDateMethod(thisDate, day + 1);
         for (YbAppealManageView item : appealManageList) {
             YbAppealManage updateAppealManage = new YbAppealManage();
             updateAppealManage.setId(item.getId());

@@ -23,7 +23,11 @@ public interface IYbAppealResultReportViewService extends IService<YbAppealResul
 
         IPage<YbAppealResultReportView> findYbAppealResultReportViewList(QueryRequest request, YbAppealResultReportView ybAppealResultReportView);
 
-        IPage<YbAppealResultReportView> findAppealResultReportViews(QueryRequest request, YbAppealResultReportView ybAppealResultReportView,boolean isUser);
+        IPage<YbAppealResultReportView> findAppealResultReportViews(QueryRequest request, YbAppealResultReportView ybAppealResultReportView, String keyField,boolean isUser);
+
+        IPage<YbAppealResultReportView> findAppealResultReportViewNew(QueryRequest request, YbAppealResultReportView ybAppealResultReportView, String keyField);
+
+        IPage<YbAppealResultReportView> findAppealResultReportViewUserNew(QueryRequest request, YbAppealResultReportView ybAppealResultReportView, String keyField);
 
         void createYbAppealResultReportView(YbAppealResultReportView ybAppealResultReportView);
 
@@ -31,5 +35,5 @@ public interface IYbAppealResultReportViewService extends IService<YbAppealResul
 
         void deleteYbAppealResultReportViews(String[]Ids);
 
-        List<YbAppealResultReportView> findYbAppealResultReportLists(YbAppealResultReportView ybAppealResultReportView,boolean isUser);
+        List<YbAppealResultReportView> findYbAppealResultReportLists(YbAppealResultReportView ybAppealResultReportView, String keyField,boolean isUser);
         }

@@ -78,7 +78,8 @@ export default {
     return {
       loading: false,
       error: '',
-      areaTypeDataSource: [{value: 0, text: '本部'}, {value: 1, text: '西院'}],
+      // areaTypeDataSource: [{value: 0, text: '本部'}, {value: 1, text: '西院'}],
+      areaTypeDataSource: [],
       logAreaType: 0,
       activeKey: '1'
     }
@@ -95,7 +96,25 @@ export default {
     this.$db.clear()
     this.$router.options.routes = []
   },
+  mounted () {
+    this.findComArea()
+  },
   methods: {
+    findComArea () {
+      this.areaTypeDataSource = []
+      this.$get('comConfiguremanage/getAreaList').then((r) => {
+        if (r.data.length > 0) {
+          for (var i in r.data) {
+            var at = {text: r.data[i].areaName, value: r.data[i].areaType}
+            this.areaTypeDataSource.push(at)
+          }
+        } else {
+          this.areaTypeDataSource.push({text: '本部', value: 0})
+        }
+      }).catch(() => {
+        this.areaTypeDataSource.push({text: '本部', value: 0})
+      })
+    },
     handleAreaTypeChange (value) {
       this.logAreaType = value
     },

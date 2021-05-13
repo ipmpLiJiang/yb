@@ -2,6 +2,7 @@ package cc.mrbird.febs.com.controller;
 
 import cc.mrbird.febs.common.annotation.Log;
 import cc.mrbird.febs.common.controller.BaseController;
+import cc.mrbird.febs.common.domain.FebsResponse;
 import cc.mrbird.febs.common.exception.FebsException;
 import cc.mrbird.febs.common.domain.QueryRequest;
 
@@ -10,6 +11,7 @@ import cc.mrbird.febs.com.entity.ComSms;
 
 import cc.mrbird.febs.common.utils.FebsUtil;
 import cc.mrbird.febs.system.domain.User;
+import cc.mrbird.febs.yb.domain.ResponseResult;
 import com.baomidou.mybatisplus.core.toolkit.StringPool;
 import com.wuwenze.poi.ExcelKit;
 import lombok.extern.slf4j.Slf4j;
@@ -95,6 +97,28 @@ public class ComSmsController extends BaseController {
         }
     }
 
+    @Log("发送短信")
+    @PutMapping("sendSms")
+    @RequiresPermissions("comSms:update")
+    public FebsResponse sendSmss(ComSms comsms) {
+        int success = 0;
+        try {
+            String msg = this.iComSmsService.sendSms(comsms,null);
+            if(msg.equals("ok")){
+                success = 1;
+            }else{
+                message = msg;
+            }
+        } catch (Exception e) {
+            message = "发送短信失败";
+            log.error(message, e);
+        }
+
+        ResponseResult rr = new ResponseResult();
+        rr.setSuccess(success);
+        rr.setMessage(message);
+        return new FebsResponse().data(rr);
+    }
 
     @Log("删除")
     @DeleteMapping("/{ids}")

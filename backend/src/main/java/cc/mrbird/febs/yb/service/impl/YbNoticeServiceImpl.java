@@ -337,7 +337,7 @@ public class YbNoticeServiceImpl extends ServiceImpl<YbNoticeMapper, YbNotice> i
         String sendContent = ybNotice.getNtTitle();
         if (ybNotice.getSendType() == YbNotice.SENDTYPE_1) {
             for(YbPerson person : personList) {
-                this.addSms(personList, createSms, person.getPersonCode(), sendContent, currentUser);
+                this.addSms(ybNotice,personList, createSms, person.getPersonCode(), sendContent, currentUser);
             }
         } else if (ybNotice.getSendType() == YbNotice.SENDTYPE_2) {
             if (isOpenSms) {
@@ -351,7 +351,7 @@ public class YbNoticeServiceImpl extends ServiceImpl<YbNoticeMapper, YbNotice> i
                 }
                 List<YbAppealConfire> acList = iYbAppealConfireService.findAppealConfireATList(atIds,ybNotice.getAreaType());
                 for (YbAppealConfire obj : acList) {
-                    this.addSms(personList, createSms, obj.getDoctorCode(), sendContent, currentUser);
+                    this.addSms(ybNotice,personList, createSms, obj.getDoctorCode(), sendContent, currentUser);
                 }
             }
         } else {
@@ -361,7 +361,7 @@ public class YbNoticeServiceImpl extends ServiceImpl<YbNoticeMapper, YbNotice> i
                 query.setNdType(YbNoticeData.NDTYPE_2);
                 List<YbNoticeData> noticeDatalist = iYbNoticeDataService.findNoticeDataList(query);
                 for (YbNoticeData obj : noticeDatalist) {
-                    this.addSms(personList, createSms, obj.getPersonCode(), sendContent, currentUser);
+                    this.addSms(ybNotice,personList, createSms, obj.getPersonCode(), sendContent, currentUser);
                 }
             }
         }
@@ -373,7 +373,7 @@ public class YbNoticeServiceImpl extends ServiceImpl<YbNoticeMapper, YbNotice> i
 
     }
 
-    private void addSms(List<YbPerson> personList, List<ComSms> createSms, String personCode, String sendContent, User currentUser) {
+    private void addSms(YbNotice ybNotice,List<YbPerson> personList, List<ComSms> createSms, String personCode, String sendContent, User currentUser) {
         Date thisDate = new Date();
         List<YbPerson> queryPersonList = new ArrayList<>();
         queryPersonList = personList.stream().filter(s -> s.getPersonCode().equals(personCode)).collect(Collectors.toList());
@@ -390,12 +390,14 @@ public class YbNoticeServiceImpl extends ServiceImpl<YbNoticeMapper, YbNotice> i
                         comSms.setMobile(queryPersonList.get(0).getTel());
                         comSms.setSendType(ComSms.SENDTYPE_7);
                         comSms.setState(ComSms.STATE_0);
+                        comSms.setAreaType(ybNotice.getAreaType());
                         comSms.setSendcontent(sendContent);
                         comSms.setOperatorId(currentUser.getUserId());
                         comSms.setOperatorName(currentUser.getUsername());
                         comSms.setIsDeletemark(1);
                         comSms.setCreateUserId(currentUser.getUserId());
                         comSms.setCreateTime(thisDate);
+                        comSms.setRefTableId(ybNotice.getId());
                         createSms.add(comSms);
                     }
                 }

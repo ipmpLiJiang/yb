@@ -159,6 +159,9 @@ public class JobServiceImpl extends ServiceImpl<JobMapper, Job> implements JobSe
         if(job.getMethodName()!=null){
             wrapper.eq(Job::getMethodName,job.getMethodName());
         }
+        if(job.getParams()!=null){
+            wrapper.eq(Job::getParams,job.getParams());
+        }
         if(job.getStatus()!=null){
             wrapper.eq(Job::getStatus,job.getStatus());
         }

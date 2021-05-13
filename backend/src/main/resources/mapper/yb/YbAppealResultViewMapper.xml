@@ -124,9 +124,9 @@
             art.dataType,
             art.orderNumber,
             art.orderNum,
-          art.id,
+            art.id,
             art.applyDataId,
-          art.verifyId,
+            art.verifyId,
             art.doctorCode arDoctorCode,
             art.doctorName arDoctorName,
             art.deptCode arDeptCode,
@@ -155,68 +155,44 @@
         <if test="ybAppealResultView.sourceType!= null">
             and art.sourceType = #{ybAppealResultView.sourceType}
         </if>
-        <if test="ybAppealResultView.typeno!= null">
-            and art.typeno = #{ybAppealResultView.typeno}
+        <if test="ybAppealResultView.state!= null and ybAppealResultView.state != 12">
+            and art.state = #{ybAppealResultView.state}
         </if>
         <if test="ybAppealResultView.dataType!= null">
             and art.dataType = #{ybAppealResultView.dataType}
         </if>
-        <if test="ybAppealResultView.state!= null and ybAppealResultView.state != 12">
-            and art.state = #{ybAppealResultView.state}
+        <if test="ybAppealResultView.typeno!= null">
+            and art.typeno = #{ybAppealResultView.typeno}
         </if>
         <if test="ybAppealResultView.relatelDataId!= null">
             and art.relatelDataId = #{ybAppealResultView.relatelDataId}
         </if>
-        <if test="ybAppealResultView.billNo!= null">
-            and ad.billNo = #{ybAppealResultView.billNo}
+        <if test="ybAppealResultView.arDoctorCode != null and ybAppealResultView.arDoctorCode != ''">
+            and art.doctorCode = #{ ybAppealResultView.arDoctorCode}
         </if>
-        <if test="ybAppealResultView.serialNo!= null">
-            and ad.serialNo = #{ybAppealResultView.serialNo}
+        <if test="ybAppealResultView.arDoctorName != null and ybAppealResultView.arDoctorName != ''">
+            and art.doctorCode in (select personCode from yb_person where personName = #{ ybAppealResultView.arDoctorName})
         </if>
-        <if test="ybAppealResultView.dataType!= null and ybAppealResultView.dataType==0 and ybAppealResultView.projectCode!= null">
-            and ad.projectCode = #{ybAppealResultView.projectCode}
+        <if test="(ybAppealResultView.arDoctorCode != null or ybAppealResultView.arDoctorName != null) and ybAppealResultView.sourceType!= null and ybAppealResultView.sourceType == 0">
+            order by art.orderNum asc
         </if>
-        <if test="ybAppealResultView.dataType!= null and ybAppealResultView.dataType==0 and ybAppealResultView.projectName!= null">
-            and ad.projectName = #{ybAppealResultView.projectName}
+        <if test="ybAppealResultView.arDoctorCode == null and ybAppealResultView.arDoctorName == null and ybAppealResultView.sourceType!= null and ybAppealResultView.sourceType == 0">
+            order by art.orderNum asc
         </if>
-        <if test="ybAppealResultView.dataType!= null and ybAppealResultView.dataType==1 and ybAppealResultView.personalNo!= null">
-            and ad.personalNo = #{ybAppealResultView.personalNo}
+        <if test="ybAppealResultView.arDoctorCode == null and ybAppealResultView.arDoctorName == null and ybAppealResultView.sourceType!= null and ybAppealResultView.sourceType == 1">
+            order by art.typeno,art.dataType,art.orderNum asc
         </if>
-        <if test="ybAppealResultView.ruleName!= null">
-            and ad.ruleName = #{ybAppealResultView.ruleName}
+        <if test="(ybAppealResultView.arDoctorCode != null or ybAppealResultView.arDoctorName != null) and ybAppealResultView.sourceType!= null and ybAppealResultView.sourceType == 1">
+            order by art.typeno,art.dataType,art.orderNum asc
         </if>
-        <if test="ybAppealResultView.dataType == 0 and ybAppealResultView.currencyField!= null and ybAppealResultView.currencyField!= ''">
-            and (ad.serialNo like concat('%', #{ ybAppealResultView.currencyField} ,'%')
-            or ad.proposalCode like concat('%', #{ ybAppealResultView.currencyField} ,'%')
-            or ad.billNo like concat('%', #{ ybAppealResultView.currencyField} ,'%')
-            or ad.projectCode like concat('%', #{ ybAppealResultView.currencyField} ,'%')
-            or ad.projectName like concat('%', #{ ybAppealResultView.currencyField} ,'%')
-            or ad.ruleName like concat('%', #{ ybAppealResultView.currencyField} ,'%'))
-        </if>
-        <if test="ybAppealResultView.dataType == 1 and ybAppealResultView.currencyField!= null and ybAppealResultView.currencyField!= ''">
-            and (ad.serialNo like concat('%', #{ ybAppealResultView.currencyField} ,'%')
-            or ad.proposalCode like concat('%', #{ ybAppealResultView.currencyField} ,'%')
-            or ad.billNo like concat('%', #{ ybAppealResultView.currencyField} ,'%')
-            or ad.ruleName like concat('%', #{ ybAppealResultView.currencyField} ,'%'))
-        </if>
-        <if test="ybAppealResultView.dataType == null and ybAppealResultView.currencyField!= null and ybAppealResultView.currencyField!= ''">
-            and (ad.serialNo like concat('%', #{ ybAppealResultView.currencyField} ,'%')
-            or ad.proposalCode like concat('%', #{ ybAppealResultView.currencyField} ,'%')
-            or ad.billNo like concat('%', #{ ybAppealResultView.currencyField} ,'%')
-            or ad.projectCode like concat('%', #{ ybAppealResultView.currencyField} ,'%')
-            or ad.projectName like concat('%', #{ ybAppealResultView.currencyField} ,'%')
-            or ad.ruleName like concat('%', #{ ybAppealResultView.currencyField} ,'%'))
-        </if>
-        order by art.orderNum asc
-</select>
+    </select>
+
     <select id="findAppealResultCount" resultType="Integer"
             parameterType="cc.mrbird.febs.yb.entity.YbAppealResultView">
         select
             count(1)
         from
         yb_appeal_result art
-        STRAIGHT_JOIN yb_reconsider_apply_data ad ON
-            art.applyDataId = ad.id
         where
             art.applyDateStr = #{ ybAppealResultView.applyDateStr }
         <if test="ybAppealResultView.areaType!= null">
@@ -225,60 +201,172 @@
         <if test="ybAppealResultView.sourceType!= null">
             and art.sourceType = #{ybAppealResultView.sourceType}
         </if>
-        <if test="ybAppealResultView.typeno!= null">
-            and art.typeno = #{ybAppealResultView.typeno}
+        <if test="ybAppealResultView.state!= null and ybAppealResultView.state != 12">
+            and art.state = #{ybAppealResultView.state}
         </if>
         <if test="ybAppealResultView.dataType!= null">
             and art.dataType = #{ybAppealResultView.dataType}
         </if>
-        <if test="ybAppealResultView.state!= null and ybAppealResultView.state != 12">
-            and art.state = #{ybAppealResultView.state}
+        <if test="ybAppealResultView.typeno!= null">
+            and art.typeno = #{ybAppealResultView.typeno}
         </if>
         <if test="ybAppealResultView.relatelDataId!= null">
             and art.relatelDataId = #{ybAppealResultView.relatelDataId}
         </if>
-        <if test="ybAppealResultView.billNo!= null">
-            and ad.billNo = #{ybAppealResultView.billNo}
+        <if test="ybAppealResultView.arDoctorCode != null and ybAppealResultView.arDoctorCode != ''">
+            and art.doctorCode = #{ ybAppealResultView.arDoctorCode}
         </if>
-        <if test="ybAppealResultView.serialNo!= null">
-            and ad.serialNo = #{ybAppealResultView.serialNo}
-        </if>
-        <if test="ybAppealResultView.dataType!= null and ybAppealResultView.dataType==0 and ybAppealResultView.projectCode!= null">
-            and ad.projectCode = #{ybAppealResultView.projectCode}
-        </if>
-        <if test="ybAppealResultView.dataType!= null and ybAppealResultView.dataType==0 and ybAppealResultView.projectName!= null">
-            and ad.projectName = #{ybAppealResultView.projectName}
-        </if>
-        <if test="ybAppealResultView.dataType!= null and ybAppealResultView.dataType==1 and ybAppealResultView.personalNo!= null">
-            and ad.personalNo = #{ybAppealResultView.personalNo}
-        </if>
-        <if test="ybAppealResultView.ruleName!= null">
-            and ad.ruleName = #{ybAppealResultView.ruleName}
-        </if>
-        <if test="ybAppealResultView.dataType == 0 and ybAppealResultView.currencyField!= null and ybAppealResultView.currencyField!= ''">
-            and (ad.serialNo like concat('%', #{ ybAppealResultView.currencyField} ,'%')
-            or ad.proposalCode like concat('%', #{ ybAppealResultView.currencyField} ,'%')
-            or ad.billNo like concat('%', #{ ybAppealResultView.currencyField} ,'%')
-            or ad.projectCode like concat('%', #{ ybAppealResultView.currencyField} ,'%')
-            or ad.projectName like concat('%', #{ ybAppealResultView.currencyField} ,'%')
-            or ad.ruleName like concat('%', #{ ybAppealResultView.currencyField} ,'%'))
-        </if>
-        <if test="ybAppealResultView.dataType == 1 and ybAppealResultView.currencyField!= null and ybAppealResultView.currencyField!= ''">
-            and (ad.serialNo like concat('%', #{ ybAppealResultView.currencyField} ,'%')
-            or ad.proposalCode like concat('%', #{ ybAppealResultView.currencyField} ,'%')
-            or ad.billNo like concat('%', #{ ybAppealResultView.currencyField} ,'%')
-            or ad.ruleName like concat('%', #{ ybAppealResultView.currencyField} ,'%'))
-        </if>
-        <if test="ybAppealResultView.dataType == null and ybAppealResultView.currencyField!= null and ybAppealResultView.currencyField!= ''">
-            and (ad.serialNo like concat('%', #{ ybAppealResultView.currencyField} ,'%')
-            or ad.proposalCode like concat('%', #{ ybAppealResultView.currencyField} ,'%')
-            or ad.billNo like concat('%', #{ ybAppealResultView.currencyField} ,'%')
-            or ad.projectCode like concat('%', #{ ybAppealResultView.currencyField} ,'%')
-            or ad.projectName like concat('%', #{ ybAppealResultView.currencyField} ,'%')
-            or ad.ruleName like concat('%', #{ ybAppealResultView.currencyField} ,'%'))
+        <if test="ybAppealResultView.arDoctorName != null and ybAppealResultView.arDoctorName != ''">
+            and art.doctorCode in (select personCode from yb_person where personName = #{ ybAppealResultView.arDoctorName})
         </if>
     </select>
 
+    <select id="findAppealResultLikeView" resultType="cc.mrbird.febs.yb.entity.YbAppealResultView"
+            parameterType="cc.mrbird.febs.yb.entity.YbAppealResultView">
+        select
+        ad.pid,
+        ad.serialNo,
+        ad.billNo,
+        ad.proposalCode,
+        ad.projectCode,
+        ad.projectName,
+        ad.num,
+        ad.medicalPrice,
+        ad.ruleName,
+        ad.deductPrice,
+        ad.deductReason,
+        ad.repaymentReason,
+        ad.doctorName,
+        ad.deptCode,
+        ad.deptName,
+        ad.enterHospitalDateStr,
+        ad.outHospitalDateStr,
+        ad.costDateStr,
+        ad.hospitalizedNo,
+        ad.treatmentMode,
+        ad.settlementDateStr,
+        ad.personalNo,
+        ad.insuredName,
+        ad.insuredType,
+        ad.cardNumber,
+        ad.areaName,
+        ad.versionNumber,
+        ad.backAppeal,
+        art.typeno,
+        art.applyDateStr,
+        art.dataType,
+        art.orderNumber,
+        art.orderNum,
+        art.id,
+        art.applyDataId,
+        art.verifyId,
+        art.doctorCode arDoctorCode,
+        art.doctorName arDoctorName,
+        art.deptCode arDeptCode,
+        art.deptName arDeptName,
+        art.orderDoctorCode arOrderDoctorCode,
+        art.orderDoctorName arOrderDoctorName,
+        art.orderDeptCode arOrderDeptCode,
+        art.orderDeptName arOrderDeptName,
+        art.operateReason,
+        art.operateDate,
+        art.sourceType,
+        art.STATE,
+        art.repayState,
+        '' currencyField,
+        art.relatelDataId,
+        art.areaType
+        from
+        yb_appeal_result art
+        INNER JOIN yb_reconsider_apply_data ad ON
+        art.applyDataId = ad.id
+        <if test="keyField == 'serialNo' and ybAppealResultView.currencyField != null and ybAppealResultView.currencyField != ''">
+            and ad.serialNo = #{ ybAppealResultView.currencyField}
+        </if>
+        <if test="keyField == 'proposalCode' and ybAppealResultView.currencyField != null and ybAppealResultView.currencyField != ''">
+            and ad.proposalCode = #{ ybAppealResultView.currencyField}
+        </if>
+        <if test="keyField == 'projectCode' and ybAppealResultView.currencyField != null and ybAppealResultView.currencyField != ''">
+            and ad.projectCode = #{ ybAppealResultView.currencyField}
+        </if>
+        <if test="keyField == 'projectName' and ybAppealResultView.currencyField != null and ybAppealResultView.currencyField != ''">
+            and ad.projectName = #{ ybAppealResultView.currencyField}
+        </if>
+        <if test="keyField == 'ruleName' and ybAppealResultView.currencyField != null and ybAppealResultView.currencyField != ''">
+            and ad.ruleName = #{ ybAppealResultView.currencyField}
+        </if>
+        <if test="keyField == 'orderNumber' and ybAppealResultView.currencyField != null and ybAppealResultView.currencyField != ''">
+            and ad.orderNumber = #{ ybAppealResultView.currencyField}
+        </if>
+        where
+        art.applyDateStr = #{ ybAppealResultView.applyDateStr }
+        <if test="ybAppealResultView.areaType!= null">
+            and art.areaType = #{ybAppealResultView.areaType}
+        </if>
+        <if test="ybAppealResultView.sourceType!= null">
+            and art.sourceType = #{ybAppealResultView.sourceType}
+        </if>
+        <if test="ybAppealResultView.state!= null and ybAppealResultView.state != 12">
+            and art.state = #{ybAppealResultView.state}
+        </if>
+        <if test="ybAppealResultView.dataType!= null">
+            and art.dataType = #{ybAppealResultView.dataType}
+        </if>
+        <if test="ybAppealResultView.typeno!= null">
+            and art.typeno = #{ybAppealResultView.typeno}
+        </if>
+        <if test="ybAppealResultView.relatelDataId!= null">
+            and art.relatelDataId = #{ybAppealResultView.relatelDataId}
+        </if>
+    </select>
+
+    <select id="findAppealResultLikeCount" resultType="Integer"
+            parameterType="cc.mrbird.febs.yb.entity.YbAppealResultView">
+        select
+        count(1)
+        from
+        yb_appeal_result art
+        INNER JOIN yb_reconsider_apply_data ad ON
+        art.applyDataId = ad.id
+        <if test="keyField == 'serialNo' and ybAppealResultView.currencyField != null and ybAppealResultView.currencyField != ''">
+            and ad.serialNo = #{ ybAppealResultView.currencyField}
+        </if>
+        <if test="keyField == 'proposalCode' and ybAppealResultView.currencyField != null and ybAppealResultView.currencyField != ''">
+            and ad.proposalCode = #{ ybAppealResultView.currencyField}
+        </if>
+        <if test="keyField == 'projectCode' and ybAppealResultView.currencyField != null and ybAppealResultView.currencyField != ''">
+            and ad.projectCode = #{ ybAppealResultView.currencyField}
+        </if>
+        <if test="keyField == 'projectName' and ybAppealResultView.currencyField != null and ybAppealResultView.currencyField != ''">
+            and ad.projectName = #{ ybAppealResultView.currencyField}
+        </if>
+        <if test="keyField == 'ruleName' and ybAppealResultView.currencyField != null and ybAppealResultView.currencyField != ''">
+            and ad.ruleName = #{ ybAppealResultView.currencyField}
+        </if>
+        <if test="keyField == 'orderNumber' and ybAppealResultView.currencyField != null and ybAppealResultView.currencyField != ''">
+            and ad.orderNumber = #{ ybAppealResultView.currencyField}
+        </if>
+        where
+        art.applyDateStr = #{ ybAppealResultView.applyDateStr }
+        <if test="ybAppealResultView.areaType!= null">
+            and art.areaType = #{ybAppealResultView.areaType}
+        </if>
+        <if test="ybAppealResultView.sourceType!= null">
+            and art.sourceType = #{ybAppealResultView.sourceType}
+        </if>
+        <if test="ybAppealResultView.state!= null and ybAppealResultView.state != 12">
+            and art.state = #{ybAppealResultView.state}
+        </if>
+        <if test="ybAppealResultView.dataType!= null">
+            and art.dataType = #{ybAppealResultView.dataType}
+        </if>
+        <if test="ybAppealResultView.typeno!= null">
+            and art.typeno = #{ybAppealResultView.typeno}
+        </if>
+        <if test="ybAppealResultView.relatelDataId!= null">
+            and art.relatelDataId = #{ybAppealResultView.relatelDataId}
+        </if>
+    </select>
 
     <select id="findAppealResultResetView" resultType="cc.mrbird.febs.yb.entity.YbAppealResultView"
             parameterType="cc.mrbird.febs.yb.entity.YbAppealResultView">
@@ -348,11 +436,11 @@
         <if test="ybAppealResultView.state!= null and ybAppealResultView.state != 12">
             and art.state = #{ybAppealResultView.state}
         </if>
-        <if test="ybAppealResultView.typeno!= null">
-            and art.typeno = #{ybAppealResultView.typeno}
-        </if>
         <if test="ybAppealResultView.dataType!= null">
             and art.dataType = #{ybAppealResultView.dataType}
+        </if>
+        <if test="ybAppealResultView.typeno!= null">
+            and art.typeno = #{ybAppealResultView.typeno}
         </if>
         <if test="ybAppealResultView.relatelDataId!= null">
             and art.relatelDataId = #{ybAppealResultView.relatelDataId}
@@ -385,6 +473,7 @@
         </if>
         order by art.orderNum asc
     </select>
+
     <select id="findAppealResultResetCount" resultType="Integer"
             parameterType="cc.mrbird.febs.yb.entity.YbAppealResultView">
         select
@@ -402,11 +491,11 @@
         <if test="ybAppealResultView.state!= null and ybAppealResultView.state != 12">
             and art.state = #{ybAppealResultView.state}
         </if>
-        <if test="ybAppealResultView.typeno!= null">
-            and art.typeno = #{ybAppealResultView.typeno}
-        </if>
         <if test="ybAppealResultView.dataType!= null">
             and art.dataType = #{ybAppealResultView.dataType}
+        </if>
+        <if test="ybAppealResultView.typeno!= null">
+            and art.typeno = #{ybAppealResultView.typeno}
         </if>
         <if test="ybAppealResultView.relatelDataId!= null">
             and art.relatelDataId = #{ybAppealResultView.relatelDataId}
@@ -476,7 +565,7 @@
             ad.orderNum,
             art.applyDateStr,
             art.id,
-            art.applyDataId,
+            ad.id applyDataId,
             art.verifyId,
             art.doctorCode arDoctorCode,
             art.doctorName arDoctorName,
@@ -612,10 +701,10 @@
         <if test="ybAppealResultView.sourceType != null ">
             and art.sourceType = #{ ybAppealResultView.sourceType}
         </if>
-        <if test="ybAppealResultView.typeno != null ">and art.typeno = #{ ybAppealResultView.typeno}</if>
         <if test="ybAppealResultView.state != null and ybAppealResultView.state != 12 ">
             and art.state = #{ ybAppealResultView.state}
         </if>
+        <if test="ybAppealResultView.typeno != null ">and art.typeno = #{ ybAppealResultView.typeno}</if>
     </select>
 
 </mapper>

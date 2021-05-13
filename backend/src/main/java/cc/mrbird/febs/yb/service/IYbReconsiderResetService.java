@@ -34,7 +34,7 @@ public interface IYbReconsiderResetService extends IService<YbReconsiderReset> {
 
     YbReconsiderReset findReconsiderResetByApplyDateStr(String applyDateStr,Integer areaType);
 
-    List<YbReconsiderReset> findReconsiderResetByApplyDateStr(List<String> applyDateStrList,Integer areaType);
+    List<YbReconsiderReset> findReconsiderResetByApplyDateStr(List<String> applyDateStrList,Integer areaType,Integer state);
 
     String updateReconsiderApplyState(YbReconsiderReset ybReconsiderReset, User currentUser);
 }

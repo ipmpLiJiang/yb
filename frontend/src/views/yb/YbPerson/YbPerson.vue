@@ -202,7 +202,7 @@ export default {
             this.pagination.defaultPageSize +
             index +
             1}`,
-        width: 70
+        width: 80
       },
       {
         title: '医生编码',

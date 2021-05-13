@@ -1,8 +1,21 @@
 <template>
-    <!-- 表格区域 -->
-    <a-table :columns="columns" :data-source="dataSource" bordered :scroll="{ x: 600 }">
-    <a slot="operation" slot-scope="text, record, index" @click="() => downloadFile(record)">下载</a>
-    </a-table>
+  <div>
+  <div style="color:red">{{deptNotMsg}}</div>
+  <a-popconfirm
+      title="确定验证科室？"
+      v-show="this.appealResultDownLoad.type === 1 ? true : false"
+      @confirm="checkDept"
+      okText="确定"
+      cancelText="取消"
+    >
+      <a-button type="primary">验证科室</a-button>
+    </a-popconfirm>
+
+  <!-- 表格区域 -->
+  <a-table :columns="columns" :data-source="dataSource" bordered :scroll="{ x: 600 }">
+  <a slot="operation" slot-scope="text, record, index" @click="() => downloadFile(record)">下载</a>
+  </a-table>
+  </div>
 </template>
 <script>
 export default {
@@ -19,6 +32,7 @@ export default {
       },
       appealResultDownLoad: {
       },
+      deptNotMsg: '',
       user: this.$store.state.account.user,
       loading: false
     }
@@ -55,6 +69,51 @@ export default {
   mounted () {
   },
   methods: {
+    checkDept () {
+      this.queryParams = {}
+      this.queryParams.applyDateStr = this.appealResultDownLoad.applyDateStr
+
+      if (this.appealResultDownLoad.typeno !== undefined) {
+        if (this.tableSelectKey === '1' || this.tableSelectKey === '2') {
+          this.queryParams.typeno = this.appealResultDownLoad.typeno
+        }
+      }
+      this.queryParams.sourceType = this.appealResultDownLoad.sourceType
+
+      if (this.tableSelectKey === '1' || this.tableSelectKey === '2') {
+        this.queryParams.sourceType = 0
+      } else {
+        this.queryParams.state = 1
+        this.queryParams.sourceType = 1
+      }
+      this.deptNotMsg = ''
+      this.queryParams.dataType = this.appealResultDownLoad.dataType
+      this.queryParams.areaType = this.user.areaType
+      this.$get('ybAppealResultView/fileNotDeptList', {
+        ...this.queryParams
+      }).then((r) => {
+        let data = r.data.data.data
+        let notMsg = ''
+        if (data !== null) {
+          if (data.length > 0) {
+            data.forEach(item => {
+              if (notMsg === '') {
+                notMsg = item.deptId + '-' + item.deptName
+              } else {
+                notMsg += ' , ' + item.deptId + '-' + item.deptName
+              }
+            })
+            this.deptNotMsg = '以下科室未在汇总科室中配置：' + notMsg + '.'
+          } else {
+            this.deptNotMsg = '汇总科室配置已完成.'
+          }
+        } else {
+          this.deptNotMsg = '汇总科室配置已完成.'
+        }
+      }).catch(() => {
+        this.$message.error('获取导出图片列表失败!')
+      })
+    },
     downloadFile (record) {
       let formData = {}
       formData.deptName = record.deptName
@@ -94,6 +153,7 @@ export default {
       }, formData.fileName + '.zip')
     },
     setFormValues ({ ...appealResultDownLoad }) {
+      this.deptNotMsg = ''
       this.appealResultDownLoad = appealResultDownLoad
       this.search()
     },

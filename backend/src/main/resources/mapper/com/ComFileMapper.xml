@@ -100,7 +100,7 @@
         <if test="inUploadFile.state != null and inUploadFile.state==12"> and yb_appeal_result.STATE IN (1,2) </if>
         <if test="inUploadFile.state != null and inUploadFile.state==1"> and yb_appeal_result.STATE = 1 </if>
         <if test="inUploadFile.state != null and inUploadFile.state==2"> and yb_appeal_result.STATE = 2 </if>
-        <if test="inUploadFile.deptId != null"> and yb_appeal_result.deptCode in (select deptId from yb_appeal_sumdept_data where pid =  #{inUploadFile.sumId}) </if>
+        <if test="inUploadFile.sumId != null"> and yb_appeal_result.deptCode in (select deptId from yb_appeal_sumdept_data where pid =  #{inUploadFile.sumId}) </if>
     </select>
 
 </mapper>

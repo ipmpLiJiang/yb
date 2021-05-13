@@ -20,15 +20,15 @@ import java.util.List;
 public interface YbAppealResultDeductimplementViewMapper extends BaseMapper<YbAppealResultDeductimplementView> {
     void updateYbAppealResultDeductimplementView(YbAppealResultDeductimplementView ybAppealResultDeductimplementView);
 
-    IPage<YbAppealResultDeductimplementView> findAppealResultDeductimplementView(Page page, @Param("ybAppealResultDeductimplementView") YbAppealResultDeductimplementView ybAppealResultDeductimplementView);
+    IPage<YbAppealResultDeductimplementView> findAppealResultDeductimplementView(Page page, @Param("ybAppealResultDeductimplementView") YbAppealResultDeductimplementView ybAppealResultDeductimplementView,@Param("keyField") String keyField);
 
-    int findAppealResultDeductimplementCount(@Param("ybAppealResultDeductimplementView") YbAppealResultDeductimplementView ybAppealResultDeductimplementView);
+    int findAppealResultDeductimplementCount(@Param("ybAppealResultDeductimplementView") YbAppealResultDeductimplementView ybAppealResultDeductimplementView,@Param("keyField") String keyField);
 
-    IPage<YbAppealResultDeductimplementView> findAppealResultDmtView(Page page, @Param("ybAppealResultDeductimplementView") YbAppealResultDeductimplementView ybAppealResultDeductimplementView);
+    IPage<YbAppealResultDeductimplementView> findAppealResultDmtView(Page page, @Param("ybAppealResultDeductimplementView") YbAppealResultDeductimplementView ybAppealResultDeductimplementView,@Param("keyField") String keyField);
 
-    int findAppealResultDmtCount(@Param("ybAppealResultDeductimplementView") YbAppealResultDeductimplementView ybAppealResultDeductimplementView);
+    int findAppealResultDmtCount(@Param("ybAppealResultDeductimplementView") YbAppealResultDeductimplementView ybAppealResultDeductimplementView,@Param("keyField") String keyField);
 
-    IPage<YbAppealResultDeductimplementView> findAppealResultDmtUserView(Page page, @Param("ybAppealResultDeductimplementView") YbAppealResultDeductimplementView ybAppealResultDeductimplementView, @Param("listStr") List<String> listStr);
+    IPage<YbAppealResultDeductimplementView> findAppealResultDmtUserView(Page page, @Param("ybAppealResultDeductimplementView") YbAppealResultDeductimplementView ybAppealResultDeductimplementView, @Param("listStr") List<String> listStr,@Param("keyField") String keyField);
 
-    int findAppealResultDmtUserCount(@Param("ybAppealResultDeductimplementView") YbAppealResultDeductimplementView ybAppealResultDeductimplementView, @Param("listStr") List<String> listStr);
+    int findAppealResultDmtUserCount(@Param("ybAppealResultDeductimplementView") YbAppealResultDeductimplementView ybAppealResultDeductimplementView, @Param("listStr") List<String> listStr,@Param("keyField") String keyField);
 }

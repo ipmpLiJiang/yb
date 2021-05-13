@@ -218,7 +218,8 @@ public class YbHandleVerifyDataServiceImpl extends ServiceImpl<YbHandleVerifyDat
         int day = iComConfiguremanageService.getConfigDay();
         List<YbHandleVerifyData> updateHandleVerifyList = new ArrayList<>();
         List<YbAppealManage> appealManageList = new ArrayList<>();
-        Date addDate = DataTypeHelpers.addDateMethod(thisDate, day);
+        //加1 表示忽略当前日期，从第二天开始
+        Date addDate = DataTypeHelpers.addDateMethod(thisDate, day + 1);
 
         List<YbPerson> personList = this.findPerson(list);
         List<YbPerson> queryPersonList = new ArrayList<>();
@@ -232,6 +233,7 @@ public class YbHandleVerifyDataServiceImpl extends ServiceImpl<YbHandleVerifyDat
             ComSms qu = new ComSms();
             qu.setState(ComSms.STATE_0);
             qu.setSendType(ComSms.SENDTYPE_6);
+            qu.setAreaType(areaType);
             smsList = iComSmsService.findLmdSmsList(qu);
         }
 
@@ -298,6 +300,7 @@ public class YbHandleVerifyDataServiceImpl extends ServiceImpl<YbHandleVerifyDat
                                     comSms.setMobile(queryPersonList.get(0).getTel());
                                     comSms.setSendType(ComSms.SENDTYPE_6);
                                     comSms.setState(ComSms.STATE_0);
+                                    comSms.setAreaType(areaType);
 
                                     comSms.setSendcontent("医保管理平台提醒您，" + applyDateStr + "人工复议任务已发布，请尽快处理。");
                                     comSms.setOperatorId(uId);
@@ -305,6 +308,8 @@ public class YbHandleVerifyDataServiceImpl extends ServiceImpl<YbHandleVerifyDat
                                     comSms.setIsDeletemark(1);
                                     comSms.setCreateUserId(uId);
                                     comSms.setCreateTime(thisDate);
+                                    comSms.setApplyDateStr(applyDateStr);
+//                                    comSms.setTypeno(typeno);人工复议无
                                     saveSmsList.add(comSms);
                                 }
                             }
@@ -332,7 +337,8 @@ public class YbHandleVerifyDataServiceImpl extends ServiceImpl<YbHandleVerifyDat
             int day = iComConfiguremanageService.getConfigDay();
             List<YbHandleVerifyData> updateHandleVerifyList = new ArrayList<>();
             List<YbAppealManage> appealManageList = new ArrayList<>();
-            Date addDate = DataTypeHelpers.addDateMethod(thisDate, day);
+            //加1 表示忽略当前日期，从第二天开始
+            Date addDate = DataTypeHelpers.addDateMethod(thisDate, day + 1);
             List<YbHandleVerifyData> list = this.baseMapper.findHandleVerifyDataList(handleVerify.getId(), dataType, state);
 
             List<YbPerson> personList = iYbPersonService.findPersonList(new YbPerson(), 0);
@@ -346,6 +352,7 @@ public class YbHandleVerifyDataServiceImpl extends ServiceImpl<YbHandleVerifyDat
                 ComSms qu = new ComSms();
                 qu.setState(ComSms.STATE_0);
                 qu.setSendType(ComSms.SENDTYPE_6);
+                qu.setAreaType(areaType);
                 smsList = iComSmsService.findLmdSmsList(qu);
             }
             for (YbHandleVerifyData ybHandleVerifyData : list) {
@@ -410,13 +417,15 @@ public class YbHandleVerifyDataServiceImpl extends ServiceImpl<YbHandleVerifyDat
                                         comSms.setMobile(queryPersonList.get(0).getTel());
                                         comSms.setSendType(ComSms.SENDTYPE_6);
                                         comSms.setState(ComSms.STATE_0);
-
+                                        comSms.setAreaType(handleVerify.getAreaType());
                                         comSms.setSendcontent("医保管理平台提醒您，" + applyDateStr + " 人工复议任务已发布，请尽快处理。");
                                         comSms.setOperatorId(uId);
                                         comSms.setOperatorName(Uname);
                                         comSms.setIsDeletemark(1);
                                         comSms.setCreateUserId(uId);
                                         comSms.setCreateTime(thisDate);
+                                        comSms.setApplyDateStr(applyDateStr);
+//                                        comSms.setTypeno(typeno);//人工复议无
                                         saveSmsList.add(comSms);
                                     }
                                 }

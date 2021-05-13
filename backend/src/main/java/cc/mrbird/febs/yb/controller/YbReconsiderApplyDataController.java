@@ -3,6 +3,7 @@ package cc.mrbird.febs.yb.controller;
 import cc.mrbird.febs.com.controller.DataTypeHelpers;
 import cc.mrbird.febs.com.controller.FileHelpers;
 import cc.mrbird.febs.com.controller.ImportExcelUtils;
+import cc.mrbird.febs.com.entity.ComSms;
 import cc.mrbird.febs.common.annotation.Log;
 import cc.mrbird.febs.common.controller.BaseController;
 import cc.mrbird.febs.common.domain.FebsResponse;
@@ -17,6 +18,7 @@ import cc.mrbird.febs.yb.domain.ResponseImportResultData;
 import cc.mrbird.febs.yb.domain.ResponseResult;
 import cc.mrbird.febs.yb.domain.ResponseResultData;
 import cc.mrbird.febs.yb.entity.*;
+import cc.mrbird.febs.yb.manager.YbApplyDataManager;
 import cc.mrbird.febs.yb.service.IYbReconsiderApplyDataService;
 
 //import cc.mrbird.febs.yb.service.IYbReconsiderApplyService;
@@ -24,12 +26,15 @@ import cc.mrbird.febs.yb.service.IYbReconsiderApplyDataService;
 import cc.mrbird.febs.common.utils.FebsUtil;
 import cc.mrbird.febs.system.domain.User;
 import cc.mrbird.febs.yb.service.IYbReconsiderApplyService;
+import cc.mrbird.febs.yb.service.IYbReconsiderVerifyService;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.poi.excel.ExcelUtil;
 import cn.hutool.poi.excel.ExcelWriter;
 import cn.hutool.poi.excel.StyleSet;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.TypeReference;
 import com.baomidou.mybatisplus.core.toolkit.StringPool;
 import com.google.common.collect.Lists;
 import com.wuwenze.poi.ExcelKit;
@@ -39,6 +44,7 @@ import com.wuwenze.poi.pojo.ExcelErrorField;
 import com.wuwenze.poi.pojo.ExcelMapping;
 import com.wuwenze.poi.pojo.ExcelProperty;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.ibatis.annotations.Case;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.usermodel.IndexedColors;
@@ -73,11 +79,15 @@ public class YbReconsiderApplyDataController extends BaseController {
 
     private String message;
     @Autowired
-    public IYbReconsiderApplyDataService iYbReconsiderApplyDataService;
+    IYbReconsiderApplyDataService iYbReconsiderApplyDataService;
     @Autowired
-    public IYbReconsiderApplyService iYbReconsiderApplyService;
+    IYbReconsiderApplyService iYbReconsiderApplyService;
     @Autowired
-    private FebsProperties febsProperties;
+    FebsProperties febsProperties;
+    @Autowired
+    IYbReconsiderVerifyService iYbReconsiderVerifyService;
+    @Autowired
+    YbApplyDataManager ybApplyDataManager;
 
     /**
      * 分页查询数据
@@ -93,9 +103,88 @@ public class YbReconsiderApplyDataController extends BaseController {
     }
 
 
-    @GetMapping("ListReconsiderApplyData")
+    @GetMapping("findReconsiderApplyDataList")
     public Map<String, Object> findReconsiderApplyDatas(QueryRequest request, YbReconsiderApplyData ybReconsiderApplyData) {
         return getDataTable(this.iYbReconsiderApplyDataService.findYbReconsiderApplyDataList(request, ybReconsiderApplyData));
+    }
+
+    @Log("updateCache")
+    @PutMapping("updateCache")
+    public FebsResponse updateCaches(String applyDateStr, Integer areaType) {
+        int success = 0;
+        try {
+            YbReconsiderApply apply = iYbReconsiderApplyService.findReconsiderApplyByApplyDateStrs(applyDateStr, areaType);
+            if (apply != null) {
+                ybApplyDataManager.loadgetApplyDataCache(apply.getId(), applyDateStr + "-" + areaType);
+                success = 1;
+            }
+        } catch (Exception e) {
+            message = "updateCache失败";
+            log.error(message, e);
+        }
+
+        ResponseResult rr = new ResponseResult();
+        rr.setSuccess(success);
+        rr.setMessage(message);
+        return new FebsResponse().data(rr);
+    }
+
+    @Log("His数据接口")
+    @PutMapping("getHis")
+    @RequiresPermissions("ybReconsiderApplyData:his")
+    public FebsResponse getHiss(String applyDateStr, Integer areaType, Integer typeno) {
+        int success = 0;
+        try {
+            String msg = this.iYbReconsiderApplyDataService.findReconsiderApplyDataTask(applyDateStr, areaType, typeno);
+            if (msg.equals("no")) {
+                msg = iYbReconsiderApplyDataService.findReconsiderApplyDataNotTask(applyDateStr, areaType, typeno);
+                if (msg.equals("ok")) {
+                    success = 1;
+                } else if (msg.equals("")) {
+                    message = "未找到相关" + applyDateStr + "数据或已完成复议.";
+                } else if (msg.equals("no")) {
+                    message = "His数据已获取完成.";
+                } else {
+                    message = this.getHisMsg(msg);
+                }
+            } else {
+                if (msg.equals("ok")) {
+                    success = 1;
+                } else if (msg.equals("")) {
+                    message = "未找到相关" + applyDateStr + "数据或已完成复议.";
+                } else {
+                    message = this.getHisMsg(msg);
+                }
+            }
+        } catch (Exception e) {
+            message = "获取His数据失败.";
+            log.error(message, e);
+        }
+
+        ResponseResult rr = new ResponseResult();
+        rr.setSuccess(success);
+        rr.setMessage(message);
+        return new FebsResponse().data(rr);
+    }
+
+    private String getHisMsg(String msg) {
+        //"","no","deptNo","getMessage","hisSqlNo","dataNo",hisDataNo,hisMainNo,
+        if (msg.equals("deptNo")) {
+            return "获取科室数据异常.";
+        } else if (msg.equals("hisSqlNo")) {
+            return "获取查询语句异常.";
+        } else if (msg.equals("dataNo")) {
+            return "获取明细数据为空.";
+        } else if (msg.equals("hisDataNo")) {
+            return "获取His明细扣款数据为空.";
+        } else if (msg.equals("hisMainNo")) {
+            return "获取His主单扣款数据为空.";
+        } else if (msg.equals("lockNo")) {
+            return "已有其他用户正在获取His数据,请稍等...";
+        } else {
+            return msg;
+        }
+
     }
 
     /**
@@ -198,7 +287,7 @@ public class YbReconsiderApplyDataController extends BaseController {
         try {
             String sheetName1 = "明细扣款";
             String sheetName2 = "主单扣款";
-            ExportExcelUtils.exportTemplateFileT(response,YbAppealResultDataExport.class,sheetName1,YbAppealResultMainExport.class,sheetName2);
+            ExportExcelUtils.exportTemplateFileT(response, YbAppealResultDataExport.class, sheetName1, YbAppealResultMainExport.class, sheetName2);
         } catch (Exception e) {
             message = "导出Excel模板失败";
             log.error(message, e);
@@ -256,256 +345,264 @@ public class YbReconsiderApplyDataController extends BaseController {
                 int state = queryReconsiderApply.getState();
                 if ((typeno == YbDefaultValue.TYPENO_1 && (state == YbDefaultValue.APPLYSTATE_1 || state == YbDefaultValue.APPLYSTATE_2)) ||
                         typeno == YbDefaultValue.TYPENO_2 && (state == YbDefaultValue.APPLYSTATE_3 || state == YbDefaultValue.APPLYSTATE_4)) {
-                    uploadFileName = file.getOriginalFilename();
-                    boolean blError = false;
-                    try {
-                        String filePath = febsProperties.getUploadPath(); // 上传后的路径
-                        File getFile = FileHelpers.fileUpLoad(file, filePath, pid, "ReconsiderApplyTemp");
-                        Map<Integer, String> sheetMap = ImportExcelUtils.getSheelNames(getFile);
-                        if (sheetMap.size() > 0) {
-                            int nZd = 0;
-                            int nMx = 0;
-                            for (Integer key : sheetMap.keySet()) {
-                                String value = sheetMap.get(key);
-                                if (value.equals("明细扣款")) {
-                                    nMx = 1;
-                                }
-                                if (value.equals("主单扣款")) {
-                                    nZd = 1;
-                                }
-                            }
-                            if (nZd == 1 || nMx == 1) {
-                                List<Object[]> objMx = new ArrayList<Object[]>();
-                                List<Object[]> objZd = new ArrayList<Object[]>();
+                    int checkCount = 0;
+                    if (typeno == YbDefaultValue.TYPENO_2) {
+                        checkCount = iYbReconsiderVerifyService.findReconsiderVerifyApplyDataCheckCounts(queryReconsiderApply.getId(), queryReconsiderApply.getApplyDateStr(), areaType, YbDefaultValue.TYPENO_1);
+                    }
+                    if (checkCount == 0) {
+                        uploadFileName = file.getOriginalFilename();
+                        boolean blError = false;
+                        try {
+                            String filePath = febsProperties.getUploadPath(); // 上传后的路径
+                            File getFile = FileHelpers.fileUpLoad(file, filePath, pid, "ReconsiderApplyTemp");
+                            Map<Integer, String> sheetMap = ImportExcelUtils.getSheelNames(getFile);
+                            if (sheetMap.size() > 0) {
+                                int nZd = 0;
+                                int nMx = 0;
                                 for (Integer key : sheetMap.keySet()) {
                                     String value = sheetMap.get(key);
                                     if (value.equals("明细扣款")) {
-                                        objMx = ImportExcelUtils.importExcelBySheetIndex(getFile, key, 0, 0);
+                                        nMx = 1;
                                     }
                                     if (value.equals("主单扣款")) {
-                                        objZd = ImportExcelUtils.importExcelBySheetIndex(getFile, key, 0, 0);
+                                        nZd = 1;
                                     }
                                 }
-                                if (objMx.size() > 1 || objZd.size() > 1) {
-                                    List<YbReconsiderApplyData> ListData = new ArrayList<>();
-                                    List<YbReconsiderApplyData> ListMain = new ArrayList<>();
-                                    String guid = pid;
-
-                                    if (objMx.size() > 1) {
-                                        if (objMx.get(0).length >= 27) {
-                                            for (int i = 1; i < objMx.size(); i++) {
-                                                String strVersionNumber = DataTypeHelpers.importTernaryOperate(objMx.get(i), 25);//'版本号',
-                                                if ((typeno == YbDefaultValue.TYPENO_1 && strVersionNumber.equals("1")) || (typeno == YbDefaultValue.TYPENO_2 && strVersionNumber.equals("2"))) {
-                                                    message = "明细扣款数据读取失败，请确保Excel列表数据正确无误.";
-                                                    YbReconsiderApplyData rrData = new YbReconsiderApplyData();
-                                                    rrData.setId(UUID.randomUUID().toString());
-                                                    rrData.setPid(guid);
-                                                    rrData.setIsDeletemark(1);
-                                                    String strOrderNumber = DataTypeHelpers.importTernaryOperate(objMx.get(i), 0);//序号',
-                                                    rrData.setOrderNumber(strOrderNumber);
-                                                    rrData.setOrderNum(i);
-                                                    String strSerialNo = DataTypeHelpers.importTernaryOperate(objMx.get(i), 1);//交易流水号',
-                                                    rrData.setSerialNo(strSerialNo);
-                                                    String strBillNo = DataTypeHelpers.importTernaryOperate(objMx.get(i), 2);//'单据号',
-                                                    rrData.setBillNo(strBillNo);
-                                                    String strProposalCode = DataTypeHelpers.importTernaryOperate(objMx.get(i), 3);//意见书编码',
-                                                    rrData.setProposalCode(strProposalCode);
-                                                    String strProjectCode = DataTypeHelpers.importTernaryOperate(objMx.get(i), 4);//'项目编码',
-                                                    rrData.setProjectCode(strProjectCode);
-                                                    String strProjectName = DataTypeHelpers.importTernaryOperate(objMx.get(i), 5);//'项目名称',
-                                                    rrData.setProjectName(strProjectName);
-                                                    String strNum = DataTypeHelpers.importTernaryOperate(objMx.get(i), 6);//'数量',
-                                                    BigDecimal bd = new BigDecimal(0);
-                                                    if (DataTypeHelpers.isNumeric(strNum)) {
-                                                        bd = new BigDecimal(strNum);
-                                                        rrData.setNum(bd);
-                                                    }
-                                                    String strMedicalPrice = DataTypeHelpers.importTernaryOperate(objMx.get(i), 7);//'医保内金额',
-                                                    bd = new BigDecimal(0);
-                                                    if (DataTypeHelpers.isNumeric(strMedicalPrice)) {
-                                                        bd = new BigDecimal(strMedicalPrice);
-                                                        rrData.setMedicalPrice(bd);
-                                                    }
-                                                    String strRuleName = DataTypeHelpers.importTernaryOperate(objMx.get(i), 8);//'规则名称',
-                                                    rrData.setRuleName(strRuleName);
-                                                    String strDeductPrice = DataTypeHelpers.importTernaryOperate(objMx.get(i), 9);//'扣除金额',
-                                                    if (DataTypeHelpers.isNumeric(strDeductPrice)) {
-                                                        bd = new BigDecimal(strDeductPrice);
-                                                        rrData.setDeductPrice(bd);
-                                                    }
-                                                    String strDeductReason = DataTypeHelpers.importTernaryOperate(objMx.get(i), 10);//'扣除原因',
-                                                    rrData.setDeductReason(strDeductReason);
-                                                    String strRepaymentReason = DataTypeHelpers.importTernaryOperate(objMx.get(i), 11);//'还款原因',
-                                                    rrData.setRepaymentReason(strRepaymentReason);
-                                                    String strDoctorName = DataTypeHelpers.importTernaryOperate(objMx.get(i), 12);//'医生姓名',
-                                                    rrData.setDoctorName(strDoctorName);
-                                                    String strDeptCode = DataTypeHelpers.importTernaryOperate(objMx.get(i), 13);// '科室编码',
-                                                    rrData.setDeptCode(strDeptCode);
-                                                    String strDeptName = DataTypeHelpers.importTernaryOperate(objMx.get(i), 14);//'科室名称',
-                                                    rrData.setDeptName(strDeptName);
-                                                    String strEnterHospitalDate = DataTypeHelpers.importTernaryOperate(objMx.get(i), 15);//'入院日期str',
-                                                    rrData.setEnterHospitalDateStr(strEnterHospitalDate);
-                                                    String strOutHospitalDate = DataTypeHelpers.importTernaryOperate(objMx.get(i), 16);//'出院日期str',
-                                                    rrData.setOutHospitalDateStr(strOutHospitalDate);
-                                                    String strCostDateStr = DataTypeHelpers.importTernaryOperate(objMx.get(i), 17);//'费用日期str',
-                                                    rrData.setCostDateStr(strCostDateStr);
-                                                    Date CostDate = DataTypeHelpers.stringToDate(strCostDateStr);
-                                                    if (CostDate != null) {
-                                                        rrData.setCostDate(CostDate);
-                                                    } else {
-                                                        message = "Excel导入失败，Sheet明细扣款 费用日期存在错误格式或为空，序号：" + strOrderNumber + ".";
-                                                        blError = true;
-                                                        break;
-                                                    }
-                                                    String strHospitalizedNo = DataTypeHelpers.importTernaryOperate(objMx.get(i), 18);//'住院号',
-                                                    rrData.setHospitalizedNo(strHospitalizedNo);
-                                                    String strTreatmentMode = DataTypeHelpers.importTernaryOperate(objMx.get(i), 19);//'就医方式',
-                                                    rrData.setTreatmentMode(strTreatmentMode);
-                                                    String strSettlementDateStr = DataTypeHelpers.importTernaryOperate(objMx.get(i), 20);//'结算日期Str',
-                                                    rrData.setSettlementDateStr(strSettlementDateStr);
-                                                    Date SettlementDate = DataTypeHelpers.stringToDate(strSettlementDateStr);
-                                                    if (SettlementDate != null) {
-                                                        rrData.setSettlementDate(SettlementDate);
-                                                    } else {
-                                                        message = "Excel导入失败，Sheet明细扣款 结算日期存在错误格式或为空，序号：" + strOrderNumber + ".";
-                                                        blError = true;
-                                                        break;
-                                                    }
-
-                                                    String strPersonalNo = DataTypeHelpers.importTernaryOperate(objMx.get(i), 21);//'个人编号',
-                                                    rrData.setPersonalNo(strPersonalNo);
-                                                    String strInsuredName = DataTypeHelpers.importTernaryOperate(objMx.get(i), 22);//'参保人姓名',
-                                                    rrData.setInsuredName(strInsuredName);
-                                                    String strCardNumber = DataTypeHelpers.importTernaryOperate(objMx.get(i), 23);//'医保卡号',
-                                                    rrData.setCardNumber(strCardNumber);
-                                                    String strAreaName = DataTypeHelpers.importTernaryOperate(objMx.get(i), 24);//'统筹区名称',
-                                                    rrData.setAreaName(strAreaName);
-
-                                                    rrData.setVersionNumber(strVersionNumber);
-                                                    String strBackAppeal = DataTypeHelpers.importTernaryOperate(objMx.get(i), 26);//'反馈申诉',
-                                                    rrData.setBackAppeal(strBackAppeal);
-                                                    rrData.setTypeno(typeno);
-                                                    rrData.setDataType(YbDefaultValue.DATATYPE_0);
-                                                    rrData.setState(0);
-                                                    ListData.add(rrData);
-                                                }
-                                            }
-                                        } else {
-                                            blError = true;
-                                            message = "Excel导入失败，Sheet明细扣款 列表列数不正确";
+                                if (nZd == 1 || nMx == 1) {
+                                    List<Object[]> objMx = new ArrayList<Object[]>();
+                                    List<Object[]> objZd = new ArrayList<Object[]>();
+                                    for (Integer key : sheetMap.keySet()) {
+                                        String value = sheetMap.get(key);
+                                        if (value.equals("明细扣款")) {
+                                            objMx = ImportExcelUtils.importExcelBySheetIndex(getFile, key, 0, 0);
+                                        }
+                                        if (value.equals("主单扣款")) {
+                                            objZd = ImportExcelUtils.importExcelBySheetIndex(getFile, key, 0, 0);
                                         }
                                     }
-                                    if (!blError) {
-                                        if (objZd.size() > 1) {
-                                            if (objZd.get(0).length >= 18) {
-                                                for (int i = 1; i < objZd.size(); i++) {
-                                                    String strVersionNumber = DataTypeHelpers.importTernaryOperate(objZd.get(i), 16);//'版本号',
+                                    if (objMx.size() > 1 || objZd.size() > 1) {
+                                        List<YbReconsiderApplyData> ListData = new ArrayList<>();
+                                        List<YbReconsiderApplyData> ListMain = new ArrayList<>();
+                                        String guid = pid;
+
+                                        if (objMx.size() > 1) {
+                                            if (objMx.get(0).length >= 27) {
+                                                for (int i = 1; i < objMx.size(); i++) {
+                                                    String strVersionNumber = DataTypeHelpers.importTernaryOperate(objMx.get(i), 25);//'版本号',
                                                     if ((typeno == YbDefaultValue.TYPENO_1 && strVersionNumber.equals("1")) || (typeno == YbDefaultValue.TYPENO_2 && strVersionNumber.equals("2"))) {
-                                                        message = "主单扣款数据读取失败，请确保Excel列表数据正确无误.";
-                                                        YbReconsiderApplyData rrMain = new YbReconsiderApplyData();
-                                                        rrMain.setIsDeletemark(1);
-                                                        rrMain.setId(UUID.randomUUID().toString());
-                                                        rrMain.setPid(guid);
-                                                        String strOrderNumber = DataTypeHelpers.importTernaryOperate(objZd.get(i), 0);//序号',
-                                                        rrMain.setOrderNumber(strOrderNumber);
-                                                        rrMain.setOrderNum(i);
-                                                        String strSerialNo = DataTypeHelpers.importTernaryOperate(objZd.get(i), 1);//交易流水号',
-                                                        rrMain.setSerialNo(strSerialNo);
-                                                        String strProposalCode = DataTypeHelpers.importTernaryOperate(objZd.get(i), 2);//意见书编码',
-                                                        rrMain.setProposalCode(strProposalCode);
-                                                        String strBillNo = DataTypeHelpers.importTernaryOperate(objZd.get(i), 3);//'单据号',
-                                                        rrMain.setBillNo(strBillNo);
-                                                        String strMedicalPrice = DataTypeHelpers.importTernaryOperate(objZd.get(i), 4);//'医保内金额',
+                                                        message = "明细扣款数据读取失败，请确保Excel列表数据正确无误.";
+                                                        YbReconsiderApplyData rrData = new YbReconsiderApplyData();
+                                                        rrData.setId(UUID.randomUUID().toString());
+                                                        rrData.setPid(guid);
+                                                        rrData.setIsDeletemark(1);
+                                                        String strOrderNumber = DataTypeHelpers.importTernaryOperate(objMx.get(i), 0);//序号',
+                                                        rrData.setOrderNumber(strOrderNumber);
+                                                        rrData.setOrderNum(i);
+                                                        String strSerialNo = DataTypeHelpers.importTernaryOperate(objMx.get(i), 1);//交易流水号',
+                                                        rrData.setSerialNo(strSerialNo);
+                                                        String strBillNo = DataTypeHelpers.importTernaryOperate(objMx.get(i), 2);//'单据号',
+                                                        rrData.setBillNo(strBillNo);
+                                                        String strProposalCode = DataTypeHelpers.importTernaryOperate(objMx.get(i), 3);//意见书编码',
+                                                        rrData.setProposalCode(strProposalCode);
+                                                        String strProjectCode = DataTypeHelpers.importTernaryOperate(objMx.get(i), 4);//'项目编码',
+                                                        rrData.setProjectCode(strProjectCode);
+                                                        String strProjectName = DataTypeHelpers.importTernaryOperate(objMx.get(i), 5);//'项目名称',
+                                                        rrData.setProjectName(strProjectName);
+                                                        String strNum = DataTypeHelpers.importTernaryOperate(objMx.get(i), 6);//'数量',
                                                         BigDecimal bd = new BigDecimal(0);
+                                                        if (DataTypeHelpers.isNumeric(strNum)) {
+                                                            bd = new BigDecimal(strNum);
+                                                            rrData.setNum(bd);
+                                                        }
+                                                        String strMedicalPrice = DataTypeHelpers.importTernaryOperate(objMx.get(i), 7);//'医保内金额',
+                                                        bd = new BigDecimal(0);
                                                         if (DataTypeHelpers.isNumeric(strMedicalPrice)) {
                                                             bd = new BigDecimal(strMedicalPrice);
-                                                            rrMain.setMedicalPrice(bd);
+                                                            rrData.setMedicalPrice(bd);
                                                         }
-                                                        String strRuleName = DataTypeHelpers.importTernaryOperate(objZd.get(i), 5);//'规则名称',
-                                                        rrMain.setRuleName(strRuleName);
-                                                        String strDeductPrice = DataTypeHelpers.importTernaryOperate(objZd.get(i), 6);//'扣除金额',
+                                                        String strRuleName = DataTypeHelpers.importTernaryOperate(objMx.get(i), 8);//'规则名称',
+                                                        rrData.setRuleName(strRuleName);
+                                                        String strDeductPrice = DataTypeHelpers.importTernaryOperate(objMx.get(i), 9);//'扣除金额',
                                                         if (DataTypeHelpers.isNumeric(strDeductPrice)) {
                                                             bd = new BigDecimal(strDeductPrice);
-                                                            rrMain.setDeductPrice(bd);
+                                                            rrData.setDeductPrice(bd);
                                                         }
-                                                        String strSettlementDateStr = DataTypeHelpers.importTernaryOperate(objZd.get(i), 7);//'结算日期Str',
-                                                        rrMain.setSettlementDateStr(strSettlementDateStr);
+                                                        String strDeductReason = DataTypeHelpers.importTernaryOperate(objMx.get(i), 10);//'扣除原因',
+                                                        rrData.setDeductReason(strDeductReason);
+                                                        String strRepaymentReason = DataTypeHelpers.importTernaryOperate(objMx.get(i), 11);//'还款原因',
+                                                        rrData.setRepaymentReason(strRepaymentReason);
+                                                        String strDoctorName = DataTypeHelpers.importTernaryOperate(objMx.get(i), 12);//'医生姓名',
+                                                        rrData.setDoctorName(strDoctorName);
+                                                        String strDeptCode = DataTypeHelpers.importTernaryOperate(objMx.get(i), 13);// '科室编码',
+                                                        rrData.setDeptCode(strDeptCode);
+                                                        String strDeptName = DataTypeHelpers.importTernaryOperate(objMx.get(i), 14);//'科室名称',
+                                                        rrData.setDeptName(strDeptName);
+                                                        String strEnterHospitalDate = DataTypeHelpers.importTernaryOperate(objMx.get(i), 15);//'入院日期str',
+                                                        rrData.setEnterHospitalDateStr(strEnterHospitalDate);
+                                                        String strOutHospitalDate = DataTypeHelpers.importTernaryOperate(objMx.get(i), 16);//'出院日期str',
+                                                        rrData.setOutHospitalDateStr(strOutHospitalDate);
+                                                        String strCostDateStr = DataTypeHelpers.importTernaryOperate(objMx.get(i), 17);//'费用日期str',
+                                                        rrData.setCostDateStr(strCostDateStr);
+                                                        Date CostDate = DataTypeHelpers.stringToDate(strCostDateStr);
+                                                        if (CostDate != null) {
+                                                            rrData.setCostDate(CostDate);
+                                                        } else {
+                                                            message = "Excel导入失败，Sheet明细扣款 费用日期存在错误格式或为空，序号：" + strOrderNumber + ".";
+                                                            blError = true;
+                                                            break;
+                                                        }
+                                                        String strHospitalizedNo = DataTypeHelpers.importTernaryOperate(objMx.get(i), 18);//'住院号',
+                                                        rrData.setHospitalizedNo(strHospitalizedNo);
+                                                        String strTreatmentMode = DataTypeHelpers.importTernaryOperate(objMx.get(i), 19);//'就医方式',
+                                                        rrData.setTreatmentMode(strTreatmentMode);
+                                                        String strSettlementDateStr = DataTypeHelpers.importTernaryOperate(objMx.get(i), 20);//'结算日期Str',
+                                                        rrData.setSettlementDateStr(strSettlementDateStr);
                                                         Date SettlementDate = DataTypeHelpers.stringToDate(strSettlementDateStr);
                                                         if (SettlementDate != null) {
-                                                            rrMain.setSettlementDate(SettlementDate);
+                                                            rrData.setSettlementDate(SettlementDate);
                                                         } else {
-                                                            message = "Excel导入失败，Sheet主单扣款 结算日期存在错误格式或为空，序号：" + strOrderNumber + ".";
+                                                            message = "Excel导入失败，Sheet明细扣款 结算日期存在错误格式或为空，序号：" + strOrderNumber + ".";
                                                             blError = true;
                                                             break;
                                                         }
 
-                                                        String strHospitalizedNo = DataTypeHelpers.importTernaryOperate(objZd.get(i), 8);//'住院号',
-                                                        rrMain.setHospitalizedNo(strHospitalizedNo);
-                                                        String strEnterHospitalDate = DataTypeHelpers.importTernaryOperate(objZd.get(i), 9);//'入院日期str',
-                                                        rrMain.setEnterHospitalDateStr(strEnterHospitalDate);
-                                                        String strOutHospitalDate = DataTypeHelpers.importTernaryOperate(objZd.get(i), 10);//'出院日期str',
-                                                        rrMain.setOutHospitalDateStr(strOutHospitalDate);
-                                                        String strTreatmentMode = DataTypeHelpers.importTernaryOperate(objZd.get(i), 11);//'就医方式',
-                                                        rrMain.setTreatmentMode(strTreatmentMode);
-                                                        String strPersonalNo = DataTypeHelpers.importTernaryOperate(objZd.get(i), 12);//'个人编号',
-                                                        rrMain.setPersonalNo(strPersonalNo);
-                                                        String strInsuredName = DataTypeHelpers.importTernaryOperate(objZd.get(i), 13);//'参保人姓名',
-                                                        rrMain.setInsuredName(strInsuredName);
-                                                        String strInsuredType = DataTypeHelpers.importTernaryOperate(objZd.get(i), 14);//'参保类型',
-                                                        rrMain.setInsuredType(strInsuredType);
-                                                        String strAreaName = DataTypeHelpers.importTernaryOperate(objZd.get(i), 15);//'统筹区名称',
-                                                        rrMain.setAreaName(strAreaName);
-                                                        rrMain.setVersionNumber(strVersionNumber);
-                                                        String strBackAppeal = DataTypeHelpers.importTernaryOperate(objZd.get(i), 17);//'反馈申诉',
-                                                        rrMain.setBackAppeal(strBackAppeal);
-                                                        rrMain.setTypeno(typeno);
-                                                        rrMain.setDataType(YbDefaultValue.DATATYPE_1);
-                                                        rrMain.setState(0);
-                                                        ListMain.add(rrMain);
+                                                        String strPersonalNo = DataTypeHelpers.importTernaryOperate(objMx.get(i), 21);//'个人编号',
+                                                        rrData.setPersonalNo(strPersonalNo);
+                                                        String strInsuredName = DataTypeHelpers.importTernaryOperate(objMx.get(i), 22);//'参保人姓名',
+                                                        rrData.setInsuredName(strInsuredName);
+                                                        String strCardNumber = DataTypeHelpers.importTernaryOperate(objMx.get(i), 23);//'医保卡号',
+                                                        rrData.setCardNumber(strCardNumber);
+                                                        String strAreaName = DataTypeHelpers.importTernaryOperate(objMx.get(i), 24);//'统筹区名称',
+                                                        rrData.setAreaName(strAreaName);
+
+                                                        rrData.setVersionNumber(strVersionNumber);
+                                                        String strBackAppeal = DataTypeHelpers.importTernaryOperate(objMx.get(i), 26);//'反馈申诉',
+                                                        rrData.setBackAppeal(strBackAppeal);
+                                                        rrData.setTypeno(typeno);
+                                                        rrData.setDataType(YbDefaultValue.DATATYPE_0);
+                                                        rrData.setState(0);
+                                                        ListData.add(rrData);
                                                     }
                                                 }
                                             } else {
                                                 blError = true;
-                                                message = "Excel导入失败，Sheet主单扣款 列表列数不正确";
+                                                message = "Excel导入失败，Sheet明细扣款 列表列数不正确";
                                             }
                                         }
-                                    }
-                                    if (!blError) {
-                                        if (ListData.size() > 0 || ListMain.size() > 0) {
-                                            //1待复议 2上传一 3申述一 4上传二 5申述二 6已剔除 7已还款
-                                            YbReconsiderApply ybReconsiderApply = new YbReconsiderApply();
-                                            if (typeno == 1) {
-                                                ybReconsiderApply.setState(YbDefaultValue.APPLYSTATE_2);//State=2 审核一
-                                                ybReconsiderApply.setUploadFileNameOne(uploadFileName);
-                                            }
-                                            if (typeno == 2) {
-                                                ybReconsiderApply.setState(YbDefaultValue.APPLYSTATE_4);
-                                                ybReconsiderApply.setUploadFileNameTwo(uploadFileName);
-                                            }
-                                            ybReconsiderApply.setId(pid);
+                                        if (!blError) {
+                                            if (objZd.size() > 1) {
+                                                if (objZd.get(0).length >= 18) {
+                                                    for (int i = 1; i < objZd.size(); i++) {
+                                                        String strVersionNumber = DataTypeHelpers.importTernaryOperate(objZd.get(i), 16);//'版本号',
+                                                        if ((typeno == YbDefaultValue.TYPENO_1 && strVersionNumber.equals("1")) || (typeno == YbDefaultValue.TYPENO_2 && strVersionNumber.equals("2"))) {
+                                                            message = "主单扣款数据读取失败，请确保Excel列表数据正确无误.";
+                                                            YbReconsiderApplyData rrMain = new YbReconsiderApplyData();
+                                                            rrMain.setIsDeletemark(1);
+                                                            rrMain.setId(UUID.randomUUID().toString());
+                                                            rrMain.setPid(guid);
+                                                            String strOrderNumber = DataTypeHelpers.importTernaryOperate(objZd.get(i), 0);//序号',
+                                                            rrMain.setOrderNumber(strOrderNumber);
+                                                            rrMain.setOrderNum(i);
+                                                            String strSerialNo = DataTypeHelpers.importTernaryOperate(objZd.get(i), 1);//交易流水号',
+                                                            rrMain.setSerialNo(strSerialNo);
+                                                            String strProposalCode = DataTypeHelpers.importTernaryOperate(objZd.get(i), 2);//意见书编码',
+                                                            rrMain.setProposalCode(strProposalCode);
+                                                            String strBillNo = DataTypeHelpers.importTernaryOperate(objZd.get(i), 3);//'单据号',
+                                                            rrMain.setBillNo(strBillNo);
+                                                            String strMedicalPrice = DataTypeHelpers.importTernaryOperate(objZd.get(i), 4);//'医保内金额',
+                                                            BigDecimal bd = new BigDecimal(0);
+                                                            if (DataTypeHelpers.isNumeric(strMedicalPrice)) {
+                                                                bd = new BigDecimal(strMedicalPrice);
+                                                                rrMain.setMedicalPrice(bd);
+                                                            }
+                                                            String strRuleName = DataTypeHelpers.importTernaryOperate(objZd.get(i), 5);//'规则名称',
+                                                            rrMain.setRuleName(strRuleName);
+                                                            String strDeductPrice = DataTypeHelpers.importTernaryOperate(objZd.get(i), 6);//'扣除金额',
+                                                            if (DataTypeHelpers.isNumeric(strDeductPrice)) {
+                                                                bd = new BigDecimal(strDeductPrice);
+                                                                rrMain.setDeductPrice(bd);
+                                                            }
+                                                            String strSettlementDateStr = DataTypeHelpers.importTernaryOperate(objZd.get(i), 7);//'结算日期Str',
+                                                            rrMain.setSettlementDateStr(strSettlementDateStr);
+                                                            Date SettlementDate = DataTypeHelpers.stringToDate(strSettlementDateStr);
+                                                            if (SettlementDate != null) {
+                                                                rrMain.setSettlementDate(SettlementDate);
+                                                            } else {
+                                                                message = "Excel导入失败，Sheet主单扣款 结算日期存在错误格式或为空，序号：" + strOrderNumber + ".";
+                                                                blError = true;
+                                                                break;
+                                                            }
 
-                                            this.iYbReconsiderApplyDataService.importReconsiderApply(ybReconsiderApply, ListData, ListMain);
-                                            success = 1;
-                                            message = "Excel导入成功.";
-                                        } else {
-                                            message = "Excel导入失败，导入数据为空.";
+                                                            String strHospitalizedNo = DataTypeHelpers.importTernaryOperate(objZd.get(i), 8);//'住院号',
+                                                            rrMain.setHospitalizedNo(strHospitalizedNo);
+                                                            String strEnterHospitalDate = DataTypeHelpers.importTernaryOperate(objZd.get(i), 9);//'入院日期str',
+                                                            rrMain.setEnterHospitalDateStr(strEnterHospitalDate);
+                                                            String strOutHospitalDate = DataTypeHelpers.importTernaryOperate(objZd.get(i), 10);//'出院日期str',
+                                                            rrMain.setOutHospitalDateStr(strOutHospitalDate);
+                                                            String strTreatmentMode = DataTypeHelpers.importTernaryOperate(objZd.get(i), 11);//'就医方式',
+                                                            rrMain.setTreatmentMode(strTreatmentMode);
+                                                            String strPersonalNo = DataTypeHelpers.importTernaryOperate(objZd.get(i), 12);//'个人编号',
+                                                            rrMain.setPersonalNo(strPersonalNo);
+                                                            String strInsuredName = DataTypeHelpers.importTernaryOperate(objZd.get(i), 13);//'参保人姓名',
+                                                            rrMain.setInsuredName(strInsuredName);
+                                                            String strInsuredType = DataTypeHelpers.importTernaryOperate(objZd.get(i), 14);//'参保类型',
+                                                            rrMain.setInsuredType(strInsuredType);
+                                                            String strAreaName = DataTypeHelpers.importTernaryOperate(objZd.get(i), 15);//'统筹区名称',
+                                                            rrMain.setAreaName(strAreaName);
+                                                            rrMain.setVersionNumber(strVersionNumber);
+                                                            String strBackAppeal = DataTypeHelpers.importTernaryOperate(objZd.get(i), 17);//'反馈申诉',
+                                                            rrMain.setBackAppeal(strBackAppeal);
+                                                            rrMain.setTypeno(typeno);
+                                                            rrMain.setDataType(YbDefaultValue.DATATYPE_1);
+                                                            rrMain.setState(0);
+                                                            ListMain.add(rrMain);
+                                                        }
+                                                    }
+                                                } else {
+                                                    blError = true;
+                                                    message = "Excel导入失败，Sheet主单扣款 列表列数不正确";
+                                                }
+                                            }
                                         }
+                                        if (!blError) {
+                                            if (ListData.size() > 0 || ListMain.size() > 0) {
+                                                //1待复议 2上传一 3申述一 4上传二 5申述二 6已剔除 7已还款
+                                                YbReconsiderApply ybReconsiderApply = new YbReconsiderApply();
+                                                if (typeno == 1) {
+                                                    ybReconsiderApply.setState(YbDefaultValue.APPLYSTATE_2);//State=2 审核一
+                                                    ybReconsiderApply.setUploadFileNameOne(uploadFileName);
+                                                }
+                                                if (typeno == 2) {
+                                                    ybReconsiderApply.setState(YbDefaultValue.APPLYSTATE_4);
+                                                    ybReconsiderApply.setUploadFileNameTwo(uploadFileName);
+                                                }
+                                                ybReconsiderApply.setId(pid);
+
+                                                this.iYbReconsiderApplyDataService.importReconsiderApply(ybReconsiderApply, ListData, ListMain);
+                                                success = 1;
+                                                message = "Excel导入成功.";
+                                            } else {
+                                                message = "Excel导入失败，导入数据为空.";
+                                            }
+                                        }
+                                    } else {
+                                        message = "Excel导入失败，需确保存在两个Sheet 明细扣款、主单扣款,并确认列表数据是否正确.";
                                     }
                                 } else {
-                                    message = "Excel导入失败，需确保存在两个Sheet 明细扣款、主单扣款,并确认列表数据是否正确.";
+                                    message = "Excel导入失败，需确保存在1个Sheet 明细扣款、主单扣款.";
                                 }
                             } else {
-                                message = "Excel导入失败，需确保存在1个Sheet 明细扣款、主单扣款.";
+                                message = "Excel导入失败，Sheet个数不正确,需确保存在1个Sheet 明细扣款、主单扣款.";
                             }
-                        } else {
-                            message = "Excel导入失败，Sheet个数不正确,需确保存在1个Sheet 明细扣款、主单扣款.";
+                        } catch (Exception ex) {
+                            //message = ex.getMessage();
+                            if ("".equals(message)) {
+                                message = "Excel导入失败.";
+                            }
+                            log.error(message, ex);
                         }
-                    } catch (Exception ex) {
-                        //message = ex.getMessage();
-                        if ("".equals(message)) {
-                            message = "Excel导入失败.";
-                        }
-                        log.error(message, ex);
+                    } else {
+                        message = "Excel导入失败,版本一还有未核对的数据.";
                     }
                 } else {
                     message = "Excel导入失败.";

@@ -29,4 +29,6 @@ public interface YbReconsiderVerifyMapper extends BaseMapper<YbReconsiderVerify>
     List<YbReconsiderVerify> findReconsiderVerifyList(@Param("applyDateStr") String applyDateStr,@Param("areaType") Integer areaType,@Param("dataType") Integer dataType,@Param("state") Integer state,@Param("typeno") Integer typeno);
 
     int findReconsiderVerifyResetCheckCount(@Param("applyDateStr") String applyDateStr,@Param("areaType") Integer areaType);
+
+    int findReconsiderVerifyApplyDataCheckCount(@Param("pid") String pid,@Param("applyDateStr") String applyDateStr,@Param("areaType") Integer areaType,@Param("typeno") Integer typeno);
 }

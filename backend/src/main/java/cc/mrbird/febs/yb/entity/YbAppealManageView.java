@@ -12,6 +12,7 @@ import lombok.Data;
 import lombok.experimental.Accessors;
 
 import java.util.Date;
+import java.util.List;
 
 import com.wuwenze.poi.annotation.Excel;
 import com.wuwenze.poi.annotation.ExcelField;
@@ -528,6 +529,8 @@ public class YbAppealManageView implements Serializable {
     @TableField("areaType")
     @ExcelField(value = "院区")
     private Integer areaType;
+
+    private transient List<String> listPid;
 
     public static final String PID = "pid";
     public static final String SERIALNO = "serialNo";

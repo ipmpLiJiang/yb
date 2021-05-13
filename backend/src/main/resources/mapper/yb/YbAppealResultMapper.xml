@@ -154,11 +154,11 @@
                 <if test="ybAppealResultView.sourceType != null">
                     and yb_appeal_result.sourceType = #{ybAppealResultView.sourceType}
                 </if>
-                <if test="ybAppealResultView.typeno != null">
-                    and yb_appeal_result.typeno = #{ybAppealResultView.typeno}
-                </if>
                 <if test="ybAppealResultView.dataType != null">
                     and yb_appeal_result.dataType = #{ybAppealResultView.dataType}
+                </if>
+                <if test="ybAppealResultView.typeno != null">
+                    and yb_appeal_result.typeno = #{ybAppealResultView.typeno}
                 </if>
                 <if test="ybAppealResultView.state != null and ybAppealResultView.state==1">
                     and yb_appeal_result.STATE = 1
@@ -170,6 +170,7 @@
             )
         )
     </select>
+
     <select id="findAppealResultGroupDept" resultType="cc.mrbird.febs.yb.entity.YbResultDownLoad"
             parameterType="cc.mrbird.febs.yb.entity.YbAppealResultView">
         SELECT
@@ -184,18 +185,70 @@
         <if test="ybAppealResultView.areaType != null">
             and yb_appeal_result.areaType =  #{ybAppealResultView.areaType}
         </if>
-        <if test="ybAppealResultView.sourceType != null">and yb_appeal_result.sourceType =
-            #{ybAppealResultView.sourceType}
+        <if test="ybAppealResultView.sourceType != null">
+            and yb_appeal_result.sourceType = #{ybAppealResultView.sourceType}
         </if>
-        <if test="ybAppealResultView.typeno != null">and yb_appeal_result.typeno =
-            #{ybAppealResultView.typeno}
+        <if test="ybAppealResultView.dataType != null">
+            and yb_appeal_result.dataType = #{ybAppealResultView.dataType}
         </if>
-        <if test="ybAppealResultView.dataType != null">and yb_appeal_result.dataType = #{ybAppealResultView.dataType}
+        <if test="ybAppealResultView.typeno != null">
+            and yb_appeal_result.typeno = #{ybAppealResultView.typeno}
         </if>
-        <if test="ybAppealResultView.state != null and ybAppealResultView.state==1">and yb_appeal_result.STATE = 1</if>
-        <if test="ybAppealResultView.state != null and ybAppealResultView.state==2">and yb_appeal_result.STATE = 2</if>
+        <if test="ybAppealResultView.state != null and ybAppealResultView.state==1">
+            and yb_appeal_result.STATE = 1
+        </if>
+        <if test="ybAppealResultView.state != null and ybAppealResultView.state==2">
+            and yb_appeal_result.STATE = 2
+        </if>
         group BY
         yb_appeal_result.deptCode,yb_appeal_result.deptName
+    </select>
+
+    <select id="findAppealResultNotDept" resultType="cc.mrbird.febs.yb.entity.YbResultDownLoad"
+            parameterType="cc.mrbird.febs.yb.entity.YbAppealResultView">
+	SELECT
+	    uuid() id,
+        yb_appeal_result.deptCode deptId,
+        yb_appeal_result.deptName
+    FROM
+        yb_appeal_result
+        INNER JOIN com_file ON com_file.REF_TAB_ID = yb_appeal_result.id
+        AND com_file.IS_DELETEMARK = 1
+    WHERE
+        yb_appeal_result.applyDateStr = #{ybAppealResultView.applyDateStr}
+        <if test="ybAppealResultView.areaType != null">
+            and yb_appeal_result.areaType =  #{ybAppealResultView.areaType}
+        </if>
+        <if test="ybAppealResultView.sourceType != null">
+            and yb_appeal_result.sourceType = #{ybAppealResultView.sourceType}
+        </if>
+        <if test="ybAppealResultView.dataType != null">
+            and yb_appeal_result.dataType = #{ybAppealResultView.dataType}
+        </if>
+        <if test="ybAppealResultView.typeno != null">
+            and yb_appeal_result.typeno = #{ybAppealResultView.typeno}
+        </if>
+        <if test="ybAppealResultView.state != null and ybAppealResultView.state==1">
+            and yb_appeal_result.STATE = 1
+        </if>
+        <if test="ybAppealResultView.state != null and ybAppealResultView.state==2">
+            and yb_appeal_result.STATE = 2
+        </if>
+        AND yb_appeal_result.deptCode NOT IN(
+            SELECT
+                yb_appeal_sumdept_data.deptId
+            FROM
+                yb_appeal_sumdept_data
+                inner join yb_appeal_sumdept on
+                    yb_appeal_sumdept.id = yb_appeal_sumdept_data.pid
+            WHERE
+                IS_DELETEMARK = 1
+                <if test="ybAppealResultView.areaType != null">
+                    and areaType =  #{ybAppealResultView.areaType}
+                </if>
+        )
+    GROUP BY
+        yb_appeal_result.deptCode ,yb_appeal_result.deptName
     </select>
     <select id="findAppealResulDataByReset" resultType="cc.mrbird.febs.yb.entity.YbAppealResult">
         SELECT
@@ -203,11 +256,11 @@
         FROM
         yb_appeal_result
         where
-        applyDateStr = #{ applyDateStr} AND
-        areaType =#{ areaType} and
-        sourceType = 0 AND
-        state = 1
+        applyDateStr = #{ applyDateStr}
+        AND areaType =#{ areaType}
+        and sourceType = 0
         <if test="dataType != null">and dataType =#{ dataType}</if>
+        AND state = 1
     </select>
     <select id="findAppealResulDataByRepay" resultType="cc.mrbird.febs.yb.entity.YbAppealResult">
         SELECT
@@ -215,11 +268,11 @@
         FROM
         yb_appeal_result
         where
-        applyDateStr = #{ applyDateStr} AND
-        areaType =#{ areaType} and
-        sourceType = 0 AND
-        state = 2
+        applyDateStr = #{ applyDateStr}
+        and areaType =#{ areaType}
+        AND sourceType = 0
         <if test="dataType != null">and dataType =#{ dataType}</if>
+        and state = 2
         AND repayState in (2,3)
     </select>
     <select id="findAppealResulDataHandle" resultType="cc.mrbird.febs.yb.entity.YbAppealResult">
@@ -228,10 +281,10 @@
         FROM
             yb_appeal_result
         WHERE
-            applyDateStr = #{applyDateStr} AND
-            areaType = #{areaType} and
-            sourceType = 0 and
-            STATE = 2
+            applyDateStr = #{applyDateStr}
+            and areaType = #{areaType}
+            and sourceType = 0
+            and STATE = 2
         <if test="hvId != null">
             AND id NOT IN (
                 SELECT

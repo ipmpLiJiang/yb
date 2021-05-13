@@ -98,16 +98,10 @@ export default {
         width: 70
       },
       {
-        title: '意见书编码',
-        dataIndex: 'proposalCode',
-        fixed: 'left',
-        width: 140
-      },
-      {
         title: '交易流水号',
         dataIndex: 'serialNo',
         fixed: 'left',
-        width: 135
+        width: 150
       },
       {
         title: '单据号',
@@ -128,7 +122,7 @@ export default {
       {
         title: '规则名称',
         dataIndex: 'ruleName',
-        width: 100
+        width: 130
       },
       {
         title: '扣除金额',
@@ -306,9 +300,11 @@ export default {
           })
         } else {
           this.$message.warning('未找到对象')
+          this.$emit('verifySpin')
         }
       } else {
         this.$message.warning('未选择行')
+        this.$emit('verifySpin')
       }
     },
     send (key) {

@@ -17,6 +17,11 @@
               :format="monthFormat"
             />
           </a-col>
+          <a-col :span=3 v-show="tableSelectKey==6?true:false">
+            <a-checkbox :checked="checked"  @change="onChange" >
+            是否发送
+          </a-checkbox>
+          </a-col>
           <a-col :span=5>
             <a-input-search placeholder="请输入关键字" v-model="searchText" style="width: 200px" enter-button @search="searchTable" />
           </a-col>
@@ -74,7 +79,18 @@
               <a-button type="primary" >导出未知数据</a-button>
             </a-popconfirm>
           </a-col>
-          <a-col :span=3 >
+          <a-col :span=3 v-show="tableSelectKey==6?true:false">
+          <a-popconfirm
+              title="确定发送短信？"
+              @confirm="sendSms"
+              okText="确定"
+              style="margin-left: 15px"
+              cancelText="取消"
+            >
+              <a-button type="primary">发送短信</a-button>
+            </a-popconfirm>
+          </a-col>
+          <a-col :span=3 v-show="tableSelectKey==6?false:true">
             <a-popconfirm
               title="确定完成剔除？"
               @confirm="updateApplyState"
@@ -162,6 +178,19 @@
             >
             </ybReconsiderResetHandle-data>
           </a-tab-pane>
+          <a-tab-pane
+            key="6"
+            :forceRender="true"
+            tab="剔除短信"
+          >
+            <ybReconsiderReset-sms
+              ref="ybReconsiderResetSms"
+              :applyDateStr="searchApplyDate"
+              :searchText="searchText"
+              :checked="checked"
+            >
+            </ybReconsiderReset-sms>
+          </a-tab-pane>
         </a-tabs>
       </div>
     </template>
@@ -199,6 +228,7 @@ import YbReconsiderResetUnknown from './YbReconsiderResetUnknown'
 import YbReconsiderResetExceptDetail from './YbReconsiderResetExceptDetail'
 import YbReconsiderResetUnknownDetail from './YbReconsiderResetUnknownDetail'
 import YbReconsiderResetHandleData from './YbReconsiderResetHandleData'
+import YbReconsiderResetSms from './YbReconsiderResetSms'
 const formItemLayout = {
   labelCol: { span: 9 },
   wrapperCol: { span: 13, offset: 1 }
@@ -206,7 +236,7 @@ const formItemLayout = {
 export default {
   name: 'YbReconsiderResetView',
   components: {
-    YbReconsiderResetMain, YbReconsiderResetData, YbReconsiderResetDataModule, YbReconsiderResetExcept, YbReconsiderResetUnknown, YbReconsiderResetExceptDetail, YbReconsiderResetUnknownDetail, YbReconsiderResetHandleData},
+    YbReconsiderResetMain, YbReconsiderResetData, YbReconsiderResetDataModule, YbReconsiderResetExcept, YbReconsiderResetUnknown, YbReconsiderResetExceptDetail, YbReconsiderResetUnknownDetail, YbReconsiderResetHandleData, YbReconsiderResetSms},
   data () {
     return {
       formItemLayout,
@@ -219,6 +249,7 @@ export default {
       searchApplyDate: this.formatDate(),
       spinning: false,
       delayTime: 500,
+      checked: false,
       exceptResetVisiable: false,
       unknownResetVisiable: false,
       user: this.$store.state.account.user,
@@ -270,6 +301,38 @@ export default {
         this.spinning = false
         this.$message.error('剔除数据操作失败.')
       })
+    },
+    onChange () {
+      this.checked = !this.checked
+      setTimeout(() => {
+        this.searchTable()
+      }, 500)
+    },
+    sendSms () {
+      if (this.tableSelectKey === '6') {
+        this.spinning = true
+        let key = this.tableSelectKey
+        this.$put('comSms/sendSms', {
+          applyDateStr: this.searchApplyDate,
+          areaType: this.user.areaType,
+          sendType: 5,
+          state: 0
+        }).then((r) => {
+          if (r.data.data.success === 1) {
+            this.$message.success('发送成功.')
+            if (this.tableSelectKey === key) {
+              this.callback(key)
+            }
+            this.spinning = false
+          } else {
+            this.$message.warning(r.data.data.message)
+            this.spinning = false
+          }
+        }).catch(() => {
+          this.$message.error('发送失败.')
+          this.spinning = false
+        })
+      }
     },
     exportExcel () {
       this.$refs.ybReconsiderResetUnknown.exportExcel()
@@ -392,6 +455,8 @@ export default {
         this.$refs.ybReconsiderResetUnknown.searchPage()
       } else if (key === '5') {
         this.$refs.ybReconsiderResetHandleData.searchPage()
+      } else if (key === '6') {
+        this.$refs.ybReconsiderResetSms.searchPage()
       } else {
         console.log('ok')
       }

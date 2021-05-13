@@ -2,7 +2,6 @@ package cc.mrbird.febs.yb.service.impl;
 
 import cc.mrbird.febs.com.entity.ComConfiguremanage;
 import cc.mrbird.febs.com.service.IComConfiguremanageService;
-import cc.mrbird.febs.com.service.impl.ComConfiguremanageServiceImpl;
 import cc.mrbird.febs.common.domain.QueryRequest;
 import cc.mrbird.febs.common.utils.SortUtil;
 import cc.mrbird.febs.system.domain.Dept;
@@ -10,9 +9,7 @@ import cc.mrbird.febs.system.domain.User;
 import cc.mrbird.febs.system.domain.UserRolesImport;
 import cc.mrbird.febs.system.service.DeptService;
 import cc.mrbird.febs.system.service.UserService;
-import cc.mrbird.febs.system.service.impl.UserServiceImpl;
 import cc.mrbird.febs.yb.dao.YbPersonMapper;
-import cc.mrbird.febs.yb.entity.YbDept;
 import cc.mrbird.febs.yb.entity.YbPerson;
 import cc.mrbird.febs.yb.service.IYbPersonService;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -20,7 +17,6 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -151,7 +147,7 @@ public class YbPersonServiceImpl extends ServiceImpl<YbPersonMapper, YbPerson> i
 
     @Override
     @Transactional
-    public boolean importPerson(User logUser) {
+    public boolean importPerson(User logUser) throws Exception {
         boolean isTrue = false;
         List<User> userList = userService.findUserList(new User());
         List<YbPerson> personList = this.findPersonList(new YbPerson(), 0);
@@ -227,6 +223,7 @@ public class YbPersonServiceImpl extends ServiceImpl<YbPersonMapper, YbPerson> i
         return this.baseMapper.findPersonResultList(applyDateStr,areaType);
     }
 
+
     /**
      * type 0 查询集合 type 1 like
      */
@@ -269,7 +266,7 @@ public class YbPersonServiceImpl extends ServiceImpl<YbPersonMapper, YbPerson> i
 
     @Override
     @Transactional
-    public void createYbPerson(YbPerson ybPerson) {
+    public void createYbPerson(YbPerson ybPerson) throws Exception {
         ybPerson.setCreateTime(new Date());
         ybPerson.setIsDeletemark(1);
         this.save(ybPerson);
@@ -277,17 +274,33 @@ public class YbPersonServiceImpl extends ServiceImpl<YbPersonMapper, YbPerson> i
 
     @Override
     @Transactional
-    public void updateYbPerson(YbPerson ybPerson) {
+    public void updateYbPerson(YbPerson ybPerson) throws Exception {
         ybPerson.setModifyTime(new Date());
         this.baseMapper.updateYbPerson(ybPerson);
     }
 
     @Override
     @Transactional
-    public void deleteYbPersons(String[] Ids) {
+    public void deleteYbPersons(String[] Ids) throws Exception {
         List<String> list = Arrays.asList(Ids);
         this.baseMapper.deleteBatchIds(list);
+
     }
 
+    @Override
+    public List<String> findPersonCodeList(String value){
+        YbPerson person = new YbPerson();
+        person.setPersonName(value);
+        List<YbPerson> personList = this.findPersonList(person,0);
+        List<String> strList = new ArrayList<>();
+        for (YbPerson item : personList){
+            strList.add(item.getPersonCode());
+        }
+        return strList;
+    }
 
+    @Override
+    public  List<YbPerson> findPersonWarnLists(String applyDateStr,Integer areaType, Integer acceptState, Integer typeno, Integer sourceType){
+        return this.baseMapper.findPersonWarnList(applyDateStr,areaType, acceptState, typeno, sourceType);
+    }
 }

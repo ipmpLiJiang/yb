@@ -115,9 +115,9 @@ public class YbAppealResultDeductimplement implements Serializable, Comparable<Y
     /**
      * 备注
      */
-    @TableField("COMMENTS")
-    @ExcelField(value = "备注")
-    private String comments;
+//    @TableField("COMMENTS")
+//    @ExcelField(value = "备注")
+//    private String comments;
 
     /**
      * 状态
@@ -129,41 +129,41 @@ public class YbAppealResultDeductimplement implements Serializable, Comparable<Y
     /**
      * 是否删除
      */
-    @TableField("IS_DELETEMARK")
-    @ExcelField(value = "是否删除")
-    private Integer isDeletemark;
+//    @TableField("IS_DELETEMARK")
+//    @ExcelField(value = "是否删除")
+//    private Integer isDeletemark;
 
     /**
      * 修改时间
      */
-    @TableField("MODIFY_TIME")
-    @ExcelField(value = "修改时间")
-    private Date modifyTime;
-    private transient String modifyTimeFrom;
-    private transient String modifyTimeTo;
+//    @TableField("MODIFY_TIME")
+//    @ExcelField(value = "修改时间")
+//    private Date modifyTime;
+//    private transient String modifyTimeFrom;
+//    private transient String modifyTimeTo;
 
     /**
      * 创建时间
      */
-    @TableField("CREATE_TIME")
-    @ExcelField(value = "创建时间")
-    private Date createTime;
-    private transient String createTimeFrom;
-    private transient String createTimeTo;
+//    @TableField("CREATE_TIME")
+//    @ExcelField(value = "创建时间")
+//    private Date createTime;
+//    private transient String createTimeFrom;
+//    private transient String createTimeTo;
 
     /**
      * 创建人
      */
-    @TableField("CREATE_USER_ID")
-    @ExcelField(value = "创建人")
-    private Long createUserId;
+//    @TableField("CREATE_USER_ID")
+//    @ExcelField(value = "创建人")
+//    private Long createUserId;
 
     /**
      * 修改人
      */
-    @TableField("MODIFY_USER_ID")
-    @ExcelField(value = "修改人")
-    private Long modifyUserId;
+//    @TableField("MODIFY_USER_ID")
+//    @ExcelField(value = "修改人")
+//    private Long modifyUserId;
 
     /**
      * 院区
@@ -171,6 +171,28 @@ public class YbAppealResultDeductimplement implements Serializable, Comparable<Y
     @TableField("areaType")
     @ExcelField(value = "院区")
     private Integer areaType;
+
+    /**
+     * 是否已更新
+     */
+//    @TableField("isUpdate")
+//    @ExcelField(value = "是否已更新")
+//    private Integer isUpdate;
+
+    /**
+     * 序号
+     */
+    @TableField("orderNumber")
+    @ExcelField(value = "序号")
+    private String orderNumber;
+
+    /**
+     * 排序
+     */
+    @TableField("orderNum")
+    @ExcelField(value = "排序")
+    private Integer orderNum;
+
 
     public static final String ID = "id";
 
@@ -194,21 +216,26 @@ public class YbAppealResultDeductimplement implements Serializable, Comparable<Y
 
     public static final String DATATYPE = "dataType";
 
-    public static final String COMMENTS = "COMMENTS";
+//    public static final String COMMENTS = "COMMENTS";
 
     public static final String STATE = "STATE";
 
-    public static final String IS_DELETEMARK = "IS_DELETEMARK";
+//    public static final String IS_DELETEMARK = "IS_DELETEMARK";
 
-    public static final String MODIFY_TIME = "MODIFY_TIME";
+//    public static final String MODIFY_TIME = "MODIFY_TIME";
 
-    public static final String CREATE_TIME = "CREATE_TIME";
+//    public static final String CREATE_TIME = "CREATE_TIME";
 
-    public static final String CREATE_USER_ID = "CREATE_USER_ID";
+//    public static final String CREATE_USER_ID = "CREATE_USER_ID";
 
-    public static final String MODIFY_USER_ID = "MODIFY_USER_ID";
+//    public static final String MODIFY_USER_ID = "MODIFY_USER_ID";
 
     public static final String AREATYPE = "areaType";
+
+//    public static final String ISUPDATE = "isUpdate";
+    public static final String ORDERNUMBER = "orderNumber";
+    public static final String ORDERNUM = "orderNum";
+
 
     @Override
     public int compareTo(YbAppealResultDeductimplement o) {

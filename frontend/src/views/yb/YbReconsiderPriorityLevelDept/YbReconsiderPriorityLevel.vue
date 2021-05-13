@@ -169,6 +169,7 @@ export default {
       queryParams: {},
       addVisiable: false,
       editVisiable: false,
+      user: this.$store.state.account.user,
       loading: false,
       bordered: true
     }
@@ -256,7 +257,7 @@ export default {
       {
         title: '操作员',
         dataIndex: 'operatorName',
-        width: 150
+        width: 160
       },
       {
         title: '操作',
@@ -293,7 +294,7 @@ export default {
     },
     add () {
       this.addVisiable = true
-      this.$refs.ybReconsiderPriorityLevelAdd.setFormValues()
+      this.$refs.ybReconsiderPriorityLevelAdd.setFormValues(this.user.areaType)
     },
     handleEditSuccess () {
       this.editVisiable = false
@@ -411,6 +412,7 @@ export default {
       params.sortField = 'create_Time'
       params.sortOrder = 'descend'
       // params.sortOrder = 'ascend'
+      params.areaType = this.user.areaType
       params.state = 3
       this.$get('ybReconsiderPriorityLevel', {
         ...params

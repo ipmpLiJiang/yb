@@ -274,7 +274,7 @@ export default {
         params.pageSize = this.pagination.defaultPageSize
         params.pageNum = this.pagination.defaultCurrent
       }
-      params.sortField = 'create_Time'
+      params.sortField = 'operateDate'
       params.sortOrder = 'descend'
       this.$get('ybAppealManage', {
         ...params

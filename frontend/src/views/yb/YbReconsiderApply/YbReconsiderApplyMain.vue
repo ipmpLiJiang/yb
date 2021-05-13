@@ -72,7 +72,7 @@ export default {
       {
         title: '交易流水号',
         dataIndex: 'serialNo',
-        width: 135
+        width: 150
       },
       {
         title: '意见书编码',
@@ -263,7 +263,7 @@ export default {
       }
       params.sortField = 'orderNum'
       params.sortOrder = 'ascend'
-      this.$get('ybReconsiderApplyData/ListReconsiderApplyData', {
+      this.$get('ybReconsiderApplyData/findReconsiderApplyDataList', {
         ...params
       }).then((r) => {
         let data = r.data

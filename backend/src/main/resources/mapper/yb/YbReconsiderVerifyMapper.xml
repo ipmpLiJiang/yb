@@ -11,6 +11,9 @@
                     <result column="verifyDeptCode" property="verifyDeptCode"/>
                     <result column="verifyDeptName" property="verifyDeptName"/>
             <result column="dataType" property="dataType"/>
+            <result column="sendPersonId" property="sendPersonId"/>
+            <result column="sendPersonName" property="sendPersonName"/>
+            <result column="sendDate" property="sendDate"/>
             <result column="applyDateStr" property="applyDateStr"/>
             <result column="typeno" property="typeno"/>
             <result column="orderNumber" property="orderNumber"/>
@@ -27,7 +30,7 @@
 
         <!-- 通用查询结果列 -->
         <sql id="Base_Column_List">
-        id, applyDataId, verifyDoctorCode, verifyDoctorName, verifyDeptCode, verifyDeptName, dataType,applyDateStr,typeno,orderNumber,orderNum,orderDoctorCode,orderDoctorName,orderDeptCode,orderDeptName, COMMENTS, STATE, IS_DELETEMARK, areaType
+        id, applyDataId, verifyDoctorCode, verifyDoctorName, verifyDeptCode, verifyDeptName, dataType, sendPersonId, sendPersonName, sendDate,applyDateStr,typeno,orderNumber,orderNum,orderDoctorCode,orderDoctorName,orderDeptCode,orderDeptName, COMMENTS, STATE, IS_DELETEMARK, areaType
     </sql>
     <update id="updateYbReconsiderVerify" parameterType="cc.mrbird.febs.yb.entity.YbReconsiderVerify">
         update yb_reconsider_verify
@@ -38,6 +41,9 @@
 <if test="verifyDeptCode != null">verifyDeptCode=#{verifyDeptCode},</if>
 <if test="verifyDeptName != null">verifyDeptName=#{verifyDeptName},</if>
 <if test="dataType != null">dataType=#{dataType},</if>
+<if test="sendPersonId != null">sendPersonId=#{sendPersonId},</if>
+<if test="sendPersonName != null">sendPersonName=#{sendPersonName},</if>
+<if test="sendDate != null">sendDate=#{sendDate},</if>
 <if test="applyDateStr != null">applyDateStr=#{applyDateStr},</if>
 <if test="typeno != null">typeno=#{typeno},</if>
 <if test="orderNumber != null">orderNumber=#{orderNumber},</if>
@@ -95,6 +101,9 @@
             <if test="verifyDeptCode != null">verifyDeptCode=#{verifyDeptCode},</if>
             <if test="verifyDeptName != null">verifyDeptName=#{verifyDeptName},</if>
             <if test="dataType != null">dataType=#{dataType},</if>
+            <if test="sendPersonId != null">sendPersonId=#{sendPersonId},</if>
+            <if test="sendPersonName != null">sendPersonName=#{sendPersonName},</if>
+            <if test="sendDate != null">sendDate=#{sendDate},</if>
             <if test="comments != null">COMMENTS=#{comments},</if>
             <if test="state != null">STATE=#{state},</if>
             <if test="isDeletemark != null">IS_DELETEMARK=#{isDeletemark},</if>
@@ -196,5 +205,13 @@ from
             applyDateStr = #{applyDateStr} and
             areaType = #{areaType} and
             state in(1,2)
-</select>
+        limit 0,1
+    </select>
+    <select id="findReconsiderVerifyApplyDataCheckCount" resultType="Integer">
+    select count(1) from yb_reconsider_apply_data where pid = #{pid} <if test="typeno != null"> and typeno =#{ typeno } </if> and
+    id not in(
+        select applyDataId from yb_reconsider_verify where applyDateStr= #{applyDateStr} and areaType = #{areaType}
+        <if test="typeno != null"> and typeno =#{ typeno } </if>
+    )
+    </select>
 </mapper>

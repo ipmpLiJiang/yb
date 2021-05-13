@@ -70,7 +70,7 @@
         rrd.pid,
         ardi.applyDate,
         ardi.applyDateStr,
-        ardi.id resetDataId,
+        ardi.resetDataId,
         ardi.relatelDataId,
         ardi.implementDate,
         ardi.implementDateStr,
@@ -114,16 +114,31 @@
             yb_appeal_result_deductImplement ardi
             INNER JOIN  yb_reconsider_reset_data rrd on
                 ardi.resetDataId = rrd.id
+        <if test="keyField == 'serialNo' and ybAppealResultDeductimplementView.currencyField != null and ybAppealResultDeductimplementView.currencyField != ''">
+            and rrd.serialNo = #{ ybAppealResultDeductimplementView.currencyField}
+        </if>
+        <if test="keyField == 'proposalCode' and ybAppealResultDeductimplementView.currencyField != null and ybAppealResultDeductimplementView.currencyField != ''">
+            and rrd.proposalCode = #{ ybAppealResultDeductimplementView.currencyField}
+        </if>
+        <if test="keyField == 'projectCode' and ybAppealResultDeductimplementView.currencyField != null and ybAppealResultDeductimplementView.currencyField != ''">
+            and rrd.projectCode = #{ ybAppealResultDeductimplementView.currencyField}
+        </if>
+        <if test="keyField == 'projectName' and ybAppealResultDeductimplementView.currencyField != null and ybAppealResultDeductimplementView.currencyField != ''">
+            and rrd.projectName = #{ ybAppealResultDeductimplementView.currencyField}
+        </if>
+        <if test="keyField == 'ruleName' and ybAppealResultDeductimplementView.currencyField != null and ybAppealResultDeductimplementView.currencyField != ''">
+            and rrd.ruleName = #{ ybAppealResultDeductimplementView.currencyField}
+        </if>
+        <if test="keyField == 'orderNumber' and ybAppealResultDeductimplementView.currencyField != null and ybAppealResultDeductimplementView.currencyField != ''">
+            and rrd.orderNumber = #{ ybAppealResultDeductimplementView.currencyField}
+        </if>
             INNER JOIN yb_appeal_result art ON
                 art.relatelDataId = rrd.relatelDataId
-                and art.dataType = rrd.dataType
-                and art.areaType = #{ybAppealResultDeductimplementView.areaType}
-                and art.state = 2
-        <if test="ybAppealResultDeductimplementView.dataType != null">
-            and art.dataType=#{ ybAppealResultDeductimplementView.dataType}
-        </if>
         <if test="ybAppealResultDeductimplementView.arDoctorCode != null and ybAppealResultDeductimplementView.arDoctorCode != ''">
             and art.doctorCode=#{ ybAppealResultDeductimplementView.arDoctorCode}
+        </if>
+        <if test="ybAppealResultDeductimplementView.arDoctorName != null and ybAppealResultDeductimplementView.arDoctorName != ''">
+            and art.doctorCode in (select personCode from yb_person where personName = #{ ybAppealResultDeductimplementView.arDoctorName})
         </if>
         where
         <if test="ybAppealResultDeductimplementView.implementDateStr != null and ybAppealResultDeductimplementView.implementDateStr != ''">
@@ -140,25 +155,6 @@
         </if>
         <if test="ybAppealResultDeductimplementView.dataType != null">
             and ardi.dataType=#{ ybAppealResultDeductimplementView.dataType}
-        </if>
-        <if test="ybAppealResultDeductimplementView.dataType != null and ybAppealResultDeductimplementView.dataType == 0 and ybAppealResultDeductimplementView.currencyField!= null and ybAppealResultDeductimplementView.currencyField != ''">
-            and (rrd.serialNo like concat('%', #{ ybAppealResultDeductimplementView.currencyField} ,'%')
-            or rrd.billNo like concat('%', #{ ybAppealResultDeductimplementView.currencyField} ,'%')
-            or rrd.projectCode like concat('%', #{ ybAppealResultDeductimplementView.currencyField} ,'%')
-            or rrd.projectName like concat('%', #{ ybAppealResultDeductimplementView.currencyField} ,'%')
-            or rrd.ruleName like concat('%', #{ ybAppealResultDeductimplementView.currencyField} ,'%'))
-        </if>
-        <if test="ybAppealResultDeductimplementView.dataType != null and ybAppealResultDeductimplementView.dataType == 1 and ybAppealResultDeductimplementView.currencyField!= null and ybAppealResultDeductimplementView.currencyField != ''">
-            and (rrd.serialNo like concat('%', #{ ybAppealResultDeductimplementView.currencyField} ,'%')
-            or rrd.billNo like concat('%', #{ ybAppealResultDeductimplementView.currencyField} ,'%')
-            or rrd.ruleName like concat('%', #{ ybAppealResultDeductimplementView.currencyField} ,'%'))
-        </if>
-        <if test="ybAppealResultDeductimplementView.dataType == null and ybAppealResultDeductimplementView.currencyField!= null and ybAppealResultDeductimplementView.currencyField != ''">
-            and (rrd.serialNo like concat('%', #{ ybAppealResultDeductimplementView.currencyField} ,'%')
-            or rrd.billNo like concat('%', #{ ybAppealResultDeductimplementView.currencyField} ,'%')
-            or rrd.projectCode like concat('%', #{ ybAppealResultDeductimplementView.currencyField} ,'%')
-            or rrd.projectName like concat('%', #{ ybAppealResultDeductimplementView.currencyField} ,'%')
-            or rrd.ruleName like concat('%', #{ ybAppealResultDeductimplementView.currencyField} ,'%'))
         </if>
     </select>
 
@@ -170,17 +166,32 @@
         FROM
         yb_appeal_result_deductImplement ardi
         INNER JOIN  yb_reconsider_reset_data rrd on
-        ardi.resetDataId = rrd.id
-        INNER JOIN yb_appeal_result art ON
-        art.relatelDataId = rrd.relatelDataId
-        and art.dataType = rrd.dataType
-        and art.areaType = #{ybAppealResultDeductimplementView.areaType}
-        and art.state = 2
-        <if test="ybAppealResultDeductimplementView.dataType != null">
-            and art.dataType=#{ ybAppealResultDeductimplementView.dataType}
+            ardi.resetDataId = rrd.id
+        <if test="keyField == 'serialNo' and ybAppealResultDeductimplementView.currencyField != null and ybAppealResultDeductimplementView.currencyField != ''">
+            and rrd.serialNo = #{ ybAppealResultDeductimplementView.currencyField}
         </if>
+        <if test="keyField == 'proposalCode' and ybAppealResultDeductimplementView.currencyField != null and ybAppealResultDeductimplementView.currencyField != ''">
+            and rrd.proposalCode = #{ ybAppealResultDeductimplementView.currencyField}
+        </if>
+        <if test="keyField == 'projectCode' and ybAppealResultDeductimplementView.currencyField != null and ybAppealResultDeductimplementView.currencyField != ''">
+            and rrd.projectCode = #{ ybAppealResultDeductimplementView.currencyField}
+        </if>
+        <if test="keyField == 'projectName' and ybAppealResultDeductimplementView.currencyField != null and ybAppealResultDeductimplementView.currencyField != ''">
+            and rrd.projectName = #{ ybAppealResultDeductimplementView.currencyField}
+        </if>
+        <if test="keyField == 'ruleName' and ybAppealResultDeductimplementView.currencyField != null and ybAppealResultDeductimplementView.currencyField != ''">
+            and rrd.ruleName = #{ ybAppealResultDeductimplementView.currencyField}
+        </if>
+        <if test="keyField == 'orderNumber' and ybAppealResultDeductimplementView.currencyField != null and ybAppealResultDeductimplementView.currencyField != ''">
+            and rrd.orderNumber = #{ ybAppealResultDeductimplementView.currencyField}
+        </if>
+        INNER JOIN yb_appeal_result art ON
+            art.relatelDataId = rrd.relatelDataId
         <if test="ybAppealResultDeductimplementView.arDoctorCode != null and ybAppealResultDeductimplementView.arDoctorCode != ''">
             and art.doctorCode=#{ ybAppealResultDeductimplementView.arDoctorCode}
+        </if>
+        <if test="ybAppealResultDeductimplementView.arDoctorName != null and ybAppealResultDeductimplementView.arDoctorName != ''">
+            and art.doctorCode in (select personCode from yb_person where personName = #{ ybAppealResultDeductimplementView.arDoctorName})
         </if>
         where
         <if test="ybAppealResultDeductimplementView.implementDateStr != null and ybAppealResultDeductimplementView.implementDateStr != ''">
@@ -197,25 +208,6 @@
         </if>
         <if test="ybAppealResultDeductimplementView.dataType != null">
             and ardi.dataType=#{ ybAppealResultDeductimplementView.dataType}
-        </if>
-        <if test="ybAppealResultDeductimplementView.dataType != null and ybAppealResultDeductimplementView.dataType == 0 and ybAppealResultDeductimplementView.currencyField!= null and ybAppealResultDeductimplementView.currencyField != ''">
-            and (rrd.serialNo like concat('%', #{ ybAppealResultDeductimplementView.currencyField} ,'%')
-            or rrd.billNo like concat('%', #{ ybAppealResultDeductimplementView.currencyField} ,'%')
-            or rrd.projectCode like concat('%', #{ ybAppealResultDeductimplementView.currencyField} ,'%')
-            or rrd.projectName like concat('%', #{ ybAppealResultDeductimplementView.currencyField} ,'%')
-            or rrd.ruleName like concat('%', #{ ybAppealResultDeductimplementView.currencyField} ,'%'))
-        </if>
-        <if test="ybAppealResultDeductimplementView.dataType != null and ybAppealResultDeductimplementView.dataType == 1 and ybAppealResultDeductimplementView.currencyField!= null and ybAppealResultDeductimplementView.currencyField != ''">
-            and (rrd.serialNo like concat('%', #{ ybAppealResultDeductimplementView.currencyField} ,'%')
-            or rrd.billNo like concat('%', #{ ybAppealResultDeductimplementView.currencyField} ,'%')
-            or rrd.ruleName like concat('%', #{ ybAppealResultDeductimplementView.currencyField} ,'%'))
-        </if>
-        <if test="ybAppealResultDeductimplementView.dataType == null and ybAppealResultDeductimplementView.currencyField!= null and ybAppealResultDeductimplementView.currencyField != ''">
-            and (rrd.serialNo like concat('%', #{ ybAppealResultDeductimplementView.currencyField} ,'%')
-            or rrd.billNo like concat('%', #{ ybAppealResultDeductimplementView.currencyField} ,'%')
-            or rrd.projectCode like concat('%', #{ ybAppealResultDeductimplementView.currencyField} ,'%')
-            or rrd.projectName like concat('%', #{ ybAppealResultDeductimplementView.currencyField} ,'%')
-            or rrd.ruleName like concat('%', #{ ybAppealResultDeductimplementView.currencyField} ,'%'))
         </if>
     </select>
 
@@ -269,14 +261,11 @@
         yb_reconsider_reset_data rrd
         INNER JOIN yb_appeal_result art ON
         art.relatelDataId = rrd.relatelDataId
-        and art.dataType = rrd.dataType
-        AND art.areaType = #{ybAppealResultDeductimplementView.areaType}
-        and art.state = 2
-        <if test="ybAppealResultDeductimplementView.dataType != null">
-            and art.dataType=#{ ybAppealResultDeductimplementView.dataType}
-        </if>
         <if test="ybAppealResultDeductimplementView.arDoctorCode != null and ybAppealResultDeductimplementView.arDoctorCode != ''">
             and art.doctorCode=#{ ybAppealResultDeductimplementView.arDoctorCode}
+        </if>
+        <if test="ybAppealResultDeductimplementView.arDoctorName != null and ybAppealResultDeductimplementView.arDoctorName != ''">
+            and art.doctorCode in (select personCode from yb_person where personName = #{ ybAppealResultDeductimplementView.arDoctorName})
         </if>
         where
         <if test="ybAppealResultDeductimplementView.pid != null and ybAppealResultDeductimplementView.pid != ''">
@@ -295,27 +284,27 @@
             and ard.dataType=#{ ybAppealResultDeductimplementView.dataType}
         </if>
         )
-        <if test="ybAppealResultDeductimplementView.dataType != null and ybAppealResultDeductimplementView.dataType == 0 and ybAppealResultDeductimplementView.currencyField!= null and ybAppealResultDeductimplementView.currencyField != ''">
-            and (rrd.serialNo like concat('%', #{ ybAppealResultDeductimplementView.currencyField} ,'%')
-            or rrd.billNo like concat('%', #{ ybAppealResultDeductimplementView.currencyField} ,'%')
-            or rrd.projectCode like concat('%', #{ ybAppealResultDeductimplementView.currencyField} ,'%')
-            or rrd.projectName like concat('%', #{ ybAppealResultDeductimplementView.currencyField} ,'%')
-            or rrd.ruleName like concat('%', #{ ybAppealResultDeductimplementView.currencyField} ,'%'))
+        <if test="keyField == 'serialNo' and ybAppealResultDeductimplementView.currencyField != null and ybAppealResultDeductimplementView.currencyField != ''">
+            and rrd.serialNo = #{ ybAppealResultDeductimplementView.currencyField}
         </if>
-        <if test="ybAppealResultDeductimplementView.dataType != null and ybAppealResultDeductimplementView.dataType == 1 and ybAppealResultDeductimplementView.currencyField!= null and ybAppealResultDeductimplementView.currencyField != ''">
-            and (rrd.serialNo like concat('%', #{ ybAppealResultDeductimplementView.currencyField} ,'%')
-            or rrd.billNo like concat('%', #{ ybAppealResultDeductimplementView.currencyField} ,'%')
-            or rrd.ruleName like concat('%', #{ ybAppealResultDeductimplementView.currencyField} ,'%'))
+        <if test="keyField == 'proposalCode' and ybAppealResultDeductimplementView.currencyField != null and ybAppealResultDeductimplementView.currencyField != ''">
+            and rrd.proposalCode = #{ ybAppealResultDeductimplementView.currencyField}
         </if>
-        <if test="ybAppealResultDeductimplementView.dataType == null and ybAppealResultDeductimplementView.currencyField!= null and ybAppealResultDeductimplementView.currencyField != ''">
-            and (rrd.serialNo like concat('%', #{ ybAppealResultDeductimplementView.currencyField} ,'%')
-            or rrd.billNo like concat('%', #{ ybAppealResultDeductimplementView.currencyField} ,'%')
-            or rrd.projectCode like concat('%', #{ ybAppealResultDeductimplementView.currencyField} ,'%')
-            or rrd.projectName like concat('%', #{ ybAppealResultDeductimplementView.currencyField} ,'%')
-            or rrd.ruleName like concat('%', #{ ybAppealResultDeductimplementView.currencyField} ,'%'))
+        <if test="keyField == 'projectCode' and ybAppealResultDeductimplementView.currencyField != null and ybAppealResultDeductimplementView.currencyField != ''">
+            and rrd.projectCode = #{ ybAppealResultDeductimplementView.currencyField}
+        </if>
+        <if test="keyField == 'projectName' and ybAppealResultDeductimplementView.currencyField != null and ybAppealResultDeductimplementView.currencyField != ''">
+            and rrd.projectName = #{ ybAppealResultDeductimplementView.currencyField}
+        </if>
+        <if test="keyField == 'ruleName' and ybAppealResultDeductimplementView.currencyField != null and ybAppealResultDeductimplementView.currencyField != ''">
+            and rrd.ruleName = #{ ybAppealResultDeductimplementView.currencyField}
+        </if>
+        <if test="keyField == 'orderNumber' and ybAppealResultDeductimplementView.currencyField != null and ybAppealResultDeductimplementView.currencyField != ''">
+            and rrd.orderNumber = #{ ybAppealResultDeductimplementView.currencyField}
         </if>
 
     </select>
+
     <select id="findAppealResultDmtCount"
             resultType="Integer"
             parameterType="cc.mrbird.febs.yb.entity.YbAppealResultDeductimplementView">
@@ -325,14 +314,11 @@
         yb_reconsider_reset_data rrd
         INNER JOIN yb_appeal_result art ON
         art.relatelDataId = rrd.relatelDataId
-        and art.dataType = rrd.dataType
-        and art.areaType=#{ ybAppealResultDeductimplementView.areaType}
-        AND art.state = 2
-        <if test="ybAppealResultDeductimplementView.dataType != null">
-            and art.dataType=#{ ybAppealResultDeductimplementView.dataType}
-        </if>
         <if test="ybAppealResultDeductimplementView.arDoctorCode != null and ybAppealResultDeductimplementView.arDoctorCode != ''">
             and art.doctorCode=#{ ybAppealResultDeductimplementView.arDoctorCode}
+        </if>
+        <if test="ybAppealResultDeductimplementView.arDoctorName != null and ybAppealResultDeductimplementView.arDoctorName != ''">
+            and art.doctorCode in (select personCode from yb_person where personName = #{ ybAppealResultDeductimplementView.arDoctorName})
         </if>
         where
         <if test="ybAppealResultDeductimplementView.pid != null and ybAppealResultDeductimplementView.pid != ''">
@@ -342,33 +328,32 @@
             and rrd.dataType=#{ ybAppealResultDeductimplementView.dataType}
         </if>
         and rrd.id not in(
-        select ard.resetDataId from yb_appeal_result_deductimplement ard where
-        ard.applyDateStr=#{ ybAppealResultDeductimplementView.applyDateStr}
-        <if test="ybAppealResultDeductimplementView.areaType != null">
-            and ard.areaType=#{ ybAppealResultDeductimplementView.areaType}
-        </if>
-        <if test="ybAppealResultDeductimplementView.dataType != null">
-            and ard.dataType=#{ ybAppealResultDeductimplementView.dataType}
-        </if>
+            select ard.resetDataId from yb_appeal_result_deductimplement ard where
+            ard.applyDateStr=#{ ybAppealResultDeductimplementView.applyDateStr}
+            <if test="ybAppealResultDeductimplementView.areaType != null">
+                and ard.areaType=#{ ybAppealResultDeductimplementView.areaType}
+            </if>
+            <if test="ybAppealResultDeductimplementView.dataType != null">
+                and ard.dataType=#{ ybAppealResultDeductimplementView.dataType}
+            </if>
         )
-        <if test="ybAppealResultDeductimplementView.dataType != null and ybAppealResultDeductimplementView.dataType == 0 and ybAppealResultDeductimplementView.currencyField!= null and ybAppealResultDeductimplementView.currencyField != ''">
-            and (rrd.serialNo like concat('%', #{ ybAppealResultDeductimplementView.currencyField} ,'%')
-            or rrd.billNo like concat('%', #{ ybAppealResultDeductimplementView.currencyField} ,'%')
-            or rrd.projectCode like concat('%', #{ ybAppealResultDeductimplementView.currencyField} ,'%')
-            or rrd.projectName like concat('%', #{ ybAppealResultDeductimplementView.currencyField} ,'%')
-            or rrd.ruleName like concat('%', #{ ybAppealResultDeductimplementView.currencyField} ,'%'))
+        <if test="keyField == 'serialNo' and ybAppealResultDeductimplementView.currencyField != null and ybAppealResultDeductimplementView.currencyField != ''">
+            and rrd.serialNo = #{ ybAppealResultDeductimplementView.currencyField}
         </if>
-        <if test="ybAppealResultDeductimplementView.dataType != null and ybAppealResultDeductimplementView.dataType == 1 and ybAppealResultDeductimplementView.currencyField!= null and ybAppealResultDeductimplementView.currencyField != ''">
-            and (rrd.serialNo like concat('%', #{ ybAppealResultDeductimplementView.currencyField} ,'%')
-            or rrd.billNo like concat('%', #{ ybAppealResultDeductimplementView.currencyField} ,'%')
-            or rrd.ruleName like concat('%', #{ ybAppealResultDeductimplementView.currencyField} ,'%'))
+        <if test="keyField == 'proposalCode' and ybAppealResultDeductimplementView.currencyField != null and ybAppealResultDeductimplementView.currencyField != ''">
+            and rrd.proposalCode = #{ ybAppealResultDeductimplementView.currencyField}
         </if>
-        <if test="ybAppealResultDeductimplementView.dataType == null and ybAppealResultDeductimplementView.currencyField!= null and ybAppealResultDeductimplementView.currencyField != ''">
-            and (rrd.serialNo like concat('%', #{ ybAppealResultDeductimplementView.currencyField} ,'%')
-            or rrd.billNo like concat('%', #{ ybAppealResultDeductimplementView.currencyField} ,'%')
-            or rrd.projectCode like concat('%', #{ ybAppealResultDeductimplementView.currencyField} ,'%')
-            or rrd.projectName like concat('%', #{ ybAppealResultDeductimplementView.currencyField} ,'%')
-            or rrd.ruleName like concat('%', #{ ybAppealResultDeductimplementView.currencyField} ,'%'))
+        <if test="keyField == 'projectCode' and ybAppealResultDeductimplementView.currencyField != null and ybAppealResultDeductimplementView.currencyField != ''">
+            and rrd.projectCode = #{ ybAppealResultDeductimplementView.currencyField}
+        </if>
+        <if test="keyField == 'projectName' and ybAppealResultDeductimplementView.currencyField != null and ybAppealResultDeductimplementView.currencyField != ''">
+            and rrd.projectName = #{ ybAppealResultDeductimplementView.currencyField}
+        </if>
+        <if test="keyField == 'ruleName' and ybAppealResultDeductimplementView.currencyField != null and ybAppealResultDeductimplementView.currencyField != ''">
+            and rrd.ruleName = #{ ybAppealResultDeductimplementView.currencyField}
+        </if>
+        <if test="keyField == 'orderNumber' and ybAppealResultDeductimplementView.currencyField != null and ybAppealResultDeductimplementView.currencyField != ''">
+            and rrd.orderNumber = #{ ybAppealResultDeductimplementView.currencyField}
         </if>
 
     </select>
@@ -423,14 +408,11 @@
         yb_reconsider_reset_data rrd
         INNER JOIN yb_appeal_result art ON
         art.relatelDataId = rrd.relatelDataId
-        and art.dataType = rrd.dataType
-        and art.areaType=#{ ybAppealResultDeductimplementView.areaType}
-        AND art.state = 2
-        <if test="ybAppealResultDeductimplementView.dataType != null">
-            and art.dataType=#{ ybAppealResultDeductimplementView.dataType}
-        </if>
         <if test="ybAppealResultDeductimplementView.arDoctorCode != null and ybAppealResultDeductimplementView.arDoctorCode != ''">
             and art.doctorCode=#{ ybAppealResultDeductimplementView.arDoctorCode}
+        </if>
+        <if test="ybAppealResultDeductimplementView.arDoctorName != null and ybAppealResultDeductimplementView.arDoctorName != ''">
+            and art.doctorCode in (select personCode from yb_person where personName = #{ ybAppealResultDeductimplementView.arDoctorName})
         </if>
         where
         <if test="ybAppealResultDeductimplementView.applyDateStr != null and ybAppealResultDeductimplementView.applyDateStr != ''">
@@ -446,41 +428,40 @@
             and rrd.dataType=#{ ybAppealResultDeductimplementView.dataType}
         </if>
         and rrd.id not in(
-        select ard.id from yb_appeal_result_deductimplement ard where
-        <if test="ybAppealResultDeductimplementView.applyDateStr != null and ybAppealResultDeductimplementView.applyDateStr != ''">
-            ard.applyDateStr=#{ ybAppealResultDeductimplementView.applyDateStr}
-        </if>
-        <if test="ybAppealResultDeductimplementView.applyDateFrom!= null">
-            ard.applyDate <![CDATA[ >= ]]>  #{ybAppealResultDeductimplementView.applyDateFrom}
-        </if>
-        <if test="ybAppealResultDeductimplementView.applyDateTo!= null">
-            AND ard.applyDate <![CDATA[ <= ]]>  #{ybAppealResultDeductimplementView.applyDateTo}
-        </if>
-        <if test="ybAppealResultDeductimplementView.areaType != null">
-            and ard.areaType=#{ ybAppealResultDeductimplementView.areaType}
-        </if>
-        <if test="ybAppealResultDeductimplementView.dataType != null">
-            and ard.dataType=#{ ybAppealResultDeductimplementView.dataType}
-        </if>
+            select ard.resetDataId from yb_appeal_result_deductimplement ard where
+            <if test="ybAppealResultDeductimplementView.applyDateStr != null and ybAppealResultDeductimplementView.applyDateStr != ''">
+                ard.applyDateStr=#{ ybAppealResultDeductimplementView.applyDateStr}
+            </if>
+            <if test="ybAppealResultDeductimplementView.applyDateFrom!= null">
+                ard.applyDate <![CDATA[ >= ]]>  #{ybAppealResultDeductimplementView.applyDateFrom}
+            </if>
+            <if test="ybAppealResultDeductimplementView.applyDateTo!= null">
+                AND ard.applyDate <![CDATA[ <= ]]>  #{ybAppealResultDeductimplementView.applyDateTo}
+            </if>
+            <if test="ybAppealResultDeductimplementView.areaType != null">
+                and ard.areaType=#{ ybAppealResultDeductimplementView.areaType}
+            </if>
+            <if test="ybAppealResultDeductimplementView.dataType != null">
+                and ard.dataType=#{ ybAppealResultDeductimplementView.dataType}
+            </if>
         )
-        <if test="ybAppealResultDeductimplementView.dataType != null and ybAppealResultDeductimplementView.dataType == 0 and ybAppealResultDeductimplementView.currencyField!= null and ybAppealResultDeductimplementView.currencyField != ''">
-            and (rrd.serialNo like concat('%', #{ ybAppealResultDeductimplementView.currencyField} ,'%')
-            or rrd.billNo like concat('%', #{ ybAppealResultDeductimplementView.currencyField} ,'%')
-            or rrd.projectCode like concat('%', #{ ybAppealResultDeductimplementView.currencyField} ,'%')
-            or rrd.projectName like concat('%', #{ ybAppealResultDeductimplementView.currencyField} ,'%')
-            or rrd.ruleName like concat('%', #{ ybAppealResultDeductimplementView.currencyField} ,'%'))
+        <if test="keyField == 'serialNo' and ybAppealResultDeductimplementView.currencyField != null and ybAppealResultDeductimplementView.currencyField != ''">
+            and rrd.serialNo = #{ ybAppealResultDeductimplementView.currencyField}
         </if>
-        <if test="ybAppealResultDeductimplementView.dataType != null and ybAppealResultDeductimplementView.dataType == 1 and ybAppealResultDeductimplementView.currencyField!= null and ybAppealResultDeductimplementView.currencyField != ''">
-            and (rrd.serialNo like concat('%', #{ ybAppealResultDeductimplementView.currencyField} ,'%')
-            or rrd.billNo like concat('%', #{ ybAppealResultDeductimplementView.currencyField} ,'%')
-            or rrd.ruleName like concat('%', #{ ybAppealResultDeductimplementView.currencyField} ,'%'))
+        <if test="keyField == 'proposalCode' and ybAppealResultDeductimplementView.currencyField != null and ybAppealResultDeductimplementView.currencyField != ''">
+            and rrd.proposalCode = #{ ybAppealResultDeductimplementView.currencyField}
         </if>
-        <if test="ybAppealResultDeductimplementView.dataType == null and ybAppealResultDeductimplementView.currencyField!= null and ybAppealResultDeductimplementView.currencyField != ''">
-            and (rrd.serialNo like concat('%', #{ ybAppealResultDeductimplementView.currencyField} ,'%')
-            or rrd.billNo like concat('%', #{ ybAppealResultDeductimplementView.currencyField} ,'%')
-            or rrd.projectCode like concat('%', #{ ybAppealResultDeductimplementView.currencyField} ,'%')
-            or rrd.projectName like concat('%', #{ ybAppealResultDeductimplementView.currencyField} ,'%')
-            or rrd.ruleName like concat('%', #{ ybAppealResultDeductimplementView.currencyField} ,'%'))
+        <if test="keyField == 'projectCode' and ybAppealResultDeductimplementView.currencyField != null and ybAppealResultDeductimplementView.currencyField != ''">
+            and rrd.projectCode = #{ ybAppealResultDeductimplementView.currencyField}
+        </if>
+        <if test="keyField == 'projectName' and ybAppealResultDeductimplementView.currencyField != null and ybAppealResultDeductimplementView.currencyField != ''">
+            and rrd.projectName = #{ ybAppealResultDeductimplementView.currencyField}
+        </if>
+        <if test="keyField == 'ruleName' and ybAppealResultDeductimplementView.currencyField != null and ybAppealResultDeductimplementView.currencyField != ''">
+            and rrd.ruleName = #{ ybAppealResultDeductimplementView.currencyField}
+        </if>
+        <if test="keyField == 'orderNumber' and ybAppealResultDeductimplementView.currencyField != null and ybAppealResultDeductimplementView.currencyField != ''">
+            and rrd.orderNumber = #{ ybAppealResultDeductimplementView.currencyField}
         </if>
 
     </select>
@@ -493,14 +474,11 @@
         yb_reconsider_reset_data rrd
         INNER JOIN yb_appeal_result art ON
         art.relatelDataId = rrd.relatelDataId
-        and art.dataType = rrd.dataType
-        and art.areaType=#{ ybAppealResultDeductimplementView.areaType}
-        AND art.state = 2
-        <if test="ybAppealResultDeductimplementView.dataType != null">
-            and art.dataType=#{ ybAppealResultDeductimplementView.dataType}
-        </if>
         <if test="ybAppealResultDeductimplementView.arDoctorCode != null and ybAppealResultDeductimplementView.arDoctorCode != ''">
             and art.doctorCode=#{ ybAppealResultDeductimplementView.arDoctorCode}
+        </if>
+        <if test="ybAppealResultDeductimplementView.arDoctorName != null and ybAppealResultDeductimplementView.arDoctorName != ''">
+            and art.doctorCode in (select personCode from yb_person where personName = #{ ybAppealResultDeductimplementView.arDoctorName})
         </if>
         where
         <if test="ybAppealResultDeductimplementView.pid != null and ybAppealResultDeductimplementView.pid != ''">
@@ -516,41 +494,40 @@
             and rrd.dataType=#{ ybAppealResultDeductimplementView.dataType}
         </if>
         and rrd.id not in(
-        select ard.id from yb_appeal_result_deductimplement ard where
-        <if test="ybAppealResultDeductimplementView.applyDateStr != null and ybAppealResultDeductimplementView.applyDateStr != ''">
-            ard.applyDateStr=#{ ybAppealResultDeductimplementView.applyDateStr}
-        </if>
-        <if test="ybAppealResultDeductimplementView.applyDateFrom!= null">
-            ard.applyDate <![CDATA[ >= ]]>  #{ybAppealResultDeductimplementView.applyDateFrom}
-        </if>
-        <if test="ybAppealResultDeductimplementView.applyDateTo!= null">
-            AND ard.applyDate <![CDATA[ <= ]]>  #{ybAppealResultDeductimplementView.applyDateTo}
-        </if>
-        <if test="ybAppealResultDeductimplementView.areaType != null">
-            and ard.areaType=#{ ybAppealResultDeductimplementView.areaType}
-        </if>
-        <if test="ybAppealResultDeductimplementView.dataType != null">
-            and ard.dataType=#{ ybAppealResultDeductimplementView.dataType}
-        </if>
+        select ard.resetDataId from yb_appeal_result_deductimplement ard where
+            <if test="ybAppealResultDeductimplementView.applyDateStr != null and ybAppealResultDeductimplementView.applyDateStr != ''">
+                ard.applyDateStr=#{ ybAppealResultDeductimplementView.applyDateStr}
+            </if>
+            <if test="ybAppealResultDeductimplementView.applyDateFrom!= null">
+                ard.applyDate <![CDATA[ >= ]]>  #{ybAppealResultDeductimplementView.applyDateFrom}
+            </if>
+            <if test="ybAppealResultDeductimplementView.applyDateTo!= null">
+                AND ard.applyDate <![CDATA[ <= ]]>  #{ybAppealResultDeductimplementView.applyDateTo}
+            </if>
+            <if test="ybAppealResultDeductimplementView.areaType != null">
+                and ard.areaType=#{ ybAppealResultDeductimplementView.areaType}
+            </if>
+            <if test="ybAppealResultDeductimplementView.dataType != null">
+                and ard.dataType=#{ ybAppealResultDeductimplementView.dataType}
+            </if>
         )
-        <if test="ybAppealResultDeductimplementView.dataType != null and ybAppealResultDeductimplementView.dataType == 0 and ybAppealResultDeductimplementView.currencyField!= null and ybAppealResultDeductimplementView.currencyField != ''">
-            and (rrd.serialNo like concat('%', #{ ybAppealResultDeductimplementView.currencyField} ,'%')
-            or rrd.billNo like concat('%', #{ ybAppealResultDeductimplementView.currencyField} ,'%')
-            or rrd.projectCode like concat('%', #{ ybAppealResultDeductimplementView.currencyField} ,'%')
-            or rrd.projectName like concat('%', #{ ybAppealResultDeductimplementView.currencyField} ,'%')
-            or rrd.ruleName like concat('%', #{ ybAppealResultDeductimplementView.currencyField} ,'%'))
+        <if test="keyField == 'serialNo' and ybAppealResultDeductimplementView.currencyField != null and ybAppealResultDeductimplementView.currencyField != ''">
+            and rrd.serialNo = #{ ybAppealResultDeductimplementView.currencyField}
         </if>
-        <if test="ybAppealResultDeductimplementView.dataType != null and ybAppealResultDeductimplementView.dataType == 1 and ybAppealResultDeductimplementView.currencyField!= null and ybAppealResultDeductimplementView.currencyField != ''">
-            and (rrd.serialNo like concat('%', #{ ybAppealResultDeductimplementView.currencyField} ,'%')
-            or rrd.billNo like concat('%', #{ ybAppealResultDeductimplementView.currencyField} ,'%')
-            or rrd.ruleName like concat('%', #{ ybAppealResultDeductimplementView.currencyField} ,'%'))
+        <if test="keyField == 'proposalCode' and ybAppealResultDeductimplementView.currencyField != null and ybAppealResultDeductimplementView.currencyField != ''">
+            and rrd.proposalCode = #{ ybAppealResultDeductimplementView.currencyField}
         </if>
-        <if test="ybAppealResultDeductimplementView.dataType == null and ybAppealResultDeductimplementView.currencyField!= null and ybAppealResultDeductimplementView.currencyField != ''">
-            and (rrd.serialNo like concat('%', #{ ybAppealResultDeductimplementView.currencyField} ,'%')
-            or rrd.billNo like concat('%', #{ ybAppealResultDeductimplementView.currencyField} ,'%')
-            or rrd.projectCode like concat('%', #{ ybAppealResultDeductimplementView.currencyField} ,'%')
-            or rrd.projectName like concat('%', #{ ybAppealResultDeductimplementView.currencyField} ,'%')
-            or rrd.ruleName like concat('%', #{ ybAppealResultDeductimplementView.currencyField} ,'%'))
+        <if test="keyField == 'projectCode' and ybAppealResultDeductimplementView.currencyField != null and ybAppealResultDeductimplementView.currencyField != ''">
+            and rrd.projectCode = #{ ybAppealResultDeductimplementView.currencyField}
+        </if>
+        <if test="keyField == 'projectName' and ybAppealResultDeductimplementView.currencyField != null and ybAppealResultDeductimplementView.currencyField != ''">
+            and rrd.projectName = #{ ybAppealResultDeductimplementView.currencyField}
+        </if>
+        <if test="keyField == 'ruleName' and ybAppealResultDeductimplementView.currencyField != null and ybAppealResultDeductimplementView.currencyField != ''">
+            and rrd.ruleName = #{ ybAppealResultDeductimplementView.currencyField}
+        </if>
+        <if test="keyField == 'orderNumber' and ybAppealResultDeductimplementView.currencyField != null and ybAppealResultDeductimplementView.currencyField != ''">
+            and rrd.orderNumber = #{ ybAppealResultDeductimplementView.currencyField}
         </if>
 
     </select>

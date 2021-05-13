@@ -220,6 +220,14 @@ export default {
       gotoVisiable: false
     }
   },
+  // watch: {
+  //   'user.areaType': {
+  //     handler (newValue, oldValue) {
+  //       console.log('旧' + oldValue + ',新' + newValue)
+  //       this.searchPage()
+  //     }
+  //   }
+  // },
   computed: {
     columns () {
       return [{
@@ -234,60 +242,12 @@ export default {
       {
         title: '复议年月',
         dataIndex: 'applyDateStr',
-        width: 100
+        width: 90
       },
       {
         title: '操作员',
         dataIndex: 'operatorName',
-        width: 150
-      },
-      {
-        title: '第一版结束日期',
-        dataIndex: 'endDateOne',
-        customRender: (text, row, index) => {
-          if (text !== '' && text !== null) {
-            if (isNaN(text) && !isNaN(Date.parse(text))) {
-              return moment(text).format(this.tableFormat1)
-            } else {
-              return text
-            }
-          } else {
-            return text
-          }
-        },
-        width: 145
-      },
-      {
-        title: '第二版结束日期',
-        dataIndex: 'endDateTwo',
-        customRender: (text, row, index) => {
-          if (text !== '' && text !== null) {
-            if (isNaN(text) && !isNaN(Date.parse(text))) {
-              return moment(text).format(this.tableFormat1)
-            } else {
-              return text
-            }
-          } else {
-            return text
-          }
-        },
-        width: 145
-      },
-      {
-        title: '操作时间',
-        dataIndex: 'createTime',
-        customRender: (text, row, index) => {
-          if (text !== '' && text !== null) {
-            if (isNaN(text) && !isNaN(Date.parse(text))) {
-              return moment(text).format(this.tableFormat)
-            } else {
-              return text
-            }
-          } else {
-            return text
-          }
-        },
-        width: 115
+        width: 130
       },
       {
         title: '状态',
@@ -312,12 +272,94 @@ export default {
               return text
           }
         },
-        width: 100
+        width: 80
+      },
+      {
+        title: '第一版结束日期',
+        dataIndex: 'endDateOne',
+        customRender: (text, row, index) => {
+          if (text !== '' && text !== null) {
+            if (isNaN(text) && !isNaN(Date.parse(text))) {
+              return moment(text).format(this.tableFormat1)
+            } else {
+              return text
+            }
+          } else {
+            return text
+          }
+        },
+        width: 135
+      },
+      {
+        title: '第一版确认日期',
+        dataIndex: 'enableDateOne',
+        customRender: (text, row, index) => {
+          if (text !== '' && text !== null) {
+            if (isNaN(text) && !isNaN(Date.parse(text))) {
+              return moment(text).format(this.tableFormat)
+            } else {
+              return text
+            }
+          } else {
+            return text
+          }
+        },
+        width: 135
+      },
+      {
+        title: '第二版结束日期',
+        dataIndex: 'endDateTwo',
+        customRender: (text, row, index) => {
+          if (text !== '' && text !== null) {
+            if (isNaN(text) && !isNaN(Date.parse(text))) {
+              return moment(text).format(this.tableFormat1)
+            } else {
+              return text
+            }
+          } else {
+            return text
+          }
+        },
+        width: 135
+      },
+      {
+        title: '第二版确认日期',
+        dataIndex: 'enableDateTwo',
+        customRender: (text, row, index) => {
+          if (text !== '' && text !== null) {
+            if (isNaN(text) && !isNaN(Date.parse(text))) {
+              return moment(text).format(this.tableFormat)
+            } else {
+              return text
+            }
+          } else {
+            return text
+          }
+        },
+        width: 135
+      },
+      {
+        title: '操作员',
+        dataIndex: 'createTime',
+        customRender: (text, row, index) => {
+          if (text !== '' && text !== null) {
+            if (isNaN(text) && !isNaN(Date.parse(text))) {
+              return moment(text).format(this.tableFormat)
+            } else {
+              return text
+            }
+          } else {
+            return text
+          }
+        },
+        width: 115
       },
       {
         title: '操作',
         dataIndex: 'operation',
-        scopedSlots: { customRender: 'operation' }
+        scopedSlots: { customRender: 'operation' },
+        fixed: 'right',
+        width: 300
       }]
     }
   },

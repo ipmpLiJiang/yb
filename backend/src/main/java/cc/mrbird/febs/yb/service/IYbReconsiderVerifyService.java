@@ -46,5 +46,9 @@ public interface IYbReconsiderVerifyService extends IService<YbReconsiderVerify>
 
     int findReconsiderVerifyResetCheckCounts(String applyDateStr,Integer areaType);
 
+    int findReconsiderVerifyApplyDataCheckCounts(String pid,String applyDateStr,Integer areaType,Integer typeno);
+
     void importReconsiderDataVerifys(YbReconsiderApply reconsiderApply, int dataType, int typeno, List<YbReconsiderVerify> verifyList);
+
+    String createEndJobState(String applyDateStr, Integer areaType,int[] jobTypeList);
 }

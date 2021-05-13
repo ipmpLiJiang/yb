@@ -422,7 +422,28 @@ public class YbReconsiderApplyServiceImpl extends ServiceImpl<YbReconsiderApplyM
         return msg;
     }
 
+    @Override
+    public List<YbReconsiderApply> findReconsiderApplyByApplyDateStrs(List<String> listStr, Integer areaType, Integer resetState) {
+        LambdaQueryWrapper<YbReconsiderApply> wrapper = new LambdaQueryWrapper<>();
+        wrapper.in(YbReconsiderApply::getApplyDateStr, listStr);
+        wrapper.eq(YbReconsiderApply::getAreaType, areaType);
+        if (resetState != null) {
+            wrapper.eq(YbReconsiderApply::getResetState, 1);
+        }
+        wrapper.eq(YbReconsiderApply::getIsDeletemark, 1);
+        return this.list(wrapper);
+    }
 
+    /**
+     * 核对发送和申诉变更短信内容
+     *
+     * @param applyDateStr 年月
+     * @param enableDate   确认截止日期
+     * @param areaType     院区
+     * @param typeno       版本类型
+     * @param isChange     是否申诉变更
+     * @return 短信内容
+     */
     @Override
     public String getSendMessage(String applyDateStr, Date enableDate, Integer areaType, int typeno, boolean isChange) {
         YbReconsiderApply entity = this.findReconsiderApplyByApplyDateStrs(applyDateStr, areaType);
@@ -455,17 +476,60 @@ public class YbReconsiderApplyServiceImpl extends ServiceImpl<YbReconsiderApplyM
         } else {
             ssm = "您有其他医生转发的医保违规项目需复议，此次复议截止时间是" + date1 + "，请及时登录医保管理系统处理。" + wangz;
         }
-        return ssm;
+        return ssm + this.areaMsg(areaType);
     }
 
+    /**
+     * 复议截止当天短信内容
+     *
+     * @param applyDateStr 年月
+     * @param endDate      复议截止日期
+     * @param typeno       版本类型
+     * @param areaType     院区
+     * @return 短信内容
+     */
     @Override
-    public String getSendMessage(String applyDateStr) {
+    public String getSendMessage(String applyDateStr, Date endDate, Integer typeno, Integer areaType) {
+        applyDateStr = applyDateStr.replace("-", "年");
+        String wangz = febsProperties.getSmsWebsite();
+        String ssm = "";
+        if (typeno == YbDefaultValue.TYPENO_1) {
+            ssm = "第一版";
+        } else {
+            ssm = "第二版";
+        }
+        Calendar now = Calendar.getInstance();
+        now.setTime(endDate);
+        String fen = "" + now.get(Calendar.MINUTE);
+        if (fen.length() == 1) {
+            fen = "0" + fen;
+        }
+        String shi = "" + now.get(Calendar.HOUR_OF_DAY);
+        ssm = "武汉市医保" + applyDateStr + "月" + ssm + "复议将于今天" + shi + ":" + fen + "截止，您尚有未处理的扣款，请登陆系统及时查看并处理。" + wangz;
+        return ssm + this.areaMsg(areaType);
+    }
+
+    /**
+     * 剔除短信内容
+     *
+     * @param applyDateStr 年月
+     * @param areaType     院区
+     * @return 短信内容
+     */
+    @Override
+    public String getSendMessage(String applyDateStr, Integer areaType) {
 //        YbReconsiderApply entity = this.findReconsiderApplyByApplyDateStrs(applyDateStr);
         applyDateStr = applyDateStr.replace("-", "年");
         String wangz = febsProperties.getSmsWebsite();
 //        String ssm = "武汉市医保" + applyDateStr + "月复议结果已反馈，请登录医保管理系统-复议结果查询界面进行查看。" + wangz;
         String ssm = "医保中心已反馈武汉市医保" + applyDateStr + "复议结果，请登录医保管理系统-复议结果查询界面进行查看，" + wangz + "选择时间，点搜索即可。";
-        return ssm;
+
+        return ssm + this.areaMsg(areaType);
+    }
+
+    public String areaMsg(Integer areaType) {
+        String areaName = iComConfiguremanageService.getConfigAreaName(areaType);
+        return "院区请选择“" + areaName + "”。（" + areaName + "）";
     }
 
     @Override

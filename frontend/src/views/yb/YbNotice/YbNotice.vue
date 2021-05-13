@@ -114,6 +114,14 @@
           ></a-icon>
           <a-divider type="vertical" />
           <a-icon
+            type="message"
+            theme="twoTone"
+            :twoToneColor="record.state === 2 ? '#4a9ff5':'#D3D3D3'"
+            @click="record.state==2?openSms(record):null"
+            title="发短信"
+          ></a-icon>
+          <a-divider type="vertical" />
+          <a-icon
             v-hasPermission="['ybNotice:delete']"
             type="delete"
             theme="twoTone"
@@ -150,6 +158,13 @@
       :lookVisiable="lookVisiable"
     >
     </ybNotice-look>
+    <!-- 查看短信 -->
+    <ybNotice-sms
+      ref="ybNoticeSms"
+      @close="handleSmsClose"
+      :smsVisiable="smsVisiable"
+    >
+    </ybNotice-sms>
     <template>
       <div>
         <a-modal width="60%" :maskClosable="false" :footer="null" v-model="adminTypeVisible" title="管理员类型维护" @cancel="handleOk">
@@ -168,6 +183,7 @@
 import moment from 'moment'
 import YbNoticeEdit from './YbNoticeEdit'
 import YbNoticeLook from './YbNoticeLook'
+import YbNoticeSms from './YbNoticeSms'
 import ComTypeData from '../../com/ComType/ComTypeData'
 const formItemLayout = {
   labelCol: { span: 8 },
@@ -175,7 +191,7 @@ const formItemLayout = {
 }
 export default {
   name: 'YbNotice',
-  components: { YbNoticeEdit, YbNoticeLook, ComTypeData },
+  components: { YbNoticeEdit, YbNoticeLook, ComTypeData, YbNoticeSms },
   data () {
     return {
       advanced: false,
@@ -201,6 +217,7 @@ export default {
       selectAdminTypeDataSource: [],
       editVisiable: false,
       lookVisiable: false,
+      smsVisiable: false,
       adminTypeVisible: false,
       loading: false,
       ctType: 1,
@@ -281,7 +298,7 @@ export default {
         dataIndex: 'operation',
         scopedSlots: { customRender: 'operation' },
         fixed: 'right',
-        width: 140
+        width: 220
       }]
     }
   },
@@ -328,6 +345,13 @@ export default {
     },
     handleEditClose () {
       this.editVisiable = false
+    },
+    openSms (record) {
+      this.smsVisiable = true
+      this.$refs.ybNoticeSms.searchPage(record)
+    },
+    handleSmsClose () {
+      this.smsVisiable = false
     },
     findComType () {
       let ctParams = {ctType: this.ctType}

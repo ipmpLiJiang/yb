@@ -7,7 +7,7 @@
       <div style="text-align:center;margin-bottom:20px">
         <a-row justify="center"
           align="middle">
-          <a-col :span=6>
+          <a-col :span=5>
               复议年月：
               <a-month-picker
                 placeholder="请输入复议年月"
@@ -27,8 +27,17 @@
               </a-select-option>
             </a-select>
           </a-col>
-          <a-col :span=6>
-            <a-input-search placeholder="请输入关键字" v-model="searchText" style="width: 200px" enter-button @search="searchTable" />
+          <a-col :span=8>
+            <a-select v-model="searchItem.keyField" style="width: 115px">
+              <a-select-option
+              v-for="d in searchDropDataSource"
+              :key="d.value"
+              >
+              {{ d.text }}
+              </a-select-option>
+            </a-select>
+            =
+            <a-input-search placeholder="请输入关键字" v-model="searchItem.value" style="width: 170px" enter-button @search="searchTable" />
           </a-col>
           <a-col :span=3 v-show="tableSelectKey!=1?true:false">
             <a-button
@@ -59,7 +68,7 @@
             <ybAppealManage-accept
               ref="ybAppealManageAccept"
               :applyDate='searchApplyDate'
-              :searchText='searchText'
+              :searchItem='searchItem'
               :searchTypeno='searchTypeno'
               @look="look"
               @onHistoryLook="onHistoryLook"
@@ -75,7 +84,7 @@
           <!-- 已拒绝 -->
             <ybAppealManage-refused
               ref="ybAppealManageRefused"
-              :searchText='searchText'
+              :searchItem='searchItem'
               :applyDate='searchApplyDate'
               :searchTypeno='searchTypeno'
               @onHistoryLook="onHistoryLook"
@@ -91,7 +100,7 @@
           <!-- 待申诉 -->
           <ybAppealManage-stayed
               ref="ybAppealManageStayed"
-              :searchText='searchText'
+              :searchItem='searchItem'
               :applyDate='searchApplyDate'
               :searchTypeno='searchTypeno'
               @onHistoryLook="onHistoryLook"
@@ -107,7 +116,7 @@
           <!-- 已申诉 -->
           <ybAppealManage-completed
               ref="ybAppealManageCompleted"
-              :searchText='searchText'
+              :searchItem='searchItem'
               :applyDate='searchApplyDate'
               :searchTypeno='searchTypeno'
               @onHistoryLook="onHistoryLook"
@@ -123,7 +132,7 @@
           <!-- 未申诉 -->
           <ybAppealManage-overdue
               ref="ybAppealManageOverdue"
-              :searchText='searchText'
+              :searchItem='searchItem'
               :applyDate='searchApplyDate'
               :searchTypeno='searchTypeno'
               @onHistoryLook="onHistoryLook"
@@ -174,7 +183,15 @@ export default {
       ybAppealManage: {},
       lookVisiable: false,
       historyVisiable: false,
-      searchText: '',
+      searchItem: {keyField: 'serialNo', value: ''},
+      searchDropDataSource: [
+        {text: '交易流水号', value: 'serialNo'},
+        {text: '项目编码', value: 'projectCode'},
+        {text: '项目名称', value: 'projectName'},
+        {text: '医生工号', value: 'readyDoctorCode'},
+        {text: '医生姓名', value: 'readyDoctorName'},
+        {text: '序号', value: 'orderNumber'}
+      ],
       tableSelectKey: '1',
       searchTypeno: 1,
       user: this.$store.state.account.user,

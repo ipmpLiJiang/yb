@@ -39,6 +39,8 @@ public interface IYbAppealResultService extends IService<YbAppealResult> {
 
     List<YbResultDownLoad> findAppealResultGroupSumDepts(YbAppealResultView ybAppealResultView);
 
+    List<YbResultDownLoad> findAppealResultNotDepts(YbAppealResultView ybAppealResultView);
+
     void updateAppealResulResetDatas(String applyDateStr, Long resetPersonId, String resetPersonName);
 
     List<YbAppealResult> findAppealResulDataByResets(String applyDateStr,Integer areaType, Integer dataType);

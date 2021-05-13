@@ -153,6 +153,7 @@ export default {
       loading: false,
       formItemLayout,
       form: this.$form.createForm(this),
+      areaType: undefined,
       checkPersonType: true,
       ybPriorityLevel: {},
       isDefaultCheck: false,
@@ -206,7 +207,7 @@ export default {
       this.ybPriorityLevel.deptCode = item.value
       this.ybPriorityLevel.deptName = item.text
     },
-    setFormValues () {
+    setFormValues (areaType) {
       // this.$refs.inputSelectDept.dataSource = []
       this.form.getFieldDecorator('deptState')
       this.form.getFieldDecorator('personType')
@@ -217,6 +218,7 @@ export default {
         isFixDept: false
       })
       this.isDefaultCheck = false
+      this.areaType = areaType
     },
     handleSubmit () {
       if (this.ybPriorityLevel.doctorCode !== '' && this.ybPriorityLevel.doctorCode !== undefined) {
@@ -246,6 +248,7 @@ export default {
           if (this.ybReconsiderPriorityLevel.doctorCode === '') {
             this.ybReconsiderPriorityLevel.doctorName = ''
           }
+          this.ybReconsiderPriorityLevel.areaType = this.areaType
           this.$post('ybReconsiderPriorityLevel', {
             ...this.ybReconsiderPriorityLevel
           }).then(() => {

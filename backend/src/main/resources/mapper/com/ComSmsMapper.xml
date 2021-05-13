@@ -19,11 +19,15 @@
                     <result column="CREATE_TIME" property="createTime"/>
                     <result column="CREATE_USER_ID" property="createUserId"/>
                     <result column="MODIFY_USER_ID" property="modifyUserId"/>
+            <result column="areaType" property="areaType"/>
+            <result column="applyDateStr" property="applyDateStr"/>
+            <result column="typeno" property="typeno"/>
+            <result column="refTableId" property="refTableId"/>
         </resultMap>
 
         <!-- 通用查询结果列 -->
         <sql id="Base_Column_List">
-        id, sendcode, sendname, mobile, sendType, operatorId, operatorName, sendcontent, COMMENTS, STATE, IS_DELETEMARK, MODIFY_TIME, CREATE_TIME, CREATE_USER_ID, MODIFY_USER_ID
+        id, sendcode, sendname, mobile, sendType, operatorId, operatorName, sendcontent, COMMENTS, STATE, IS_DELETEMARK, MODIFY_TIME, CREATE_TIME, CREATE_USER_ID, MODIFY_USER_ID,areaType,applyDateStr,typeno,refTableId
     </sql>
     <update id="updateComSms" parameterType="cc.mrbird.febs.com.entity.ComSms">
         update com_sms
@@ -42,6 +46,10 @@
 <if test="createTime != null">CREATE_TIME=#{createTime},</if>
 <if test="createUserId != null">CREATE_USER_ID=#{createUserId},</if>
 <if test="modifyUserId != null">MODIFY_USER_ID=#{modifyUserId},</if>
+            <if test="areaType != null">areaType=#{areaType},</if>
+            <if test="applyDateStr != null">applyDateStr=#{applyDateStr},</if>
+            <if test="typeno != null">typeno=#{typeno},</if>
+            <if test="refTableId != null">refTableId=#{refTableId},</if>
         </trim>
                 where id=#{id}
 
@@ -50,6 +58,8 @@
         select  *  from com_sms
         where  1=1
             <if test="comSms.id != null and comSms.id != ''"> and id =#{ comSms.id} </if>
+        <if test="comSms.applyDateStr != null and comSms.applyDateStr != ''"> and applyDateStr =#{ comSms.applyDateStr} </if>
+        <if test="comSms.typeno != null"> and typeno =#{ comSms.typeno} </if>
             <if test="comSms.sendcode != null and comSms.sendcode != ''"> and sendcode like concat('%', #{ comSms.sendcode} ,'%')</if>
             <if test="comSms.sendname != null and comSms.sendname != ''"> and sendname like concat('%', #{ comSms.sendname} ,'%')</if>
             <if test="comSms.mobile != null and comSms.mobile != ''"> and mobile like concat('%', #{ comSms.mobile} ,'%')</if>
@@ -58,6 +68,8 @@
             <if test="comSms.sendcontent != null and comSms.sendcontent != ''"> and sendcontent like concat('%', #{ comSms.sendcontent} ,'%')</if>
             <if test="comSms.comments != null and comSms.comments != ''"> and COMMENTS like concat('%', #{ comSms.comments} ,'%')</if>
         <if test="comSms.state != null"> and STATE =#{ comSms.state} </if>
+        <if test="comSms.areaType != null"> and areaType =#{ comSms.areaType} </if>
+        <if test="comSms.refTableId != null and comSms.refTableId != ''"> and refTableId =#{ comSms.refTableId} </if>
         <if test="comSms.isDeletemark != null"> and IS_DELETEMARK =#{ comSms.isDeletemark} </if>
         <if test="comSms.modifyTimeFrom!= null">
             AND comSms.MODIFY_TIME <![CDATA[ >= ]]>  modifyTimeFrom}
@@ -77,10 +89,14 @@
         select  *  from com_sms
         where  IS_DELETEMARK = 1
         <if test="comSms.id != null and comSms.id != ''"> and id =#{ comSms.id} </if>
+        <if test="comSms.applyDateStr != null and comSms.applyDateStr != ''"> and applyDateStr = #{ comSms.applyDateStr} </if>
+        <if test="comSms.areaType != null"> and areaType =#{ comSms.areaType} </if>
+        <if test="comSms.typeno != null"> and typeno =#{ comSms.typeno} </if>
         <if test="comSms.sendcode != null and comSms.sendcode != ''"> and sendcode = #{ comSms.sendcode} </if>
         <if test="comSms.sendname != null and comSms.sendname != ''"> and sendname = #{ comSms.sendname} </if>
         <if test="comSms.mobile != null and comSms.mobile != ''"> and mobile = #{ comSms.mobile} </if>
         <if test="comSms.sendType != null"> and sendType =#{ comSms.sendType} </if>
+        <if test="comSms.refTableId != null and comSms.refTableId != ''"> and refTableId =#{ comSms.refTableId} </if>
         <if test="comSms.operatorName != null and comSms.operatorName != ''"> and operatorName = #{ comSms.operatorName} </if>
         <if test="comSms.sendcontent != null and comSms.sendcontent != ''"> and sendcontent like concat('%', #{ comSms.sendcontent} ,'%')</if>
         <if test="comSms.comments != null and comSms.comments != ''"> and COMMENTS like concat('%', #{ comSms.comments} ,'%')</if>
@@ -109,9 +125,13 @@
             IS_DELETEMARK = 1
             <if test="comSms.id != null and comSms.id != ''"> and id =#{ comSms.id} </if>
             <if test="comSms.sendcode != null and comSms.sendcode != ''"> and sendcode = #{ comSms.sendcode} </if>
+            <if test="comSms.applyDateStr != null and comSms.applyDateStr != ''"> and applyDateStr =#{ comSms.applyDateStr} </if>
             <if test="comSms.sendType != null"> and sendType =#{ comSms.sendType} </if>
+            <if test="comSms.areaType != null"> and areaType =#{ comSms.areaType} </if>
+            <if test="comSms.typeno != null"> and typeno =#{ comSms.typeno} </if>
             <if test="comSms.state != null"> and STATE =#{ comSms.state} </if>
             <if test="comSms.mobile != null and comSms.mobile != ''"> and mobile = #{ comSms.mobile} </if>
+            <if test="comSms.refTableId != null and comSms.refTableId != ''"> and refTableId =#{ comSms.refTableId} </if>
         ORDER BY
             CREATE_TIME desc
             LIMIT 1

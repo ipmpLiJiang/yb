@@ -25,6 +25,10 @@ public interface YbAppealResultViewMapper extends BaseMapper<YbAppealResultView>
 
         int findAppealResultCount( @Param("ybAppealResultView") YbAppealResultView ybAppealResultView);
 
+        IPage<YbAppealResultView> findAppealResultLikeView(Page page, @Param("ybAppealResultView") YbAppealResultView ybAppealResultView,@Param("keyField") String keyField);
+
+        int findAppealResultLikeCount( @Param("ybAppealResultView") YbAppealResultView ybAppealResultView,@Param("keyField") String keyField);
+
         IPage<YbAppealResultView> findAppealResultResetView(Page page, @Param("ybAppealResultView") YbAppealResultView ybAppealResultView);
 
         int findAppealResultResetCount( @Param("ybAppealResultView") YbAppealResultView ybAppealResultView);

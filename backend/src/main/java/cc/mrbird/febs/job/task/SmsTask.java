@@ -26,11 +26,26 @@ public class SmsTask {
     @Autowired
     IComSmsService iComSmsService;
 
-    public void sendSmsTask() {
-        iComSmsService.sendSms(ComSms.SENDTYPE_1);
-        iComSmsService.sendSms(ComSms.SENDTYPE_5);
-//        iComSmsService.sendSms(ComSms.SENDTYPE_6);
-        iComSmsService.sendSms(ComSms.SENDTYPE_7);
+    public void sendSmsTask(String params) {
+        if(params != null) {
+            int areaType = Integer.parseInt(params);
+            iComSmsService.sendSms(ComSms.SENDTYPE_1, areaType);
+            iComSmsService.sendSms(ComSms.SENDTYPE_5, areaType);
+//        iComSmsService.sendSms(ComSms.SENDTYPE_6,areaType);
+            iComSmsService.sendSms(ComSms.SENDTYPE_7, areaType);
+        }
+    }
+
+    public void sendSmsWarnTask(String params) {
+        if(params != null && params!=""){
+            String[] arr = params.split("\\|");
+            if(arr.length == 2) {
+                params = arr[0];
+                int areaType = Integer.parseInt(arr[1]);
+                //写方法
+                iComSmsService.sendAppealManageWarnSms(params,areaType);
+            }
+        }
     }
 
 }

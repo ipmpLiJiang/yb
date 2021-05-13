@@ -175,22 +175,22 @@ export default {
         width: 70
       },
       {
-        title: '意见书编码',
-        dataIndex: 'proposalCode',
+        title: '交易流水号',
+        dataIndex: 'serialNo',
         fixed: 'left',
-        width: 140
+        width: 150
       },
       {
         title: '项目编码',
         dataIndex: 'projectCode',
         fixed: 'left',
-        width: 120
+        width: 125
       },
       {
         title: '项目名称',
         dataIndex: 'projectName',
         fixed: 'left',
-        width: 160
+        width: 170
       },
       {
         title: '数量',
@@ -558,7 +558,9 @@ export default {
             applyDateStr: target.applyDateStr,
             orderNumber: target.orderNumber,
             orderNum: target.orderNum,
-            typeno: target.typeno}]
+            typeno: target.typeno,
+            areaType: this.user.areaType
+          }]
           this.verifyService(arrData)
         } else {
           this.$message.warning('未选择，参考复议科室 或 参考复议医生.')

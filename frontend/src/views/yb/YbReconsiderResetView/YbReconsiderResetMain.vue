@@ -79,7 +79,7 @@ export default {
         title: '交易流水号',
         dataIndex: 'serialNo',
         fixed: 'left',
-        width: 135
+        width: 150
       },
       {
         title: '单据号',
