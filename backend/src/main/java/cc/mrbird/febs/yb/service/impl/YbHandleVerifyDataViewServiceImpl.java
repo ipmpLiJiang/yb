@@ -47,7 +47,7 @@ public class YbHandleVerifyDataViewServiceImpl extends ServiceImpl<YbHandleVerif
     public IPage<YbHandleVerifyDataView> findYbHandleVerifyDataViews(QueryRequest request, YbHandleVerifyDataView ybHandleVerifyDataView) {
         try {
             Page<YbHandleVerifyDataView> page = new Page<>();
-            YbHandleVerify ybHandleVerify = iYbHandleVerifyService.findYbHandleVerifyApplyDateStr(ybHandleVerifyDataView.getApplyDateStr());
+            YbHandleVerify ybHandleVerify = iYbHandleVerifyService.findYbHandleVerifyApplyDateStr(ybHandleVerifyDataView.getApplyDateStr(),ybHandleVerifyDataView.getAreaType());
             if(ybHandleVerify!=null){
                 ybHandleVerifyDataView.setPid(ybHandleVerify.getId());
                 int count = this.baseMapper.findHandleVerifyDataCount(ybHandleVerifyDataView);

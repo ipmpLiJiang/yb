@@ -18,21 +18,42 @@ public class AppealManageTask {
     public void oneDate(String params) {
         if(params == null || params.equals("no")){
             params = "";
+        } else {
+            String[] arr = params.split("\\|");
+            if(arr.length == 2) {
+                params = arr[0];
+                int areaType = Integer.parseInt(arr[1]);
+                iYbReconsiderApplyService.updateApplyEndDateOne(params,areaType);
+            }
         }
-        iYbReconsiderApplyService.updateApplyEndDateOne(params);
+
     }
 
     public void twoDate(String params) {
         if(params == null || params.equals("no")){
             params = "";
+        } else {
+            String[] arr = params.split("\\|");
+            if(arr.length == 2) {
+                params = arr[0];
+                int areaType = Integer.parseInt(arr[1]);
+                iYbReconsiderApplyService.updateApplyEndDateTwo(params,areaType);
+            }
         }
-        iYbReconsiderApplyService.updateApplyEndDateTwo(params);
+
     }
 
     public void enableDate(String params) {
         if(params == null || params.equals("no")){
             params = "";
+        } else {
+            String[] arr = params.split("\\|");
+            if(arr.length == 2) {
+                params = arr[0];
+                int areaType = Integer.parseInt(arr[1]);
+
+                iYbReconsiderApplyService.updateEnableOverdue(params,areaType);
+            }
         }
-        iYbReconsiderApplyService.updateEnableOverdue(params);
     }
 }

@@ -90,7 +90,7 @@ public class YbReconsiderVerifyController extends BaseController {
     public void addYbReconsiderVerify(@Valid YbReconsiderVerify ybReconsiderVerify) throws FebsException {
         try {
             User currentUser = FebsUtil.getCurrentUser();
-            ybReconsiderVerify.setCreateUserId(currentUser.getUserId());
+//            ybReconsiderVerify.setCreateUserId(currentUser.getUserId());
             this.iYbReconsiderVerifyService.createYbReconsiderVerify(ybReconsiderVerify);
         } catch (Exception e) {
             message = "新增/按钮失败";
@@ -111,7 +111,7 @@ public class YbReconsiderVerifyController extends BaseController {
     public void updateYbReconsiderVerify(@Valid YbReconsiderVerify ybReconsiderVerify) throws FebsException {
         try {
             User currentUser = FebsUtil.getCurrentUser();
-            ybReconsiderVerify.setModifyUserId(currentUser.getUserId());
+//            ybReconsiderVerify.setModifyUserId(currentUser.getUserId());
             this.iYbReconsiderVerifyService.updateYbReconsiderVerify(ybReconsiderVerify);
         } catch (Exception e) {
             message = "修改失败";
@@ -293,7 +293,6 @@ public class YbReconsiderVerifyController extends BaseController {
                     wrapper.eq(YbReconsiderApplyData::getPid, reconsiderApply.getId());
                     wrapper.eq(YbReconsiderApplyData::getTypeno, typeno);
                     wrapper.eq(YbReconsiderApplyData::getDataType, dataType);
-                    wrapper.eq(YbReconsiderApplyData::getAreaType, areaType);
                     List<YbReconsiderApplyData> applyDataList = this.iYbReconsiderApplyDataService.list(wrapper);
 
                     if (applyDataList.size() > 0) {
@@ -332,9 +331,9 @@ public class YbReconsiderVerifyController extends BaseController {
                                             if (objMx.get(0).length >= 47) {
                                                 YbReconsiderInpatientfees queryRif = new YbReconsiderInpatientfees();
                                                 queryRif.setApplyDateStr(applyDateStr);
+                                                queryRif.setAreaType(areaType);
                                                 queryRif.setDataType(dataType);
                                                 queryRif.setTypeno(typeno);
-                                                queryRif.setAreaType(areaType);
                                                 List<YbReconsiderInpatientfees> rifList = this.iYbReconsiderInpatientfeesService.findReconsiderInpatientfeesList(queryRif);
                                                 for (int i = 1; i < objMx.size(); i++) {
                                                     YbReconsiderVerify rv = this.getReconsiderVerify(objMx, i, applyDateStr,areaType, currentUser, dataType, applyDataList, rifList);
@@ -458,10 +457,10 @@ public class YbReconsiderVerifyController extends BaseController {
                     ybReconsiderVerify.setVerifyDoctorCode(strDocCode);
                     ybReconsiderVerify.setVerifyDoctorName(strDocName);
 
-                    ybReconsiderVerify.setOperateDate(thisDate);//'操作日期'
-                    ybReconsiderVerify.setMatchDate(thisDate);//'匹配日期'
-                    ybReconsiderVerify.setMatchPersonId(currentUser.getUserId());//'匹配人代码'
-                    ybReconsiderVerify.setMatchPersonName(currentUser.getUsername());//'匹配人'
+//                    ybReconsiderVerify.setOperateDate(thisDate);//'操作日期'
+//                    ybReconsiderVerify.setMatchDate(thisDate);//'匹配日期'
+//                    ybReconsiderVerify.setMatchPersonId(currentUser.getUserId());//'匹配人代码'
+//                    ybReconsiderVerify.setMatchPersonName(currentUser.getUsername());//'匹配人'
 
                     ybReconsiderVerify.setApplyDateStr(applyDateStr);
                     ybReconsiderVerify.setTypeno(entity.getTypeno());
@@ -489,8 +488,8 @@ public class YbReconsiderVerifyController extends BaseController {
 
                     ybReconsiderVerify.setState(YbDefaultValue.VERIFYSTATE_1);//1 待审核、2已审核、3已发送
                     ybReconsiderVerify.setIsDeletemark(1);
-                    ybReconsiderVerify.setCreateUserId(currentUser.getUserId());
-                    ybReconsiderVerify.setCreateTime(thisDate);
+//                    ybReconsiderVerify.setCreateUserId(currentUser.getUserId());
+//                    ybReconsiderVerify.setCreateTime(thisDate);
                 }
             }
         }

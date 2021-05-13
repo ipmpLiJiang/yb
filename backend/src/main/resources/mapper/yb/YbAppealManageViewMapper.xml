@@ -298,7 +298,7 @@
         END isEnableDate,
         date_add(am.enableDate,INTERVAL -1 DAY) enableDate,
         am.STATE,
-        am.currencyField,
+        '' currencyField,
         am.sourceType,
         am.operateProcess,
         am.verifySendId,
@@ -324,8 +324,14 @@
         ra.id = #{ybAppealManageView.pid}
         where
         am.applyDateStr = #{ybAppealManageView.applyDateStr}
+        <if test="ybAppealManageView.areaType != null">
+            and am.areaType = #{ybAppealManageView.areaType}
+        </if>
         <if test="ybAppealManageView.readyDoctorCode != null and ybAppealManageView.readyDoctorCode != ''">
             and am.readyDoctorCode = #{ybAppealManageView.readyDoctorCode}
+        </if>
+        <if test="ybAppealManageView.orderDoctorCode != null and ybAppealManageView.orderDoctorCode != ''">
+            and am.orderDoctorCode = #{ybAppealManageView.orderDoctorCode}
         </if>
         <if test="ybAppealManageView.readyDeptName != null and ybAppealManageView.readyDeptName != ''">
             and am.readyDeptName = #{ybAppealManageView.readyDeptName}
@@ -344,12 +350,6 @@
         </if>
         <if test="ybAppealManageView.typeno != null and ybAppealManageView.typeno != 0 and ybAppealManageView.typeno!=3">
             and am.typeno =#{ ybAppealManageView.typeno}
-        </if>
-        <if test="ybAppealManageView.orderDoctorCode != null and ybAppealManageView.orderDoctorCode != ''">
-            and am.orderDoctorCode = #{ybAppealManageView.orderDoctorCode}
-        </if>
-        <if test="ybAppealManageView.areaType != null">
-            and am.areaType = #{ybAppealManageView.areaType}
         </if>
         <if test="appealConfireId != null">
             and am.readyDeptCode in(SELECT deptId FROM yb_appeal_confire_data where pid = #{ appealConfireId})
@@ -367,8 +367,14 @@
         am.applyDataId = ad.id and ad.pid = #{ybAppealManageView.pid}
         where
         am.applyDateStr = #{ybAppealManageView.applyDateStr}
+        <if test="ybAppealManageView.areaType != null">
+            and am.areaType = #{ybAppealManageView.areaType}
+        </if>
         <if test="ybAppealManageView.readyDoctorCode != null and ybAppealManageView.readyDoctorCode != ''">
             and am.readyDoctorCode = #{ybAppealManageView.readyDoctorCode}
+        </if>
+        <if test="ybAppealManageView.orderDoctorCode != null and ybAppealManageView.orderDoctorCode != ''">
+            and am.orderDoctorCode = #{ybAppealManageView.orderDoctorCode}
         </if>
         <if test="ybAppealManageView.readyDeptName != null and ybAppealManageView.readyDeptName != ''">
             and am.readyDeptName = #{ybAppealManageView.readyDeptName}
@@ -387,12 +393,6 @@
         </if>
         <if test="ybAppealManageView.typeno != null and ybAppealManageView.typeno != 0 and ybAppealManageView.typeno!=3">
             and am.typeno =#{ ybAppealManageView.typeno}
-        </if>
-        <if test="ybAppealManageView.orderDoctorCode != null and ybAppealManageView.orderDoctorCode != ''">
-            and am.orderDoctorCode = #{ybAppealManageView.orderDoctorCode}
-        </if>
-        <if test="ybAppealManageView.areaType != null">
-            and am.areaType = #{ybAppealManageView.areaType}
         </if>
         <if test="appealConfireId != null">
             and am.readyDeptCode in(SELECT deptId FROM yb_appeal_confire_data where pid = #{ appealConfireId})
@@ -469,7 +469,7 @@
         END isEnableDate,
         date_add(am.enableDate,INTERVAL -1 DAY) enableDate,
         am.STATE,
-        am.currencyField,
+        '' currencyField,
         am.sourceType,
         am.operateProcess,
         am.verifySendId,
@@ -492,8 +492,14 @@
         inner join yb_appeal_manage am  ON
         am.applyDataId = ad.id and
         am.applyDateStr = #{ybAppealManageView.applyDateStr}
+        <if test="ybAppealManageView.areaType != null">
+            and am.areaType = #{ybAppealManageView.areaType}
+        </if>
         <if test="ybAppealManageView.readyDoctorCode != null and ybAppealManageView.readyDoctorCode != ''">
             and am.readyDoctorCode = #{ybAppealManageView.readyDoctorCode}
+        </if>
+        <if test="ybAppealManageView.orderDoctorCode != null and ybAppealManageView.orderDoctorCode != ''">
+            and am.orderDoctorCode = #{ybAppealManageView.orderDoctorCode}
         </if>
         <if test="ybAppealManageView.readyDeptName != null and ybAppealManageView.readyDeptName != ''">
             and am.readyDeptName = #{ybAppealManageView.readyDeptName}
@@ -512,12 +518,6 @@
         </if>
         <if test="ybAppealManageView.typeno != null and ybAppealManageView.typeno != 0 and ybAppealManageView.typeno!=3">
             and am.typeno =#{ ybAppealManageView.typeno}
-        </if>
-        <if test="ybAppealManageView.orderDoctorCode != null and ybAppealManageView.orderDoctorCode != ''">
-            and am.orderDoctorCode = #{ybAppealManageView.orderDoctorCode}
-        </if>
-        <if test="ybAppealManageView.areaType != null">
-            and am.areaType = #{ybAppealManageView.areaType}
         </if>
         <if test="appealConfireId != null">
             and am.readyDeptCode in(SELECT deptId FROM yb_appeal_confire_data where pid = #{ appealConfireId})
@@ -550,8 +550,14 @@
         inner join yb_appeal_manage am  ON
         am.applyDataId = ad.id and
         am.applyDateStr = #{ybAppealManageView.applyDateStr}
+        <if test="ybAppealManageView.areaType != null">
+            and am.areaType = #{ybAppealManageView.areaType}
+        </if>
         <if test="ybAppealManageView.readyDoctorCode != null and ybAppealManageView.readyDoctorCode != ''">
             and am.readyDoctorCode = #{ybAppealManageView.readyDoctorCode}
+        </if>
+        <if test="ybAppealManageView.orderDoctorCode != null and ybAppealManageView.orderDoctorCode != ''">
+            and am.orderDoctorCode = #{ybAppealManageView.orderDoctorCode}
         </if>
         <if test="ybAppealManageView.readyDeptName != null and ybAppealManageView.readyDeptName != ''">
             and am.readyDeptName = #{ybAppealManageView.readyDeptName}
@@ -570,12 +576,6 @@
         </if>
         <if test="ybAppealManageView.typeno != null and ybAppealManageView.typeno != 0 and ybAppealManageView.typeno!=3">
             and am.typeno =#{ ybAppealManageView.typeno}
-        </if>
-        <if test="ybAppealManageView.orderDoctorCode != null and ybAppealManageView.orderDoctorCode != ''">
-            and am.orderDoctorCode = #{ybAppealManageView.orderDoctorCode}
-        </if>
-        <if test="ybAppealManageView.areaType != null">
-            and am.areaType = #{ybAppealManageView.areaType}
         </if>
         <if test="appealConfireId != null">
             and am.readyDeptCode in(SELECT deptId FROM yb_appeal_confire_data where pid = #{ appealConfireId})
@@ -669,7 +669,7 @@
         END isEnableDate,
         date_add(am.enableDate,INTERVAL -1 DAY) enableDate,
         am.STATE,
-        am.currencyField,
+        '' currencyField,
         am.sourceType,
         am.operateProcess,
         am.verifySendId,
@@ -695,6 +695,9 @@
         ra.id = #{ybAppealManageView.pid}
         where
         am.applyDateStr = #{ybAppealManageView.applyDateStr}
+        <if test="ybAppealManageView.areaType != null">
+            and am.areaType = #{ybAppealManageView.areaType}
+        </if>
         <if test="ybAppealManageView.acceptState != null">
             and am.acceptState = #{ybAppealManageView.acceptState}
         </if>
@@ -706,9 +709,6 @@
         </if>
         <if test="ybAppealManageView.dataType != null">
             and am.dataType = #{ybAppealManageView.dataType}
-        </if>
-        <if test="ybAppealManageView.areaType != null">
-            and am.areaType = #{ybAppealManageView.areaType}
         </if>
     </select>
 </mapper>

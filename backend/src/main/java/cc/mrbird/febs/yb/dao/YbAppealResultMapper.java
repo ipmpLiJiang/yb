@@ -28,11 +28,11 @@ public interface YbAppealResultMapper extends BaseMapper<YbAppealResult> {
 
     List<YbResultDownLoad> findAppealResultGroupSumDept(@Param("ybAppealResultView") YbAppealResultView ybAppealResultView);
 
-    List<YbAppealResult> findAppealResulDataByReset(@Param("applyDateStr") String applyDateStr,@Param("dataType") Integer dataType);
+    List<YbAppealResult> findAppealResulDataByReset(@Param("applyDateStr") String applyDateStr,@Param("areaType") Integer areaType,@Param("dataType") Integer dataType);
 
-    List<YbAppealResult> findAppealResulDataByRepay(@Param("applyDateStr") String applyDateStr,@Param("dataType") Integer dataType);
+    List<YbAppealResult> findAppealResulDataByRepay(@Param("applyDateStr") String applyDateStr,@Param("areaType") Integer areaType,@Param("dataType") Integer dataType);
 
-    List<YbAppealResult> findAppealResulDataHandle(@Param("applyDateStr") String applyDateStr,@Param("hvId") String hvId);
+    List<YbAppealResult> findAppealResulDataHandle(@Param("applyDateStr") String applyDateStr,@Param("hvId") String hvId,@Param("areaType") Integer areaType);
 
     void updateAppealResulResetData(@Param("applyDateStr") String applyDateStr,@Param("resetPersonId") Long resetPersonId,@Param("resetPersonName") String resetPersonName,@Param("resetDate") Date resetDate);
 

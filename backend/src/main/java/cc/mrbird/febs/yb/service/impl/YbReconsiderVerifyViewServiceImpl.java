@@ -46,20 +46,6 @@ public class YbReconsiderVerifyViewServiceImpl extends ServiceImpl<YbReconsiderV
             Page<YbReconsiderVerifyView> page = new Page<>();
             YbReconsiderApply reconsiderApply = iYbReconsiderApplyService.findReconsiderApplyByApplyDateStrs(ybReconsiderVerifyView.getApplyDateStr(),ybReconsiderVerifyView.getAreaType());
             if (reconsiderApply != null) {
-                /*
-                LambdaQueryWrapper<YbReconsiderVerifyView> queryWrapper = new LambdaQueryWrapper<>();
-                queryWrapper.eq(YbReconsiderVerifyView::getPid, reconsiderApply.getId());
-                if (ybReconsiderVerifyView.getState() != null) {
-                    queryWrapper.eq(YbReconsiderVerifyView::getState, ybReconsiderVerifyView.getState());//状态
-                }
-                if (ybReconsiderVerifyView.getDataType() != null) {
-                    queryWrapper.eq(YbReconsiderVerifyView::getDataType, ybReconsiderVerifyView.getDataType());
-                }
-                if (ybReconsiderVerifyView.getTypeno() != null) {
-                    queryWrapper.eq(YbReconsiderVerifyView::getTypeno, ybReconsiderVerifyView.getTypeno());
-                }
-                SortUtil.handlePageSort(request, page, false);//true 是属性  false是数据库字段可两个
-                return this.page(page, queryWrapper);*/
                 ybReconsiderVerifyView.setPid(reconsiderApply.getId());
                 int count = this.baseMapper.findReconsiderVerifyCount(ybReconsiderVerifyView, null);
                 if (count > 0) {
@@ -91,66 +77,6 @@ public class YbReconsiderVerifyViewServiceImpl extends ServiceImpl<YbReconsiderV
             Page<YbReconsiderVerifyView> page = new Page<>();
             YbReconsiderApply reconsiderApply = iYbReconsiderApplyService.findReconsiderApplyByApplyDateStrs(ybReconsiderVerifyView.getApplyDateStr(),ybReconsiderVerifyView.getAreaType());
             if (reconsiderApply != null) {
-                /*
-                LambdaQueryWrapper<YbReconsiderVerifyView> queryWrapper = new LambdaQueryWrapper<>();
-                queryWrapper.eq(YbReconsiderVerifyView::getPid, reconsiderApply.getId());
-                queryWrapper.eq(YbReconsiderVerifyView::getState, ybReconsiderVerifyView.getState());//状态
-
-                String strSearchType = "";
-                if (ybReconsiderVerifyView.getProjectName() != null) {
-                    strSearchType = searchType[0];
-                    if (strSearchType.equals("LIKE")) {
-                        queryWrapper.like(YbReconsiderVerifyView::getProjectName, ybReconsiderVerifyView.getProjectName());
-                    } else if (strSearchType.equals("EQ")) {
-                        queryWrapper.eq(YbReconsiderVerifyView::getProjectName, ybReconsiderVerifyView.getProjectName());
-                    } else if (strSearchType.equals("NOTLIKE")) {
-                        queryWrapper.notLike(YbReconsiderVerifyView::getProjectName, ybReconsiderVerifyView.getProjectName());
-                    }
-                }
-
-                if (ybReconsiderVerifyView.getRuleName() != null) {
-                    strSearchType = searchType[1];
-                    if (strSearchType.equals("LIKE")) {
-                        queryWrapper.like(YbReconsiderVerifyView::getRuleName, ybReconsiderVerifyView.getRuleName());
-                    } else if (strSearchType.equals("EQ")) {
-                        queryWrapper.eq(YbReconsiderVerifyView::getRuleName, ybReconsiderVerifyView.getRuleName());
-                    } else if (strSearchType.equals("NOTLIKE")) {
-                        queryWrapper.notLike(YbReconsiderVerifyView::getRuleName, ybReconsiderVerifyView.getRuleName());
-                    }
-                }
-
-                if (ybReconsiderVerifyView.getVerifyDeptName() != null) {
-                    strSearchType = searchType[2];
-                    if (strSearchType.equals("LIKE")) {
-                        queryWrapper.like(YbReconsiderVerifyView::getVerifyDeptName, ybReconsiderVerifyView.getVerifyDeptName());
-                    } else if (strSearchType.equals("EQ")) {
-                        queryWrapper.eq(YbReconsiderVerifyView::getVerifyDeptName, ybReconsiderVerifyView.getVerifyDeptName());
-                    } else if (strSearchType.equals("NOTLIKE")) {
-                        queryWrapper.notLike(YbReconsiderVerifyView::getVerifyDeptName, ybReconsiderVerifyView.getVerifyDeptName());
-                    }
-                }
-
-                if (ybReconsiderVerifyView.getOrderNumber() != null) {
-                    strSearchType = searchType[3];
-                    if (strSearchType.equals("LIKE")) {
-                        queryWrapper.like(YbReconsiderVerifyView::getOrderNumber, ybReconsiderVerifyView.getOrderNumber());
-                    } else if (strSearchType.equals("EQ")) {
-                        queryWrapper.eq(YbReconsiderVerifyView::getOrderNumber, ybReconsiderVerifyView.getOrderNumber());
-                    } else if (strSearchType.equals("NOTLIKE")) {
-                        queryWrapper.notLike(YbReconsiderVerifyView::getOrderNumber, ybReconsiderVerifyView.getOrderNumber());
-                    }
-                }
-
-                if (ybReconsiderVerifyView.getDataType() != null) {
-                    queryWrapper.eq(YbReconsiderVerifyView::getDataType, ybReconsiderVerifyView.getDataType());
-                }
-
-                if (ybReconsiderVerifyView.getTypeno() != null) {
-                    queryWrapper.eq(YbReconsiderVerifyView::getTypeno, ybReconsiderVerifyView.getTypeno());
-                }
-
-                SortUtil.handlePageSort(request, page, false);//true 是属性  false是数据库字段可两个
-                return this.page(page, queryWrapper);*/
                 ybReconsiderVerifyView.setPid(reconsiderApply.getId());
                 int count = this.baseMapper.findReconsiderVerifyCount(ybReconsiderVerifyView, searchType);
                 if (count > 0) {
@@ -230,10 +156,6 @@ public class YbReconsiderVerifyViewServiceImpl extends ServiceImpl<YbReconsiderV
                     int count = this.findReconsiderVerifyApplyDateCounts(rvvQv);
                     if (count > 0) {
                         ybReconsiderVerifyView.setTypeno(typeno);
-                        /*
-                        SortUtil.handlePageSort(request, page, false);//true 是属性  false是数据库字段可两个
-                        return this.baseMapper.findYbReconsiderVerifyViewNull(page, ybReconsiderVerifyView, searchType);
-                        */
                         count = this.baseMapper.findReconsiderVerifyCountNull(ybReconsiderVerifyView, searchType);
                         if (count > 0) {
                             page.setSearchCount(false);

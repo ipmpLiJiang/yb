@@ -32,9 +32,9 @@ public interface IYbReconsiderResetService extends IService<YbReconsiderReset> {
 
     void importReconsiderResets(YbReconsiderReset ybReconsiderReset, List<YbReconsiderResetData> listData, List<YbReconsiderResetData> listMain);
 
-    YbReconsiderReset findReconsiderResetByApplyDateStr(String applyDateStr);
+    YbReconsiderReset findReconsiderResetByApplyDateStr(String applyDateStr,Integer areaType);
 
-    List<YbReconsiderReset> findReconsiderResetByApplyDateStr(List<String> applyDateStrList);
+    List<YbReconsiderReset> findReconsiderResetByApplyDateStr(List<String> applyDateStrList,Integer areaType);
 
     String updateReconsiderApplyState(YbReconsiderReset ybReconsiderReset, User currentUser);
 }

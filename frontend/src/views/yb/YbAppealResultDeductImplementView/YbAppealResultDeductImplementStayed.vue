@@ -71,6 +71,7 @@ export default {
       },
       loading: false,
       bordered: true,
+      user: this.$store.state.account.user,
       ybAppealResultDeductImplement: {}
     }
   },
@@ -134,6 +135,7 @@ export default {
             return row.arDeptCode + '-' + row.arDeptName
           }
         },
+        fixed: 'right',
         width: 150
       },
       {
@@ -144,6 +146,7 @@ export default {
             return row.arDoctorCode + '-' + row.arDoctorName
           }
         },
+        fixed: 'right',
         width: 130
       },
       {
@@ -238,6 +241,7 @@ export default {
       this.loading = true
       params.applyDateStr = this.applyDateStr
       params.currencyField = this.searchText
+      params.areaType = this.user.areaType
       if (this.searchDataType !== 2) {
         params.dataType = this.searchDataType
       }
@@ -252,7 +256,7 @@ export default {
         params.pageSize = this.pagination.defaultPageSize
         params.pageNum = this.pagination.defaultCurrent
       }
-      params.sortField = 'rr.applyDateStr,rrd.dataType,rrd.orderNum'
+      params.sortField = 'rrd.dataType,rrd.orderNum'
       // params.sortOrder = 'descend'
       params.sortOrder = 'ascend'
       this.$get('ybAppealResultDeductimplementView/findAppealResultView', {

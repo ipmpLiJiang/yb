@@ -38,6 +38,7 @@ public class YbHandleVerifyServiceImpl extends ServiceImpl<YbHandleVerifyMapper,
     public IPage<YbHandleVerify> findYbHandleVerifys(QueryRequest request, YbHandleVerify ybHandleVerify) {
         try {
             LambdaQueryWrapper<YbHandleVerify> queryWrapper = new LambdaQueryWrapper<>();
+            queryWrapper.eq(YbHandleVerify::getAreaType, ybHandleVerify.getAreaType());
             queryWrapper.eq(YbHandleVerify::getIsDeletemark, 1);//1是未删 0是已删
 
 
@@ -63,10 +64,13 @@ public class YbHandleVerifyServiceImpl extends ServiceImpl<YbHandleVerifyMapper,
     }
 
     @Override
-    public YbHandleVerify findYbHandleVerifyApplyDateStr(String applyDateStr) {
+    public YbHandleVerify findYbHandleVerifyApplyDateStr(String applyDateStr,Integer areaType) {
         LambdaQueryWrapper<YbHandleVerify> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(YbHandleVerify::getIsDeletemark, 1);
         queryWrapper.eq(YbHandleVerify::getApplyDateStr, applyDateStr);
+        if(areaType !=null){
+            queryWrapper.eq(YbHandleVerify::getAreaType, areaType);
+        }
+        queryWrapper.eq(YbHandleVerify::getIsDeletemark, 1);
         List<YbHandleVerify> list = this.list(queryWrapper);
         if (list.size() > 0) {
             return list.get(0);

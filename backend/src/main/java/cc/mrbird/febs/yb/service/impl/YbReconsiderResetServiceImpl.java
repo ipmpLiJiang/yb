@@ -117,9 +117,13 @@ public class YbReconsiderResetServiceImpl extends ServiceImpl<YbReconsiderResetM
     }
 
     @Override
-    public YbReconsiderReset findReconsiderResetByApplyDateStr(String applyDateStr) {
+    public YbReconsiderReset findReconsiderResetByApplyDateStr(String applyDateStr,Integer areaType) {
         LambdaQueryWrapper<YbReconsiderReset> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(YbReconsiderReset::getApplyDateStr, applyDateStr);
+        if(areaType!=null){
+            wrapper.eq(YbReconsiderReset::getAreaType, areaType);
+        }
+        wrapper.eq(YbReconsiderReset::getIsDeletemark, 1);
         List<YbReconsiderReset> list = this.list(wrapper);
         if (list.size() > 0) {
             return list.get(0);
@@ -129,9 +133,10 @@ public class YbReconsiderResetServiceImpl extends ServiceImpl<YbReconsiderResetM
     }
 
     @Override
-    public List<YbReconsiderReset> findReconsiderResetByApplyDateStr(List<String> applyDateStrList) {
+    public List<YbReconsiderReset> findReconsiderResetByApplyDateStr(List<String> applyDateStrList,Integer areaType) {
         LambdaQueryWrapper<YbReconsiderReset> wrapper = new LambdaQueryWrapper<>();
         wrapper.in(YbReconsiderReset::getApplyDateStr, applyDateStrList);
+        wrapper.eq(YbReconsiderReset::getAreaType,areaType);
         return this.list(wrapper);
     }
 
@@ -139,20 +144,14 @@ public class YbReconsiderResetServiceImpl extends ServiceImpl<YbReconsiderResetM
     @Transactional
     public String updateReconsiderApplyState(YbReconsiderReset ybReconsiderReset, User currentUser) {
         String message = "";
-        LambdaQueryWrapper<YbReconsiderApply> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(YbReconsiderApply::getApplyDateStr, ybReconsiderReset.getApplyDateStr());
-        wrapper.ne(YbReconsiderApply::getState, YbDefaultValue.APPLYSTATE_1);
-        List<YbReconsiderApply> list = this.iYbReconsiderApplyService.list(wrapper);
+        YbReconsiderApply reconsiderApply = this.iYbReconsiderApplyService.findReconsiderApplyByApplyDateStrs(ybReconsiderReset.getApplyDateStr(),ybReconsiderReset.getAreaType());
         Date thisDate = new Date();
-        if (list.size() > 0) {
-            if (list.get(0).getResetState() == 0) {
-                LambdaQueryWrapper<YbReconsiderReset> wrapperReset = new LambdaQueryWrapper<>();
-                wrapperReset.eq(YbReconsiderReset::getApplyDateStr, ybReconsiderReset.getApplyDateStr());
-                List<YbReconsiderReset> listReset = this.list(wrapperReset);
-                if (listReset.size() > 0) {
-                    YbReconsiderReset searchReconsiderReset = listReset.get(0);
+        if (reconsiderApply != null) {
+            if (reconsiderApply.getResetState() == 0 && reconsiderApply.getState() !=YbDefaultValue.APPLYSTATE_1) {
+                YbReconsiderReset reconsiderReset = this.findReconsiderResetByApplyDateStr(ybReconsiderReset.getApplyDateStr(),ybReconsiderReset.getAreaType());
+                if (reconsiderReset !=null) {
                     LambdaQueryWrapper<YbReconsiderResetData> wrapperResetData = new LambdaQueryWrapper<>();
-                    wrapperResetData.eq(YbReconsiderResetData::getPid, searchReconsiderReset.getId());
+                    wrapperResetData.eq(YbReconsiderResetData::getPid, reconsiderReset.getId());
                     List<YbReconsiderResetData> listResetData = this.iYbReconsiderResetDataService.list(wrapperResetData);
                     if (listResetData.size() > 0) {
                         long count = listResetData.stream().filter(s ->
@@ -166,7 +165,7 @@ public class YbReconsiderResetServiceImpl extends ServiceImpl<YbReconsiderResetM
                             String sendContent = iYbReconsiderApplyService.getSendMessage(ybReconsiderReset.getApplyDateStr());
                             boolean isOpenSms = nOpenSms == 1 ? true : false;
                             if (isOpenSms) {
-                                List<YbPerson> personList = iYbPersonService.findPersonResultList(ybReconsiderReset.getApplyDateStr());
+                                List<YbPerson> personList = iYbPersonService.findPersonResultList(ybReconsiderReset.getApplyDateStr(),ybReconsiderReset.getAreaType());
                                 for(YbPerson person : personList) {
                                     ComSms sms = new ComSms();
                                     sms.setId(UUID.randomUUID().toString());
@@ -186,12 +185,12 @@ public class YbReconsiderResetServiceImpl extends ServiceImpl<YbReconsiderResetM
                             }
 
                             YbReconsiderReset updateReset  = new YbReconsiderReset();
-                            updateReset.setId(searchReconsiderReset.getId());
+                            updateReset.setId(reconsiderReset.getId());
                             updateReset.setState(1);
                             boolean bl = this.updateById(updateReset);
                             if (bl) {
                                 YbReconsiderApply updateApply = new YbReconsiderApply();
-                                updateApply.setId(list.get(0).getId());
+                                updateApply.setId(reconsiderApply.getId());
                                 updateApply.setModifyTime(thisDate);
                                 updateApply.setState(YbDefaultValue.APPLYSTATE_6);
                                 updateApply.setResetState(1);

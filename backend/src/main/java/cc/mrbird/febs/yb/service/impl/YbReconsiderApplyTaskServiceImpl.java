@@ -93,10 +93,12 @@ public class YbReconsiderApplyTaskServiceImpl extends ServiceImpl<YbReconsiderAp
     @Override
     public List<YbReconsiderApplyTask> findReconsiderApplyTaskList(YbReconsiderApplyTask ybReconsiderApplyTask) {
         LambdaQueryWrapper<YbReconsiderApplyTask> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(YbReconsiderApplyTask::getIsDeletemark, 1);//1是未删 0是已删
-
         if (ybReconsiderApplyTask.getApplyDateStr() != null) {
             queryWrapper.eq(YbReconsiderApplyTask::getApplyDateStr, ybReconsiderApplyTask.getApplyDateStr());
+        }
+
+        if (ybReconsiderApplyTask.getAreaType() != null) {
+            queryWrapper.eq(YbReconsiderApplyTask::getAreaType, ybReconsiderApplyTask.getAreaType());
         }
 
         if (ybReconsiderApplyTask.getDataType() != null) {
@@ -110,13 +112,14 @@ public class YbReconsiderApplyTaskServiceImpl extends ServiceImpl<YbReconsiderAp
         if (ybReconsiderApplyTask.getState() != null) {
             queryWrapper.eq(YbReconsiderApplyTask::getState, ybReconsiderApplyTask.getState());
         }
-
-        if (ybReconsiderApplyTask.getAreaType() != null) {
-            queryWrapper.eq(YbReconsiderApplyTask::getAreaType, ybReconsiderApplyTask.getAreaType());
-        }
+        queryWrapper.eq(YbReconsiderApplyTask::getIsDeletemark, 1);//1是未删 0是已删
 
         return this.list(queryWrapper);
     }
 
+    @Override
+    public YbReconsiderApplyTask findReconsiderApplyTasks(YbReconsiderApplyTask ybReconsiderApplyTask) {
+        return this.baseMapper.findReconsiderApplyTask(ybReconsiderApplyTask);
+    }
 
 }

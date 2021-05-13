@@ -148,6 +148,7 @@ export default {
       searchDataType: 0,
       spinning: false,
       delayTime: 500,
+      user: this.$store.state.account.user,
       tableSelectKey: '1'
     }
   },
@@ -170,7 +171,8 @@ export default {
     importData () {
       this.spinning = true
       this.$post('ybHandleVerifyData/importCreateHandleVerifyData', {
-        applyDateStr: this.searchApplyDate
+        applyDateStr: this.searchApplyDate,
+        areaType: this.user.areaType
       }).then((r) => {
         if (r.data.data.success === 1) {
           this.spinning = false

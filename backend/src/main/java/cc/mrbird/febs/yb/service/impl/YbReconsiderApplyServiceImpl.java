@@ -65,13 +65,13 @@ public class YbReconsiderApplyServiceImpl extends ServiceImpl<YbReconsiderApplyM
     public IPage<YbReconsiderApply> findYbReconsiderApplys(QueryRequest request, YbReconsiderApply ybReconsiderApply) {
         try {
             LambdaQueryWrapper<YbReconsiderApply> queryWrapper = new LambdaQueryWrapper<>();
-            queryWrapper.eq(YbReconsiderApply::getIsDeletemark, 1);//1是未删 0是已删
             queryWrapper.eq(YbReconsiderApply::getAreaType, ybReconsiderApply.getAreaType());
             if (StringUtils.isNotBlank(ybReconsiderApply.getCreateTimeFrom()) && StringUtils.isNotBlank(ybReconsiderApply.getCreateTimeTo())) {
                 queryWrapper
                         .ge(YbReconsiderApply::getCreateTime, ybReconsiderApply.getCreateTimeFrom())
                         .le(YbReconsiderApply::getCreateTime, ybReconsiderApply.getCreateTimeTo());
             }
+            queryWrapper.eq(YbReconsiderApply::getIsDeletemark, 1);//1是未删 0是已删
 
             Page<YbReconsiderApply> page = new Page<>();
             SortUtil.handlePageSort(request, page, false);//true 是属性  false是数据库字段可两个
@@ -125,7 +125,7 @@ public class YbReconsiderApplyServiceImpl extends ServiceImpl<YbReconsiderApplyM
             atList.add(5);
             List<ComConfiguremanage> ccsList = iComConfiguremanageService.getConfigLists(atList);
             if (ccsList.size() > 0) {
-                ccsList = ccsList.stream().filter(s->s.getIntField().equals(ybReconsiderApply.getAreaType())).collect(Collectors.toList());
+                ccsList = ccsList.stream().filter(s -> s.getIntField().equals(ybReconsiderApply.getAreaType())).collect(Collectors.toList());
                 message = ccsList.get(0).getStringField() + " 该年月 " + ybReconsiderApply.getApplyDateStr() + " 已创建过复议申请记录";
             } else {
                 message = "该年月 " + ybReconsiderApply.getApplyDateStr() + " 已创建过复议申请记录";
@@ -162,36 +162,39 @@ public class YbReconsiderApplyServiceImpl extends ServiceImpl<YbReconsiderApplyM
     }
 
     @Override
-    public void updateEnableOverdue(String applyDateStr) {
+    public void updateEnableOverdue(String applyDateStr, int areaType) {
         if (applyDateStr == null || "".equals(applyDateStr)) {
             applyDateStr = DataTypeHelpers.getUpNianYue();
         }
         Map<String, Object> map = new HashMap<>();
         map.put("applyDateStr", applyDateStr);
+        map.put("areaType", areaType);
         this.baseMapper.updateAppealManageEnableOverdue(map);
         String message = (String) map.get("message");
         log.info(message);
     }
 
     @Override
-    public void updateApplyEndDateOne(String applyDateStr) {
+    public void updateApplyEndDateOne(String applyDateStr, int areaType) {
         if (applyDateStr == null || "".equals(applyDateStr)) {
             applyDateStr = DataTypeHelpers.getUpNianYue();
         }
         Map<String, Object> map = new HashMap<>();
         map.put("applyDateStr", applyDateStr);
+        map.put("areaType", areaType);
         this.baseMapper.updateAppealManageApplyEndDateOne(map);
         String message = (String) map.get("message");
         log.info(message);
     }
 
     @Override
-    public void updateApplyEndDateTwo(String applyDateStr) {
+    public void updateApplyEndDateTwo(String applyDateStr, int areaType) {
         if (applyDateStr == null || "".equals(applyDateStr)) {
             applyDateStr = DataTypeHelpers.getUpNianYue();
         }
         Map<String, Object> map = new HashMap<>();
         map.put("applyDateStr", applyDateStr);
+        map.put("areaType", areaType);
         this.baseMapper.updateAppealManageApplyEndDateTwo(map);
         String message = (String) map.get("message");
         log.info(message);
@@ -245,6 +248,9 @@ public class YbReconsiderApplyServiceImpl extends ServiceImpl<YbReconsiderApplyM
         }
         if (ybReconsiderApply.getApplyDateStr() != null) {
             wrapper.eq(YbReconsiderApply::getApplyDateStr, ybReconsiderApply.getApplyDateStr());
+        }
+        if (ybReconsiderApply.getAreaType() != null) {
+            wrapper.eq(YbReconsiderApply::getAreaType, ybReconsiderApply.getAreaType());
         }
         if (ybReconsiderApply.getState() != null) {
             wrapper.eq(YbReconsiderApply::getState, ybReconsiderApply.getState());
@@ -366,14 +372,15 @@ public class YbReconsiderApplyServiceImpl extends ServiceImpl<YbReconsiderApplyM
             // Job state 0.正常    1.暂停
             Job job = new Job();
             job.setBeanName("reconsiderApplyTask");
-            if (areaType == YbDefaultValue.AREATYPE_0) {
-                job.setMethodName("applyTask");
-            } else if (areaType == YbDefaultValue.AREATYPE_1) {
-                job.setMethodName("applyTaskWest");
-            } else {
-                job.setMethodName("applyTaskOther");
-            }
-            job.setParams(applyDateStr);
+            job.setMethodName("applyTask");
+//            if (areaType == YbDefaultValue.AREATYPE_0) {
+//                job.setMethodName("applyTask");
+//            } else if (areaType == YbDefaultValue.AREATYPE_1) {
+//                job.setMethodName("applyTaskWest");
+//            } else {
+//                job.setMethodName("applyTaskOther");
+//            }
+            job.setParams(applyDateStr + "|" + Integer.toString(areaType));
             //查询当前正在运行的任务
             List<Job> findList = jobService.jobList(job);
 

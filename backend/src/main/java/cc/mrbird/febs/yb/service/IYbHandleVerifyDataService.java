@@ -31,7 +31,7 @@ public interface IYbHandleVerifyDataService extends IService<YbHandleVerifyData>
 
     void importCreateHandleVerifyData(String applyDateStr, Integer areaType,Long uid, String uname);
 
-    void updateSendStates(List<YbHandleVerifyData> list,Long uId, String Uname);
+    void updateSendStates(List<YbHandleVerifyData> list,String applyDateStr,Integer areaType,Long uId, String Uname);
 
-    void updateAllSendStates(String applyDateStr,Integer dataType,Integer state, Long uId, String Uname);
+    void updateAllSendStates(String applyDateStr,Integer dataType,Integer areaType,Integer state, Long uId, String Uname);
 }

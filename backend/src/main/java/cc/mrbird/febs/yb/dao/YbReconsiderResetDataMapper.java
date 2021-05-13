@@ -22,7 +22,7 @@ public interface YbReconsiderResetDataMapper extends BaseMapper<YbReconsiderRese
 
     IPage<YbReconsiderResetData> findYbReconsiderResetData(Page page, @Param("ybReconsiderResetData") YbReconsiderResetData ybReconsiderResetData);
 
-    List<YbReconsiderResetData> findResetNotExistsRepayByApplyDate(@Param("applyDateStr") String applyDateStr, @Param("dataType") Integer dataType);
+    List<YbReconsiderResetData> findResetNotExistsRepayByApplyDate(@Param("applyDateStr") String applyDateStr, @Param("areaType") Integer areaType, @Param("dataType") Integer dataType);
 
     int updateReconsiderResetCancelData(@Param("resetList") List<YbReconsiderResetData> resetList);
 }

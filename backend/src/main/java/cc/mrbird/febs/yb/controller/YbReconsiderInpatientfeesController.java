@@ -73,7 +73,7 @@ public class YbReconsiderInpatientfeesController extends BaseController {
     public void addYbReconsiderInpatientfees(@Valid YbReconsiderInpatientfees ybReconsiderInpatientfees) throws FebsException {
         try {
             User currentUser = FebsUtil.getCurrentUser();
-            ybReconsiderInpatientfees.setCreateUserId(currentUser.getUserId());
+//            ybReconsiderInpatientfees.setCreateUserId(currentUser.getUserId());
             this.iYbReconsiderInpatientfeesService.createYbReconsiderInpatientfees(ybReconsiderInpatientfees);
         } catch (Exception e) {
             message = "新增/按钮失败";
@@ -94,7 +94,7 @@ public class YbReconsiderInpatientfeesController extends BaseController {
     public void updateYbReconsiderInpatientfees(@Valid YbReconsiderInpatientfees ybReconsiderInpatientfees) throws FebsException {
         try {
             User currentUser = FebsUtil.getCurrentUser();
-            ybReconsiderInpatientfees.setModifyUserId(currentUser.getUserId());
+//            ybReconsiderInpatientfees.setModifyUserId(currentUser.getUserId());
             this.iYbReconsiderInpatientfeesService.updateYbReconsiderInpatientfees(ybReconsiderInpatientfees);
         } catch (Exception e) {
             message = "修改失败";

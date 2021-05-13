@@ -14,7 +14,6 @@
         <result column="deptName" property="deptName"/>
         <result column="operateReason" property="operateReason"/>
         <result column="operateDate" property="operateDate"/>
-        <result column="currencyField" property="currencyField"/>
         <result column="sourceType" property="sourceType"/>
         <result column="relatelDataId" property="relatelDataId"/>
         <!--        <result column="resetDataId" property="resetDataId"/>-->
@@ -34,16 +33,12 @@
         <result column="COMMENTS" property="comments"/>
         <result column="STATE" property="state"/>
         <result column="IS_DELETEMARK" property="isDeletemark"/>
-        <result column="MODIFY_TIME" property="modifyTime"/>
-        <result column="CREATE_TIME" property="createTime"/>
-        <result column="CREATE_USER_ID" property="createUserId"/>
-        <result column="MODIFY_USER_ID" property="modifyUserId"/>
         <result column="areaType" property="areaType"/>
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, applyDataId, verifyId, manageId, doctorCode, doctorName, deptCode, deptName, operateReason, operateDate, currencyField,sourceType,relatelDataId,resetDate,dataType,orderDoctorCode,orderDoctorName,orderDeptCode,orderDeptName,repayState,applyDateStr,typeno,orderNumber,orderNum, COMMENTS, STATE, IS_DELETEMARK, MODIFY_TIME, CREATE_TIME, CREATE_USER_ID, MODIFY_USER_ID,areaType
+        id, applyDataId, verifyId, manageId, doctorCode, doctorName, deptCode, deptName, operateReason, operateDate, sourceType,relatelDataId,resetDate,dataType,orderDoctorCode,orderDoctorName,orderDeptCode,orderDeptName,repayState,applyDateStr,typeno,orderNumber,orderNum, COMMENTS, STATE, IS_DELETEMARK, areaType
     </sql>
     <!--    resetDataId,resetPersonId,resetPersonName,-->
     <update id="updateYbAppealResult" parameterType="cc.mrbird.febs.yb.entity.YbAppealResult">
@@ -58,7 +53,6 @@
             <if test="deptName != null">deptName=#{deptName},</if>
             <if test="operateReason != null">operateReason=#{operateReason},</if>
             <if test="operateDate != null">operateDate=#{operateDate},</if>
-            <if test="currencyField != null">currencyField=#{currencyField},</if>
             <if test="sourceType != null">sourceType=#{sourceType},</if>
             <if test="relatelDataId != null">relatelDataId=#{relatelDataId},</if>
             <!--            <if test="resetDataId != null">resetDataId=#{resetDataId},</if>-->
@@ -78,10 +72,6 @@
             <if test="comments != null">COMMENTS=#{comments},</if>
             <if test="state != null">STATE=#{state},</if>
             <if test="isDeletemark != null">IS_DELETEMARK=#{isDeletemark},</if>
-            <if test="modifyTime != null">MODIFY_TIME=#{modifyTime},</if>
-            <if test="createTime != null">CREATE_TIME=#{createTime},</if>
-            <if test="createUserId != null">CREATE_USER_ID=#{createUserId},</if>
-            <if test="modifyUserId != null">MODIFY_USER_ID=#{modifyUserId},</if>
             <if test="areaType != null">areaType=#{areaType},</if>
         </trim>
         where id=#{id}
@@ -122,9 +112,6 @@
         <if test="ybAppealResult.operateDateTo!= null">
             AND ybAppealResult.operateDate <![CDATA[ <= ]]>  operateDateTo}
         </if>
-        <if test="ybAppealResult.currencyField != null and ybAppealResult.currencyField != ''">and currencyField like
-            concat('%', #{ ybAppealResult.currencyField} ,'%')
-        </if>
         <if test="ybAppealResult.sourceType != null">and sourceType =#{ ybAppealResult.sourceType}</if>
         <if test="ybAppealResult.repayState != null">and repayState =#{ ybAppealResult.repayState}</if>
         <if test="ybAppealResult.resetDateFrom!= null">
@@ -137,18 +124,6 @@
             #{ ybAppealResult.comments} ,'%')
         </if>
         <if test="ybAppealResult.state != null">and STATE =#{ ybAppealResult.state}</if>
-        <if test="ybAppealResult.modifyTimeFrom!= null">
-            AND ybAppealResult.MODIFY_TIME <![CDATA[ >= ]]>  modifyTimeFrom}
-        </if>
-        <if test="ybAppealResult.modifyTimeTo!= null">
-            AND ybAppealResult.MODIFY_TIME <![CDATA[ <= ]]>  modifyTimeTo}
-        </if>
-        <if test="ybAppealResult.createTimeFrom!= null">
-            AND ybAppealResult.CREATE_TIME <![CDATA[ >= ]]>  createTimeFrom}
-        </if>
-        <if test="ybAppealResult.createTimeTo!= null">
-            AND ybAppealResult.CREATE_TIME <![CDATA[ <= ]]>  createTimeTo}
-        </if>
         <if test="ybAppealResult.areaType != null">and ybAppealResult.areaType =#{ ybAppealResult.areaType}</if>
     </select>
     <select id="findAppealResultGroupSumDept" resultType="cc.mrbird.febs.yb.entity.YbResultDownLoad"
@@ -159,19 +134,23 @@
         yb_appeal_sumdept
         WHERE
         IS_DELETEMARK = 1 and
-        <if test="ybAppealResultView.repayState != null">and areaType =#{ ybAppealResultView.repayState}</if>
+        <if test="ybAppealResultView.areaType != null">
+        areaType =  #{ybAppealResultView.areaType} and
+        </if>
         ID IN(
         select DISTINCT pid from yb_appeal_sumdept_data where deptId in (
-            SELECT DISTINCT
+            SELECT
                 yb_appeal_result.deptCode
             FROM
                 yb_appeal_result
                 INNER JOIN com_file ON
-            com_file.REF_TAB_ID = yb_appeal_result.id
-                INNER JOIN yb_reconsider_apply_data ON
-            yb_reconsider_apply_data.id = yb_appeal_result.applyDataId
-            WHERE
+                com_file.REF_TAB_ID = yb_appeal_result.id and
+                com_file.IS_DELETEMARK = 1
+        WHERE
                 yb_appeal_result.applyDateStr = #{ybAppealResultView.applyDateStr}
+                <if test="ybAppealResultView.areaType != null">
+                    and yb_appeal_result.areaType =  #{ybAppealResultView.areaType}
+                </if>
                 <if test="ybAppealResultView.sourceType != null">
                     and yb_appeal_result.sourceType = #{ybAppealResultView.sourceType}
                 </if>
@@ -187,9 +166,7 @@
                 <if test="ybAppealResultView.state != null and ybAppealResultView.state==2">
                     and yb_appeal_result.STATE = 2
                 </if>
-                <if test="ybAppealResultView.areaType != null">
-                    and yb_appeal_result.areaType =  #{ybAppealResultView.areaType}
-                </if>
+                group by yb_appeal_result.deptCode
             )
         )
     </select>
@@ -200,11 +177,13 @@
         FROM
         yb_appeal_result
         INNER JOIN com_file ON
-        com_file.REF_TAB_ID = yb_appeal_result.id
-        INNER JOIN yb_reconsider_apply_data ON
-        yb_reconsider_apply_data.id = yb_appeal_result.applyDataId
+        com_file.REF_TAB_ID = yb_appeal_result.id and
+        com_file.IS_DELETEMARK = 1
         WHERE
-        yb_reconsider_apply_data.pid = #{ybAppealResultView.pid}
+        yb_appeal_result.applyDateStr = #{ybAppealResultView.applyDateStr}
+        <if test="ybAppealResultView.areaType != null">
+            and yb_appeal_result.areaType =  #{ybAppealResultView.areaType}
+        </if>
         <if test="ybAppealResultView.sourceType != null">and yb_appeal_result.sourceType =
             #{ybAppealResultView.sourceType}
         </if>
@@ -215,9 +194,6 @@
         </if>
         <if test="ybAppealResultView.state != null and ybAppealResultView.state==1">and yb_appeal_result.STATE = 1</if>
         <if test="ybAppealResultView.state != null and ybAppealResultView.state==2">and yb_appeal_result.STATE = 2</if>
-        <if test="ybAppealResultView.areaType != null">
-            and yb_appeal_result.areaType =  #{ybAppealResultView.areaType}
-        </if>
         group BY
         yb_appeal_result.deptCode,yb_appeal_result.deptName
     </select>
@@ -228,6 +204,7 @@
         yb_appeal_result
         where
         applyDateStr = #{ applyDateStr} AND
+        areaType =#{ areaType} and
         sourceType = 0 AND
         state = 1
         <if test="dataType != null">and dataType =#{ dataType}</if>
@@ -239,6 +216,7 @@
         yb_appeal_result
         where
         applyDateStr = #{ applyDateStr} AND
+        areaType =#{ areaType} and
         sourceType = 0 AND
         state = 2
         <if test="dataType != null">and dataType =#{ dataType}</if>
@@ -251,6 +229,8 @@
             yb_appeal_result
         WHERE
             applyDateStr = #{applyDateStr} AND
+            areaType = #{areaType} and
+            sourceType = 0 and
             STATE = 2
         <if test="hvId != null">
             AND id NOT IN (
@@ -309,8 +289,8 @@
             yb_appeal_result.resetPersonName = #{resetPersonName},
             yb_appeal_result.resetDate = #{resetDate}
         WHERE
+            yb_reconsider_apply.applyDateStr = #{applyDateStr} AND
             yb_appeal_result.STATE = 1 AND
-            yb_appeal_result.resetDataId IS NULL AND
-            yb_reconsider_apply.applyDateStr = #{applyDateStr}
+            yb_appeal_result.resetDataId IS NULL
     </update>
 </mapper>

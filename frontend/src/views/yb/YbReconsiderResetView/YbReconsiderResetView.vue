@@ -272,17 +272,6 @@ export default {
       })
     },
     exportExcel () {
-      // if (this.tableSelectKey === '1') {
-      //   this.$refs.ybReconsiderResetData.exportExcel()
-      // } else if (this.tableSelectKey === '2') {
-      //   this.$refs.ybReconsiderResetMain.exportExcel()
-      // } else if (this.tableSelectKey === '3') {
-      //   this.$refs.ybReconsiderResetExcept.exportExcel()
-      // } else if (this.tableSelectKey === '4') {
-      //   this.$refs.ybReconsiderResetUnknown.search()
-      // } else {
-      //   console.log('exportExcel')
-      // }
       this.$refs.ybReconsiderResetUnknown.exportExcel()
     },
     exportDeductimplementExcel () {
@@ -323,6 +312,7 @@ export default {
       const formData = new FormData()
       formData.append('file', file)
       formData.append('applyDateStr', this.searchApplyDate)
+      formData.append('areaType', this.user.areaType)
       this.spinning = true
       this.$upload('ybReconsiderReset/importReconsiderReset', formData).then((r) => {
         // r.data.data.message
@@ -342,8 +332,10 @@ export default {
     },
     updateApplyState () {
       let updateParam = {
-        applyDateStr: this.searchApplyDate
+        applyDateStr: this.searchApplyDate,
+        areaType: this.user.areaType
       }
+      this.spinning = true
       this.$put('ybReconsiderReset/updateApplyState', {
         ...updateParam
       }).then((r) => {
@@ -352,7 +344,9 @@ export default {
         } else {
           this.$message.error(r.data.data.message)
         }
+        this.spinning = false
       }).catch(() => {
+        this.spinning = false
         this.$message.error('剔除完成操作失败.')
       })
     },

@@ -99,7 +99,7 @@ public class YbReconsiderVerifyServiceImpl extends ServiceImpl<YbReconsiderVerif
     @Override
     @Transactional
     public void createYbReconsiderVerify(YbReconsiderVerify ybReconsiderVerify) {
-        ybReconsiderVerify.setCreateTime(new Date());
+//        ybReconsiderVerify.setCreateTime(new Date());
         if (ybReconsiderVerify.getId() == null || "".equals(ybReconsiderVerify.getId())) {
             ybReconsiderVerify.setId(UUID.randomUUID().toString());
         }
@@ -110,7 +110,7 @@ public class YbReconsiderVerifyServiceImpl extends ServiceImpl<YbReconsiderVerif
     @Override
     @Transactional
     public void updateYbReconsiderVerify(YbReconsiderVerify ybReconsiderVerify) {
-        ybReconsiderVerify.setModifyTime(new Date());
+//        ybReconsiderVerify.setModifyTime(new Date());
         this.baseMapper.updateYbReconsiderVerify(ybReconsiderVerify);
     }
 
@@ -144,9 +144,9 @@ public class YbReconsiderVerifyServiceImpl extends ServiceImpl<YbReconsiderVerif
                     List<YbReconsiderPriorityLevel> rplList = iYbReconsiderPriorityLevelService.findReconsiderPriorityLevelList();
                     YbReconsiderInpatientfees waquery = new YbReconsiderInpatientfees();
                     waquery.setApplyDateStr(applyDateStr);
+                    waquery.setAreaType(areaType);
                     waquery.setTypeno(typeno);
                     waquery.setDataType(YbDefaultValue.DATATYPE_0);
-                    waquery.setAreaType(areaType);
                     List<YbReconsiderInpatientfees> rifList = iYbReconsiderInpatientfeesService.findReconsiderInpatientfeesList(waquery);
 
                     List<YbReconsiderPriorityLevel> rlProjectList = rplList.stream().filter(s -> s.getState() == YbReconsiderPriorityLevel.PL_STATE_2).collect(Collectors.toList());
@@ -167,7 +167,6 @@ public class YbReconsiderVerifyServiceImpl extends ServiceImpl<YbReconsiderVerif
                     ComConfiguremanage configuremanage = new ComConfiguremanage();
                     List<YbReconsiderVerify> createList = new ArrayList<>();
                     YbReconsiderInpatientfees entityRif = new YbReconsiderInpatientfees();
-                    Date thisDate = new Date();
                     String strDocId = "";
                     String strDocName = "";
                     String strDeptId = "";
@@ -376,16 +375,16 @@ public class YbReconsiderVerifyServiceImpl extends ServiceImpl<YbReconsiderVerif
                             ybReconsiderVerify.setTypeno(item.getTypeno());
                             ybReconsiderVerify.setOrderNumber(item.getOrderNumber());
                             ybReconsiderVerify.setOrderNum(item.getOrderNum());
-                            ybReconsiderVerify.setOperateDate(thisDate);//'操作日期'
-                            ybReconsiderVerify.setMatchDate(thisDate);//'匹配日期'
-                            ybReconsiderVerify.setMatchPersonId(matchPersonId);//'匹配人代码'
-                            ybReconsiderVerify.setMatchPersonName(matchPersonName);//'匹配人'
+//                            ybReconsiderVerify.setOperateDate(thisDate);//'操作日期'
+//                            ybReconsiderVerify.setMatchDate(thisDate);//'匹配日期'
+//                            ybReconsiderVerify.setMatchPersonId(matchPersonId);//'匹配人代码'
+//                            ybReconsiderVerify.setMatchPersonName(matchPersonName);//'匹配人'
                             ybReconsiderVerify.setDataType(YbDefaultValue.DATATYPE_0);//扣款类型  0 明细扣款 1 主单扣款
                             ybReconsiderVerify.setState(YbDefaultValue.VERIFYSTATE_1);//1 待审核、2已审核、3已发送
                             ybReconsiderVerify.setAreaType(areaType);
                             ybReconsiderVerify.setIsDeletemark(1);
-                            ybReconsiderVerify.setCreateUserId(matchPersonId);
-                            ybReconsiderVerify.setCreateTime(thisDate);
+//                            ybReconsiderVerify.setCreateUserId(matchPersonId);
+//                            ybReconsiderVerify.setCreateTime(thisDate);
                             String deptCode = ybReconsiderVerify.getVerifyDeptCode();
                             count = deptList.stream().filter(s -> s.getDeptId().equals(deptCode)).count();
                             if (count == 0) {
@@ -531,9 +530,9 @@ public class YbReconsiderVerifyServiceImpl extends ServiceImpl<YbReconsiderVerif
                     isCreate = false;
                     YbReconsiderInpatientfees waquery = new YbReconsiderInpatientfees();
                     waquery.setApplyDateStr(applyDateStr);
+                    waquery.setAreaType(areaType);
                     waquery.setTypeno(typeno);
                     waquery.setDataType(YbDefaultValue.DATATYPE_1);
-                    waquery.setAreaType(areaType);
                     List<YbReconsiderInpatientfees> rifList = iYbReconsiderInpatientfeesService.findReconsiderInpatientfeesList(waquery);
                     List<YbDept> deptList = iYbDeptService.findDeptList(new YbDept(), 0);
 
@@ -543,7 +542,6 @@ public class YbReconsiderVerifyServiceImpl extends ServiceImpl<YbReconsiderVerif
                     personList = iYbPersonService.list();
                     List<YbPerson> queryPersontList = new ArrayList<>();
                     List<YbReconsiderVerify> createList = new ArrayList<>();
-                    Date thisDate = new Date();
                     long count = 0;
                     for (YbReconsiderApplyData item : radList) {
                         YbReconsiderVerify ybReconsiderVerify = new YbReconsiderVerify();
@@ -576,16 +574,16 @@ public class YbReconsiderVerifyServiceImpl extends ServiceImpl<YbReconsiderVerif
                             ybReconsiderVerify.setTypeno(item.getTypeno());
                             ybReconsiderVerify.setOrderNumber(item.getOrderNumber());
                             ybReconsiderVerify.setOrderNum(item.getOrderNum());
-                            ybReconsiderVerify.setOperateDate(thisDate);//'操作日期'
-                            ybReconsiderVerify.setMatchDate(thisDate);//'匹配日期'
-                            ybReconsiderVerify.setMatchPersonId(matchPersonId);//'匹配人代码'
-                            ybReconsiderVerify.setMatchPersonName(matchPersonName);//'匹配人'
+//                            ybReconsiderVerify.setOperateDate(thisDate);//'操作日期'
+//                            ybReconsiderVerify.setMatchDate(thisDate);//'匹配日期'
+//                            ybReconsiderVerify.setMatchPersonId(matchPersonId);//'匹配人代码'
+//                            ybReconsiderVerify.setMatchPersonName(matchPersonName);//'匹配人'
                             ybReconsiderVerify.setDataType(YbDefaultValue.DATATYPE_1);//扣款类型  0 明细扣款 1 主单扣款
                             ybReconsiderVerify.setState(YbDefaultValue.VERIFYSTATE_1);//1 待审核、2已审核、3已发送
                             ybReconsiderVerify.setAreaType(areaType);
                             ybReconsiderVerify.setIsDeletemark(1);
-                            ybReconsiderVerify.setCreateUserId(matchPersonId);
-                            ybReconsiderVerify.setCreateTime(thisDate);
+//                            ybReconsiderVerify.setCreateUserId(matchPersonId);
+//                            ybReconsiderVerify.setCreateTime(thisDate);
                             String deptCode = ybReconsiderVerify.getVerifyDeptCode();
                             count = deptList.stream().filter(s -> s.getDeptId().equals(deptCode)).count();
                             if (count == 0) {
@@ -628,9 +626,10 @@ public class YbReconsiderVerifyServiceImpl extends ServiceImpl<YbReconsiderVerif
     public void importReconsiderDataVerifys(YbReconsiderApply reconsiderApply, int dataType, int typeno, List<YbReconsiderVerify> verifyList) {
         LambdaQueryWrapper<YbReconsiderVerify> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(YbReconsiderVerify::getApplyDateStr, reconsiderApply.getApplyDateStr());
+        wrapper.eq(YbReconsiderVerify::getAreaType, reconsiderApply.getAreaType());
         wrapper.eq(YbReconsiderVerify::getDataType, dataType);
         wrapper.eq(YbReconsiderVerify::getTypeno, typeno);
-        wrapper.eq(YbReconsiderVerify::getAreaType, reconsiderApply.getAreaType());
+        wrapper.eq(YbReconsiderVerify::getIsDeletemark, 1);
         List<YbReconsiderVerify> list = this.list(wrapper);
         List<YbDept> deptList = iYbDeptService.findDeptList(new YbDept(), 0);
 
@@ -777,13 +776,13 @@ public class YbReconsiderVerifyServiceImpl extends ServiceImpl<YbReconsiderVerif
                 ).collect(Collectors.toList());
                 if (queryPersonList.size() > 0) {
                     //更新
-                    ybReconsiderVerify.setState(YbDefaultValue.VERIFYSTATE_3);
-                    ybReconsiderVerify.setModifyUserId(uId);
-                    ybReconsiderVerify.setModifyTime(thisDate);
-                    ybReconsiderVerify.setSendPersonId(uId);
-                    ybReconsiderVerify.setSendPersonName(Uname);
-                    ybReconsiderVerify.setSendDate(thisDate);
-                    ybReconsiderVerify.setOperateDate(thisDate);
+//                    ybReconsiderVerify.setState(YbDefaultValue.VERIFYSTATE_3);
+//                    ybReconsiderVerify.setModifyUserId(uId);
+//                    ybReconsiderVerify.setModifyTime(thisDate);
+//                    ybReconsiderVerify.setSendPersonId(uId);
+//                    ybReconsiderVerify.setSendPersonName(Uname);
+//                    ybReconsiderVerify.setSendDate(thisDate);
+//                    ybReconsiderVerify.setOperateDate(thisDate);
 
                     String strVerifyDeptName = DataTypeHelpers.stringReplaceSetString(ybReconsiderVerify.getVerifyDeptName(), ybReconsiderVerify.getVerifyDeptCode() + "-");
                     ybReconsiderVerify.setVerifyDeptName(strVerifyDeptName);
@@ -820,8 +819,8 @@ public class YbReconsiderVerifyServiceImpl extends ServiceImpl<YbReconsiderVerif
                     }
                     ybAppealManage.setEnableDate(addDate);
                     ybAppealManage.setIsDeletemark(1);
-                    ybAppealManage.setCreateUserId(uId);
-                    ybAppealManage.setCreateTime(thisDate);
+//                    ybAppealManage.setCreateUserId(uId);
+//                    ybAppealManage.setCreateTime(thisDate);
                     ybAppealManage.setDataType(dataType);
                     ybAppealManage.setAreaType(areaType);
 
@@ -860,7 +859,9 @@ public class YbReconsiderVerifyServiceImpl extends ServiceImpl<YbReconsiderVerif
                             }
                         }
                     }
-                    this.baseMapper.update(ybReconsiderVerify, queryWrapper);
+                    YbReconsiderVerify updateVerify = new YbReconsiderVerify();
+                    updateVerify.setState(YbDefaultValue.VERIFYSTATE_3);
+                    this.baseMapper.update(updateVerify, queryWrapper);
                 }
             }
         }
@@ -907,13 +908,13 @@ public class YbReconsiderVerifyServiceImpl extends ServiceImpl<YbReconsiderVerif
 
                         if (queryPersonList.size() > 0) {
                             //更新
-                            ybReconsiderVerify.setState(YbDefaultValue.VERIFYSTATE_3);
-                            ybReconsiderVerify.setModifyUserId(uId);
-                            ybReconsiderVerify.setModifyTime(thisDate);
-                            ybReconsiderVerify.setSendPersonId(uId);
-                            ybReconsiderVerify.setSendPersonName(Uname);
-                            ybReconsiderVerify.setSendDate(thisDate);
-                            ybReconsiderVerify.setOperateDate(thisDate);
+//                            ybReconsiderVerify.setState(YbDefaultValue.VERIFYSTATE_3);
+//                            ybReconsiderVerify.setModifyUserId(uId);
+//                            ybReconsiderVerify.setModifyTime(thisDate);
+//                            ybReconsiderVerify.setSendPersonId(uId);
+//                            ybReconsiderVerify.setSendPersonName(Uname);
+//                            ybReconsiderVerify.setSendDate(thisDate);
+//                            ybReconsiderVerify.setOperateDate(thisDate);
 
                             String strVerifyDeptName = DataTypeHelpers.stringReplaceSetString(ybReconsiderVerify.getVerifyDeptName(), ybReconsiderVerify.getVerifyDeptCode() + "-");
                             ybReconsiderVerify.setVerifyDeptName(strVerifyDeptName);
@@ -950,8 +951,8 @@ public class YbReconsiderVerifyServiceImpl extends ServiceImpl<YbReconsiderVerif
                             }
                             ybAppealManage.setEnableDate(addDate);
                             ybAppealManage.setIsDeletemark(1);
-                            ybAppealManage.setCreateUserId(uId);
-                            ybAppealManage.setCreateTime(thisDate);
+//                            ybAppealManage.setCreateUserId(uId);
+//                            ybAppealManage.setCreateTime(thisDate);
                             ybAppealManage.setDataType(dataType);
                             ybAppealManage.setAreaType(areaType);
 
@@ -990,8 +991,9 @@ public class YbReconsiderVerifyServiceImpl extends ServiceImpl<YbReconsiderVerif
                                     }
                                 }
                             }
-
-                            this.baseMapper.update(ybReconsiderVerify, queryWrapper);
+                            YbReconsiderVerify updateVerify = new YbReconsiderVerify();
+                            updateVerify.setState(YbDefaultValue.VERIFYSTATE_3);
+                            this.baseMapper.update(updateVerify, queryWrapper);
                         }
                     }
                 }
@@ -1005,7 +1007,6 @@ public class YbReconsiderVerifyServiceImpl extends ServiceImpl<YbReconsiderVerif
     public void updateReviewerStates(List<YbReconsiderVerify> list, Long uId, String Uname) {
         List<YbPerson> personList = this.findPerson(list);
         for (YbReconsiderVerify item : list) {
-            Date thisDate = new Date();
             if (item.getVerifyDeptCode() != "" && item.getVerifyDeptCode() != null &&
                     item.getVerifyDeptName() != "" && item.getVerifyDeptName() != null &&
                     item.getVerifyDoctorCode() != "" && item.getVerifyDoctorCode() != null &&
@@ -1017,29 +1018,31 @@ public class YbReconsiderVerifyServiceImpl extends ServiceImpl<YbReconsiderVerif
                     item.setVerifyDoctorName(strVerifyDoctorName);
 
                     item.setState(YbDefaultValue.VERIFYSTATE_2);
-                    item.setModifyTime(thisDate);
-                    item.setModifyUserId(uId);
-                    item.setReviewerId(uId);
-                    item.setReviewerName(Uname);
-                    item.setReviewerDate(thisDate);
-                    item.setOperateDate(thisDate);
+//                    item.setModifyTime(thisDate);
+//                    item.setModifyUserId(uId);
+//                    item.setReviewerId(uId);
+//                    item.setReviewerName(Uname);
+//                    item.setReviewerDate(thisDate);
+//                    item.setOperateDate(thisDate);
                     item.setAreaType(item.getAreaType());
 
                     if (item.getId() == null || item.getId().equals("")) {
                         item.setId(UUID.randomUUID().toString());
                         item.setIsDeletemark(1);
-                        item.setMatchPersonId(uId);
-                        item.setMatchPersonName(Uname);
-                        item.setMatchDate(thisDate);
-                        item.setCreateTime(thisDate);
-                        item.setCreateUserId(uId);
+//                        item.setMatchPersonId(uId);
+//                        item.setMatchPersonName(Uname);
+//                        item.setMatchDate(thisDate);
+//                        item.setCreateTime(thisDate);
+//                        item.setCreateUserId(uId);
                         this.baseMapper.insert(item);
                     } else {
+                        YbReconsiderVerify updateVerify = new YbReconsiderVerify();
+                        updateVerify.setState(YbDefaultValue.VERIFYSTATE_2);
                         LambdaQueryWrapper<YbReconsiderVerify> queryWrapper = new LambdaQueryWrapper<>();
                         queryWrapper.eq(YbReconsiderVerify::getId, item.getId());
                         queryWrapper.eq(YbReconsiderVerify::getDataType, YbDefaultValue.DATATYPE_0);
                         queryWrapper.eq(YbReconsiderVerify::getState, YbDefaultValue.VERIFYSTATE_1);
-                        this.baseMapper.update(item, queryWrapper);
+                        this.baseMapper.update(updateVerify, queryWrapper);
                     }
                 }
             }
@@ -1058,7 +1061,6 @@ public class YbReconsiderVerifyServiceImpl extends ServiceImpl<YbReconsiderVerif
 
             if (typeno == YbDefaultValue.TYPENO_1 || typeno == YbDefaultValue.TYPENO_2) {
                 List<YbReconsiderVerify> list = this.baseMapper.findReconsiderVerifyList(applyDateStr,areaType, dataType, state, typeno);
-                Date thisDate = new Date();
                 List<YbReconsiderVerify> updateList = new ArrayList<>();
                 List<YbPerson> personList = this.iYbPersonService.findPersonList(new YbPerson(), 0);
                 for (YbReconsiderVerify item : list) {
@@ -1070,9 +1072,9 @@ public class YbReconsiderVerifyServiceImpl extends ServiceImpl<YbReconsiderVerif
                             YbReconsiderVerify update = new YbReconsiderVerify();
                             update.setId(item.getId());
                             update.setState(YbDefaultValue.VERIFYSTATE_2);
-                            update.setReviewerId(uId);
-                            update.setReviewerName(Uname);
-                            update.setReviewerDate(thisDate);
+//                            update.setReviewerId(uId);
+//                            update.setReviewerName(Uname);
+//                            update.setReviewerDate(thisDate);
                             updateList.add(update);
                         }
                     }
@@ -1095,9 +1097,9 @@ public class YbReconsiderVerifyServiceImpl extends ServiceImpl<YbReconsiderVerif
                     item.getVerifyDoctorCode() != "" && item.getVerifyDoctorCode() != null &&
                     item.getVerifyDoctorName() != "" && item.getVerifyDoctorName() != null) {
                 item.setState(YbDefaultValue.VERIFYSTATE_1);
-                item.setModifyTime(thisDate);
-                item.setModifyUserId(uId);
-                item.setOperateDate(thisDate);
+//                item.setModifyTime(thisDate);
+//                item.setModifyUserId(uId);
+//                item.setOperateDate(thisDate);
 
                 String strVerifyDeptName = DataTypeHelpers.stringReplaceSetString(item.getVerifyDeptName(), item.getVerifyDeptCode() + "-");
                 item.setVerifyDeptName(strVerifyDeptName);
@@ -1107,11 +1109,11 @@ public class YbReconsiderVerifyServiceImpl extends ServiceImpl<YbReconsiderVerif
                 if (item.getId() == null || item.getId().equals("")) {
                     item.setId(UUID.randomUUID().toString());
                     item.setIsDeletemark(1);
-                    item.setMatchPersonId(uId);
-                    item.setMatchPersonName(Uname);
-                    item.setMatchDate(thisDate);
-                    item.setCreateTime(thisDate);
-                    item.setCreateUserId(uId);
+//                    item.setMatchPersonId(uId);
+//                    item.setMatchPersonName(Uname);
+//                    item.setMatchDate(thisDate);
+//                    item.setCreateTime(thisDate);
+//                    item.setCreateUserId(uId);
                     this.baseMapper.insert(item);
                 } else {
                     LambdaQueryWrapper<YbReconsiderVerify> queryWrapper = new LambdaQueryWrapper<>();

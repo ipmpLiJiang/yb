@@ -223,8 +223,8 @@ public class YbPersonServiceImpl extends ServiceImpl<YbPersonMapper, YbPerson> i
     }
 
     @Override
-    public List<YbPerson> findPersonResultList(String applyDateStr){
-        return this.baseMapper.findPersonResultList(applyDateStr);
+    public List<YbPerson> findPersonResultList(String applyDateStr,Integer areaType){
+        return this.baseMapper.findPersonResultList(applyDateStr,areaType);
     }
 
     /**

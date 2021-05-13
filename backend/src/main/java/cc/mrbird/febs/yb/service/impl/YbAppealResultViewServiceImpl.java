@@ -127,55 +127,6 @@ public class YbAppealResultViewServiceImpl extends ServiceImpl<YbAppealResultVie
             YbReconsiderApply reconsiderApply = iYbReconsiderApplyService.findReconsiderApplyByApplyDateStrs(ybAppealResultView.getApplyDateStr(),ybAppealResultView.getAreaType());
             Page<YbAppealResultView> page = new Page<>();
             if (reconsiderApply != null) {
-//                LambdaQueryWrapper<YbAppealResultView> queryWrapper = new LambdaQueryWrapper<>();
-//                queryWrapper.eq(YbAppealResultView::getApplyDateStr, ybAppealResultView.getApplyDateStr());
-//
-//                if (ybAppealResultView.getBillNo() != null && ybAppealResultView.getBillNo() != "") {
-//                    queryWrapper.eq(YbAppealResultView::getBillNo, ybAppealResultView.getBillNo());
-//                }
-//
-//                if (ybAppealResultView.getSerialNo() != null && ybAppealResultView.getSerialNo() != "") {
-//                    queryWrapper.eq(YbAppealResultView::getSerialNo, ybAppealResultView.getSerialNo());
-//                }
-//
-//                if (ybAppealResultView.getDataType() != null) {
-//                    queryWrapper.eq(YbAppealResultView::getDataType, ybAppealResultView.getDataType());
-//                }
-//
-//                if (ybAppealResultView.getSourceType() != null) {
-//                    queryWrapper.eq(YbAppealResultView::getSourceType, ybAppealResultView.getSourceType());
-//                }
-//
-//                if (ybAppealResultView.getState() != null) {
-//                    queryWrapper.eq(YbAppealResultView::getState, ybAppealResultView.getState());
-//                }
-//
-//                if (ybAppealResultView.getDataType() == YbDefaultValue.DATATYPE_0) {
-//                    if (ybAppealResultView.getProjectCode() != null && ybAppealResultView.getProjectCode() != "") {
-//                        queryWrapper.eq(YbAppealResultView::getProjectCode, ybAppealResultView.getProjectCode());
-//                    }
-//                    if (ybAppealResultView.getProjectName() != null && ybAppealResultView.getProjectName() != "") {
-//                        queryWrapper.eq(YbAppealResultView::getProjectName, ybAppealResultView.getProjectName());
-//                    }
-//                } else {
-//                    if (ybAppealResultView.getPersonalNo() != null && ybAppealResultView.getPersonalNo() != "") {
-//                        queryWrapper.eq(YbAppealResultView::getPersonalNo, ybAppealResultView.getPersonalNo());
-//                    }
-//                }
-//
-//                if (ybAppealResultView.getRuleName() != null && ybAppealResultView.getRuleName() != "") {
-//                    queryWrapper.eq(YbAppealResultView::getRuleName, ybAppealResultView.getRuleName());
-//                }
-//
-//                if (ybAppealResultView.getId() != null && ybAppealResultView.getId() != "") {
-//                    queryWrapper.eq(YbAppealResultView::getId, ybAppealResultView.getId());
-//                }
-//
-//                if (ybAppealResultView.getRelatelDataId() != null && ybAppealResultView.getRelatelDataId() != "") {
-//                    queryWrapper.eq(YbAppealResultView::getRelatelDataId, ybAppealResultView.getRelatelDataId());
-//                }
-//                SortUtil.handlePageSort(request, page, false);//true 是属性  false是数据库字段可两个
-//                return this.page(page, queryWrapper);
                 ybAppealResultView.setPid(reconsiderApply.getId());
                 int count = this.baseMapper.findAppealResultResetCount(ybAppealResultView);
                 if (count > 0) {
@@ -296,8 +247,8 @@ public class YbAppealResultViewServiceImpl extends ServiceImpl<YbAppealResultVie
                 ybAppealResultView.setPid(reconsiderApply.getId());
                 YbReconsiderInpatientfees rif = new YbReconsiderInpatientfees();
                 rif.setApplyDateStr(reconsiderApply.getApplyDateStr());
-                rif.setTypeno(ybAppealResultView.getTypeno());
                 rif.setAreaType(reconsiderApply.getAreaType());
+                rif.setTypeno(ybAppealResultView.getTypeno());
                 List<YbReconsiderInpatientfees> rifList = iYbReconsiderInpatientfeesService.findReconsiderInpatientfeesList(rif);
                 List<YbReconsiderInpatientfees> queryRifList = new ArrayList<>();
                 list = this.baseMapper.findAppealResultList(ybAppealResultView);
@@ -336,50 +287,13 @@ public class YbAppealResultViewServiceImpl extends ServiceImpl<YbAppealResultVie
     public List<YbAppealResultView> findAppealResultViewLists(YbAppealResultView ybAppealResultView) {
         List<YbAppealResultView> list = new ArrayList<>();
         try {
-            /*
-            LambdaQueryWrapper<YbAppealResultView> queryWrapper = new LambdaQueryWrapper<>();
-            String sql = "";
-            sql += " applyDateStr ='" + ybAppealResultView.getApplyDateStr() + "'";
-            if (ybAppealResultView.getTypeno() != null) {
-                if (ybAppealResultView.getTypeno() == YbDefaultValue.TYPENO_1) {
-                    sql += " and typeno = " + YbDefaultValue.TYPENO_1;
-                } else if (ybAppealResultView.getTypeno() == YbDefaultValue.TYPENO_2) {
-                    sql += " and typeno = " + YbDefaultValue.TYPENO_2;
-                }
-            }
-            if (ybAppealResultView.getState() != null) {
-                if (ybAppealResultView.getState() == 12) {
-                    sql += " and state IN (1,2)";
-                } else {
-                    sql += " and state =" + ybAppealResultView.getState();
-                }
-
-            }
-
-            if (ybAppealResultView.getId() != null) {
-                sql += " and id = '" + ybAppealResultView.getId() + "'";
-            }
-
-            if (ybAppealResultView.getSourceType() != null) {
-                sql += " and sourceType = " + ybAppealResultView.getSourceType();
-            }
-
-            if (ybAppealResultView.getArDeptName() != null) {
-                sql += " and arDeptName = '" + ybAppealResultView.getArDeptName() + "'";
-            }
-
-            queryWrapper.apply(sql);
-            list = this.baseMapper.selectList(queryWrapper);
-
-            return list;
-            */
             YbReconsiderApply reconsiderApply = iYbReconsiderApplyService.findReconsiderApplyByApplyDateStrs(ybAppealResultView.getApplyDateStr(),ybAppealResultView.getAreaType());
             if (reconsiderApply != null) {
                 ybAppealResultView.setPid(reconsiderApply.getId());
                 YbReconsiderInpatientfees rif = new YbReconsiderInpatientfees();
                 rif.setApplyDateStr(reconsiderApply.getApplyDateStr());
-                rif.setTypeno(ybAppealResultView.getTypeno());
                 rif.setAreaType(reconsiderApply.getAreaType());
+                rif.setTypeno(ybAppealResultView.getTypeno());
                 List<YbReconsiderInpatientfees> rifList = iYbReconsiderInpatientfeesService.findReconsiderInpatientfeesList(rif);
                 List<YbReconsiderInpatientfees> queryRifList = new ArrayList<>();
                 list = this.baseMapper.findAppealResultList(ybAppealResultView);

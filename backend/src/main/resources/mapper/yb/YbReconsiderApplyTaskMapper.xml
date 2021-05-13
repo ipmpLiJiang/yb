@@ -82,5 +82,16 @@
         </if>
         <if test="ybReconsiderApplyTask.areaType != null">and ybReconsiderApplyTask.areaType =#{ ybReconsiderApplyTask.areaType}</if>
 </select>
-
+    <select id="findReconsiderApplyTask" resultType="cc.mrbird.febs.yb.entity.YbReconsiderApplyTask" parameterType="cc.mrbird.febs.yb.entity.YbReconsiderApplyTask">
+    SELECT
+    *
+    FROM
+    yb_reconsider_apply_task
+    WHERE
+    applyDateStr = #{ ybReconsiderApplyTask.applyDateStr} and
+    areaType = #{ ybReconsiderApplyTask.areaType} and
+    typeno = #{ ybReconsiderApplyTask.typeno} and
+    state = #{ ybReconsiderApplyTask.state}
+    order by currentPage desc LIMIT 0,1
+</select>
 </mapper>

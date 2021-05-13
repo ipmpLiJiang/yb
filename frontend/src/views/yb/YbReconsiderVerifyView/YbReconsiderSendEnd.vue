@@ -171,23 +171,6 @@ export default {
         },
         fixed: 'right',
         width: 105
-      },
-      {
-        title: '发送日期',
-        dataIndex: 'sendDate',
-        customRender: (text, row, index) => {
-          if (text !== '' && text !== null) {
-            if (isNaN(text) && !isNaN(Date.parse(text))) {
-              return moment(text).format(this.tableFormat)
-            } else {
-              return text
-            }
-          } else {
-            return text
-          }
-        },
-        fixed: 'right',
-        width: 110
       }]
     }
   },

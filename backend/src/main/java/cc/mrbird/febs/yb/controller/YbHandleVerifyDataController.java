@@ -73,7 +73,7 @@ public class YbHandleVerifyDataController extends BaseController {
     public void addYbHandleVerifyData(@Valid YbHandleVerifyData ybHandleVerifyData) throws FebsException {
         try {
             User currentUser = FebsUtil.getCurrentUser();
-            ybHandleVerifyData.setCreateUserId(currentUser.getUserId());
+//            ybHandleVerifyData.setCreateUserId(currentUser.getUserId());
             this.iYbHandleVerifyDataService.createYbHandleVerifyData(ybHandleVerifyData);
         } catch (Exception e) {
             message = "新增/按钮失败";
@@ -94,7 +94,7 @@ public class YbHandleVerifyDataController extends BaseController {
     public void updateYbHandleVerifyData(@Valid YbHandleVerifyData ybHandleVerifyData) throws FebsException {
         try {
             User currentUser = FebsUtil.getCurrentUser();
-            ybHandleVerifyData.setModifyUserId(currentUser.getUserId());
+//            ybHandleVerifyData.setModifyUserId(currentUser.getUserId());
             this.iYbHandleVerifyDataService.updateYbHandleVerifyData(ybHandleVerifyData);
         } catch (Exception e) {
             message = "修改失败";
@@ -140,14 +140,14 @@ public class YbHandleVerifyDataController extends BaseController {
     @Log("修改")
     @PutMapping("updateSendState")
     @RequiresPermissions("ybHandleVerifyData:update")
-    public void updateSendStates(String dataJson) throws FebsException {
+    public void updateSendStates(String dataJson,String applyDateStr,Integer areaType) throws FebsException {
         try {
             User currentUser = FebsUtil.getCurrentUser();
             Long uid = currentUser.getUserId();
             String uname = currentUser.getUsername();
             List<YbHandleVerifyData> list = JSON.parseObject(dataJson, new TypeReference<List<YbHandleVerifyData>>() {
             });
-            this.iYbHandleVerifyDataService.updateSendStates(list,uid,uname);
+            this.iYbHandleVerifyDataService.updateSendStates(list,applyDateStr,areaType,uid,uname);
         } catch (Exception e) {
             message = "发送失败";
             log.error(message, e);
@@ -158,13 +158,13 @@ public class YbHandleVerifyDataController extends BaseController {
     @Log("修改")
     @PutMapping("updateASendState")
     @RequiresPermissions("ybHandleVerifyData:update")
-    public void updateASendState(String applyDateStr,Integer state,Integer dataType) throws FebsException {
+    public void updateASendState(String applyDateStr,Integer state,Integer dataType,Integer areaType) throws FebsException {
         try {
             User currentUser = FebsUtil.getCurrentUser();
             Long uid = currentUser.getUserId();
             String uname = currentUser.getUsername();
 
-            this.iYbHandleVerifyDataService.updateAllSendStates(applyDateStr,dataType,state,uid ,uname);
+            this.iYbHandleVerifyDataService.updateAllSendStates(applyDateStr,dataType,areaType,state,uid ,uname);
         } catch (Exception e) {
             message = "发送失败";
             log.error(message, e);

@@ -281,6 +281,7 @@ export default {
       this.isUpdate = true
       let updateParams = {
         resetId: this.ybReconsiderResetData.id,
+        areaType: this.ybReconsiderResetData.areaType,
         applyDateStr: this.ybReconsiderResetData.applyDateStr
       }
       this.$put('ybReconsiderResetData/updateHandleResetCanceltData', {
@@ -328,6 +329,7 @@ export default {
       // params.projectName = this.ybReconsiderResetData.projectName
       // params.personalNo = this.ybReconsiderResetData.personalNo
       params.relatelDataId = this.ybReconsiderResetData.relatelDataId
+      params.areaType = this.ybReconsiderResetData.areaType
       params.dataType = this.ybReconsiderResetData.dataType
       params.sourceType = 0
       params.state = 2

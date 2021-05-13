@@ -159,16 +159,16 @@ public class YbAppealConfireServiceImpl extends ServiceImpl<YbAppealConfireMappe
     @Override
     public YbAppealConfire findAppealConfire(YbAppealConfire appealConfire) {
         LambdaQueryWrapper<YbAppealConfire> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(YbAppealConfire::getIsDeletemark, 1);
         if (appealConfire.getId() != null) {
             wrapper.eq(YbAppealConfire::getId, appealConfire.getId());
-        }
-        if (appealConfire.getDoctorCode() != null) {
-            wrapper.eq(YbAppealConfire::getDoctorCode, appealConfire.getDoctorCode());
         }
         if (appealConfire.getAreaType() != null) {
             wrapper.eq(YbAppealConfire::getAreaType, appealConfire.getAreaType());
         }
+        if (appealConfire.getDoctorCode() != null) {
+            wrapper.eq(YbAppealConfire::getDoctorCode, appealConfire.getDoctorCode());
+        }
+        wrapper.eq(YbAppealConfire::getIsDeletemark, 1);
         List<YbAppealConfire> list = this.baseMapper.selectList(wrapper);
         if (list.size() > 0) {
             return list.get(0);
@@ -178,9 +178,10 @@ public class YbAppealConfireServiceImpl extends ServiceImpl<YbAppealConfireMappe
     }
 
     @Override
-    public List<YbAppealConfire> findAppealConfireATList(List<Integer> atIds) {
+    public List<YbAppealConfire> findAppealConfireATList(List<Integer> atIds,Integer areaType) {
         LambdaQueryWrapper<YbAppealConfire> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(YbAppealConfire::getIsDeletemark, 1);
+        wrapper.eq(YbAppealConfire::getAreaType, areaType);
         wrapper.in(YbAppealConfire::getAdminType, atIds);
         return this.list(wrapper);
     }

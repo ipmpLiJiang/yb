@@ -202,6 +202,7 @@ export default {
       })
     },
     fetch (params = {}) {
+      params.applyDateStr = this.ybAppealManageHistory.applyDateStr
       params.applyDataId = this.appealManageHistory.applyDataId
       this.loading = true
       if (this.paginationInfo) {
@@ -215,7 +216,7 @@ export default {
         params.pageSize = this.pagination.defaultPageSize
         params.pageNum = this.pagination.defaultCurrent
       }
-      params.sortField = 'create_Time'
+      params.sortField = 'operateDate'
       params.sortOrder = 'descend'
       this.$get('ybAppealManage', {
         ...params

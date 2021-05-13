@@ -66,8 +66,8 @@ public class YbAppealConfireDataController extends BaseController {
     @RequiresPermissions("ybAppealConfireData:add")
     public void addYbAppealConfireData(@Valid YbAppealConfireData ybAppealConfireData) throws FebsException {
         try {
-            User currentUser = FebsUtil.getCurrentUser();
-            ybAppealConfireData.setCreateUserId(currentUser.getUserId());
+//            User currentUser = FebsUtil.getCurrentUser();
+//            ybAppealConfireData.setCreateUserId(currentUser.getUserId());
             this.iYbAppealConfireDataService.createYbAppealConfireData(ybAppealConfireData);
         } catch (Exception e) {
             message = "新增/按钮失败";
@@ -87,8 +87,8 @@ public class YbAppealConfireDataController extends BaseController {
     @RequiresPermissions("ybAppealConfireData:update")
     public void updateYbAppealConfireData(@Valid YbAppealConfireData ybAppealConfireData) throws FebsException {
         try {
-            User currentUser = FebsUtil.getCurrentUser();
-            ybAppealConfireData.setModifyUserId(currentUser.getUserId());
+//            User currentUser = FebsUtil.getCurrentUser();
+//            ybAppealConfireData.setModifyUserId(currentUser.getUserId());
             this.iYbAppealConfireDataService.updateYbAppealConfireData(ybAppealConfireData);
         } catch (Exception e) {
             message = "修改失败";

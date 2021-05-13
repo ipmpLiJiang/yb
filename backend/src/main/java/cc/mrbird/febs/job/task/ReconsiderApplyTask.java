@@ -22,22 +22,14 @@ public class ReconsiderApplyTask {
     public void applyTask(String params) {
         if(params == null || params.equals("no")){
             params = "";
+        } else {
+            String[] arr = params.split("\\|");
+            if(arr.length == 2) {
+                params = arr[0];
+                int areaType = Integer.parseInt(arr[1]);
+                iYbReconsiderApplyService.findReconsiderApplyDataTask(params, areaType);
+            }
         }
-        iYbReconsiderApplyService.findReconsiderApplyDataTask(params, YbDefaultValue.AREATYPE_0);
-    }
-
-    public void applyTaskWest(String params) {
-        if(params == null || params.equals("no")){
-            params = "";
-        }
-        iYbReconsiderApplyService.findReconsiderApplyDataTask(params, YbDefaultValue.AREATYPE_1);
-    }
-
-    public void applyTaskOther(String params) {
-        if(params == null || params.equals("no")){
-            params = "";
-        }
-        iYbReconsiderApplyService.findReconsiderApplyDataTask(params, YbDefaultValue.AREATYPE_2);
     }
 
 }

@@ -24,5 +24,5 @@ public interface YbPersonMapper extends BaseMapper<YbPerson> {
     List<YbPerson> findPersonList( @Param("type") Integer type);
 
 
-    List<YbPerson> findPersonResultList( @Param("applyDateStr") String applyDateStr);
+    List<YbPerson> findPersonResultList( @Param("applyDateStr") String applyDateStr,@Param("areaType") Integer areaType);
 }

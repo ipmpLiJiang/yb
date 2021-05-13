@@ -48,15 +48,14 @@
                     <result column="hvDoctorName" property="hvDoctorName"/>
                     <result column="hvDeptCode" property="hvDeptCode"/>
                     <result column="hvDeptName" property="hvDeptName"/>
-                    <result column="operateReason" property="operateReason"/>
-                    <result column="operateDate" property="operateDate"/>
                     <result column="STATE" property="state"/>
                     <result column="currencyField" property="currencyField"/>
+            <result column="areaType" property="areaType"/>
         </resultMap>
 
         <!-- 通用查询结果列 -->
         <sql id="Base_Column_List">
-        serialNo, billNo, proposalCode, projectCode, projectName, num, medicalPrice, ruleName, deductPrice, deductReason, repaymentReason, doctorName, deptCode, deptName, enterHospitalDateStr, outHospitalDateStr, costDateStr, hospitalizedNo, treatmentMode, settlementDateStr, personalNo, insuredName, cardNumber, areaName, versionNumber, backAppeal, typeno, insuredType, dataType, orderNumber,orderNum,applyDateStr, id, pid, applyDataId, verifyId, manageId, resultId,relatelDataId, hvDoctorCode, hvDoctorName, hvDeptCode, hvDeptName, operateReason, operateDate, STATE, currencyField
+        serialNo, billNo, proposalCode, projectCode, projectName, num, medicalPrice, ruleName, deductPrice, deductReason, repaymentReason, doctorName, deptCode, deptName, enterHospitalDateStr, outHospitalDateStr, costDateStr, hospitalizedNo, treatmentMode, settlementDateStr, personalNo, insuredName, cardNumber, areaName, versionNumber, backAppeal, typeno, insuredType, dataType, orderNumber,orderNum,applyDateStr, id, pid, applyDataId, verifyId, manageId, resultId,relatelDataId, hvDoctorCode, hvDoctorName, hvDeptCode, hvDeptName,  STATE, currencyField,areaType
     </sql>
     <update id="updateYbHandleVerifyDataView" parameterType="cc.mrbird.febs.yb.entity.YbHandleVerifyDataView">
         update yb_handle_verify_data_view
@@ -120,11 +119,9 @@
             hvd.doctorName hvDoctorName,
             hvd.deptCode hvDeptCode,
             hvd.deptName hvDeptName,
-            hvd.operateReason,
-            hvd.operateDate,
             hvd.STATE,
             hvd.relatelDataId,
-            hvd.currencyField
+            '' currencyField
         from
             yb_handle_verify_data hvd
             INNER JOIN yb_reconsider_apply_data ad ON

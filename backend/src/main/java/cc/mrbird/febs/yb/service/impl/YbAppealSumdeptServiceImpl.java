@@ -45,12 +45,12 @@ public class YbAppealSumdeptServiceImpl extends ServiceImpl<YbAppealSumdeptMappe
     public IPage<YbAppealSumdept> findYbAppealSumdepts(QueryRequest request, YbAppealSumdept ybAppealSumdept) {
         try {
             LambdaQueryWrapper<YbAppealSumdept> queryWrapper = new LambdaQueryWrapper<>();
-            queryWrapper.eq(YbAppealSumdept::getIsDeletemark, 1);//1是未删 0是已删
-
+            queryWrapper.eq(YbAppealSumdept::getAreaType, ybAppealSumdept.getAreaType());
             if (StringUtils.isNotBlank(ybAppealSumdept.getCurrencyField())) {
                 queryWrapper.like(YbAppealSumdept::getCurrencyField, ybAppealSumdept.getCurrencyField());
             }
 
+            queryWrapper.eq(YbAppealSumdept::getIsDeletemark, 1);//1是未删 0是已删
             Page<YbAppealSumdept> page = new Page<>();
             SortUtil.handlePageSort(request, page, false);//true 是属性  false是数据库字段可两个
             return this.page(page, queryWrapper);
@@ -133,9 +133,11 @@ public class YbAppealSumdeptServiceImpl extends ServiceImpl<YbAppealSumdeptMappe
     @Override
     public YbAppealSumdept findAppealSumdept(YbAppealSumdept appealSumdept) {
         LambdaQueryWrapper<YbAppealSumdept> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(YbAppealSumdept::getIsDeletemark, 1);
         if (appealSumdept.getId() != null) {
             wrapper.eq(YbAppealSumdept::getId, appealSumdept.getId());
+        }
+        if (appealSumdept.getAreaType() != null) {
+            wrapper.eq(YbAppealSumdept::getAreaType, appealSumdept.getAreaType());
         }
         if (appealSumdept.getAsCode() != null) {
             wrapper.eq(YbAppealSumdept::getAsCode, appealSumdept.getAsCode());
@@ -143,6 +145,7 @@ public class YbAppealSumdeptServiceImpl extends ServiceImpl<YbAppealSumdeptMappe
         if (appealSumdept.getAsName() != null) {
             wrapper.eq(YbAppealSumdept::getAsName, appealSumdept.getAsName());
         }
+        wrapper.eq(YbAppealSumdept::getIsDeletemark, 1);
         List<YbAppealSumdept> list = this.baseMapper.selectList(wrapper);
         if (list.size() > 0) {
             return list.get(0);

@@ -212,6 +212,11 @@ public class YbNoticeServiceImpl extends ServiceImpl<YbNoticeMapper, YbNotice> i
         if (ybNotice.getId() != null) {
             queryWrapper.eq(YbNotice::getId, ybNotice.getId());
         }
+
+        if (ybNotice.getAreaType() != null) {
+            queryWrapper.eq(YbNotice::getAreaType, ybNotice.getAreaType());
+        }
+
         if (ybNotice.getNtTitle() != null) {
             queryWrapper.eq(YbNotice::getNtTitle, ybNotice.getNtTitle());
         }
@@ -344,7 +349,7 @@ public class YbNoticeServiceImpl extends ServiceImpl<YbNoticeMapper, YbNotice> i
                 for (YbNoticeData item : noticeDatalist) {
                     atIds.add(item.getCmId());
                 }
-                List<YbAppealConfire> acList = iYbAppealConfireService.findAppealConfireATList(atIds);
+                List<YbAppealConfire> acList = iYbAppealConfireService.findAppealConfireATList(atIds,ybNotice.getAreaType());
                 for (YbAppealConfire obj : acList) {
                     this.addSms(personList, createSms, obj.getDoctorCode(), sendContent, currentUser);
                 }

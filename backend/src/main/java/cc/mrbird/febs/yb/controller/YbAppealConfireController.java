@@ -130,7 +130,6 @@ public class YbAppealConfireController extends BaseController {
                     createData.setDeptId(item.getDeptId());
                     String strDeptName = DataTypeHelpers.stringReplaceSetString(item.getDeptName(), item.getDeptId() + "-");
                     createData.setDeptName(strDeptName);
-                    createData.setIsDeletemark(1);
                     createDataList.add(createData);
                 }
                 this.iYbAppealConfireService.createAppealConfire(create, createDataList);
@@ -184,7 +183,6 @@ public class YbAppealConfireController extends BaseController {
                     String strDeptName = DataTypeHelpers.stringReplaceSetString(item.getDeptName(), item.getDeptId() + "-");
                     updateData.setDeptName(strDeptName);
                     if (updateData.getId() == null) {
-                        updateData.setIsDeletemark(1);
                         updateData.setId(UUID.randomUUID().toString());
                         createDataList.add(updateData);
                     } else {

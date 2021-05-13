@@ -86,8 +86,6 @@ public class YbReconsiderResetDataController extends BaseController {
     @RequiresPermissions("ybReconsiderResetData:add")
     public void addYbReconsiderResetData(@Valid YbReconsiderResetData ybReconsiderResetData) throws FebsException {
         try {
-            User currentUser = FebsUtil.getCurrentUser();
-            ybReconsiderResetData.setCreateUserId(currentUser.getUserId());
             this.iYbReconsiderResetDataService.createYbReconsiderResetData(ybReconsiderResetData);
         } catch (Exception e) {
             message = "新增/按钮失败";
@@ -107,8 +105,6 @@ public class YbReconsiderResetDataController extends BaseController {
     @RequiresPermissions("ybReconsiderResetData:update")
     public void updateYbReconsiderResetData(@Valid YbReconsiderResetData ybReconsiderResetData) throws FebsException {
         try {
-            User currentUser = FebsUtil.getCurrentUser();
-            ybReconsiderResetData.setModifyUserId(currentUser.getUserId());
             this.iYbReconsiderResetDataService.updateYbReconsiderResetData(ybReconsiderResetData);
         } catch (Exception e) {
             message = "修改失败";
@@ -210,10 +206,10 @@ public class YbReconsiderResetDataController extends BaseController {
     @Log("修改")
     @PutMapping("updateHandleResetCanceltData")
     @RequiresPermissions("ybReconsiderResetData:updateResetData")
-    public FebsResponse updateHandResetCanceltData(String resetId,String applyDateStr) {
+    public FebsResponse updateHandResetCanceltData(String resetId,String applyDateStr,Integer areaType) {
         int success = 0;
         try {
-            message = this.iYbReconsiderResetDataService.updateHandleResetCancelData(resetId,applyDateStr);
+            message = this.iYbReconsiderResetDataService.updateHandleResetCancelData(resetId,applyDateStr,areaType);
             if ("ok".equals(message)) {
                 success = 1;
                 message = "取消剔除数据成功.";

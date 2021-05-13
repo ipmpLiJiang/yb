@@ -203,16 +203,16 @@ public class YbReconsiderRepayDataController extends BaseController {
     @Log("修改")
     @PutMapping("updateRepayData")
     @RequiresPermissions("ybReconsiderRepayData:updateRepayData")
-    public FebsResponse updateRepayDatas(@Valid YbReconsiderRepayData ybReconsiderRepayData) {
+    public FebsResponse updateRepayDatas(@Valid YbReconsiderRepayData ybReconsiderRepayData,Integer areaType) {
         int success = 0;
         try {
             User currentUser = FebsUtil.getCurrentUser();
             Long uid = currentUser.getUserId();
             String uname = currentUser.getUsername();
 
-            message = this.iYbReconsiderRepayDataService.updateOrderNumberRepayDatas(ybReconsiderRepayData, uid, uname);
+            message = this.iYbReconsiderRepayDataService.updateOrderNumberRepayDatas(ybReconsiderRepayData,areaType, uid, uname);
             if ("ok".equals(message)) {
-                message = this.iYbReconsiderRepayDataService.updateFieldRepayDatas(ybReconsiderRepayData, uid, uname);
+                message = this.iYbReconsiderRepayDataService.updateFieldRepayDatas(ybReconsiderRepayData,areaType, uid, uname);
                 if ("ok".equals(message) || "repay0".equals(message)) {
                     success = 1;
                     message = "还款数据成功.";

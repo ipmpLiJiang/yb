@@ -41,8 +41,6 @@ public interface IYbAppealManageService extends IService<YbAppealManage> {
 
     String updateUploadStateCompleteds(YbAppealManage ybAppealManage, Long uId, String Uname);
 
-    void updateExamineStates(YbAppealManage ybAppealManage);
-
     List<YbAppealManage> getUpdateAppealManageList(List<YbAppealManageView> appealManageList, Date endDateOne);
 
     int findAppealManageResetCheckCounts(String applyDateStr,Integer areaType);

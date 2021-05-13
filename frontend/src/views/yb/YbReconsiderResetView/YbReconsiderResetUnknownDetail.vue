@@ -206,6 +206,7 @@ export default {
       loading1: false,
       queryParams1: {
       },
+      user: this.$store.state.account.user,
       isUpdate: false,
       state: 1,
       seekState: 0,
@@ -693,6 +694,7 @@ export default {
       params.dataType = this.ybReconsiderResetUnknownDetail.dataType
       params.sourceType = 0
       params.state = this.state
+      params.areaType = this.user.areaType
       this.loading = true
       if (this.paginationInfo) {
         // 如果分页信息不为空，则设置表格当前第几页，每页条数，并设置查询分页参数

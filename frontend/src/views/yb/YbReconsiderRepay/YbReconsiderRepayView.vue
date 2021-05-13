@@ -202,6 +202,7 @@ export default {
       spinning: false,
       delayTime: 500,
       isUpdate: false,
+      user: this.$store.state.account.user,
       tableSelectKey: '1'
     }
   },
@@ -267,6 +268,7 @@ export default {
         seekState: 0,
         repayType: this.ybReconsiderRepay.repayType,
         dataType: this.ybReconsiderRepay.dataType,
+        areaType: this.user.areaType,
         state: 0
       }
       this.spinning = true

@@ -49,49 +49,6 @@ public class YbAppealManageViewServiceImpl extends ServiceImpl<YbAppealManageVie
     @Override
     public IPage<YbAppealManageView> findYbAppealManageViews(QueryRequest request, YbAppealManageView ybAppealManageView) {
         try {
-            /*
-            Page<YbAppealManageView> page = new Page<>();
-
-            YbReconsiderApply reconsiderApply = iYbReconsiderApplyService.findReconsiderApplyByApplyDateStrs(ybAppealManageView.getApplyDateStr());
-            if (reconsiderApply != null) {
-                LambdaQueryWrapper<YbAppealManageView> queryWrapper = new LambdaQueryWrapper<>();
-                String sql = "(";
-                sql += " pid='" + reconsiderApply.getId() + "' ";
-
-                if (ybAppealManageView.getAcceptState() != null) {
-                    if (ybAppealManageView.getAcceptState() == 10) {
-                        sql += " and (acceptState = 1 or acceptState = 0)";
-                    } else if (ybAppealManageView.getAcceptState() == 210) {
-                        sql += " and (acceptState = 1 or acceptState = 0 or acceptState = 2)";
-                    } else {
-                        sql += " and acceptState = " + ybAppealManageView.getAcceptState();
-                    }
-                }
-                if (ybAppealManageView.getTypeno() != null && ybAppealManageView.getTypeno() != 0) {
-                    if (ybAppealManageView.getTypeno() == 3) {
-                        sql += " and sourceType = 1";
-                    } else {
-                        sql += " and typeno = " + ybAppealManageView.getTypeno();
-                    }
-                }
-                sql += ")";
-                if (ybAppealManageView.getCurrencyField() != null && !"".equals(ybAppealManageView.getCurrencyField())) {
-                    sql += " and (serialNo like'%" + ybAppealManageView.getCurrencyField() + "%'" +
-                            " or billNo like'%" + ybAppealManageView.getCurrencyField() + "%'" +
-                            " or orderNumber = '" + ybAppealManageView.getCurrencyField() + "'" +
-                            " or proposalCode like'%" + ybAppealManageView.getCurrencyField() + "%'" +
-                            " or projectCode like'%" + ybAppealManageView.getCurrencyField() + "%'" +
-                            " or ruleName like'%" + ybAppealManageView.getCurrencyField() + "%'" +
-                            " or projectName like'%" + ybAppealManageView.getCurrencyField() + "%'" +
-                            " or deductReason like'%" + ybAppealManageView.getCurrencyField() + "%')";
-                }
-                queryWrapper.apply(sql);
-                SortUtil.handlePageSort(request, page, false);//true 是属性  false是数据库字段可两个
-                return this.page(page, queryWrapper);
-            } else {
-                return page;
-            }*/
-
             YbReconsiderApply reconsiderApply = iYbReconsiderApplyService.findReconsiderApplyByApplyDateStrs(ybAppealManageView.getApplyDateStr(),ybAppealManageView.getAreaType());
             Page<YbAppealManageView> page = new Page<>();
             if (reconsiderApply != null) {
@@ -130,45 +87,6 @@ public class YbAppealManageViewServiceImpl extends ServiceImpl<YbAppealManageVie
     @Override
     public IPage<YbAppealManageView> findAppealManageUserViews(QueryRequest request, YbAppealManageView ybAppealManageView) {
         try {
-            /*
-            Page<YbAppealManageView> page = new Page<>();
-
-            YbReconsiderApply reconsiderApply = iYbReconsiderApplyService.findReconsiderApplyByApplyDateStrs(ybAppealManageView.getApplyDateStr());
-            if (reconsiderApply != null) {
-                LambdaQueryWrapper<YbAppealManageView> queryWrapper = new LambdaQueryWrapper<>();
-
-                String sql = "(";
-                sql += " pid='" + reconsiderApply.getId() + "' ";
-
-                sql += " and readyDoctorCode ='" + ybAppealManageView.getReadyDoctorCode() + "'";
-
-                if (ybAppealManageView.getAcceptState() != null) {
-                    sql += " and acceptState = " + ybAppealManageView.getAcceptState();
-                }
-                if (ybAppealManageView.getTypeno() != null && ybAppealManageView.getTypeno() != 0) {
-                    if (ybAppealManageView.getTypeno() == 3) {
-                        sql += " and sourceType = 1";
-                    } else {
-                        sql += " and typeno = " + ybAppealManageView.getTypeno();
-                    }
-                }
-                sql += ")";
-                if (ybAppealManageView.getCurrencyField() != null && !"".equals(ybAppealManageView.getCurrencyField())) {
-                    sql += " and (serialNo like'%" + ybAppealManageView.getCurrencyField() + "%'" +
-                            " or orderNumber = '" + ybAppealManageView.getCurrencyField() + "'" +
-                            " or billNo like'%" + ybAppealManageView.getCurrencyField() + "%'" +
-                            " or proposalCode like'%" + ybAppealManageView.getCurrencyField() + "%'" +
-                            " or projectCode like'%" + ybAppealManageView.getCurrencyField() + "%'" +
-                            " or ruleName like'%" + ybAppealManageView.getCurrencyField() + "%'" +
-                            " or projectName like'%" + ybAppealManageView.getCurrencyField() + "%'" +
-                            " or deductReason like'%" + ybAppealManageView.getCurrencyField() + "%')";
-                }
-                queryWrapper.apply(sql);
-                SortUtil.handlePageSort(request, page, false);//true 是属性  false是数据库字段可两个
-                return this.page(page, queryWrapper);
-            } else {
-                return page;
-            }*/
             YbReconsiderApply reconsiderApply = iYbReconsiderApplyService.findReconsiderApplyByApplyDateStrs(ybAppealManageView.getApplyDateStr(),ybAppealManageView.getAreaType());
             Page<YbAppealManageView> page = new Page<>();
             if (reconsiderApply != null) {
@@ -207,46 +125,6 @@ public class YbAppealManageViewServiceImpl extends ServiceImpl<YbAppealManageVie
     @Override
     public IPage<YbAppealManageView> findAppealManageOperateRoomViews(QueryRequest request, YbAppealManageView ybAppealManageView) {
         try {
-            /*
-            Page<YbAppealManageView> page = new Page<>();
-
-            YbReconsiderApply reconsiderApply = iYbReconsiderApplyService.findReconsiderApplyByApplyDateStrs(ybAppealManageView.getApplyDateStr());
-            if (reconsiderApply != null) {
-                LambdaQueryWrapper<YbAppealManageView> queryWrapper = new LambdaQueryWrapper<>();
-                String sql = "(";
-                sql += " pid='" + reconsiderApply.getId() + "' ";
-
-                sql += " and orderDoctorCode ='" + ybAppealManageView.getOrderDoctorCode() + "'";
-
-                sql += " and readyDeptName ='手术室'";
-
-                if (ybAppealManageView.getAcceptState() != null) {
-                    sql += " and acceptState = " + ybAppealManageView.getAcceptState();
-                }
-                if (ybAppealManageView.getTypeno() != null && ybAppealManageView.getTypeno() != 0) {
-                    if (ybAppealManageView.getTypeno() == 3) {
-                        sql += " and sourceType = 1";
-                    } else {
-                        sql += " and typeno = " + ybAppealManageView.getTypeno();
-                    }
-                }
-                sql += ")";
-                if (ybAppealManageView.getCurrencyField() != null && !"".equals(ybAppealManageView.getCurrencyField())) {
-                    sql += " and (serialNo like'%" + ybAppealManageView.getCurrencyField() + "%'" +
-                            " or orderNumber = '" + ybAppealManageView.getCurrencyField() + "'" +
-                            " or billNo like'%" + ybAppealManageView.getCurrencyField() + "%'" +
-                            " or proposalCode like'%" + ybAppealManageView.getCurrencyField() + "%'" +
-                            " or projectCode like'%" + ybAppealManageView.getCurrencyField() + "%'" +
-                            " or ruleName like'%" + ybAppealManageView.getCurrencyField() + "%'" +
-                            " or projectName like'%" + ybAppealManageView.getCurrencyField() + "%'" +
-                            " or deductReason like'%" + ybAppealManageView.getCurrencyField() + "%')";
-                }
-                queryWrapper.apply(sql);
-                SortUtil.handlePageSort(request, page, false);//true 是属性  false是数据库字段可两个
-                return this.page(page, queryWrapper);
-            } else {
-                return page;
-            }*/
             YbReconsiderApply reconsiderApply = iYbReconsiderApplyService.findReconsiderApplyByApplyDateStrs(ybAppealManageView.getApplyDateStr(),ybAppealManageView.getAreaType());
             Page<YbAppealManageView> page = new Page<>();
             if (reconsiderApply != null) {
@@ -286,66 +164,10 @@ public class YbAppealManageViewServiceImpl extends ServiceImpl<YbAppealManageVie
     @Override
     public IPage<YbAppealManageView> findAppealManageConfireViews(QueryRequest request, YbAppealManageView ybAppealManageView, User currentUser) {
         try {
-            /*
-            Page<YbAppealManageView> page = new Page<>();
-            YbReconsiderApply reconsiderApply = iYbReconsiderApplyService.findReconsiderApplyByApplyDateStrs(ybAppealManageView.getApplyDateStr());
-            if (reconsiderApply != null) {
-                List<YbAppealConfireData> acdlist = iYbAppealConfireDataService.findAppealConfireDataByInDoctorCodeList(currentUser.getUsername());
-                if (acdlist.size() > 0) {
-                    LambdaQueryWrapper<YbAppealManageView> queryWrapper = new LambdaQueryWrapper<>();
-
-                    List<String> deptList = new ArrayList<>();
-                    String deptInStr = "";
-                    for (YbAppealConfireData item : acdlist) {
-                        if (deptList.stream().filter(s -> s.equals(item.getDeptId())).count() == 0) {
-                            deptList.add(item.getDeptId());
-                            if (deptInStr.equals("")) {
-                                deptInStr = "'" + item.getDeptId() + "'";
-                            } else {
-                                deptInStr += ",'" + item.getDeptId() + "'";
-                            }
-                        }
-                    }
-
-                    String sql = "(";
-                    sql += " pid='" + reconsiderApply.getId() + "' ";
-
-                    sql += " and readyDeptCode in (" + deptInStr + ") ";
-
-                    if (ybAppealManageView.getAcceptState() != null) {
-                        sql += " and acceptState = " + ybAppealManageView.getAcceptState();
-                    }
-                    if (ybAppealManageView.getTypeno() != null && ybAppealManageView.getTypeno() != 0) {
-                        if (ybAppealManageView.getTypeno() == 3) {
-                            sql += " and sourceType = 1";
-                        } else {
-                            sql += " and typeno = " + ybAppealManageView.getTypeno();
-                        }
-                    }
-                    sql += ")";
-                    if (ybAppealManageView.getCurrencyField() != null && !"".equals(ybAppealManageView.getCurrencyField())) {
-                        sql += " and (serialNo like'%" + ybAppealManageView.getCurrencyField() + "%'" +
-                                " or orderNumber = '" + ybAppealManageView.getCurrencyField() + "'" +
-                                " or billNo like'%" + ybAppealManageView.getCurrencyField() + "%'" +
-                                " or proposalCode like'%" + ybAppealManageView.getCurrencyField() + "%'" +
-                                " or projectCode like'%" + ybAppealManageView.getCurrencyField() + "%'" +
-                                " or ruleName like'%" + ybAppealManageView.getCurrencyField() + "%'" +
-                                " or projectName like'%" + ybAppealManageView.getCurrencyField() + "%'" +
-                                " or deductReason like'%" + ybAppealManageView.getCurrencyField() + "%')";
-                    }
-                    queryWrapper.apply(sql);
-                    SortUtil.handlePageSort(request, page, false);//true 是属性  false是数据库字段可两个
-                    return this.page(page, queryWrapper);
-                } else {
-                    return page;
-                }
-            } else {
-                return page;
-            }*/
             YbReconsiderApply reconsiderApply = iYbReconsiderApplyService.findReconsiderApplyByApplyDateStrs(ybAppealManageView.getApplyDateStr(),ybAppealManageView.getAreaType());
             Page<YbAppealManageView> page = new Page<>();
             if (reconsiderApply != null) {
-                List<YbAppealConfireData> acdlist = iYbAppealConfireDataService.findAppealConfireDataByInDoctorCodeList(currentUser.getUsername());
+                List<YbAppealConfireData> acdlist = iYbAppealConfireDataService.findAppealConfireDataByInDoctorCodeList(currentUser.getUsername(),ybAppealManageView.getAreaType());
                 if (acdlist.size() > 0) {
                     String appealConfireId = acdlist.get(0).getPid();
                     ybAppealManageView.setPid(reconsiderApply.getId());
@@ -398,25 +220,6 @@ public class YbAppealManageViewServiceImpl extends ServiceImpl<YbAppealManageVie
         List<YbAppealManageView> list = new ArrayList<>();
 
         if (ybAppealManageView.getPid() != null) {
-            /*
-            LambdaQueryWrapper<YbAppealManageView> wrapper = new LambdaQueryWrapper<>();
-            if (ybAppealManageView.getPid() != null) {
-                wrapper.eq(YbAppealManageView::getPid, ybAppealManageView.getPid());
-            }
-            if (ybAppealManageView.getAcceptState() != null) {
-                wrapper.eq(YbAppealManageView::getAcceptState, ybAppealManageView.getAcceptState());
-            }
-            if (ybAppealManageView.getTypeno() != null) {
-                wrapper.eq(YbAppealManageView::getTypeno, ybAppealManageView.getTypeno());
-            }
-            if (ybAppealManageView.getSourceType() != null) {
-                wrapper.eq(YbAppealManageView::getSourceType, ybAppealManageView.getSourceType());//
-            }
-            if (ybAppealManageView.getDataType() != null) {
-                wrapper.eq(YbAppealManageView::getDataType, ybAppealManageView.getDataType());
-            }
-            return this.list(wrapper);
-             */
             return this.baseMapper.findAppealManageList(ybAppealManageView);
         } else {
             return list;

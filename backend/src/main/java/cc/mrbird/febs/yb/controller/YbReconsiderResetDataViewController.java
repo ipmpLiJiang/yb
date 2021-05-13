@@ -377,6 +377,8 @@ public class YbReconsiderResetDataViewController extends BaseController {
 
             YbAppealResult queryAppealResult = new YbAppealResult();
             queryAppealResult.setApplyDateStr(resetDataView.getApplyDateStr());
+            queryAppealResult.setAreaType(resetDataView.getAreaType());
+            queryAppealResult.setSourceType(YbDefaultValue.SOURCETYPE_0);
             queryAppealResult.setState(2);
             List<YbAppealResult> appealResultList = iYbAppealResultService.findAppealResultList(queryAppealResult);
             List<YbAppealResult> queryAppealResultList = new ArrayList<>();

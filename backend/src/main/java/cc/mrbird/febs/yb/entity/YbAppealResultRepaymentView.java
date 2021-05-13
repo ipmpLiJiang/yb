@@ -368,6 +368,13 @@ public class YbAppealResultRepaymentView implements Serializable, Comparable<YbA
     @ExcelField(value = "通用")
     private String currencyField;
 
+    /**
+     * 院区
+     */
+    @TableField("areaType")
+    @ExcelField(value = "院区")
+    private Integer areaType;
+
 
     public static final String ID = "id";
 
@@ -462,6 +469,8 @@ public class YbAppealResultRepaymentView implements Serializable, Comparable<YbA
     public static final String SHAREPROGRAMME = "shareProgramme";
 
     public static final String CURRENCYFIELD = "currencyField";
+
+    public static final String AREATYPE = "areaType";
 
     @Override
     public int compareTo(YbAppealResultRepaymentView o) {

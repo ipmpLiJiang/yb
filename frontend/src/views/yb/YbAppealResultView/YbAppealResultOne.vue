@@ -146,6 +146,23 @@ export default {
       {
         title: '科室名称',
         dataIndex: 'arDeptName',
+        customRender: (text, row, index) => {
+          if (text !== '' && text !== null) {
+            return row.arDeptCode + '-' + row.arDeptName
+          }
+        },
+        fixed: 'right',
+        width: 150
+      },
+      {
+        title: '医生姓名',
+        dataIndex: 'arDoctorName',
+        customRender: (text, row, index) => {
+          if (text !== '' && text !== null) {
+            return row.arDoctorCode + '-' + row.arDoctorName
+          }
+        },
+        fixed: 'right',
         width: 130
       },
       {

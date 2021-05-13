@@ -42,5 +42,5 @@ public interface IYbAppealConfireService extends IService<YbAppealConfire> {
 
     YbAppealConfire findAppealConfire(YbAppealConfire appealConfire);
 
-    List<YbAppealConfire> findAppealConfireATList(List<Integer> atIds);
+    List<YbAppealConfire> findAppealConfireATList(List<Integer> atIds,Integer areaType);
 }

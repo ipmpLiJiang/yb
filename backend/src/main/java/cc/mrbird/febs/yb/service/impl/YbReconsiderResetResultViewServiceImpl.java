@@ -40,6 +40,9 @@ public class YbReconsiderResetResultViewServiceImpl extends ServiceImpl<YbRecons
             //queryWrapper.eq(YbReconsiderResetResultView::getIsDeletemark, 1);//1是未删 0是已删
             String sql = "(";
             sql += " applyDateStr ='" + ybReconsiderResetResultView.getApplyDateStr() + "' ";
+            if (ybReconsiderResetResultView.getAreaType() != null) {
+                sql += " and areaType = " + ybReconsiderResetResultView.getAreaType();
+            }
             if (ybReconsiderResetResultView.getDataType() != null) {
                 sql += " and dataType = " + ybReconsiderResetResultView.getDataType();
             }
@@ -107,8 +110,8 @@ public class YbReconsiderResetResultViewServiceImpl extends ServiceImpl<YbRecons
         if (ybReconsiderResetResultView.getApplyDateStr() != null) {
             queryWrapper.eq(YbReconsiderResetResultView::getApplyDateStr, ybReconsiderResetResultView.getApplyDateStr());
         }
-        if (ybReconsiderResetResultView.getDataType() != null) {
-            queryWrapper.eq(YbReconsiderResetResultView::getDataType, ybReconsiderResetResultView.getDataType());
+        if (ybReconsiderResetResultView.getAreaType() != null) {
+            queryWrapper.eq(YbReconsiderResetResultView::getAreaType, ybReconsiderResetResultView.getAreaType());
         }
         if (ybReconsiderResetResultView.getDataType() != null) {
             queryWrapper.eq(YbReconsiderResetResultView::getDataType, ybReconsiderResetResultView.getDataType());

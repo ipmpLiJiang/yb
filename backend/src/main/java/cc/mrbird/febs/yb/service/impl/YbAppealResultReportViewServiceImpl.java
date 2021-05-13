@@ -162,7 +162,7 @@ public class YbAppealResultReportViewServiceImpl extends ServiceImpl<YbAppealRes
             String pid = null;
             List<YbReconsiderApply> reconsiderApplyList = new ArrayList<>();
             if (listStr.size() > 0) {
-                reconsiderApplyList = this.findReconsiderApplyList(listStr);
+                reconsiderApplyList = this.findReconsiderApplyList(listStr,ybAppealResultReportView.getAreaType());
                 if (reconsiderApplyList.size() > 0) {
                     pid = reconsiderApplyList.get(0).getId();
                 }
@@ -224,11 +224,12 @@ public class YbAppealResultReportViewServiceImpl extends ServiceImpl<YbAppealRes
         return listStr;
     }
 
-    private List<YbReconsiderApply> findReconsiderApplyList(List<String> listStr) {
+    private List<YbReconsiderApply> findReconsiderApplyList(List<String> listStr,Integer areaType) {
         LambdaQueryWrapper<YbReconsiderApply> wrapper = new LambdaQueryWrapper<>();
         wrapper.in(YbReconsiderApply::getApplyDateStr, listStr);
-        wrapper.eq(YbReconsiderApply::getIsDeletemark, 1);
+        wrapper.eq(YbReconsiderApply::getAreaType, areaType);
         wrapper.eq(YbReconsiderApply::getResetState, 1);
+        wrapper.eq(YbReconsiderApply::getIsDeletemark, 1);
         return iYbReconsiderApplyService.getBaseMapper().selectList(wrapper);
     }
 
@@ -245,7 +246,7 @@ public class YbAppealResultReportViewServiceImpl extends ServiceImpl<YbAppealRes
             String pid = null;
             List<YbReconsiderApply> reconsiderApplyList = new ArrayList<>();
             if (listStr.size() > 0) {
-                reconsiderApplyList = this.findReconsiderApplyList(listStr);
+                reconsiderApplyList = this.findReconsiderApplyList(listStr,ybAppealResultReportView.getAreaType());
                 if (reconsiderApplyList.size() > 0) {
                     pid = reconsiderApplyList.get(0).getId();
                 }

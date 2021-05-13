@@ -656,6 +656,7 @@ export default {
     fetch1 (params = {}) {
       params.id = this.ybReconsiderResetExceptDetail.id
       params.applyDateStr = this.ybReconsiderResetExceptDetail.applyDateStr
+      params.areaType = this.ybReconsiderResetExceptDetail.areaType
       params.serialNo = this.ybReconsiderResetExceptDetail.serialNo
       params.billNo = this.ybReconsiderResetExceptDetail.billNo
       params.projectCode = this.ybReconsiderResetExceptDetail.projectCode
@@ -687,6 +688,7 @@ export default {
     },
     fetch (params = {}) {
       params.applyDateStr = this.ybReconsiderResetExceptDetail.applyDateStr
+      params.areaType = this.ybReconsiderResetExceptDetail.areaType
       params.serialNo = this.ybReconsiderResetExceptDetail.serialNo
       params.billNo = this.ybReconsiderResetExceptDetail.billNo
       params.projectCode = this.ybReconsiderResetExceptDetail.projectCode

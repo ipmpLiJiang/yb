@@ -8,18 +8,11 @@
                     <result column="pid" property="pid"/>
                     <result column="deptId" property="deptId"/>
                     <result column="deptName" property="deptName"/>
-                    <result column="COMMENTS" property="comments"/>
-                    <result column="STATE" property="state"/>
-                    <result column="IS_DELETEMARK" property="isDeletemark"/>
-                    <result column="MODIFY_TIME" property="modifyTime"/>
-                    <result column="CREATE_TIME" property="createTime"/>
-                    <result column="CREATE_USER_ID" property="createUserId"/>
-                    <result column="MODIFY_USER_ID" property="modifyUserId"/>
         </resultMap>
 
         <!-- 通用查询结果列 -->
         <sql id="Base_Column_List">
-        id, pid, deptId, deptName, COMMENTS, STATE, IS_DELETEMARK, MODIFY_TIME, CREATE_TIME, CREATE_USER_ID, MODIFY_USER_ID
+        id, pid, deptId, deptName
     </sql>
     <update id="updateYbAppealConfireData" parameterType="cc.mrbird.febs.yb.entity.YbAppealConfireData">
         update yb_appeal_confire_data
@@ -27,13 +20,6 @@
 <if test="pid != null">pid=#{pid},</if>
 <if test="deptId != null">deptId=#{deptId},</if>
 <if test="deptName != null">deptName=#{deptName},</if>
-<if test="comments != null">COMMENTS=#{comments},</if>
-<if test="state != null">STATE=#{state},</if>
-<if test="isDeletemark != null">IS_DELETEMARK=#{isDeletemark},</if>
-<if test="modifyTime != null">MODIFY_TIME=#{modifyTime},</if>
-<if test="createTime != null">CREATE_TIME=#{createTime},</if>
-<if test="createUserId != null">CREATE_USER_ID=#{createUserId},</if>
-<if test="modifyUserId != null">MODIFY_USER_ID=#{modifyUserId},</if>
         </trim>
                 where id=#{id}
 
@@ -45,21 +31,7 @@
             <if test="ybAppealConfireData.pid != null and ybAppealConfireData.pid != ''"> and pid like concat('%', #{ ybAppealConfireData.pid} ,'%')</if>
             <if test="ybAppealConfireData.deptId != null and ybAppealConfireData.deptId != ''"> and deptId like concat('%', #{ ybAppealConfireData.deptId} ,'%')</if>
             <if test="ybAppealConfireData.deptName != null and ybAppealConfireData.deptName != ''"> and deptName like concat('%', #{ ybAppealConfireData.deptName} ,'%')</if>
-            <if test="ybAppealConfireData.comments != null and ybAppealConfireData.comments != ''"> and COMMENTS like concat('%', #{ ybAppealConfireData.comments} ,'%')</if>
-        <if test="ybAppealConfireData.state != null"> and STATE =#{ ybAppealConfireData.state} </if>
-        <if test="ybAppealConfireData.isDeletemark != null"> and IS_DELETEMARK =#{ ybAppealConfireData.isDeletemark} </if>
-        <if test="ybAppealConfireData.modifyTimeFrom!= null">
-            AND ybAppealConfireData.MODIFY_TIME <![CDATA[ >= ]]>  modifyTimeFrom}
-        </if>
-        <if test="ybAppealConfireData.modifyTimeTo!= null">
-            AND ybAppealConfireData.MODIFY_TIME <![CDATA[ <= ]]>  modifyTimeTo}
-        </if>
-        <if test="ybAppealConfireData.createTimeFrom!= null">
-            AND ybAppealConfireData.CREATE_TIME <![CDATA[ >= ]]>  createTimeFrom}
-        </if>
-        <if test="ybAppealConfireData.createTimeTo!= null">
-            AND ybAppealConfireData.CREATE_TIME <![CDATA[ <= ]]>  createTimeTo}
-        </if>
+
 </select>
 
 </mapper>

@@ -28,5 +28,5 @@ public interface IYbHandleVerifyService extends IService<YbHandleVerify> {
 
         void deleteYbHandleVerifys(String[]Ids);
 
-        YbHandleVerify findYbHandleVerifyApplyDateStr(String applyDateStr);
+        YbHandleVerify findYbHandleVerifyApplyDateStr(String applyDateStr,Integer areaType);
         }

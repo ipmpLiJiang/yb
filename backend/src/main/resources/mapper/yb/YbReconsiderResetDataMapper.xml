@@ -44,15 +44,11 @@
                     <result column="COMMENTS" property="comments"/>
                     <result column="STATE" property="state"/>
                     <result column="IS_DELETEMARK" property="isDeletemark"/>
-                    <result column="MODIFY_TIME" property="modifyTime"/>
-                    <result column="CREATE_TIME" property="createTime"/>
-                    <result column="CREATE_USER_ID" property="createUserId"/>
-                    <result column="MODIFY_USER_ID" property="modifyUserId"/>
         </resultMap>
 
         <!-- 通用查询结果列 -->
         <sql id="Base_Column_List">
-        id, pid, serialNo, billNo, projectCode, projectName, medicalPrice, ruleName, deductPrice, deductReason, repaymentReason, doctorName, deptCode, deptName, costDate, costDateStr, hospitalizedNo, treatmentMode, settlementDate, settlementDateStr, personalNo, insuredName, cardNumber, areaName,insuredType,dataType,orderNumber,orderNum,repaymentPrice,relatelDataId,resetType,resetPersonId,resetPersonName,resetDate, COMMENTS, STATE, IS_DELETEMARK, MODIFY_TIME, CREATE_TIME, CREATE_USER_ID, MODIFY_USER_ID
+        id, pid, serialNo, billNo, projectCode, projectName, medicalPrice, ruleName, deductPrice, deductReason, repaymentReason, doctorName, deptCode, deptName, costDate, costDateStr, hospitalizedNo, treatmentMode, settlementDate, settlementDateStr, personalNo, insuredName, cardNumber, areaName,insuredType,dataType,orderNumber,orderNum,repaymentPrice,relatelDataId,resetType,resetPersonId,resetPersonName,resetDate, COMMENTS, STATE, IS_DELETEMARK
     </sql>
     <update id="updateYbReconsiderResetData" parameterType="cc.mrbird.febs.yb.entity.YbReconsiderResetData">
         update yb_reconsider_reset_data
@@ -96,10 +92,6 @@
 <if test="comments != null">COMMENTS=#{comments},</if>
 <if test="state != null">STATE=#{state},</if>
 <if test="isDeletemark != null">IS_DELETEMARK=#{isDeletemark},</if>
-<if test="modifyTime != null">MODIFY_TIME=#{modifyTime},</if>
-<if test="createTime != null">CREATE_TIME=#{createTime},</if>
-<if test="createUserId != null">CREATE_USER_ID=#{createUserId},</if>
-<if test="modifyUserId != null">MODIFY_USER_ID=#{modifyUserId},</if>
         </trim>
                 where id=#{id}
 
@@ -159,18 +151,7 @@
         <if test="ybReconsiderResetData.repaymentPrice != null"> and repaymentPrice =#{ ybReconsiderResetData.repaymentPrice} </if>
         <if test="ybReconsiderResetData.state != null"> and STATE =#{ ybReconsiderResetData.state} </if>
         <if test="ybReconsiderResetData.isDeletemark != null"> and IS_DELETEMARK =#{ ybReconsiderResetData.isDeletemark} </if>
-        <if test="ybReconsiderResetData.modifyTimeFrom!= null">
-            AND ybReconsiderResetData.MODIFY_TIME <![CDATA[ >= ]]>  modifyTimeFrom}
-        </if>
-        <if test="ybReconsiderResetData.modifyTimeTo!= null">
-            AND ybReconsiderResetData.MODIFY_TIME <![CDATA[ <= ]]>  modifyTimeTo}
-        </if>
-        <if test="ybReconsiderResetData.createTimeFrom!= null">
-            AND ybReconsiderResetData.CREATE_TIME <![CDATA[ >= ]]>  createTimeFrom}
-        </if>
-        <if test="ybReconsiderResetData.createTimeTo!= null">
-            AND ybReconsiderResetData.CREATE_TIME <![CDATA[ <= ]]>  createTimeTo}
-        </if>
+
 </select>
 
     <select id="findResetNotExistsRepayByApplyDate" resultType="cc.mrbird.febs.yb.entity.YbReconsiderResetData">
@@ -182,6 +163,7 @@
             yb_reconsider_reset.id = yb_reconsider_reset_data.pid
         WHERE
             yb_reconsider_reset.applyDateStr = #{ applyDateStr} AND
+            yb_reconsider_reset.areaType = #{ areaType} AND
             NOT EXISTS (
                 SELECT yb_reconsider_repay_data.id FROM
                 yb_reconsider_repay_data

@@ -65,6 +65,7 @@ export default {
       },
       queryParams: {
       },
+      user: this.$store.state.account.user,
       loading: false,
       bordered: true,
       ybReconsiderVerify: {}
@@ -140,12 +141,22 @@ export default {
       {
         title: '复议科室',
         dataIndex: 'hvDeptName',
+        customRender: (text, row, index) => {
+          if (text !== '' && text !== null) {
+            return row.hvDeptCode + '-' + row.hvDeptName
+          }
+        },
         fixed: 'right',
         width: 200
       },
       {
         title: '复议医生',
         dataIndex: 'hvDoctorName',
+        customRender: (text, row, index) => {
+          if (text !== '' && text !== null) {
+            return row.hvDoctorCode + '-' + row.hvDoctorName
+          }
+        },
         fixed: 'right',
         width: 130
       },
@@ -225,6 +236,7 @@ export default {
     fetch (params = {}) {
       this.loading = true
       params.applyDateStr = this.applyDate
+      params.areaType = this.user.areaType
       params.state = 3
       if (this.searchDataType !== 2) {
         params.dataType = this.searchDataType

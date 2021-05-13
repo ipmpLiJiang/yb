@@ -156,9 +156,10 @@
                 yb_appeal_result.doctorCode = yb_person.personCode and
                 yb_person.IS_DELETEMARK =1
         WHERE
-            yb_appeal_result.IS_DELETEMARK = 1 AND
             yb_appeal_result.applyDateStr = #{ applyDateStr} AND
-            yb_appeal_result.state =2
+            yb_appeal_result.areaType = #{ areaType} AND
+            yb_appeal_result.state =2 and
+            yb_appeal_result.IS_DELETEMARK = 1
     </select>
 
 </mapper>

@@ -83,7 +83,6 @@ public class YbReconsiderResetDataServiceImpl extends ServiceImpl<YbReconsiderRe
         if (ybReconsiderResetData.getId() == null || "".equals(ybReconsiderResetData.getId())) {
             ybReconsiderResetData.setId(UUID.randomUUID().toString());
         }
-        ybReconsiderResetData.setCreateTime(new Date());
         ybReconsiderResetData.setIsDeletemark(1);
         this.save(ybReconsiderResetData);
     }
@@ -91,7 +90,6 @@ public class YbReconsiderResetDataServiceImpl extends ServiceImpl<YbReconsiderRe
     @Override
     @Transactional
     public void updateYbReconsiderResetData(YbReconsiderResetData ybReconsiderResetData) {
-        ybReconsiderResetData.setModifyTime(new Date());
         this.baseMapper.updateYbReconsiderResetData(ybReconsiderResetData);
     }
 
@@ -103,9 +101,9 @@ public class YbReconsiderResetDataServiceImpl extends ServiceImpl<YbReconsiderRe
     }
 
     @Override
-    public List<YbReconsiderResetData> findReconsiderResetDataByApplyDates(String applyDateStr, Integer dataType) {
+    public List<YbReconsiderResetData> findReconsiderResetDataByApplyDates(String applyDateStr, Integer areaType, Integer dataType) {
         List<YbReconsiderResetData> list = new ArrayList<>();
-        YbReconsiderReset reconsiderReset = iYbReconsiderResetService.findReconsiderResetByApplyDateStr(applyDateStr);
+        YbReconsiderReset reconsiderReset = iYbReconsiderResetService.findReconsiderResetByApplyDateStr(applyDateStr,areaType);
         if (reconsiderReset != null) {
             LambdaQueryWrapper<YbReconsiderResetData> wrapper = new LambdaQueryWrapper<>();
             wrapper.eq(YbReconsiderResetData::getPid,reconsiderReset.getId());
@@ -118,14 +116,14 @@ public class YbReconsiderResetDataServiceImpl extends ServiceImpl<YbReconsiderRe
     }
 
     @Override
-    public List<YbReconsiderResetData> findResetNotExistsRepayByApplyDates(String applyDateStr, Integer dataType) {
-        return this.baseMapper.findResetNotExistsRepayByApplyDate(applyDateStr, dataType);
+    public List<YbReconsiderResetData> findResetNotExistsRepayByApplyDates(String applyDateStr, Integer areaType, Integer dataType) {
+        return this.baseMapper.findResetNotExistsRepayByApplyDate(applyDateStr,areaType, dataType);
     }
 
     @Override
-    public String updateHandleResetCancelData(String resetId, String applyDateStr) {
+    public String updateHandleResetCancelData(String resetId, String applyDateStr,Integer areaType) {
         String message = "";
-        YbReconsiderReset reconsiderReset = iYbReconsiderResetService.findReconsiderResetByApplyDateStr(applyDateStr);
+        YbReconsiderReset reconsiderReset = iYbReconsiderResetService.findReconsiderResetByApplyDateStr(applyDateStr,areaType);
         if (reconsiderReset != null) {
             if (reconsiderReset.getState() == 0) {
                 LambdaQueryWrapper<YbReconsiderResetData> wrapperReset = new LambdaQueryWrapper<>();
@@ -138,7 +136,10 @@ public class YbReconsiderResetDataServiceImpl extends ServiceImpl<YbReconsiderRe
                     resetDataList = this.list(wrapperReset);
                     if (resetData.getSeekState() == YbDefaultValue.SEEKSTATE_1) {
                         LambdaQueryWrapper<YbAppealResult> wrapperResult = new LambdaQueryWrapper<>();
+                        wrapperResult.eq(YbAppealResult::getApplyDateStr, applyDateStr);
+                        wrapperResult.eq(YbAppealResult::getAreaType, areaType);
                         wrapperResult.eq(YbAppealResult::getRelatelDataId, resetData.getRelatelDataId());
+                        wrapperResult.eq(YbAppealResult::getIsDeletemark, 1);
                         List<YbAppealResult> resultList = this.iYbAppealResultService.list(wrapperResult);
                         if (resetDataList.size() > 0 && resultList.size() > 0) {
                             int count = 0;
@@ -205,8 +206,6 @@ public class YbReconsiderResetDataServiceImpl extends ServiceImpl<YbReconsiderRe
                         updateResetData.setRelatelDataId(relatelDataId);
                         updateResetData.setResetPersonId(uid);
                         updateResetData.setResetPersonName(uname);
-                        updateResetData.setModifyTime(new Date());
-                        updateResetData.setModifyUserId(uid);
 //                            updateResetData.setResultId(appealResult.getId());
 //                            updateResetData.setApplyDataId(appealResult.getApplyDataId());
 //                            updateResetData.setApplyOrderNumber(appealResult.getOrderNumber());
@@ -255,23 +254,19 @@ public class YbReconsiderResetDataServiceImpl extends ServiceImpl<YbReconsiderRe
     public String updateResetDatas(String applyDateStr,Integer areaType, Long uid, String uname, Integer dataType) {
         String message = "";
         int rvCheckCount = iYbReconsiderVerifyService.findReconsiderVerifyResetCheckCounts(applyDateStr,areaType);
-        int amCheckCount = iYbAppealManageService.findAppealManageResetCheckCounts(applyDateStr,areaType);
         if (rvCheckCount == 0) {
+            int amCheckCount = iYbAppealManageService.findAppealManageResetCheckCounts(applyDateStr,areaType);
             if (amCheckCount == 0) {
                 YbReconsiderResetDataView queryRrd = new YbReconsiderResetDataView();
                 queryRrd.setApplyDateStr(applyDateStr);
+                queryRrd.setAreaType(areaType);
                 queryRrd.setDataType(dataType);
                 queryRrd.setSeekState(YbDefaultValue.SEEKSTATE_0);
-//                LambdaQueryWrapper<YbReconsiderResetDataView> queryWrapperRdv = new LambdaQueryWrapper<>();
-//                queryWrapperRdv.eq(YbReconsiderResetDataView::getApplyDateStr, applyDateStr);
-//                queryWrapperRdv.eq(YbReconsiderResetDataView::getDataType, dataType);
-//                queryWrapperRdv.eq(YbReconsiderResetDataView::getSeekState, YbDefaultValue.SEEKSTATE_0);
-//                List<YbReconsiderResetDataView> resetDataList = this.iYbReconsiderResetDataViewService.list(queryWrapperRdv);
                 List<YbReconsiderResetDataView> resetDataList = this.iYbReconsiderResetDataViewService.findYbReconsiderResetDataList(queryRrd);
                 if (resetDataList.size() > 0) {
                     List<YbReconsiderApplyData> applyDataList = this.iYbReconsiderApplyDataService.findReconsiderApplyDataByApplyDates(applyDateStr,areaType, dataType);
                     if (applyDataList.size() > 0) {
-                        List<YbAppealResult> resultList = this.iYbAppealResultService.findAppealResulDataByResets(applyDateStr, dataType);
+                        List<YbAppealResult> resultList = this.iYbAppealResultService.findAppealResulDataByResets(applyDateStr,areaType, dataType);
                         if (resultList.size() == 0) {
                             message = "result0";
                         } else {
@@ -284,8 +279,6 @@ public class YbReconsiderResetDataServiceImpl extends ServiceImpl<YbReconsiderRe
                             for (YbReconsiderResetDataView rdv : resetDataList) {
                                 YbReconsiderResetData updateResetData = new YbReconsiderResetData();
                                 updateResetData.setId(rdv.getId());
-                                updateResetData.setModifyTime(new Date());
-                                updateResetData.setModifyUserId(uid);
                                 String relatelDataId = UUID.randomUUID().toString();
 
                                 //DataType 0 明细扣款 1 主单扣款

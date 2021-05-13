@@ -77,7 +77,7 @@ public class YbAppealResultServiceImpl extends ServiceImpl<YbAppealResultMapper,
         if (ybAppealResult.getId() == null || "".equals(ybAppealResult.getId())) {
             ybAppealResult.setId(UUID.randomUUID().toString());
         }
-        ybAppealResult.setCreateTime(new Date());
+//        ybAppealResult.setCreateTime(new Date());
         ybAppealResult.setIsDeletemark(1);
         this.save(ybAppealResult);
     }
@@ -85,7 +85,7 @@ public class YbAppealResultServiceImpl extends ServiceImpl<YbAppealResultMapper,
     @Override
     @Transactional
     public void updateYbAppealResult(YbAppealResult ybAppealResult) {
-        ybAppealResult.setModifyTime(new Date());
+//        ybAppealResult.setModifyTime(new Date());
         this.baseMapper.updateYbAppealResult(ybAppealResult);
     }
 
@@ -107,8 +107,8 @@ public class YbAppealResultServiceImpl extends ServiceImpl<YbAppealResultMapper,
         } else {
             Date thisDate = new java.sql.Timestamp(new Date().getTime());
             ybAppealResult.setIsDeletemark(1);
-            ybAppealResult.setCreateUserId(uId);
-            ybAppealResult.setCreateTime(thisDate);
+//            ybAppealResult.setCreateUserId(uId);
+//            ybAppealResult.setCreateTime(thisDate);
             ybAppealResult.setOperateDate(thisDate);
             //ybAppealResult.setOperateReason("");
             int count = this.baseMapper.insert(ybAppealResult);
@@ -143,20 +143,20 @@ public class YbAppealResultServiceImpl extends ServiceImpl<YbAppealResultMapper,
 
     //数据剔除业务
     @Override
-    public List<YbAppealResult> findAppealResulDataByResets(String applyDateStr, Integer dataType) {
-        return this.baseMapper.findAppealResulDataByReset(applyDateStr, dataType);
+    public List<YbAppealResult> findAppealResulDataByResets(String applyDateStr,Integer areaType, Integer dataType) {
+        return this.baseMapper.findAppealResulDataByReset(applyDateStr,areaType, dataType);
     }
 
     //数据还款业务
     @Override
-    public List<YbAppealResult> findAppealResulDataByRepays(String applyDateStr, Integer dataType) {
-        return this.baseMapper.findAppealResulDataByRepay(applyDateStr, dataType);
+    public List<YbAppealResult> findAppealResulDataByRepays(String applyDateStr,Integer areaType, Integer dataType) {
+        return this.baseMapper.findAppealResulDataByRepay(applyDateStr,areaType, dataType);
     }
 
     //手动剔除业务
     @Override
-    public List<YbAppealResult> findAppealResulDataHandles(String applyDateStr,String hvId) {
-        return this.baseMapper.findAppealResulDataHandle(applyDateStr,hvId);
+    public List<YbAppealResult> findAppealResulDataHandles(String applyDateStr,String hvId,Integer areaType) {
+        return this.baseMapper.findAppealResulDataHandle(applyDateStr,hvId,areaType);
     }
 
     @Override
@@ -166,20 +166,23 @@ public class YbAppealResultServiceImpl extends ServiceImpl<YbAppealResultMapper,
             wrapper.eq(YbAppealResult::getApplyDateStr, appealResult.getApplyDateStr());
         }
 
-        if (appealResult.getState() != null) {
-            wrapper.eq(YbAppealResult::getState, appealResult.getState());
+        if (appealResult.getAreaType() != null) {
+            wrapper.eq(YbAppealResult::getAreaType, appealResult.getAreaType());
         }
-
-        if (appealResult.getSourceType() != null) {
-            wrapper.eq(YbAppealResult::getSourceType, appealResult.getSourceType());
-        }
-
         if (appealResult.getDataType() != null) {
             wrapper.eq(YbAppealResult::getDataType, appealResult.getDataType());
         }
 
         if (appealResult.getTypeno() != null) {
             wrapper.eq(YbAppealResult::getTypeno, appealResult.getTypeno());
+        }
+
+        if (appealResult.getState() != null) {
+            wrapper.eq(YbAppealResult::getState, appealResult.getState());
+        }
+
+        if (appealResult.getSourceType() != null) {
+            wrapper.eq(YbAppealResult::getSourceType, appealResult.getSourceType());
         }
 
         if (appealResult.getRepayState() != null) {

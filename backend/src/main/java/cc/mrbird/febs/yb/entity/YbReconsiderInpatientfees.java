@@ -329,37 +329,6 @@ private static final long serialVersionUID=1L;
             @ExcelField(value ="是否删除")
     private Integer isDeletemark;
 
-    /**
-     * 修改时间
-     */
-    @TableField("MODIFY_TIME")
-            @ExcelField(value ="修改时间")
-    private Date modifyTime;
-    private transient String modifyTimeFrom;
-    private transient String modifyTimeTo;
-
-    /**
-     * 创建时间
-     */
-    @TableField("CREATE_TIME")
-            @ExcelField(value ="创建时间")
-    private Date createTime;
-    private transient String createTimeFrom;
-    private transient String createTimeTo;
-
-    /**
-     * 创建人
-     */
-    @TableField("CREATE_USER_ID")
-            @ExcelField(value ="创建人")
-    private Long createUserId;
-
-    /**
-     * 修改人
-     */
-    @TableField("MODIFY_USER_ID")
-            @ExcelField(value ="修改人")
-    private Long modifyUserId;
 
     /**
      * 院区
@@ -427,14 +396,6 @@ private static final long serialVersionUID=1L;
     public static final String STATE ="STATE" ;
 
     public static final String IS_DELETEMARK ="IS_DELETEMARK" ;
-
-    public static final String MODIFY_TIME ="MODIFY_TIME" ;
-
-    public static final String CREATE_TIME ="CREATE_TIME" ;
-
-    public static final String CREATE_USER_ID ="CREATE_USER_ID" ;
-
-    public static final String MODIFY_USER_ID ="MODIFY_USER_ID" ;
 
     public static final String AREATYPE = "areaType";
 

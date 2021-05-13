@@ -84,6 +84,9 @@ public class ComSmsServiceImpl extends ServiceImpl<ComSmsMapper, ComSms> impleme
         if (comSms.getMobile() != null) {
             wrapper.eq(ComSms::getMobile, comSms.getMobile());
         }
+        if (comSms.getSendType() != null) {
+            wrapper.eq(ComSms::getSendType, comSms.getSendType());
+        }
         if (comSms.getState() != null) {
             wrapper.eq(ComSms::getState, comSms.getState());
         }

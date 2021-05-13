@@ -35,8 +35,8 @@ public class YbReconsiderInpatientfeesServiceImpl extends ServiceImpl<YbReconsid
     public IPage<YbReconsiderInpatientfees> findYbReconsiderInpatientfeess(QueryRequest request, YbReconsiderInpatientfees ybReconsiderInpatientfees) {
         try {
             LambdaQueryWrapper<YbReconsiderInpatientfees> queryWrapper = new LambdaQueryWrapper<>();
-            queryWrapper.eq(YbReconsiderInpatientfees::getIsDeletemark, 1);//1是未删 0是已删
             queryWrapper.eq(YbReconsiderInpatientfees::getAreaType, ybReconsiderInpatientfees.getAreaType());
+            queryWrapper.eq(YbReconsiderInpatientfees::getIsDeletemark, 1);//1是未删 0是已删
 
             Page<YbReconsiderInpatientfees> page = new Page<>();
             SortUtil.handlePageSort(request, page, false);//true 是属性  false是数据库字段可两个
@@ -62,10 +62,10 @@ public class YbReconsiderInpatientfeesServiceImpl extends ServiceImpl<YbReconsid
     public IPage<YbReconsiderInpatientfees> findYbReconsiderInpatientfeesList(QueryRequest request, YbReconsiderInpatientfees ybReconsiderInpatientfees) {
         try {
             LambdaQueryWrapper<YbReconsiderInpatientfees> queryWrapper = new LambdaQueryWrapper<>();
-            queryWrapper.eq(YbReconsiderInpatientfees::getIsDeletemark, 1);//1是未删 0是已删
             queryWrapper.eq(YbReconsiderInpatientfees::getApplyDateStr, ybReconsiderInpatientfees.getApplyDateStr());
-            queryWrapper.eq(YbReconsiderInpatientfees::getDataType, ybReconsiderInpatientfees.getDataType());
             queryWrapper.eq(YbReconsiderInpatientfees::getAreaType, ybReconsiderInpatientfees.getAreaType());
+            queryWrapper.eq(YbReconsiderInpatientfees::getDataType, ybReconsiderInpatientfees.getDataType());
+            queryWrapper.eq(YbReconsiderInpatientfees::getIsDeletemark, 1);//1是未删 0是已删
             Page<YbReconsiderInpatientfees> page = new Page<>();
             SortUtil.handlePageSort(request, page, false);//true 是属性  false是数据库字段可两个
             return this.page(page, queryWrapper);
@@ -90,7 +90,7 @@ public class YbReconsiderInpatientfeesServiceImpl extends ServiceImpl<YbReconsid
     @Override
     @Transactional
     public void createYbReconsiderInpatientfees(YbReconsiderInpatientfees ybReconsiderInpatientfees) {
-        ybReconsiderInpatientfees.setCreateTime(new Date());
+//        ybReconsiderInpatientfees.setCreateTime(new Date());
         if (ybReconsiderInpatientfees.getId() == null || "".equals(ybReconsiderInpatientfees.getId())) {
             ybReconsiderInpatientfees.setId(UUID.randomUUID().toString());
         }
@@ -101,7 +101,7 @@ public class YbReconsiderInpatientfeesServiceImpl extends ServiceImpl<YbReconsid
     @Override
     @Transactional
     public void updateYbReconsiderInpatientfees(YbReconsiderInpatientfees ybReconsiderInpatientfees) {
-        ybReconsiderInpatientfees.setModifyTime(new Date());
+//        ybReconsiderInpatientfees.setModifyTime(new Date());
         this.baseMapper.updateYbReconsiderInpatientfees(ybReconsiderInpatientfees);
     }
 
@@ -118,15 +118,16 @@ public class YbReconsiderInpatientfeesServiceImpl extends ServiceImpl<YbReconsid
         if (ybReconsiderInpatientfees.getApplyDateStr() != null) {
             wrapper.eq(YbReconsiderInpatientfees::getApplyDateStr, ybReconsiderInpatientfees.getApplyDateStr());
         }
-        if (ybReconsiderInpatientfees.getDataType() != null) {
-            wrapper.eq(YbReconsiderInpatientfees::getDataType, ybReconsiderInpatientfees.getDataType());
+        if (ybReconsiderInpatientfees.getAreaType() != null) {
+            wrapper.eq(YbReconsiderInpatientfees::getAreaType, ybReconsiderInpatientfees.getAreaType());
         }
         if (ybReconsiderInpatientfees.getTypeno() != null) {
             wrapper.eq(YbReconsiderInpatientfees::getTypeno, ybReconsiderInpatientfees.getTypeno());
         }
-        if (ybReconsiderInpatientfees.getAreaType() != null) {
-            wrapper.eq(YbReconsiderInpatientfees::getAreaType, ybReconsiderInpatientfees.getAreaType());
+        if (ybReconsiderInpatientfees.getDataType() != null) {
+            wrapper.eq(YbReconsiderInpatientfees::getDataType, ybReconsiderInpatientfees.getDataType());
         }
+        wrapper.eq(YbReconsiderInpatientfees::getIsDeletemark, 1);
         return this.list(wrapper);
     }
 

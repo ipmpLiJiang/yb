@@ -431,6 +431,14 @@ public class YbAppealResultReportView implements Serializable, Comparable<YbAppe
     @ExcelField(value = "关联Id")
     private String relatelDataId;
 
+    /**
+     * 院区
+     */
+    @TableField("areaType")
+    @ExcelField(value = "院区")
+    private Integer areaType;
+
+
 
     public static final String SERIALNO = "serialNo";
 
@@ -548,6 +556,8 @@ public class YbAppealResultReportView implements Serializable, Comparable<YbAppe
     public static final String ISSUCCESS = "isSuccess";
 
     public static final String RELATELDATAID = "relatelDataId";
+
+    public static final String AREATYPE = "areaType";
 
     @Override
     public int compareTo(YbAppealResultReportView o) {

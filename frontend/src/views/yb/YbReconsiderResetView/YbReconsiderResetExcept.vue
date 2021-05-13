@@ -67,6 +67,7 @@ export default {
       },
       queryParams: {
       },
+      user: this.$store.state.account.user,
       loading: false,
       bordered: true,
       ybAppealResult: {}
@@ -240,6 +241,7 @@ export default {
       this.loading = true
       params.applyDateStr = this.applyDate
       params.currencyField = this.searchText
+      params.areaType = this.user.areaType
       params.state = 1
       // params.dataType = 0
       // params.seekState = 0

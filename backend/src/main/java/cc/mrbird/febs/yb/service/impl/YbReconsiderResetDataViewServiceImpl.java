@@ -39,57 +39,8 @@ public class YbReconsiderResetDataViewServiceImpl extends ServiceImpl<YbReconsid
     @Override
     public IPage<YbReconsiderResetDataView> findYbReconsiderResetDataViews(QueryRequest request, YbReconsiderResetDataView ybReconsiderResetDataView) {
         try {
-            /*
-            LambdaQueryWrapper<YbReconsiderResetDataView> queryWrapper = new LambdaQueryWrapper<>();
-            String sql = "(";
-            sql += " applyDateStr='" + ybReconsiderResetDataView.getApplyDateStr() + "' ";
-
-            if (ybReconsiderResetDataView.getDataType() != null) {
-                sql += " AND dataType = " + ybReconsiderResetDataView.getDataType();
-            }
-            if (ybReconsiderResetDataView.getState() != null) {
-                sql += " AND STATE = " + ybReconsiderResetDataView.getState();
-            }
-            if (ybReconsiderResetDataView.getSeekState() != null) {
-                sql += " AND seekState = " + ybReconsiderResetDataView.getSeekState();
-            }
-
-            if (ybReconsiderResetDataView.getResetType() != null) {
-                sql += " AND resetType = " + ybReconsiderResetDataView.getResetType();
-            }
-
-            sql += ")";
-            if (ybReconsiderResetDataView.getCurrencyField() != null && !"".equals(ybReconsiderResetDataView.getCurrencyField())) {
-                if (ybReconsiderResetDataView.getDataType() != null) {
-                    if (ybReconsiderResetDataView.getDataType() == 0) {
-                        sql += " and (serialNo like'%" + ybReconsiderResetDataView.getCurrencyField() + "%'" +
-                                " or billNo like'%" + ybReconsiderResetDataView.getCurrencyField() + "%'" +
-                                " or projectCode like'%" + ybReconsiderResetDataView.getCurrencyField() + "%'" +
-                                " or projectName like'%" + ybReconsiderResetDataView.getCurrencyField() + "%'" +
-                                " or ruleName like'%" + ybReconsiderResetDataView.getCurrencyField() + "%'" +
-                                " or deductReason like'%" + ybReconsiderResetDataView.getCurrencyField() + "%')";
-                    } else {
-                        sql += " and (serialNo like'%" + ybReconsiderResetDataView.getCurrencyField() + "%'" +
-                                " or billNo like'%" + ybReconsiderResetDataView.getCurrencyField() + "%'" +
-                                " or ruleName like'%" + ybReconsiderResetDataView.getCurrencyField() + "%'" +
-                                " or personalNo like'%" + ybReconsiderResetDataView.getCurrencyField() + "%')";
-                    }
-                } else {
-                    sql += " and (serialNo like'%" + ybReconsiderResetDataView.getCurrencyField() + "%'" +
-                            " or billNo like'%" + ybReconsiderResetDataView.getCurrencyField() + "%'" +
-                            " or projectCode like'%" + ybReconsiderResetDataView.getCurrencyField() + "%'" +
-                            " or projectName like'%" + ybReconsiderResetDataView.getCurrencyField() + "%'" +
-                            " or ruleName like'%" + ybReconsiderResetDataView.getCurrencyField() + "%'" +
-                            " or deductReason like'%" + ybReconsiderResetDataView.getCurrencyField() + "%')";
-                }
-            }
-            queryWrapper.apply(sql);
-
             Page<YbReconsiderResetDataView> page = new Page<>();
-            SortUtil.handlePageSort(request, page, false);//true 是属性  false是数据库字段可两个
-            return this.page(page, queryWrapper);*/
-            Page<YbReconsiderResetDataView> page = new Page<>();
-            YbReconsiderReset reconsiderReset = iYbReconsiderResetService.findReconsiderResetByApplyDateStr(ybReconsiderResetDataView.getApplyDateStr());
+            YbReconsiderReset reconsiderReset = iYbReconsiderResetService.findReconsiderResetByApplyDateStr(ybReconsiderResetDataView.getApplyDateStr(),ybReconsiderResetDataView.getAreaType());
             if(reconsiderReset!=null){
                 ybReconsiderResetDataView.setResetId(reconsiderReset.getId());
                 int count = this.baseMapper.findReconsiderResetDataCount(ybReconsiderResetDataView);
@@ -111,64 +62,8 @@ public class YbReconsiderResetDataViewServiceImpl extends ServiceImpl<YbReconsid
     @Override
     public IPage<YbReconsiderResetDataView> findReconsiderResetDataViews(QueryRequest request, YbReconsiderResetDataView ybReconsiderResetDataView) {
         try {
-            /*
-            LambdaQueryWrapper<YbReconsiderResetDataView> queryWrapper = new LambdaQueryWrapper<>();
-            if (ybReconsiderResetDataView.getId() != null) {
-                queryWrapper.ne(YbReconsiderResetDataView::getId, ybReconsiderResetDataView.getId());
-            }
-
-            if (ybReconsiderResetDataView.getApplyDateStr() != null) {
-                queryWrapper.eq(YbReconsiderResetDataView::getApplyDateStr, ybReconsiderResetDataView.getApplyDateStr());
-            }
-
-            if (ybReconsiderResetDataView.getDataType() != null) {
-                queryWrapper.eq(YbReconsiderResetDataView::getDataType, ybReconsiderResetDataView.getDataType());
-            }
-
-            if (ybReconsiderResetDataView.getState() != null) {
-                queryWrapper.eq(YbReconsiderResetDataView::getState, ybReconsiderResetDataView.getState());
-            }
-
-            if (ybReconsiderResetDataView.getSeekState() != null) {
-                queryWrapper.eq(YbReconsiderResetDataView::getSeekState, ybReconsiderResetDataView.getSeekState());
-            }
-
-            if (ybReconsiderResetDataView.getResetType() != null) {
-                queryWrapper.eq(YbReconsiderResetDataView::getResetType, ybReconsiderResetDataView.getResetType());
-            }
-            if (ybReconsiderResetDataView.getOrderNumber() != null) {
-                queryWrapper.eq(YbReconsiderResetDataView::getOrderNumber, ybReconsiderResetDataView.getOrderNumber());
-            }
-
-            if (ybReconsiderResetDataView.getSerialNo() != null) {
-                queryWrapper.eq(YbReconsiderResetDataView::getSerialNo, ybReconsiderResetDataView.getSerialNo());
-            }
-
-            if (ybReconsiderResetDataView.getBillNo() != null) {
-                queryWrapper.eq(YbReconsiderResetDataView::getBillNo, ybReconsiderResetDataView.getBillNo());
-            }
-
-
-            if (ybReconsiderResetDataView.getProjectCode() != null) {
-                queryWrapper.eq(YbReconsiderResetDataView::getProjectCode, ybReconsiderResetDataView.getProjectCode());
-            }
-
-            if (ybReconsiderResetDataView.getProjectName() != null) {
-                queryWrapper.eq(YbReconsiderResetDataView::getProjectName, ybReconsiderResetDataView.getProjectName());
-            }
-
-            if (ybReconsiderResetDataView.getRuleName() != null) {
-                queryWrapper.eq(YbReconsiderResetDataView::getRuleName, ybReconsiderResetDataView.getRuleName());
-            }
-
-            if (ybReconsiderResetDataView.getPersonalNo() != null) {
-                queryWrapper.eq(YbReconsiderResetDataView::getPersonalNo, ybReconsiderResetDataView.getPersonalNo());
-            }
             Page<YbReconsiderResetDataView> page = new Page<>();
-            SortUtil.handlePageSort(request, page, false);//true 是属性  false是数据库字段可两个
-            return this.page(page, queryWrapper);*/
-            Page<YbReconsiderResetDataView> page = new Page<>();
-            YbReconsiderReset reconsiderReset = iYbReconsiderResetService.findReconsiderResetByApplyDateStr(ybReconsiderResetDataView.getApplyDateStr());
+            YbReconsiderReset reconsiderReset = iYbReconsiderResetService.findReconsiderResetByApplyDateStr(ybReconsiderResetDataView.getApplyDateStr(),ybReconsiderResetDataView.getAreaType());
             if(reconsiderReset!=null){
                 ybReconsiderResetDataView.setResetId(reconsiderReset.getId());
                 int count = this.baseMapper.findReconsiderResetDataNotCount(ybReconsiderResetDataView);
@@ -218,32 +113,7 @@ public class YbReconsiderResetDataViewServiceImpl extends ServiceImpl<YbReconsid
     public List<YbReconsiderResetDataView> findYbReconsiderResetDataList(YbReconsiderResetDataView ybReconsiderResetDataView) {
         List<YbReconsiderResetDataView> list = new ArrayList<>();
         try {
-            /*
-            LambdaQueryWrapper<YbReconsiderResetDataView> queryWrapper = new LambdaQueryWrapper<>();
-            if (ybReconsiderResetDataView.getApplyDateStr() != null) {
-                queryWrapper.eq(YbReconsiderResetDataView::getApplyDateStr, ybReconsiderResetDataView.getApplyDateStr());
-            }
-            if (ybReconsiderResetDataView.getDataType() != null) {
-                queryWrapper.eq(YbReconsiderResetDataView::getDataType, ybReconsiderResetDataView.getDataType());
-            }
-            if (ybReconsiderResetDataView.getState() != null) {
-                queryWrapper.eq(YbReconsiderResetDataView::getState, ybReconsiderResetDataView.getState());
-            }
-            if (ybReconsiderResetDataView.getSeekState() != null) {
-                queryWrapper.eq(YbReconsiderResetDataView::getSeekState, ybReconsiderResetDataView.getSeekState());
-            }
-            if (ybReconsiderResetDataView.getId() != null) {
-                queryWrapper.eq(YbReconsiderResetDataView::getId, ybReconsiderResetDataView.getId());
-            }
-            if (ybReconsiderResetDataView.getOrderNumber() != null) {
-                queryWrapper.eq(YbReconsiderResetDataView::getOrderNumber, ybReconsiderResetDataView.getOrderNumber());
-            }
-            if (ybReconsiderResetDataView.getResetId() != null) {
-                queryWrapper.eq(YbReconsiderResetDataView::getResetId, ybReconsiderResetDataView.getResetId());
-            }
-            list = this.baseMapper.selectList(queryWrapper);
-             */
-            YbReconsiderReset reconsiderReset = iYbReconsiderResetService.findReconsiderResetByApplyDateStr(ybReconsiderResetDataView.getApplyDateStr());
+            YbReconsiderReset reconsiderReset = iYbReconsiderResetService.findReconsiderResetByApplyDateStr(ybReconsiderResetDataView.getApplyDateStr(),ybReconsiderResetDataView.getAreaType());
             if(reconsiderReset!=null) {
                 ybReconsiderResetDataView.setResetId(reconsiderReset.getId());
                 list = this.baseMapper.findReconsiderResetDataList(ybReconsiderResetDataView);

@@ -112,12 +112,15 @@ public class YbAppealResultDeductimplementServiceImpl extends ServiceImpl<YbAppe
         String applyDateStr = ybAppealResultDeductimplement.getApplyDateStr();
         YbReconsiderResetDataView ybReconsiderResetDataView = new YbReconsiderResetDataView();
         ybReconsiderResetDataView.setApplyDateStr(applyDateStr);
+        ybReconsiderResetDataView.setAreaType(ybAppealResultDeductimplement.getAreaType());
         List<YbReconsiderResetDataView> resetDataViewList = this.iYbReconsiderResetDataViewService.findYbReconsiderResetDataList(ybReconsiderResetDataView);
         List<YbAppealResultDeductimplement> createList = new ArrayList<>();
         List<YbReconsiderResetDataView> queryList = new ArrayList<>();
 
         LambdaQueryWrapper<YbAppealResultDeductimplement> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(YbAppealResultDeductimplement::getApplyDateStr, applyDateStr);
+        wrapper.eq(YbAppealResultDeductimplement::getAreaType, ybAppealResultDeductimplement.getAreaType());
+        wrapper.eq(YbAppealResultDeductimplement::getIsDeletemark, 1);
         List<YbAppealResultDeductimplement> ardList = this.list(wrapper);
 
         Date applyDate = ybAppealResultDeductimplement.getApplyDate();
@@ -140,6 +143,7 @@ public class YbAppealResultDeductimplementServiceImpl extends ServiceImpl<YbAppe
                     createDeductimplement.setId(UUID.randomUUID().toString());
                     createDeductimplement.setApplyDate(applyDate);
                     createDeductimplement.setApplyDateStr(applyDateStr);
+                    createDeductimplement.setAreaType(ybAppealResultDeductimplement.getAreaType());
                     createDeductimplement.setRelatelDataId(rrr.getRelatelDataId());
                     createDeductimplement.setResetDataId(rrr.getId());
                     createDeductimplement.setImplementDate(item.getImplementDate());

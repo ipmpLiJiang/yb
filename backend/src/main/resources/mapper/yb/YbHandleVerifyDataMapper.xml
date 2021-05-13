@@ -14,41 +14,26 @@
                     <result column="doctorName" property="doctorName"/>
                     <result column="deptCode" property="deptCode"/>
                     <result column="deptName" property="deptName"/>
-                    <result column="operateReason" property="operateReason"/>
-                    <result column="operateDate" property="operateDate"/>
-                    <result column="matchPersonId" property="matchPersonId"/>
-                    <result column="matchPersonName" property="matchPersonName"/>
-                    <result column="matchDate" property="matchDate"/>
-                    <result column="reviewerId" property="reviewerId"/>
-                    <result column="reviewerName" property="reviewerName"/>
-                    <result column="reviewerDate" property="reviewerDate"/>
                     <result column="sendPersonId" property="sendPersonId"/>
                     <result column="sendPersonName" property="sendPersonName"/>
                     <result column="sendDate" property="sendDate"/>
-                    <result column="currencyField" property="currencyField"/>
                     <result column="dataType" property="dataType"/>
             <result column="orderDoctorCode" property="orderDoctorCode"/>
             <result column="orderDoctorName" property="orderDoctorName"/>
             <result column="orderDeptCode" property="orderDeptCode"/>
             <result column="orderDeptName" property="orderDeptName"/>
-            <result column="applyDateStr" property="applyDateStr"/>
             <result column="typeno" property="typeno"/>
             <result column="orderNumber" property="orderNumber"/>
             <result column="orderNum" property="orderNum"/>
-                    <result column="COMMENTS" property="comments"/>
                     <result column="STATE" property="state"/>
                     <result column="IS_DELETEMARK" property="isDeletemark"/>
-                    <result column="MODIFY_TIME" property="modifyTime"/>
-                    <result column="CREATE_TIME" property="createTime"/>
-                    <result column="CREATE_USER_ID" property="createUserId"/>
-                    <result column="MODIFY_USER_ID" property="modifyUserId"/>
                     <result column="resultId" property="resultId"/>
             <result column="relatelDataId" property="relatelDataId"/>
         </resultMap>
 
         <!-- 通用查询结果列 -->
         <sql id="Base_Column_List">
-        id, pid, applyDataId, verifyId, manageId, doctorCode, doctorName, deptCode, deptName, operateReason, operateDate, matchPersonId, matchPersonName, matchDate, reviewerId, reviewerName, reviewerDate, sendPersonId, sendPersonName, sendDate, currencyField, dataType,orderDoctorCode,orderDoctorName,orderDeptCode,orderDeptName,applyDateStr,typeno,orderNumber,orderNum, COMMENTS, STATE, IS_DELETEMARK, MODIFY_TIME, CREATE_TIME, CREATE_USER_ID, MODIFY_USER_ID, resultId, relatelDataId
+        id, pid, applyDataId, verifyId, manageId, doctorCode, doctorName, deptCode, deptName, sendPersonId, sendPersonName, sendDate, dataType,orderDoctorCode,orderDoctorName,orderDeptCode,orderDeptName,typeno,orderNumber,orderNum, STATE, IS_DELETEMARK,  resultId, relatelDataId
     </sql>
 <!--    resetId-->
     <update id="updateYbHandleVerifyData" parameterType="cc.mrbird.febs.yb.entity.YbHandleVerifyData">
@@ -63,34 +48,19 @@
 <if test="doctorName != null">doctorName=#{doctorName},</if>
 <if test="deptCode != null">deptCode=#{deptCode},</if>
 <if test="deptName != null">deptName=#{deptName},</if>
-<if test="operateReason != null">operateReason=#{operateReason},</if>
-<if test="operateDate != null">operateDate=#{operateDate},</if>
-<if test="matchPersonId != null">matchPersonId=#{matchPersonId},</if>
-<if test="matchPersonName != null">matchPersonName=#{matchPersonName},</if>
-<if test="matchDate != null">matchDate=#{matchDate},</if>
-<if test="reviewerId != null">reviewerId=#{reviewerId},</if>
-<if test="reviewerName != null">reviewerName=#{reviewerName},</if>
-<if test="reviewerDate != null">reviewerDate=#{reviewerDate},</if>
 <if test="sendPersonId != null">sendPersonId=#{sendPersonId},</if>
 <if test="sendPersonName != null">sendPersonName=#{sendPersonName},</if>
 <if test="sendDate != null">sendDate=#{sendDate},</if>
-<if test="currencyField != null">currencyField=#{currencyField},</if>
 <if test="dataType != null">dataType=#{dataType},</if>
 <if test="orderDoctorCode != null">orderDoctorCode=#{orderDoctorCode},</if>
 <if test="orderDoctorName != null">orderDoctorName=#{orderDoctorName},</if>
 <if test="orderDeptCode != null">orderDeptCode=#{orderDeptCode},</if>
 <if test="orderDeptName != null">orderDeptName=#{orderDeptName},</if>
-<if test="applyDateStr != null">applyDateStr=#{applyDateStr},</if>
 <if test="typeno != null">typeno=#{typeno},</if>
 <if test="orderNumber != null">orderNumber=#{orderNumber},</if>
 <if test="orderNum != null">orderNum=#{orderNum},</if>
-<if test="comments != null">COMMENTS=#{comments},</if>
 <if test="state != null">STATE=#{state},</if>
 <if test="isDeletemark != null">IS_DELETEMARK=#{isDeletemark},</if>
-<if test="modifyTime != null">MODIFY_TIME=#{modifyTime},</if>
-<if test="createTime != null">CREATE_TIME=#{createTime},</if>
-<if test="createUserId != null">CREATE_USER_ID=#{createUserId},</if>
-<if test="modifyUserId != null">MODIFY_USER_ID=#{modifyUserId},</if>
 <if test="resultId != null">resultId=#{resultId},</if>
             <if test="relatelDataId != null">relatelDataId=#{relatelDataId},</if>
         </trim>
@@ -109,27 +79,6 @@
             <if test="ybHandleVerifyData.doctorName != null and ybHandleVerifyData.doctorName != ''"> and doctorName like concat('%', #{ ybHandleVerifyData.doctorName} ,'%')</if>
             <if test="ybHandleVerifyData.deptCode != null and ybHandleVerifyData.deptCode != ''"> and deptCode like concat('%', #{ ybHandleVerifyData.deptCode} ,'%')</if>
             <if test="ybHandleVerifyData.deptName != null and ybHandleVerifyData.deptName != ''"> and deptName like concat('%', #{ ybHandleVerifyData.deptName} ,'%')</if>
-            <if test="ybHandleVerifyData.operateReason != null and ybHandleVerifyData.operateReason != ''"> and operateReason like concat('%', #{ ybHandleVerifyData.operateReason} ,'%')</if>
-        <if test="ybHandleVerifyData.operateDateFrom!= null">
-            AND ybHandleVerifyData.operateDate <![CDATA[ >= ]]>  operateDateFrom}
-        </if>
-        <if test="ybHandleVerifyData.operateDateTo!= null">
-            AND ybHandleVerifyData.operateDate <![CDATA[ <= ]]>  operateDateTo}
-        </if>
-            <if test="ybHandleVerifyData.matchPersonName != null and ybHandleVerifyData.matchPersonName != ''"> and matchPersonName like concat('%', #{ ybHandleVerifyData.matchPersonName} ,'%')</if>
-        <if test="ybHandleVerifyData.matchDateFrom!= null">
-            AND ybHandleVerifyData.matchDate <![CDATA[ >= ]]>  matchDateFrom}
-        </if>
-        <if test="ybHandleVerifyData.matchDateTo!= null">
-            AND ybHandleVerifyData.matchDate <![CDATA[ <= ]]>  matchDateTo}
-        </if>
-            <if test="ybHandleVerifyData.reviewerName != null and ybHandleVerifyData.reviewerName != ''"> and reviewerName like concat('%', #{ ybHandleVerifyData.reviewerName} ,'%')</if>
-        <if test="ybHandleVerifyData.reviewerDateFrom!= null">
-            AND ybHandleVerifyData.reviewerDate <![CDATA[ >= ]]>  reviewerDateFrom}
-        </if>
-        <if test="ybHandleVerifyData.reviewerDateTo!= null">
-            AND ybHandleVerifyData.reviewerDate <![CDATA[ <= ]]>  reviewerDateTo}
-        </if>
             <if test="ybHandleVerifyData.sendPersonName != null and ybHandleVerifyData.sendPersonName != ''"> and sendPersonName like concat('%', #{ ybHandleVerifyData.sendPersonName} ,'%')</if>
         <if test="ybHandleVerifyData.sendDateFrom!= null">
             AND ybHandleVerifyData.sendDate <![CDATA[ >= ]]>  sendDateFrom}
@@ -137,23 +86,11 @@
         <if test="ybHandleVerifyData.sendDateTo!= null">
             AND ybHandleVerifyData.sendDate <![CDATA[ <= ]]>  sendDateTo}
         </if>
-            <if test="ybHandleVerifyData.currencyField != null and ybHandleVerifyData.currencyField != ''"> and currencyField like concat('%', #{ ybHandleVerifyData.currencyField} ,'%')</if>
+
         <if test="ybHandleVerifyData.dataType != null"> and dataType =#{ ybHandleVerifyData.dataType} </if>
-            <if test="ybHandleVerifyData.comments != null and ybHandleVerifyData.comments != ''"> and COMMENTS like concat('%', #{ ybHandleVerifyData.comments} ,'%')</if>
+
         <if test="ybHandleVerifyData.state != null"> and STATE =#{ ybHandleVerifyData.state} </if>
         <if test="ybHandleVerifyData.isDeletemark != null"> and IS_DELETEMARK =#{ ybHandleVerifyData.isDeletemark} </if>
-        <if test="ybHandleVerifyData.modifyTimeFrom!= null">
-            AND ybHandleVerifyData.MODIFY_TIME <![CDATA[ >= ]]>  modifyTimeFrom}
-        </if>
-        <if test="ybHandleVerifyData.modifyTimeTo!= null">
-            AND ybHandleVerifyData.MODIFY_TIME <![CDATA[ <= ]]>  modifyTimeTo}
-        </if>
-        <if test="ybHandleVerifyData.createTimeFrom!= null">
-            AND ybHandleVerifyData.CREATE_TIME <![CDATA[ >= ]]>  createTimeFrom}
-        </if>
-        <if test="ybHandleVerifyData.createTimeTo!= null">
-            AND ybHandleVerifyData.CREATE_TIME <![CDATA[ <= ]]>  createTimeTo}
-        </if>
             <if test="ybHandleVerifyData.resultId != null and ybHandleVerifyData.resultId != ''"> and resultId like concat('%', #{ ybHandleVerifyData.resultId} ,'%')</if>
         <if test="ybHandleVerifyData.relatelDataId != null and ybHandleVerifyData.relatelDataId != ''"> and relatelDataId like concat('%', #{ ybHandleVerifyData.relatelDataId} ,'%')</if>
 </select>

@@ -308,6 +308,12 @@ public class YbReconsiderResetDataView implements Serializable, Comparable<YbRec
     @ExcelField(value = "主状态")
     private Integer resetState;
 
+    /**
+     * 院区
+     */
+    @TableField("areaType")
+    @ExcelField(value = "院区")
+    private Integer areaType;
 
     public static final String ID = "id";
     public static final String SERIALNO = "serialNo";
@@ -351,6 +357,8 @@ public class YbReconsiderResetDataView implements Serializable, Comparable<YbRec
     public static final String RESETDATE = "resetDate";
 
     public static final String RESETSTATE = "resetState";
+
+    public static final String AREATYPE = "areaType";
 
 
     @Override

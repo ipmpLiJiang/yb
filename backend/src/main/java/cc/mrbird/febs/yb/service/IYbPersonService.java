@@ -34,7 +34,7 @@ public interface IYbPersonService extends IService<YbPerson> {
 
     List<YbPerson> findPersonList(ArrayList<String> personCodeList);
 
-    List<YbPerson> findPersonResultList(String applyDateStr);
+    List<YbPerson> findPersonResultList(String applyDateStr,Integer areaType);
 
     void deleteYbPersons(String[] Ids);
 

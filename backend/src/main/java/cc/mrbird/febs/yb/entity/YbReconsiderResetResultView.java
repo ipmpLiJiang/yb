@@ -334,6 +334,12 @@ public class YbReconsiderResetResultView implements Serializable {
     @ExcelField(value = "关联Id")
     private String relatelDataId;
 
+    /**
+     * 院区
+     */
+    @TableField("areaType")
+    @ExcelField(value = "院区")
+    private Integer areaType;
 
     public static final String ID = "id";
 
@@ -419,5 +425,5 @@ public class YbReconsiderResetResultView implements Serializable {
 
     public static final String RELATELDATAID = "relatelDataId";
 
-
+    public static final String AREATYPE = "areaType";
 }

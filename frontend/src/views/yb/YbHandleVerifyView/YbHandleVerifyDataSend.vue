@@ -76,6 +76,7 @@ export default {
       },
       queryParams: {
       },
+      user: this.$store.state.account.user,
       loading: false,
       bordered: true,
       ybReconsiderVerify: {}
@@ -151,12 +152,22 @@ export default {
       {
         title: '复议科室',
         dataIndex: 'hvDeptName',
+        customRender: (text, row, index) => {
+          if (text !== '' && text !== null) {
+            return row.hvDeptCode + '-' + row.hvDeptName
+          }
+        },
         fixed: 'right',
         width: 200
       },
       {
         title: '复议医生',
         dataIndex: 'hvDoctorName',
+        customRender: (text, row, index) => {
+          if (text !== '' && text !== null) {
+            return row.hvDoctorCode + '-' + row.hvDoctorName
+          }
+        },
         fixed: 'right',
         width: 130
       },
@@ -214,7 +225,7 @@ export default {
     batchSendA () {
       if (this.dataSource.length > 0) {
         this.$put('ybHandleVerifyData/updateASendState', {
-          applyDateStr: this.applyDate, state: 1
+          applyDateStr: this.applyDate, state: 1, areaType: this.user.areaType
         }).then(() => {
           this.$message.success('发送成功')
           this.search()
@@ -248,7 +259,7 @@ export default {
     sendService (data) {
       let jsonString = JSON.stringify(data)
       this.$put('ybHandleVerifyData/updateSendState', {
-        dataJson: jsonString
+        dataJson: jsonString, applyDateStr: this.applyDate, areaType: this.user.areaType
       }).then(() => {
         this.$message.success('发送成功')
         this.search()
@@ -309,6 +320,7 @@ export default {
     fetch (params = {}) {
       this.loading = true
       params.applyDateStr = this.applyDate
+      params.areaType = this.user.areaType
       params.state = 1
       if (this.searchDataType !== 2) {
         params.dataType = this.searchDataType

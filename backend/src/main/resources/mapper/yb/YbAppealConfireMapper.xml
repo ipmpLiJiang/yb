@@ -81,11 +81,11 @@
         p.CREATE_TIME,
         p.CREATE_USER_ID,
         p.MODIFY_USER_ID,
-        GROUP_CONCAT(CONCAT(d.deptId,'-',d.deptName)) currencyField
+        GROUP_CONCAT(CONCAT(d.deptId,'-',d.deptName)) currencyField,
+        p.areaType
        FROM yb_appeal_confire p
          left join yb_appeal_confire_data d on
-            p.id = d.pid and
-            d.IS_DELETEMARK =1
+            p.id = d.pid
         where
             p.IS_DELETEMARK = 1
             <if test="areaType!= null">
@@ -137,11 +137,11 @@
         p.CREATE_TIME,
         p.CREATE_USER_ID,
         p.MODIFY_USER_ID,
-        GROUP_CONCAT(CONCAT(d.deptId,'-',d.deptName)) currencyField
+        GROUP_CONCAT(CONCAT(d.deptId,'-',d.deptName)) currencyField,
+        p.areaType
         FROM yb_appeal_confire p
         left join yb_appeal_confire_data d on
-        p.id = d.pid and
-        d.IS_DELETEMARK =1
+        p.id = d.pid
         where
         p.IS_DELETEMARK = 1
         <if test="areaType!= null">

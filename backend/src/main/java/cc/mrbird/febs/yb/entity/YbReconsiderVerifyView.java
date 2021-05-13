@@ -274,91 +274,6 @@ public class YbReconsiderVerifyView implements Serializable {
     private String verifyDeptName;
 
     /**
-     * 操作理由
-     */
-    @TableField("operateReason")
-    @ExcelField(value = "操作理由")
-    private String operateReason;
-
-    /**
-     * 操作日期
-     */
-    @TableField("operateDate")
-    @ExcelField(value = "操作日期")
-    private Date operateDate;
-    private transient String operateDateFrom;
-    private transient String operateDateTo;
-
-    /**
-     * 匹配人代码
-     */
-    @TableField("matchPersonId")
-    @ExcelField(value = "匹配人代码")
-    private Long matchPersonId;
-
-    /**
-     * 匹配人
-     */
-    @TableField("matchPersonName")
-    @ExcelField(value = "匹配人")
-    private String matchPersonName;
-
-    /**
-     * 匹配日期
-     */
-    @TableField("matchDate")
-    @ExcelField(value = "匹配日期")
-    private Date matchDate;
-    private transient String matchDateFrom;
-    private transient String matchDateTo;
-
-    /**
-     * 审核人代码
-     */
-    @TableField("reviewerId")
-    @ExcelField(value = "审核人代码")
-    private Long reviewerId;
-
-    /**
-     * 审核人
-     */
-    @TableField("reviewerName")
-    @ExcelField(value = "审核人")
-    private String reviewerName;
-
-    /**
-     * 审核日期
-     */
-    @TableField("reviewerDate")
-    @ExcelField(value = "审核日期")
-    private Date reviewerDate;
-    private transient String reviewerDateFrom;
-    private transient String reviewerDateTo;
-
-    /**
-     * 发送人代码
-     */
-    @TableField("sendPersonId")
-    @ExcelField(value = "发送人代码")
-    private Long sendPersonId;
-
-    /**
-     * 发送人
-     */
-    @TableField("sendPersonName")
-    @ExcelField(value = "发送人")
-    private String sendPersonName;
-
-    /**
-     * 发送日期
-     */
-    @TableField("sendDate")
-    @ExcelField(value = "发送日期")
-    private Date sendDate;
-    private transient String sendDateFrom;
-    private transient String sendDateTo;
-
-    /**
      * 参保类型
      */
     @TableField("insuredType")
@@ -512,28 +427,6 @@ public class YbReconsiderVerifyView implements Serializable {
     public static final String VERIFYDEPTCODE = "verifyDeptCode";
 
     public static final String VERIFYDEPTNAME = "verifyDeptName";
-
-    public static final String OPERATEREASON = "operateReason";
-
-    public static final String OPERATEDATE = "operateDate";
-
-    public static final String MATCHPERSONID = "matchPersonId";
-
-    public static final String MATCHPERSONNAME = "matchPersonName";
-
-    public static final String MATCHDATE = "matchDate";
-
-    public static final String REVIEWERID = "reviewerId";
-
-    public static final String REVIEWERNAME = "reviewerName";
-
-    public static final String REVIEWERDATE = "reviewerDate";
-
-    public static final String SENDPERSONID = "sendPersonId";
-
-    public static final String SENDPERSONNAME = "sendPersonName";
-
-    public static final String SENDDATE = "sendDate";
 
     public static final String INSUREDTYPE = "insuredType";
 

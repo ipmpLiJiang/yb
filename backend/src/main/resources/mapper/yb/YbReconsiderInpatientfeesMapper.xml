@@ -46,16 +46,12 @@
             <result column="COMMENTS" property="comments"/>
             <result column="STATE" property="state"/>
             <result column="IS_DELETEMARK" property="isDeletemark"/>
-            <result column="MODIFY_TIME" property="modifyTime"/>
-            <result column="CREATE_TIME" property="createTime"/>
-            <result column="CREATE_USER_ID" property="createUserId"/>
-            <result column="MODIFY_USER_ID" property="modifyUserId"/>
             <result column="areaType" property="areaType"/>
         </resultMap>
 
         <!-- 通用查询结果列 -->
         <sql id="Base_Column_List">
-        id, inpatientId, patientName, settlementId, billNo, transNo, itemId, itemCode, itemName, itemCount, itemPrice, itemAmount, feeDate, deptId, deptName, orderDocId, orderDocName, excuteDeptId, excuteDeptName, excuteDocId, excuteDocName, settlementDate,applyDateStr,dataType,typeno,orderNumber,applyDataId,miCode,hisName,miName,dyyz,attendDocId,attendDocName,itemTypeCode,itemTypeName,feeOperatorId,feeOperatorName,feeDeptId,feeDeptName, COMMENTS, STATE, IS_DELETEMARK, MODIFY_TIME, CREATE_TIME, CREATE_USER_ID, MODIFY_USER_ID,areaType
+        id, inpatientId, patientName, settlementId, billNo, transNo, itemId, itemCode, itemName, itemCount, itemPrice, itemAmount, feeDate, deptId, deptName, orderDocId, orderDocName, excuteDeptId, excuteDeptName, excuteDocId, excuteDocName, settlementDate,applyDateStr,dataType,typeno,orderNumber,applyDataId,miCode,hisName,miName,dyyz,attendDocId,attendDocName,itemTypeCode,itemTypeName,feeOperatorId,feeOperatorName,feeDeptId,feeDeptName, COMMENTS, STATE, IS_DELETEMARK, areaType
     </sql>
     <update id="updateYbReconsiderInpatientfees" parameterType="cc.mrbird.febs.yb.entity.YbReconsiderInpatientfees">
         update yb_reconsider_inpatientfees
@@ -101,10 +97,6 @@
 <if test="comments != null">COMMENTS=#{comments},</if>
 <if test="state != null">STATE=#{state},</if>
 <if test="isDeletemark != null">IS_DELETEMARK=#{isDeletemark},</if>
-<if test="modifyTime != null">MODIFY_TIME=#{modifyTime},</if>
-<if test="createTime != null">CREATE_TIME=#{createTime},</if>
-<if test="createUserId != null">CREATE_USER_ID=#{createUserId},</if>
-<if test="modifyUserId != null">MODIFY_USER_ID=#{modifyUserId},</if>
             <if test="areaType != null">areaType=#{areaType},</if>
         </trim>
                 where id=#{id}
@@ -149,18 +141,6 @@
             <if test="ybReconsiderInpatientfees.comments != null and ybReconsiderInpatientfees.comments != ''"> and COMMENTS like concat('%', #{ ybReconsiderInpatientfees.comments} ,'%')</if>
         <if test="ybReconsiderInpatientfees.state != null"> and STATE =#{ ybReconsiderInpatientfees.state} </if>
         <if test="ybReconsiderInpatientfees.isDeletemark != null"> and IS_DELETEMARK =#{ ybReconsiderInpatientfees.isDeletemark} </if>
-        <if test="ybReconsiderInpatientfees.modifyTimeFrom!= null">
-            AND ybReconsiderInpatientfees.MODIFY_TIME <![CDATA[ >= ]]>  modifyTimeFrom}
-        </if>
-        <if test="ybReconsiderInpatientfees.modifyTimeTo!= null">
-            AND ybReconsiderInpatientfees.MODIFY_TIME <![CDATA[ <= ]]>  modifyTimeTo}
-        </if>
-        <if test="ybReconsiderInpatientfees.createTimeFrom!= null">
-            AND ybReconsiderInpatientfees.CREATE_TIME <![CDATA[ >= ]]>  createTimeFrom}
-        </if>
-        <if test="ybReconsiderInpatientfees.createTimeTo!= null">
-            AND ybReconsiderInpatientfees.CREATE_TIME <![CDATA[ <= ]]>  createTimeTo}
-        </if>
         <if test="ybReconsiderInpatientfees.areaType != null">and ybReconsiderInpatientfees.areaType =#{ ybReconsiderInpatientfees.areaType}</if>
 </select>
 
@@ -203,18 +183,6 @@
         <if test="ybReconsiderInpatientfees.comments != null and ybReconsiderInpatientfees.comments != ''"> and COMMENTS = #{ ybReconsiderInpatientfees.comments} </if>
         <if test="ybReconsiderInpatientfees.state != null"> and STATE =#{ ybReconsiderInpatientfees.state} </if>
         <if test="ybReconsiderInpatientfees.isDeletemark != null"> and IS_DELETEMARK =#{ ybReconsiderInpatientfees.isDeletemark} </if>
-        <if test="ybReconsiderInpatientfees.modifyTimeFrom!= null">
-            AND ybReconsiderInpatientfees.MODIFY_TIME <![CDATA[ >= ]]>  modifyTimeFrom}
-        </if>
-        <if test="ybReconsiderInpatientfees.modifyTimeTo!= null">
-            AND ybReconsiderInpatientfees.MODIFY_TIME <![CDATA[ <= ]]>  modifyTimeTo}
-        </if>
-        <if test="ybReconsiderInpatientfees.createTimeFrom!= null">
-            AND ybReconsiderInpatientfees.CREATE_TIME <![CDATA[ >= ]]>  createTimeFrom}
-        </if>
-        <if test="ybReconsiderInpatientfees.createTimeTo!= null">
-            AND ybReconsiderInpatientfees.CREATE_TIME <![CDATA[ <= ]]>  createTimeTo}
-        </if>
         <if test="ybReconsiderInpatientfees.areaType != null">and ybReconsiderInpatientfees.areaType =#{ ybReconsiderInpatientfees.areaType}</if>
     </select>
 

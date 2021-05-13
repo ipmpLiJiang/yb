@@ -174,12 +174,12 @@ public class YbReconsiderResetController extends BaseController {
 
     @PostMapping("importReconsiderReset")
     @RequiresPermissions("ybReconsiderReset:import")
-    public FebsResponse importReconsiderReset(@RequestParam MultipartFile file, @RequestParam String applyDateStr) {
+    public FebsResponse importReconsiderReset(@RequestParam MultipartFile file, @RequestParam String applyDateStr, @RequestParam Integer areaType) {
         int success = 0;
         if (file.isEmpty()) {
             message = "空文件";
         } else {
-            YbReconsiderReset yRr = this.iYbReconsiderResetService.findReconsiderResetByApplyDateStr(applyDateStr);
+            YbReconsiderReset yRr = this.iYbReconsiderResetService.findReconsiderResetByApplyDateStr(applyDateStr,areaType);
             if (yRr == null) {
                 boolean blError = false;
                 try {
@@ -222,6 +222,9 @@ public class YbReconsiderResetController extends BaseController {
                                 reconsiderReset.setIsDeletemark(1);
                                 reconsiderReset.setApplyDateStr(applyDateStr);
                                 reconsiderReset.setState(0);
+                                reconsiderReset.setAreaType(areaType);
+                                reconsiderReset.setCreateTime(thisDate);
+                                reconsiderReset.setCreateUserId(currentUser.getUserId());
                                 String newApplyDateStr = applyDateStr + "15";
                                 Date applyDate = DataTypeHelpers.stringDateFormat(newApplyDateStr, null, false);
                                 reconsiderReset.setApplyDate(applyDate);
@@ -301,8 +304,6 @@ public class YbReconsiderResetController extends BaseController {
                                             String strAreaName = DataTypeHelpers.importTernaryOperate(objMx.get(i), 19);//'统筹区名称',
                                             rrData.setAreaName(strAreaName);
                                             rrData.setDataType(YbDefaultValue.DATATYPE_0);
-                                            rrData.setCreateUserId(currentUser.getUserId());
-                                            rrData.setCreateTime(thisDate);
                                             ListData.add(rrData);
                                         }
                                     } else {
@@ -363,8 +364,6 @@ public class YbReconsiderResetController extends BaseController {
                                                 String strAreaName = DataTypeHelpers.importTernaryOperate(objZd.get(i), 12);//'统筹区名称',
                                                 rrMain.setAreaName(strAreaName);
                                                 rrMain.setDataType(YbDefaultValue.DATATYPE_1);
-                                                rrMain.setCreateUserId(currentUser.getUserId());
-                                                rrMain.setCreateTime(thisDate);
                                                 ListMain.add(rrMain);
                                             }
                                         } else {

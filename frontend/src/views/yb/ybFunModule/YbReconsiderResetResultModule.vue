@@ -225,6 +225,7 @@ export default {
     },
     fetch (params = {}) {
       params.applyDateStr = this.ybReconsiderResetResult.belongDateStr
+      params.areaType = this.ybReconsiderResetResult.areaType
       let warnType = this.ybReconsiderResetResult.warnType
       if (warnType === 2 || warnType === 5) {
         params.orderNumber = this.ybReconsiderResetResult.orderNumberNew

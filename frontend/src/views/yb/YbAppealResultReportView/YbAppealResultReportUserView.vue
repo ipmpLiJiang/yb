@@ -199,6 +199,7 @@ export default {
       searchText: '',
       historyVisiable: false,
       lookVisiable: false,
+      user: this.$store.state.account.user,
       monthFormat: 'YYYY-MM',
       tableFormat: 'YYYY-MM-DD'
     }
@@ -315,6 +316,7 @@ export default {
         queryParams.applyDateFrom = this.selectApplyDateStr
         queryParams.applyDateTo = this.selectToApplyDateStr
         queryParams.state = this.selectResultState
+        queryParams.areaType = this.user.areaType
         if (this.selectDataType !== 2) {
           queryParams.dataType = this.selectDataType
         }
@@ -401,6 +403,7 @@ export default {
         params.applyDateFrom = this.selectApplyDateStr
         params.applyDateTo = this.selectToApplyDateStr
         params.state = this.selectResultState
+        params.areaType = this.user.areaType
         if (this.selectDataType !== 2) {
           params.dataType = this.selectDataType
         }

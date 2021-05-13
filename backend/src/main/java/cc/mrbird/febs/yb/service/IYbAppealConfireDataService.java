@@ -30,7 +30,7 @@ public interface IYbAppealConfireDataService extends IService<YbAppealConfireDat
 
         void deleteAppealConfireDataPids(String[] pIds);
 
-        List<YbAppealConfireData> findAppealConfireDataByInDoctorCodeList(String doctorCode);
+        List<YbAppealConfireData> findAppealConfireDataByInDoctorCodeList(String doctorCode,Integer areaType);
 
         List<YbAppealConfireData> findAppealConfireDataList(YbAppealConfireData appealConfireData);
         }

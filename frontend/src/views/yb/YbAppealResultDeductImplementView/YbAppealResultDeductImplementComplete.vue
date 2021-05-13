@@ -63,6 +63,7 @@ export default {
       },
       loading: false,
       bordered: true,
+      user: this.$store.state.account.user,
       ybAppealResultDeductImplement: {}
     }
   },
@@ -257,6 +258,7 @@ export default {
         this.loading = true
         params.applyDateFrom = dateStr
         params.applyDateTo = dateToStr
+        params.areaType = this.user.areaType
         params.currencyField = this.searchText
         if (this.searchDataType !== 2) {
           params.dataType = this.searchDataType

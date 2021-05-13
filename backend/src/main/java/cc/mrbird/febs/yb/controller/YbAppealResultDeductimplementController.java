@@ -287,6 +287,7 @@ public class YbAppealResultDeductimplementController extends BaseController {
                                                 rrd.setShareProgramme(shareProgramme);
 
                                                 rrd.setDataType(YbDefaultValue.DATATYPE_0);
+
                                                 listDataCount = 1;
                                                 resetDeductimplementList.add(rrd);
                                             }
@@ -410,6 +411,7 @@ public class YbAppealResultDeductimplementController extends BaseController {
                                             ybAppealResultDeductimplement.setApplyDateStr(applyDateStr);
                                             ybAppealResultDeductimplement.setApplyDate(applyDate);
                                             ybAppealResultDeductimplement.setCreateUserId(currentUser.getUserId());
+                                            ybAppealResultDeductimplement.setAreaType(areaType);
                                             this.iYbAppealResultDeductimplementService.importCreateAppealResultDeductimplement(ybAppealResultDeductimplement, resetDeductimplementList);
                                             success = 1;
                                             message = "Excel数据获取成功.";

@@ -140,7 +140,7 @@
             art.sourceType,
             art.STATE,
             art.repayState,
-            art.currencyField,
+            '' currencyField,
             art.relatelDataId,
             art.areaType
         from
@@ -149,6 +149,9 @@
             art.applyDataId = ad.id
         where
             art.applyDateStr = #{ ybAppealResultView.applyDateStr }
+        <if test="ybAppealResultView.areaType!= null">
+            and art.areaType = #{ybAppealResultView.areaType}
+        </if>
         <if test="ybAppealResultView.sourceType!= null">
             and art.sourceType = #{ybAppealResultView.sourceType}
         </if>
@@ -163,9 +166,6 @@
         </if>
         <if test="ybAppealResultView.relatelDataId!= null">
             and art.relatelDataId = #{ybAppealResultView.relatelDataId}
-        </if>
-        <if test="ybAppealResultView.areaType!= null">
-            and art.areaType = #{ybAppealResultView.areaType}
         </if>
         <if test="ybAppealResultView.billNo!= null">
             and ad.billNo = #{ybAppealResultView.billNo}
@@ -219,6 +219,9 @@
             art.applyDataId = ad.id
         where
             art.applyDateStr = #{ ybAppealResultView.applyDateStr }
+        <if test="ybAppealResultView.areaType!= null">
+            and art.areaType = #{ybAppealResultView.areaType}
+        </if>
         <if test="ybAppealResultView.sourceType!= null">
             and art.sourceType = #{ybAppealResultView.sourceType}
         </if>
@@ -233,9 +236,6 @@
         </if>
         <if test="ybAppealResultView.relatelDataId!= null">
             and art.relatelDataId = #{ybAppealResultView.relatelDataId}
-        </if>
-        <if test="ybAppealResultView.areaType!= null">
-            and art.areaType = #{ybAppealResultView.areaType}
         </if>
         <if test="ybAppealResultView.billNo!= null">
             and ad.billNo = #{ybAppealResultView.billNo}
@@ -332,13 +332,16 @@
         art.sourceType,
         art.STATE,
         art.repayState,
-        art.currencyField,
+        '' currencyField,
         art.relatelDataId,
         art.areaType
         from
         yb_reconsider_apply_data ad
         inner join yb_appeal_result art ON
         art.applyDataId = ad.id
+        <if test="ybAppealResultView.areaType!= null">
+            and art.areaType = #{ybAppealResultView.areaType}
+        </if>
         <if test="ybAppealResultView.sourceType!= null">
             and art.sourceType = #{ybAppealResultView.sourceType}
         </if>
@@ -353,9 +356,6 @@
         </if>
         <if test="ybAppealResultView.relatelDataId!= null">
             and art.relatelDataId = #{ybAppealResultView.relatelDataId}
-        </if>
-        <if test="ybAppealResultView.areaType!= null">
-            and art.areaType = #{ybAppealResultView.areaType}
         </if>
         where
         ad.pid = #{ ybAppealResultView.pid }
@@ -393,6 +393,9 @@
         yb_reconsider_apply_data ad
         inner join yb_appeal_result art ON
         art.applyDataId = ad.id
+        <if test="ybAppealResultView.areaType!= null">
+            and art.areaType = #{ybAppealResultView.areaType}
+        </if>
         <if test="ybAppealResultView.sourceType!= null">
             and art.sourceType = #{ybAppealResultView.sourceType}
         </if>
@@ -407,9 +410,6 @@
         </if>
         <if test="ybAppealResultView.relatelDataId!= null">
             and art.relatelDataId = #{ybAppealResultView.relatelDataId}
-        </if>
-        <if test="ybAppealResultView.areaType!= null">
-            and art.areaType = #{ybAppealResultView.areaType}
         </if>
         where
         ad.pid = #{ ybAppealResultView.pid }
@@ -491,7 +491,7 @@
             art.STATE,
             art.sourceType,
             art.repayState,
-            art.currencyField,
+            '' currencyField,
             null orderDeptId,
             null orderDeptName,
             null orderDocId,
@@ -514,14 +514,14 @@
         LEFT JOIN yb_appeal_result art ON
             art.applyDataId = ad.id and
             art.applyDateStr = #{ ybAppealResultView.applyDateStr}
+            <if test="ybAppealResultView.areaType!= null">
+                and art.areaType = #{ybAppealResultView.areaType}
+            </if>
             <if test="ybAppealResultView.sourceType != null ">
                 and art.sourceType = #{ ybAppealResultView.sourceType}
             </if>
             <if test="ybAppealResultView.state != null and ybAppealResultView.state != 12 ">
                 and art.state = #{ ybAppealResultView.state}
-            </if>
-            <if test="ybAppealResultView.areaType!= null">
-                and art.areaType = #{ybAppealResultView.areaType}
             </if>
         where
             ad.pid = #{ ybAppealResultView.pid}
@@ -582,7 +582,7 @@
             art.STATE,
             art.sourceType,
             art.repayState,
-            art.currencyField,
+            '' currencyField,
             null orderDeptId,
             null orderDeptName,
             null orderDocId,
@@ -606,15 +606,15 @@
             art.applyDataId = ad.id
         where
             art.applyDateStr = #{ ybAppealResultView.applyDateStr }
+        <if test="ybAppealResultView.areaType!= null">
+            and art.areaType = #{ybAppealResultView.areaType}
+        </if>
         <if test="ybAppealResultView.sourceType != null ">
             and art.sourceType = #{ ybAppealResultView.sourceType}
         </if>
         <if test="ybAppealResultView.typeno != null ">and art.typeno = #{ ybAppealResultView.typeno}</if>
         <if test="ybAppealResultView.state != null and ybAppealResultView.state != 12 ">
             and art.state = #{ ybAppealResultView.state}
-        </if>
-        <if test="ybAppealResultView.areaType!= null">
-            and art.areaType = #{ybAppealResultView.areaType}
         </if>
     </select>
 

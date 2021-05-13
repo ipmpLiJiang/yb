@@ -294,7 +294,7 @@ export default {
           verifyId: this.ybAppealManageUpload.verifySendId,
           applyDataId: this.ybAppealManageUpload.applyDataId,
           id: this.ybAppealManageUpload.id,
-          currencyField: this.ybAppealManageUpload.applyDateStr
+          applyDateStr: this.ybAppealManageUpload.applyDateStr
         }
         this.$post('ybAppealResult/findLoadLastAppealResul', {
           ...formData

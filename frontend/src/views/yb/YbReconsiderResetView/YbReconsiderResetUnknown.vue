@@ -67,6 +67,7 @@ export default {
       },
       queryParams: {
       },
+      user: this.$store.state.account.user,
       loading: false,
       bordered: true,
       ybAppealResult: {}
@@ -193,6 +194,7 @@ export default {
       if (this.dataSource.length > 0) {
         let queryParams = {}
         queryParams.applyDateStr = this.applyDate
+        queryParams.areaType = this.user.areaType
         queryParams.state = 2
         this.$export('ybReconsiderResetDataView/excelReset', {
           ...queryParams
@@ -252,6 +254,7 @@ export default {
       this.loading = true
       params.applyDateStr = this.applyDate
       params.currencyField = this.searchText
+      params.areaType = this.user.areaType
       params.state = 2
       // params.dataType = 0
       // params.seekState = 0

@@ -46,12 +46,12 @@
         <result column="shareState" property="shareState"/>
         <result column="shareProgramme" property="shareProgramme"/>
         <result column="deductImplementId" property="deductImplementId"/>
-
+        <result column="areaType" property="areaType"/>
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        pid, serialNo, billNo,  projectCode, projectName,  medicalPrice, ruleName, deductPrice, deductReason, repaymentReason, doctorName, deptCode, deptName, costDateStr, hospitalizedNo, treatmentMode, settlementDateStr, personalNo, insuredName, cardNumber, areaName,  typeno, insuredType, dataType, orderNumber,orderNum, applyDate, applyDateStr,id, applyDataId, arDoctorCode, arDoctorName, arDeptCode, arDeptName, resetDataId,relatelDataId, currencyField, implementDate, implementDateStr, shareState, shareProgramme,deductImplementId
+        pid, serialNo, billNo,  projectCode, projectName,  medicalPrice, ruleName, deductPrice, deductReason, repaymentReason, doctorName, deptCode, deptName, costDateStr, hospitalizedNo, treatmentMode, settlementDateStr, personalNo, insuredName, cardNumber, areaName,  typeno, insuredType, dataType, orderNumber,orderNum, applyDate, applyDateStr,id, applyDataId, arDoctorCode, arDoctorName, arDeptCode, arDeptName, resetDataId,relatelDataId, currencyField, implementDate, implementDateStr, shareState, shareProgramme,deductImplementId,areaType
     </sql>
     <!--    proposalCode,num,enterHospitalDate, outHospitalDate,enterHospitalDateStr, outHospitalDateStr,versionNumber, backAppeal,operatorId, operatorName, raResetState, raResultState, raRepayState,-->
     <update id="updateYbAppealResultDeductimplementView"
@@ -108,14 +108,17 @@
         art.doctorName arDoctorName,
         art.deptCode arDeptCode,
         art.deptName arDeptName,
-        art.currencyField
+        '' currencyField,
+        art.areaType
         FROM
             yb_appeal_result_deductImplement ardi
             INNER JOIN  yb_reconsider_reset_data rrd on
                 ardi.resetDataId = rrd.id
             INNER JOIN yb_appeal_result art ON
-                art.relatelDataId = rrd.relatelDataId and
-                art.state = 2
+                art.relatelDataId = rrd.relatelDataId
+                and art.dataType = rrd.dataType
+                and art.areaType = #{ybAppealResultDeductimplementView.areaType}
+                and art.state = 2
         <if test="ybAppealResultDeductimplementView.dataType != null">
             and art.dataType=#{ ybAppealResultDeductimplementView.dataType}
         </if>
@@ -131,6 +134,9 @@
         </if>
         <if test="ybAppealResultDeductimplementView.implementDateTo!= null">
             and ardi.implementDate <![CDATA[ <= ]]>  #{ybAppealResultDeductimplementView.implementDateTo}
+        </if>
+        <if test="ybAppealResultDeductimplementView.areaType!= null">
+            and ardi.areaType = #{ybAppealResultDeductimplementView.areaType}
         </if>
         <if test="ybAppealResultDeductimplementView.dataType != null">
             and ardi.dataType=#{ ybAppealResultDeductimplementView.dataType}
@@ -166,8 +172,10 @@
         INNER JOIN  yb_reconsider_reset_data rrd on
         ardi.resetDataId = rrd.id
         INNER JOIN yb_appeal_result art ON
-        art.relatelDataId = rrd.relatelDataId and
-        art.state = 2
+        art.relatelDataId = rrd.relatelDataId
+        and art.dataType = rrd.dataType
+        and art.areaType = #{ybAppealResultDeductimplementView.areaType}
+        and art.state = 2
         <if test="ybAppealResultDeductimplementView.dataType != null">
             and art.dataType=#{ ybAppealResultDeductimplementView.dataType}
         </if>
@@ -183,6 +191,9 @@
         </if>
         <if test="ybAppealResultDeductimplementView.implementDateTo!= null">
             and ardi.implementDate <![CDATA[ <= ]]>  #{ybAppealResultDeductimplementView.implementDateTo}
+        </if>
+        <if test="ybAppealResultDeductimplementView.areaType!= null">
+            and ardi.areaType = #{ybAppealResultDeductimplementView.areaType}
         </if>
         <if test="ybAppealResultDeductimplementView.dataType != null">
             and ardi.dataType=#{ ybAppealResultDeductimplementView.dataType}
@@ -213,8 +224,7 @@
             parameterType="cc.mrbird.febs.yb.entity.YbAppealResultDeductimplementView">
         SELECT
         rrd.pid,
-        rr.applyDate,
-        rr.applyDateStr,
+        art.applyDateStr,
         rrd.id resetDataId,
         rrd.relatelDataId,
         null implementDate,
@@ -253,14 +263,15 @@
         art.doctorName arDoctorName,
         art.deptCode arDeptCode,
         art.deptName arDeptName,
-        art.currencyField
+        '' currencyField,
+        art.areaType
         from
         yb_reconsider_reset_data rrd
-        INNER JOIN yb_reconsider_reset rr on
-        rrd.pid = rr.id
         INNER JOIN yb_appeal_result art ON
-        art.relatelDataId = rrd.relatelDataId AND
-        art.state = 2
+        art.relatelDataId = rrd.relatelDataId
+        and art.dataType = rrd.dataType
+        AND art.areaType = #{ybAppealResultDeductimplementView.areaType}
+        and art.state = 2
         <if test="ybAppealResultDeductimplementView.dataType != null">
             and art.dataType=#{ ybAppealResultDeductimplementView.dataType}
         </if>
@@ -269,7 +280,7 @@
         </if>
         where
         <if test="ybAppealResultDeductimplementView.pid != null and ybAppealResultDeductimplementView.pid != ''">
-            rr.id=#{ ybAppealResultDeductimplementView.pid}
+            rrd.pid=#{ ybAppealResultDeductimplementView.pid}
         </if>
         <if test="ybAppealResultDeductimplementView.dataType != null">
             and rrd.dataType=#{ ybAppealResultDeductimplementView.dataType}
@@ -277,6 +288,9 @@
         and rrd.id not in(
             select ard.resetDataId from yb_appeal_result_deductimplement ard where
             ard.applyDateStr=#{ ybAppealResultDeductimplementView.applyDateStr}
+        <if test="ybAppealResultDeductimplementView.areaType!= null">
+            and ard.areaType = #{ybAppealResultDeductimplementView.areaType}
+        </if>
         <if test="ybAppealResultDeductimplementView.dataType != null">
             and ard.dataType=#{ ybAppealResultDeductimplementView.dataType}
         </if>
@@ -309,11 +323,11 @@
         count(1)
         from
         yb_reconsider_reset_data rrd
-        INNER JOIN yb_reconsider_reset rr on
-        rrd.pid = rr.id
         INNER JOIN yb_appeal_result art ON
-        art.relatelDataId = rrd.relatelDataId AND
-        art.state = 2
+        art.relatelDataId = rrd.relatelDataId
+        and art.dataType = rrd.dataType
+        and art.areaType=#{ ybAppealResultDeductimplementView.areaType}
+        AND art.state = 2
         <if test="ybAppealResultDeductimplementView.dataType != null">
             and art.dataType=#{ ybAppealResultDeductimplementView.dataType}
         </if>
@@ -322,7 +336,7 @@
         </if>
         where
         <if test="ybAppealResultDeductimplementView.pid != null and ybAppealResultDeductimplementView.pid != ''">
-            rr.id=#{ ybAppealResultDeductimplementView.pid}
+            rrd.pid=#{ ybAppealResultDeductimplementView.pid}
         </if>
         <if test="ybAppealResultDeductimplementView.dataType != null">
             and rrd.dataType=#{ ybAppealResultDeductimplementView.dataType}
@@ -330,6 +344,9 @@
         and rrd.id not in(
         select ard.resetDataId from yb_appeal_result_deductimplement ard where
         ard.applyDateStr=#{ ybAppealResultDeductimplementView.applyDateStr}
+        <if test="ybAppealResultDeductimplementView.areaType != null">
+            and ard.areaType=#{ ybAppealResultDeductimplementView.areaType}
+        </if>
         <if test="ybAppealResultDeductimplementView.dataType != null">
             and ard.dataType=#{ ybAppealResultDeductimplementView.dataType}
         </if>
@@ -361,8 +378,7 @@
             parameterType="cc.mrbird.febs.yb.entity.YbAppealResultDeductimplementView">
         SELECT
         rrd.pid,
-        rr.applyDate,
-        rr.applyDateStr,
+        art.applyDateStr,
         rrd.id resetDataId,
         rrd.relatelDataId,
         null implementDate,
@@ -401,14 +417,15 @@
         art.doctorName arDoctorName,
         art.deptCode arDeptCode,
         art.deptName arDeptName,
-        art.currencyField
+        '' currencyField,
+        art.areaType
         from
         yb_reconsider_reset_data rrd
-        INNER JOIN yb_reconsider_reset rr on
-        rrd.pid = rr.id
         INNER JOIN yb_appeal_result art ON
-        art.relatelDataId = rrd.relatelDataId AND
-        art.state = 2
+        art.relatelDataId = rrd.relatelDataId
+        and art.dataType = rrd.dataType
+        and art.areaType=#{ ybAppealResultDeductimplementView.areaType}
+        AND art.state = 2
         <if test="ybAppealResultDeductimplementView.dataType != null">
             and art.dataType=#{ ybAppealResultDeductimplementView.dataType}
         </if>
@@ -417,13 +434,13 @@
         </if>
         where
         <if test="ybAppealResultDeductimplementView.applyDateStr != null and ybAppealResultDeductimplementView.applyDateStr != ''">
-            rr.id=#{ ybAppealResultDeductimplementView.pid}
+            rrd.pid=#{ ybAppealResultDeductimplementView.pid}
         </if>
         <if test="ybAppealResultDeductimplementView.applyDateFrom!= null">
-            rr.applyDate <![CDATA[ >= ]]>  #{ybAppealResultDeductimplementView.applyDateFrom}
-        </if>
-        <if test="ybAppealResultDeductimplementView.applyDateTo!= null">
-            and rr.applyDate <![CDATA[ <= ]]>  #{ybAppealResultDeductimplementView.applyDateTo}
+            rrd.pid in
+            <foreach item="item" index="index" collection="listStr" open="(" separator="," close=")">
+                #{item}
+            </foreach>
         </if>
         <if test="ybAppealResultDeductimplementView.dataType != null">
             and rrd.dataType=#{ ybAppealResultDeductimplementView.dataType}
@@ -438,6 +455,9 @@
         </if>
         <if test="ybAppealResultDeductimplementView.applyDateTo!= null">
             AND ard.applyDate <![CDATA[ <= ]]>  #{ybAppealResultDeductimplementView.applyDateTo}
+        </if>
+        <if test="ybAppealResultDeductimplementView.areaType != null">
+            and ard.areaType=#{ ybAppealResultDeductimplementView.areaType}
         </if>
         <if test="ybAppealResultDeductimplementView.dataType != null">
             and ard.dataType=#{ ybAppealResultDeductimplementView.dataType}
@@ -471,11 +491,11 @@
         count(1)
         from
         yb_reconsider_reset_data rrd
-        INNER JOIN yb_reconsider_reset rr on
-        rrd.pid = rr.id
         INNER JOIN yb_appeal_result art ON
-        art.relatelDataId = rrd.relatelDataId AND
-        art.state = 2
+        art.relatelDataId = rrd.relatelDataId
+        and art.dataType = rrd.dataType
+        and art.areaType=#{ ybAppealResultDeductimplementView.areaType}
+        AND art.state = 2
         <if test="ybAppealResultDeductimplementView.dataType != null">
             and art.dataType=#{ ybAppealResultDeductimplementView.dataType}
         </if>
@@ -484,13 +504,13 @@
         </if>
         where
         <if test="ybAppealResultDeductimplementView.pid != null and ybAppealResultDeductimplementView.pid != ''">
-            rr.id=#{ ybAppealResultDeductimplementView.pid}
+            rrd.pid=#{ ybAppealResultDeductimplementView.pid}
         </if>
         <if test="ybAppealResultDeductimplementView.applyDateFrom!= null">
-            rr.applyDate <![CDATA[ >= ]]>  #{ybAppealResultDeductimplementView.applyDateFrom}
-        </if>
-        <if test="ybAppealResultDeductimplementView.applyDateTo!= null">
-            and rr.applyDate <![CDATA[ <= ]]>  #{ybAppealResultDeductimplementView.applyDateTo}
+            rrd.pid in
+            <foreach item="item" index="index" collection="listStr" open="(" separator="," close=")">
+                #{item}
+            </foreach>
         </if>
         <if test="ybAppealResultDeductimplementView.dataType != null">
             and rrd.dataType=#{ ybAppealResultDeductimplementView.dataType}
@@ -505,6 +525,9 @@
         </if>
         <if test="ybAppealResultDeductimplementView.applyDateTo!= null">
             AND ard.applyDate <![CDATA[ <= ]]>  #{ybAppealResultDeductimplementView.applyDateTo}
+        </if>
+        <if test="ybAppealResultDeductimplementView.areaType != null">
+            and ard.areaType=#{ ybAppealResultDeductimplementView.areaType}
         </if>
         <if test="ybAppealResultDeductimplementView.dataType != null">
             and ard.dataType=#{ ybAppealResultDeductimplementView.dataType}

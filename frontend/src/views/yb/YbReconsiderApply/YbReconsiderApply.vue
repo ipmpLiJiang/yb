@@ -239,7 +239,7 @@ export default {
       {
         title: '操作员',
         dataIndex: 'operatorName',
-        width: 130
+        width: 150
       },
       {
         title: '第一版结束日期',

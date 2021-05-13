@@ -167,8 +167,8 @@ public class YbReconsiderVerifyViewController extends BaseController {
                     if (ybReconsiderVerifyView.getDataType().equals(YbDefaultValue.DATATYPE_0)) {
                         YbReconsiderInpatientfees queryRif = new YbReconsiderInpatientfees();
                         queryRif.setApplyDateStr(ybReconsiderVerifyView.getApplyDateStr());
-                        queryRif.setDataType(YbDefaultValue.DATATYPE_0);
                         queryRif.setAreaType(ybReconsiderVerifyView.getAreaType());
+                        queryRif.setDataType(YbDefaultValue.DATATYPE_0);
                         queryRif.setTypeno(typeno);
                         List<YbReconsiderInpatientfees> rifList = this.iYbReconsiderInpatientfeesService.findReconsiderInpatientfeesList(queryRif);
                         List<YbReconsiderInpatientfees> queryRifList = new ArrayList<>();

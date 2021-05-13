@@ -15,9 +15,5 @@ public class YbReconsiderVerifyUpdateState {
     private String ids;
     private List<String> listString;
     private int acceptState;
-    private Long reviewerId;
-    private String reviewerName;
-    private Long sendPersonId;
-    private String sendPersonName;
 }
 

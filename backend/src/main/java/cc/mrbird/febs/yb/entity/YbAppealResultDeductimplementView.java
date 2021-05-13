@@ -331,6 +331,13 @@ public class YbAppealResultDeductimplementView implements Serializable, Comparab
     @ExcelField(value = "扣款落实ID")
     private String deductImplementId;
 
+    /**
+     * 院区
+     */
+    @TableField("areaType")
+    @ExcelField(value = "院区")
+    private Integer areaType;
+
     public static final String PID = "pid";
     public static final String SERIALNO = "serialNo";
     public static final String BILLNO = "billNo";
@@ -373,6 +380,7 @@ public class YbAppealResultDeductimplementView implements Serializable, Comparab
     public static final String SHARESTATE = "shareState";
     public static final String SHAREPROGRAMME = "shareProgramme";
     public static final String DEDUCTIMPLEMENTID = "deductImplementId";
+    public static final String AREATYPE = "areaType";
 
     @Override
     public int compareTo(YbAppealResultDeductimplementView o) {

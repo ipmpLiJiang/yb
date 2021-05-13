@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.apache.ibatis.annotations.Param;
 
 import java.sql.Date;
+import java.util.List;
 
 /**
  * <p>
@@ -27,7 +28,7 @@ public interface YbAppealResultDeductimplementViewMapper extends BaseMapper<YbAp
 
     int findAppealResultDmtCount(@Param("ybAppealResultDeductimplementView") YbAppealResultDeductimplementView ybAppealResultDeductimplementView);
 
-    IPage<YbAppealResultDeductimplementView> findAppealResultDmtUserView(Page page, @Param("ybAppealResultDeductimplementView") YbAppealResultDeductimplementView ybAppealResultDeductimplementView);
+    IPage<YbAppealResultDeductimplementView> findAppealResultDmtUserView(Page page, @Param("ybAppealResultDeductimplementView") YbAppealResultDeductimplementView ybAppealResultDeductimplementView, @Param("listStr") List<String> listStr);
 
-    int findAppealResultDmtUserCount(@Param("ybAppealResultDeductimplementView") YbAppealResultDeductimplementView ybAppealResultDeductimplementView);
+    int findAppealResultDmtUserCount(@Param("ybAppealResultDeductimplementView") YbAppealResultDeductimplementView ybAppealResultDeductimplementView, @Param("listStr") List<String> listStr);
 }

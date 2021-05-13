@@ -42,7 +42,7 @@ public class YbAppealConfireDataServiceImpl extends ServiceImpl<YbAppealConfireD
     public IPage<YbAppealConfireData> findYbAppealConfireDatas(QueryRequest request, YbAppealConfireData ybAppealConfireData) {
         try {
             LambdaQueryWrapper<YbAppealConfireData> queryWrapper = new LambdaQueryWrapper<>();
-            queryWrapper.eq(YbAppealConfireData::getIsDeletemark, 1);//1是未删 0是已删
+//            queryWrapper.eq(YbAppealConfireData::getIsDeletemark, 1);//1是未删 0是已删
             if (ybAppealConfireData.getPid() != null) {
                 queryWrapper.eq(YbAppealConfireData::getPid, ybAppealConfireData.getPid());
             }
@@ -72,15 +72,15 @@ public class YbAppealConfireDataServiceImpl extends ServiceImpl<YbAppealConfireD
     @Transactional
     public void createYbAppealConfireData(YbAppealConfireData ybAppealConfireData) {
         ybAppealConfireData.setId(UUID.randomUUID().toString());
-        ybAppealConfireData.setCreateTime(new Date());
-        ybAppealConfireData.setIsDeletemark(1);
+//        ybAppealConfireData.setCreateTime(new Date());
+//        ybAppealConfireData.setIsDeletemark(1);
         this.save(ybAppealConfireData);
     }
 
     @Override
     @Transactional
     public void updateYbAppealConfireData(YbAppealConfireData ybAppealConfireData) {
-        ybAppealConfireData.setModifyTime(new Date());
+//        ybAppealConfireData.setModifyTime(new Date());
         this.baseMapper.updateYbAppealConfireData(ybAppealConfireData);
     }
 
@@ -102,16 +102,16 @@ public class YbAppealConfireDataServiceImpl extends ServiceImpl<YbAppealConfireD
 
 
     @Override
-    public List<YbAppealConfireData> findAppealConfireDataByInDoctorCodeList(String doctorCode) {
+    public List<YbAppealConfireData> findAppealConfireDataByInDoctorCodeList(String doctorCode,Integer areaType) {
         LambdaQueryWrapper<YbAppealConfireData> wrapper = new LambdaQueryWrapper<>();
-        String sql = " IS_DELETEMARK = 1 and pid in (select id from  yb_appeal_confire where doctorCode = '" + doctorCode + "' and IS_DELETEMARK = 1)";
+        String sql = " pid in (select id from  yb_appeal_confire where doctorCode = '" + doctorCode + "' and areaType = "+areaType+" and IS_DELETEMARK = 1)";
         wrapper.apply(sql);
         return this.list(wrapper);
     }
     @Override
     public List<YbAppealConfireData> findAppealConfireDataList(YbAppealConfireData appealConfireData) {
         LambdaQueryWrapper<YbAppealConfireData> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(YbAppealConfireData::getIsDeletemark,1);
+//        wrapper.eq(YbAppealConfireData::getIsDeletemark,1);
 
         if(appealConfireData.getPid() !=null){
             wrapper.eq(YbAppealConfireData::getPid,appealConfireData.getPid());

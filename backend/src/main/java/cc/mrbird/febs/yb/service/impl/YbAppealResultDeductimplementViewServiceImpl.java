@@ -200,7 +200,7 @@ public class YbAppealResultDeductimplementViewServiceImpl extends ServiceImpl<Yb
     public IPage<YbAppealResultDeductimplementView> findAppealResultDmtView(QueryRequest request, YbAppealResultDeductimplementView ybAppealResultDeductimplementView) {
         try {
             Page<YbAppealResultDeductimplementView> page = new Page<>();
-            YbReconsiderReset reset = iYbReconsiderResetService.findReconsiderResetByApplyDateStr(ybAppealResultDeductimplementView.getApplyDateStr());
+            YbReconsiderReset reset = iYbReconsiderResetService.findReconsiderResetByApplyDateStr(ybAppealResultDeductimplementView.getApplyDateStr(),ybAppealResultDeductimplementView.getAreaType());
             if (reset != null && reset.getState() == 1) {
                 ybAppealResultDeductimplementView.setPid(reset.getId());
                 ybAppealResultDeductimplementView.setApplyDateStr(reset.getApplyDateStr());
@@ -234,7 +234,7 @@ public class YbAppealResultDeductimplementViewServiceImpl extends ServiceImpl<Yb
                 listStr = DataTypeHelpers.stringApplyDateStrToList(ybAppealResultDeductimplementView.getApplyDateFrom(), ybAppealResultDeductimplementView.getApplyDateTo());
             }
             if (listStr.size() > 0) {
-                List<YbReconsiderReset> resetList = iYbReconsiderResetService.findReconsiderResetByApplyDateStr(listStr);
+                List<YbReconsiderReset> resetList = iYbReconsiderResetService.findReconsiderResetByApplyDateStr(listStr,ybAppealResultDeductimplementView.getAreaType());
                 listStr.clear();
                 for (YbReconsiderReset rs : resetList) {
                     if (rs.getState() == 1) {
@@ -252,19 +252,24 @@ public class YbAppealResultDeductimplementViewServiceImpl extends ServiceImpl<Yb
                         ybAppealResultDeductimplementView.setApplyDateStr(null);
                         ybAppealResultDeductimplementView.setApplyDateFrom(applyDateStrForm);
                         ybAppealResultDeductimplementView.setApplyDateTo(applyDateStrTo);
+                        listStr.clear();
+                        for(YbReconsiderReset item : orderResetList){
+                            listStr.add(item.getId());
+                        }
                     } else {
-                        String idStr = listStr.get(0);
-                        resetList = resetList.stream().filter(s->s.getId().equals(idStr)).collect(Collectors.toList());
+//                        String idStr = listStr.get(0);
+//                        resetList = resetList.stream().filter(s->s.getId().equals(idStr)).collect(Collectors.toList());
                         ybAppealResultDeductimplementView.setApplyDateFrom(null);
                         ybAppealResultDeductimplementView.setApplyDateTo(null);
                         ybAppealResultDeductimplementView.setPid(resetList.get(0).getId());
                         ybAppealResultDeductimplementView.setApplyDateStr(resetList.get(0).getApplyDateStr());
+                        listStr.clear();
                     }
-                    int count = this.baseMapper.findAppealResultDmtUserCount(ybAppealResultDeductimplementView);
+                    int count = this.baseMapper.findAppealResultDmtUserCount(ybAppealResultDeductimplementView,listStr);
                     if (count > 0) {
                         page.setSearchCount(false);
                         SortUtil.handlePageSort(request, page, false);//true 是属性  false是数据库字段可两个
-                        IPage<YbAppealResultDeductimplementView> pg = this.baseMapper.findAppealResultDmtUserView(page, ybAppealResultDeductimplementView);
+                        IPage<YbAppealResultDeductimplementView> pg = this.baseMapper.findAppealResultDmtUserView(page, ybAppealResultDeductimplementView,listStr);
                         pg.setTotal(count);
                         return pg;
                     }

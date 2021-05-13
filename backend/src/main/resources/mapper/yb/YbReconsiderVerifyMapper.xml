@@ -10,18 +10,6 @@
                     <result column="verifyDoctorName" property="verifyDoctorName"/>
                     <result column="verifyDeptCode" property="verifyDeptCode"/>
                     <result column="verifyDeptName" property="verifyDeptName"/>
-                    <result column="operateReason" property="operateReason"/>
-                    <result column="operateDate" property="operateDate"/>
-                    <result column="matchPersonId" property="matchPersonId"/>
-                    <result column="matchPersonName" property="matchPersonName"/>
-                    <result column="matchDate" property="matchDate"/>
-                    <result column="reviewerId" property="reviewerId"/>
-                    <result column="reviewerName" property="reviewerName"/>
-                    <result column="reviewerDate" property="reviewerDate"/>
-                    <result column="sendPersonId" property="sendPersonId"/>
-                    <result column="sendPersonName" property="sendPersonName"/>
-                    <result column="sendDate" property="sendDate"/>
-                    <result column="currencyField" property="currencyField"/>
             <result column="dataType" property="dataType"/>
             <result column="applyDateStr" property="applyDateStr"/>
             <result column="typeno" property="typeno"/>
@@ -34,16 +22,12 @@
                     <result column="COMMENTS" property="comments"/>
                     <result column="STATE" property="state"/>
                     <result column="IS_DELETEMARK" property="isDeletemark"/>
-                    <result column="MODIFY_TIME" property="modifyTime"/>
-                    <result column="CREATE_TIME" property="createTime"/>
-                    <result column="CREATE_USER_ID" property="createUserId"/>
-                    <result column="MODIFY_USER_ID" property="modifyUserId"/>
             <result column="areaType" property="areaType"/>
         </resultMap>
 
         <!-- 通用查询结果列 -->
         <sql id="Base_Column_List">
-        id, applyDataId, verifyDoctorCode, verifyDoctorName, verifyDeptCode, verifyDeptName, operateReason, operateDate, matchPersonId, matchPersonName, matchDate, reviewerId, reviewerName, reviewerDate, sendPersonId, sendPersonName, sendDate, currencyField,dataType,applyDateStr,typeno,orderNumber,orderNum,orderDoctorCode,orderDoctorName,orderDeptCode,orderDeptName, COMMENTS, STATE, IS_DELETEMARK, MODIFY_TIME, CREATE_TIME, CREATE_USER_ID, MODIFY_USER_ID,areaType
+        id, applyDataId, verifyDoctorCode, verifyDoctorName, verifyDeptCode, verifyDeptName, dataType,applyDateStr,typeno,orderNumber,orderNum,orderDoctorCode,orderDoctorName,orderDeptCode,orderDeptName, COMMENTS, STATE, IS_DELETEMARK, areaType
     </sql>
     <update id="updateYbReconsiderVerify" parameterType="cc.mrbird.febs.yb.entity.YbReconsiderVerify">
         update yb_reconsider_verify
@@ -53,18 +37,6 @@
 <if test="verifyDoctorName != null">verifyDoctorName=#{verifyDoctorName},</if>
 <if test="verifyDeptCode != null">verifyDeptCode=#{verifyDeptCode},</if>
 <if test="verifyDeptName != null">verifyDeptName=#{verifyDeptName},</if>
-<if test="operateReason != null">operateReason=#{operateReason},</if>
-<if test="operateDate != null">operateDate=#{operateDate},</if>
-<if test="matchPersonId != null">matchPersonId=#{matchPersonId},</if>
-<if test="matchPersonName != null">matchPersonName=#{matchPersonName},</if>
-<if test="matchDate != null">matchDate=#{matchDate},</if>
-<if test="reviewerId != null">reviewerId=#{reviewerId},</if>
-<if test="reviewerName != null">reviewerName=#{reviewerName},</if>
-<if test="reviewerDate != null">reviewerDate=#{reviewerDate},</if>
-<if test="sendPersonId != null">sendPersonId=#{sendPersonId},</if>
-<if test="sendPersonName != null">sendPersonName=#{sendPersonName},</if>
-<if test="sendDate != null">sendDate=#{sendDate},</if>
-<if test="currencyField != null">currencyField=#{currencyField},</if>
 <if test="dataType != null">dataType=#{dataType},</if>
 <if test="applyDateStr != null">applyDateStr=#{applyDateStr},</if>
 <if test="typeno != null">typeno=#{typeno},</if>
@@ -77,10 +49,6 @@
 <if test="comments != null">COMMENTS=#{comments},</if>
 <if test="state != null">STATE=#{state},</if>
 <if test="isDeletemark != null">IS_DELETEMARK=#{isDeletemark},</if>
-<if test="modifyTime != null">MODIFY_TIME=#{modifyTime},</if>
-<if test="createTime != null">CREATE_TIME=#{createTime},</if>
-<if test="createUserId != null">CREATE_USER_ID=#{createUserId},</if>
-<if test="modifyUserId != null">MODIFY_USER_ID=#{modifyUserId},</if>
             <if test="areaType != null">areaType=#{areaType},</if>
         </trim>
                 where id=#{id}
@@ -95,50 +63,9 @@
             <if test="ybReconsiderVerify.verifyDoctorName != null and ybReconsiderVerify.verifyDoctorName != ''"> and verifyDoctorName like concat('%', #{ ybReconsiderVerify.verifyDoctorName} ,'%')</if>
             <if test="ybReconsiderVerify.verifyDeptCode != null and ybReconsiderVerify.verifyDeptCode != ''"> and verifyDeptCode like concat('%', #{ ybReconsiderVerify.verifyDeptCode} ,'%')</if>
             <if test="ybReconsiderVerify.verifyDeptName != null and ybReconsiderVerify.verifyDeptName != ''"> and verifyDeptName like concat('%', #{ ybReconsiderVerify.verifyDeptName} ,'%')</if>
-            <if test="ybReconsiderVerify.operateReason != null and ybReconsiderVerify.operateReason != ''"> and operateReason like concat('%', #{ ybReconsiderVerify.operateReason} ,'%')</if>
-        <if test="ybReconsiderVerify.operateDateFrom!= null">
-            AND ybReconsiderVerify.operateDate <![CDATA[ >= ]]>  operateDateFrom}
-        </if>
-        <if test="ybReconsiderVerify.operateDateTo!= null">
-            AND ybReconsiderVerify.operateDate <![CDATA[ <= ]]>  operateDateTo}
-        </if>
-            <if test="ybReconsiderVerify.matchPersonName != null and ybReconsiderVerify.matchPersonName != ''"> and matchPersonName like concat('%', #{ ybReconsiderVerify.matchPersonName} ,'%')</if>
-        <if test="ybReconsiderVerify.matchDateFrom!= null">
-            AND ybReconsiderVerify.matchDate <![CDATA[ >= ]]>  matchDateFrom}
-        </if>
-        <if test="ybReconsiderVerify.matchDateTo!= null">
-            AND ybReconsiderVerify.matchDate <![CDATA[ <= ]]>  matchDateTo}
-        </if>
-            <if test="ybReconsiderVerify.reviewerName != null and ybReconsiderVerify.reviewerName != ''"> and reviewerName like concat('%', #{ ybReconsiderVerify.reviewerName} ,'%')</if>
-        <if test="ybReconsiderVerify.reviewerDateFrom!= null">
-            AND ybReconsiderVerify.reviewerDate <![CDATA[ >= ]]>  reviewerDateFrom}
-        </if>
-        <if test="ybReconsiderVerify.reviewerDateTo!= null">
-            AND ybReconsiderVerify.reviewerDate <![CDATA[ <= ]]>  reviewerDateTo}
-        </if>
-            <if test="ybReconsiderVerify.sendPersonName != null and ybReconsiderVerify.sendPersonName != ''"> and sendPersonName like concat('%', #{ ybReconsiderVerify.sendPersonName} ,'%')</if>
-        <if test="ybReconsiderVerify.sendDateFrom!= null">
-            AND ybReconsiderVerify.sendDate <![CDATA[ >= ]]>  sendDateFrom}
-        </if>
-        <if test="ybReconsiderVerify.sendDateTo!= null">
-            AND ybReconsiderVerify.sendDate <![CDATA[ <= ]]>  sendDateTo}
-        </if>
-            <if test="ybReconsiderVerify.currencyField != null and ybReconsiderVerify.currencyField != ''"> and currencyField like concat('%', #{ ybReconsiderVerify.currencyField} ,'%')</if>
             <if test="ybReconsiderVerify.comments != null and ybReconsiderVerify.comments != ''"> and COMMENTS like concat('%', #{ ybReconsiderVerify.comments} ,'%')</if>
         <if test="ybReconsiderVerify.state != null"> and STATE =#{ ybReconsiderVerify.state} </if>
         <if test="ybReconsiderVerify.isDeletemark != null"> and IS_DELETEMARK =#{ ybReconsiderVerify.isDeletemark} </if>
-        <if test="ybReconsiderVerify.modifyTimeFrom!= null">
-            AND ybReconsiderVerify.MODIFY_TIME <![CDATA[ >= ]]>  modifyTimeFrom}
-        </if>
-        <if test="ybReconsiderVerify.modifyTimeTo!= null">
-            AND ybReconsiderVerify.MODIFY_TIME <![CDATA[ <= ]]>  modifyTimeTo}
-        </if>
-        <if test="ybReconsiderVerify.createTimeFrom!= null">
-            AND ybReconsiderVerify.CREATE_TIME <![CDATA[ >= ]]>  createTimeFrom}
-        </if>
-        <if test="ybReconsiderVerify.createTimeTo!= null">
-            AND ybReconsiderVerify.CREATE_TIME <![CDATA[ <= ]]>  createTimeTo}
-        </if>
         <if test="ybReconsiderVerify.areaType != null">and ybReconsiderVerify.areaType =#{ ybReconsiderVerify.areaType}</if>
 </select>
 
@@ -150,26 +77,11 @@
             <if test="verifyDoctorName != null">verifyDoctorName=#{verifyDoctorName},</if>
             <if test="verifyDeptCode != null">verifyDeptCode=#{verifyDeptCode},</if>
             <if test="verifyDeptName != null">verifyDeptName=#{verifyDeptName},</if>
-            <if test="operateReason != null">operateReason=#{operateReason},</if>
-            <if test="operateDate != null">operateDate=#{operateDate},</if>
-            <if test="matchPersonId != null">matchPersonId=#{matchPersonId},</if>
-            <if test="matchPersonName != null">matchPersonName=#{matchPersonName},</if>
-            <if test="matchDate != null">matchDate=#{matchDate},</if>
-            <if test="reviewerId != null">reviewerId=#{reviewerId},</if>
-            <if test="reviewerName != null">reviewerName=#{reviewerName},</if>
-            <if test="reviewerDate != null">reviewerDate=#{reviewerDate},</if>
-            <if test="sendPersonId != null">sendPersonId=#{sendPersonId},</if>
-            <if test="sendPersonName != null">sendPersonName=#{sendPersonName},</if>
-            <if test="sendDate != null">sendDate=#{sendDate},</if>
-            <if test="currencyField != null">currencyField=#{currencyField},</if>
             <if test="dataType != null">dataType=#{dataType},</if>
             <if test="comments != null">COMMENTS=#{comments},</if>
             <if test="state != null">STATE=#{state},</if>
             <if test="isDeletemark != null">IS_DELETEMARK=#{isDeletemark},</if>
-            <if test="modifyTime != null">MODIFY_TIME=#{modifyTime},</if>
-            <if test="createTime != null">CREATE_TIME=#{createTime},</if>
-            <if test="createUserId != null">CREATE_USER_ID=#{createUserId},</if>
-            <if test="modifyUserId != null">MODIFY_USER_ID=#{modifyUserId},</if>
+            <if test="areaType != null">areaType=#{areaType},</if>
         </trim>
         where id=#{id} and state=1
 
@@ -182,26 +94,11 @@
             <if test="verifyDoctorName != null">verifyDoctorName=#{verifyDoctorName},</if>
             <if test="verifyDeptCode != null">verifyDeptCode=#{verifyDeptCode},</if>
             <if test="verifyDeptName != null">verifyDeptName=#{verifyDeptName},</if>
-            <if test="operateReason != null">operateReason=#{operateReason},</if>
-            <if test="operateDate != null">operateDate=#{operateDate},</if>
-            <if test="matchPersonId != null">matchPersonId=#{matchPersonId},</if>
-            <if test="matchPersonName != null">matchPersonName=#{matchPersonName},</if>
-            <if test="matchDate != null">matchDate=#{matchDate},</if>
-            <if test="reviewerId != null">reviewerId=#{reviewerId},</if>
-            <if test="reviewerName != null">reviewerName=#{reviewerName},</if>
-            <if test="reviewerDate != null">reviewerDate=#{reviewerDate},</if>
-            <if test="sendPersonId != null">sendPersonId=#{sendPersonId},</if>
-            <if test="sendPersonName != null">sendPersonName=#{sendPersonName},</if>
-            <if test="sendDate != null">sendDate=#{sendDate},</if>
-            <if test="currencyField != null">currencyField=#{currencyField},</if>
             <if test="dataType != null">dataType=#{dataType},</if>
             <if test="comments != null">COMMENTS=#{comments},</if>
             <if test="state != null">STATE=#{state},</if>
             <if test="isDeletemark != null">IS_DELETEMARK=#{isDeletemark},</if>
-            <if test="modifyTime != null">MODIFY_TIME=#{modifyTime},</if>
-            <if test="createTime != null">CREATE_TIME=#{createTime},</if>
-            <if test="createUserId != null">CREATE_USER_ID=#{createUserId},</if>
-            <if test="modifyUserId != null">MODIFY_USER_ID=#{modifyUserId},</if>
+            <if test="areaType != null">areaType=#{areaType},</if>
         </trim>
         where id=#{id} and state=2
 
@@ -214,10 +111,10 @@
             yb_reconsider_verify
         WHERE
             applyDateStr = #{ applyDateStr }
+        <if test="areaType != null"> and areaType =#{ areaType } </if>
         <if test="state != null"> and state =#{ state } </if>
         <if test="typeno != null"> and typeno =#{ typeno } </if>
         <if test="dataType != null"> and dataType =#{ dataType } </if>
-        <if test="areaType != null"> and areaType =#{ areaType } </if>
     </select>
 
     <insert id="insertReconsiderVerifyImport">
@@ -230,12 +127,7 @@ insert into yb_reconsider_verify(
 	verifyDoctorName,
 	verifyDeptCode,
 	verifyDeptName,
-	matchPersonId,
-	matchPersonName,
-	matchDate,
-	dataType,
-	CREATE_USER_ID,
-	CREATE_TIME
+	dataType
 )
 select
     UUID(),
@@ -246,22 +138,18 @@ select
     '系统管理员',
     '101A',
     '测试科室1',
-	#{matchPersonId},
-	#{matchPersonName},
-	NOW(),
-	0,
-	#{matchPersonId},
-	NOW()
+	0
 from
 	yb_reconsider_apply_data rda
 	INNER JOIN yb_reconsider_apply ra ON
-		rda.pid = ra.id and ra.IS_DELETEMARK = 1
+		rda.pid = ra.id and
+		ra.areaType = #{areaType}
     WHERE
-    ra.applyDateStr= #{applyDate} and ra.areaType = #{areaType} and rda.dataType = 0 and rda.IS_DELETEMARK = 1
+    ra.applyDateStr= #{applyDate} and ra.areaType = #{areaType} and rda.dataType = 0
     AND NOT EXISTS(
         select vv.* from yb_reconsider_verify vv INNER JOIN yb_reconsider_apply_data dd ON vv.applyDataId = dd.id
-        and dd.IS_DELETEMARK = 1 INNER JOIN yb_reconsider_apply pp on pp.id = dd.pid and pp.IS_DELETEMARK = 1 where vv.IS_DELETEMARK = 1
-        and pp.applyDateStr=ra.applyDateStr and vv.applyDataId= rda.id and vv.areaType = #{areaType} and vv.dataType = 0
+        INNER JOIN yb_reconsider_apply pp on pp.id = dd.pid  where
+        pp.applyDateStr=ra.applyDateStr and vv.applyDataId= rda.id and vv.areaType = #{areaType} and vv.dataType = 0
     )
 </insert>
     <insert id="insertMainReconsiderVerifyImport">
@@ -274,12 +162,7 @@ from
             verifyDoctorName,
             verifyDeptCode,
             verifyDeptName,
-            matchPersonId,
-            matchPersonName,
-            matchDate,
-            dataType,
-            CREATE_USER_ID,
-            CREATE_TIME
+            dataType
         )
         select
             UUID(),
@@ -290,22 +173,17 @@ from
             '系统管理员',
             '101A',
             '测试科室1',
-            #{matchPersonId},
-            #{matchPersonName},
-            NOW(),
-            1,
-            #{matchPersonId},
-            NOW()
+            1
         from
             yb_reconsider_apply_data rda
             INNER JOIN yb_reconsider_apply ra ON
-                rda.pid = ra.id and ra.IS_DELETEMARK = 1
+                rda.pid = ra.id and ra.areaType = #{areaType}
             WHERE
-            ra.applyDateStr= #{applyDate} and ra.areaType = #{areaType} and  rda.dataType = 1 and rda.IS_DELETEMARK = 1
+            ra.applyDateStr= #{applyDate} and ra.areaType = #{areaType} and  rda.dataType = 1
             AND NOT EXISTS(
                 select vv.* from yb_reconsider_verify vv INNER JOIN yb_reconsider_apply_data dd ON vv.applyDataId = dd.id
-                and dd.IS_DELETEMARK = 1 INNER JOIN yb_reconsider_apply pp on pp.id = dd.pid and pp.IS_DELETEMARK = 1 where vv.IS_DELETEMARK = 1
-                and pp.applyDateStr=ra.applyDateStr and vv.applyDataId= rda.id and vv.areaType = #{areaType} and vv.dataType = 1
+                INNER JOIN yb_reconsider_apply pp on pp.id = dd.pid  where
+                pp.applyDateStr=ra.applyDateStr and vv.applyDataId= rda.id and vv.areaType = #{areaType} and vv.dataType = 1
             )
     </insert>
     <!--State in(1,2) 1待审核、2已审核-->
@@ -316,7 +194,7 @@ from
             yb_reconsider_verify
         where
             applyDateStr = #{applyDateStr} and
-            areaType = #{areaType}
+            areaType = #{areaType} and
             state in(1,2)
 </select>
 </mapper>

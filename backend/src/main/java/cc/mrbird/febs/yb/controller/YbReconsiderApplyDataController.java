@@ -109,8 +109,6 @@ public class YbReconsiderApplyDataController extends BaseController {
     @RequiresPermissions("ybReconsiderApplyData:add")
     public void addYbReconsiderApplyData(@Valid YbReconsiderApplyData ybReconsiderApplyData) throws FebsException {
         try {
-            User currentUser = FebsUtil.getCurrentUser();
-            ybReconsiderApplyData.setCreateUserId(currentUser.getUserId());
             this.iYbReconsiderApplyDataService.createYbReconsiderApplyData(ybReconsiderApplyData);
         } catch (Exception e) {
             message = "新增/按钮失败";
@@ -130,8 +128,6 @@ public class YbReconsiderApplyDataController extends BaseController {
     @RequiresPermissions("ybReconsiderApplyData:update")
     public void updateYbReconsiderApplyData(@Valid YbReconsiderApplyData ybReconsiderApplyData) throws FebsException {
         try {
-            User currentUser = FebsUtil.getCurrentUser();
-            ybReconsiderApplyData.setModifyUserId(currentUser.getUserId());
             this.iYbReconsiderApplyDataService.updateYbReconsiderApplyData(ybReconsiderApplyData);
         } catch (Exception e) {
             message = "修改失败";
@@ -384,7 +380,6 @@ public class YbReconsiderApplyDataController extends BaseController {
                                                     rrData.setCardNumber(strCardNumber);
                                                     String strAreaName = DataTypeHelpers.importTernaryOperate(objMx.get(i), 24);//'统筹区名称',
                                                     rrData.setAreaName(strAreaName);
-                                                    rrData.setAreaType(areaType);
 
                                                     rrData.setVersionNumber(strVersionNumber);
                                                     String strBackAppeal = DataTypeHelpers.importTernaryOperate(objMx.get(i), 26);//'反馈申诉',
@@ -460,7 +455,6 @@ public class YbReconsiderApplyDataController extends BaseController {
                                                         rrMain.setInsuredType(strInsuredType);
                                                         String strAreaName = DataTypeHelpers.importTernaryOperate(objZd.get(i), 15);//'统筹区名称',
                                                         rrMain.setAreaName(strAreaName);
-                                                        rrMain.setAreaType(areaType);
                                                         rrMain.setVersionNumber(strVersionNumber);
                                                         String strBackAppeal = DataTypeHelpers.importTernaryOperate(objZd.get(i), 17);//'反馈申诉',
                                                         rrMain.setBackAppeal(strBackAppeal);

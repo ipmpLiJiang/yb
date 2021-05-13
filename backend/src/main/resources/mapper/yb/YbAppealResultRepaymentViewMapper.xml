@@ -50,58 +50,17 @@
         <result column="repaymentProgramme" property="repaymentProgramme"/>
         <result column="shareState" property="shareState"/>
         <result column="shareProgramme" property="shareProgramme"/>
+        <result column="areaType" property="areaType"/>
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, applyDate, applyDateStr, dataType, repayType, belongDate, belongDateStr, hospitalCode, hospitalName, orderNumber, orderNumberNew, orderNum, serialNo, billNo, projectCode, projectName, medicalPrice, ruleName, deductPrice, deductReason, repaymentPrice, repaymentReason, doctorName, deptCode, deptName, costDate, costDateStr, hospitalizedNo, treatmentMode, settlementDate, settlementDateStr, personalNo, insuredName, updateType, warnType, arDoctorCode, arDoctorName, arDeptCode, arDeptName, repaymentId, resultId, resetDataId, deductImplementId, repaymentProgramme,shareState,shareProgramme
+        id, applyDate, applyDateStr, dataType, repayType, belongDate, belongDateStr, hospitalCode, hospitalName, orderNumber, orderNumberNew, orderNum, serialNo, billNo, projectCode, projectName, medicalPrice, ruleName, deductPrice, deductReason, repaymentPrice, repaymentReason, doctorName, deptCode, deptName, costDate, costDateStr, hospitalizedNo, treatmentMode, settlementDate, settlementDateStr, personalNo, insuredName, updateType, warnType, arDoctorCode, arDoctorName, arDeptCode, arDeptName, repaymentId, resultId, resetDataId, deductImplementId, repaymentProgramme,shareState,shareProgramme,areaType
     </sql>
     <update id="updateYbAppealResultRepaymentView" parameterType="cc.mrbird.febs.yb.entity.YbAppealResultRepaymentView">
         update yb_appeal_result_repayment_view
         <trim prefix="set" suffixOverrides=",">
             <if test="id != null">id=#{id},</if>
-            <if test="applyDate != null">applyDate=#{applyDate},</if>
-            <if test="applyDateStr != null">applyDateStr=#{applyDateStr},</if>
-            <if test="dataType != null">dataType=#{dataType},</if>
-            <if test="repayType != null">repayType=#{repayType},</if>
-            <if test="belongDate != null">belongDate=#{belongDate},</if>
-            <if test="belongDateStr != null">belongDateStr=#{belongDateStr},</if>
-            <if test="hospitalCode != null">hospitalCode=#{hospitalCode},</if>
-            <if test="hospitalName != null">hospitalName=#{hospitalName},</if>
-            <if test="orderNumber != null">orderNumber=#{orderNumber},</if>
-            <if test="orderNumberNew != null">orderNumberNew=#{orderNumberNew},</if>
-            <if test="serialNo != null">serialNo=#{serialNo},</if>
-            <if test="billNo != null">billNo=#{billNo},</if>
-            <if test="projectCode != null">projectCode=#{projectCode},</if>
-            <if test="projectName != null">projectName=#{projectName},</if>
-            <if test="medicalPrice != null">medicalPrice=#{medicalPrice},</if>
-            <if test="ruleName != null">ruleName=#{ruleName},</if>
-            <if test="deductPrice != null">deductPrice=#{deductPrice},</if>
-            <if test="deductReason != null">deductReason=#{deductReason},</if>
-            <if test="repaymentPrice != null">repaymentPrice=#{repaymentPrice},</if>
-            <if test="repaymentReason != null">repaymentReason=#{repaymentReason},</if>
-            <if test="doctorName != null">doctorName=#{doctorName},</if>
-            <if test="deptCode != null">deptCode=#{deptCode},</if>
-            <if test="deptName != null">deptName=#{deptName},</if>
-            <if test="costDate != null">costDate=#{costDate},</if>
-            <if test="costDateStr != null">costDateStr=#{costDateStr},</if>
-            <if test="hospitalizedNo != null">hospitalizedNo=#{hospitalizedNo},</if>
-            <if test="treatmentMode != null">treatmentMode=#{treatmentMode},</if>
-            <if test="settlementDate != null">settlementDate=#{settlementDate},</if>
-            <if test="settlementDateStr != null">settlementDateStr=#{settlementDateStr},</if>
-            <if test="personalNo != null">personalNo=#{personalNo},</if>
-            <if test="insuredName != null">insuredName=#{insuredName},</if>
-            <if test="updateType != null">updateType=#{updateType},</if>
-            <if test="warnType != null">warnType=#{warnType},</if>
-            <if test="arDoctorCode != null">arDoctorCode=#{arDoctorCode},</if>
-            <if test="arDoctorName != null">arDoctorName=#{arDoctorName},</if>
-            <if test="arDeptCode != null">arDeptCode=#{arDeptCode},</if>
-            <if test="arDeptName != null">arDeptName=#{arDeptName},</if>
-            <if test="repaymentId != null">repaymentId=#{repaymentId},</if>
-            <if test="resultId != null">resultId=#{resultId},</if>
-            <if test="resetDataId != null">resetDataId=#{resetDataId},</if>
-            <if test="deductImplementId != null">deductImplementId=#{deductImplementId},</if>
-            <if test="repaymentProgramme != null">repaymentProgramme=#{repaymentProgramme},</if>
         </trim>
 
     </update>

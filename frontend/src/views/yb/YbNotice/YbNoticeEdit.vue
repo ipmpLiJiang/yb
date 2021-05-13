@@ -641,6 +641,7 @@ export default {
         id: this.ybNotice.id,
         sendType: this.ybNotice.sendType,
         ntTitle: this.ybNotice.ntTitle,
+        areaType: this.ybNotice.areaType,
         state: 2
       }
       this.$put('ybNotice/updateReleaseNotice', {

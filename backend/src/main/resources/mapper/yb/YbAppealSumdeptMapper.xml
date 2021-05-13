@@ -80,7 +80,8 @@
         p.CREATE_TIME,
         p.CREATE_USER_ID,
         p.MODIFY_USER_ID,
-        GROUP_CONCAT(CONCAT(d.deptId,'-',d.deptName)) currencyField
+        GROUP_CONCAT(CONCAT(d.deptId,'-',d.deptName)) currencyField,
+        p.areaType
         FROM yb_appeal_sumdept p
         left join yb_appeal_sumdept_data d on
         p.id = d.pid

@@ -331,22 +331,6 @@ public class YbHandleVerifyDataView implements Serializable {
     private String hvDeptName;
 
     /**
-     * 操作理由
-     */
-    @TableField("operateReason")
-    @ExcelField(value = "操作理由")
-    private String operateReason;
-
-    /**
-     * 操作日期
-     */
-    @TableField("operateDate")
-    @ExcelField(value = "操作日期")
-    private Date operateDate;
-    private transient String operateDateFrom;
-    private transient String operateDateTo;
-
-    /**
      * 状态
      */
     @TableField("STATE")
@@ -368,6 +352,12 @@ public class YbHandleVerifyDataView implements Serializable {
     @ExcelField(value = "关联Id")
     private String relatelDataId;
 
+    /**
+     * 院区
+     */
+    @TableField("areaType")
+    @ExcelField(value = "院区")
+    private Integer areaType;
 
     public static final String SERIALNO = "serialNo";
 
@@ -457,12 +447,10 @@ public class YbHandleVerifyDataView implements Serializable {
 
     public static final String HVDEPTNAME = "hvDeptName";
 
-    public static final String OPERATEREASON = "operateReason";
-
-    public static final String OPERATEDATE = "operateDate";
-
     public static final String STATE = "STATE";
 
     public static final String CURRENCYFIELD = "currencyField";
+
+    public static final String AREATYPE = "areaType";
 
 }

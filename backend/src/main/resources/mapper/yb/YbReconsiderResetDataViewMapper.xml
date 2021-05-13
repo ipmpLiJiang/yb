@@ -42,11 +42,12 @@
         <result column="resetPersonName" property="resetPersonName"/>
         <result column="resetDate" property="resetDate"/>
         <result column="resetState" property="resetState"/>
+        <result column="areaType" property="areaType"/>
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id,serialNo,billNo,projectCode,projectName,medicalPrice,ruleName,deductPrice,deductReason,repaymentReason,doctorName ,deptCode,deptName,costDateStr,hospitalizedNo,treatmentMode,settlementDateStr,personalNo,insuredName,cardNumber,areaName,insuredType,dataType,orderNumber,orderNum,repaymentPrice,STATE,seekState,resetDate,resetType,relatelDataId,resetPersonId,resetPersonName,resetId,applyDate,applyDateStr,currencyField,resetState
+        id,serialNo,billNo,projectCode,projectName,medicalPrice,ruleName,deductPrice,deductReason,repaymentReason,doctorName ,deptCode,deptName,costDateStr,hospitalizedNo,treatmentMode,settlementDateStr,personalNo,insuredName,cardNumber,areaName,insuredType,dataType,orderNumber,orderNum,repaymentPrice,STATE,seekState,resetDate,resetType,relatelDataId,resetPersonId,resetPersonName,resetId,applyDate,applyDateStr,currencyField,resetState,areaType
     </sql>
     <update id="updateYbReconsiderResetDataView" parameterType="cc.mrbird.febs.yb.entity.YbReconsiderResetDataView">
         update yb_reconsider_reset_data_view
@@ -96,11 +97,15 @@
         rr.state resetState,
         rr.applyDate,
         rr.applyDateStr,
-        rr.currencyField
+        rr.currencyField,
+        rr.areaType
     FROM
          yb_reconsider_reset_data rrd
         INNER JOIN yb_reconsider_reset rr ON
             rrd.pid = rr.id
+        <if test="ybReconsiderResetDataView.areaType != null">
+            and rr.areaType = #{ ybReconsiderResetDataView.areaType}
+        </if>
     WHERE
         rrd.pid = #{ ybReconsiderResetDataView.resetId}
         <if test="ybReconsiderResetDataView.dataType != null">
@@ -143,6 +148,9 @@
         yb_reconsider_reset_data rrd
         INNER JOIN yb_reconsider_reset rr ON
         rrd.pid = rr.id
+        <if test="ybReconsiderResetDataView.areaType != null">
+            and rr.areaType = #{ ybReconsiderResetDataView.areaType}
+        </if>
         WHERE
         rrd.pid = #{ ybReconsiderResetDataView.resetId}
         <if test="ybReconsiderResetDataView.dataType != null">
@@ -217,11 +225,15 @@
         rr.state resetState,
         rr.applyDate,
         rr.applyDateStr,
-        rr.currencyField
+        rr.currencyField,
+        rr.areaType
     FROM
          yb_reconsider_reset_data rrd
         INNER JOIN yb_reconsider_reset rr ON
             rrd.pid = rr.id
+        <if test="ybReconsiderResetDataView.areaType != null">
+            and rr.areaType = #{ ybReconsiderResetDataView.areaType}
+        </if>
     WHERE
         rrd.pid = #{ ybReconsiderResetDataView.resetId}
         <if test="ybReconsiderResetDataView.dataType != null">
@@ -269,6 +281,9 @@
         yb_reconsider_reset_data rrd
         INNER JOIN yb_reconsider_reset rr ON
         rrd.pid = rr.id
+        <if test="ybReconsiderResetDataView.areaType != null">
+            and rr.areaType = #{ ybReconsiderResetDataView.areaType}
+        </if>
         WHERE
         rrd.pid = #{ ybReconsiderResetDataView.resetId}
         <if test="ybReconsiderResetDataView.dataType != null">
@@ -348,11 +363,15 @@
         rr.state resetState,
         rr.applyDate,
         rr.applyDateStr,
-        rr.currencyField
+        rr.currencyField,
+        rr.areaType
         FROM
         yb_reconsider_reset_data rrd
         INNER JOIN yb_reconsider_reset rr ON
         rrd.pid = rr.id
+        <if test="ybReconsiderResetDataView.areaType != null">
+            and rr.areaType = #{ ybReconsiderResetDataView.areaType}
+        </if>
         WHERE
         rrd.pid = #{ ybReconsiderResetDataView.resetId}
         <if test="ybReconsiderResetDataView.dataType != null">

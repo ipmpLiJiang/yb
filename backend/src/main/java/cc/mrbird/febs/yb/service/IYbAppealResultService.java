@@ -41,11 +41,11 @@ public interface IYbAppealResultService extends IService<YbAppealResult> {
 
     void updateAppealResulResetDatas(String applyDateStr, Long resetPersonId, String resetPersonName);
 
-    List<YbAppealResult> findAppealResulDataByResets(String applyDateStr, Integer dataType);
+    List<YbAppealResult> findAppealResulDataByResets(String applyDateStr,Integer areaType, Integer dataType);
 
-    List<YbAppealResult> findAppealResulDataByRepays(String applyDateStr, Integer dataType);
+    List<YbAppealResult> findAppealResulDataByRepays(String applyDateStr,Integer areaType, Integer dataType);
 
-    List<YbAppealResult> findAppealResulDataHandles(String applyDateStr,String hvId);
+    List<YbAppealResult> findAppealResulDataHandles(String applyDateStr,String hvId,Integer areaType);
 
     List<YbAppealResult> findAppealResultList(YbAppealResult appealResult);
 

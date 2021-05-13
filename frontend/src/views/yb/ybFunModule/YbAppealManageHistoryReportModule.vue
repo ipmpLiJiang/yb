@@ -260,6 +260,7 @@ export default {
       })
     },
     fetch (params = {}) {
+      params.applyDateStr = this.ybAppealManageHistory.applyDateStr
       params.applyDataId = this.ybAppealManageHistory.applyDataId
       this.loading = true
       if (this.paginationInfo) {

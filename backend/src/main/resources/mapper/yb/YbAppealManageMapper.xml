@@ -27,7 +27,6 @@
                     <result column="adminChangeDate" property="adminChangeDate"/>
                     <result column="adminReason" property="adminReason"/>
                     <result column="enableDate" property="enableDate"/>
-                    <result column="currencyField" property="currencyField"/>
                     <result column="sourceType" property="sourceType"/>
             <result column="dataType" property="dataType"/>
             <result column="orderDoctorCode" property="orderDoctorCode"/>
@@ -42,16 +41,12 @@
             <result column="COMMENTS" property="comments"/>
                     <result column="STATE" property="state"/>
                     <result column="IS_DELETEMARK" property="isDeletemark"/>
-                    <result column="MODIFY_TIME" property="modifyTime"/>
-                    <result column="CREATE_TIME" property="createTime"/>
-                    <result column="CREATE_USER_ID" property="createUserId"/>
-                    <result column="MODIFY_USER_ID" property="modifyUserId"/>
             <result column="areaType" property="areaType"/>
         </resultMap>
 
         <!-- 通用查询结果列 -->
         <sql id="Base_Column_List">
-        id, applyDataId, verifyId, readyDoctorCode, readyDoctorName, readyDeptCode, readyDeptName, changeDoctorCode, changeDoctorName, changeDeptCode, changeDeptName, acceptState, operateReason, operateDate, refuseId, refuseName, refuseReason, refuseDate, adminPersonId, adminPersonName, adminChangeDate, adminReason,enableDate, currencyField,sourceType,dataType,orderDoctorCode,orderDoctorName,orderDeptCode,orderDeptName,approvalState,applyDateStr,typeno,orderNumber,orderNum, COMMENTS, STATE, IS_DELETEMARK, MODIFY_TIME, CREATE_TIME, CREATE_USER_ID, MODIFY_USER_ID, areaType
+        id, applyDataId, verifyId, readyDoctorCode, readyDoctorName, readyDeptCode, readyDeptName, changeDoctorCode, changeDoctorName, changeDeptCode, changeDeptName, acceptState, operateReason, operateDate, refuseId, refuseName, refuseReason, refuseDate, adminPersonId, adminPersonName, adminChangeDate, adminReason,enableDate, sourceType,dataType,orderDoctorCode,orderDoctorName,orderDeptCode,orderDeptName,approvalState,applyDateStr,typeno,orderNumber,orderNum, COMMENTS, STATE, IS_DELETEMARK, areaType
     </sql>
     <update id="updateYbAppealManage" parameterType="cc.mrbird.febs.yb.entity.YbAppealManage">
         update yb_appeal_manage
@@ -78,7 +73,6 @@
 <if test="adminChangeDate != null">adminChangeDate=#{adminChangeDate},</if>
 <if test="adminReason != null">adminReason=#{adminReason},</if>
 <if test="enableDate != null">enableDate=#{enableDate},</if>
-<if test="currencyField != null">currencyField=#{currencyField},</if>
 <if test="sourceType != null">sourceType=#{sourceType},</if>
 <if test="dataType != null">dataType=#{dataType},</if>
 <if test="orderDoctorCode != null">orderDoctorCode=#{orderDoctorCode},</if>
@@ -93,10 +87,6 @@
 <if test="comments != null">COMMENTS=#{comments},</if>
 <if test="state != null">STATE=#{state},</if>
 <if test="isDeletemark != null">IS_DELETEMARK=#{isDeletemark},</if>
-<if test="modifyTime != null">MODIFY_TIME=#{modifyTime},</if>
-<if test="createTime != null">CREATE_TIME=#{createTime},</if>
-<if test="createUserId != null">CREATE_USER_ID=#{createUserId},</if>
-<if test="modifyUserId != null">MODIFY_USER_ID=#{modifyUserId},</if>
             <if test="areaType != null">areaType=#{areaType},</if>
         </trim>
                 where id=#{id}
@@ -146,24 +136,11 @@
         <if test="ybAppealManage.enableDateTo!= null">
             AND ybAppealManage.enableDate <![CDATA[ <= ]]>  enableDateTo}
         </if>
-            <if test="ybAppealManage.currencyField != null and ybAppealManage.currencyField != ''"> and currencyField like concat('%', #{ ybAppealManage.currencyField} ,'%')</if>
         <if test="ybAppealManage.sourceType != null"> and sourceType =#{ ybAppealManage.sourceType} </if>
             <if test="ybAppealManage.comments != null and ybAppealManage.comments != ''"> and COMMENTS like concat('%', #{ ybAppealManage.comments} ,'%')</if>
         <if test="ybAppealManage.state != null"> and STATE =#{ ybAppealManage.state} </if>
         <if test="ybAppealManage.approvalState != null"> and approvalState =#{ ybAppealManage.approvalState} </if>
         <if test="ybAppealManage.isDeletemark != null"> and IS_DELETEMARK =#{ ybAppealManage.isDeletemark} </if>
-        <if test="ybAppealManage.modifyTimeFrom!= null">
-            AND ybAppealManage.MODIFY_TIME <![CDATA[ >= ]]>  modifyTimeFrom}
-        </if>
-        <if test="ybAppealManage.modifyTimeTo!= null">
-            AND ybAppealManage.MODIFY_TIME <![CDATA[ <= ]]>  modifyTimeTo}
-        </if>
-        <if test="ybAppealManage.createTimeFrom!= null">
-            AND ybAppealManage.CREATE_TIME <![CDATA[ >= ]]>  createTimeFrom}
-        </if>
-        <if test="ybAppealManage.createTimeTo!= null">
-            AND ybAppealManage.CREATE_TIME <![CDATA[ <= ]]>  createTimeTo}
-        </if>
 </select>
 
     <update id="updateAcceptRejectState" parameterType="cc.mrbird.febs.yb.entity.YbAppealManage">
@@ -191,17 +168,12 @@
             <if test="adminChangeDate != null">adminChangeDate=#{adminChangeDate},</if>
             <if test="adminReason != null">adminReason=#{adminReason},</if>
             <if test="enableDate != null">enableDate=#{enableDate},</if>
-            <if test="currencyField != null">currencyField=#{currencyField},</if>
             <if test="sourceType != null">sourceType=#{sourceType},</if>
             <if test="dataType != null">dataType=#{dataType},</if>
             <if test="approvalState != null">approvalState=#{approvalState},</if>
             <if test="comments != null">COMMENTS=#{comments},</if>
             <if test="state != null">STATE=#{state},</if>
             <if test="isDeletemark != null">IS_DELETEMARK=#{isDeletemark},</if>
-            <if test="modifyTime != null">MODIFY_TIME=#{modifyTime},</if>
-            <if test="createTime != null">CREATE_TIME=#{createTime},</if>
-            <if test="createUserId != null">CREATE_USER_ID=#{createUserId},</if>
-            <if test="modifyUserId != null">MODIFY_USER_ID=#{modifyUserId},</if>
         </trim>
         where id=#{id} and acceptState=0
 
@@ -232,17 +204,12 @@
             <if test="adminChangeDate != null">adminChangeDate=#{adminChangeDate},</if>
             <if test="adminReason != null">adminReason=#{adminReason},</if>
             <if test="enableDate != null">enableDate=#{enableDate},</if>
-            <if test="currencyField != null">currencyField=#{currencyField},</if>
             <if test="sourceType != null">sourceType=#{sourceType},</if>
             <if test="dataType != null">dataType=#{dataType},</if>
             <if test="approvalState != null">approvalState=#{approvalState},</if>
             <if test="comments != null">COMMENTS=#{comments},</if>
             <if test="state != null">STATE=#{state},</if>
             <if test="isDeletemark != null">IS_DELETEMARK=#{isDeletemark},</if>
-            <if test="modifyTime != null">MODIFY_TIME=#{modifyTime},</if>
-            <if test="createTime != null">CREATE_TIME=#{createTime},</if>
-            <if test="createUserId != null">CREATE_USER_ID=#{createUserId},</if>
-            <if test="modifyUserId != null">MODIFY_USER_ID=#{modifyUserId},</if>
         </trim>
         where id=#{id} and acceptState=1
 
@@ -273,17 +240,12 @@
             <if test="adminChangeDate != null">adminChangeDate=#{adminChangeDate},</if>
             <if test="adminReason != null">adminReason=#{adminReason},</if>
             <if test="enableDate != null">enableDate=#{enableDate},</if>
-            <if test="currencyField != null">currencyField=#{currencyField},</if>
             <if test="sourceType != null">sourceType=#{sourceType},</if>
             <if test="dataType != null">dataType=#{dataType},</if>
             <if test="comments != null">COMMENTS=#{comments},</if>
             <if test="state != null">STATE=#{state},</if>
             <if test="approvalState != null">approvalState=#{approvalState},</if>
             <if test="isDeletemark != null">IS_DELETEMARK=#{isDeletemark},</if>
-            <if test="modifyTime != null">MODIFY_TIME=#{modifyTime},</if>
-            <if test="createTime != null">CREATE_TIME=#{createTime},</if>
-            <if test="createUserId != null">CREATE_USER_ID=#{createUserId},</if>
-            <if test="modifyUserId != null">MODIFY_USER_ID=#{modifyUserId},</if>
         </trim>
         where id=#{id} and acceptState=2
 

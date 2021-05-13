@@ -71,7 +71,7 @@ public class YbAppealResultRepayment implements Serializable, Comparable<YbAppea
      * 关联Id
      */
     @TableField("relatelDataId")
-    @ExcelField(value ="关联Id")
+    @ExcelField(value = "关联Id")
     private String relatelDataId;
 
     /**
@@ -148,6 +148,13 @@ public class YbAppealResultRepayment implements Serializable, Comparable<YbAppea
     @ExcelField(value = "修改人")
     private Long modifyUserId;
 
+    /**
+     * 院区
+     */
+    @TableField("areaType")
+    @ExcelField(value = "院区")
+    private Integer areaType;
+
 
     public static final String ID = "id";
 
@@ -165,7 +172,7 @@ public class YbAppealResultRepayment implements Serializable, Comparable<YbAppea
 
     public static final String APPLYDATESTR = "applyDateStr";
 
-    public static final String DATATYPE ="dataType" ;
+    public static final String DATATYPE = "dataType";
 
     public static final String COMMENTS = "COMMENTS";
 
@@ -180,6 +187,8 @@ public class YbAppealResultRepayment implements Serializable, Comparable<YbAppea
     public static final String CREATE_USER_ID = "CREATE_USER_ID";
 
     public static final String MODIFY_USER_ID = "MODIFY_USER_ID";
+
+    public static final String AREATYPE = "areaType";
 
     @Override
     public int compareTo(YbAppealResultRepayment o) {

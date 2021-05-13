@@ -78,7 +78,7 @@ public class YbAppealResultController extends BaseController {
     public void addYbAppealResult(@Valid YbAppealResult ybAppealResult) throws FebsException {
         try {
             User currentUser = FebsUtil.getCurrentUser();
-            ybAppealResult.setCreateUserId(currentUser.getUserId());
+//            ybAppealResult.setCreateUserId(currentUser.getUserId());
             this.iYbAppealResultService.createYbAppealResult(ybAppealResult);
         } catch (Exception e) {
             message = "新增/按钮失败";
@@ -99,7 +99,7 @@ public class YbAppealResultController extends BaseController {
     public void updateYbAppealResult(@Valid YbAppealResult ybAppealResult) throws FebsException {
         try {
             User currentUser = FebsUtil.getCurrentUser();
-            ybAppealResult.setModifyUserId(currentUser.getUserId());
+//            ybAppealResult.setModifyUserId(currentUser.getUserId());
             this.iYbAppealResultService.updateYbAppealResult(ybAppealResult);
         } catch (Exception e) {
             message = "修改失败";
@@ -175,7 +175,7 @@ public class YbAppealResultController extends BaseController {
             //获取当前是否上传过附件 sourceType==1
             List<ComFile> comFileList = this.iComFileService.findListComFile(loadId);
             if (comFileList.size() == 0) {
-                String applyDateStr = ybAppealResult.getCurrencyField(); //获得传过来的 applyDateStr
+                String applyDateStr = ybAppealResult.getApplyDateStr(); //获得传过来的 applyDateStr
                 //获得之前申诉记录
                 ybAppealResult = this.iYbAppealResultService.findLoadLastAppealResulData(ybAppealResult);
                 if (ybAppealResult != null) {

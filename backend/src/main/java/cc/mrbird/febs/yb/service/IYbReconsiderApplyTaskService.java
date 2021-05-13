@@ -29,4 +29,6 @@ public interface IYbReconsiderApplyTaskService extends IService<YbReconsiderAppl
         void deleteYbReconsiderApplyTasks(String[]Ids);
 
         List<YbReconsiderApplyTask>  findReconsiderApplyTaskList(YbReconsiderApplyTask ybReconsiderApplyTask);
+
+        YbReconsiderApplyTask findReconsiderApplyTasks(YbReconsiderApplyTask ybReconsiderApplyTask);
         }

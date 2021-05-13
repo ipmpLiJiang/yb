@@ -99,23 +99,23 @@ public class YbAppealSumdeptDataServiceImpl extends ServiceImpl<YbAppealSumdeptD
         this.baseMapper.delete(wrapper);
     }
 
-        @Override
-        public List<YbAppealSumdeptData> findAppealSumdeptDataList(YbAppealSumdeptData appealSumdeptData) {
-                LambdaQueryWrapper<YbAppealSumdeptData> wrapper = new LambdaQueryWrapper<>();
+    @Override
+    public List<YbAppealSumdeptData> findAppealSumdeptDataList(YbAppealSumdeptData appealSumdeptData) {
+        LambdaQueryWrapper<YbAppealSumdeptData> wrapper = new LambdaQueryWrapper<>();
 
-                if(appealSumdeptData.getPid() !=null){
-                        wrapper.eq(YbAppealSumdeptData::getPid,appealSumdeptData.getPid());
-                }
-
-                if(appealSumdeptData.getDeptId() !=null){
-                        wrapper.eq(YbAppealSumdeptData::getDeptId,appealSumdeptData.getDeptId());
-                }
-
-                if(appealSumdeptData.getDeptName() !=null){
-                        wrapper.eq(YbAppealSumdeptData::getDeptName,appealSumdeptData.getDeptName());
-                }
-
-                return this.list(wrapper);
+        if (appealSumdeptData.getPid() != null) {
+            wrapper.eq(YbAppealSumdeptData::getPid, appealSumdeptData.getPid());
         }
+
+        if (appealSumdeptData.getDeptId() != null) {
+            wrapper.eq(YbAppealSumdeptData::getDeptId, appealSumdeptData.getDeptId());
+        }
+
+        if (appealSumdeptData.getDeptName() != null) {
+            wrapper.eq(YbAppealSumdeptData::getDeptName, appealSumdeptData.getDeptName());
+        }
+
+        return this.list(wrapper);
+    }
 
 }

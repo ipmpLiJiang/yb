@@ -154,7 +154,7 @@ public class YbReconsiderRepayDataServiceImpl extends ServiceImpl<YbReconsiderRe
 
     @Override
     @Transactional
-    public String updateOrderNumberRepayDatas(YbReconsiderRepayData ybReconsiderRepayData, Long uid, String uname) {
+    public String updateOrderNumberRepayDatas(YbReconsiderRepayData ybReconsiderRepayData,Integer areaType, Long uid, String uname) {
         String message = "";
         String sql = "";
         LambdaQueryWrapper<YbReconsiderRepayData> queryWrapperRay = new LambdaQueryWrapper<>();
@@ -167,9 +167,9 @@ public class YbReconsiderRepayDataServiceImpl extends ServiceImpl<YbReconsiderRe
         queryWrapperRay.apply(sql);
         List<YbReconsiderRepayData> repayDataList = this.list(queryWrapperRay);
         if (repayDataList.size() > 0) {
-            List<YbReconsiderResetData> resetDataList = this.iYbReconsiderResetDataService.findReconsiderResetDataByApplyDates(ybReconsiderRepayData.getBelongDateStr(), ybReconsiderRepayData.getDataType());
+            List<YbReconsiderResetData> resetDataList = this.iYbReconsiderResetDataService.findReconsiderResetDataByApplyDates(ybReconsiderRepayData.getBelongDateStr(),areaType, ybReconsiderRepayData.getDataType());
             if (resetDataList.size() > 0) {
-                List<YbAppealResult> resultList = this.iYbAppealResultService.findAppealResulDataByRepays(ybReconsiderRepayData.getBelongDateStr(), ybReconsiderRepayData.getDataType());
+                List<YbAppealResult> resultList = this.iYbAppealResultService.findAppealResulDataByRepays(ybReconsiderRepayData.getBelongDateStr(), areaType,ybReconsiderRepayData.getDataType());
                 if (resultList.size() == 0) {
                     message = "result0";
                 }
@@ -283,7 +283,7 @@ public class YbReconsiderRepayDataServiceImpl extends ServiceImpl<YbReconsiderRe
 
     @Override
     @Transactional
-    public String updateFieldRepayDatas(YbReconsiderRepayData ybReconsiderRepayData, Long uid, String uname) {
+    public String updateFieldRepayDatas(YbReconsiderRepayData ybReconsiderRepayData,Integer areaType, Long uid, String uname) {
         String message = "";
 
         LambdaQueryWrapper<YbReconsiderRepayData> queryWrapperRay = new LambdaQueryWrapper<>();
@@ -296,9 +296,9 @@ public class YbReconsiderRepayDataServiceImpl extends ServiceImpl<YbReconsiderRe
 
         List<YbReconsiderRepayData> repayDataList = this.list(queryWrapperRay);
         if (repayDataList.size() > 0) {
-            List<YbReconsiderResetData> resetDataList = this.iYbReconsiderResetDataService.findResetNotExistsRepayByApplyDates(ybReconsiderRepayData.getBelongDateStr(), ybReconsiderRepayData.getDataType());
+            List<YbReconsiderResetData> resetDataList = this.iYbReconsiderResetDataService.findResetNotExistsRepayByApplyDates(ybReconsiderRepayData.getBelongDateStr(),areaType, ybReconsiderRepayData.getDataType());
             if (resetDataList.size() > 0) {
-                List<YbAppealResult> resultList = this.iYbAppealResultService.findAppealResulDataByRepays(ybReconsiderRepayData.getBelongDateStr(), ybReconsiderRepayData.getDataType());
+                List<YbAppealResult> resultList = this.iYbAppealResultService.findAppealResulDataByRepays(ybReconsiderRepayData.getBelongDateStr(),areaType, ybReconsiderRepayData.getDataType());
                 if (resultList.size() == 0) {
                     message = "result0";
                 }

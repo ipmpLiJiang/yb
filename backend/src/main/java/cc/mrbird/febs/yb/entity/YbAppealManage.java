@@ -198,14 +198,6 @@ private static final long serialVersionUID=1L;
     private transient String enableDateFrom;
     private transient String enableDateTo;
 
-
-    /**
-     * 通用
-     */
-    @TableField("currencyField")
-            @ExcelField(value ="通用")
-    private String currencyField;
-
     /**
      * 来源类型
      */
@@ -319,38 +311,6 @@ private static final long serialVersionUID=1L;
     private Integer isDeletemark;
 
     /**
-     * 修改时间
-     */
-    @TableField("MODIFY_TIME")
-            @ExcelField(value ="修改时间")
-    private Date modifyTime;
-    private transient String modifyTimeFrom;
-    private transient String modifyTimeTo;
-
-    /**
-     * 创建时间
-     */
-    @TableField("CREATE_TIME")
-            @ExcelField(value ="创建时间")
-    private Date createTime;
-    private transient String createTimeFrom;
-    private transient String createTimeTo;
-
-    /**
-     * 创建人
-     */
-    @TableField("CREATE_USER_ID")
-            @ExcelField(value ="创建人")
-    private Long createUserId;
-
-    /**
-     * 修改人
-     */
-    @TableField("MODIFY_USER_ID")
-            @ExcelField(value ="修改人")
-    private Long modifyUserId;
-
-    /**
      * 院区
      */
     @TableField("areaType")
@@ -403,8 +363,6 @@ private static final long serialVersionUID=1L;
 
     public static final String ENABLEDATE ="enableDate" ;
 
-    public static final String CURRENCYFIELD ="currencyField" ;
-
     public static final String SOURCETYPE ="sourceType";
 
     public static final String DATATYPE ="dataType" ;
@@ -433,14 +391,6 @@ private static final long serialVersionUID=1L;
     public static final String ORDERNUMBER = "orderNumber";
     public static final String ORDERNUM = "orderNum";
     public static final String TYPENO = "typeno";
-
-    public static final String MODIFY_TIME ="MODIFY_TIME" ;
-
-    public static final String CREATE_TIME ="CREATE_TIME" ;
-
-    public static final String CREATE_USER_ID ="CREATE_USER_ID" ;
-
-    public static final String MODIFY_USER_ID ="MODIFY_USER_ID" ;
 
     public static final String AREATYPE = "areaType";
 
