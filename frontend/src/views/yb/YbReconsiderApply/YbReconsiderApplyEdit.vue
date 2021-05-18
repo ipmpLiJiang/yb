@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <a-drawer
     title="修改"
     :maskClosable="false"
@@ -150,7 +150,7 @@ export default {
           this.form.getFieldDecorator(key)
           let obj = {}
           if (fieldDates.indexOf(key) !== -1) {
-            if (ybReconsiderApply[key] !== '') {
+            if (ybReconsiderApply[key] !== '' && ybReconsiderApply[key] !== null) {
               obj[key] = moment(ybReconsiderApply[key])
             } else {
               obj[key] = ''

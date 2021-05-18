@@ -71,8 +71,8 @@
             label="发送人员"
           >
           <a-radio-group v-decorator="['sendType']" :disabled="ybNotice.state!==0?true:false"  size="large" @change="handleSendTypeChange">
-            <a-radio style="display:block;height:20px;lineHeight:20px" value="1">
-              所有人
+            <a-radio style="color:red;:display:block;height:20px;lineHeight:20px" value="1">
+              所有人 (此选项慎用)
             </a-radio>
             <a-radio style="display:block;height:120px;lineHeight:120px" value="2">
               医管人员&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -181,12 +181,12 @@
         </a-col>
         <a-col :span=3>
           <a-popconfirm
-            title="确定放弃编辑？"
+            title="确定返回列表？"
             @confirm="onClose"
             okText="确定"
             cancelText="取消"
           >
-            <a-button style="margin-right: .8rem">取消</a-button>
+            <a-button style="margin-right: .8rem">返回列表</a-button>
           </a-popconfirm>
         </a-col>
       </a-row>
@@ -532,8 +532,10 @@ export default {
       if (obj === undefined || obj === null || obj === '') {
         this.ybNotice.state = 0
         this.form.setFieldsValue({
-          sendType: '1'
+          sendType: '2'
         })
+        this.adminTypeDisabled = false
+        this.personDisabled = true
         setTimeout(() => {
           this.isClear = true
           this.detailContent = ''

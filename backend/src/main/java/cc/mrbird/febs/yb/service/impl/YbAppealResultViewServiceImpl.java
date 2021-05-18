@@ -266,7 +266,11 @@ public class YbAppealResultViewServiceImpl extends ServiceImpl<YbAppealResultVie
                     List<String> strList = new ArrayList<>();
                     strList = this.iYbPersonService.findPersonCodeList(value);
                     if (strList.size() > 0) {
-                        queryWrapper.in(YbAppealResult::getDoctorCode, strList);
+                        if(strList.size() == 1){
+                            queryWrapper.eq(YbAppealResult::getDoctorCode, strList.get(0));
+                        }else {
+                            queryWrapper.in(YbAppealResult::getDoctorCode, strList);
+                        }
                     }
                     if (typeno != null) {
                         queryWrapper.eq(YbAppealResult::getTypeno, typeno);

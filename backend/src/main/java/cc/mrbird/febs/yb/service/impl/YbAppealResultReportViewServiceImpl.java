@@ -282,15 +282,19 @@ public class YbAppealResultReportViewServiceImpl extends ServiceImpl<YbAppealRes
                     List<String> strList = new ArrayList<>();
                     strList = this.iYbPersonService.findPersonCodeList(value);
                     if (strList.size() > 0) {
-                        String docIn = "";
-                        for (String code : strList) {
-                            if (docIn.equals("")) {
-                                docIn = "'" + code + "'";
-                            } else {
-                                docIn = ",'" + code + "'";
+                        if(strList.size() == 1){
+                            sql += " and doctorCode = '" + strList.get(0) + "'";
+                        }else {
+                            String docIn = "";
+                            for (String code : strList) {
+                                if (docIn.equals("")) {
+                                    docIn = "'" + code + "'";
+                                } else {
+                                    docIn = ",'" + code + "'";
+                                }
                             }
+                            sql += " and doctorCode in (" + docIn + ")";
                         }
-                        sql += " and doctorCode in (" + docIn + ")";
 //                        queryWrapper.in(YbAppealResult::getDoctorCode, strList);
                     }
                 }

@@ -98,6 +98,18 @@ public class YbDeptServiceImpl extends ServiceImpl<YbDeptMapper, YbDept> impleme
     }
 
     @Override
+    public List<String> findDeptCodeList(String value){
+        YbDept dept = new YbDept();
+        dept.setDeptName(value);
+        List<YbDept> deltList = this.findDeptList(dept,0);
+        List<String> strList = new ArrayList<>();
+        for (YbDept item : deltList){
+            strList.add(item.getDeptId());
+        }
+        return strList;
+    }
+
+    @Override
     @Transactional
     public void deleteBatchDepts() {
         LambdaQueryWrapper<YbDept> wrapper = new LambdaQueryWrapper<>();

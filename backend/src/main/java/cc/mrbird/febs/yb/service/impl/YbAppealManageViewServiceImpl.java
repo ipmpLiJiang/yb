@@ -167,7 +167,11 @@ public class YbAppealManageViewServiceImpl extends ServiceImpl<YbAppealManageVie
                         }
                         strList = this.iYbPersonService.findPersonCodeList(value);
                         if(strList.size()>0){
-                            queryWrapper.in(YbAppealManage::getReadyDoctorCode,strList);
+                            if(strList.size() == 1){
+                                queryWrapper.eq(YbAppealManage::getReadyDoctorCode, strList.get(0));
+                            }else {
+                                queryWrapper.in(YbAppealManage::getReadyDoctorCode, strList);
+                            }
                         }
                         if (typeno != null) {
                             queryWrapper.eq(YbAppealManage::getTypeno,typeno);
@@ -223,7 +227,11 @@ public class YbAppealManageViewServiceImpl extends ServiceImpl<YbAppealManageVie
                         if (value != null && value != "" && keyField.equals("readyDoctorName")) {
                             strList = this.iYbPersonService.findPersonCodeList(value);
                             if(strList.size()>0){
-                                queryWrapper.in(YbAppealManage::getReadyDoctorCode,strList);
+                                if(strList.size() == 1){
+                                    queryWrapper.eq(YbAppealManage::getReadyDoctorCode, strList.get(0));
+                                }else {
+                                    queryWrapper.in(YbAppealManage::getReadyDoctorCode, strList);
+                                }
                             }
                         }
                         if (value != null && value != "" && keyField.equals("orderNumber")) {

@@ -33,4 +33,6 @@ public interface IYbDeptService extends IService<YbDept> {
         void deleteBatchDepts();
 
         boolean createBatchDepts(List<YbDeptHis> list);
+
+        List<String> findDeptCodeList(String value);
         }

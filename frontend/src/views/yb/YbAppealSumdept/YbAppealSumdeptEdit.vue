@@ -55,12 +55,12 @@
         </a-col>
         <a-col :span=11>
           <a-popconfirm
-            title="确定取消？"
+            title="确定返回列表？"
             @confirm="onClose"
             okText="确定"
             cancelText="取消"
           >
-            <a-button style="margin-right: .8rem">取消</a-button>
+            <a-button style="margin-right: .8rem">返回列表</a-button>
           </a-popconfirm>
         </a-col>
       </a-row>
