@@ -52,6 +52,9 @@ public class YbAppealResultReportViewServiceImpl extends ServiceImpl<YbAppealRes
     @Autowired
     IYbPersonService iYbPersonService;
 
+    @Autowired
+    IYbAppealConfireDataService iYbAppealConfireDataService;
+
     @Override
     public IPage<YbAppealResultReportView> findYbAppealResultReportViews(QueryRequest request, YbAppealResultReportView ybAppealResultReportView) {
         try {
@@ -226,7 +229,7 @@ public class YbAppealResultReportViewServiceImpl extends ServiceImpl<YbAppealRes
     }
 
     @Override
-    public IPage<YbAppealResultReportView> findAppealResultReportViewNew(QueryRequest request, YbAppealResultReportView ybAppealResultReportView, String keyField) {
+    public IPage<YbAppealResultReportView> findAppealResultReportViewNew(QueryRequest request, YbAppealResultReportView ybAppealResultReportView, String keyField,String confDocCode) {
         try {
             String applyDateStr = ybAppealResultReportView.getApplyDateStr();
             Integer areaType = ybAppealResultReportView.getAreaType();
@@ -278,22 +281,43 @@ public class YbAppealResultReportViewServiceImpl extends ServiceImpl<YbAppealRes
                 if (state != null && state == 2) {
                     sql += " and state = 2 and repayState = 2";
                 }
+
+                String strIn = "";
+                if(confDocCode!=null && !confDocCode.equals("")) {
+                    List<YbAppealConfireData> acdlist = iYbAppealConfireDataService.findAppealConfireDataByInDoctorCodeList(confDocCode, areaType);
+                    if (acdlist.size() > 0) {
+                        if (acdlist.size() == 1) {
+                            sql += " and deptCode = '" + acdlist.get(0).getDeptId() + "'";
+                        } else {
+                            strIn = "";
+                            for (YbAppealConfireData item : acdlist) {
+                                if (strIn.equals("")) {
+                                    strIn = "'" + item.getDeptId() + "'";
+                                } else {
+                                    strIn += ",'" + item.getDeptId() + "'";
+                                }
+                            }
+                            sql += " and deptCode in (" + strIn + ")";
+                        }
+                    } else {
+                        sql += " and 1 = 2";
+                    }
+                }
                 if (value != null && value != "" && keyField.equals("arDoctorName")) {
-                    List<String> strList = new ArrayList<>();
-                    strList = this.iYbPersonService.findPersonCodeList(value);
+                    List<String> strList = this.iYbPersonService.findPersonCodeList(value);
                     if (strList.size() > 0) {
                         if(strList.size() == 1){
                             sql += " and doctorCode = '" + strList.get(0) + "'";
                         }else {
-                            String docIn = "";
+                            strIn = "";
                             for (String code : strList) {
-                                if (docIn.equals("")) {
-                                    docIn = "'" + code + "'";
+                                if (strIn.equals("")) {
+                                    strIn = "'" + code + "'";
                                 } else {
-                                    docIn = ",'" + code + "'";
+                                    strIn += ",'" + code + "'";
                                 }
                             }
-                            sql += " and doctorCode in (" + docIn + ")";
+                            sql += " and doctorCode in (" + strIn + ")";
                         }
 //                        queryWrapper.in(YbAppealResult::getDoctorCode, strList);
                     }

@@ -91,19 +91,22 @@ public class YbPersonServiceImpl extends ServiceImpl<YbPersonMapper, YbPerson> i
             List<String> strDeptList = new ArrayList<>();
             List<String> strRoleList = new ArrayList<>();
             List<UserRolesImport> userRoleList = new ArrayList<>();
+            // type 配置文件
             if (type.equals(1)) {
+                int ndept = 2;
+                int nrole = 3;
                 List<Integer> intList = new ArrayList<>();
-                intList.add(2);//部门
-                intList.add(3);//角色
+                intList.add(ndept);//部门
+                intList.add(nrole);//角色
                 List<ComConfiguremanage> configList = iComConfiguremanageService.getConfigLists(intList);
                 if (configList.size() > 0) {
                     List<ComConfiguremanage> configDeptList = configList.stream().filter(
-                            s -> s.getConfigureType().equals(2)
+                            s -> s.getConfigureType().equals(ndept)
                     ).collect(Collectors.toList());
                     strDept = configDeptList.size() > 0 ? configDeptList.get(0).getStringField() : str;
 
                     List<ComConfiguremanage> configRoleList = configList.stream().filter(
-                            s -> s.getConfigureType().equals(3)
+                            s -> s.getConfigureType().equals(nrole)
                     ).collect(Collectors.toList());
                     strRole = configRoleList.size() > 0 ? configRoleList.get(0).getStringField() : str;
                 }
@@ -184,11 +187,17 @@ public class YbPersonServiceImpl extends ServiceImpl<YbPersonMapper, YbPerson> i
                 if (person.getEmail() !=null && !person.getEmail().equals(user.getEmail())) {
                     isUpdate = true;
                 }
+                if (user.getStatus() !=null && user.getStatus().equals("0")) {
+                    isUpdate = true;
+                }
                 if (isUpdate) {
                     YbPerson updatePerson = new YbPerson();
                     updatePerson.setId(person.getId());
                     updatePerson.setTel(user.getMobile());
                     updatePerson.setEmail(user.getEmail());
+                    if (user.getStatus() !=null && user.getStatus().equals("0")) {
+                        updatePerson.setIsDeletemark(0);
+                    }
                     updateList.add(updatePerson);
                 }
                 isUpdate = false;
@@ -233,6 +242,9 @@ public class YbPersonServiceImpl extends ServiceImpl<YbPersonMapper, YbPerson> i
         List<YbPerson> list = new ArrayList<>();
         if (type == 1) {
             String sql = " IS_DELETEMARK = 1 ";
+            if (ybPerson.getDeptName() != null) {
+                sql += " and deptName = '"+ybPerson.getDeptName()+"'";
+            }
             if (ybPerson.getComments() != null) {
                 sql += " and (personName like '%" + ybPerson.getComments() + "%' or personCode like '%" + ybPerson.getComments() + "%')";
             } else {

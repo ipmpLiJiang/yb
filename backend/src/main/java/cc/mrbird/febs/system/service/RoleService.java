@@ -13,6 +13,8 @@ public interface RoleService extends IService<Role> {
 
     List<Role> findUserRole(String userName);
 
+    List<Role> findRoleConfLists(Integer configureType);
+
     Role findByName(String roleName);
 
     void createRole(Role role);

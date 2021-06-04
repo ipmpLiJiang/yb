@@ -157,8 +157,6 @@ export default {
     },
     frd () {
       let date = this.ybNoticeLook.releaseDate
-      debugger
-      console.log(date)
       if (date !== '' && date !== null) {
         if (isNaN(date) && !isNaN(Date.parse(date))) {
           return moment(date).format(this.dataFormat)

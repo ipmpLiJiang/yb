@@ -23,11 +23,12 @@
                     <result column="MODIFY_USER_ID" property="modifyUserId"/>
             <result column="areaType" property="areaType"/>
             <result column="hisCount" property="hisCount"/>
+            <result column="isOutpfees" property="isOutpfees"/>
         </resultMap>
 
         <!-- 通用查询结果列 -->
         <sql id="Base_Column_List">
-        id, applyDateStr, dataType,typeno, startNum, endNum, totalRow, currentPage, pageSize, totalPage, COMMENTS, STATE, IS_DELETEMARK, MODIFY_TIME, CREATE_TIME, CREATE_USER_ID, MODIFY_USER_ID,areaType,hisCount
+        id, applyDateStr, dataType,typeno, startNum, endNum, totalRow, currentPage, pageSize, totalPage, COMMENTS, STATE, IS_DELETEMARK, MODIFY_TIME, CREATE_TIME, CREATE_USER_ID, MODIFY_USER_ID,areaType,hisCount,isOutpfees
     </sql>
     <update id="updateYbReconsiderApplyTask" parameterType="cc.mrbird.febs.yb.entity.YbReconsiderApplyTask">
         update yb_reconsider_apply_task
@@ -50,6 +51,7 @@
 <if test="modifyUserId != null">MODIFY_USER_ID=#{modifyUserId},</if>
             <if test="areaType != null">areaType=#{areaType},</if>
             <if test="hisCount != null">hisCount=#{hisCount},</if>
+            <if test="isOutpfees != null">isOutpfees=#{isOutpfees},</if>
         </trim>
                 where id=#{id}
 
@@ -93,7 +95,8 @@
     applyDateStr = #{ ybReconsiderApplyTask.applyDateStr} and
     areaType = #{ ybReconsiderApplyTask.areaType} and
     typeno = #{ ybReconsiderApplyTask.typeno} and
-    state = #{ ybReconsiderApplyTask.state}
+    state = #{ ybReconsiderApplyTask.state} and
+    isOutpfees = #{ ybReconsiderApplyTask.isOutpfees}
     order by dataType desc,currentPage desc LIMIT 0,1
 </select>
 </mapper>

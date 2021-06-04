@@ -1,6 +1,6 @@
 <template>
   <div id="tab" style="margin: 0px!important">
-        <!-- 已完成 表格区域 -->
+        <!-- 表格区域 -->
         <a-table
           ref="TableInfo"
           :columns="columns"
@@ -8,42 +8,30 @@
           :dataSource="dataSource"
           :pagination="pagination"
           :loading="loading"
-          :rowSelection="{type: 'radio', selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
           @change="handleTableChange"
           :bordered="bordered"
-          :customRow="handleClickRow"
           :scroll="{ x: 900 }"
         >
           <template slot="operationDeductReason" slot-scope="text, record, index">
             <span :title="record.deductReason">{{record.deductReason}}</span>
           </template>
-          <template
-            slot="operation"
-            slot-scope="text, record, index"
-          >
-            <div class="editable-row-operations">
-              <span>
-                <a :disabled="record.isEnd===1?true:false"
-                  @click.stop="() => appealComplete(record,index)"
-                >修改</a>
-              </span>
-              <a-divider type="vertical" />
-              <span>
-                <a
-                  @click.stop="() => look(record,index)"
-                >查看</a>
-              </span>
-            </div>
-          </template>
         </a-table>
   </div>
 </template>
+
 <script>
 import moment from 'moment'
+import { custom } from '../../js/custom'
 export default {
-  name: 'YbAppealManageCompleted',
+  name: 'YbAppealResultDeductImplementComplete',
   props: {
-    applyDate: {
+    applyDateStr: {
+      default: ''
+    },
+    applyDateToStr: {
+      default: ''
+    },
+    defaultFormatDate: {
       default: ''
     },
     searchItem: {
@@ -51,8 +39,8 @@ export default {
         return {}
       }
     },
-    searchTypeno: {
-      default: 1
+    searchDataType: {
+      default: 0
     }
   },
   data () {
@@ -77,11 +65,8 @@ export default {
       },
       loading: false,
       bordered: true,
-      ybAppealManage: {},
-      className: '',
       user: this.$store.state.account.user,
-      tableFormat1: 'YYYY-MM-DD HH:mm:ss',
-      tableFormat: 'YYYY-MM-DD'
+      ybAppealResultDeductImplement: {}
     }
   },
   computed: {
@@ -102,18 +87,13 @@ export default {
         title: '项目编码',
         dataIndex: 'projectCode',
         fixed: 'left',
-        width: 130
+        width: 140
       },
       {
         title: '项目名称',
         dataIndex: 'projectName',
         fixed: 'left',
-        width: 170
-      },
-      {
-        title: '数量',
-        dataIndex: 'num',
-        width: 70
+        width: 200
       },
       {
         title: '医保内金额',
@@ -123,7 +103,7 @@ export default {
       {
         title: '规则名称',
         dataIndex: 'ruleName',
-        width: 140
+        width: 180
       },
       {
         title: '扣除金额',
@@ -139,73 +119,77 @@ export default {
       {
         title: '费用日期',
         dataIndex: 'costDateStr',
-        customRender: (text, row, index) => {
-          if (text !== '' && text !== null) {
-            if (isNaN(text) && !isNaN(Date.parse(text))) {
-              return moment(text).format(this.tableFormat)
-            } else {
-              return text
-            }
-          } else {
-            return text
-          }
-        },
-        width: 110
+        width: 130
       },
       {
         title: '科室名称',
-        dataIndex: 'deptName',
-        width: 100
+        dataIndex: 'arDeptName',
+        customRender: (text, row, index) => {
+          if (text !== '' && text !== null) {
+            return row.arDeptCode + '-' + row.arDeptName
+          }
+        },
+        width: 150
       },
       {
         title: '医生姓名',
-        dataIndex: 'doctorName',
-        width: 100
-      },
-      {
-        title: '复议截止日期',
-        dataIndex: 'applyEndDate',
+        dataIndex: 'arDoctorName',
         customRender: (text, row, index) => {
           if (text !== '' && text !== null) {
-            if (isNaN(text) && !isNaN(Date.parse(text))) {
-              return moment(text).format(this.tableFormat1)
-            } else {
-              return text
-            }
-          } else {
-            return text
+            return row.arDoctorCode + '-' + row.arDoctorName
           }
         },
-        fixed: 'right',
-        width: 120
+        width: 130
       },
       {
-        title: '复议类型',
-        dataIndex: 'sourceType',
+        title: '扣款类型',
+        dataIndex: 'dataType',
         customRender: (text, row, index) => {
           switch (text) {
             case 0:
-              return '网上复议'
+              return '明细扣款'
             case 1:
-              return '人工复议'
+              return '主单扣款'
             default:
               return text
           }
         },
         fixed: 'right',
-        width: 90
+        width: 95
       },
       {
-        title: '操作',
-        dataIndex: 'operation',
-        scopedSlots: { customRender: 'operation' },
+        title: '落实年月',
+        dataIndex: 'implementDateStr',
         fixed: 'right',
-        width: 140
+        width: 95
+      },
+      {
+        title: '分摊方式',
+        dataIndex: 'shareState',
+        customRender: (text, row, index) => {
+          switch (text) {
+            case 0:
+              return '个人分摊'
+            case 1:
+              return '科室分摊'
+            case 2:
+              return '其他分摊'
+            default:
+              return text
+          }
+        },
+        fixed: 'right',
+        width: 95
+      },
+      {
+        title: '分摊方案',
+        dataIndex: 'shareProgramme',
+        fixed: 'right',
+        width: 250
       }]
     }
   },
   mounted () {
-    // this.fetch()
   },
   methods: {
     moment,
@@ -213,40 +197,8 @@ export default {
       return (this.pagination.defaultCurrent - 1) *
             this.pagination.defaultPageSize + index + 1
     },
-    look (record, index) {
-      record.rowNo = this.rowNo(index)
-      this.$emit('look', record)
-    },
-    handleClickRow (record, index) {
-      return {
-        on: {
-          click: () => {
-            let target = this.selectedRowKeys.filter(key => key === record.id)[0]
-            if (target === undefined) {
-              this.selectedRowKeys = []
-              this.selectedRowKeys.push(record.id)
-            } else {
-              this.selectedRowKeys.splice(this.selectedRowKeys.indexOf(record.id), 1)
-            }
-          }
-        }
-      }
-    },
     onSelectChange (selectedRowKeys) {
       this.selectedRowKeys = selectedRowKeys
-    },
-    onHistory () {
-      let selectedRowKeys = this.selectedRowKeys
-      if (selectedRowKeys.length === 1) {
-        let target = this.dataSource.filter(item => selectedRowKeys[0] === item.id)[0]
-        let indOf = this.dataSource.indexOf(target)
-        target.rowNo = this.rowNo(indOf)
-        this.$emit('onHistoryLook', target)
-      } else if (selectedRowKeys.length === 0) {
-        this.$message.warning('未选择行')
-      } else {
-        this.$message.warning('请选择单行')
-      }
     },
     searchPage () {
       this.pagination.defaultCurrent = 1
@@ -254,10 +206,6 @@ export default {
         this.paginationInfo.current = this.pagination.defaultCurrent
       }
       this.search()
-    },
-    appealComplete (record, index) {
-      record.rowNo = this.rowNo(index)
-      this.$emit('appealComplete', record)
     },
     search () {
       let { sortedInfo } = this
@@ -300,37 +248,52 @@ export default {
       })
     },
     fetch (params = {}) {
-      this.loading = true
-      params.applyDateStr = this.applyDate
-      params.acceptState = 6
-      params.currencyField = this.searchItem.value
-      params.typeno = this.searchTypeno
-      params.areaType = this.user.areaType
-      params.keyField = this.searchItem.keyField
-      if (this.paginationInfo) {
-        // 如果分页信息不为空，则设置表格当前第几页，每页条数，并设置查询分页参数
-        this.$refs.TableInfo.pagination.current = this.paginationInfo.current
-        this.$refs.TableInfo.pagination.pageSize = this.paginationInfo.pageSize
-        params.pageSize = this.paginationInfo.pageSize
-        params.pageNum = this.paginationInfo.current
+      let dateStr = this.applyDateStr
+      let dateToStr = this.applyDateToStr
+
+      let arrDateStr = custom.resetApplyDateStr(dateStr, dateToStr, this.defaultFormatDate)
+      dateStr = arrDateStr[0]
+      dateToStr = arrDateStr[1]
+
+      let msg = custom.checkApplyDateStr(dateStr, dateToStr, 3)
+      if (msg === '') {
+        this.loading = true
+        params.applyDateFrom = dateStr
+        params.applyDateTo = dateToStr
+        params.areaType = this.user.areaType
+        params.currencyField = this.searchItem.value
+        params.keyField = this.searchItem.keyField
+        if (this.searchDataType !== 2) {
+          params.dataType = this.searchDataType
+        }
+        if (this.paginationInfo) {
+          // 如果分页信息不为空，则设置表格当前第几页，每页条数，并设置查询分页参数
+          this.$refs.TableInfo.pagination.current = this.paginationInfo.current
+          this.$refs.TableInfo.pagination.pageSize = this.paginationInfo.pageSize
+          params.pageSize = this.paginationInfo.pageSize
+          params.pageNum = this.paginationInfo.current
+        } else {
+          // 如果分页信息为空，则设置为默认值
+          params.pageSize = this.pagination.defaultPageSize
+          params.pageNum = this.pagination.defaultCurrent
+        }
+        // params.sortField = 'ardi.applyDateStr asc,rrd.orderNum'
+        // params.sortOrder = 'descend'
+        // params.sortOrder = 'ascend'
+        this.$get('ybAppealResultDeductimplementView/findAppealResultDeductimplementConfView', {
+          ...params
+        }).then((r) => {
+          let data = r.data
+          const pagination = { ...this.pagination }
+          pagination.total = data.total
+          this.loading = false
+          this.dataSource = data.rows
+          this.pagination = pagination
+        })
+        this.selectedRowKeys = []
       } else {
-        // 如果分页信息为空，则设置为默认值
-        params.pageSize = this.pagination.defaultPageSize
-        params.pageNum = this.pagination.defaultCurrent
+        this.$message.error(msg)
       }
-      // params.sortField = 'ad.orderNum'
-      // params.sortOrder = 'ascend'
-      this.$get('ybAppealManageView/appealManageUserView', {
-        ...params
-      }).then((r) => {
-        let data = r.data
-        const pagination = { ...this.pagination }
-        pagination.total = data.total
-        this.loading = false
-        this.dataSource = data.rows
-        this.pagination = pagination
-      })
-      this.selectedRowKeys = []
     }
   }
 }
@@ -340,4 +303,3 @@ export default {
 .editable-row-operations a {
   margin-right: 8px;
 }
-</style>

@@ -69,11 +69,18 @@ public class YbAppealResultReportViewController extends BaseController {
     public Map<String, Object> List(QueryRequest request, YbAppealResultReportView ybAppealResultReportView, String keyField) {
         if (ybAppealResultReportView.getCurrencyField() != null && ybAppealResultReportView.getCurrencyField() != "") {
             System.out.println("View-New");
-            return getDataTable(this.iYbAppealResultReportViewService.findAppealResultReportViewNew(request, ybAppealResultReportView, keyField));
+            return getDataTable(this.iYbAppealResultReportViewService.findAppealResultReportViewNew(request, ybAppealResultReportView, keyField,null));
         } else {
             System.out.println("View-Old");
             return getDataTable(this.iYbAppealResultReportViewService.findAppealResultReportViews(request, ybAppealResultReportView, keyField, false));
         }
+    }
+
+    @GetMapping("findAppealResultReportConfView")
+    @RequiresPermissions("ybAppealResultReportView:userView")
+    public Map<String, Object> ListConf(QueryRequest request, YbAppealResultReportView ybAppealResultReportView, String keyField) {
+        User currentUser = FebsUtil.getCurrentUser();
+        return getDataTable(this.iYbAppealResultReportViewService.findAppealResultReportViewNew(request, ybAppealResultReportView, keyField,currentUser.getUsername()));
     }
 
     @GetMapping("findAppealResultReportUserView")
@@ -84,7 +91,7 @@ public class YbAppealResultReportViewController extends BaseController {
 //        return getDataTable(this.iYbAppealResultReportViewService.findAppealResultReportViews(request, ybAppealResultReportView,keyField,true));
         if (ybAppealResultReportView.getApplyDateFrom().equals(ybAppealResultReportView.getApplyDateTo())) {
             ybAppealResultReportView.setApplyDateStr(ybAppealResultReportView.getApplyDateFrom());
-            return getDataTable(this.iYbAppealResultReportViewService.findAppealResultReportViewNew(request, ybAppealResultReportView, keyField));
+            return getDataTable(this.iYbAppealResultReportViewService.findAppealResultReportViewNew(request, ybAppealResultReportView, keyField,null));
         } else {
             return getDataTable(this.iYbAppealResultReportViewService.findAppealResultReportViewUserNew(request, ybAppealResultReportView, keyField));
         }

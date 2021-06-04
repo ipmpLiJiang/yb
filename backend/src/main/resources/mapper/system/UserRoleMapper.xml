@@ -18,4 +18,12 @@
 		DELETE FROM t_user_role WHERE role_id = #{roleId}
 	</delete>
 
+    <select id="findUserRoleList" resultType="cc.mrbird.febs.system.domain.UserRole">
+        select * from t_user_role where USER_ID in (
+        select USER_ID from t_user where username in
+        <foreach item="item" index="index" collection="username" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        )
+    </select>
 </mapper>

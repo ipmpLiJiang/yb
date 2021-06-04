@@ -25,7 +25,7 @@ public interface IYbAppealResultReportViewService extends IService<YbAppealResul
 
         IPage<YbAppealResultReportView> findAppealResultReportViews(QueryRequest request, YbAppealResultReportView ybAppealResultReportView, String keyField,boolean isUser);
 
-        IPage<YbAppealResultReportView> findAppealResultReportViewNew(QueryRequest request, YbAppealResultReportView ybAppealResultReportView, String keyField);
+        IPage<YbAppealResultReportView> findAppealResultReportViewNew(QueryRequest request, YbAppealResultReportView ybAppealResultReportView, String keyField,String confDocCode);
 
         IPage<YbAppealResultReportView> findAppealResultReportViewUserNew(QueryRequest request, YbAppealResultReportView ybAppealResultReportView, String keyField);
 

@@ -77,6 +77,7 @@
             ref="inputSelectDoctor"
             v-decorator="['doctorCode', {rules: [{ required: checkPersonType, message: '医生名称不能为空' }] }]"
             :type=2
+            dept='医生'
             @selectChange=selectDoctorChange
         >
         </input-select>

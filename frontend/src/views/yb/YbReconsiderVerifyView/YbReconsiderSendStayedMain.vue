@@ -415,11 +415,20 @@ export default {
       params.state = 1
       params.dataType = 1
       params.areaType = this.user.areaType
-      let searchType = [this.searchItem.project.type, this.searchItem.rule.type, this.searchItem.dept.type, this.searchItem.order.type]
-      params.searchType = searchType
+      // let searchType = [this.searchItem.project.type, this.searchItem.rule.type, this.searchItem.dept.type, this.searchItem.order.type]
+      // params.searchType = searchType
       if (this.searchItem !== undefined) {
+        if (this.searchItem.serial.serialNo !== '') {
+          params.serialNo = this.searchItem.serial.serialNo
+        }
         if (this.searchItem.rule.ruleName !== '') {
           params.ruleName = this.searchItem.rule.ruleName
+        }
+        if (this.searchItem.doctor.docCode !== '') {
+          params.verifyDoctorCode = this.searchItem.doctor.docCode
+        }
+        if (this.searchItem.doctor.docName !== '') {
+          params.verifyDoctorName = this.searchItem.doctor.docName
         }
         if (this.searchItem.dept.deptName !== '') {
           params.verifyDeptName = this.searchItem.dept.deptName
@@ -440,10 +449,10 @@ export default {
         params.pageNum = this.pagination.defaultCurrent
       }
 
-      params.sortField = 'ad.orderNum'
-      params.sortOrder = 'ascend'
+      // params.sortField = 'rv.orderNum'
+      // params.sortOrder = 'ascend'
 
-      this.$get('ybReconsiderVerifyView/findVerifyViewNull', {
+      this.$get('ybReconsiderVerifyView', {
         ...params
       }).then((r) => {
         let data = r.data

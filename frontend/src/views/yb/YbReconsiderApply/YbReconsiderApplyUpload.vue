@@ -7,7 +7,7 @@
       <a-spin tip="Loading..." :spinning="spinning" :delay="delayTime">
           <div>
         <a-row justify='center'>
-          <a-col :span=16>
+          <a-col :span=15>
             <a-form-item
               v-bind="{
                 labelCol: { span: 8 },
@@ -24,7 +24,7 @@
           </a-col>
         </a-row>
         <a-row justify='center'>
-          <a-col :span=14>
+          <a-col :span=13>
             <a-form-item
               v-bind="formItemLayout"
               label="上传文件名称"
@@ -36,7 +36,7 @@
               />
             </a-form-item>
           </a-col>
-          <a-col :span=2 v-show="showBtn">
+          <a-col :span=2 v-show="tableSelectKey == '3' ? false:showBtn">
             <template>
               <a-upload
                 name="file"
@@ -60,7 +60,15 @@
               <a-button type="primary" style="margin-right: .8rem">删除明细</a-button>
             </a-popconfirm>
           </a-col>
-          <a-col :span=2 v-show="tableSelectKey == 3 ? true:false">
+          <a-col :span=5 v-show="tableSelectKey == 3 ? true:false">
+            <a-select :value="searchOutpfees" style="width: 100px" @change="handleOutpfeesChange">
+              <a-select-option
+              v-for="d in selectOutpfeesDataSource"
+              :key="d.value"
+              >
+              {{ d.text }}
+              </a-select-option>
+            </a-select>
             <a-popconfirm
               title="确定获取His数据？"
               @confirm="addHis"
@@ -71,14 +79,14 @@
               <a-button type="primary">获取His数据</a-button>
             </a-popconfirm>
           </a-col>
-          <a-col :span=2 v-show="showBtn">
+          <a-col :span=2 v-show="tableSelectKey == '3' ? false:showBtn">
             <a-button
               type="primary"
               style="margin-left: 8px"
               @click="downloadFile"
             >模板</a-button>
           </a-col>
-          <a-col :span=2>
+          <a-col :span=2 >
             <a-popconfirm
               title="确定缓存明细？"
               @confirm="updateCache"
@@ -139,6 +147,7 @@
               :applyDateStr="ybReconsiderApply.applyDateStr"
               :typeno="typeno"
               :areaType="ybReconsiderApply.areaType"
+              :isOutpfees="searchOutpfees"
             >
             </ybReconsiderApply-task>
           </a-tab-pane>
@@ -173,6 +182,9 @@ export default {
       typeno: 1,
       tableSelectKey: '1',
       spinning: false,
+      searchOutpfees: 2,
+      selectOutpfeesDataSource: [{text: '住院', value: 2},
+        {text: '门诊', value: 1}],
       delayTime: 500,
       uploadFileName: '',
       user: this.$store.state.account.user,
@@ -238,6 +250,12 @@ export default {
         this.$message.error('缓存失败')
       })
     },
+    handleOutpfeesChange (value) {
+      this.searchOutpfees = value
+      setTimeout(() => {
+        this.callback('3')
+      }, 200)
+    },
     onClose () {
       this.ybReconsiderApply = {}
       this.showBtn = false
@@ -254,7 +272,8 @@ export default {
         this.$put('ybReconsiderApplyData/getHis', {
           applyDateStr: this.ybReconsiderApply.applyDateStr,
           areaType: this.ybReconsiderApply.areaType,
-          typeno: this.typeno
+          typeno: this.typeno,
+          isOutpfees: this.searchOutpfees
         }).then((r) => {
           if (r.data.data.success === 1) {
             this.$message.success('His数据获取成功.')
@@ -285,7 +304,6 @@ export default {
       }
     },
     setFormValues ({ ...ybReconsiderApply }, typeno) {
-      console.log(ybReconsiderApply)
       this.tableSelectKey = '1'
       this.ybReconsiderApply = ybReconsiderApply
       let pid = ybReconsiderApply.id

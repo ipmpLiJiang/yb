@@ -1,6 +1,8 @@
 package cc.mrbird.febs.yb.service.impl;
 
 import cc.mrbird.febs.com.controller.DataTypeHelpers;
+import cc.mrbird.febs.com.entity.ComConfiguremanage;
+import cc.mrbird.febs.com.service.IComConfiguremanageService;
 import cc.mrbird.febs.common.domain.QueryRequest;
 import cc.mrbird.febs.common.properties.FebsProperties;
 import cc.mrbird.febs.common.utils.OracleDB;
@@ -56,6 +58,9 @@ public class YbReconsiderApplyDataServiceImpl extends ServiceImpl<YbReconsiderAp
 
     @Autowired
     YbApplyDataManager ybApplyDataManager;
+
+    @Autowired
+    IComConfiguremanageService iComConfiguremanageService;
 
     @Override
     public IPage<YbReconsiderApplyData> findYbReconsiderApplyDatas(QueryRequest request, YbReconsiderApplyData ybReconsiderApplyData) {
@@ -204,6 +209,11 @@ public class YbReconsiderApplyDataServiceImpl extends ServiceImpl<YbReconsiderAp
     }
 
     @Override
+    public List<YbReconsiderApplyData> findReconsiderApplyDataByNotVerifyStates(String pid, String applyDateStr, Integer areaType, Integer dataType, Integer typeno) {
+        return this.baseMapper.findReconsiderApplyDataByNotVerifyState(pid, applyDateStr, areaType, dataType, typeno);
+    }
+
+    @Override
     @Transactional
     public void createBatchDatas(List<YbReconsiderApplyData> listReconsiderApplyData) {
         this.baseMapper.createBatchData(listReconsiderApplyData);
@@ -216,7 +226,11 @@ public class YbReconsiderApplyDataServiceImpl extends ServiceImpl<YbReconsiderAp
         List<YbReconsiderApplyData> createMainList = new ArrayList<>();
         listData = listData.stream().sorted(Comparator.comparing(YbReconsiderApplyData::getSettlementDate)).collect(Collectors.toList());
         listMain = listMain.stream().sorted(Comparator.comparing(YbReconsiderApplyData::getSettlementDate)).collect(Collectors.toList());
+
+        List<ComConfiguremanage> comConfiguremanageList = iComConfiguremanageService.getConfigLists(6);
         int i = 1;
+        int j = 1;
+        boolean isOutpfees = false;
         for (YbReconsiderApplyData item : listData) {
             YbReconsiderApplyData rrData = new YbReconsiderApplyData();
             rrData.setId(item.getId());
@@ -253,11 +267,45 @@ public class YbReconsiderApplyDataServiceImpl extends ServiceImpl<YbReconsiderAp
             rrData.setBackAppeal(item.getBackAppeal());//'反馈申诉
             rrData.setTypeno(item.getTypeno());
             rrData.setDataType(item.getDataType());
-            rrData.setOrderSettlementNum(i);
             rrData.setIsDeletemark(1);
             rrData.setState(item.getState());
             createDataList.add(rrData);
-            i++;
+            if(rrData.getTreatmentMode() != null && rrData.getTreatmentMode() != "") {
+                if(comConfiguremanageList.size()>0) {
+                    isOutpfees = false;
+                    for(ComConfiguremanage comf : comConfiguremanageList) {
+                        if(rrData.getTreatmentMode().contains(comf.getStringField())){
+                            isOutpfees =true;
+                            break;
+                        }
+                    }
+                    if (isOutpfees) {
+                        rrData.setOrderSettlementNum(j);
+                        rrData.setIsOutpfees(1);
+                        j++;
+                    } else {
+                        rrData.setOrderSettlementNum(i);
+                        rrData.setIsOutpfees(2);
+                        i++;
+                    }
+                }else{
+                    if (rrData.getTreatmentMode().contains("重症") ||
+                            rrData.getTreatmentMode().contains("慢性病") ||
+                            rrData.getTreatmentMode().contains("门诊")) {
+                        rrData.setOrderSettlementNum(j);
+                        rrData.setIsOutpfees(1);
+                        j++;
+                    } else {
+                        rrData.setOrderSettlementNum(i);
+                        rrData.setIsOutpfees(2);
+                        i++;
+                    }
+                }
+            } else {
+                rrData.setOrderSettlementNum(i);
+                rrData.setIsOutpfees(2);
+                i++;
+            }
         }
         i = 1;
         for (YbReconsiderApplyData item : listMain) {
@@ -302,6 +350,9 @@ public class YbReconsiderApplyDataServiceImpl extends ServiceImpl<YbReconsiderAp
         this.iYbReconsiderApplyService.updateYbReconsiderApply(ybReconsiderApply);
     }
 
+    private List<YbPerson> getPersonList(){
+        return iYbPersonService.findPersonList(new YbPerson(), 0);
+    }
 
     private List<YbDeptHis> getDeptHisList() {
         List<YbDeptHis> departList = new ArrayList<>();
@@ -317,27 +368,14 @@ public class YbReconsiderApplyDataServiceImpl extends ServiceImpl<YbReconsiderAp
     }
 
     private List<YbReconsiderInpatientfees> getCreateDataList(List<YbReconsiderApplyData> reconsiderApplyDataList,
-                                                              List<YbReconsiderInpatientfeesData> rifDataList, List<YbDeptHis> departList, List<YbPerson> personList, String applyDateStr, int state, int areaType, boolean isNot) {
+                                                              List<YbReconsiderInpatientfeesData> rifDataList, List<YbDeptHis> departList, List<YbPerson> personList, String applyDateStr, int state, int areaType,int isOutpfees) {
         List<YbReconsiderInpatientfees> createList = new ArrayList<>();
         List<YbReconsiderInpatientfeesData> queryRifDataList = new ArrayList<>();
         List<YbDeptHis> queryDepartList = new ArrayList<>();
         List<YbPerson> queryPersontList = new ArrayList<>();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         for (YbReconsiderApplyData item : reconsiderApplyDataList) {
-            if (!isNot) {
-                queryRifDataList = rifDataList.stream().filter(
-                        s -> s.getTransNo().equals(item.getSerialNo()) &&
-                                s.getItemName().equals(item.getProjectName()) &&
-                                sdf.format(s.getFeeDate()).equals(sdf.format(item.getCostDate()))
-                ).collect(Collectors.toList());
-
-                if (queryRifDataList.size() == 0) {
-                    queryRifDataList = rifDataList.stream().filter(
-                            s -> s.getTransNo().equals(item.getSerialNo()) &&
-                                    s.getItemName().equals(item.getProjectName())
-                    ).collect(Collectors.toList());
-                }
-            } else {
+            if (state == 1) {
                 queryRifDataList = rifDataList.stream().filter(
                         s -> s.getTransNo().equals(item.getSerialNo()) &&
                                 s.getHisName().equals(item.getProjectName()) &&
@@ -348,6 +386,34 @@ public class YbReconsiderApplyDataServiceImpl extends ServiceImpl<YbReconsiderAp
                     queryRifDataList = rifDataList.stream().filter(
                             s -> s.getTransNo().equals(item.getSerialNo()) &&
                                     s.getHisName().equals(item.getProjectName())
+                    ).collect(Collectors.toList());
+                }
+            } else if (state == 2) {
+                if(item.getProjectCode() != null && item.getProjectCode() != "") {
+                    queryRifDataList = rifDataList.stream().filter(
+                            s -> s.getTransNo().equals(item.getSerialNo()) &&
+                                    s.getItemCode().equals(item.getProjectCode().toUpperCase()) &&
+                                    sdf.format(s.getFeeDate()).equals(sdf.format(item.getCostDate()))
+                    ).collect(Collectors.toList());
+
+                    if (queryRifDataList.size() == 0) {
+                        queryRifDataList = rifDataList.stream().filter(
+                                s -> s.getTransNo().equals(item.getSerialNo()) &&
+                                        s.getItemCode().equals(item.getProjectCode().toUpperCase())
+                        ).collect(Collectors.toList());
+                    }
+                }
+            }else {
+                queryRifDataList = rifDataList.stream().filter(
+                        s -> s.getTransNo().equals(item.getSerialNo()) &&
+                                s.getItemName().equals(item.getProjectName()) &&
+                                sdf.format(s.getFeeDate()).equals(sdf.format(item.getCostDate()))
+                ).collect(Collectors.toList());
+
+                if (queryRifDataList.size() == 0) {
+                    queryRifDataList = rifDataList.stream().filter(
+                            s -> s.getTransNo().equals(item.getSerialNo()) &&
+                                    s.getItemName().equals(item.getProjectName())
                     ).collect(Collectors.toList());
                 }
             }
@@ -437,6 +503,7 @@ public class YbReconsiderApplyDataServiceImpl extends ServiceImpl<YbReconsiderAp
 //                                            reconsiderInpatientfees.setCreateTime(new Date());
                 reconsiderInpatientfees.setState(state);
                 reconsiderInpatientfees.setAreaType(areaType);
+                reconsiderInpatientfees.setIsOutpfees(isOutpfees);
                 createList.add(reconsiderInpatientfees);
             }
         }
@@ -485,6 +552,7 @@ public class YbReconsiderApplyDataServiceImpl extends ServiceImpl<YbReconsiderAp
 //                                            reconsiderInpatientfees.setCreateTime(new Date());
                 reconsiderInpatientfees.setState(state);
                 reconsiderInpatientfees.setAreaType(areaType);
+                reconsiderInpatientfees.setIsOutpfees(2);
                 createList.add(reconsiderInpatientfees);
             }
         }
@@ -493,39 +561,31 @@ public class YbReconsiderApplyDataServiceImpl extends ServiceImpl<YbReconsiderAp
 
     private Lock lockApp = new ReentrantLock();
     private Lock lockAppNot = new ReentrantLock();
+    private Lock lockProjCodeAppNot = new ReentrantLock();
 
     @Override
     @Transactional
-    public String findReconsiderApplyDataNotTask(String applyDateStr, Integer areaType,Integer typeno) {
+    public String findReconsiderApplyProjCodeTask(String applyDateStr, Integer areaType,Integer typeno,Integer isOutpfees) {
         int dataType = 0;
         String msg = "";
-        if (lockAppNot.tryLock()) {
+        if (lockProjCodeAppNot.tryLock()) {
             try {
                 //当前复议年月
                 if (applyDateStr == null || "".equals(applyDateStr)) {
-                    applyDateStr = DataTypeHelpers.getUpNianYue();
+                    return "";
+//                    applyDateStr = DataTypeHelpers.getUpNianYue();
                 }
                 YbReconsiderApply reconsiderApply = iYbReconsiderApplyService.findReconsiderApplyByApplyDateStrs(applyDateStr, areaType);
                 if (reconsiderApply == null) {
                     return "";
                 }
+                typeno = this.getTypeno(reconsiderApply,typeno);
                 if(typeno==null) {
-                    typeno = 1;
-                    if (reconsiderApply.getState() == 2 || reconsiderApply.getState() == 3) {
-                        typeno = 1;
-                    } else if (reconsiderApply.getState() == 4 || reconsiderApply.getState() == 5) {
-                        typeno = 2;
-                    } else {
-                        return "";
-                    }
+                    return "";
                 }
-                int state = 1;
-                YbReconsiderApplyTask ybReconsiderApplyTask = new YbReconsiderApplyTask();
-                ybReconsiderApplyTask.setApplyDateStr(reconsiderApply.getApplyDateStr());
-                ybReconsiderApplyTask.setAreaType(reconsiderApply.getAreaType());
-                ybReconsiderApplyTask.setTypeno(typeno);
-                ybReconsiderApplyTask.setState(state);
-                YbReconsiderApplyTask raTask = this.iYbReconsiderApplyTaskService.findReconsiderApplyTasks(ybReconsiderApplyTask);
+                int state = 2;
+                // isOutpfees 1 是门诊 2是住院 0未区分
+                YbReconsiderApplyTask raTask = this.getApplyTask(applyDateStr,areaType,typeno,state,isOutpfees);
                 //总数
                 int totalRow = 0;
                 //当前页
@@ -533,20 +593,20 @@ public class YbReconsiderApplyDataServiceImpl extends ServiceImpl<YbReconsiderAp
                 boolean noUpdate = false;
                 YbReconsiderApplyTask createTask = new YbReconsiderApplyTask();
                 if (raTask == null) {
-                    totalRow = this.baseMapper.findReconsiderApplyDataNotCount(reconsiderApply.getId(), reconsiderApply.getApplyDateStr(), reconsiderApply.getAreaType(), dataType, typeno);
+                    totalRow = this.baseMapper.findReconsiderApplyDataNotCount(reconsiderApply.getId(), reconsiderApply.getApplyDateStr(), reconsiderApply.getAreaType(), dataType, typeno,isOutpfees);
                     if (totalRow == 0) {
                         noUpdate = true;
                     } else {
-                        createTask = createReconsiderApplyTask(reconsiderApply.getApplyDateStr(), reconsiderApply.getAreaType(), 1, dataType, typeno, currentPage, totalRow);
-                        List<YbReconsiderApplyData> reconsiderApplyDataList = this.baseMapper.findReconsiderApplyDataNotInpatientfees(reconsiderApply.getId(), reconsiderApply.getApplyDateStr(), reconsiderApply.getAreaType(), dataType, typeno);
-                        reconsiderApplyDataList = reconsiderApplyDataList.stream().sorted(Comparator.comparing(YbReconsiderApplyData::getOrderNum)).collect(Collectors.toList());
+                        createTask = createReconsiderApplyTask(reconsiderApply.getApplyDateStr(), reconsiderApply.getAreaType(), state, dataType, typeno, currentPage, totalRow,isOutpfees);
+                        List<YbReconsiderApplyData> reconsiderApplyDataList = this.baseMapper.findReconsiderApplyDataNotInpatientfees(reconsiderApply.getId(), reconsiderApply.getApplyDateStr(), reconsiderApply.getAreaType(), dataType, typeno,isOutpfees);
+//                        reconsiderApplyDataList = reconsiderApplyDataList.stream().sorted(Comparator.comparing(YbReconsiderApplyData::getOrderNum)).collect(Collectors.toList());
                         if (reconsiderApplyDataList.size() > 0) {
                             List<YbReconsiderApplyData> updateList = new ArrayList<>();
                             int i = 1;
                             for (YbReconsiderApplyData item : reconsiderApplyDataList) {
                                 YbReconsiderApplyData update = new YbReconsiderApplyData();
                                 update.setId(item.getId());
-                                update.setState(1);
+                                update.setState(state);
                                 update.setOrderSettlementNum(i);
                                 i++;
                                 updateList.add(update);
@@ -565,43 +625,23 @@ public class YbReconsiderApplyDataServiceImpl extends ServiceImpl<YbReconsiderAp
                         currentPage = raTask.getCurrentPage() + 1;
                         totalRow = raTask.getTotalRow();
                         dataType = raTask.getDataType();
-                        createTask = createReconsiderApplyTask(reconsiderApply.getApplyDateStr(), reconsiderApply.getAreaType(), state, dataType, typeno, currentPage, totalRow);
+                        createTask = createReconsiderApplyTask(reconsiderApply.getApplyDateStr(), reconsiderApply.getAreaType(), state, dataType, typeno, currentPage, totalRow,isOutpfees);
                     }
                 }
                 if (!noUpdate) {
-                    List<YbDeptHis> departList = new ArrayList<>();
-                    List<YbPerson> personList = new ArrayList<>();
                     //从orderNum开始
                     int startNum = createTask.getStartNum();
                     //从orderNum结束
                     int endNum = createTask.getEndNum();
 
-                    List<YbReconsiderApplyData> reconsiderApplyDataList = this.baseMapper.findReconsiderApplyDataNotBetween(reconsiderApply.getId(), dataType, typeno, startNum, endNum);
-                    reconsiderApplyDataList = reconsiderApplyDataList.stream().sorted(Comparator.comparing(YbReconsiderApplyData::getOrderNum)).collect(Collectors.toList());
+                    List<YbReconsiderApplyData> reconsiderApplyDataList = this.baseMapper.findReconsiderApplyDataNotBetween(reconsiderApply.getId(), dataType, typeno, startNum, endNum,state,isOutpfees);
+//                    reconsiderApplyDataList = reconsiderApplyDataList.stream().sorted(Comparator.comparing(YbReconsiderApplyData::getOrderNum)).collect(Collectors.toList());
                     if (reconsiderApplyDataList.size() > 0) {
-                        String hisSql = "";
-                        String hisWhere = "";
-
-                        //String[] dateArr = hisTaskDate(reconsiderApplyDataList);
-                        //查询his日期区间 开始
-                        String dateStrForm = reconsiderApply.getApplyDateStr() + "-01";
-//                String dateStrForm = dateArr[0];
-                        //查询his日期区间 结束
-                        String dateStrTo = DataTypeHelpers.stringDateFormatAddMonth(1, dateStrForm, "", false);
-//                String dateStrTo = dateArr[1];
-                        if (dataType == 0) {
-                            hisWhere = hisTaskWhere(reconsiderApplyDataList, 0, state);
-
-                            if (!hisWhere.equals("")) {
-                                hisSql = "select * from his.V_SAP_INPFEES where " + hisWhere +
-                                        "settlementdate >= to_date('" + dateStrForm + "',' yyyy-mm-dd') and " +
-                                        "settlementdate < to_date('" + dateStrTo + "',' yyyy-mm-dd') ";
-                            }
-                        }
+                        String hisSql = this.getHisSql(reconsiderApply,reconsiderApplyDataList,dataType,state,isOutpfees);
 
                         if (!hisSql.equals("")) {
-                            departList = this.getDeptHisList();
-                            personList = iYbPersonService.findPersonList(new YbPerson(), 0);
+                            List<YbDeptHis> departList = this.getDeptHisList();
+                            List<YbPerson> personList = this.getPersonList();
 
                             if (departList.size() > 0) {
                                 List<YbReconsiderInpatientfees> createList = new ArrayList<>();
@@ -611,7 +651,135 @@ public class YbReconsiderApplyDataServiceImpl extends ServiceImpl<YbReconsiderAp
                                     OracleDB<YbReconsiderInpatientfeesData> oracleDB = new OracleDB<>();
                                     rifDataList = oracleDB.excuteSqlRS(new YbReconsiderInpatientfeesData(), hisSql);
                                     if (rifDataList.size() > 0) {
-                                        createList = this.getCreateDataList(reconsiderApplyDataList, rifDataList, departList, personList, reconsiderApply.getApplyDateStr(), state, reconsiderApply.getAreaType(), true);
+                                        createList = this.getCreateDataList(reconsiderApplyDataList, rifDataList, departList, personList, reconsiderApply.getApplyDateStr(), state, reconsiderApply.getAreaType(),isOutpfees);
+                                    } else {
+                                        msg = "hisDataNo";
+                                        log.error("his接口明细扣款无数据.");
+                                    }
+                                }
+
+                                if (createList.size() > 0) {
+                                    createTask.setHisCount(createList.size());
+                                    msg = "update";
+                                    iYbReconsiderInpatientfeesService.saveBatch(createList);
+                                    log.error("His更新数据：" + createList.size() + "条");
+                                }
+                                createTask.setPageSize(reconsiderApplyDataList.size());
+                                this.iYbReconsiderApplyTaskService.createYbReconsiderApplyTask(createTask);
+                                if(msg.equals("update")){
+                                    msg = "ok";
+                                }
+                            } else {
+                                msg = "deptNo";
+                                log.error("his接口科室无数据.");
+                            }
+                        } else {
+                            msg = "hisSqlNo";
+                            log.error("his接口Where为空.");
+                        }
+                    }
+                }
+            } catch (Exception e) {
+                msg = e.getMessage();
+                log.error(msg);
+            } finally {
+                lockProjCodeAppNot.unlock();
+            }
+        } else {
+            msg = "lockNo";
+        }
+        System.out.println("findReconsiderApplyProjCodeTask end:" + msg);
+        return msg;
+    }
+
+    @Override
+    @Transactional
+    public String findReconsiderApplyDataNotTask(String applyDateStr, Integer areaType,Integer typeno,Integer isOutpfees) {
+        int dataType = 0;
+        String msg = "";
+        if (lockAppNot.tryLock()) {
+            try {
+                //当前复议年月
+                if (applyDateStr == null || "".equals(applyDateStr)) {
+                    return "";
+//                    applyDateStr = DataTypeHelpers.getUpNianYue();
+                }
+                YbReconsiderApply reconsiderApply = iYbReconsiderApplyService.findReconsiderApplyByApplyDateStrs(applyDateStr, areaType);
+                if (reconsiderApply == null) {
+                    return "";
+                }
+                typeno = this.getTypeno(reconsiderApply,typeno);
+                if(typeno==null) {
+                    return "";
+                }
+                int state = 1;
+                // isOutpfees 1 是门诊 2是住院 0未区分
+                YbReconsiderApplyTask raTask = this.getApplyTask(applyDateStr,areaType,typeno,state,isOutpfees);
+                //总数
+                int totalRow = 0;
+                //当前页
+                int currentPage = 1;
+                boolean noUpdate = false;
+                YbReconsiderApplyTask createTask = new YbReconsiderApplyTask();
+                if (raTask == null) {
+                    totalRow = this.baseMapper.findReconsiderApplyDataNotCount(reconsiderApply.getId(), reconsiderApply.getApplyDateStr(), reconsiderApply.getAreaType(), dataType, typeno,isOutpfees);
+                    if (totalRow == 0) {
+                        noUpdate = true;
+                    } else {
+                        createTask = createReconsiderApplyTask(reconsiderApply.getApplyDateStr(), reconsiderApply.getAreaType(), state, dataType, typeno, currentPage, totalRow,isOutpfees);
+                        List<YbReconsiderApplyData> reconsiderApplyDataList = this.baseMapper.findReconsiderApplyDataNotInpatientfees(reconsiderApply.getId(), reconsiderApply.getApplyDateStr(), reconsiderApply.getAreaType(), dataType, typeno,isOutpfees);
+//                        reconsiderApplyDataList = reconsiderApplyDataList.stream().sorted(Comparator.comparing(YbReconsiderApplyData::getOrderNum)).collect(Collectors.toList());
+                        if (reconsiderApplyDataList.size() > 0) {
+                            List<YbReconsiderApplyData> updateList = new ArrayList<>();
+                            int i = 1;
+                            for (YbReconsiderApplyData item : reconsiderApplyDataList) {
+                                YbReconsiderApplyData update = new YbReconsiderApplyData();
+                                update.setId(item.getId());
+                                update.setState(state);
+                                update.setOrderSettlementNum(i);
+                                i++;
+                                updateList.add(update);
+                            }
+                            if (updateList.size() > 0) {
+                                this.updateBatchById(updateList);
+                            }
+                        }
+                    }
+                } else {
+                    if (raTask.getCurrentPage().equals(raTask.getTotalPage())) {
+                        noUpdate = true;
+                        msg = "no";
+                        System.out.println("notTask ok");
+                    } else {
+                        currentPage = raTask.getCurrentPage() + 1;
+                        totalRow = raTask.getTotalRow();
+                        dataType = raTask.getDataType();
+                        createTask = createReconsiderApplyTask(reconsiderApply.getApplyDateStr(), reconsiderApply.getAreaType(), state, dataType, typeno, currentPage, totalRow,isOutpfees);
+                    }
+                }
+                if (!noUpdate) {
+                    //从orderNum开始
+                    int startNum = createTask.getStartNum();
+                    //从orderNum结束
+                    int endNum = createTask.getEndNum();
+
+                    List<YbReconsiderApplyData> reconsiderApplyDataList = this.baseMapper.findReconsiderApplyDataNotBetween(reconsiderApply.getId(), dataType, typeno, startNum, endNum,state,isOutpfees);
+//                    reconsiderApplyDataList = reconsiderApplyDataList.stream().sorted(Comparator.comparing(YbReconsiderApplyData::getOrderNum)).collect(Collectors.toList());
+                    if (reconsiderApplyDataList.size() > 0) {
+                        String hisSql = this.getHisSql(reconsiderApply,reconsiderApplyDataList,dataType,state,isOutpfees);
+
+                        if (!hisSql.equals("")) {
+                            List<YbDeptHis> departList = this.getDeptHisList();
+                            List<YbPerson> personList = this.getPersonList();
+
+                            if (departList.size() > 0) {
+                                List<YbReconsiderInpatientfees> createList = new ArrayList<>();
+                                if (dataType == 0) {
+                                    List<YbReconsiderInpatientfeesData> rifDataList = new ArrayList<>();
+                                    OracleDB<YbReconsiderInpatientfeesData> oracleDB = new OracleDB<>();
+                                    rifDataList = oracleDB.excuteSqlRS(new YbReconsiderInpatientfeesData(), hisSql);
+                                    if (rifDataList.size() > 0) {
+                                        createList = this.getCreateDataList(reconsiderApplyDataList, rifDataList, departList, personList, reconsiderApply.getApplyDateStr(), state, reconsiderApply.getAreaType(),isOutpfees);
                                     } else {
                                         msg = "hisDataNo";
                                         log.error("his接口明细扣款无数据.");
@@ -654,55 +822,27 @@ public class YbReconsiderApplyDataServiceImpl extends ServiceImpl<YbReconsiderAp
 
     @Override
     @Transactional
-    public String getHisDept() {
-        String msg = "ok";
-        List<YbDeptHis> departList = new ArrayList<>();
-        OracleDB<YbDeptHis> oracleDB = new OracleDB<>();
-        try {
-            departList = oracleDB.excuteSqlRS(new YbDeptHis(), "select * from his.V_SAP_DEPART");
-            if (departList.size() > 0) {
-                iYbDeptService.createBatchDepts(departList);
-            }
-        } catch (Exception e) {
-            msg = e.getMessage();
-            log.error(msg);
-        }
-        System.out.println("getHisDept end:" + msg);
-        return msg;
-    }
-
-    @Override
-    @Transactional
-    public String findReconsiderApplyDataTask(String applyDateStr, Integer areaType,Integer typeno) {
+    public String findReconsiderApplyDataTask(String applyDateStr, Integer areaType,Integer typeno,Integer isOutpfees) {
         int dataType = 0;
         String msg = "";
         if (lockApp.tryLock()) {
             try {
                 //当前复议年月
                 if (applyDateStr == null || "".equals(applyDateStr)) {
-                    applyDateStr = DataTypeHelpers.getUpNianYue();
+                    return "";
+//                    applyDateStr = DataTypeHelpers.getUpNianYue();
                 }
                 YbReconsiderApply reconsiderApply = iYbReconsiderApplyService.findReconsiderApplyByApplyDateStrs(applyDateStr, areaType);
                 if (reconsiderApply == null) {
                     return "";
                 }
+                typeno = this.getTypeno(reconsiderApply,typeno);
                 if(typeno==null) {
-                    typeno = 1;
-                    if (reconsiderApply.getState() == 2 || reconsiderApply.getState() == 3) {
-                        typeno = 1;
-                    } else if (reconsiderApply.getState() == 4 || reconsiderApply.getState() == 5) {
-                        typeno = 2;
-                    } else {
-                        return "";
-                    }
+                    return "";
                 }
                 int state = 0;
-                YbReconsiderApplyTask ybReconsiderApplyTask = new YbReconsiderApplyTask();
-                ybReconsiderApplyTask.setApplyDateStr(applyDateStr);
-                ybReconsiderApplyTask.setAreaType(areaType);
-                ybReconsiderApplyTask.setTypeno(typeno);
-                ybReconsiderApplyTask.setState(state);
-                YbReconsiderApplyTask raTask = this.iYbReconsiderApplyTaskService.findReconsiderApplyTasks(ybReconsiderApplyTask);
+                // isOutpfees 1 是门诊 2是住院 0未区分
+                YbReconsiderApplyTask raTask = this.getApplyTask(applyDateStr,areaType,typeno,state,isOutpfees);
                 //总数
                 int totalRow = 0;
                 //当前页
@@ -710,27 +850,27 @@ public class YbReconsiderApplyDataServiceImpl extends ServiceImpl<YbReconsiderAp
                 boolean noUpdate = false;
                 YbReconsiderApplyTask createTask = new YbReconsiderApplyTask();
                 if (raTask == null) {
-                    totalRow = this.baseMapper.findReconsiderApplyDataCount(reconsiderApply.getId(), dataType, typeno);
+                    totalRow = this.baseMapper.findReconsiderApplyDataCount(reconsiderApply.getId(), dataType, typeno,isOutpfees);
                     if (totalRow == 0) {
                         dataType = 1;
-                        totalRow = this.baseMapper.findReconsiderApplyDataCount(reconsiderApply.getId(), dataType, typeno);
+                        totalRow = this.baseMapper.findReconsiderApplyDataCount(reconsiderApply.getId(), dataType, typeno,isOutpfees);
                     }
                     if (totalRow == 0) {
                         noUpdate = true;
                     } else {
-                        createTask = createReconsiderApplyTask(applyDateStr, areaType, state, dataType, typeno, currentPage, totalRow);
+                        createTask = createReconsiderApplyTask(applyDateStr, areaType, state, dataType, typeno, currentPage, totalRow,isOutpfees);
                     }
                 } else {
                     if (raTask.getCurrentPage().equals(raTask.getTotalPage())) {
                         if (raTask.getDataType() == 0) {
                             dataType = 1;
-                            totalRow = this.baseMapper.findReconsiderApplyDataCount(reconsiderApply.getId(), dataType, typeno);
+                            totalRow = this.baseMapper.findReconsiderApplyDataCount(reconsiderApply.getId(), dataType, typeno,isOutpfees);
                             if (totalRow == 0) {
                                 msg = "no";
                                 log.error("findReconsiderApplyDataTask 没有数据了");
                                 noUpdate = true;
                             } else {
-                                createTask = createReconsiderApplyTask(applyDateStr, areaType, state, dataType, typeno, currentPage, totalRow);
+                                createTask = createReconsiderApplyTask(applyDateStr, areaType, state, dataType, typeno, currentPage, totalRow,isOutpfees);
                             }
                         } else {
                             msg = "no";
@@ -741,48 +881,22 @@ public class YbReconsiderApplyDataServiceImpl extends ServiceImpl<YbReconsiderAp
                         currentPage = raTask.getCurrentPage() + 1;
                         totalRow = raTask.getTotalRow();
                         dataType = raTask.getDataType();
-                        createTask = createReconsiderApplyTask(applyDateStr, areaType, state, dataType, typeno, currentPage, totalRow);
+                        createTask = createReconsiderApplyTask(applyDateStr, areaType, state, dataType, typeno, currentPage, totalRow,isOutpfees);
                     }
                 }
                 if (!noUpdate) {
-                    List<YbDeptHis> departList = new ArrayList<>();
-                    List<YbPerson> personList = new ArrayList<>();
                     //从orderNum开始
                     int startNum = createTask.getStartNum();
                     //从orderNum结束
                     int endNum = createTask.getEndNum();
 
-                    List<YbReconsiderApplyData> reconsiderApplyDataList = this.baseMapper.findReconsiderApplyDataBetween(reconsiderApply.getId(), dataType, typeno, startNum, endNum);
-                    reconsiderApplyDataList = reconsiderApplyDataList.stream().sorted(Comparator.comparing(YbReconsiderApplyData::getOrderNum)).collect(Collectors.toList());
+                    List<YbReconsiderApplyData> reconsiderApplyDataList = this.baseMapper.findReconsiderApplyDataBetween(reconsiderApply.getId(), dataType, typeno, startNum, endNum,isOutpfees);
+                    //reconsiderApplyDataList = reconsiderApplyDataList.stream().sorted(Comparator.comparing(YbReconsiderApplyData::getOrderNum)).collect(Collectors.toList());
                     if (reconsiderApplyDataList.size() > 0) {
-                        String hisSql = "";
-                        String hisWhere = "";
-
-                        //String[] dateArr = hisTaskDate(reconsiderApplyDataList);
-                        //查询his日期区间 开始
-                        String dateStrForm = applyDateStr + "-01";
-//                String dateStrForm = dateArr[0];
-                        //查询his日期区间 结束
-                        String dateStrTo = DataTypeHelpers.stringDateFormatAddMonth(1, dateStrForm, "", false);
-//                String dateStrTo = dateArr[1];
-                        if (dataType == 0) {
-                            hisWhere = hisTaskWhere(reconsiderApplyDataList, 0, state);
-
-                            if (!hisWhere.equals("")) {
-                                hisSql = "select * from his.V_SAP_INPFEES where " + hisWhere +
-                                        "settlementdate >= to_date('" + dateStrForm + "',' yyyy-mm-dd') and " +
-                                        "settlementdate < to_date('" + dateStrTo + "',' yyyy-mm-dd') ";
-                            }
-                        } else {
-                            hisWhere = hisTaskWhere(reconsiderApplyDataList, 1, state);
-                            if (!hisWhere.equals("")) {
-                                hisSql = "select * from his.V_SAP_INPSETTLEINFO where " + hisWhere +
-                                        "settledate >= to_date('" + dateStrForm + "',' yyyy-mm-dd') and " +
-                                        "settledate < to_date('" + dateStrTo + "',' yyyy-mm-dd') ";
-                            }
-                        }
+                        String hisSql = this.getHisSql(reconsiderApply,reconsiderApplyDataList,dataType,state,isOutpfees);
 
                         if (!hisSql.equals("")) {
+                            List<YbDeptHis> departList = new ArrayList<>();
                             if (raTask == null) {
                                 OracleDB<YbDeptHis> oracleDB = new OracleDB<>();
                                 departList = oracleDB.excuteSqlRS(new YbDeptHis(), "select * from his.V_SAP_DEPART");
@@ -793,7 +907,7 @@ public class YbReconsiderApplyDataServiceImpl extends ServiceImpl<YbReconsiderAp
                             }
                             departList = this.getDeptHisList();
 
-                            personList = iYbPersonService.findPersonList(new YbPerson(), 0);
+                            List<YbPerson> personList = this.getPersonList();
 
                             if (departList.size() > 0) {
                                 List<YbReconsiderInpatientfees> createList = new ArrayList<>();
@@ -803,7 +917,7 @@ public class YbReconsiderApplyDataServiceImpl extends ServiceImpl<YbReconsiderAp
                                     OracleDB<YbReconsiderInpatientfeesData> oracleDB = new OracleDB<>();
                                     rifDataList = oracleDB.excuteSqlRS(new YbReconsiderInpatientfeesData(), hisSql);
                                     if (rifDataList.size() > 0) {
-                                        createList = this.getCreateDataList(reconsiderApplyDataList, rifDataList, departList, personList, applyDateStr, state, areaType, false);
+                                        createList = this.getCreateDataList(reconsiderApplyDataList, rifDataList, departList, personList, applyDateStr, state, areaType,isOutpfees);
 
                                     } else {
                                         msg = "hisDataNo";
@@ -856,23 +970,83 @@ public class YbReconsiderApplyDataServiceImpl extends ServiceImpl<YbReconsiderAp
         return msg;
     }
 
-    //得到定时任务最后一次创建日期的数据
-//    private YbReconsiderApplyTask maxReconsiderApplyTask(List<YbReconsiderApplyTask> list) {
-//        YbReconsiderApplyTask reconsiderApplyTask = new YbReconsiderApplyTask();
-//        reconsiderApplyTask = list.get(0);
-//        for (YbReconsiderApplyTask item : list) {
-//            int n = item.getCreateTime().compareTo(reconsiderApplyTask.getCreateTime());
-//            if (n > 0) {
-//                reconsiderApplyTask = item;
-//            } else if (n == 0) {
-//
-//            }
-//        }
-//        return reconsiderApplyTask;
-//    }
+    private YbReconsiderApplyTask getApplyTask(String applyDateStr,int areaType,int typeno,int state,int isOutpfees){
+        YbReconsiderApplyTask ybReconsiderApplyTask = new YbReconsiderApplyTask();
+        ybReconsiderApplyTask.setApplyDateStr(applyDateStr);
+        ybReconsiderApplyTask.setAreaType(areaType);
+        ybReconsiderApplyTask.setTypeno(typeno);
+        ybReconsiderApplyTask.setState(state);
+        ybReconsiderApplyTask.setIsOutpfees(isOutpfees);
+        return this.iYbReconsiderApplyTaskService.findReconsiderApplyTasks(ybReconsiderApplyTask);
+    }
 
+    private  String getHisSql(YbReconsiderApply reconsiderApply,List<YbReconsiderApplyData> reconsiderApplyDataList,int dataType,int state,int isOutpfees){
+        String hisSql  = "";
+        String hisWhere = "";
+
+        //String[] dateArr = hisTaskDate(reconsiderApplyDataList);
+        //查询his日期区间 开始
+        String dateStrForm = reconsiderApply.getApplyDateStr() + "-01";
+//                String dateStrForm = dateArr[0];
+        //查询his日期区间 结束
+        String dateStrTo = DataTypeHelpers.stringDateFormatAddMonth(1, dateStrForm, "", false);
+//                String dateStrTo = dateArr[1];
+        if (dataType == 0) {
+            hisWhere = hisTaskWhere(reconsiderApplyDataList, dataType, state);
+
+            if (!hisWhere.equals("")) {
+                String tab = "V_SAP_INPFEES";
+                if(isOutpfees == 1) {
+                    tab = "V_SAP_OUTPFEES";
+                }
+                hisSql = "select * from his."+tab+" where " + hisWhere +
+                        "settlementdate >= to_date('" + dateStrForm + "',' yyyy-mm-dd') and " +
+                        "settlementdate < to_date('" + dateStrTo + "',' yyyy-mm-dd') ";
+            }
+        }else {
+            hisWhere = hisTaskWhere(reconsiderApplyDataList, dataType, state);
+            if (!hisWhere.equals("")) {
+                hisSql = "select * from his.V_SAP_INPSETTLEINFO where " + hisWhere +
+                        "settledate >= to_date('" + dateStrForm + "',' yyyy-mm-dd') and " +
+                        "settledate < to_date('" + dateStrTo + "',' yyyy-mm-dd') ";
+            }
+        }
+        return hisSql;
+    }
+    @Override
+    @Transactional
+    public String getHisDept() {
+        String msg = "ok";
+        List<YbDeptHis> departList = new ArrayList<>();
+        OracleDB<YbDeptHis> oracleDB = new OracleDB<>();
+        try {
+            departList = oracleDB.excuteSqlRS(new YbDeptHis(), "select * from his.V_SAP_DEPART");
+            if (departList.size() > 0) {
+                iYbDeptService.createBatchDepts(departList);
+            }
+        } catch (Exception e) {
+            msg = e.getMessage();
+            log.error(msg);
+        }
+        System.out.println("getHisDept end:" + msg);
+        return msg;
+    }
+
+    private Integer getTypeno(YbReconsiderApply reconsiderApply,Integer typeno){
+        if(typeno==null) {
+            typeno = 1;
+            if (reconsiderApply.getState() == 2 || reconsiderApply.getState() == 3) {
+                typeno = 1;
+            } else if (reconsiderApply.getState() == 4 || reconsiderApply.getState() == 5) {
+                typeno = 2;
+            } else {
+                return null;
+            }
+        }
+        return  typeno;
+    }
     //创建定时任务Task数据
-    private YbReconsiderApplyTask createReconsiderApplyTask(String applyDateStr, int areaType, int state, int dataType, int typeno, int currentPage, int totalRow) {
+    private YbReconsiderApplyTask createReconsiderApplyTask(String applyDateStr, int areaType, int state, int dataType, int typeno, int currentPage, int totalRow,int isOutpfees) {
         YbReconsiderApplyTask createTask = new YbReconsiderApplyTask();
         //从orderNum开始
         int startNum = 0;
@@ -924,6 +1098,7 @@ public class YbReconsiderApplyDataServiceImpl extends ServiceImpl<YbReconsiderAp
         createTask.setTotalPage(totalPage);
         createTask.setState(state);
         createTask.setAreaType(areaType);
+        createTask.setIsOutpfees(isOutpfees);
 //        createTask.setIsDeletemark(1);
 //        createTask.setCreateTime(new Date());
         return createTask;
@@ -934,17 +1109,19 @@ public class YbReconsiderApplyDataServiceImpl extends ServiceImpl<YbReconsiderAp
         String hisWhere = "";
         String sql = "";
         String sql1 = "";
-        String sql2 = "";
+//        String sql2 = "";
         List<String> strList = new ArrayList<>();
         List<String> strList1 = new ArrayList<>();
-        List<String> strList2 = new ArrayList<>();
+//        List<String> strList2 = new ArrayList<>();
         for (YbReconsiderApplyData item : reconsiderApplyDataList) {
-            String[] arr = item.getSerialNo().split("-");
-            String transno1 = arr[1] + "-" + item.getProjectName();
+//            String[] arr = item.getSerialNo().split("-");
+//            String transno1 = state == 2 ? arr[1] + "-" + item.getProjectCode() : arr[1] + "-" + item.getProjectName();
             String transno = item.getSerialNo();
-            String project = item.getProjectName();
-//            String project = item.getProjectCode();
-
+            String project1 = state == 2 ? item.getProjectCode() : item.getProjectName();
+            if(state == 2 && project1 != null && project1 !=""){
+                project1 = project1.toUpperCase();
+            }
+            String project = project1;
             if (dateType == 0) {
                 if (strList.stream().filter(s -> s.equals(transno)).count() == 0) {
                     strList.add(transno);
@@ -964,14 +1141,14 @@ public class YbReconsiderApplyDataServiceImpl extends ServiceImpl<YbReconsiderAp
                     }
                 }
 
-                if (strList2.stream().filter(s -> s.equals(transno1)).count() == 0) {
-                    strList2.add(transno1);
-                    if (sql2.equals("")) {
-                        sql2 = "'" + transno1 + "'";
-                    } else {
-                        sql2 += ",'" + transno1 + "'";
-                    }
-                }
+//                if (strList2.stream().filter(s -> s.equals(transno1)).count() == 0) {
+//                    strList2.add(transno1);
+//                    if (sql2.equals("")) {
+//                        sql2 = "'" + transno1 + "'";
+//                    } else {
+//                        sql2 += ",'" + transno1 + "'";
+//                    }
+//                }
             } else {
                 if (strList.stream().filter(s -> s.equals(transno)).count() == 0) {
                     strList.add(transno);
@@ -990,8 +1167,10 @@ public class YbReconsiderApplyDataServiceImpl extends ServiceImpl<YbReconsiderAp
 
             if (state == 0) {
                 hisWhere += " and itemname in(" + sql1 + ") and ";
-            } else {
+            } else if (state == 1){
                 hisWhere += " and HisName in(" + sql1 + ") and ";
+            } else {
+                hisWhere += " and itemcode in(" + sql1 + ") and ";
             }
             //hisWhere = " itemybcode in(" + sql1 + ") and ";
 //            System.out.println(sql2);

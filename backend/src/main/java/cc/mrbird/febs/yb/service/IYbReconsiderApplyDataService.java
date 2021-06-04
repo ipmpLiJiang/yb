@@ -42,6 +42,8 @@ public interface IYbReconsiderApplyDataService extends IService<YbReconsiderAppl
 
         List<YbReconsiderApplyData> findReconsiderApplyDataByNotVerifys(String pid,String applyDateStr,Integer areaType, Integer dataType,Integer typeno);
 
+        List<YbReconsiderApplyData> findReconsiderApplyDataByNotVerifyStates(String pid,String applyDateStr,Integer areaType, Integer dataType,Integer typeno);
+
         void createBatchDatas(List<YbReconsiderApplyData> listReconsiderApplyData);
 
         void  importReconsiderApply(YbReconsiderApply ybReconsiderApply, List<YbReconsiderApplyData> listData, List<YbReconsiderApplyData> listMain);
@@ -51,9 +53,11 @@ public interface IYbReconsiderApplyDataService extends IService<YbReconsiderAppl
 
 //        int findReconsiderApplyDataCount(String applyDateStr,Integer dataType);
 
-        String findReconsiderApplyDataTask(String applyDateStr,Integer areaType,Integer typeno);
+        String findReconsiderApplyDataTask(String applyDateStr,Integer areaType,Integer typeno,Integer isOutpfees);
 
-        String findReconsiderApplyDataNotTask(String applyDateStr,Integer areaType,Integer typeno);
+        String findReconsiderApplyDataNotTask(String applyDateStr,Integer areaType,Integer typeno,Integer isOutpfees);
+
+        String findReconsiderApplyProjCodeTask(String applyDateStr, Integer areaType,Integer typeno,Integer isOutpfees);
 
         List<YbReconsiderApplyData> getApplyDataListView(List<YbReconsiderApplyData> applyDataList,String keyField,String value,Integer typeno,Integer dataType);
 //        void findReconsiderApplyDataNotTask(String applyDateStr);

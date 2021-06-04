@@ -442,7 +442,7 @@ export default {
     },
     ajaxDoctor (keyword) {
       let dataSource = []
-      let params = {comments: keyword}
+      let params = {comments: keyword, deptName: '医生'}
       this.$get('ybPerson/findPersonList', {
         ...params
       }).then((r) => {
@@ -566,7 +566,7 @@ export default {
           this.$message.warning('未选择，参考复议科室 或 参考复议医生.')
         }
       } else {
-        this.$message.warning('未找到对象')
+        this.$message.warning('未找到对象.')
       }
       this.ybReconsiderVerify = {}
     },
@@ -639,14 +639,23 @@ export default {
       params.state = 1
       params.dataType = 0
       params.areaType = this.user.areaType
-      let searchType = [this.searchItem.project.type, this.searchItem.rule.type, this.searchItem.dept.type, this.searchItem.order.type]
-      params.searchType = searchType
+      // let searchType = [this.searchItem.project.type, this.searchItem.rule.type, this.searchItem.dept.type, this.searchItem.order.type]
+      // params.searchType = searchType
       if (this.searchItem !== undefined) {
+        if (this.searchItem.serial.serialNo !== '') {
+          params.serialNo = this.searchItem.serial.serialNo
+        }
         if (this.searchItem.project.projectName !== '') {
           params.projectName = this.searchItem.project.projectName
         }
         if (this.searchItem.rule.ruleName !== '') {
           params.ruleName = this.searchItem.rule.ruleName
+        }
+        if (this.searchItem.doctor.docCode !== '') {
+          params.verifyDoctorCode = this.searchItem.doctor.docCode
+        }
+        if (this.searchItem.doctor.docName !== '') {
+          params.verifyDoctorName = this.searchItem.doctor.docName
         }
         if (this.searchItem.dept.deptName !== '') {
           params.verifyDeptName = this.searchItem.dept.deptName
@@ -667,10 +676,10 @@ export default {
         params.pageNum = this.pagination.defaultCurrent
       }
       // applyDateStr asc,orderNum
-      params.sortField = 'ad.orderNum'
-      params.sortOrder = 'ascend'
+      // params.sortField = 'rv.orderNum'
+      // params.sortOrder = 'ascend'
 
-      this.$get('ybReconsiderVerifyView/findVerifyViewNull', {
+      this.$get('ybReconsiderVerifyView', {
         ...params
       }).then((r) => {
         let data = r.data

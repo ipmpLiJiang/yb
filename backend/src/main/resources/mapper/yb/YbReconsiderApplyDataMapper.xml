@@ -45,11 +45,12 @@
                     <result column="COMMENTS" property="comments"/>
                     <result column="STATE" property="state"/>
                     <result column="IS_DELETEMARK" property="isDeletemark"/>
+            <result column="isOutpfees" property="isOutpfees"/>
         </resultMap>
 
         <!-- 通用查询结果列 -->
         <sql id="Base_Column_List">
-        id, pid, serialNo, billNo, proposalCode, projectCode, projectName, num, medicalPrice, ruleName, deductPrice, deductReason, repaymentReason, doctorName, deptCode, deptName, enterHospitalDate,enterHospitalDateStr, outHospitalDate,outHospitalDateStr, costDate,costDateStr, hospitalizedNo, treatmentMode, settlementDate,settlementDateStr, personalNo, insuredName, cardNumber, areaName, versionNumber, backAppeal, typeno,insuredType,dataType,orderNumber,orderNum,orderSettlementNum, COMMENTS, STATE, IS_DELETEMARK
+        id, pid, serialNo, billNo, proposalCode, projectCode, projectName, num, medicalPrice, ruleName, deductPrice, deductReason, repaymentReason, doctorName, deptCode, deptName, enterHospitalDate,enterHospitalDateStr, outHospitalDate,outHospitalDateStr, costDate,costDateStr, hospitalizedNo, treatmentMode, settlementDate,settlementDateStr, personalNo, insuredName, cardNumber, areaName, versionNumber, backAppeal, typeno,insuredType,dataType,orderNumber,orderNum,orderSettlementNum, COMMENTS, STATE, IS_DELETEMARK,isOutpfees
     </sql>
     <update id="updateYbReconsiderApplyData" parameterType="cc.mrbird.febs.yb.entity.YbReconsiderApplyData">
         update yb_reconsider_apply_data
@@ -89,7 +90,7 @@
 <if test="comments != null">COMMENTS=#{comments},</if>
 <if test="state != null">STATE=#{state},</if>
 <if test="isDeletemark != null">IS_DELETEMARK=#{isDeletemark},</if>
-
+            <if test="isOutpfees != null">isOutpfees=#{isOutpfees},</if>
         </trim>
                 where id=#{id}
 
@@ -168,6 +169,20 @@
                 applyDateStr = #{applyDateStr} and areaType = #{areaType} and typeno = #{typeno} and dataType = #{dataType}
             )
     </select>
+
+    <select id="findReconsiderApplyDataByNotVerifyState" resultType="cc.mrbird.febs.yb.entity.YbReconsiderApplyData">
+        select
+          *
+        from
+            yb_reconsider_apply_data
+            WHERE
+            pid= #{pid} and typeno = #{typeno} and dataType = #{dataType}
+            AND id in(
+                select applyDataId from yb_reconsider_verify where applyDateStr = #{applyDateStr} and areaType = #{areaType} and
+                typeno = #{typeno} and dataType = #{dataType} and state = 1 and verifyDoctorCode is null
+            )
+    </select>
+
     <select id="findReconsiderApplyDataBetween" resultType="cc.mrbird.febs.yb.entity.YbReconsiderApplyData">
         SELECT
             *
@@ -177,6 +192,7 @@
             pid = #{pid} and
             typeno = #{typeno} and
             dataType = #{dataType} and
+            <if test="isOutpfees != null"> isOutpfees =#{ isOutpfees} and </if>
             orderSettlementNum between #{startNum} and #{endNum}
     </select>
     <select id="findReconsiderApplyDataNotBetween" resultType="cc.mrbird.febs.yb.entity.YbReconsiderApplyData">
@@ -188,7 +204,8 @@
             pid = #{pid} and
             typeno = #{typeno} and
             dataType = #{dataType} and
-            state = 1 and
+            state = #{state} and
+            <if test="isOutpfees != null"> isOutpfees =#{ isOutpfees} and </if>
             orderSettlementNum between #{startNum} and #{endNum}
     </select>
     <select id="findReconsiderApplyDataNotInpatientfees" resultType="cc.mrbird.febs.yb.entity.YbReconsiderApplyData">
@@ -200,9 +217,11 @@
             pid = #{pid} and
             typeno = #{typeno} and
             dataType = #{dataType} and
+            <if test="isOutpfees != null">isOutpfees =#{ isOutpfees}  and </if>
             id not in(
                 select applyDataId from yb_reconsider_inpatientfees where
                 applyDateStr = #{applyDateStr} and areaType = #{areaType} and typeno = #{typeno} and dataType = #{dataType}
+                <if test="isOutpfees != null"> and isOutpfees =#{ isOutpfees}  </if>
             )
     </select>
     <select id="findReconsiderApplyDataCount"  resultType="Integer">
@@ -214,6 +233,7 @@
             pid = #{pid}
             <if test="typeno != null"> and typeno =#{ typeno} </if>
             <if test="dataType != null"> and dataType =#{ dataType} </if>
+            <if test="isOutpfees != null"> and isOutpfees =#{ isOutpfees} </if>
     </select>
 
     <select id="findReconsiderApplyDataNotCount" resultType="Integer">
@@ -225,9 +245,11 @@
             pid = #{pid} and
             typeno = #{typeno} and
             dataType = #{dataType} and
+            <if test="isOutpfees != null">isOutpfees =#{ isOutpfees}  and </if>
             id not in(
                 select applyDataId from yb_reconsider_inpatientfees  where
                 applyDateStr = #{applyDateStr} and areaType = #{areaType} and typeno = #{typeno} and dataType = #{dataType}
+                <if test="isOutpfees != null"> and isOutpfees =#{ isOutpfees}  </if>
             )
     </select>
 

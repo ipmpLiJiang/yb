@@ -324,6 +324,12 @@ public class YbReconsiderApplyData implements Serializable {
     //@ExcelField(value ="是否删除")
     private Integer isDeletemark;
 
+    /**
+     * 是否门诊
+     */
+    @TableField("isOutpfees")
+    //@ExcelField(value ="是否门诊")
+    private Integer isOutpfees;
 
     public static final String ID = "id";
 
@@ -406,5 +412,8 @@ public class YbReconsiderApplyData implements Serializable {
     public static final String STATE = "STATE";
 
     public static final String IS_DELETEMARK = "IS_DELETEMARK";
+
+
+    public static final String ISOUTPFEES = "isOutpfees";
 
 }

@@ -59,6 +59,7 @@
                   <input-select
                   ref="inputSelectVerifyDoctor"
                   :type=2
+                  dept='医生'
                   @selectChange=selectDoctorChang
                   >
                   </input-select>

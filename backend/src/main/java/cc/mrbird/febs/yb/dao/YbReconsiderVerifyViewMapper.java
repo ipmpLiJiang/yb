@@ -23,15 +23,21 @@ public interface YbReconsiderVerifyViewMapper extends BaseMapper<YbReconsiderVer
 
     int findReconsiderVerifyApplyDateCount(@Param("ybReconsiderVerifyView") YbReconsiderVerifyView ybReconsiderVerifyView);
 
-    IPage<YbReconsiderVerifyView> findYbReconsiderVerifyViewNull(Page page, @Param("ybReconsiderVerifyView") YbReconsiderVerifyView ybReconsiderVerifyView, @Param("searchType") String[] searchType);
-
     IPage<YbReconsiderVerifyView> findReconsiderVerifyViewNull(Page page, @Param("ybReconsiderVerifyView") YbReconsiderVerifyView ybReconsiderVerifyView, @Param("searchType") String[] searchType);
 
     int findReconsiderVerifyCountNull(@Param("ybReconsiderVerifyView") YbReconsiderVerifyView ybReconsiderVerifyView, @Param("searchType") String[] searchType);
 
-    IPage<YbReconsiderVerifyView> findReconsiderVerifyView(Page page, @Param("ybReconsiderVerifyView") YbReconsiderVerifyView ybReconsiderVerifyView, @Param("searchType") String[] searchType);
+//    IPage<YbReconsiderVerifyView> findReconsiderVerifyView(Page page, @Param("ybReconsiderVerifyView") YbReconsiderVerifyView ybReconsiderVerifyView, @Param("searchType") String[] searchType);
 
-    int findReconsiderVerifyCount(@Param("ybReconsiderVerifyView") YbReconsiderVerifyView ybReconsiderVerifyView, @Param("searchType") String[] searchType);
+//    int findReconsiderVerifyCount(@Param("ybReconsiderVerifyView") YbReconsiderVerifyView ybReconsiderVerifyView, @Param("searchType") String[] searchType);
+
+    IPage<YbReconsiderVerifyView> findReconsiderVerifyView(Page page, @Param("ybReconsiderVerifyView") YbReconsiderVerifyView ybReconsiderVerifyView);
+
+    int findReconsiderVerifyCount(@Param("ybReconsiderVerifyView") YbReconsiderVerifyView ybReconsiderVerifyView);
+
 
     List<YbReconsiderVerifyView> findReconsiderVerifyViewList(@Param("ybReconsiderVerifyView") YbReconsiderVerifyView ybReconsiderVerifyView);
+
+
+
 }

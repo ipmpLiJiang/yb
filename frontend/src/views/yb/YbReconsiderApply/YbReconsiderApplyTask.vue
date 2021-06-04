@@ -29,6 +29,9 @@ export default {
     },
     areaType: {
       default: 0
+    },
+    isOutpfees: {
+      default: 2
     }
   },
   data () {
@@ -94,9 +97,11 @@ export default {
         customRender: (text, row, index) => {
           switch (text) {
             case 0:
-              return '第一次'
+              return '第一次,Item项目名称'
             case 1:
-              return '第二次'
+              return '第二次,His项目名称'
+            case 2:
+              return '第三次,项目编码'
             default:
               return text
           }
@@ -173,6 +178,7 @@ export default {
       params.applyDateStr = this.applyDateStr
       params.areaType = this.areaType
       params.typeno = this.typeno
+      params.isOutpfees = this.isOutpfees
       if (this.paginationInfo) {
         // 如果分页信息不为空，则设置表格当前第几页，每页条数，并设置查询分页参数
         this.$refs.TableInfo.pagination.current = this.paginationInfo.current

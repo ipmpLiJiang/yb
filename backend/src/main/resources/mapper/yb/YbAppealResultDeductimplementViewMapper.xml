@@ -140,6 +140,11 @@
         <if test="ybAppealResultDeductimplementView.arDoctorName != null and ybAppealResultDeductimplementView.arDoctorName != ''">
             and art.doctorCode in (select personCode from yb_person where personName = #{ ybAppealResultDeductimplementView.arDoctorName})
         </if>
+        <if test="confDocCode != null and confDocCode != ''">
+            and art.deptCode in (select deptId from yb_appeal_confire_data where pid in(
+            select id from yb_appeal_confire where doctorCode = #{confDocCode}
+            ))
+        </if>
         where
         <if test="ybAppealResultDeductimplementView.implementDateStr != null and ybAppealResultDeductimplementView.implementDateStr != ''">
             ardi.implementDateStr=#{ ybAppealResultDeductimplementView.implementDateStr}
@@ -192,6 +197,11 @@
         </if>
         <if test="ybAppealResultDeductimplementView.arDoctorName != null and ybAppealResultDeductimplementView.arDoctorName != ''">
             and art.doctorCode in (select personCode from yb_person where personName = #{ ybAppealResultDeductimplementView.arDoctorName})
+        </if>
+        <if test="confDocCode != null and confDocCode != ''">
+            and art.deptCode in (select deptId from yb_appeal_confire_data where pid in(
+            select id from yb_appeal_confire where doctorCode = #{confDocCode}
+            ))
         </if>
         where
         <if test="ybAppealResultDeductimplementView.implementDateStr != null and ybAppealResultDeductimplementView.implementDateStr != ''">
@@ -267,6 +277,11 @@
         <if test="ybAppealResultDeductimplementView.arDoctorName != null and ybAppealResultDeductimplementView.arDoctorName != ''">
             and art.doctorCode in (select personCode from yb_person where personName = #{ ybAppealResultDeductimplementView.arDoctorName})
         </if>
+        <if test="confDocCode != null and confDocCode != ''">
+            and art.deptCode in (select deptId from yb_appeal_confire_data where pid in(
+            select id from yb_appeal_confire where doctorCode = #{confDocCode}
+            ))
+        </if>
         where
         <if test="ybAppealResultDeductimplementView.pid != null and ybAppealResultDeductimplementView.pid != ''">
             rrd.pid=#{ ybAppealResultDeductimplementView.pid}
@@ -319,6 +334,11 @@
         </if>
         <if test="ybAppealResultDeductimplementView.arDoctorName != null and ybAppealResultDeductimplementView.arDoctorName != ''">
             and art.doctorCode in (select personCode from yb_person where personName = #{ ybAppealResultDeductimplementView.arDoctorName})
+        </if>
+        <if test="confDocCode != null and confDocCode != ''">
+            and art.deptCode in (select deptId from yb_appeal_confire_data where pid in(
+            select id from yb_appeal_confire where doctorCode = #{confDocCode}
+            ))
         </if>
         where
         <if test="ybAppealResultDeductimplementView.pid != null and ybAppealResultDeductimplementView.pid != ''">
@@ -408,12 +428,25 @@
         yb_reconsider_reset_data rrd
         INNER JOIN yb_appeal_result art ON
         art.relatelDataId = rrd.relatelDataId
-        <if test="ybAppealResultDeductimplementView.arDoctorCode != null and ybAppealResultDeductimplementView.arDoctorCode != ''">
-            and art.doctorCode=#{ ybAppealResultDeductimplementView.arDoctorCode}
-        </if>
-        <if test="ybAppealResultDeductimplementView.arDoctorName != null and ybAppealResultDeductimplementView.arDoctorName != ''">
-            and art.doctorCode in (select personCode from yb_person where personName = #{ ybAppealResultDeductimplementView.arDoctorName})
-        </if>
+        AND art.id in(
+            select id from yb_appeal_result where applyDateStr in
+            <foreach item="item" index="index" collection="listApplyDateStr" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+            <if test="ybAppealResultDeductimplementView.areaType != null">
+                and areaType=#{ ybAppealResultDeductimplementView.areaType}
+            </if>
+            <if test="ybAppealResultDeductimplementView.dataType != null">
+                and dataType=#{ ybAppealResultDeductimplementView.dataType}
+            </if>
+            and sourceType = 0
+            <if test="ybAppealResultDeductimplementView.arDoctorCode != null and ybAppealResultDeductimplementView.arDoctorCode != ''">
+                and doctorCode=#{ ybAppealResultDeductimplementView.arDoctorCode}
+            </if>
+            <if test="ybAppealResultDeductimplementView.arDoctorName != null and ybAppealResultDeductimplementView.arDoctorName != ''">
+                and .doctorCode in (select personCode from yb_person where personName = #{ ybAppealResultDeductimplementView.arDoctorName})
+            </if>
+        )
         where
         <if test="ybAppealResultDeductimplementView.applyDateStr != null and ybAppealResultDeductimplementView.applyDateStr != ''">
             rrd.pid=#{ ybAppealResultDeductimplementView.pid}
@@ -429,15 +462,10 @@
         </if>
         and rrd.id not in(
             select ard.resetDataId from yb_appeal_result_deductimplement ard where
-            <if test="ybAppealResultDeductimplementView.applyDateStr != null and ybAppealResultDeductimplementView.applyDateStr != ''">
-                ard.applyDateStr=#{ ybAppealResultDeductimplementView.applyDateStr}
-            </if>
-            <if test="ybAppealResultDeductimplementView.applyDateFrom!= null">
-                ard.applyDate <![CDATA[ >= ]]>  #{ybAppealResultDeductimplementView.applyDateFrom}
-            </if>
-            <if test="ybAppealResultDeductimplementView.applyDateTo!= null">
-                AND ard.applyDate <![CDATA[ <= ]]>  #{ybAppealResultDeductimplementView.applyDateTo}
-            </if>
+            ard.applyDateStr in
+            <foreach item="item" index="index" collection="listApplyDateStr" open="(" separator="," close=")">
+                #{item}
+            </foreach>
             <if test="ybAppealResultDeductimplementView.areaType != null">
                 and ard.areaType=#{ ybAppealResultDeductimplementView.areaType}
             </if>
@@ -474,12 +502,25 @@
         yb_reconsider_reset_data rrd
         INNER JOIN yb_appeal_result art ON
         art.relatelDataId = rrd.relatelDataId
+        AND art.id in(
+        select id from yb_appeal_result where applyDateStr in
+        <foreach item="item" index="index" collection="listApplyDateStr" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        <if test="ybAppealResultDeductimplementView.areaType != null">
+            and areaType=#{ ybAppealResultDeductimplementView.areaType}
+        </if>
+        <if test="ybAppealResultDeductimplementView.dataType != null">
+            and dataType=#{ ybAppealResultDeductimplementView.dataType}
+        </if>
+        and sourceType = 0
         <if test="ybAppealResultDeductimplementView.arDoctorCode != null and ybAppealResultDeductimplementView.arDoctorCode != ''">
-            and art.doctorCode=#{ ybAppealResultDeductimplementView.arDoctorCode}
+            and doctorCode=#{ ybAppealResultDeductimplementView.arDoctorCode}
         </if>
         <if test="ybAppealResultDeductimplementView.arDoctorName != null and ybAppealResultDeductimplementView.arDoctorName != ''">
-            and art.doctorCode in (select personCode from yb_person where personName = #{ ybAppealResultDeductimplementView.arDoctorName})
+            and .doctorCode in (select personCode from yb_person where personName = #{ ybAppealResultDeductimplementView.arDoctorName})
         </if>
+        )
         where
         <if test="ybAppealResultDeductimplementView.pid != null and ybAppealResultDeductimplementView.pid != ''">
             rrd.pid=#{ ybAppealResultDeductimplementView.pid}
@@ -495,15 +536,10 @@
         </if>
         and rrd.id not in(
         select ard.resetDataId from yb_appeal_result_deductimplement ard where
-            <if test="ybAppealResultDeductimplementView.applyDateStr != null and ybAppealResultDeductimplementView.applyDateStr != ''">
-                ard.applyDateStr=#{ ybAppealResultDeductimplementView.applyDateStr}
-            </if>
-            <if test="ybAppealResultDeductimplementView.applyDateFrom!= null">
-                ard.applyDate <![CDATA[ >= ]]>  #{ybAppealResultDeductimplementView.applyDateFrom}
-            </if>
-            <if test="ybAppealResultDeductimplementView.applyDateTo!= null">
-                AND ard.applyDate <![CDATA[ <= ]]>  #{ybAppealResultDeductimplementView.applyDateTo}
-            </if>
+            ard.applyDateStr in
+            <foreach item="item" index="index" collection="listApplyDateStr" open="(" separator="," close=")">
+                #{item}
+            </foreach>
             <if test="ybAppealResultDeductimplementView.areaType != null">
                 and ard.areaType=#{ ybAppealResultDeductimplementView.areaType}
             </if>

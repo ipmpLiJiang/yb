@@ -132,18 +132,27 @@ public class YbReconsiderApplyDataController extends BaseController {
     @Log("His数据接口")
     @PutMapping("getHis")
     @RequiresPermissions("ybReconsiderApplyData:his")
-    public FebsResponse getHiss(String applyDateStr, Integer areaType, Integer typeno) {
+    public FebsResponse getHiss(String applyDateStr, Integer areaType, Integer typeno, Integer isOutpfees) {
         int success = 0;
         try {
-            String msg = this.iYbReconsiderApplyDataService.findReconsiderApplyDataTask(applyDateStr, areaType, typeno);
+            String msg = this.iYbReconsiderApplyDataService.findReconsiderApplyDataTask(applyDateStr, areaType, typeno,isOutpfees);
             if (msg.equals("no")) {
-                msg = iYbReconsiderApplyDataService.findReconsiderApplyDataNotTask(applyDateStr, areaType, typeno);
+                msg = iYbReconsiderApplyDataService.findReconsiderApplyDataNotTask(applyDateStr, areaType, typeno,isOutpfees);
                 if (msg.equals("ok")) {
                     success = 1;
                 } else if (msg.equals("")) {
                     message = "未找到相关" + applyDateStr + "数据或已完成复议.";
                 } else if (msg.equals("no")) {
-                    message = "His数据已获取完成.";
+                    msg = iYbReconsiderApplyDataService.findReconsiderApplyProjCodeTask(applyDateStr, areaType, typeno,isOutpfees);
+                    if (msg.equals("ok")) {
+                        success = 1;
+                    } else if (msg.equals("")) {
+                        message = "未找到相关" + applyDateStr + "数据或已完成复议.";
+                    } else if (msg.equals("no")) {
+                        message = "His数据已获取完成.";
+                    } else {
+                        message = this.getHisMsg(msg);
+                    }
                 } else {
                     message = this.getHisMsg(msg);
                 }

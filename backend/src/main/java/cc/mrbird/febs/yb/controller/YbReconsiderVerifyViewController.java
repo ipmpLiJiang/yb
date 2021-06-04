@@ -69,7 +69,19 @@ public class YbReconsiderVerifyViewController extends BaseController {
     @GetMapping
     @RequiresPermissions("ybReconsiderVerifyView:view")
     public Map<String, Object> List(QueryRequest request, YbReconsiderVerifyView ybReconsiderVerifyView, String[] searchType) {
-        return getDataTable(this.iYbReconsiderVerifyViewService.findYbReconsiderVerifyViews(request, ybReconsiderVerifyView, searchType));
+//        String s = ybReconsiderVerifyView.getSerialNo();
+//        String c = ybReconsiderVerifyView.getProjectCode();
+//        String p = ybReconsiderVerifyView.getProjectName();
+//        String r = ybReconsiderVerifyView.getRuleName();
+//        String o = ybReconsiderVerifyView.getOrderNumber();
+//        String d = ybReconsiderVerifyView.getVerifyDeptName();
+//        String dc = ybReconsiderVerifyView.getVerifyDoctorCode();
+//        String dm = ybReconsiderVerifyView.getVerifyDoctorName();
+//        if (s != null || c != null || p != null || r != null || o != null || d != null || dc != null || dm != null) {
+//            return getDataTable(this.iYbReconsiderVerifyViewService.findReconsiderVerifyViewNew(request, ybReconsiderVerifyView));
+//        }
+        return getDataTable(this.iYbReconsiderVerifyViewService.findYbReconsiderVerifyViews(request, ybReconsiderVerifyView));
+
     }
 
     @GetMapping("findVerifyViewNull")
@@ -165,8 +177,7 @@ public class YbReconsiderVerifyViewController extends BaseController {
                     List<YbReconsiderVerifyView> list = this.iYbReconsiderVerifyViewService.findReconsiderVerifyViewLists(ybReconsiderVerifyView);
                     list = list.stream().sorted(Comparator.comparing(YbReconsiderVerifyView::getOrderNum)).collect(Collectors.toList());
                     if (ybReconsiderVerifyView.getDataType().equals(YbDefaultValue.DATATYPE_0)) {
-                        YbReconsiderInpatientfees queryRif = new YbReconsiderInpatientfees();
-                        queryRif.setApplyDateStr(ybReconsiderVerifyView.getApplyDateStr());
+                        YbReconsiderInpatientfees queryRif = new YbReconsiderInpatientfees();queryRif.setApplyDateStr(ybReconsiderVerifyView.getApplyDateStr());
                         queryRif.setAreaType(ybReconsiderVerifyView.getAreaType());
                         queryRif.setDataType(YbDefaultValue.DATATYPE_0);
                         queryRif.setTypeno(typeno);

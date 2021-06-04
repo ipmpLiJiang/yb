@@ -55,6 +55,7 @@ public class OracleDB<T extends Serializable> {
         PreparedStatement pre = null;// 创建预编译语句对象，一般都是用这个而不用Statement
         ResultSet result = null;// 创建一个结果集对象
         boolean isErr = false;
+        String errMsg = "";
         try {
             con = source.getConnection();
             //String sql = "SELECT * FROM Table where id = ?";// 预编译语句，“？”代表参数
@@ -66,8 +67,9 @@ public class OracleDB<T extends Serializable> {
             }
         } catch (Exception e) {
             isErr = true;
+            log.error(e.getMessage(),e);
+            errMsg = e.getMessage();
             e.printStackTrace();
-            log.error("His连接、读取数据异常",e);
         } finally {
             try {
                 // 逐一将上面的几个对象关闭，因为不关闭的话会影响性能、并且占用资源
@@ -83,7 +85,7 @@ public class OracleDB<T extends Serializable> {
             }
         }
         if(isErr) {
-            throw new Exception("his接口执行异常");
+            throw new Exception("调用his接口:" + errMsg);
         }
         return resultList;
     }

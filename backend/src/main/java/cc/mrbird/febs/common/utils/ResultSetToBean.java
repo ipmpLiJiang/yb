@@ -6,6 +6,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 /**
@@ -22,9 +23,9 @@ public class ResultSetToBean {
 	 * @param objectClass
 	 * @return
 	 */
-	public static <T> ArrayList<T> putResult(ResultSet resultSet, Class<T> objectClass) {
+	public static <T> ArrayList<T> putResult(ResultSet resultSet, Class<T> objectClass) throws Exception {
 		ArrayList<T> arrayList = new ArrayList<T>();
-		try {
+//		try {
 			while (resultSet.next()) {
 				//通过反射创建 objectClass 对象
 				T obj = objectClass.newInstance();
@@ -72,9 +73,9 @@ public class ResultSetToBean {
 				//System.out.println(obj.toString());
 				 arrayList.add(obj);
 			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
 		return arrayList;
 	}
 

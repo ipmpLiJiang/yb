@@ -67,7 +67,7 @@ public class YbPersonController extends BaseController {
     }
 
     @GetMapping("findPersonList")
-    public FebsResponse findDeptLists(YbPerson ybPerson) {
+    public FebsResponse findPersonLists(YbPerson ybPerson) {
         List<YbPerson> list = new ArrayList<>();
         try {
             list = this.iYbPersonService.findPersonList(ybPerson,1);
@@ -115,12 +115,12 @@ public class YbPersonController extends BaseController {
             boolean isTrue = this.iYbPersonService.importPerson(currentUser);
             if (isTrue) {
                 success = 1;
-                message = "医生同步成功.";
+                message = "人员同步成功.";
             } else {
-                message = "医生同步失败.";
+                message = "人员同步失败或没有可同步的数据.";
             }
         } catch (Exception e) {
-            message = "医生同步失败.";
+            message = "人员同步失败.";
             log.error(message, e);
         }
         ResponseResultData rrd = new ResponseResultData();

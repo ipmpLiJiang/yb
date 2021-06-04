@@ -47,11 +47,12 @@
             <result column="STATE" property="state"/>
             <result column="IS_DELETEMARK" property="isDeletemark"/>
             <result column="areaType" property="areaType"/>
+            <result column="isOutpfees" property="isOutpfees"/>
         </resultMap>
 
         <!-- 通用查询结果列 -->
         <sql id="Base_Column_List">
-        id, inpatientId, patientName, settlementId, billNo, transNo, itemId, itemCode, itemName, itemCount, itemPrice, itemAmount, feeDate, deptId, deptName, orderDocId, orderDocName, excuteDeptId, excuteDeptName, excuteDocId, excuteDocName, settlementDate,applyDateStr,dataType,typeno,orderNumber,applyDataId,miCode,hisName,miName,dyyz,attendDocId,attendDocName,itemTypeCode,itemTypeName,feeOperatorId,feeOperatorName,feeDeptId,feeDeptName, COMMENTS, STATE, IS_DELETEMARK, areaType
+        id, inpatientId, patientName, settlementId, billNo, transNo, itemId, itemCode, itemName, itemCount, itemPrice, itemAmount, feeDate, deptId, deptName, orderDocId, orderDocName, excuteDeptId, excuteDeptName, excuteDocId, excuteDocName, settlementDate,applyDateStr,dataType,typeno,orderNumber,applyDataId,miCode,hisName,miName,dyyz,attendDocId,attendDocName,itemTypeCode,itemTypeName,feeOperatorId,feeOperatorName,feeDeptId,feeDeptName, COMMENTS, STATE, IS_DELETEMARK, areaType,isOutpfees
     </sql>
     <update id="updateYbReconsiderInpatientfees" parameterType="cc.mrbird.febs.yb.entity.YbReconsiderInpatientfees">
         update yb_reconsider_inpatientfees
@@ -98,6 +99,7 @@
 <if test="state != null">STATE=#{state},</if>
 <if test="isDeletemark != null">IS_DELETEMARK=#{isDeletemark},</if>
             <if test="areaType != null">areaType=#{areaType},</if>
+            <if test="isOutpfees != null">isOutpfees=#{isOutpfees},</if>
         </trim>
                 where id=#{id}
 

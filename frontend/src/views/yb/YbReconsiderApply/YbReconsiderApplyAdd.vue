@@ -132,7 +132,6 @@ export default {
         if (!err) {
           this.setFields()
           this.ybReconsiderApply.areaType = this.user.areaType
-          console.log(this.ybReconsiderApply)
           this.$post('ybReconsiderApply/addYbReconsiderApplyCheck', {
             ...this.ybReconsiderApply
           }).then((r) => {

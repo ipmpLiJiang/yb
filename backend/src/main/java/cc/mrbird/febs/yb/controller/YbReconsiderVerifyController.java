@@ -15,6 +15,7 @@ import cc.mrbird.febs.job.service.JobService;
 import cc.mrbird.febs.system.domain.User;
 import cc.mrbird.febs.yb.domain.ResponseImportResultData;
 import cc.mrbird.febs.yb.domain.ResponseResult;
+import cc.mrbird.febs.yb.domain.ResponseResultData;
 import cc.mrbird.febs.yb.entity.*;
 import cc.mrbird.febs.yb.service.IYbReconsiderApplyDataService;
 import cc.mrbird.febs.yb.service.IYbReconsiderApplyService;
@@ -158,12 +159,48 @@ public class YbReconsiderVerifyController extends BaseController {
         return ybReconsiderVerify;
     }
 
+    @Log("删除")
+    @DeleteMapping("deleteVerifyState")
+    @RequiresPermissions("ybReconsiderVerify:addImport")
+    public FebsResponse deleteReconsiderVerifys(YbReconsiderVerify delVerify) {
+        int success = 0;
+        try {
+            YbReconsiderApply ybReconsiderApply = this.iYbReconsiderApplyService.findReconsiderApplyByApplyDateStrs(delVerify.getApplyDateStr(), delVerify.getAreaType());
+            if (ybReconsiderApply != null) {
+                int state = ybReconsiderApply.getState();
+                int typeno = state == YbDefaultValue.APPLYSTATE_2 || state == YbDefaultValue.APPLYSTATE_3 ? YbDefaultValue.TYPENO_1 :
+                        state == YbDefaultValue.APPLYSTATE_4 || state == YbDefaultValue.APPLYSTATE_5 ? YbDefaultValue.TYPENO_2 : 0;
+                delVerify.setTypeno(typeno);
+                delVerify.setState(1);
+                this.iYbReconsiderVerifyService.deleteReconsiderVerifyState(delVerify);
+                message = "删除成功";
+                success = 1;
+            } else {
+                message = "未找到" + delVerify.getApplyDateStr() + "年月数据.";
+            }
+        } catch (Exception e) {
+            message = "删除失败.";
+            log.error(message, e);
+        }
+        ResponseResult rr = new ResponseResult();
+        rr.setSuccess(success);
+        rr.setMessage(message);
+
+        return new FebsResponse().data(rr);
+    }
+
     @PostMapping("importReconsiderVerify")
     @RequiresPermissions("ybReconsiderVerify:addImport")
-    public void importReconsiderVerifys(String applyDate, Integer areaType) throws FebsException {
+    public void importReconsiderVerifys(String applyDate, Integer areaType, int[] sumxu) throws FebsException {
         try {
             User currentUser = FebsUtil.getCurrentUser();
-            this.iYbReconsiderVerifyService.insertReconsiderVerifyImports(applyDate, areaType, currentUser.getUserId(), currentUser.getUsername());
+            List<Integer> sunxuList = new ArrayList<>();
+            if(sumxu!=null && sumxu.length == 3){
+                for (int item : sumxu){
+                    sunxuList.add(item);
+                }
+            }
+            this.iYbReconsiderVerifyService.insertReconsiderVerifyImports(applyDate, areaType, currentUser.getUserId(), currentUser.getUsername(),sunxuList);
         } catch (Exception e) {
             message = "匹配失败";
             log.error(message, e);

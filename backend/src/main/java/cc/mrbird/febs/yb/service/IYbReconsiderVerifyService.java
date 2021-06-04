@@ -30,7 +30,7 @@ public interface IYbReconsiderVerifyService extends IService<YbReconsiderVerify>
 
     void deleteYbReconsiderVerifys(String[] Ids);
 
-    void insertReconsiderVerifyImports(String applyDateStr, Integer areaType, Long matchPersonId, String matchPersonName);
+    void insertReconsiderVerifyImports(String applyDateStr, Integer areaType, Long matchPersonId, String matchPersonName,List<Integer> sxList);
 
     void insertMainReconsiderVerifyImports(String applyDateStr, Integer areaType, Long matchPersonId, String matchPersonName);
 
@@ -51,4 +51,6 @@ public interface IYbReconsiderVerifyService extends IService<YbReconsiderVerify>
     void importReconsiderDataVerifys(YbReconsiderApply reconsiderApply, int dataType, int typeno, List<YbReconsiderVerify> verifyList);
 
     String createEndJobState(String applyDateStr, Integer areaType,int[] jobTypeList);
+
+    void deleteReconsiderVerifyState(YbReconsiderVerify delVerify);
 }

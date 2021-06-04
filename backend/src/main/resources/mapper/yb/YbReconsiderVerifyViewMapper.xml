@@ -154,190 +154,6 @@
         <if test="ybReconsiderVerifyView.state != null">and STATE =#{ ybReconsiderVerifyView.state}</if>
     </select>
 
-    <select id="findYbReconsiderVerifyViewNull" resultType="cc.mrbird.febs.yb.entity.YbReconsiderVerifyView"
-            parameterType="cc.mrbird.febs.yb.entity.YbReconsiderVerifyView">
-        select * from yb_reconsider_verify_view
-        where (
-        <if test="ybReconsiderVerifyView.isVerify != null and ybReconsiderVerifyView.isVerify != 0">1=2</if>
-        <if test="ybReconsiderVerifyView.isVerify != null and ybReconsiderVerifyView.isVerify == 0">isVerify = 0</if>
-        <if test="ybReconsiderVerifyView.isVerify == null ">isVerify = 0</if>
-        <if test="ybReconsiderVerifyView.dataType != null">and dataType =#{ ybReconsiderVerifyView.dataType}</if>
-        <if test="ybReconsiderVerifyView.typeno != null">and typeno =#{ ybReconsiderVerifyView.typeno}</if>
-        <if test="ybReconsiderVerifyView.applyDateStr != null and ybReconsiderVerifyView.applyDateStr != ''">and
-            applyDateStr = #{ ybReconsiderVerifyView.applyDateStr}
-        </if>
-        <if test="ybReconsiderVerifyView.pid != null and ybReconsiderVerifyView.pid != ''">and pid =
-            #{ ybReconsiderVerifyView.pid}
-        </if>
-        <if test="ybReconsiderVerifyView.serialNo != null and ybReconsiderVerifyView.serialNo != ''">and serialNo like
-            concat('%', #{ ybReconsiderVerifyView.serialNo} ,'%')
-        </if>
-        <if test="ybReconsiderVerifyView.billNo != null and ybReconsiderVerifyView.billNo != ''">and billNo like
-            concat('%', #{ ybReconsiderVerifyView.billNo} ,'%')
-        </if>
-        <if test="ybReconsiderVerifyView.proposalCode != null and ybReconsiderVerifyView.proposalCode != ''">and
-            proposalCode like concat('%', #{ ybReconsiderVerifyView.proposalCode} ,'%')
-        </if>
-        <if test="ybReconsiderVerifyView.projectCode != null and ybReconsiderVerifyView.projectCode != ''">and
-            projectCode like concat('%', #{ ybReconsiderVerifyView.projectCode} ,'%')
-        </if>
-        <if test="searchType[0] == 'LIKE' and ybReconsiderVerifyView.projectName != null and ybReconsiderVerifyView.projectName != ''">
-            and projectName like concat('%', #{ ybReconsiderVerifyView.projectName} ,'%')
-        </if>
-        <if test="searchType[0] == 'EQ' and ybReconsiderVerifyView.projectName != null and ybReconsiderVerifyView.projectName != ''">
-            and projectName = #{ ybReconsiderVerifyView.projectName}
-        </if>
-        <if test="searchType[0] == 'NOTLIKE' and ybReconsiderVerifyView.projectName != null and ybReconsiderVerifyView.projectName != ''">
-            and projectName not like concat('%', #{ ybReconsiderVerifyView.projectName} ,'%')
-        </if>
-        <if test="searchType[1] == 'LIKE' and ybReconsiderVerifyView.ruleName != null and ybReconsiderVerifyView.ruleName != ''">
-            and ruleName like concat('%', #{ ybReconsiderVerifyView.ruleName} ,'%')
-        </if>
-        <if test="searchType[1] == 'EQ' and ybReconsiderVerifyView.ruleName != null and ybReconsiderVerifyView.ruleName != ''">
-            and ruleName = #{ ybReconsiderVerifyView.ruleName}
-        </if>
-        <if test="searchType[1] == 'NOTLIKE' and ybReconsiderVerifyView.ruleName != null and ybReconsiderVerifyView.ruleName != ''">
-            and ruleName not like concat('%', #{ ybReconsiderVerifyView.ruleName} ,'%')
-        </if>
-        <if test="ybReconsiderVerifyView.verifyDoctorCode != null and ybReconsiderVerifyView.verifyDoctorCode != ''">and
-            verifyDoctorCode like concat('%', #{ ybReconsiderVerifyView.verifyDoctorCode} ,'%')
-        </if>
-        <if test="ybReconsiderVerifyView.verifyDoctorName != null and ybReconsiderVerifyView.verifyDoctorName != ''">and
-            verifyDoctorName like concat('%', #{ ybReconsiderVerifyView.verifyDoctorName} ,'%')
-        </if>
-        <if test="ybReconsiderVerifyView.verifyDeptCode != null and ybReconsiderVerifyView.verifyDeptCode != ''">and
-            verifyDeptCode like concat('%', #{ ybReconsiderVerifyView.verifyDeptCode} ,'%')
-        </if>
-        <if test="searchType[2] == 'LIKE' and ybReconsiderVerifyView.verifyDeptName != null and ybReconsiderVerifyView.verifyDeptName != ''">
-            and verifyDeptName like concat('%', #{ ybReconsiderVerifyView.verifyDeptName} ,'%')
-        </if>
-        <if test="searchType[2] == 'EQ' and ybReconsiderVerifyView.verifyDeptName != null and ybReconsiderVerifyView.verifyDeptName != ''">
-            and verifyDeptName = #{ ybReconsiderVerifyView.verifyDeptName}
-        </if>
-        <if test="searchType[2] == 'NOTLIKE' and ybReconsiderVerifyView.verifyDeptName != null and ybReconsiderVerifyView.verifyDeptName != ''">
-            and verifyDeptName not like concat('%', #{ ybReconsiderVerifyView.verifyDeptName} ,'%')
-        </if>
-        <if test="searchType[3] == 'LIKE' and ybReconsiderVerifyView.orderNumber != null and ybReconsiderVerifyView.orderNumber != ''">
-            and orderNumber like concat('%', #{ ybReconsiderVerifyView.orderNumber} ,'%')
-        </if>
-        <if test="searchType[3] == 'EQ' and ybReconsiderVerifyView.orderNumber != null and ybReconsiderVerifyView.orderNumber != ''">
-            and orderNumber = #{ ybReconsiderVerifyView.orderNumber}
-        </if>
-        <if test="searchType[3] == 'NOTLIKE' and ybReconsiderVerifyView.orderNumber != null and ybReconsiderVerifyView.orderNumber != ''">
-            and orderNumber not like concat('%', #{ ybReconsiderVerifyView.orderNumber} ,'%')
-        </if>
-        ) or (
-        <if test="ybReconsiderVerifyView.isVerify != null and ybReconsiderVerifyView.isVerify != 1">1=2</if>
-        <if test="ybReconsiderVerifyView.isVerify != null and ybReconsiderVerifyView.isVerify == 1">isVerify = 1</if>
-        <if test="ybReconsiderVerifyView.isVerify == null ">isVerify = 1</if>
-        <if test="ybReconsiderVerifyView.dataType != null">and dataType =#{ ybReconsiderVerifyView.dataType}</if>
-        <if test="ybReconsiderVerifyView.serialNo != null and ybReconsiderVerifyView.serialNo != ''">and serialNo like
-            concat('%', #{ ybReconsiderVerifyView.serialNo} ,'%')
-        </if>
-        <if test="ybReconsiderVerifyView.billNo != null and ybReconsiderVerifyView.billNo != ''">and billNo like
-            concat('%', #{ ybReconsiderVerifyView.billNo} ,'%')
-        </if>
-        <if test="ybReconsiderVerifyView.proposalCode != null and ybReconsiderVerifyView.proposalCode != ''">and
-            proposalCode like concat('%', #{ ybReconsiderVerifyView.proposalCode} ,'%')
-        </if>
-        <if test="ybReconsiderVerifyView.projectCode != null and ybReconsiderVerifyView.projectCode != ''">and
-            projectCode like concat('%', #{ ybReconsiderVerifyView.projectCode} ,'%')
-        </if>
-        <if test="searchType[0] == 'LIKE' and ybReconsiderVerifyView.projectName != null and ybReconsiderVerifyView.projectName != ''">
-            and projectName like concat('%', #{ ybReconsiderVerifyView.projectName} ,'%')
-        </if>
-        <if test="searchType[0] == 'EQ' and ybReconsiderVerifyView.projectName != null and ybReconsiderVerifyView.projectName != ''">
-            and projectName = #{ ybReconsiderVerifyView.projectName}
-        </if>
-        <if test="searchType[0] == 'NOTLIKE' and ybReconsiderVerifyView.projectName != null and ybReconsiderVerifyView.projectName != ''">
-            and projectName not like concat('%', #{ ybReconsiderVerifyView.projectName} ,'%')
-        </if>
-        <if test="searchType[1] == 'LIKE' and ybReconsiderVerifyView.ruleName != null and ybReconsiderVerifyView.ruleName != ''">
-            and ruleName like concat('%', #{ ybReconsiderVerifyView.ruleName} ,'%')
-        </if>
-        <if test="searchType[1] == 'EQ' and ybReconsiderVerifyView.ruleName != null and ybReconsiderVerifyView.ruleName != ''">
-            and ruleName = #{ ybReconsiderVerifyView.ruleName}
-        </if>
-        <if test="searchType[1] == 'NOTLIKE' and ybReconsiderVerifyView.ruleName != null and ybReconsiderVerifyView.ruleName != ''">
-            and ruleName not like concat('%', #{ ybReconsiderVerifyView.ruleName} ,'%')
-        </if>
-        <if test="ybReconsiderVerifyView.deductReason != null and ybReconsiderVerifyView.deductReason != ''">and
-            deductReason like concat('%', #{ ybReconsiderVerifyView.deductReason} ,'%')
-        </if>
-        <if test="ybReconsiderVerifyView.repaymentReason != null and ybReconsiderVerifyView.repaymentReason != ''">and
-            repaymentReason like concat('%', #{ ybReconsiderVerifyView.repaymentReason} ,'%')
-        </if>
-        <if test="ybReconsiderVerifyView.doctorName != null and ybReconsiderVerifyView.doctorName != ''">and doctorName
-            like concat('%', #{ ybReconsiderVerifyView.doctorName} ,'%')
-        </if>
-        <if test="ybReconsiderVerifyView.deptCode != null and ybReconsiderVerifyView.deptCode != ''">and deptCode like
-            concat('%', #{ ybReconsiderVerifyView.deptCode} ,'%')
-        </if>
-        <if test="ybReconsiderVerifyView.hospitalizedNo != null and ybReconsiderVerifyView.hospitalizedNo != ''">and
-            hospitalizedNo like concat('%', #{ ybReconsiderVerifyView.hospitalizedNo} ,'%')
-        </if>
-        <if test="ybReconsiderVerifyView.treatmentMode != null and ybReconsiderVerifyView.treatmentMode != ''">and
-            treatmentMode like concat('%', #{ ybReconsiderVerifyView.treatmentMode} ,'%')
-        </if>
-        <if test="ybReconsiderVerifyView.personalNo != null and ybReconsiderVerifyView.personalNo != ''">and personalNo
-            like concat('%', #{ ybReconsiderVerifyView.personalNo} ,'%')
-        </if>
-        <if test="ybReconsiderVerifyView.insuredName != null and ybReconsiderVerifyView.insuredName != ''">and
-            insuredName like concat('%', #{ ybReconsiderVerifyView.insuredName} ,'%')
-        </if>
-        <if test="ybReconsiderVerifyView.cardNumber != null and ybReconsiderVerifyView.cardNumber != ''">and cardNumber
-            like concat('%', #{ ybReconsiderVerifyView.cardNumber} ,'%')
-        </if>
-        <if test="ybReconsiderVerifyView.areaName != null and ybReconsiderVerifyView.areaName != ''">and areaName like
-            concat('%', #{ ybReconsiderVerifyView.areaName} ,'%')
-        </if>
-        <if test="ybReconsiderVerifyView.versionNumber != null and ybReconsiderVerifyView.versionNumber != ''">and
-            versionNumber like concat('%', #{ ybReconsiderVerifyView.versionNumber} ,'%')
-        </if>
-        <if test="ybReconsiderVerifyView.backAppeal != null and ybReconsiderVerifyView.backAppeal != ''">and backAppeal
-            like concat('%', #{ ybReconsiderVerifyView.backAppeal} ,'%')
-        </if>
-        <if test="ybReconsiderVerifyView.typeno != null">and typeno =#{ ybReconsiderVerifyView.typeno}</if>
-        <if test="ybReconsiderVerifyView.isPerson != null">and isPerson =#{ ybReconsiderVerifyView.isPerson}</if>
-        <if test="ybReconsiderVerifyView.applyDateStr != null and ybReconsiderVerifyView.applyDateStr != ''">and
-            applyDateStr = #{ ybReconsiderVerifyView.applyDateStr}
-        </if>
-        <if test="ybReconsiderVerifyView.pid != null and ybReconsiderVerifyView.pid != ''">and pid =
-            #{ ybReconsiderVerifyView.pid}
-        </if>
-        <if test="ybReconsiderVerifyView.applyDataId != null">and applyDataId =#{ ybReconsiderVerifyView.applyDataId}
-        </if>
-        <if test="ybReconsiderVerifyView.verifyDoctorCode != null and ybReconsiderVerifyView.verifyDoctorCode != ''">and
-            verifyDoctorCode like concat('%', #{ ybReconsiderVerifyView.verifyDoctorCode} ,'%')
-        </if>
-        <if test="ybReconsiderVerifyView.verifyDoctorName != null and ybReconsiderVerifyView.verifyDoctorName != ''">and
-            verifyDoctorName like concat('%', #{ ybReconsiderVerifyView.verifyDoctorName} ,'%')
-        </if>
-        <if test="ybReconsiderVerifyView.verifyDeptCode != null and ybReconsiderVerifyView.verifyDeptCode != ''">and
-            verifyDeptCode like concat('%', #{ ybReconsiderVerifyView.verifyDeptCode} ,'%')
-        </if>
-        <if test="searchType[2] == 'LIKE' and ybReconsiderVerifyView.verifyDeptName != null and ybReconsiderVerifyView.verifyDeptName != ''">
-            and verifyDeptName like concat('%', #{ ybReconsiderVerifyView.verifyDeptName} ,'%')
-        </if>
-        <if test="searchType[2] == 'EQ' and ybReconsiderVerifyView.verifyDeptName != null and ybReconsiderVerifyView.verifyDeptName != ''">
-            and verifyDeptName = #{ ybReconsiderVerifyView.verifyDeptName}
-        </if>
-        <if test="searchType[2] == 'NOTLIKE' and ybReconsiderVerifyView.verifyDeptName != null and ybReconsiderVerifyView.verifyDeptName != ''">
-            and verifyDeptName not like concat('%', #{ ybReconsiderVerifyView.verifyDeptName} ,'%')
-        </if>
-        <if test="searchType[3] == 'LIKE' and ybReconsiderVerifyView.orderNumber != null and ybReconsiderVerifyView.orderNumber != ''">
-            and orderNumber like concat('%', #{ ybReconsiderVerifyView.orderNumber} ,'%')
-        </if>
-        <if test="searchType[3] == 'EQ' and ybReconsiderVerifyView.orderNumber != null and ybReconsiderVerifyView.orderNumber != ''">
-            and orderNumber = #{ ybReconsiderVerifyView.orderNumber}
-        </if>
-        <if test="searchType[3] == 'NOTLIKE' and ybReconsiderVerifyView.orderNumber != null and ybReconsiderVerifyView.orderNumber != ''">
-            and orderNumber not like concat('%', #{ ybReconsiderVerifyView.orderNumber} ,'%')
-        </if>
-        <if test="ybReconsiderVerifyView.state != null">and STATE =#{ ybReconsiderVerifyView.state}</if>
-        )
-    </select>
-
     <select id="findReconsiderVerifyViewNull" resultType="cc.mrbird.febs.yb.entity.YbReconsiderVerifyView"
             parameterType="cc.mrbird.febs.yb.entity.YbReconsiderVerifyView">
         select
@@ -659,7 +475,153 @@
         rv.areaType
         from
         yb_reconsider_verify rv
+        INNER JOIN yb_reconsider_apply_data ad ON
+            ad.id = rv.applyDataId and
+            ad.pid =  #{ ybReconsiderVerifyView.pid}
+        <if test="ybReconsiderVerifyView.orderNumber != null and ybReconsiderVerifyView.orderNumber != ''">
+            and ad.orderNumber = #{ ybReconsiderVerifyView.orderNumber}
+        </if>
+        <if test="ybReconsiderVerifyView.serialNo != null and ybReconsiderVerifyView.serialNo != ''">
+            and ad.serialNo = #{ ybReconsiderVerifyView.serialNo}
+        </if>
+        <if test="ybReconsiderVerifyView.projectCode != null and ybReconsiderVerifyView.projectCode != ''">
+            and ad.projectCode = #{ ybReconsiderVerifyView.projectCode}
+        </if>
+        <if test="ybReconsiderVerifyView.projectName != null and ybReconsiderVerifyView.projectName != ''">
+            and ad.projectName = #{ ybReconsiderVerifyView.projectName}
+        </if>
+        <if test="ybReconsiderVerifyView.ruleName != null and ybReconsiderVerifyView.ruleName != ''">
+            and ad.ruleName = #{ ybReconsiderVerifyView.ruleName}
+        </if>
+        LEFT join yb_person yp on
+            rv.verifyDoctorCode = yp.personCode
+        where
+            rv.applyDateStr = #{ ybReconsiderVerifyView.applyDateStr}
+        <if test="ybReconsiderVerifyView.areaType != null">and rv.areaType = #{ ybReconsiderVerifyView.areaType}</if>
+        <if test="ybReconsiderVerifyView.typeno != null">and rv.typeno =#{ ybReconsiderVerifyView.typeno}</if>
+        <if test="ybReconsiderVerifyView.dataType != null">and rv.dataType =#{ ybReconsiderVerifyView.dataType}</if>
+        <if test="ybReconsiderVerifyView.state != null">and rv.state =#{ ybReconsiderVerifyView.state}</if>
+        <if test="ybReconsiderVerifyView.orderNumber != null and ybReconsiderVerifyView.orderNumber != ''">
+            and rv.orderNumber = #{ ybReconsiderVerifyView.orderNumber}
+        </if>
+        <if test="ybReconsiderVerifyView.verifyDoctorCode != null and ybReconsiderVerifyView.verifyDoctorCode != ''">
+            and rv.verifyDoctorCode = #{ ybReconsiderVerifyView.verifyDoctorCode}
+        </if>
+        <if test="ybReconsiderVerifyView.verifyDoctorName != null and ybReconsiderVerifyView.verifyDoctorName != ''">
+            and rv.verifyDoctorName = #{ ybReconsiderVerifyView.verifyDoctorName}
+        </if>
+        <if test="ybReconsiderVerifyView.verifyDeptName != null and ybReconsiderVerifyView.verifyDeptName != ''">
+            and rv.verifyDeptName = #{ ybReconsiderVerifyView.verifyDeptName}
+        </if>
+        <if test="ybReconsiderVerifyView.state != null and ybReconsiderVerifyView.state==3">
+            order by rv.typeno,rv.dataType,rv.orderNum
+        </if>
+        <if test="ybReconsiderVerifyView.state != null and (ybReconsiderVerifyView.state==1 or ybReconsiderVerifyView.state==2)">
+            order by rv.orderNum
+        </if>
+    </select>
+
+    <select id="findReconsiderVerifyCount" resultType="Integer"
+            parameterType="cc.mrbird.febs.yb.entity.YbReconsiderVerifyView">
+        select
+        count(1)
+        from
+        yb_reconsider_verify rv
         inner JOIN yb_reconsider_apply_data ad ON
+        ad.id = rv.applyDataId and
+        ad.pid =  #{ ybReconsiderVerifyView.pid}
+        <if test="ybReconsiderVerifyView.orderNumber != null and ybReconsiderVerifyView.orderNumber != ''">
+            and ad.orderNumber = #{ ybReconsiderVerifyView.orderNumber}
+        </if>
+        <if test="ybReconsiderVerifyView.serialNo != null and ybReconsiderVerifyView.serialNo != ''">
+            and ad.serialNo = #{ ybReconsiderVerifyView.serialNo}
+        </if>
+        <if test="ybReconsiderVerifyView.projectCode != null and ybReconsiderVerifyView.projectCode != ''">
+            and ad.projectCode = #{ ybReconsiderVerifyView.projectCode}
+        </if>
+        <if test="ybReconsiderVerifyView.projectName != null and ybReconsiderVerifyView.projectName != ''">
+            and ad.projectName = #{ ybReconsiderVerifyView.projectName}
+        </if>
+        <if test="ybReconsiderVerifyView.ruleName != null and ybReconsiderVerifyView.ruleName != ''">
+            and ad.ruleName = #{ ybReconsiderVerifyView.ruleName}
+        </if>
+        where
+        rv.applyDateStr = #{ ybReconsiderVerifyView.applyDateStr}
+        <if test="ybReconsiderVerifyView.areaType != null">and rv.areaType = #{ ybReconsiderVerifyView.areaType}</if>
+        <if test="ybReconsiderVerifyView.typeno != null">and rv.typeno =#{ ybReconsiderVerifyView.typeno}</if>
+        <if test="ybReconsiderVerifyView.dataType != null">and rv.dataType =#{ ybReconsiderVerifyView.dataType}</if>
+        <if test="ybReconsiderVerifyView.state != null">and rv.state =#{ ybReconsiderVerifyView.state}</if>
+        <if test="ybReconsiderVerifyView.orderNumber != null and ybReconsiderVerifyView.orderNumber != ''">
+            and rv.orderNumber = #{ ybReconsiderVerifyView.orderNumber}
+        </if>
+        <if test="ybReconsiderVerifyView.verifyDoctorCode != null and ybReconsiderVerifyView.verifyDoctorCode != ''">
+            and rv.verifyDoctorCode = #{ ybReconsiderVerifyView.verifyDoctorCode}
+        </if>
+        <if test="ybReconsiderVerifyView.verifyDoctorName != null and ybReconsiderVerifyView.verifyDoctorName != ''">
+            and rv.verifyDoctorName = #{ ybReconsiderVerifyView.verifyDoctorName}
+        </if>
+        <if test="ybReconsiderVerifyView.verifyDeptName != null and ybReconsiderVerifyView.verifyDeptName != ''">
+            and rv.verifyDeptName = #{ ybReconsiderVerifyView.verifyDeptName}
+        </if>
+    </select>
+
+    <!--
+    <select id="findReconsiderVerifyView" resultType="cc.mrbird.febs.yb.entity.YbReconsiderVerifyView"
+            parameterType="cc.mrbird.febs.yb.entity.YbReconsiderVerifyView">
+        select
+        ad.pid,
+        ad.serialNo,
+        ad.billNo,
+        ad.proposalCode,
+        ad.projectCode,
+        ad.projectName,
+        ad.num,
+        ad.medicalPrice,
+        ad.ruleName,
+        ad.deductPrice,
+        ad.deductReason,
+        ad.repaymentReason,
+        ad.doctorName,
+        ad.deptCode,
+        ad.deptName,
+        ad.enterHospitalDateStr,
+        ad.outHospitalDateStr,
+        ad.costDateStr,
+        ad.hospitalizedNo,
+        ad.treatmentMode,
+        ad.settlementDateStr,
+        ad.personalNo,
+        ad.insuredName,
+        ad.cardNumber,
+        ad.areaName,
+        ad.versionNumber,
+        ad.backAppeal,
+        ad.typeno,
+        ad.insuredType,
+        ad.dataType,
+        ad.orderNumber,
+        ad.orderNum,
+        rv.applyDateStr,
+        case when rv.id is null then UUID() else rv.id end id,
+        ad.id applyDataId,
+        rv.verifyDoctorCode,
+        concat(rv.verifyDoctorCode,'-',rv.verifyDoctorName) verifyDoctorName,
+        rv.verifyDeptCode,
+        concat(rv.verifyDeptCode,'-',rv.verifyDeptName) verifyDeptName,
+        rv.STATE,
+        case when rv.id is null then '' else rv.orderDoctorCode end orderDoctorCode,
+        case when rv.id is null then '' else rv.orderDoctorName end orderDoctorName,
+        case when rv.id is null then '' else rv.orderDeptCode end orderDeptCode,
+        case when rv.id is null then '' else rv.orderDeptName end orderDeptName,
+        case when rv.id is null then 0 else 1 end isVerify,
+        case when yp.id is null then 0 else 1 end isPerson,
+        rv.sendPersonId,
+        rv.sendPersonName,
+        rv.sendDate,
+        rv.areaType
+        from
+        yb_reconsider_verify rv
+        STRAIGHT_JOIN yb_reconsider_apply_data ad ON
         ad.id = rv.applyDataId and
         ad.pid =  #{ ybReconsiderVerifyView.pid}
         <if test="searchType[0] == 'LIKE' and ybReconsiderVerifyView.projectName != null and ybReconsiderVerifyView.projectName != ''">
@@ -709,7 +671,6 @@
             and rv.orderNumber not like concat('%', #{ ybReconsiderVerifyView.orderNumber} ,'%')
         </if>
     </select>
-
     <select id="findReconsiderVerifyCount" resultType="Integer"
             parameterType="cc.mrbird.febs.yb.entity.YbReconsiderVerifyView">
         select
@@ -764,7 +725,7 @@
             and rv.orderNumber not like concat('%', #{ ybReconsiderVerifyView.orderNumber} ,'%')
         </if>
     </select>
-
+    -->
     <select id="findReconsiderVerifyViewList" resultType="cc.mrbird.febs.yb.entity.YbReconsiderVerifyView"
             parameterType="cc.mrbird.febs.yb.entity.YbReconsiderVerifyView">
         select
@@ -820,19 +781,23 @@
         from
             yb_reconsider_apply_data ad
             LEFT JOIN yb_reconsider_verify rv ON
-                ad.id = rv.applyDataId and
-                rv.applyDateStr=#{ ybReconsiderVerifyView.applyDateStr} and
-                rv.areaType=#{ ybReconsiderVerifyView.areaType} and
-                rv.typeno =  #{ybReconsiderVerifyView.typeno} and
-                rv.dataType = #{ybReconsiderVerifyView.dataType}
+                ad.id = rv.applyDataId
         where
             ad.pid = #{ybReconsiderVerifyView.pid} and
             ad.typeno =  #{ybReconsiderVerifyView.typeno} and
             ad.dataType = #{ybReconsiderVerifyView.dataType} and
-            (
-                (rv.id is not null and rv.state = #{ybReconsiderVerifyView.state}) or rv.id is null
-            )
+            rv.state = #{ybReconsiderVerifyView.state}
     </select>
+
+
+<!--    and-->
+<!--    rv.applyDateStr=#{ ybReconsiderVerifyView.applyDateStr} and-->
+<!--    rv.areaType=#{ ybReconsiderVerifyView.areaType} and-->
+<!--    rv.typeno =  #{ybReconsiderVerifyView.typeno} and-->
+<!--    rv.dataType = #{ybReconsiderVerifyView.dataType}-->
+<!--    (-->
+<!--    (rv.id is not null and rv.state = #{ybReconsiderVerifyView.state}) or rv.id is null-->
+<!--    )-->
     <select id="findReconsiderVerifyApplyDateCount" resultType="Integer">
     select
         count(1)

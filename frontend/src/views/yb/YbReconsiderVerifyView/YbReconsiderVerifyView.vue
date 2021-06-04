@@ -31,16 +31,44 @@
             >筛选</a-button>
           </a-col>
           <a-col :span=11>
+          <a-button
+            type="primary"
+            style="margin-right: 15px"
+            @click.stop="hideMatch"
+            v-show="tableSelectKey==1||tableSelectKey==2?true:false">
+            自动匹配
+          </a-button>
+          <a-popover v-model="visibleMatch" trigger="click" :title="tableSelectKey==1? '明细自动匹配':'主单自动匹配'">
+            <p slot="content" v-show="tableSelectKey==1?true:false">执行顺序：</p>
+            <p slot="content" v-show="tableSelectKey==1?true:false">
+              <a-select style="width: 180px" v-model="selectSunxu">
+                <a-select-option v-for="item in handleQueryXunxu" :key="item.value" :value="item.value">
+                  {{item.text}}
+                </a-select-option>
+              </a-select>
+            </p>
+            <p slot="content">
             <a-popconfirm
-              title="确定自动匹配？"
+              title="确定执行匹配？"
+              slot="content"
               @confirm="addImport"
-              v-show="tableSelectKey==1||tableSelectKey==2?true:false"
               okText="确定"
-              style="margin-right: 15px"
               cancelText="取消"
             >
-              <a-button type="primary">自动匹配</a-button>
+              <a-button type="primary">执行匹配</a-button>
             </a-popconfirm>
+            <a-popconfirm
+              title="确定删除匹配？"
+              slot="content"
+              style="margin-left: 15px"
+              @confirm="deleteVerify"
+              okText="确定"
+              cancelText="取消"
+            >
+              <a-button type="primary">删除匹配</a-button>
+            </a-popconfirm>
+            </p>
+          </a-popover>
             <a-button
               type="primary"
               style="margin-right: 15px"
@@ -185,7 +213,6 @@
               <a-button type="primary">发送短信</a-button>
             </a-popconfirm>
           </a-col>
-
           <a-col :span=2 v-show="tableSelectKey==1||tableSelectKey==2?true:false">
             <a-upload
                 name="file"
@@ -331,61 +358,45 @@
           <p>
             <a-form-item
               v-bind="formItemLayout"
+              label="交易流水号"
+            >
+              <a-input style="width: 255px"  v-model="searchItem.serial.serialNo" />
+            </a-form-item>
+            <a-form-item
+              v-bind="formItemLayout"
               label="项目名称："
             >
-            <a-input-group compact>
-              <a-select style="width: 85px" v-model="searchItem.project.type">
-                <a-select-option v-for="item in handleQuerySymbol" :key="item.value" :value="item.value">
-                  {{item.text}}
-                </a-select-option>
-              </a-select>
-              <a-input style="width: 220px"  v-model="searchItem.project.projectName" />
-            </a-input-group>
+              <a-input style="width: 255px"  v-model="searchItem.project.projectName" />
             </a-form-item>
-          </p>
-          <p>
             <a-form-item
               v-bind="formItemLayout"
               label="规则名称："
             >
-            <a-input-group compact>
-              <a-select style="width: 85px" v-model="searchItem.rule.type">
-                <a-select-option v-for="item in handleQuerySymbol" :key="item.value" :value="item.value">
-                  {{item.text}}
-                </a-select-option>
-              </a-select>
-              <a-input style="width: 220px" v-model="searchItem.rule.ruleName" />
-            </a-input-group>
+              <a-input style="width: 255px" v-model="searchItem.rule.ruleName" />
             </a-form-item>
-          </p>
-          <p>
             <a-form-item
               v-bind="formItemLayout"
               label="科室名称："
             >
-            <a-input-group compact>
-              <a-select style="width: 85px" v-model="searchItem.dept.type">
-                <a-select-option v-for="item in handleQuerySymbol" :key="item.value" :value="item.value">
-                  {{item.text}}
-                </a-select-option>
-              </a-select>
-              <a-input style="width: 220px" v-model="searchItem.dept.deptName" />
-            </a-input-group>
+              <a-input style="width: 255px" v-model="searchItem.dept.deptName" />
             </a-form-item>
-          </p>
-          <p>
+            <a-form-item
+              v-bind="formItemLayout"
+              label="医生工号"
+            >
+              <a-input style="width: 255px" v-model="searchItem.doctor.docCode" />
+            </a-form-item>
+            <a-form-item
+              v-bind="formItemLayout"
+              label="医生姓名"
+            >
+              <a-input style="width: 255px" v-model="searchItem.doctor.docName" />
+            </a-form-item>
             <a-form-item
               v-bind="formItemLayout"
               label="序号编码："
             >
-            <a-input-group compact>
-              <a-select style="width: 85px" v-model="searchItem.order.type">
-                <a-select-option v-for="item in handleQuerySymbol" :key="item.value" :value="item.value">
-                  {{item.text}}
-                </a-select-option>
-              </a-select>
-              <a-input style="width: 220px" v-model="searchItem.order.orderNumber" />
-            </a-input-group>
+              <a-input style="width: 255px" v-model="searchItem.order.orderNumber" />
             </a-form-item>
           </p>
         </a-modal>
@@ -433,6 +444,7 @@
             <input-select
               ref="inputSelectVerifyDoctor"
               :type=2
+              dept='医生'
               @selectChange=selectDoctorChange
             >
             </input-select>
@@ -471,6 +483,7 @@ export default {
       visibleSearch: false,
       visibleUpdate: false,
       visibleJob: false,
+      visibleMatch: false,
       pcmVisible: false,
       selectedPcmRowKeys: [],
       spinning: false,
@@ -481,18 +494,24 @@ export default {
       searchDataType: 0,
       checked: false,
       searchText: '',
-      handleQuerySymbol: [
-        {text: '等于', value: 'EQ'},
-        {text: '包含', value: 'LIKE'},
-        {text: '不包含', value: 'NOTLIKE'}
+      selectSunxu: 1,
+      handleQueryXunxu: [
+        {text: '1、规则项目科室', value: 1},
+        {text: '2、科室项目规则', value: 2},
+        {text: '3、科室规则项目', value: 3},
+        {text: '4、项目科室规则', value: 4},
+        {text: '5、项目规则科室', value: 5},
+        {text: '6、规则科室项目', value: 6}
       ],
       selectTypenoDataSource: [{text: '版本一', value: 1}, {text: '版本二', value: 2}],
       selectDataTypeDataSource: [{text: '明细扣款', value: 0}, {text: '主单扣款', value: 1}],
       searchItem: {
-        project: {type: 'LIKE', projectName: ''},
-        rule: {type: 'LIKE', ruleName: ''},
-        dept: {type: 'LIKE', deptName: ''},
-        order: {type: 'EQ', orderNumber: ''}
+        serial: {serialNo: ''},
+        project: {projectName: ''},
+        rule: {ruleName: ''},
+        dept: {deptName: ''},
+        doctor: {docName: '', docCode: ''},
+        order: {orderNumber: ''}
       },
       user: this.$store.state.account.user
     }
@@ -501,6 +520,7 @@ export default {
   },
   mounted () {
     this.initTypeno(this.searchApplyDate)
+    this.selectSunxu = this.user.areaType === 0 ? 1 : 2
   },
   methods: {
     moment,
@@ -580,6 +600,9 @@ export default {
     hideJob () {
       this.visibleJob = true
     },
+    hideMatch () {
+      this.visibleMatch = true
+    },
     startJob (type) {
       let types = [type]
       if (type === 4) {
@@ -600,6 +623,27 @@ export default {
         }
       }).catch(() => {
         this.$message.error('启动Job失败')
+      })
+    },
+    deleteVerify () {
+      let param = {
+        applyDateStr: this.searchApplyDate,
+        areaType: this.user.areaType,
+        dataType: this.tableSelectKey === '2' ? 1 : 0
+      }
+      this.$delete('ybReconsiderVerify/deleteVerifyState', param).then((r) => {
+        if (r.data.data.success === 1) {
+          this.$message.success('删除成功.')
+          if (this.tableSelectKey === '2') {
+            this.$refs.ybReconsiderSendStayedMain.searchPage()
+          } else {
+            this.$refs.ybReconsiderVerifyStayed.searchPage()
+          }
+        } else {
+          this.$message.warning(r.data.data.message)
+        }
+      }).catch(() => {
+        this.$message.error('删除失败.')
       })
     },
     handImport () {
@@ -702,14 +746,34 @@ export default {
     },
     addImport () {
       this.spinning = true
-      let url = 'importReconsiderVerify'
+      let url = ''
+      let param = {}
       if (this.tableSelectKey === '2') {
         url = 'importMainReconsiderVerify'
+        param = {
+          applyDate: this.searchApplyDate, areaType: this.user.areaType
+        }
+      } else {
+        let sumxu = []
+        if (this.selectSunxu === 1) {
+          sumxu = [1, 2, 3] // 1、规则项目科室
+        } else if (this.selectSunxu === 2) {
+          sumxu = [3, 2, 1] // 2、科室项目规则
+        } else if (this.selectSunxu === 3) {
+          sumxu = [3, 1, 2] // 3、科室规则项目
+        } else if (this.selectSunxu === 4) {
+          sumxu = [2, 3, 1] // 4、项目科室规则
+        } else if (this.selectSunxu === 5) {
+          sumxu = [2, 1, 3] // 5、项目规则科室
+        } else {
+          sumxu = [1, 3, 2] // 6、规则科室项目
+        }
+        url = 'importReconsiderVerify'
+        param = {
+          applyDate: this.searchApplyDate, areaType: this.user.areaType, sumxu: sumxu
+        }
       }
-
-      this.$post('ybReconsiderVerify/' + url, {
-        applyDate: this.searchApplyDate, areaType: this.user.areaType
-      }).then(() => {
+      this.$post('ybReconsiderVerify/' + url, param).then(() => {
         this.spinning = false
         this.$message.success('匹配完成')
         if (this.tableSelectKey === '2') {
@@ -721,6 +785,7 @@ export default {
         this.spinning = false
         this.$message.error('自动匹配操作失败.')
       })
+      this.visibleMatch = false
     },
     verifySpin () {
       this.spinning = false
@@ -764,9 +829,12 @@ export default {
       }
     },
     clearValue () {
+      this.searchItem.serial.serialNo = ''
       this.searchItem.project.projectName = ''
       this.searchItem.rule.ruleName = ''
       this.searchItem.dept.deptName = ''
+      this.searchItem.doctor.docCode = ''
+      this.searchItem.doctor.docName = ''
       this.searchItem.order.orderNumber = ''
     },
     sendSms () {

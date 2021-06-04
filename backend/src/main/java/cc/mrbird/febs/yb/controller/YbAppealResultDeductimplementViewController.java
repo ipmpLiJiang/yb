@@ -52,14 +52,28 @@ public class YbAppealResultDeductimplementViewController extends BaseController 
     @GetMapping
     @RequiresPermissions("ybAppealResultDeductimplementView:view")
     public Map<String, Object> List(QueryRequest request, YbAppealResultDeductimplementView ybAppealResultDeductimplementView,String keyField) {
-        return getDataTable(this.iYbAppealResultDeductimplementViewService.findAppealResultDeductimplementViews(request, ybAppealResultDeductimplementView,keyField,false));
+        return getDataTable(this.iYbAppealResultDeductimplementViewService.findAppealResultDeductimplementViews(request, ybAppealResultDeductimplementView,keyField,false,null));
     }
 
     @GetMapping("findAppealResultView")
     @RequiresPermissions("ybAppealResultDeductimplementView:view")
     public Map<String, Object> List2(QueryRequest request, YbAppealResultDeductimplementView ybAppealResultDeductimplementView,String keyField) {
-        return getDataTable(this.iYbAppealResultDeductimplementViewService.findAppealResultDmtView(request, ybAppealResultDeductimplementView,keyField));
+        return getDataTable(this.iYbAppealResultDeductimplementViewService.findAppealResultDmtView(request, ybAppealResultDeductimplementView,keyField,null));
 //        return getDataTable(this.iYbAppealResultDeductimplementViewService.findAppealResultDmtViewNew(request, ybAppealResultDeductimplementView,keyField));
+    }
+
+    @GetMapping("findAppealResultConfView")
+    @RequiresPermissions("ybAppealResultDeductimplementView:userView")
+    public Map<String, Object> ListConf(QueryRequest request, YbAppealResultDeductimplementView ybAppealResultDeductimplementView,String keyField) {
+        User currentUser = FebsUtil.getCurrentUser();
+        return getDataTable(this.iYbAppealResultDeductimplementViewService.findAppealResultDmtView(request, ybAppealResultDeductimplementView,keyField,currentUser.getUsername()));
+    }
+
+    @GetMapping("findAppealResultDeductimplementConfView")
+    @RequiresPermissions("ybAppealResultDeductimplementView:userView")
+    public Map<String, Object> confList(QueryRequest request, YbAppealResultDeductimplementView ybAppealResultDeductimplementView,String keyField) {
+        User currentUser = FebsUtil.getCurrentUser();
+        return getDataTable(this.iYbAppealResultDeductimplementViewService.findAppealResultDeductimplementViews(request, ybAppealResultDeductimplementView,keyField,false,currentUser.getUsername()));
     }
 
     @GetMapping("findAppealResultDeductimplementUserView")
@@ -67,7 +81,7 @@ public class YbAppealResultDeductimplementViewController extends BaseController 
     public Map<String, Object> userList(QueryRequest request, YbAppealResultDeductimplementView ybAppealResultDeductimplementView,String keyField) {
         User currentUser = FebsUtil.getCurrentUser();
         ybAppealResultDeductimplementView.setArDoctorCode(currentUser.getUsername());
-        return getDataTable(this.iYbAppealResultDeductimplementViewService.findAppealResultDeductimplementViews(request, ybAppealResultDeductimplementView,keyField,true));
+        return getDataTable(this.iYbAppealResultDeductimplementViewService.findAppealResultDeductimplementViews(request, ybAppealResultDeductimplementView,keyField,true,null));
     }
 
     @GetMapping("findAppealResultUserView")

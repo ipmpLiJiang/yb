@@ -1,7 +1,13 @@
 package cc.mrbird.febs.yb.service.impl;
 
+import cc.mrbird.febs.com.entity.ComConfiguremanage;
+import cc.mrbird.febs.com.service.IComConfiguremanageService;
 import cc.mrbird.febs.common.domain.QueryRequest;
 import cc.mrbird.febs.common.utils.SortUtil;
+import cc.mrbird.febs.system.domain.User;
+import cc.mrbird.febs.system.domain.UserRole;
+import cc.mrbird.febs.system.service.UserRoleService;
+import cc.mrbird.febs.system.service.UserService;
 import cc.mrbird.febs.yb.entity.YbAppealConfire;
 import cc.mrbird.febs.yb.dao.YbAppealConfireMapper;
 import cc.mrbird.febs.yb.entity.YbAppealConfireData;
@@ -43,6 +49,8 @@ public class YbAppealConfireServiceImpl extends ServiceImpl<YbAppealConfireMappe
 
     @Autowired
     public IYbAppealConfireDataService iYbAppealConfireDataService;
+    @Autowired
+    UserService userService;
 
     @Override
     public IPage<YbAppealConfire> findYbAppealConfires(QueryRequest request, YbAppealConfire ybAppealConfire) {
@@ -133,26 +141,51 @@ public class YbAppealConfireServiceImpl extends ServiceImpl<YbAppealConfireMappe
 
     @Override
     @Transactional
-    public void createAppealConfire(YbAppealConfire ybAppealConfire, List<YbAppealConfireData> createDataList) {
+    public void createAppealConfire(YbAppealConfire ybAppealConfire, List<YbAppealConfireData> createDataList) throws Exception {
         this.save(ybAppealConfire);
         if (createDataList.size() > 0) {
             iYbAppealConfireDataService.saveBatch(createDataList);
+        }
+        if(ybAppealConfire.getDoctorCode() != null) {
+            String[] users = new String[1];
+            users[0] = ybAppealConfire.getDoctorCode();
+            userService.saveConfUser(users, true);
         }
     }
 
     @Override
     @Transactional
-    public void updateAppealConfire(YbAppealConfire ybAppealConfire, List<YbAppealConfireData> createDataList, List<YbAppealConfireData> updateDataList) {
+    public void updateAppealConfire(YbAppealConfire ybAppealConfire, List<YbAppealConfireData> createDataList, List<YbAppealConfireData> updateDataList) throws Exception {
         this.updateById(ybAppealConfire);
         iYbAppealConfireDataService.saveBatch(createDataList);
+        if(ybAppealConfire.getDoctorCode() != null) {
+            String[] users = new String[1];
+            users[0] = ybAppealConfire.getDoctorCode();
+            userService.saveConfUser(users, true);
+        }
     }
 
     @Override
     @Transactional
-    public void deleteYbAppealConfires(String[] Ids) {
-        List<String> list = Arrays.asList(Ids);
-        this.iYbAppealConfireDataService.deleteAppealConfireDataPids(Ids);
-        this.baseMapper.deleteBatchIds(list);
+    public void deleteYbAppealConfires(String[] Ids) throws Exception {
+        LambdaQueryWrapper<YbAppealConfire> wrapper = new LambdaQueryWrapper<>();
+        wrapper.in(YbAppealConfire::getId, Ids);
+        List<YbAppealConfire> appealConfireList = this.baseMapper.selectList(wrapper);
+        if(appealConfireList.size()>0) {
+            List<String> list = Arrays.asList(Ids);
+            this.iYbAppealConfireDataService.deleteAppealConfireDataPids(Ids);
+            this.baseMapper.deleteBatchIds(list);
+            String[] users = new String[appealConfireList.size()];
+            int i = 0;
+            for (YbAppealConfire ybAppealConfire :appealConfireList) {
+                if (ybAppealConfire.getDoctorCode() != null){
+                    users[i] = ybAppealConfire.getDoctorCode();
+                    i++;
+                }
+            }
+            if(users.length > 0)
+                userService.saveConfUser(users, false);
+        }
 
     }
 

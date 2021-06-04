@@ -67,6 +67,7 @@
                         <input-select
                         ref="inputSelectChangeDoctor"
                         :type=2
+                        dept='医生'
                         @selectChange=selectDoctorChang
                         >
                         </input-select>

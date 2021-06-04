@@ -6,11 +6,6 @@ import cc.mrbird.febs.common.service.CacheService;
 import cc.mrbird.febs.system.domain.User;
 import cc.mrbird.febs.system.manager.UserManager;
 import cc.mrbird.febs.system.service.UserService;
-
-//import cc.mrbird.febs.yb.entity.YbReconsiderApply;
-import cc.mrbird.febs.yb.manager.YbApplyDataManager;
-//import cc.mrbird.febs.yb.service.IYbReconsiderApplyDataService;
-import cc.mrbird.febs.yb.service.IYbReconsiderApplyService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
@@ -29,18 +24,12 @@ public class CacheInitRunner implements ApplicationRunner {
 
     @Autowired
     private UserService userService;
-
     @Autowired
     private CacheService cacheService;
     @Autowired
     private UserManager userManager;
-
-    @Autowired
-    private YbApplyDataManager ybApplyDataManager;
-
     @Autowired
     private ComConfigureManager configureManager;
-
     @Autowired
     private ConfigurableApplicationContext context;
 
@@ -62,8 +51,6 @@ public class CacheInitRunner implements ApplicationRunner {
 //            }
             configureManager.loadgetConfigureCache(5,"area");
 
-//            YbReconsiderApply apply = iYbReconsiderApplyService.findReconsiderApplyByApplyDateStrs("2021-02",0);
-//            ybApplyDataManager.loadgetApplyDataCache(apply.getId(),apply.getApplyDateStr() + "-0");
         } catch (Exception e) {
             log.error("缓存初始化失败，{}", e.getMessage());
             log.error(" ____   __    _   _ ");

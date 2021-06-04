@@ -20,4 +20,8 @@
         where u.username = #{userName}
     </select>
 
+    <select id="findRoleConfList" resultType="cc.mrbird.febs.system.domain.Role">
+        select * from t_role where ROLE_NAME in(select stringField from com_configuremanage where configureType = #{configureType})
+    </select>
+
 </mapper>

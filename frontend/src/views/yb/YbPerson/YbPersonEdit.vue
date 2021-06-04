@@ -35,7 +35,7 @@
         label="科室名称"
       >
         <a-input
-          placeholder="请输入科室名称" readOnly
+          placeholder="请输入科室名称"
           v-decorator="['deptName', {rules: [{ required: true, message: '科室名称不能为空' }] }]"
         />
       </a-form-item>

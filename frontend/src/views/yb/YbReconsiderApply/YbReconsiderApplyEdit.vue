@@ -171,7 +171,6 @@ export default {
           ybReconsiderApply.id = this.ybReconsiderApply.id
           ybReconsiderApply.isUpOverdue = this.checked
           ybReconsiderApply.areaType = this.user.areaType
-          console.log(this.ybReconsiderApply)
           this.$put('ybReconsiderApply', {
             ...ybReconsiderApply
           }).then((r) => {

@@ -337,6 +337,13 @@ private static final long serialVersionUID=1L;
     @ExcelField(value = "院区")
     private Integer areaType;
 
+    /**
+     * 是否门诊
+     */
+    @TableField("isOutpfees")
+    //@ExcelField(value ="是否门诊")
+    private Integer isOutpfees;
+
     public static final String ID ="id" ;
 
     public static final String INPATIENTID ="inpatientId" ;
@@ -398,5 +405,7 @@ private static final long serialVersionUID=1L;
     public static final String IS_DELETEMARK ="IS_DELETEMARK" ;
 
     public static final String AREATYPE = "areaType";
+
+    public static final String ISOUTPFEES = "isOutpfees";
 
         }

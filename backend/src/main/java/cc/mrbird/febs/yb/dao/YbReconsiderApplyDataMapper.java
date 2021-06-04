@@ -27,15 +27,17 @@ public interface YbReconsiderApplyDataMapper extends BaseMapper<YbReconsiderAppl
 
     List<YbReconsiderApplyData> findReconsiderApplyDataByNotVerify(@Param("pid") String pid,@Param("applyDateStr") String applyDateStr,@Param("areaType") Integer areaType,@Param("dataType") Integer dataType, @Param("typeno") Integer typeno);
 
-    List<YbReconsiderApplyData> findReconsiderApplyDataBetween(@Param("pid") String pid, @Param("dataType") Integer dataType, @Param("typeno") Integer typeno, @Param("startNum") Integer startNum, @Param("endNum") Integer endNum);
+    List<YbReconsiderApplyData> findReconsiderApplyDataByNotVerifyState(@Param("pid") String pid,@Param("applyDateStr") String applyDateStr,@Param("areaType") Integer areaType,@Param("dataType") Integer dataType, @Param("typeno") Integer typeno);
 
-    List<YbReconsiderApplyData> findReconsiderApplyDataNotBetween(@Param("pid") String pid, @Param("dataType") Integer dataType, @Param("typeno") Integer typeno, @Param("startNum") Integer startNum, @Param("endNum") Integer endNum);
+    List<YbReconsiderApplyData> findReconsiderApplyDataBetween(@Param("pid") String pid, @Param("dataType") Integer dataType, @Param("typeno") Integer typeno, @Param("startNum") Integer startNum, @Param("endNum") Integer endNum, @Param("isOutpfees") Integer isOutpfees);
 
-    List<YbReconsiderApplyData> findReconsiderApplyDataNotInpatientfees(@Param("pid") String pid,@Param("applyDateStr") String applyDateStr,@Param("areaType") Integer areaType, @Param("dataType") Integer dataType, @Param("typeno") Integer typeno);
+    List<YbReconsiderApplyData> findReconsiderApplyDataNotBetween(@Param("pid") String pid, @Param("dataType") Integer dataType, @Param("typeno") Integer typeno, @Param("startNum") Integer startNum, @Param("endNum") Integer endNum,@Param("state") Integer state, @Param("isOutpfees") Integer isOutpfees);
 
-    int findReconsiderApplyDataCount(@Param("pid") String pid, @Param("dataType") Integer dataType, @Param("typeno") Integer typeno);
+    List<YbReconsiderApplyData> findReconsiderApplyDataNotInpatientfees(@Param("pid") String pid,@Param("applyDateStr") String applyDateStr,@Param("areaType") Integer areaType, @Param("dataType") Integer dataType, @Param("typeno") Integer typeno, @Param("isOutpfees") Integer isOutpfees);
 
-    int findReconsiderApplyDataNotCount(@Param("pid") String pid,@Param("applyDateStr") String applyDateStr,@Param("areaType") Integer areaType, @Param("dataType") Integer dataType, @Param("typeno") Integer typeno);
+    int findReconsiderApplyDataCount(@Param("pid") String pid, @Param("dataType") Integer dataType, @Param("typeno") Integer typeno, @Param("isOutpfees") Integer isOutpfees);
+
+    int findReconsiderApplyDataNotCount(@Param("pid") String pid,@Param("applyDateStr") String applyDateStr,@Param("areaType") Integer areaType, @Param("dataType") Integer dataType, @Param("typeno") Integer typeno, @Param("isOutpfees") Integer isOutpfees);
 
     @Select("select id from yb_reconsider_apply_data where pid = #{pid}")
     List<String> findDataId(@Param("pid") String pid);

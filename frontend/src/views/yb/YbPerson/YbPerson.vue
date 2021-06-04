@@ -43,6 +43,15 @@
             >
               <a-button type="primary">同步到用户</a-button>
             </a-popconfirm>
+            <a-popconfirm
+              title="确定同步到人员？"
+              @confirm="personImport"
+              okText="确定"
+              style="margin-left: 15px"
+              cancelText="取消"
+            >
+              <a-button type="primary">同步到人员</a-button>
+            </a-popconfirm>
             </span>
           </a-row>
           </div>
@@ -306,12 +315,12 @@ export default {
       this.$post('ybPerson/importPerson', params).then((r) => {
         if (r.data.data.success === 1) {
           this.search()
-          this.$message.success('医生同步成功.')
+          this.$message.success('人员同步成功.')
         } else {
           this.$message.error(r.data.data.message)
         }
       }).catch(() => {
-        this.$message.error('医生同步失败.')
+        this.$message.error('人员同步失败.')
       })
     },
     onSelectChange (selectedRowKeys) {

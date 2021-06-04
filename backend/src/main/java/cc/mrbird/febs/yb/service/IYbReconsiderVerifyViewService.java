@@ -21,12 +21,13 @@ public interface IYbReconsiderVerifyViewService extends IService<YbReconsiderVer
 
     IPage<YbReconsiderVerifyView> findYbReconsiderVerifyViews(QueryRequest request, YbReconsiderVerifyView ybReconsiderVerifyView);
 
-    IPage<YbReconsiderVerifyView> findYbReconsiderVerifyViews(QueryRequest request, YbReconsiderVerifyView ybReconsiderVerifyView, String[] searchType);
+//    IPage<YbReconsiderVerifyView> findYbReconsiderVerifyViews(QueryRequest request, YbReconsiderVerifyView ybReconsiderVerifyView, String[] searchType);
 
     IPage<YbReconsiderVerifyView> findYbReconsiderVerifyViewList(QueryRequest request, YbReconsiderVerifyView ybReconsiderVerifyView);
 
     List<YbReconsiderVerifyView> findReconsiderVerifyViewLists(YbReconsiderVerifyView ybReconsiderVerifyView);
 
+    IPage<YbReconsiderVerifyView> findReconsiderVerifyViewNew(QueryRequest request, YbReconsiderVerifyView ybReconsiderVerifyView);
 
     void createYbReconsiderVerifyView(YbReconsiderVerifyView ybReconsiderVerifyView);
 

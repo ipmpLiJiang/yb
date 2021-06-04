@@ -3,6 +3,7 @@ package cc.mrbird.febs.system.service;
 
 import cc.mrbird.febs.system.domain.UserRole;
 import com.baomidou.mybatisplus.extension.service.IService;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -13,4 +14,6 @@ public interface UserRoleService extends IService<UserRole> {
 	void deleteUserRolesByUserId(String[] userIds);
 
 	List<String> findUserIdsByRoleId(String[] roleIds);
+
+	List<UserRole> findUserRoleLists(String[] username);
 }

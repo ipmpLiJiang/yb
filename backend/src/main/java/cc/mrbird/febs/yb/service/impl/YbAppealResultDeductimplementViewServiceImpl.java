@@ -170,7 +170,7 @@ public class YbAppealResultDeductimplementViewServiceImpl extends ServiceImpl<Yb
 
     //扣款落实 已扣款
     @Override
-    public IPage<YbAppealResultDeductimplementView> findAppealResultDeductimplementViews(QueryRequest request, YbAppealResultDeductimplementView ybAppealResultDeductimplementView, String keyField, boolean isUser) {
+    public IPage<YbAppealResultDeductimplementView> findAppealResultDeductimplementViews(QueryRequest request, YbAppealResultDeductimplementView ybAppealResultDeductimplementView, String keyField, boolean isUser,String confDocCode) {
         try {
             Page<YbAppealResultDeductimplementView> page = new Page<>();
             List<String> listStr = new ArrayList<>();
@@ -198,11 +198,11 @@ public class YbAppealResultDeductimplementViewServiceImpl extends ServiceImpl<Yb
                         ybAppealResultDeductimplementView.setArDoctorName(ybAppealResultDeductimplementView.getCurrencyField());
                     }
                 }
-                int count = this.baseMapper.findAppealResultDeductimplementCount(ybAppealResultDeductimplementView, keyField);
+                int count = this.baseMapper.findAppealResultDeductimplementCount(ybAppealResultDeductimplementView, keyField,confDocCode);
                 if (count > 0) {
                     page.setSearchCount(false);
                     SortUtil.handlePageSort(request, page, false);//true 是属性  false是数据库字段可两个
-                    IPage<YbAppealResultDeductimplementView> pg = this.baseMapper.findAppealResultDeductimplementView(page, ybAppealResultDeductimplementView, keyField);
+                    IPage<YbAppealResultDeductimplementView> pg = this.baseMapper.findAppealResultDeductimplementView(page, ybAppealResultDeductimplementView, keyField,confDocCode);
                     pg.setTotal(count);
                     return pg;
                 }
@@ -218,7 +218,7 @@ public class YbAppealResultDeductimplementViewServiceImpl extends ServiceImpl<Yb
 
     //扣款落实 管理 待扣款
     @Override
-    public IPage<YbAppealResultDeductimplementView> findAppealResultDmtView(QueryRequest request, YbAppealResultDeductimplementView ybAppealResultDeductimplementView, String keyField) {
+    public IPage<YbAppealResultDeductimplementView> findAppealResultDmtView(QueryRequest request, YbAppealResultDeductimplementView ybAppealResultDeductimplementView, String keyField,String confDocCode) {
         try {
             Page<YbAppealResultDeductimplementView> page = new Page<>();
             YbReconsiderReset reset = iYbReconsiderResetService.findReconsiderResetByApplyDateStr(ybAppealResultDeductimplementView.getApplyDateStr(), ybAppealResultDeductimplementView.getAreaType());
@@ -233,11 +233,11 @@ public class YbAppealResultDeductimplementViewServiceImpl extends ServiceImpl<Yb
                         ybAppealResultDeductimplementView.setArDoctorName(ybAppealResultDeductimplementView.getCurrencyField());
                     }
                 }
-                int count = this.baseMapper.findAppealResultDmtCount(ybAppealResultDeductimplementView, keyField);
+                int count = this.baseMapper.findAppealResultDmtCount(ybAppealResultDeductimplementView, keyField,confDocCode);
                 if (count > 0) {
                     page.setSearchCount(false);
                     SortUtil.handlePageSort(request, page, false);//true 是属性  false是数据库字段可两个
-                    IPage<YbAppealResultDeductimplementView> pg = this.baseMapper.findAppealResultDmtView(page, ybAppealResultDeductimplementView, keyField);
+                    IPage<YbAppealResultDeductimplementView> pg = this.baseMapper.findAppealResultDmtView(page, ybAppealResultDeductimplementView, keyField,confDocCode);
                     pg.setTotal(count);
                     return pg;
                 }
@@ -313,6 +313,7 @@ public class YbAppealResultDeductimplementViewServiceImpl extends ServiceImpl<Yb
         try {
             Page<YbAppealResultDeductimplementView> page = new Page<>();
             List<String> listStr = new ArrayList<>();
+            List<String> listApplyDateStr = new ArrayList<>();
             //ApplyDateFrom getApplyDateTo 存储的格式是 2020-09
             if (ybAppealResultDeductimplementView.getApplyDateFrom().equals(ybAppealResultDeductimplementView.getApplyDateTo())) {
                 listStr.add(ybAppealResultDeductimplementView.getApplyDateFrom());
@@ -339,19 +340,21 @@ public class YbAppealResultDeductimplementViewServiceImpl extends ServiceImpl<Yb
                         listStr.clear();
                         for (YbReconsiderReset item : orderResetList) {
                             listStr.add(item.getId());
+                            listApplyDateStr.add(item.getApplyDateStr());
                         }
                     } else {
                         ybAppealResultDeductimplementView.setApplyDateFrom(null);
                         ybAppealResultDeductimplementView.setApplyDateTo(null);
                         ybAppealResultDeductimplementView.setPid(resetList.get(0).getId());
+                        listApplyDateStr.add(resetList.get(0).getApplyDateStr());
                         ybAppealResultDeductimplementView.setApplyDateStr(resetList.get(0).getApplyDateStr());
                         listStr.clear();
                     }
-                    int count = this.baseMapper.findAppealResultDmtUserCount(ybAppealResultDeductimplementView, listStr, keyField);
+                    int count = this.baseMapper.findAppealResultDmtUserCount(ybAppealResultDeductimplementView, listStr,listApplyDateStr, keyField);
                     if (count > 0) {
                         page.setSearchCount(false);
                         SortUtil.handlePageSort(request, page, false);//true 是属性  false是数据库字段可两个
-                        IPage<YbAppealResultDeductimplementView> pg = this.baseMapper.findAppealResultDmtUserView(page, ybAppealResultDeductimplementView, listStr, keyField);
+                        IPage<YbAppealResultDeductimplementView> pg = this.baseMapper.findAppealResultDmtUserView(page, ybAppealResultDeductimplementView, listStr,listApplyDateStr, keyField);
                         pg.setTotal(count);
                         return pg;
                     }
@@ -402,7 +405,7 @@ public class YbAppealResultDeductimplementViewServiceImpl extends ServiceImpl<Yb
                             if (docIn.equals("")) {
                                 docIn = "'" + code + "'";
                             } else {
-                                docIn = ",'" + code + "'";
+                                docIn += ",'" + code + "'";
                             }
                         }
                         sql += " and doctorCode in (" + docIn + ")";

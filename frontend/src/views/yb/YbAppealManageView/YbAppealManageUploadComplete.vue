@@ -225,30 +225,40 @@ export default {
         this.$message.warning('复议图片无法删除，请确认保，至少存在一张复议图片！')
         return false
       }
-      let formData = {}
-      formData.id = file.uid
-      formData.deptName = this.ybAppealManageUpload.readyDeptName
-      formData.applyDateStr = this.ybAppealManageUpload.applyDateStr
-      formData.sourceType = this.ybAppealManageUpload.sourceType
-      formData.typeno = this.ybAppealManageUpload.typeno
-      formData.isCheck = 1
-      formData.serName = file.serName
-      formData.areaType = this.user.areaType
-      this.$post('comFile/deleteImg', {
-        ...formData
-      }).then((r) => {
-        this.uploading = false
-        if (r.data.data.success === 1) {
-          this.$message.success('删除成功')
-          const index = this.fileList.indexOf(file)
-          const newFileList = this.fileList.slice()
-          newFileList.splice(index, 1)
-          this.fileList = newFileList
-        } else {
-          this.$message.error(r.data.data.message)
+      let that = this
+      this.$confirm({
+        title: '确定删除所选中的附件?',
+        content: '当您点击确定按钮后，这些附件将会被彻底删除',
+        centered: true,
+        onOk () {
+          let formData = {}
+          formData.id = file.uid
+          formData.deptName = that.ybAppealManageUpload.readyDeptName
+          formData.applyDateStr = that.ybAppealManageUpload.applyDateStr
+          formData.sourceType = that.ybAppealManageUpload.sourceType
+          formData.typeno = that.ybAppealManageUpload.typeno
+          formData.isCheck = 1
+          formData.serName = file.serName
+          formData.areaType = that.user.areaType
+          that.$post('comFile/deleteImg', {
+            ...formData
+          }).then((r) => {
+            that.uploading = false
+            if (r.data.data.success === 1) {
+              that.$message.success('删除成功')
+              const index = that.fileList.indexOf(file)
+              const newFileList = that.fileList.slice()
+              newFileList.splice(index, 1)
+              that.fileList = newFileList
+            } else {
+              that.$message.error(r.data.data.message)
+            }
+          }).catch(() => {
+            that.$message.error('删除失败.')
+          })
+        },
+        onCancel () {
         }
-      }).catch(() => {
-        this.$message.error('删除失败.')
       })
     },
     handleCancel () {

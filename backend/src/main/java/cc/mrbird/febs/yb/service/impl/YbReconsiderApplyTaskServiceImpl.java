@@ -49,6 +49,9 @@ public class YbReconsiderApplyTaskServiceImpl extends ServiceImpl<YbReconsiderAp
             if(ybReconsiderApplyTask.getTypeno() != null) {
                 queryWrapper.eq(YbReconsiderApplyTask::getTypeno,ybReconsiderApplyTask.getTypeno());
             }
+            if(ybReconsiderApplyTask.getIsOutpfees() != null) {
+                queryWrapper.eq(YbReconsiderApplyTask::getIsOutpfees,ybReconsiderApplyTask.getIsOutpfees());
+            }
 //            queryWrapper.eq(YbReconsiderApplyTask::getIsDeletemark, 1);//1是未删 0是已删
 
             Page<YbReconsiderApplyTask> page = new Page<>();

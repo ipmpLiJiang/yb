@@ -34,11 +34,11 @@ public interface IYbAppealConfireService extends IService<YbAppealConfire> {
 
     void updateYbAppealConfire(YbAppealConfire ybAppealConfire);
 
-    void deleteYbAppealConfires(String[] Ids);
+    void deleteYbAppealConfires(String[] Ids) throws Exception;
 
-    void updateAppealConfire(YbAppealConfire ybAppealConfire, List<YbAppealConfireData> createDataList, List<YbAppealConfireData> updateDataList);
+    void updateAppealConfire(YbAppealConfire ybAppealConfire, List<YbAppealConfireData> createDataList, List<YbAppealConfireData> updateDataList) throws Exception;
 
-    void createAppealConfire(YbAppealConfire ybAppealConfire, List<YbAppealConfireData> createDataList);
+    void createAppealConfire(YbAppealConfire ybAppealConfire, List<YbAppealConfireData> createDataList) throws Exception;
 
     YbAppealConfire findAppealConfire(YbAppealConfire appealConfire);
 

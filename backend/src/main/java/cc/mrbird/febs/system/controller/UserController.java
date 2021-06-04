@@ -15,6 +15,7 @@ import cc.mrbird.febs.system.service.RoleService;
 import cc.mrbird.febs.system.service.UserConfigService;
 import cc.mrbird.febs.system.service.UserService;
 import cc.mrbird.febs.yb.domain.ResponseResultData;
+import cc.mrbird.febs.yb.entity.YbPerson;
 import com.baomidou.mybatisplus.core.toolkit.StringPool;
 import com.wuwenze.poi.ExcelKit;
 import lombok.extern.slf4j.Slf4j;
@@ -82,6 +83,18 @@ public class UserController extends BaseController {
             log.error(message, e);
             throw new FebsException(message);
         }
+    }
+
+    @GetMapping("findUserList")
+    public FebsResponse findUserLists(User user) {
+        List<User> list = new ArrayList<>();
+        try {
+            list = this.userService.findUserList(user,1);
+
+        } catch (Exception e) {
+            log.error("获取医生失败", e);
+        }
+        return new FebsResponse().data(list);
     }
 
     @PostMapping("importUser")

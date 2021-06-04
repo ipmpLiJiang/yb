@@ -53,6 +53,7 @@
                   <input-select
                   ref="inputSelectVerifyDoctor"
                   :type=2
+                  dept='医生'
                   @selectChange=selectDoctorChang
                   >
                   </input-select>
@@ -131,34 +132,40 @@ export default {
       this.$emit('close')
     },
     handleSubmit () {
-      this.loading = true
-      this.spinning = true
-      let arrData = [{
-        id: this.ybReconsiderVerifyView.isVerify === 0 ? '' : this.ybReconsiderVerify.id,
-        applyDataId: this.ybReconsiderVerifyView.applyDataId,
-        verifyDoctorCode: this.ybReconsiderVerify.verifyDoctorCode,
-        verifyDoctorName: this.ybReconsiderVerify.verifyDoctorName,
-        verifyDeptCode: this.ybReconsiderVerify.verifyDeptCode,
-        verifyDeptName: this.ybReconsiderVerify.verifyDeptName,
-        dataType: this.ybReconsiderVerifyView.dataType,
-        applyDateStr: this.ybReconsiderVerifyView.applyDateStr,
-        orderNumber: this.ybReconsiderVerifyView.orderNumber,
-        orderNum: this.ybReconsiderVerifyView.orderNum,
-        typeno: this.ybReconsiderVerifyView.typeno,
-        areaType: this.user.areaType
-      }]
+      let dtc = this.ybReconsiderVerify.verifyDoctorCode
+      let dec = this.ybReconsiderVerify.verifyDeptCode
+      if (dtc !== undefined && dec !== undefined && dtc !== null && dec !== null && dtc !== '' && dec !== '') {
+        this.loading = true
+        this.spinning = true
+        let arrData = [{
+          id: this.ybReconsiderVerifyView.isVerify === 0 ? '' : this.ybReconsiderVerify.id,
+          applyDataId: this.ybReconsiderVerifyView.applyDataId,
+          verifyDoctorCode: this.ybReconsiderVerify.verifyDoctorCode,
+          verifyDoctorName: this.ybReconsiderVerify.verifyDoctorName,
+          verifyDeptCode: this.ybReconsiderVerify.verifyDeptCode,
+          verifyDeptName: this.ybReconsiderVerify.verifyDeptName,
+          dataType: this.ybReconsiderVerifyView.dataType,
+          applyDateStr: this.ybReconsiderVerifyView.applyDateStr,
+          orderNumber: this.ybReconsiderVerifyView.orderNumber,
+          orderNum: this.ybReconsiderVerifyView.orderNum,
+          typeno: this.ybReconsiderVerifyView.typeno,
+          areaType: this.user.areaType
+        }]
 
-      let jsonString = JSON.stringify(arrData)
-      this.ybReconsiderVerify = {}
-      this.$put('ybReconsiderVerify/updateReviewerState', {
-        dataJson: jsonString
-      }).then(() => {
-        this.reset()
-        this.$emit('success')
-      }).catch(() => {
-        this.loading = false
-        this.spinning = false
-      })
+        let jsonString = JSON.stringify(arrData)
+        this.ybReconsiderVerify = {}
+        this.$put('ybReconsiderVerify/updateReviewerState', {
+          dataJson: jsonString
+        }).then(() => {
+          this.reset()
+          this.$emit('success')
+        }).catch(() => {
+          this.loading = false
+          this.spinning = false
+        })
+      } else {
+        this.$message.warning('未选择，参考复议科室 或 参考复议医生.')
+      }
     },
     selectDoctorChang (item) {
       this.ybReconsiderVerify.verifyDoctorCode = item.value

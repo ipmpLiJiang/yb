@@ -25,6 +25,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -452,52 +453,59 @@ public class ComSmsServiceImpl extends ServiceImpl<ComSmsMapper, ComSms> impleme
                     } else {
                         return "该" + applyDateStr + "年月已完成复议";
                     }
-                    int sendType = 8;
-                    ComSms querySms = new ComSms();
-                    querySms.setApplyDateStr(applyDateStr);
-                    querySms.setAreaType(areaType);
-                    querySms.setSendType(sendType);
-                    querySms.setTypeno(typeno);
-                    querySms.setState(ComSms.STATE_0);
-                    List<ComSms> querySmsList = this.findSmsTopLists(querySms);
-                    if (querySmsList.size() == 0) {
-                        querySms.setState(ComSms.STATE_1);
-                        querySmsList = this.findSmsTopLists(querySms);
-                        if(querySmsList.size() == 0) {
-                            String sendContent = iYbReconsiderApplyService.getSendMessage(applyDateStr, endDate, typeno, areaType);
-                            List<YbPerson> list = iYbPersonService.findPersonWarnLists(applyDateStr, areaType, 1, typeno, 0);
-                            List<ComSms> smsList = new ArrayList<>();
-                            if (list.size() > 0) {
-                                long uid = 1;
-                                for (YbPerson item : list) {
-                                    ComSms comSms = new ComSms();
-                                    comSms.setId(UUID.randomUUID().toString());
-                                    comSms.setSendcode(item.getPersonCode());
-                                    comSms.setSendname(item.getPersonName());
-                                    comSms.setMobile(item.getTel());
+                    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
+                    String thisDateStr = dateFormat.format(new Date());
+                    String endDateStr = dateFormat.format(endDate);
+                    if(thisDateStr.equals(endDateStr)){
+                        int sendType = 8;
+                        ComSms querySms = new ComSms();
+                        querySms.setApplyDateStr(applyDateStr);
+                        querySms.setAreaType(areaType);
+                        querySms.setSendType(sendType);
+                        querySms.setTypeno(typeno);
+                        querySms.setState(ComSms.STATE_0);
+                        List<ComSms> querySmsList = this.findSmsTopLists(querySms);
+                        if (querySmsList.size() == 0) {
+                            querySms.setState(ComSms.STATE_1);
+                            querySmsList = this.findSmsTopLists(querySms);
+                            if (querySmsList.size() == 0) {
+                                String sendContent = iYbReconsiderApplyService.getSendMessage(applyDateStr, endDate, typeno, areaType);
+                                List<YbPerson> list = iYbPersonService.findPersonWarnLists(applyDateStr, areaType, 1, typeno, 0);
+                                List<ComSms> smsList = new ArrayList<>();
+                                if (list.size() > 0) {
+                                    long uid = 1;
+                                    for (YbPerson item : list) {
+                                        ComSms comSms = new ComSms();
+                                        comSms.setId(UUID.randomUUID().toString());
+                                        comSms.setSendcode(item.getPersonCode());
+                                        comSms.setSendname(item.getPersonName());
+                                        comSms.setMobile(item.getTel());
 
-                                    comSms.setSendType(sendType);
-                                    comSms.setState(ComSms.STATE_0);
-                                    comSms.setSendcontent(sendContent);
-                                    comSms.setAreaType(areaType);
-                                    comSms.setOperatorId(uid);
-                                    comSms.setOperatorName("mrbird");
-                                    comSms.setIsDeletemark(1);
-                                    comSms.setCreateUserId(uid);
-                                    comSms.setCreateTime(new Date());
-                                    comSms.setTypeno(typeno);
-                                    comSms.setApplyDateStr(applyDateStr);
-                                    smsList.add(comSms);
+                                        comSms.setSendType(sendType);
+                                        comSms.setState(ComSms.STATE_0);
+                                        comSms.setSendcontent(sendContent);
+                                        comSms.setAreaType(areaType);
+                                        comSms.setOperatorId(uid);
+                                        comSms.setOperatorName("mrbird");
+                                        comSms.setIsDeletemark(1);
+                                        comSms.setCreateUserId(uid);
+                                        comSms.setCreateTime(new Date());
+                                        comSms.setTypeno(typeno);
+                                        comSms.setApplyDateStr(applyDateStr);
+                                        smsList.add(comSms);
+                                    }
+                                    this.saveBatch(smsList);
+                                } else {
+                                    msg = "未找到" + applyDateStr + "年月申诉数据.";
                                 }
-                                this.saveBatch(smsList);
                             } else {
-                                msg = "未找到" + applyDateStr + "年月申诉数据.";
+                                msg = "该" + applyDateStr + "年月已经创建过截止提醒.";
                             }
                         } else {
-                            msg = "该" + applyDateStr + "年月已经创建过截止提醒.";
+                            msg = this.sendSms(null, querySmsList);
                         }
                     } else {
-                        msg = this.sendSms(null, querySmsList);
+                        msg = applyDateStr + "年月,还未到执行日期.";
                     }
                 } else {
                     msg = "未找到" + applyDateStr + "年月数据.";

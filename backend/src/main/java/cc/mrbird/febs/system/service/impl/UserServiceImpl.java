@@ -1,5 +1,7 @@
 package cc.mrbird.febs.system.service.impl;
 
+import cc.mrbird.febs.com.entity.ComConfiguremanage;
+import cc.mrbird.febs.com.service.IComConfiguremanageService;
 import cc.mrbird.febs.common.domain.FebsConstant;
 import cc.mrbird.febs.common.domain.QueryRequest;
 import cc.mrbird.febs.common.service.CacheService;
@@ -14,6 +16,7 @@ import cc.mrbird.febs.system.service.UserConfigService;
 import cc.mrbird.febs.system.service.UserRoleService;
 import cc.mrbird.febs.system.service.UserService;
 import cc.mrbird.febs.yb.entity.YbAppealManageView;
+import cc.mrbird.febs.yb.entity.YbPerson;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.StringPool;
@@ -49,6 +52,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
     @Autowired
     private RoleServiceImpl roleService;
+    @Autowired
+    IComConfiguremanageService iComConfiguremanageService;
 
 
     @Override
@@ -201,6 +206,40 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
     }
 
+    /**
+     * type 0 查询集合 type 1 like
+     */
+    @Override
+    public List<User> findUserList(User user, int type) {
+        LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<>();
+        List<User> list = new ArrayList<>();
+        if (type == 1) {
+            String sql = "";
+            if (user.getDescription() != null) {
+                sql += " USERNAME like '%" + user.getDescription() + "%' or XMNAME like '%" + user.getDescription() + "%'";
+            }
+            queryWrapper.apply(sql);
+
+            list = this.list(queryWrapper);
+            int count = 15;
+            if (list.size() >= count) {
+                list = list.subList(0, count);
+            }
+        } else {
+            if (user.getUsername() != null) {
+                queryWrapper.eq(User::getUsername, user.getUsername());
+            }
+            if (user.getXmname() != null) {
+                queryWrapper.eq(User::getXmname, user.getXmname());
+            }
+            if (user.getMobile()!= null) {
+                queryWrapper.eq(User::getMobile, user.getMobile());
+            }
+            list = this.list(queryWrapper);
+        }
+        return list;
+    }
+
     @Override
     @Transactional
     public void resetPassword(String[] usernames) throws Exception {
@@ -214,6 +253,72 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             cacheService.saveUser(username);
         }
 
+    }
+
+    @Override
+    public void saveConfUser(String[] userName,boolean isSaveOrDel) throws Exception {
+        List<Role> roleList = roleService.findRoleConfLists(8);
+        if(roleList.size() > 0) {
+            List<UserRole> userRoleList = this.userRoleService.findUserRoleLists(userName);
+            if (userRoleList.size() > 0) {
+                List<Long> idList = new ArrayList<>();
+                for (UserRole item:userRoleList){
+                    if(idList.stream().filter(s->s.equals(item.getUserId())).count()==0){
+                        idList.add(item.getUserId());
+                    }
+                }
+                LambdaQueryWrapper<User> queryUserWrapper = new LambdaQueryWrapper<>();
+                queryUserWrapper.in(User::getUserId,idList);
+                List<User> userList = this.list(queryUserWrapper);
+                for(User user : userList) {
+                    Long userId = user.getUserId();
+                    List<UserRole> queryUserRoleList = userRoleList.stream().filter(s->s.getUserId().equals(userId)).collect(Collectors.toList());
+                    String roleId = this.getRoleId(roleList, queryUserRoleList, isSaveOrDel);
+                    if (roleId != null && !roleId.equals("")) {
+                        user.setRoleId(roleId);
+                        this.updateUser(user);
+                    }
+                }
+            }
+        }
+    }
+
+    private String getRoleId(List<Role> roleList,List<UserRole> userRoleList,boolean isSaveOrDel){
+        String roleId = "";
+        if(isSaveOrDel) {
+            boolean isUpdate = false;
+            List<UserRole> query = new ArrayList<>();
+            for (Role item : roleList) {
+                query = userRoleList.stream().filter(s -> s.getRoleId().equals(item.getRoleId())).collect(Collectors.toList());
+                if (query.size() == 0) {
+                    if (roleId.equals("")) {
+                        roleId = item.getRoleId().toString();
+                    } else {
+                        roleId += "," + item.getRoleId().toString();
+                    }
+                    isUpdate = true;
+                }
+            }
+            if(isUpdate){
+                for (UserRole userRole: userRoleList){
+                    roleId += "," + userRole.getRoleId();
+                }
+            }
+        }else{
+            List<Role> query = new ArrayList<>();
+            for (UserRole item : userRoleList) {
+                query = roleList.stream().filter(s -> s.getRoleId().equals(item.getRoleId())).collect(Collectors.toList());
+                if (query.size() == 0) {
+                    if (roleId.equals("")) {
+                        roleId = item.getRoleId().toString();
+                    } else {
+                        roleId += "," + item.getRoleId().toString();
+                    }
+                }
+            }
+        }
+
+        return  roleId;
     }
 
     @Override

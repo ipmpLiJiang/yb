@@ -163,6 +163,13 @@ private static final long serialVersionUID=1L;
     @ExcelField(value = "更新数量")
     private Integer hisCount;
 
+    /**
+     * 是否门诊
+     */
+    @TableField("isOutpfees")
+    //@ExcelField(value ="是否门诊")
+    private Integer isOutpfees;
+
 
     public static final String ID ="id" ;
 
@@ -201,6 +208,8 @@ private static final long serialVersionUID=1L;
     public static final String AREATYPE = "areaType";
 
     public static final String HISCOUNT = "hisCount";
+
+    public static final String ISOUTPFEES = "isOutpfees";
 
 @Override
 public int compareTo(YbReconsiderApplyTask o) {

@@ -4,6 +4,8 @@ import cc.mrbird.febs.system.domain.UserRole;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.List;
+
 public interface UserRoleMapper extends BaseMapper<UserRole> {
 
     /**
@@ -25,4 +27,6 @@ public interface UserRoleMapper extends BaseMapper<UserRole> {
      * @date 2019年03月04日17:47:16
      */
     Boolean deleteByRoleId(@Param("roleId") Long roleId);
+
+    List<UserRole> findUserRoleList(@Param("username") String[] username);
 }

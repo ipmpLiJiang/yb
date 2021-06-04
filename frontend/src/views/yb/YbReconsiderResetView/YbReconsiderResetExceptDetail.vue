@@ -538,7 +538,22 @@ export default {
           this.resetDeductPrice()
           this.$message.warning('手动剔除只支持一对多或多对一的数据剔除.')
         } else {
-          if (this.totalDeductPrice === this.resultDeductPrice || type === 1) {
+          let docCode = ''
+          let isTrue = true
+          if (type === 2 && this.selectedRowKeys.length > 1) {
+            for (let key of this.selectedRowKeys) {
+              let target = this.dataSource.filter(item => key === item.id)[0]
+              if (docCode === '') {
+                docCode = target.arDoctorCode
+              } else {
+                if (docCode !== target.arDoctorCode) {
+                  isTrue = false
+                  break
+                }
+              }
+            }
+          }
+          if ((this.totalDeductPrice === this.resultDeductPrice && isTrue) || type === 1) {
             this.deductPriceReset = this.totalDeductPrice
             this.deductPriceResult = this.resultDeductPrice
             this.$put('ybReconsiderResetData/updateHandleResetData', {
@@ -565,7 +580,12 @@ export default {
             })
           } else {
             this.resetDeductPrice()
-            this.$message.warning('剔除汇总扣款金额必须等于申诉汇总扣款金额.')
+            if (this.totalDeductPrice !== this.resultDeductPrice) {
+              this.$message.warning('剔除汇总扣款金额必须等于申诉汇总扣款金额.')
+            }
+            if (!isTrue) {
+              this.$message.warning('选择复议数据的复议医生不同.')
+            }
           }
         }
       } else {

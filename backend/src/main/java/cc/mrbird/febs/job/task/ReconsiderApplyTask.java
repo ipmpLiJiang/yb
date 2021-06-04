@@ -30,9 +30,12 @@ public class ReconsiderApplyTask {
 
 //                "","no","deptNo","getMessage","hisSqlNo","dataNo"
 //                hisDataNo,hisMainNo,
-                String msg = iYbReconsiderApplyDataService.findReconsiderApplyDataTask(params, areaType,null);
+                String msg = iYbReconsiderApplyDataService.findReconsiderApplyDataTask(params, areaType,null,2);
                 if(msg.equals("no")){
-                    msg = iYbReconsiderApplyDataService.findReconsiderApplyDataNotTask(params, areaType,null);
+                    msg = iYbReconsiderApplyDataService.findReconsiderApplyDataNotTask(params, areaType,null,2);
+                }
+                if(msg.equals("no")){
+                    msg = iYbReconsiderApplyDataService.findReconsiderApplyProjCodeTask(params, areaType,null,2);
                 }
             }
         }

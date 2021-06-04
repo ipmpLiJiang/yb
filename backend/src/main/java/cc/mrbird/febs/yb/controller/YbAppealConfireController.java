@@ -172,6 +172,7 @@ public class YbAppealConfireController extends BaseController {
                 List<YbAppealConfireData> createDataList = new ArrayList<>();
                 YbAppealConfire update = new YbAppealConfire();
                 update.setId(appealConfireJson.getId());
+                update.setDoctorCode(appealConfire.getDoctorCode());
                 update.setAdminType(appealConfireJson.getAdminType());
                 update.setModifyTime(new Date());
                 update.setModifyUserId(currentUser.getUserId());

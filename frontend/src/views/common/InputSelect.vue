@@ -25,7 +25,12 @@
 <script>
 export default {
   props: {
-    type: {default: 1}
+    type: {
+      default: 1
+    },
+    dept: {
+      default: ''
+    }
   },
   data () {
     return {
@@ -66,6 +71,10 @@ export default {
         })
         // body = [{value: '101A', text: '测试科室1'}, {value: '102A', text: '测试科室2'}, {value: '103A', text: '测试科室3'}]
       } else {
+        params = {comments: keyword}
+        if (this.dept !== '' && this.dept !== null) {
+          params.deptName = this.dept
+        }
         this.$get('ybPerson/findPersonList', {
           ...params
         }).then((r) => {
