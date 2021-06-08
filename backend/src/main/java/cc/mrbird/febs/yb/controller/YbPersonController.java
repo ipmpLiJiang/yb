@@ -187,25 +187,26 @@ public class YbPersonController extends BaseController {
         }
     }
 
+//    @PostMapping("excel")
+//    @RequiresPermissions("ybPerson:export")
+//    public void export(QueryRequest request, YbPerson ybPerson, HttpServletResponse response) throws FebsException {
+//        try {
+//            List<YbPerson> ybPersons = this.iYbPersonService.findYbPersons(request, ybPerson).getRecords();
+//            ExcelKit.$Export(YbPerson.class, response).downXlsx(ybPersons, false);
+//        } catch (Exception e) {
+//            message = "导出Excel失败";
+//            log.error(message, e);
+//            throw new FebsException(message);
+//        }
+//    }
+
     @PostMapping("excel")
     @RequiresPermissions("ybPerson:export")
-    public void export(QueryRequest request, YbPerson ybPerson, HttpServletResponse response) throws FebsException {
-        try {
-            List<YbPerson> ybPersons = this.iYbPersonService.findYbPersons(request, ybPerson).getRecords();
-            ExcelKit.$Export(YbPerson.class, response).downXlsx(ybPersons, false);
-        } catch (Exception e) {
-            message = "导出Excel失败";
-            log.error(message, e);
-            throw new FebsException(message);
-        }
-    }
-
-    @PostMapping("excel1")
-    //@RequiresPermissions("ybPerson:export")
     public void export1(QueryRequest request, YbPerson ybPerson, String dataJson, HttpServletResponse response) throws FebsException {
         try {
-            List<YbPerson> ybPersons = this.iYbPersonService.findYbPersons(request, ybPerson).getRecords();
+//            List<YbPerson> ybPersons = this.iYbPersonService.findYbPersons(request, ybPerson).getRecords();
 //            ExportExcelUtils.exportCustomExcel(response, ybPersons,dataJson,"人员信息");
+            List<YbPerson> ybPersons = this.iYbPersonService.findPersonList(ybPerson,0);
             String tempUrl = febsProperties.getUploadPath() + "person.xlsx";
             ExportExcelUtils.exportTemplateExcel(response, ybPersons, dataJson, tempUrl, 2);
         } catch (Exception e) {

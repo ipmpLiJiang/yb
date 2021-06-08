@@ -337,6 +337,7 @@ public class YbReconsiderApplyDataServiceImpl extends ServiceImpl<YbReconsiderAp
             rrMain.setOrderSettlementNum(i);//结算日期排序
             rrMain.setIsDeletemark(item.getIsDeletemark());
             rrMain.setState(item.getState());
+            rrMain.setIsOutpfees(2);
             createMainList.add(rrMain);
             i++;
         }

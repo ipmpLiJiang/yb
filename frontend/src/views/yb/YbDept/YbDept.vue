@@ -266,6 +266,7 @@ export default {
         sortField = sortedInfo.field
         sortOrder = sortedInfo.order
       }
+      this.queryParams.dataJson = '[{title: "科室编码", dataIndex: "deptId"},{title: "科室名称",dataIndex: "deptName"}]'
       this.$export('ybDept/excel', {
         sortField: sortField,
         sortOrder: sortOrder,

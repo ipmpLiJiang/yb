@@ -8,6 +8,8 @@ import cc.mrbird.febs.common.domain.router.VueRouter;
 import cc.mrbird.febs.common.exception.FebsException;
 import cc.mrbird.febs.common.domain.QueryRequest;
 
+import cc.mrbird.febs.common.properties.FebsProperties;
+import cc.mrbird.febs.export.excel.ExportExcelUtils;
 import cc.mrbird.febs.yb.domain.ResponseResult;
 import cc.mrbird.febs.yb.service.IYbDeptService;
 import cc.mrbird.febs.yb.entity.YbDept;
@@ -44,7 +46,8 @@ public class YbDeptController extends BaseController {
     @Autowired
     public IYbDeptService iYbDeptService;
 
-
+    @Autowired
+    FebsProperties febsProperties;
     /**
      * 分页查询数据
      *
@@ -130,10 +133,13 @@ public class YbDeptController extends BaseController {
 
     @PostMapping("excel")
     @RequiresPermissions("ybDept:export")
-    public void export(QueryRequest request, YbDept ybDept, HttpServletResponse response) throws FebsException {
+    public void export(QueryRequest request, YbDept ybDept, String dataJson, HttpServletResponse response) throws FebsException {
         try {
-            List<YbDept> ybDepts = this.iYbDeptService.findYbDepts(request, ybDept).getRecords();
-            ExcelKit.$Export(YbDept.class, response).downXlsx(ybDepts, false);
+//            List<YbDept> ybDepts = this.iYbDeptService.findYbDepts(request, ybDept).getRecords();
+//            ExcelKit.$Export(YbDept.class, response).downXlsx(ybDepts, false);
+            List<YbDept> ybDepts = this.iYbDeptService.findDeptList(ybDept,0);
+            String tempUrl = febsProperties.getUploadPath() + "dept.xlsx";
+            ExportExcelUtils.exportTemplateExcel(response, ybDepts, dataJson, tempUrl, 2);
         } catch (Exception e) {
             message = "导出Excel失败";
             log.error(message, e);

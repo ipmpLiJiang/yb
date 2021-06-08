@@ -345,6 +345,7 @@ export default {
       this.loading = true
       params.applyDateStr = this.applyDate
       params.state = 2
+      params.dataType = 0
       params.areaType = this.user.areaType
       // let searchType = [this.searchItem.project.type, this.searchItem.rule.type, this.searchItem.dept.type, this.searchItem.order.type]
       // params.searchType = searchType

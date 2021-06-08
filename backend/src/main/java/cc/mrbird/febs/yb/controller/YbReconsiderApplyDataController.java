@@ -351,6 +351,7 @@ public class YbReconsiderApplyDataController extends BaseController {
             queryReconsiderApply = list.size() > 0 ? list.get(0) : null;
 
             if (queryReconsiderApply != null) {
+                areaType = queryReconsiderApply.getAreaType();
                 int state = queryReconsiderApply.getState();
                 if ((typeno == YbDefaultValue.TYPENO_1 && (state == YbDefaultValue.APPLYSTATE_1 || state == YbDefaultValue.APPLYSTATE_2)) ||
                         typeno == YbDefaultValue.TYPENO_2 && (state == YbDefaultValue.APPLYSTATE_3 || state == YbDefaultValue.APPLYSTATE_4)) {
@@ -588,6 +589,7 @@ public class YbReconsiderApplyDataController extends BaseController {
                                                 ybReconsiderApply.setId(pid);
 
                                                 this.iYbReconsiderApplyDataService.importReconsiderApply(ybReconsiderApply, ListData, ListMain);
+                                                this.ybApplyDataManager.loadgetApplyDataCache(pid,queryReconsiderApply.getApplyDateStr() + "-" + areaType);
                                                 success = 1;
                                                 message = "Excel导入成功.";
                                             } else {
