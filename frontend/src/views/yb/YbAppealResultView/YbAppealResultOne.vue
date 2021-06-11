@@ -207,7 +207,7 @@ export default {
         queryParams.typeno = 1
         queryParams.state = 12 // IN(1,2)
         queryParams.sourceType = 0
-        queryParams.areaType = this.user.areaType
+        queryParams.areaType = this.user.areaType.value
         this.$export('ybAppealResultView/excel1', {
           ...queryParams
         })
@@ -287,7 +287,7 @@ export default {
       params.applyDateStr = this.applyDate
       params.currencyField = this.searchItem.value
       params.dataType = this.searchDataType
-      params.areaType = this.user.areaType
+      params.areaType = this.user.areaType.value
       params.keyField = this.searchItem.keyField
       params.typeno = 1
       // params.state = 12 // IN(1,2)

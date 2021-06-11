@@ -475,24 +475,26 @@ public class ComSmsServiceImpl extends ServiceImpl<ComSmsMapper, ComSms> impleme
                                 if (list.size() > 0) {
                                     long uid = 1;
                                     for (YbPerson item : list) {
-                                        ComSms comSms = new ComSms();
-                                        comSms.setId(UUID.randomUUID().toString());
-                                        comSms.setSendcode(item.getPersonCode());
-                                        comSms.setSendname(item.getPersonName());
-                                        comSms.setMobile(item.getTel());
+                                        if(item.getTel()!=null && item.getTel()!="") {
+                                            ComSms comSms = new ComSms();
+                                            comSms.setId(UUID.randomUUID().toString());
+                                            comSms.setSendcode(item.getPersonCode());
+                                            comSms.setSendname(item.getPersonName());
+                                            comSms.setMobile(item.getTel());
 
-                                        comSms.setSendType(sendType);
-                                        comSms.setState(ComSms.STATE_0);
-                                        comSms.setSendcontent(sendContent);
-                                        comSms.setAreaType(areaType);
-                                        comSms.setOperatorId(uid);
-                                        comSms.setOperatorName("mrbird");
-                                        comSms.setIsDeletemark(1);
-                                        comSms.setCreateUserId(uid);
-                                        comSms.setCreateTime(new Date());
-                                        comSms.setTypeno(typeno);
-                                        comSms.setApplyDateStr(applyDateStr);
-                                        smsList.add(comSms);
+                                            comSms.setSendType(sendType);
+                                            comSms.setState(ComSms.STATE_0);
+                                            comSms.setSendcontent(sendContent);
+                                            comSms.setAreaType(areaType);
+                                            comSms.setOperatorId(uid);
+                                            comSms.setOperatorName("mrbird");
+                                            comSms.setIsDeletemark(1);
+                                            comSms.setCreateUserId(uid);
+                                            comSms.setCreateTime(new Date());
+                                            comSms.setTypeno(typeno);
+                                            comSms.setApplyDateStr(applyDateStr);
+                                            smsList.add(comSms);
+                                        }
                                     }
                                     this.saveBatch(smsList);
                                 } else {

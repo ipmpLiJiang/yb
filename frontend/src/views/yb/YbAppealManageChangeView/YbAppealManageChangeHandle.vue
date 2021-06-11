@@ -266,7 +266,7 @@ export default {
           ybAppealManage.readyDeptName = this.ybAppealManageChangeHandle.readyDeptName
           ybAppealManage.readyDoctorCode = this.ybAppealManageChangeHandle.readyDoctorCode
           ybAppealManage.readyDoctorName = this.ybAppealManageChangeHandle.readyDoctorName
-          ybAppealManage.areaType = this.user.areaType
+          ybAppealManage.areaType = this.user.areaType.value
           this.$put('ybAppealManage/updateCreateAppealManage', {
             ...ybAppealManage, type: 2
           }).then(() => {
@@ -299,7 +299,7 @@ export default {
           ybAppealManage.readyDeptName = this.ybAppealManageChangeHandle.readyDeptName
           ybAppealManage.readyDoctorCode = this.ybAppealManageChangeHandle.readyDoctorCode
           ybAppealManage.readyDoctorName = this.ybAppealManageChangeHandle.readyDoctorName
-          ybAppealManage.areaType = this.user.areaType
+          ybAppealManage.areaType = this.user.areaType.value
           this.$put('ybAppealManage/updateCreateAppealManage', {
             ...ybAppealManage, type: 1
           }).then(() => {

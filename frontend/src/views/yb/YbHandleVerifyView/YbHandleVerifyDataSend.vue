@@ -225,7 +225,7 @@ export default {
     batchSendA () {
       if (this.dataSource.length > 0) {
         this.$put('ybHandleVerifyData/updateASendState', {
-          applyDateStr: this.applyDate, state: 1, areaType: this.user.areaType
+          applyDateStr: this.applyDate, state: 1, areaType: this.user.areaType.value
         }).then(() => {
           this.$message.success('发送成功')
           this.search()
@@ -259,7 +259,7 @@ export default {
     sendService (data) {
       let jsonString = JSON.stringify(data)
       this.$put('ybHandleVerifyData/updateSendState', {
-        dataJson: jsonString, applyDateStr: this.applyDate, areaType: this.user.areaType
+        dataJson: jsonString, applyDateStr: this.applyDate, areaType: this.user.areaType.value
       }).then(() => {
         this.$message.success('发送成功')
         this.search()
@@ -320,7 +320,7 @@ export default {
     fetch (params = {}) {
       this.loading = true
       params.applyDateStr = this.applyDate
-      params.areaType = this.user.areaType
+      params.areaType = this.user.areaType.value
       params.state = 1
       if (this.searchDataType !== 2) {
         params.dataType = this.searchDataType

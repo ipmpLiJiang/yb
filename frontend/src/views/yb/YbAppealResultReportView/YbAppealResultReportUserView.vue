@@ -330,7 +330,7 @@ export default {
         queryParams.applyDateFrom = this.selectApplyDateStr
         queryParams.applyDateTo = this.selectToApplyDateStr
         queryParams.state = this.selectResultState
-        queryParams.areaType = this.user.areaType
+        queryParams.areaType = this.user.areaType.value
         if (this.selectDataType !== 2) {
           queryParams.dataType = this.selectDataType
         }
@@ -418,7 +418,7 @@ export default {
         params.applyDateFrom = this.selectApplyDateStr
         params.applyDateTo = this.selectToApplyDateStr
         params.state = this.selectResultState
-        params.areaType = this.user.areaType
+        params.areaType = this.user.areaType.value
         if (this.selectDataType !== 2) {
           params.dataType = this.selectDataType
         }

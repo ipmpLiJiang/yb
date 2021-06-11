@@ -194,7 +194,7 @@ export default {
       if (this.dataSource.length > 0) {
         let queryParams = {}
         queryParams.applyDateStr = this.applyDate
-        queryParams.areaType = this.user.areaType
+        queryParams.areaType = this.user.areaType.value
         queryParams.state = 2
         this.$export('ybReconsiderResetDataView/excelReset', {
           ...queryParams
@@ -254,7 +254,7 @@ export default {
       this.loading = true
       params.applyDateStr = this.applyDate
       params.currencyField = this.searchText
-      params.areaType = this.user.areaType
+      params.areaType = this.user.areaType.value
       params.state = 2
       // params.dataType = 0
       // params.seekState = 0

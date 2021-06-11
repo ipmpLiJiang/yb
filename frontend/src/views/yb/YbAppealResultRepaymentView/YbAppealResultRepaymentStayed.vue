@@ -243,7 +243,7 @@ export default {
         this.loading = true
         params.applyDateFrom = dateStr
         params.applyDateTo = dateToStr
-        params.areaType = this.user.areaType
+        params.areaType = this.user.areaType.value
         params.currencyField = this.searchText
         params.shareProgramme = 'not'
         if (this.searchDataType !== 2) {

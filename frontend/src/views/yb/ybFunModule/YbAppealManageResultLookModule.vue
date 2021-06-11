@@ -149,7 +149,7 @@ export default {
       formData.typeno = this.ybAppealManage.typeno
       formData.sourceType = this.ybAppealManage.sourceType
       formData.fileName = formData.applyDateStr + formData.deptName + '-' + this.ybAppealManage.typeno
-      formData.areaType = this.user.areaType
+      formData.areaType = this.user.areaType.value
       this.$download('comFile/fileImgZip', {
         ...formData
       }, formData.fileName + '.zip')
@@ -160,7 +160,7 @@ export default {
       formData.deptId = ybAppealManage.readyDeptCode
       formData.applyDateStr = ybAppealManage.applyDateStr
       formData.sourceType = ybAppealManage.sourceType
-      formData.areaType = this.user.areaType
+      formData.areaType = this.user.areaType.value
       this.$post('comFile/listImgComFile', {
         ...formData
       }).then((r) => {

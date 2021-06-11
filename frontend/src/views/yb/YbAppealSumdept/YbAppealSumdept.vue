@@ -220,7 +220,7 @@ export default {
     },
     add () {
       this.editVisiable = true
-      this.$refs.ybAppealSumdeptEdit.setFormValues(null, this.user.areaType)
+      this.$refs.ybAppealSumdeptEdit.setFormValues(null, this.user.areaType.value)
     },
     handleEditSuccess () {
       this.editVisiable = false
@@ -230,7 +230,7 @@ export default {
       this.editVisiable = false
     },
     edit (record) {
-      this.$refs.ybAppealSumdeptEdit.setFormValues(record, this.user.areaType)
+      this.$refs.ybAppealSumdeptEdit.setFormValues(record, this.user.areaType.value)
       this.editVisiable = true
     },
     del (record) {
@@ -332,7 +332,7 @@ export default {
       if (params.adminType === 0 || params.adminType === undefined) {
         params.adminType = null
       }
-      params.areaType = this.user.areaType
+      params.areaType = this.user.areaType.value
       if (this.paginationInfo) {
         // 如果分页信息不为空，则设置表格当前第几页，每页条数，并设置查询分页参数
         this.$refs.TableInfo.pagination.current = this.paginationInfo.current

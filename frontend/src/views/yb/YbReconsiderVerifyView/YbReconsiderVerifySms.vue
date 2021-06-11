@@ -170,7 +170,7 @@ export default {
     fetch (params = {}) {
       this.loading = true
       params.applyDateStr = this.applyDateStr
-      params.areaType = this.user.areaType
+      params.areaType = this.user.areaType.value
       params.typeno = this.searchTypeno
       params.sendType = 1
       params.comments = this.searchText

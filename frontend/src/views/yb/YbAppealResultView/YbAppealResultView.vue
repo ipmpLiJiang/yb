@@ -59,13 +59,9 @@
             </a-popconfirm>
             <a-button
             type="primary"
-            style="margin-right:15px"
+            style="margin-right:10px"
             @click="onHistory"
             >历史操作记录</a-button>
-            <a-button
-              type="primary"
-              @click="searchTable"
-            >刷新</a-button>
           </a-col>
         </a-row>
     </template>

@@ -287,7 +287,7 @@ export default {
       this.addVisiable = false
     },
     add () {
-      this.$refs.ybReconsiderPriorityLevelAdd.setFormValues(this.user.areaType)
+      this.$refs.ybReconsiderPriorityLevelAdd.setFormValues(this.user.areaType.value)
       this.addVisiable = true
     },
     handleEditSuccess () {
@@ -405,7 +405,7 @@ export default {
       }
       params.sortField = 'create_Time'
       params.sortOrder = 'descend'
-      params.areaType = this.user.areaType
+      params.areaType = this.user.areaType.value
       params.state = 1
       this.$get('ybReconsiderPriorityLevel', {
         ...params

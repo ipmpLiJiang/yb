@@ -170,7 +170,7 @@ export default {
           let ybReconsiderApply = this.form.getFieldsValue()
           ybReconsiderApply.id = this.ybReconsiderApply.id
           ybReconsiderApply.isUpOverdue = this.checked
-          ybReconsiderApply.areaType = this.user.areaType
+          ybReconsiderApply.areaType = this.user.areaType.value
           this.$put('ybReconsiderApply', {
             ...ybReconsiderApply
           }).then((r) => {

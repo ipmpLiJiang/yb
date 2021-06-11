@@ -296,6 +296,21 @@
             )
         </if>
 </select>
+    <select id="findAppealResulRelateGroup" resultType="cc.mrbird.febs.yb.entity.YbAppealResult">
+        select * from yb_appeal_result where relatelDataId in(
+            SELECT
+                relatelDataId
+            FROM
+                yb_appeal_result
+            WHERE
+                applyDateStr = #{applyDateStr}
+                AND areaType = #{areaType}
+                AND state = 2
+                AND sourceType = 0
+            GROUP BY
+                relatelDataId HAVING count(relatelDataId) > 1
+        )
+    </select>
     <update id="updateAppealResultCancelData">
         update yb_appeal_result
         set

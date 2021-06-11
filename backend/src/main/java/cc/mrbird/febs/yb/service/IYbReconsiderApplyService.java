@@ -57,6 +57,8 @@ public interface IYbReconsiderApplyService extends IService<YbReconsiderApply> {
 
     String getSendMessage(String applyDateStr, Date endDate, Integer typeno, Integer areaType);
 
+    String getSendNoticeMessage(String title, Integer areaType);
+
     void updateEnableOverdue(String applyDateStr,int areaType);
 
     void updateApplyEndDateOne(String applyDateStr,int areaType);

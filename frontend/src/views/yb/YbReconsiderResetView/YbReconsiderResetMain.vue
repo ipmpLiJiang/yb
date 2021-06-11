@@ -223,7 +223,7 @@ export default {
       this.loading = true
       params.applyDateStr = this.applyDate
       params.currencyField = this.searchText
-      params.areaType = this.user.areaType
+      params.areaType = this.user.areaType.value
       params.state = 0
       params.dataType = 1
       // params.seekState = 0

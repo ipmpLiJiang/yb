@@ -22,6 +22,7 @@ import cc.mrbird.febs.yb.service.IYbAppealResultViewService;
 import cc.mrbird.febs.yb.service.IYbReconsiderApplyService;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.IoUtil;
+import cn.hutool.core.net.multipart.UploadFile;
 import cn.hutool.core.util.ZipUtil;
 import cn.hutool.poi.excel.ExcelUtil;
 import cn.hutool.poi.excel.ExcelWriter;
@@ -610,21 +611,20 @@ public class ComFileController extends BaseController {
             String realPath = request.getSession().getServletContext()
                     .getRealPath("");
             InputStream inputStream = multipartFile.getInputStream();
+            String path = febsProperties.getUploadPath(); // 上传后的路径
 
-            String contextPath = request.getServletContext().getContextPath();
-
-            // 服务器根目录的路径
-            String path = realPath.replace(contextPath.substring(1), "");
             // 根目录下新建文件夹upload，存放上传图片
             String uploadPath = path + "upload";
             // 获取文件名称
-            String filename = Calendar.getInstance().getTimeInMillis() + "image";
+            String upFileName = multipartFile.getOriginalFilename();  // 文件名
+            String suffixName = upFileName.substring(upFileName.lastIndexOf("."));  // 后缀名
+            String filename = UUID.randomUUID().toString() + suffixName; // 新文件名
             // 将文件上传的服务器根目录下的upload文件夹
             File file = new File(uploadPath, filename);
             FileUtils.copyInputStreamToFile(inputStream, file);
             // 返回图片访问路径
             String url = request.getScheme() + "://" + request.getServerName()
-                    + ":" + request.getServerPort() + "/upload/" + filename;
+                    + ":" + request.getServerPort() + "/uploadFile/upload/" + filename;
             String[] strs = {url};
             WangEditor we = new WangEditor(strs);
             return we;

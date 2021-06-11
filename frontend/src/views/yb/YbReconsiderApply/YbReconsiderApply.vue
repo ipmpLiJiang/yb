@@ -542,7 +542,7 @@ export default {
       params.sortField = 'create_Time'
       params.sortOrder = 'descend'
       // params.sortOrder = 'ascend'
-      params.areaType = this.user.areaType
+      params.areaType = this.user.areaType.value
       this.$get('ybReconsiderApply', {
         ...params
       }).then((r) => {

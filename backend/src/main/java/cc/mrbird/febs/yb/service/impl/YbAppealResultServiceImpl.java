@@ -165,6 +165,12 @@ public class YbAppealResultServiceImpl extends ServiceImpl<YbAppealResultMapper,
         return this.baseMapper.findAppealResulDataHandle(applyDateStr,hvId,areaType);
     }
 
+    //手动剔除业务
+    @Override
+    public List<YbAppealResult> findAppealResulRelateGroups(String applyDateStr,Integer areaType) {
+        return this.baseMapper.findAppealResulRelateGroup(applyDateStr,areaType);
+    }
+
     @Override
     public List<YbAppealResult> findAppealResultList(YbAppealResult appealResult) {
         LambdaQueryWrapper<YbAppealResult> wrapper = new LambdaQueryWrapper<>();

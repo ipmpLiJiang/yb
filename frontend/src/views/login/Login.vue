@@ -80,6 +80,7 @@ export default {
       error: '',
       // areaTypeDataSource: [{value: 0, text: '本部'}, {value: 1, text: '西院'}],
       areaTypeDataSource: [],
+      defaultAreaType: {value: 0, text: '本部'},
       logAreaType: 0,
       activeKey: '1'
     }
@@ -109,10 +110,10 @@ export default {
             this.areaTypeDataSource.push(at)
           }
         } else {
-          this.areaTypeDataSource.push({text: '本部', value: 0})
+          this.areaTypeDataSource.push(this.defaultAreaType)
         }
       }).catch(() => {
-        this.areaTypeDataSource.push({text: '本部', value: 0})
+        this.areaTypeDataSource.push(this.defaultAreaType)
       })
     },
     handleAreaTypeChange (value) {
@@ -131,7 +132,13 @@ export default {
               password: password
             }).then((r) => {
               let data = r.data.data
-              data.user.areaType = this.logAreaType
+              let target = {}
+              if (this.areaTypeDataSource.length > 0) {
+                target = this.areaTypeDataSource.filter(item => this.logAreaType === item.value)[0]
+              } else {
+                target = this.defaultAreaType
+              }
+              data.user.areaType = target
               this.saveLoginData(data)
               setTimeout(() => {
                 this.loading = false

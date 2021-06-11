@@ -195,7 +195,7 @@ export default {
         queryParams.applyDateStr = this.applyDate
         queryParams.state = 0
         queryParams.seekState = 1
-        queryParams.areaType = this.user.areaType
+        queryParams.areaType = this.user.areaType.value
         this.$export('ybReconsiderResetDataView/excelResetDeductimplement', {
           ...queryParams
         })
@@ -254,7 +254,7 @@ export default {
       this.loading = true
       params.applyDateStr = this.applyDate
       params.currencyField = this.searchText
-      params.areaType = this.user.areaType
+      params.areaType = this.user.areaType.value
       params.state = 0
       params.dataType = 0
       // params.seekState = 0

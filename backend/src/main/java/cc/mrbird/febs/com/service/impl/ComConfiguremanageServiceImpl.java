@@ -116,7 +116,7 @@ public class ComConfiguremanageServiceImpl extends ServiceImpl<ComConfiguremanag
         if (configList.size() > 0) {
             configList = configList.stream().filter(s->s.getIntField().equals(areaType)).collect(Collectors.toList());
             if (configList.size() > 0) {
-                return configList.get(0).getStringField() + " ";
+                return configList.get(0).getStringField();
             }
         }
         return "";

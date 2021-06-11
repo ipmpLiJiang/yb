@@ -106,4 +106,9 @@
         <if test="dataType != null"> and dataType =#{ dataType } </if>
     </select>
 
+    <select id="findHandleVerifyDataGroupRelateList" resultType="cc.mrbird.febs.yb.entity.YbHandleVerifyData">
+        select * from yb_handle_verify_data where relatelDataId in(
+            select relatelDataId from yb_handle_verify_data where pid = #{ pid } GROUP BY relatelDataId HAVING count(relatelDataId) > 1
+        )
+    </select>
 </mapper>

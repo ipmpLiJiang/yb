@@ -15,6 +15,7 @@
               复议年月：
               <a-month-picker
                 placeholder="请输入复议年月"
+                style="width: 150px"
                 @change="monthChange"
                 :default-value="defaultApplyDate"
                 :format="monthFormat"
@@ -39,10 +40,10 @@
                 </a-select>
               </a-form-item>
           </a-col>
-            <a-col :span=5>
-              <a-input-search placeholder="请输入关键字" v-model="searchText" style="width: 200px" enter-button @search="searchTable" />
+            <a-col :span=4>
+              <a-input-search placeholder="请输入关键字" v-model="searchText" style="width: 170px" enter-button @search="searchTable" />
             </a-col>
-            <a-col :span=2 v-show="tableSelectKey==1?true:false">
+            <a-col :span=3 v-show="tableSelectKey==1?true:false">
               <a-popconfirm
               title="确定获取剔除数据剔除？"
               @confirm="importData"
@@ -172,7 +173,7 @@ export default {
       this.spinning = true
       this.$post('ybHandleVerifyData/importCreateHandleVerifyData', {
         applyDateStr: this.searchApplyDate,
-        areaType: this.user.areaType
+        areaType: this.user.areaType.value
       }).then((r) => {
         if (r.data.data.success === 1) {
           this.spinning = false

@@ -280,7 +280,7 @@ export default {
       let updateParam = {
         applyDateStr: this.searchApplyDate,
         dataType: 0,
-        areaType: this.user.areaType
+        areaType: this.user.areaType.value
       }
       if (this.tableSelectKey === '2') {
         updateParam.dataType = 1
@@ -314,7 +314,7 @@ export default {
         let key = this.tableSelectKey
         this.$put('comSms/sendSms', {
           applyDateStr: this.searchApplyDate,
-          areaType: this.user.areaType,
+          areaType: this.user.areaType.value,
           sendType: 5,
           state: 0
         }).then((r) => {
@@ -375,7 +375,7 @@ export default {
       const formData = new FormData()
       formData.append('file', file)
       formData.append('applyDateStr', this.searchApplyDate)
-      formData.append('areaType', this.user.areaType)
+      formData.append('areaType', this.user.areaType.value)
       this.spinning = true
       this.$upload('ybReconsiderReset/importReconsiderReset', formData).then((r) => {
         // r.data.data.message
@@ -396,7 +396,7 @@ export default {
     updateApplyState () {
       let updateParam = {
         applyDateStr: this.searchApplyDate,
-        areaType: this.user.areaType
+        areaType: this.user.areaType.value
       }
       this.spinning = true
       this.$put('ybReconsiderReset/updateApplyState', {

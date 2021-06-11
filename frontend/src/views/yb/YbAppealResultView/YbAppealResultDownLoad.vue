@@ -88,7 +88,7 @@ export default {
       }
       this.deptNotMsg = ''
       this.queryParams.dataType = this.appealResultDownLoad.dataType
-      this.queryParams.areaType = this.user.areaType
+      this.queryParams.areaType = this.user.areaType.value
       this.$get('ybAppealResultView/fileNotDeptList', {
         ...this.queryParams
       }).then((r) => {
@@ -141,7 +141,7 @@ export default {
         formData.state = 1
         formData.sourceType = 1
       }
-      formData.areaType = this.user.areaType
+      formData.areaType = this.user.areaType.value
       formData.dataType = this.appealResultDownLoad.dataType
       formData.fileName = formData.applyDateStr + '_' + f + '_' + formData.deptName
       let methods = 'fileSumImgZip'
@@ -177,7 +177,7 @@ export default {
       }
 
       this.queryParams.dataType = this.appealResultDownLoad.dataType
-      this.queryParams.areaType = this.user.areaType
+      this.queryParams.areaType = this.user.areaType.value
       this.loading = true
       let methods = 'fileDownLoadSumList'
       if (this.appealResultDownLoad.type === 0) {

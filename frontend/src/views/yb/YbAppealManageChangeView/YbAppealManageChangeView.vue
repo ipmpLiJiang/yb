@@ -11,6 +11,7 @@
               复议年月：
               <a-month-picker
                 placeholder="请输入复议年月"
+                style="width: 150px"
                 @change="monthChange"
                 :default-value="searchApplyDate"
                 :format="monthFormat"
@@ -36,18 +37,15 @@
               {{ d.text }}
               </a-select-option>
             </a-select>
+            =
             <a-input-search placeholder="请输入关键字" v-model="searchItem.value" style="width: 170px" enter-button @search="searchTable" />
           </a-col>
-          <a-col :span=5>
+          <a-col :span=3>
             <a-button
             type="primary"
-            style="margin-right:20px"
+            style="margin-right:10px"
             @click="onHistory"
             >历史操作记录</a-button>
-            <a-button
-              type="primary"
-              @click="searchTable"
-            >刷新</a-button>
           </a-col>
         </a-row>
       </div>
@@ -214,7 +212,7 @@ export default {
     },
     initTypeno (applyDateStr) {
       this.$get('ybReconsiderApply/getTypeno', {
-        applyDateStr: applyDateStr, areaType: this.user.areaType
+        applyDateStr: applyDateStr, areaType: this.user.areaType.value
       }).then((r) => {
         if (r.data.data.success === 1) {
           this.searchTypeno = parseInt(r.data.data.data)

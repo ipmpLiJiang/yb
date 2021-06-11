@@ -204,7 +204,7 @@ export default {
         let queryParams = {}
         queryParams.applyDateStr = this.applyDate
         queryParams.sourceType = 1
-        queryParams.areaType = this.user.areaType
+        queryParams.areaType = this.user.areaType.value
         this.$export('ybAppealResultView/excel1', {
           ...queryParams
         })
@@ -284,7 +284,7 @@ export default {
       params.applyDateStr = this.applyDate
       params.currencyField = this.searchItem.value
       params.dataType = this.searchDataType
-      params.areaType = this.user.areaType
+      params.areaType = this.user.areaType.value
       params.keyField = this.searchItem.keyField
       params.state = 1
       params.sourceType = 1

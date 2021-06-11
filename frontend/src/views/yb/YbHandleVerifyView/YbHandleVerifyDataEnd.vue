@@ -236,7 +236,7 @@ export default {
     fetch (params = {}) {
       this.loading = true
       params.applyDateStr = this.applyDate
-      params.areaType = this.user.areaType
+      params.areaType = this.user.areaType.value
       params.state = 3
       if (this.searchDataType !== 2) {
         params.dataType = this.searchDataType

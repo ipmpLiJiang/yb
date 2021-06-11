@@ -11,13 +11,14 @@
           justify="center"
           align="middle"
         >
-          <a-col :span=6>
+          <a-col :span=5>
             <a-form-item
               v-bind="formItemLayout"
               label="复议年月"
             >
               <a-month-picker
                 placeholder="请输入复议年月"
+                style="width: 150px"
                 @change="monthChange"
                 :default-value="searchApplyDate"
                 :format="monthFormat"
@@ -520,7 +521,7 @@ export default {
   },
   mounted () {
     this.initTypeno(this.searchApplyDate)
-    this.selectSunxu = this.user.areaType === 0 ? 1 : 2
+    this.selectSunxu = this.user.areaType.value === 0 ? 1 : 2
   },
   methods: {
     moment,
@@ -534,7 +535,7 @@ export default {
     },
     initTypeno (applyDateStr) {
       this.$get('ybReconsiderApply/getTypeno', {
-        applyDateStr: applyDateStr, areaType: this.user.areaType
+        applyDateStr: applyDateStr, areaType: this.user.areaType.value
       }).then((r) => {
         if (r.data.data.success === 1) {
           let typeno = parseInt(r.data.data.data)
@@ -613,7 +614,7 @@ export default {
       }
       this.$put('ybReconsiderVerify/startJob', {
         applyDateStr: this.searchApplyDate,
-        areaType: this.user.areaType,
+        areaType: this.user.areaType.value,
         jobTypeList: types
       }).then((r) => {
         if (r.data.data.success === 1) {
@@ -628,7 +629,7 @@ export default {
     deleteVerify () {
       let param = {
         applyDateStr: this.searchApplyDate,
-        areaType: this.user.areaType,
+        areaType: this.user.areaType.value,
         dataType: this.tableSelectKey === '2' ? 1 : 0
       }
       this.$delete('ybReconsiderVerify/deleteVerifyState', param).then((r) => {
@@ -706,7 +707,7 @@ export default {
       formData.append('applyDateStr', this.searchApplyDate)
       let dataType = this.tableSelectKey === '1' ? 0 : 1
       formData.append('dataType', dataType)
-      formData.append('areaType', this.user.areaType)
+      formData.append('areaType', this.user.areaType.value)
 
       this.$upload('ybReconsiderVerify/importReconsiderDataVerify', formData).then((r) => {
         if (r.data.data.success === 1) {
@@ -739,7 +740,7 @@ export default {
       queryParams.state = 1
       let dataType = this.tableSelectKey === '1' ? 0 : 1
       queryParams.dataType = dataType
-      queryParams.areaType = this.user.areaType
+      queryParams.areaType = this.user.areaType.value
       this.$export('ybReconsiderVerifyView/exportVerify', {
         ...queryParams
       })
@@ -751,7 +752,7 @@ export default {
       if (this.tableSelectKey === '2') {
         url = 'importMainReconsiderVerify'
         param = {
-          applyDate: this.searchApplyDate, areaType: this.user.areaType
+          applyDate: this.searchApplyDate, areaType: this.user.areaType.value
         }
       } else {
         let sumxu = []
@@ -770,7 +771,7 @@ export default {
         }
         url = 'importReconsiderVerify'
         param = {
-          applyDate: this.searchApplyDate, areaType: this.user.areaType, sumxu: sumxu
+          applyDate: this.searchApplyDate, areaType: this.user.areaType.value, sumxu: sumxu
         }
       }
       this.$post('ybReconsiderVerify/' + url, param).then(() => {
@@ -843,7 +844,7 @@ export default {
         let key = this.tableSelectKey
         this.$put('comSms/sendSms', {
           applyDateStr: this.searchApplyDate,
-          areaType: this.user.areaType,
+          areaType: this.user.areaType.value,
           typeno: this.searchTypeno,
           sendType: 1,
           state: 0

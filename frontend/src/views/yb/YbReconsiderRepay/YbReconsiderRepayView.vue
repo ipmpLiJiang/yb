@@ -268,7 +268,7 @@ export default {
         seekState: 0,
         repayType: this.ybReconsiderRepay.repayType,
         dataType: this.ybReconsiderRepay.dataType,
-        areaType: this.user.areaType,
+        areaType: this.user.areaType.value,
         state: 0
       }
       this.spinning = true

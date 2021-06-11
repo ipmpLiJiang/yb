@@ -13,6 +13,7 @@
             >
               <a-month-picker
                 placeholder="请选择复议年月"
+                style="width: 170px"
                 @change="monthChange"
                 :default-value="defaultApplyDate"
                 :format="monthFormat"
@@ -339,7 +340,7 @@ export default {
         let queryParams = {}
         queryParams.applyDateStr = this.selectApplyDateStr
         queryParams.state = this.selectResultState
-        queryParams.areaType = this.user.areaType
+        queryParams.areaType = this.user.areaType.value
         if (this.selectDataType !== 2) {
           queryParams.dataType = this.selectDataType
         }
@@ -420,7 +421,7 @@ export default {
     fetch (params = {}) {
       params.applyDateStr = this.selectApplyDateStr
       params.state = this.selectResultState
-      params.areaType = this.user.areaType
+      params.areaType = this.user.areaType.value
       if (this.selectDataType !== 2) {
         params.dataType = this.selectDataType
       }

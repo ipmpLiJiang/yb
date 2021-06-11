@@ -8,10 +8,7 @@ import cc.mrbird.febs.common.utils.SortUtil;
 import cc.mrbird.febs.system.domain.User;
 import cc.mrbird.febs.yb.entity.*;
 import cc.mrbird.febs.yb.dao.YbNoticeMapper;
-import cc.mrbird.febs.yb.service.IYbAppealConfireService;
-import cc.mrbird.febs.yb.service.IYbNoticeDataService;
-import cc.mrbird.febs.yb.service.IYbNoticeService;
-import cc.mrbird.febs.yb.service.IYbPersonService;
+import cc.mrbird.febs.yb.service.*;
 import cn.hutool.core.lang.Validator;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
@@ -57,6 +54,9 @@ public class YbNoticeServiceImpl extends ServiceImpl<YbNoticeMapper, YbNotice> i
 
     @Autowired
     FebsProperties febsProperties;
+
+    @Autowired
+    IYbReconsiderApplyService iYbReconsiderApplyService;
 
     @Override
     public IPage<YbNotice> findYbNotices(QueryRequest request, YbNotice ybNotice) {
@@ -330,17 +330,19 @@ public class YbNoticeServiceImpl extends ServiceImpl<YbNoticeMapper, YbNotice> i
     @Transactional
     public void updateReleaseNotice(YbNotice ybNotice, User currentUser) {
         List<YbPerson> personList = iYbPersonService.findPersonList(new YbPerson(), 0);
-
         List<ComSms> createSms = new ArrayList<>();
         int nOpenSms = febsProperties.getOpenSms();
         boolean isOpenSms = nOpenSms == 1 ? true : false;
-        String sendContent = ybNotice.getNtTitle();
-        if (ybNotice.getSendType() == YbNotice.SENDTYPE_1) {
-            for(YbPerson person : personList) {
-                this.addSms(ybNotice,personList, createSms, person.getPersonCode(), sendContent, currentUser);
-            }
-        } else if (ybNotice.getSendType() == YbNotice.SENDTYPE_2) {
-            if (isOpenSms) {
+        if (isOpenSms) {
+            String sendContent = iYbReconsiderApplyService.getSendNoticeMessage(ybNotice.getNtTitle(), ybNotice.getAreaType());
+            if (ybNotice.getSendType() == YbNotice.SENDTYPE_1) {
+                List<YbPerson> personAllList = new ArrayList<>();
+                for (YbPerson person : personList) {
+                    personAllList = new ArrayList<>();
+                    personAllList.add(person);
+                    this.addSms(ybNotice, personAllList, createSms, person.getPersonCode(), sendContent, currentUser);
+                }
+            } else if (ybNotice.getSendType() == YbNotice.SENDTYPE_2) {
                 YbNoticeData query = new YbNoticeData();
                 query.setPid(ybNotice.getId());
                 query.setNdType(YbNoticeData.NDTYPE_1);
@@ -349,29 +351,29 @@ public class YbNoticeServiceImpl extends ServiceImpl<YbNoticeMapper, YbNotice> i
                 for (YbNoticeData item : noticeDatalist) {
                     atIds.add(item.getCmId());
                 }
-                List<YbAppealConfire> acList = iYbAppealConfireService.findAppealConfireATList(atIds,ybNotice.getAreaType());
+                List<YbAppealConfire> acList = iYbAppealConfireService.findAppealConfireATList(atIds, ybNotice.getAreaType());
                 for (YbAppealConfire obj : acList) {
-                    this.addSms(ybNotice,personList, createSms, obj.getDoctorCode(), sendContent, currentUser);
+                    this.addSms(ybNotice, personList, createSms, obj.getDoctorCode(), sendContent, currentUser);
                 }
-            }
-        } else {
-            if (isOpenSms) {
+            } else {
                 YbNoticeData query = new YbNoticeData();
                 query.setPid(ybNotice.getId());
                 query.setNdType(YbNoticeData.NDTYPE_2);
                 List<YbNoticeData> noticeDatalist = iYbNoticeDataService.findNoticeDataList(query);
                 for (YbNoticeData obj : noticeDatalist) {
-                    this.addSms(ybNotice,personList, createSms, obj.getPersonCode(), sendContent, currentUser);
+                    this.addSms(ybNotice, personList, createSms, obj.getPersonCode(), sendContent, currentUser);
                 }
             }
-        }
-        if (createSms.size() > 0) {
-            iComSmsService.saveBatch(createSms);
+            if (createSms.size() > 0) {
+                iComSmsService.saveBatch(createSms);
+            }
         }
         ybNotice.setReleaseDate(new Date());
         this.updateById(ybNotice);
 
     }
+
+
 
     private void addSms(YbNotice ybNotice,List<YbPerson> personList, List<ComSms> createSms, String personCode, String sendContent, User currentUser) {
         Date thisDate = new Date();

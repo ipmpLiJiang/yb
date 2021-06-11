@@ -252,7 +252,7 @@ export default {
       params.typeno = this.searchTypeno
       params.dataType = this.searchDataType
       params.state = 3
-      params.areaType = this.user.areaType
+      params.areaType = this.user.areaType.value
       // let searchType = [this.searchItem.project.type, this.searchItem.rule.type, this.searchItem.dept.type, this.searchItem.order.type]
       // params.searchType = searchType
       if (this.searchItem !== undefined) {

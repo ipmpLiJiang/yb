@@ -86,7 +86,7 @@ febs:
   in2: MAC
   in3: FC
   taskInpatientCount: 500
-  smsWebsite: 登录网址（内网）：http://192.168.78.136:3086/#/login，用户名为工号，密码为身份证后6位。
+  smsWebsite: 登录网址（内网）：http://192.168.78.136:3086/#/login，用户名为工号，初始密码为身份证后6位。
 
   #baseUrl: http://192.168.78.136:9527
   # 单次最大批量入库数量

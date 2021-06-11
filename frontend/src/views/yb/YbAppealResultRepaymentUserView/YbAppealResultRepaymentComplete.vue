@@ -203,7 +203,7 @@ export default {
         params.applyDateTo = dateToStr
         params.currencyField = this.searchItem.value
         params.keyField = this.searchItem.keyField
-        params.areaType = this.user.areaType
+        params.areaType = this.user.areaType.value
         if (this.searchDataType !== 2) {
           params.dataType = this.searchDataType
         }

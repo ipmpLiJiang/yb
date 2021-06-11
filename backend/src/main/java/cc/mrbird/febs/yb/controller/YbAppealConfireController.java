@@ -203,7 +203,7 @@ public class YbAppealConfireController extends BaseController {
                         success = 1;
                     } else {
                         message = iComConfiguremanageService.getConfigAreaName(appealConfireJson.getAreaType());
-                        message = message + createDataList.get(0).getDeptId() + "-" + createDataList.get(0).getDeptName() + " 科室已存在!";
+                        message = message + " " +createDataList.get(0).getDeptId() + "-" + createDataList.get(0).getDeptName() + " 科室已存在!";
 
                     }
                 }

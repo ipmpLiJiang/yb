@@ -104,7 +104,7 @@ public class YbAppealSumdeptController extends BaseController {
                 success = 1;
             } else {
                 message = iComConfiguremanageService.getConfigAreaName(appealSumdeptJson.getAreaType());
-                message = message + "当前汇总科室 " + appealSumdeptJson.getAsName() + " 已经维护过数据了";
+                message = message + " 当前汇总科室 " + appealSumdeptJson.getAsName() + " 已经维护过数据了";
             }
             //dataJson = JSONUtil.toJsonStr(AppealSumdeptJson);
         } catch (Exception e) {
@@ -169,12 +169,12 @@ public class YbAppealSumdeptController extends BaseController {
                         success = 1;
                     } else {
                         message = iComConfiguremanageService.getConfigAreaName(appealSumdeptJson.getAreaType());
-                        message = message +createDataList.get(0).getDeptId() + "-" + createDataList.get(0).getDeptName() + " 科室已存在!";
+                        message = message  + " " +createDataList.get(0).getDeptId() + "-" + createDataList.get(0).getDeptName() + " 科室已存在!";
                     }
                 }
             }else {
                 message = iComConfiguremanageService.getConfigAreaName(appealSumdeptJson.getAreaType());
-                message = message + "当前汇总科室 " + appealSumdeptJson.getAsName() + " 已经维护过数据了";
+                message = message + " 当前汇总科室 " + appealSumdeptJson.getAsName() + " 已经维护过数据了";
             }
         } catch (Exception e) {
             message = "修改失败";

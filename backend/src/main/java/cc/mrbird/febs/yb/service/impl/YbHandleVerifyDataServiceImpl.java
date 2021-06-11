@@ -224,6 +224,9 @@ public class YbHandleVerifyDataServiceImpl extends ServiceImpl<YbHandleVerifyDat
         List<YbPerson> personList = this.findPerson(list);
         List<YbPerson> queryPersonList = new ArrayList<>();
         List<YbHandleVerifyData> hvdList = this.findHandleVerifyDataByIdList(list);
+
+//        List<YbAppealResult> resultGroupRelateList = iYbAppealResultService.findAppealResulRelateGroups(applyDateStr,areaType);
+
         List<ComSms> smsList = new ArrayList<>();
         List<ComSms> saveSmsList = new ArrayList<>();
         List<String> userCodeList = new ArrayList<>();
@@ -340,6 +343,7 @@ public class YbHandleVerifyDataServiceImpl extends ServiceImpl<YbHandleVerifyDat
             //加1 表示忽略当前日期，从第二天开始
             Date addDate = DataTypeHelpers.addDateMethod(thisDate, day + 1);
             List<YbHandleVerifyData> list = this.baseMapper.findHandleVerifyDataList(handleVerify.getId(), dataType, state);
+            List<YbAppealResult> resultGroupRelateList = iYbAppealResultService.findAppealResulRelateGroups(applyDateStr,areaType);
 
             List<YbPerson> personList = iYbPersonService.findPersonList(new YbPerson(), 0);
             List<YbPerson> queryPersonList = new ArrayList<>();
@@ -355,11 +359,18 @@ public class YbHandleVerifyDataServiceImpl extends ServiceImpl<YbHandleVerifyDat
                 qu.setAreaType(areaType);
                 smsList = iComSmsService.findLmdSmsList(qu);
             }
+            long count = 0;
             for (YbHandleVerifyData ybHandleVerifyData : list) {
                 if (ybHandleVerifyData.getState() != YbDefaultValue.VERIFYDATASTATE_3) {
-                    queryPersonList = personList.stream().filter(
-                            s -> s.getPersonCode().equals(ybHandleVerifyData.getDoctorCode())
-                    ).collect(Collectors.toList());
+                    if(resultGroupRelateList.size()>0) {
+                        count = resultGroupRelateList.stream().filter(s -> s.getRelatelDataId().equals(ybHandleVerifyData.getRelatelDataId())).count();
+                    }else{
+                        count = 0;
+                    }
+                    if (count == 0){
+                        queryPersonList = personList.stream().filter(
+                                s -> s.getPersonCode().equals(ybHandleVerifyData.getDoctorCode())
+                        ).collect(Collectors.toList());
                     if (queryPersonList.size() > 0) {
                         //更新
                         YbHandleVerifyData updateHandleVerify = new YbHandleVerifyData();
@@ -431,6 +442,7 @@ public class YbHandleVerifyDataServiceImpl extends ServiceImpl<YbHandleVerifyDat
                                 }
                             }
                         }
+                    }
                     }
                 }
             }

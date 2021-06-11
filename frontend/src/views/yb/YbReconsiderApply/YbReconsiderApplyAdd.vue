@@ -131,7 +131,7 @@ export default {
       this.form.validateFields((err, values) => {
         if (!err) {
           this.setFields()
-          this.ybReconsiderApply.areaType = this.user.areaType
+          this.ybReconsiderApply.areaType = this.user.areaType.value
           this.$post('ybReconsiderApply/addYbReconsiderApplyCheck', {
             ...this.ybReconsiderApply
           }).then((r) => {

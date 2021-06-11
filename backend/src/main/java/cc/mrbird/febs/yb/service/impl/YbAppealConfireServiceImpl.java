@@ -28,10 +28,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.time.LocalDate;
 
 /**
@@ -146,7 +143,7 @@ public class YbAppealConfireServiceImpl extends ServiceImpl<YbAppealConfireMappe
         if (createDataList.size() > 0) {
             iYbAppealConfireDataService.saveBatch(createDataList);
         }
-        if(ybAppealConfire.getDoctorCode() != null) {
+        if (ybAppealConfire.getDoctorCode() != null) {
             String[] users = new String[1];
             users[0] = ybAppealConfire.getDoctorCode();
             userService.saveConfUser(users, true);
@@ -158,7 +155,7 @@ public class YbAppealConfireServiceImpl extends ServiceImpl<YbAppealConfireMappe
     public void updateAppealConfire(YbAppealConfire ybAppealConfire, List<YbAppealConfireData> createDataList, List<YbAppealConfireData> updateDataList) throws Exception {
         this.updateById(ybAppealConfire);
         iYbAppealConfireDataService.saveBatch(createDataList);
-        if(ybAppealConfire.getDoctorCode() != null) {
+        if (ybAppealConfire.getDoctorCode() != null) {
             String[] users = new String[1];
             users[0] = ybAppealConfire.getDoctorCode();
             userService.saveConfUser(users, true);
@@ -171,20 +168,36 @@ public class YbAppealConfireServiceImpl extends ServiceImpl<YbAppealConfireMappe
         LambdaQueryWrapper<YbAppealConfire> wrapper = new LambdaQueryWrapper<>();
         wrapper.in(YbAppealConfire::getId, Ids);
         List<YbAppealConfire> appealConfireList = this.baseMapper.selectList(wrapper);
-        if(appealConfireList.size()>0) {
+        if (appealConfireList.size() > 0) {
             List<String> list = Arrays.asList(Ids);
             this.iYbAppealConfireDataService.deleteAppealConfireDataPids(Ids);
             this.baseMapper.deleteBatchIds(list);
-            String[] users = new String[appealConfireList.size()];
-            int i = 0;
-            for (YbAppealConfire ybAppealConfire :appealConfireList) {
-                if (ybAppealConfire.getDoctorCode() != null){
-                    users[i] = ybAppealConfire.getDoctorCode();
-                    i++;
+            List<String> userList = new ArrayList<>();
+            for (YbAppealConfire ybAppealConfire : appealConfireList) {
+                if (ybAppealConfire.getDoctorCode() != null) {
+                    userList.add(ybAppealConfire.getDoctorCode());
                 }
             }
-            if(users.length > 0)
-                userService.saveConfUser(users, false);
+            if (userList.size() > 0) {
+                wrapper = new LambdaQueryWrapper<>();
+                wrapper.in(YbAppealConfire::getDoctorCode, userList);
+                wrapper.ne(YbAppealConfire::getAreaType, appealConfireList.get(0).getAreaType());
+                appealConfireList = this.baseMapper.selectList(wrapper);
+                if (appealConfireList.size() > 0) {
+                    for (YbAppealConfire item : appealConfireList) {
+                        userList.remove(item.getDoctorCode());
+                    }
+                }
+                if(userList.size()>0) {
+                    String[] users = new String[userList.size()];
+                    int i = 0;
+                    for (String item : userList) {
+                        users[i] = item;
+                        i++;
+                    }
+                    userService.saveConfUser(users, false);
+                }
+            }
         }
 
     }
@@ -211,7 +224,7 @@ public class YbAppealConfireServiceImpl extends ServiceImpl<YbAppealConfireMappe
     }
 
     @Override
-    public List<YbAppealConfire> findAppealConfireATList(List<Integer> atIds,Integer areaType) {
+    public List<YbAppealConfire> findAppealConfireATList(List<Integer> atIds, Integer areaType) {
         LambdaQueryWrapper<YbAppealConfire> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(YbAppealConfire::getIsDeletemark, 1);
         wrapper.eq(YbAppealConfire::getAreaType, areaType);

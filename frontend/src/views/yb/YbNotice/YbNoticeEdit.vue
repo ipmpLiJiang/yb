@@ -57,7 +57,7 @@
             v-decorator="['ntDetail', {rules: [{ required: true, message: '内容详情不能为空' }] }]"
             :rows="1"
             />
-            <editor v-model="detailContent" :isClear="isClear" @change="editorChange"></editor>
+            <editor v-model="detailContent" :isClear="isClear"  @change="editorChange"></editor>
           </a-form-item>
         </a-col>
       </a-row>

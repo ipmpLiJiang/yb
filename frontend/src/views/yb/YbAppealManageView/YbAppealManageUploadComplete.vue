@@ -203,7 +203,7 @@ export default {
       formData.append('sourceType', this.ybAppealManageUpload.sourceType)
       formData.append('typeno', this.ybAppealManageUpload.typeno)
       formData.append('isCheck', 1)
-      formData.append('areaType', this.user.areaType)
+      formData.append('areaType', this.user.areaType.value)
       this.uploading = true
       let that = this
 
@@ -239,7 +239,7 @@ export default {
           formData.typeno = that.ybAppealManageUpload.typeno
           formData.isCheck = 1
           formData.serName = file.serName
-          formData.areaType = that.user.areaType
+          formData.areaType = that.user.areaType.value
           that.$post('comFile/deleteImg', {
             ...formData
           }).then((r) => {
@@ -324,7 +324,7 @@ export default {
       formData.deptId = this.ybAppealManageUpload.readyDeptCode
       formData.applyDateStr = this.ybAppealManageUpload.applyDateStr
       formData.sourceType = this.ybAppealManageUpload.sourceType
-      formData.areaType = this.user.areaType
+      formData.areaType = this.user.areaType.value
       this.$post('comFile/listImgComFile', {
         ...formData
       }).then((r) => {

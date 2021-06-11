@@ -240,7 +240,7 @@ export default {
       }
     },
     initSearch () {
-      let params = { applyDateStr: this.applyDate, areaType: this.user.areaType }
+      let params = { applyDateStr: this.applyDate, areaType: this.user.areaType.value }
       this.$get('ybReconsiderApply/getTypeno', {
         ...params
       }).then((r) => {
@@ -328,7 +328,7 @@ export default {
       params.acceptState = 2
       params.currencyField = this.searchItem.value
       params.typeno = this.searchTypeno
-      params.areaType = this.user.areaType
+      params.areaType = this.user.areaType.value
       params.keyField = this.searchItem.keyField
       if (this.paginationInfo) {
         // 如果分页信息不为空，则设置表格当前第几页，每页条数，并设置查询分页参数

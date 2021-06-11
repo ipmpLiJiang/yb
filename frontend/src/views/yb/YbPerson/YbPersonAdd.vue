@@ -78,7 +78,6 @@
         <a-input
           placeholder="请输入联系电话"
           v-decorator="['tel', {rules: [
-          { required: true, message: '联系电话不能为空' } ,
           { pattern: '^0?(13[0-9]|15[012356789]|17[013678]|18[0-9]|14[57])[0-9]{8}$', message: '请输入正确的手机号'}
           ] }]"
         />

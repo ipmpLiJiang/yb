@@ -62,25 +62,26 @@ export default {
   },
   methods: {
     findComArea () {
-      // this.areaTypeDataSource = []
-      this.$get('comConfiguremanage/getAreaList').then((r) => {
-        if (r.data.length > 0) {
-          let areaType = this.$store.state.account.user.areaType
-          for (var i in r.data) {
-            if (areaType === r.data[i].areaType) {
-              this.hdAreaName = r.data[i].areaName
-              break
-            }
-            // var at = {text: r.data[i].areaName, value: r.data[i].areaType}
-            // this.areaTypeDataSource.push(at)
-          }
-          // this.hdAreaType = this.$store.state.account.user.areaType
-        } else {
-          this.hdAreaName = '本部'
-        }
-      }).catch(() => {
-        this.hdAreaName = '本部'
-      })
+      // // this.areaTypeDataSource = []
+      // this.$get('comConfiguremanage/getAreaList').then((r) => {
+      //   if (r.data.length > 0) {
+      //     let areaType = this.$store.state.account.user.areaType
+      //     for (var i in r.data) {
+      //       if (areaType === r.data[i].areaType) {
+      //         this.hdAreaName = r.data[i].areaName
+      //         break
+      //       }
+      //       // var at = {text: r.data[i].areaName, value: r.data[i].areaType}
+      //       // this.areaTypeDataSource.push(at)
+      //     }
+      //     // this.hdAreaType = this.$store.state.account.user.areaType
+      //   } else {
+      //     this.hdAreaName = '本部'
+      //   }
+      // }).catch(() => {
+      //   this.hdAreaName = '本部'
+      // })
+      this.hdAreaName = this.$store.state.account.user.areaType.text
       // this.hdAreaName = this.$store.state.account.user.areaType === 0 ? '本院' : '西院'
       // this.hdAreaType = this.$store.state.account.user.areaType
     },

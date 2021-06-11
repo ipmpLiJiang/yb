@@ -8,7 +8,7 @@
     <a-spin tip="Loading..." :spinning="spinning" :delay="delayTime">
       <div>
         <a-row justify="center" type="flex">
-          <a-col :span=4>
+          <a-col :span=5>
             <a-form-item
               :label="applyDateText"
               v-bind="formItemLayout1"
@@ -230,7 +230,7 @@ export default {
       const formData = new FormData()
       formData.append('file', file)
       formData.append('applyDateStr', this.searchApplyDate)
-      formData.append('areaType', this.user.areaType)
+      formData.append('areaType', this.user.areaType.value)
       this.spinning = true
       this.$upload('ybAppealResultDeductimplement/importDeductimplement', formData).then((r) => {
         // r.data.data.message

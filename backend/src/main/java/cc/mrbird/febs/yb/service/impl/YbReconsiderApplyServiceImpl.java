@@ -527,6 +527,13 @@ public class YbReconsiderApplyServiceImpl extends ServiceImpl<YbReconsiderApplyM
         return ssm + this.areaMsg(areaType);
     }
 
+    @Override
+    public String getSendNoticeMessage(String title, Integer areaType) {
+        String wangz = febsProperties.getSmsWebsite();
+        String ssm = "医保办发布了新通知《"+title+"》，请登陆医保管理系统及时查看并处理。" + wangz;
+        return ssm + this.areaMsg(areaType);
+    }
+
     public String areaMsg(Integer areaType) {
         String areaName = iComConfiguremanageService.getConfigAreaName(areaType);
         return "院区请选择“" + areaName + "”。（" + areaName + "）";

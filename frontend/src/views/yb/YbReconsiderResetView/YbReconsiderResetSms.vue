@@ -167,7 +167,7 @@ export default {
     fetch (params = {}) {
       this.loading = true
       params.applyDateStr = this.applyDateStr
-      params.areaType = this.user.areaType
+      params.areaType = this.user.areaType.value
       params.sendType = 5
       params.comments = this.searchText
       if (this.checked) {

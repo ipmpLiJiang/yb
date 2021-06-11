@@ -19,7 +19,7 @@
               />
             </a-form-item>
           </a-col>
-          <a-col :span=4 v-show="isJx">
+          <a-col :span=5 v-show="isJx">
             <a-form-item
               label="至"
               v-bind="formItemLayout"

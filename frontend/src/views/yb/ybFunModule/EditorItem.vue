@@ -2,7 +2,7 @@
   <div class="editor">
     <div ref="toolbar" class="toolbar">
     </div>
-    <div ref="editor" class="text">
+    <div ref="editor" class="editorContent">
     </div>
   </div>
 </template>
@@ -52,6 +52,29 @@ export default {
     this.editor.txt.html(this.value)
   },
   methods: {
+    setMenus () {
+      this.editor.customConfig.menus = [
+        'head', // 标题
+        'bold', // 粗体
+        'fontSize', // 字号
+        'fontName', // 字体
+        'italic', // 斜体
+        'underline', // 下划线
+        'strikeThrough', // 删除线
+        'foreColor', // 文字颜色
+        'backColor', // 背景颜色
+        'link', // 插入链接
+        'list', // 列表
+        'justify', // 对齐方式
+        'quote', // 引用
+        // 'emoticon', // 表情
+        'image', // 插入图片
+        'table', // 表格
+        'undo', // 撤销
+        'redo', // 重复
+        'fullscreen' // 全屏
+      ]
+    },
     seteditor () {
       this.editor = new E(this.$refs.toolbar, this.$refs.editor)
       // 开启debug模式
@@ -62,21 +85,21 @@ export default {
       this.editor.customConfig.pasteIgnoreImg = true
       // 使用 base64 保存图片
       // this.editor.customConfig.uploadImgShowBase64 = true
-      this.editor.customConfig.uploadImgServer = 'comFile/weUploadFile'// 填写配置服务器端地址
-      this.editor.customConfig.uploadImgHeaders = { }// 自定义 header
+      this.editor.customConfig.uploadImgServer = this.$baseURL + 'comFile/weUploadFile'// 填写配置服务器端地址
+      this.editor.customConfig.uploadImgHeaders = {Authentication: this.$store.state.account.token}// 自定义 header
       this.editor.customConfig.uploadFileName = 'file' // 后端接受上传文件的参数名
+      this.editor.customConfig.uploadImgAccept = ['jpg', 'jpeg', 'png']
       this.editor.customConfig.uploadImgParams = {
         // 如果版本 <=v3.1.0 ，属性值会自动进行 encode ，此处无需 encode
         // 如果版本 >=v3.1.1 ，属性值不会自动 encode ，如有需要自己手动 encode
-        from: 'editor'
       }
-      this.editor.customConfig.uploadImgMaxSize = 10 * 1024 * 1024 // 将图片大小限制为 10M
-      this.editor.customConfig.uploadImgMaxLength = 6 // 限制一次最多上传 6 张图片
+      this.editor.customConfig.uploadImgMaxSize = 0.3 * 1024 * 1024 // 将图片大小限制为 10M
+      this.editor.customConfig.uploadImgMaxLength = 1 // 限制一次最多上传 6 张图片
       this.editor.customConfig.uploadImgTimeout = 3 * 60 * 1000 // 设置超时时间
       // 自定义 onchange 触发的延迟时间，默认为 200 ms
       // this.editor.customConfig.onchangeTimeout = 1000 // 单位 ms
       // 隐藏�网络图片�tab
-      // this.editor.customConfig.showLinkImg = false
+      this.editor.customConfig.showLinkImg = false
 
       this.editor.customConfig.uploadImgHooks = {
         fail: (xhr, editor, result) => {
@@ -98,58 +121,35 @@ export default {
           // insertImg()为插入图片的函数
           // 循环插入图片
           // for (let i = 0; i < 1; i++) {
-          if (result.code === 200) {
-            let url = result.data.image_url
-            JSON.stringify(url)
-            insertImg(url)
-          } else {
-            this.$Message.error(result.msg)
-          }
+          // let url = result.data.image_url
+          let url = result.data[0]
+          console.log(url)
+          insertImg(url)
           // }
         }
       }
-      this.editor.customConfig.customUploadImg = function (files, insert) {
-        var data = new FormData()
-        for (var i = 0; i < files.length; i++) {
-          data.append('files', files[i])
-        }
-        this.$post('comFile/weUploadFiles', {
-          ...data
-        }).then((r) => {
-          if (r.error === 0) {
-            for (var j = 0; j < r.data.length; j++) {
-              insert(r.data[j])
-            }
-          } else {
-            alert('111')
-          }
-        }).catch(() => {
-          this.$message.error('图片上传失败.')
-        })
-      }
+      // this.editor.customConfig.customUploadImg = function (files, insert) {
+      //   var data = new FormData()
+      //   // for (var i = 0; i < files.length; i++) {
+      //   //   data.append('files', files[i])
+      //   // }
+      //   data.append('file', files[0])
+      //   this.$post('comFile/weUploadFile', {
+      //     ...data
+      //   }).then((r) => {
+      //     if (r.error === 0) {
+      //       for (var j = 0; j < r.data.length; j++) {
+      //         insert(r.data[j])
+      //       }
+      //     } else {
+      //       alert('111')
+      //     }
+      //   }).catch(() => {
+      //     this.$message.error('图片上传失败.')
+      //   })
+      // }
       // 配置菜单
-      this.editor.customConfig.menus = [
-        'head', // 标题
-        'bold', // 粗体
-        'fontSize', // 字号
-        'fontName', // 字体
-        'italic', // 斜体
-        'underline', // 下划线
-        'strikeThrough', // 删除线
-        'foreColor', // 文字颜色
-        'backColor', // 背景颜色
-        'link', // 插入链接
-        'list', // 列表
-        'justify', // 对齐方式
-        'quote', // 引用
-        // 'emoticon', // 表情
-        // 'image', // 插入图片
-        'table', // 表格
-        'undo', // 撤销
-        'redo', // 重复
-        'fullscreen' // 全屏
-      ]
-
+      this.setMenus()
       this.editor.customConfig.onchange = (html) => {
         this.info_ = html // 绑定当前逐渐地值
         this.$emit('change', this.info_) // 将内容同步到父组件中
@@ -170,13 +170,13 @@ export default {
   .toolbar {
     border: 1px solid #ccc;
   }
-  .text {
-    border: 1px solid #ccc;
-    min-height: 500px;
-    max-height: 500px;
+  .editorContent {
+    height:350px;
+    max-height:380px;
+    border:1px solid #ccc;
     word-wrap: break-all;
   }
-  .text p {
+  .editorContent p {
     overflow: hidden;
     text-overflow: ellipsis;
     word-break: break-all;

@@ -241,7 +241,7 @@ export default {
       formData.deptId = ybAppealManageLook.readyDeptCode
       formData.applyDateStr = ybAppealManageLook.applyDateStr
       formData.sourceType = ybAppealManageLook.sourceType
-      formData.areaType = this.user.areaType
+      formData.areaType = this.user.areaType.value
       this.$post('comFile/listImgComFile', {
         ...formData
       }).then((r) => {

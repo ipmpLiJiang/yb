@@ -149,7 +149,7 @@ export default {
           orderNumber: this.ybReconsiderVerifyView.orderNumber,
           orderNum: this.ybReconsiderVerifyView.orderNum,
           typeno: this.ybReconsiderVerifyView.typeno,
-          areaType: this.user.areaType
+          areaType: this.user.areaType.value
         }]
 
         let jsonString = JSON.stringify(arrData)

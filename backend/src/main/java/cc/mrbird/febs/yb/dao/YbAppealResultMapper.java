@@ -36,6 +36,8 @@ public interface YbAppealResultMapper extends BaseMapper<YbAppealResult> {
 
     List<YbAppealResult> findAppealResulDataHandle(@Param("applyDateStr") String applyDateStr,@Param("hvId") String hvId,@Param("areaType") Integer areaType);
 
+    List<YbAppealResult> findAppealResulRelateGroup(@Param("applyDateStr") String applyDateStr,@Param("areaType") Integer areaType);
+
     void updateAppealResulResetData(@Param("applyDateStr") String applyDateStr,@Param("resetPersonId") Long resetPersonId,@Param("resetPersonName") String resetPersonName,@Param("resetDate") Date resetDate);
 
     int updateAppealResultCancelData(@Param("resultList") List<YbAppealResult> resultList);

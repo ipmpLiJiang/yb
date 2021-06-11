@@ -22,4 +22,6 @@ public interface YbHandleVerifyDataMapper extends BaseMapper<YbHandleVerifyData>
     IPage<YbHandleVerifyData> findYbHandleVerifyData(Page page, @Param("ybHandleVerifyData") YbHandleVerifyData ybHandleVerifyData);
 
     List<YbHandleVerifyData> findHandleVerifyDataList (@Param("pid") String pid,@Param("dataType") Integer dataType,@Param("state") Integer state);
+
+    List<YbHandleVerifyData> findHandleVerifyDataGroupRelateList(@Param("pid") String pid);
 }
