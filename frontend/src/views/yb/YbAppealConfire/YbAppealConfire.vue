@@ -102,7 +102,7 @@
         :dataSource="dataSource"
         :pagination="pagination"
         :loading="loading"
-        :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
+        :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange,getCheckboxProps: getCheckboxProps}"
         @change="handleTableChange"
         :bordered="bordered"
         :scroll="{ x: 900 }"
@@ -124,15 +124,17 @@
         >
           <a-icon
             v-hasPermission="['ybAppealConfire:update']"
+            v-show="record.state==1?true:false"
             type="setting"
             theme="twoTone"
             twoToneColor="#4a9ff5"
             @click="edit(record)"
             title="编辑"
           ></a-icon>
-          <a-divider type="vertical" />
+          <a-divider type="vertical" v-show="record.state==1?true:false" />
           <a-icon
             v-hasPermission="['ybAppealConfire:delete']"
+            v-show="record.state==1?true:false"
             type="delete"
             theme="twoTone"
             twoToneColor="#4a9ff5"
@@ -275,6 +277,13 @@ export default {
     },
     onSelectChange (selectedRowKeys) {
       this.selectedRowKeys = selectedRowKeys
+    },
+    getCheckboxProps (record) {
+      return {
+        props: {
+          disabled: record.state === 2
+        }
+      }
     },
     toggleAdvanced () {
       this.advanced = !this.advanced

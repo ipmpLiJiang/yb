@@ -100,5 +100,5 @@ public interface UserService extends IService<User> {
 
     List<User> findUserList(User user);
 
-    void saveConfUser(String[] userName,boolean isSaveOrDel) throws Exception;
+    void saveConfUser(String[] userName,boolean isLly,boolean isSaveOrDel) throws Exception;
 }

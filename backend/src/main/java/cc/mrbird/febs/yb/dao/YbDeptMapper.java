@@ -6,6 +6,8 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.List;
+
 /**
  * <p>
  *  Mapper 接口
@@ -17,4 +19,6 @@ import org.apache.ibatis.annotations.Param;
 public interface YbDeptMapper extends BaseMapper<YbDept> {
         void updateYbDept(YbDept ybDept);
         IPage<YbDept> findYbDept(Page page, @Param("ybDept") YbDept ybDept);
+
+        List<YbDept> findDeptAppealConfireList(@Param("doctorCode") String doctorCode,@Param("comments") String comments, @Param("areaType") Integer areaType);
         }

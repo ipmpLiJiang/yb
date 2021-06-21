@@ -13,6 +13,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -93,6 +94,16 @@ public class YbDeptServiceImpl extends ServiceImpl<YbDeptMapper, YbDept> impleme
                 queryWrapper.eq(YbDept::getSpellCode, ybDept.getSpellCode());
             }
             list = this.list(queryWrapper);
+        }
+        return list;
+    }
+
+    @Override
+    public List<YbDept> findDeptAppealConfireList(String doctorCode,String comments, Integer areaType) {
+        List<YbDept> list = this.baseMapper.findDeptAppealConfireList(doctorCode,comments, areaType);
+        int count = 15;
+        if (list.size() >= count) {
+            list = list.subList(0, count);
         }
         return list;
     }

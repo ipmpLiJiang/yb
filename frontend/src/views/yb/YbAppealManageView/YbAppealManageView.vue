@@ -46,8 +46,9 @@
               @confirm="batchAccept"
               okText="确定"
               cancelText="取消"
+              :disabled="!hasSelected"
             >
-              <a-button type="primary" style="margin-right: 15px">批量接受</a-button>
+              <a-button type="primary" :disabled="!hasSelected" style="margin-right: 15px">批量接受</a-button>
             </a-popconfirm>
           </a-col>
           <a-col :span=3 >
@@ -76,6 +77,7 @@
               :searchItem='searchItem'
               :searchTypeno='searchTypeno'
               @look="look"
+              @acceptSelectedRow="acceptSelectedRow"
               @reject="reject"
               @onHistoryLook="onHistoryLook"
               @setTypeno="setTypeno"
@@ -226,6 +228,8 @@ export default {
       ],
       tableSelectKey: '1',
       searchTypeno: 1,
+      selectedRowKeys: [],
+      hasSelected: false,
       user: this.$store.state.account.user,
       selectTypenoDataSource: [{text: '全部', value: 0}, {text: '版本一', value: 1}, {text: '版本二', value: 2}, {text: '人工复议', value: 3}]
     }
@@ -239,6 +243,9 @@ export default {
     formatDate () {
       let datemonth = moment().subtract(1, 'months').format('YYYY-MM')
       return datemonth
+    },
+    acceptSelectedRow (isDisabled) {
+      this.hasSelected = isDisabled
     },
     monthChange (date, dateString) {
       this.searchApplyDate = dateString

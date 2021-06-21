@@ -6,6 +6,8 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.List;
+
 /**
  * <p>
  *  Mapper 接口
@@ -20,9 +22,11 @@ public interface YbAppealConfireMapper extends BaseMapper<YbAppealConfire> {
 
         IPage<YbAppealConfire>  findAppealConfireView(Page page, @Param("doctorContent") String doctorContent, @Param("adminType") Integer adminType,@Param("areaType") Integer areaType, @Param("deptContent") String deptContent);
 
-        IPage<YbAppealConfire>  findAppealConfireUserView(Page page, @Param("doctorContent") String doctorContent, @Param("adminType") Integer adminType,@Param("areaType") Integer areaType, @Param("deptContent") String deptContent, @Param("uid") Long uid);
+        IPage<YbAppealConfire>  findAppealConfireUserView(Page page, @Param("doctorContent") String doctorContent, @Param("adminType") Integer adminType,@Param("areaType") Integer areaType, @Param("deptContent") String deptContent, @Param("uid") Long uid, @Param("doctorCode") String doctorCode);
 
         int  findAppealConfireCount(@Param("doctorContent") String doctorContent, @Param("adminType") Integer adminType,@Param("areaType") Integer areaType, @Param("deptContent") String deptContent);
 
-        int  findAppealConfireUserCount(@Param("doctorContent") String doctorContent, @Param("adminType") Integer adminType,@Param("areaType") Integer areaType, @Param("deptContent") String deptContent, @Param("uid") Long uid);
-        }
+        int  findAppealConfireUserCount(@Param("doctorContent") String doctorContent, @Param("adminType") Integer adminType,@Param("areaType") Integer areaType, @Param("deptContent") String deptContent, @Param("uid") Long uid, @Param("doctorCode") String doctorCode);
+
+        List<YbAppealConfire> findAppealConfireLlyList(@Param("ybAppealConfire") YbAppealConfire ybAppealConfire);
+}

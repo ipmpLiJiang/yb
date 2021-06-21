@@ -72,7 +72,7 @@ public class YbAppealConfireController extends BaseController {
     @RequiresPermissions("ybAppealConfire:userView")
     public Map<String, Object> findUserList(QueryRequest request, String doctorContent, Integer adminType, Integer areaType, String deptContent) {
         User currentUser = FebsUtil.getCurrentUser();
-        return getDataTable(this.iYbAppealConfireService.findAppealConfireUserView(request, doctorContent, adminType, areaType, deptContent, currentUser.getUserId()));
+        return getDataTable(this.iYbAppealConfireService.findAppealConfireUserView(request, doctorContent, adminType, areaType, deptContent, currentUser));
     }
 
     /**
@@ -174,6 +174,7 @@ public class YbAppealConfireController extends BaseController {
                 update.setId(appealConfireJson.getId());
                 update.setDoctorCode(appealConfire.getDoctorCode());
                 update.setAdminType(appealConfireJson.getAdminType());
+                update.setAreaType(appealConfire.getAreaType());
                 update.setModifyTime(new Date());
                 update.setModifyUserId(currentUser.getUserId());
                 for (YbAppealConfireDataJson item : appealConfireJson.getChild()) {
@@ -204,7 +205,6 @@ public class YbAppealConfireController extends BaseController {
                     } else {
                         message = iComConfiguremanageService.getConfigAreaName(appealConfireJson.getAreaType());
                         message = message + " " +createDataList.get(0).getDeptId() + "-" + createDataList.get(0).getDeptName() + " 科室已存在!";
-
                     }
                 }
             } else {

@@ -60,7 +60,8 @@
           >
             <input-select
               ref="inputSelectDept"
-              :type=1
+              :type=3
+              :areaType="this.ybAppealConfire.areaType"
               @selectChange=selectDeptChange
             >
             </input-select>

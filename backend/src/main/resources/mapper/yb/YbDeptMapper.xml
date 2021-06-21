@@ -62,5 +62,16 @@
         </if>
 </select>
 
+    <select id="findDeptAppealConfireList" resultType="cc.mrbird.febs.yb.entity.YbDept">
+        select * from yb_dept where deptId in(
+            select deptId from yb_appeal_confire_data where pid  in (
+                select id from yb_appeal_confire where doctorCode = #{ doctorCode} and areaType = #{ areaType}
+            )
+        ) and IS_DELETEMARK = 1
+        <if test="comments != null and comments != ''">
+            and (deptName like concat('%', #{ comments} ,'%') or spellCode like concat('%', #{ comments} ,'%'))
+        </if>
+    </select>
+
 
 </mapper>

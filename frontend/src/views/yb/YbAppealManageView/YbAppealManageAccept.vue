@@ -8,7 +8,7 @@
           :dataSource="dataSource"
           :pagination="pagination"
           :loading="loading"
-          :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
+          :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange, getCheckboxProps: getCheckboxProps}"
           @change="handleTableChange"
           :bordered="bordered"
           :customRow="handleClickRow"
@@ -85,6 +85,7 @@ export default {
       },
       loading: false,
       bordered: true,
+      isDisabled: false,
       ybAppealManage: {},
       user: this.$store.state.account.user,
       tableFormat1: 'YYYY-MM-DD HH:mm:ss',
@@ -231,11 +232,14 @@ export default {
       return {
         on: {
           click: () => {
-            let target = this.selectedRowKeys.filter(key => key === record.id)[0]
-            if (target === undefined) {
-              this.selectedRowKeys.push(record.id)
-            } else {
-              this.selectedRowKeys.splice(this.selectedRowKeys.indexOf(record.id), 1)
+            if (record.isEnd !== 1) {
+              let target = this.selectedRowKeys.filter(key => key === record.id)[0]
+              if (target === undefined) {
+                this.selectedRowKeys.push(record.id)
+              } else {
+                this.selectedRowKeys.splice(this.selectedRowKeys.indexOf(record.id), 1)
+              }
+              this.emitAcceptSelectedRow(this.selectedRowKeys)
             }
           }
         }
@@ -243,6 +247,10 @@ export default {
     },
     onSelectChange (selectedRowKeys) {
       this.selectedRowKeys = selectedRowKeys
+      this.emitAcceptSelectedRow(this.selectedRowKeys)
+    },
+    emitAcceptSelectedRow (selectedRowKeys) {
+      this.$emit('acceptSelectedRow', selectedRowKeys.length > 0)
     },
     look (record, index) {
       record.rowNo = this.rowNo(index)
@@ -351,6 +359,13 @@ export default {
         }
       })
     },
+    getCheckboxProps (record) {
+      return {
+        props: {
+          disabled: record.isEnd === 1
+        }
+      }
+    },
     search () {
       let { sortedInfo } = this
       let sortField, sortOrder
@@ -423,6 +438,7 @@ export default {
         this.pagination = pagination
       })
       this.selectedRowKeys = []
+      this.emitAcceptSelectedRow(this.selectedRowKeys)
     }
   }
 }

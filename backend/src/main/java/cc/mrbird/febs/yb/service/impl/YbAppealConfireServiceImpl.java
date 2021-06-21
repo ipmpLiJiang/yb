@@ -1,7 +1,9 @@
 package cc.mrbird.febs.yb.service.impl;
 
 import cc.mrbird.febs.com.entity.ComConfiguremanage;
+import cc.mrbird.febs.com.entity.ComType;
 import cc.mrbird.febs.com.service.IComConfiguremanageService;
+import cc.mrbird.febs.com.service.IComTypeService;
 import cc.mrbird.febs.common.domain.QueryRequest;
 import cc.mrbird.febs.common.utils.SortUtil;
 import cc.mrbird.febs.system.domain.User;
@@ -48,6 +50,8 @@ public class YbAppealConfireServiceImpl extends ServiceImpl<YbAppealConfireMappe
     public IYbAppealConfireDataService iYbAppealConfireDataService;
     @Autowired
     UserService userService;
+    @Autowired
+    IComTypeService iComTypeService;
 
     @Override
     public IPage<YbAppealConfire> findYbAppealConfires(QueryRequest request, YbAppealConfire ybAppealConfire) {
@@ -89,14 +93,24 @@ public class YbAppealConfireServiceImpl extends ServiceImpl<YbAppealConfireMappe
     }
 
     @Override
-    public IPage<YbAppealConfire> findAppealConfireUserView(QueryRequest request, String doctorContent, Integer adminType, Integer areaType, String deptContent, Long uid) {
+    public IPage<YbAppealConfire> findAppealConfireUserView(QueryRequest request, String doctorContent, Integer adminType, Integer areaType, String deptContent, User currentUser) {
         try {
             Page<YbAppealConfire> page = new Page<>();
-            int count = this.baseMapper.findAppealConfireUserCount(doctorContent, adminType, areaType, deptContent, uid);
+//            YbAppealConfire query = new YbAppealConfire();
+//            query.setDoctorCode(currentUser.getUsername());
+//            query.setAreaType(areaType);
+//            query.setComments("联络员");
+//            List<YbAppealConfire> llYList = this.baseMapper.findAppealConfireLlyList(query);
+//            String doctorCode = null;
+//            if(llYList.size() > 0){
+//                doctorCode = currentUser.getUsername();
+//            }
+            String doctorCode = currentUser.getUsername();
+            int count = this.baseMapper.findAppealConfireUserCount(doctorContent, adminType, areaType, deptContent, currentUser.getUserId(),doctorCode);
             if (count > 0) {
                 page.setSearchCount(false);
                 SortUtil.handlePageSort(request, page, false);//true 是属性  false是数据库字段可两个
-                IPage<YbAppealConfire> pg = this.baseMapper.findAppealConfireUserView(page, doctorContent, adminType, areaType, deptContent, uid);
+                IPage<YbAppealConfire> pg = this.baseMapper.findAppealConfireUserView(page, doctorContent, adminType, areaType, deptContent, currentUser.getUserId(),doctorCode);
                 pg.setTotal(count);
                 return pg;
             }
@@ -146,7 +160,16 @@ public class YbAppealConfireServiceImpl extends ServiceImpl<YbAppealConfireMappe
         if (ybAppealConfire.getDoctorCode() != null) {
             String[] users = new String[1];
             users[0] = ybAppealConfire.getDoctorCode();
-            userService.saveConfUser(users, true);
+
+            LambdaQueryWrapper<ComType> wrapper = new LambdaQueryWrapper<>();
+            wrapper.eq(ComType::getId,ybAppealConfire.getAdminType());
+            wrapper.like(ComType::getCtName,"联络员");
+            List<ComType> typeList= iComTypeService.getBaseMapper().selectList(wrapper);
+            boolean isPersonLly = typeList.size() > 0 ? true : false;
+            if(!isPersonLly){
+                isPersonLly=  this.isLly(ybAppealConfire.getDoctorCode(),null);
+            }
+            userService.saveConfUser(users, isPersonLly,true);
         }
     }
 
@@ -158,46 +181,87 @@ public class YbAppealConfireServiceImpl extends ServiceImpl<YbAppealConfireMappe
         if (ybAppealConfire.getDoctorCode() != null) {
             String[] users = new String[1];
             users[0] = ybAppealConfire.getDoctorCode();
-            userService.saveConfUser(users, true);
+
+            LambdaQueryWrapper<ComType> wrapper = new LambdaQueryWrapper<>();
+            wrapper.eq(ComType::getId,ybAppealConfire.getAdminType());
+            wrapper.like(ComType::getCtName,"联络员");
+            List<ComType> typeList= iComTypeService.getBaseMapper().selectList(wrapper);
+            boolean  isPersonLly = typeList.size() > 0 ? true : false;
+
+            if(!isPersonLly){
+                isPersonLly=  this.isLly(ybAppealConfire.getDoctorCode(),ybAppealConfire.getId());
+            }
+            userService.saveConfUser(users,isPersonLly, true);
         }
+    }
+
+    private boolean isLly(String docCode,String id){
+        YbAppealConfire query = new YbAppealConfire();
+        query.setDoctorCode(docCode);
+        if(id != null){
+            query.setId(id);
+        }
+        // 查询未添加条件 areaType 医生有可能在其他院区是联络员
+        query.setComments("联络员");
+        List<YbAppealConfire> llYList = this.baseMapper.findAppealConfireLlyList(query);
+        return  llYList.size() > 0 ? true : false;
     }
 
     @Override
     @Transactional
     public void deleteYbAppealConfires(String[] Ids) throws Exception {
+        String[] idsNew = new String[1];
+        idsNew[0] = Ids[0];
         LambdaQueryWrapper<YbAppealConfire> wrapper = new LambdaQueryWrapper<>();
-        wrapper.in(YbAppealConfire::getId, Ids);
+        wrapper.in(YbAppealConfire::getId, idsNew);
         List<YbAppealConfire> appealConfireList = this.baseMapper.selectList(wrapper);
         if (appealConfireList.size() > 0) {
-            List<String> list = Arrays.asList(Ids);
-            this.iYbAppealConfireDataService.deleteAppealConfireDataPids(Ids);
+            List<String> list = Arrays.asList(idsNew);
+            this.iYbAppealConfireDataService.deleteAppealConfireDataPids(idsNew);
             this.baseMapper.deleteBatchIds(list);
-            List<String> userList = new ArrayList<>();
-            for (YbAppealConfire ybAppealConfire : appealConfireList) {
-                if (ybAppealConfire.getDoctorCode() != null) {
-                    userList.add(ybAppealConfire.getDoctorCode());
-                }
-            }
-            if (userList.size() > 0) {
+            YbAppealConfire appealConfire = appealConfireList.get(0);
+            if (appealConfire.getDoctorCode() != null) {
                 wrapper = new LambdaQueryWrapper<>();
-                wrapper.in(YbAppealConfire::getDoctorCode, userList);
+                wrapper.eq(YbAppealConfire::getDoctorCode, appealConfire.getDoctorCode());
                 wrapper.ne(YbAppealConfire::getAreaType, appealConfireList.get(0).getAreaType());
                 appealConfireList = this.baseMapper.selectList(wrapper);
-                if (appealConfireList.size() > 0) {
-                    for (YbAppealConfire item : appealConfireList) {
-                        userList.remove(item.getDoctorCode());
-                    }
-                }
-                if(userList.size()>0) {
-                    String[] users = new String[userList.size()];
-                    int i = 0;
-                    for (String item : userList) {
-                        users[i] = item;
-                        i++;
-                    }
-                    userService.saveConfUser(users, false);
+                if(appealConfireList.size() > 0) {
+                    boolean  isPersonLly=  this.isLly(appealConfire.getDoctorCode(),Ids[0]);
+                    String[] users = new String[1];
+                    users[0] = appealConfire.getDoctorCode();
+                    userService.saveConfUser(users,isPersonLly, true);
+                }else{
+                    String[] users = new String[1];
+                    users[0] = appealConfire.getDoctorCode();
+                    userService.saveConfUser(users,true, false);
                 }
             }
+//            List<String> userList = new ArrayList<>();
+//            for (YbAppealConfire ybAppealConfire : appealConfireList) {
+//                if (ybAppealConfire.getDoctorCode() != null) {
+//                    userList.add(ybAppealConfire.getDoctorCode());
+//                }
+//            }
+//            if (userList.size() > 0) {
+//                wrapper = new LambdaQueryWrapper<>();
+//                wrapper.in(YbAppealConfire::getDoctorCode, userList);
+//                wrapper.ne(YbAppealConfire::getAreaType, appealConfireList.get(0).getAreaType());
+//                appealConfireList = this.baseMapper.selectList(wrapper);
+//                if (appealConfireList.size() > 0) {
+//                    for (YbAppealConfire item : appealConfireList) {
+//                        userList.remove(item.getDoctorCode());
+//                    }
+//                }
+//                if(userList.size()>0) {
+//                    String[] users = new String[userList.size()];
+//                    int i = 0;
+//                    for (String item : userList) {
+//                        users[i] = item;
+//                        i++;
+//                    }
+//                    userService.saveConfUser(users,true, false);
+//                }
+//            }
         }
 
     }

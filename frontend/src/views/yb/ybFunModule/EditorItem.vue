@@ -123,7 +123,6 @@ export default {
           // for (let i = 0; i < 1; i++) {
           // let url = result.data.image_url
           let url = result.data[0]
-          console.log(url)
           insertImg(url)
           // }
         }

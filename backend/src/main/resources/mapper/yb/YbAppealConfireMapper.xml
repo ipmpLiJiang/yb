@@ -124,6 +124,19 @@
         </if>
     </select>
 
+    <select id="findAppealConfireLlyList" resultType="cc.mrbird.febs.yb.entity.YbAppealConfire" >
+        SELECT * FROM yb_appeal_confire where doctorCode= #{ ybAppealConfire.doctorCode }
+        <if test="ybAppealConfire.id != null">
+            and id !=  #{ ybAppealConfire.id }
+        </if>
+        <if test="ybAppealConfire.areaType != null">
+            and areaType =  #{ ybAppealConfire.areaType }
+        </if>
+        and adminType in (
+            select id from com_type where ctName like concat('%', #{ ybAppealConfire.comments } ,'%')
+        )
+    </select>
+
     <select id="findAppealConfireUserView" resultType="cc.mrbird.febs.yb.entity.YbAppealConfire" >
         SELECT
         p.id,
@@ -131,7 +144,12 @@
         p.doctorName,
         p.adminType,
         p.COMMENTS,
-        p.STATE,
+        <if test="doctorCode == null">
+        1 STATE,
+        </if>
+        <if test="doctorCode != null">
+            case when p.doctorCode = #{ doctorCode } then 2 else 1 end  STATE,
+        </if>
         p.IS_DELETEMARK,
         p.MODIFY_TIME,
         p.CREATE_TIME,
@@ -153,8 +171,11 @@
         <if test="adminType != null">
             and p.adminType = #{ adminType }
         </if>
-        <if test="uid != null">
+        <if test="uid != null and doctorCode == null">
             and p.CREATE_USER_ID = #{ uid }
+        </if>
+        <if test="uid != null and doctorCode != null">
+            and (p.CREATE_USER_ID = #{ uid } or p.doctorCode=#{ doctorCode })
         </if>
         <if test="deptContent != null and deptContent != ''">
             and p.id in(select DISTINCT pid from yb_appeal_confire_data where deptName like concat('%', #{ deptContent } ,'%'))
@@ -171,11 +192,14 @@
         <if test="areaType!= null">
             AND areaType = #{ areaType }
         </if>
-        <if test="uid != null">
-            and CREATE_USER_ID = #{ uid }
-        </if>
         <if test="adminType != null">
             and adminType = #{ adminType }
+        </if>
+        <if test="uid != null and doctorCode == null">
+            and CREATE_USER_ID = #{ uid }
+        </if>
+        <if test="uid != null and doctorCode != null">
+            and (CREATE_USER_ID = #{ uid } or doctorCode=#{ doctorCode })
         </if>
         <if test="doctorContent != null and doctorContent != ''">
             and (doctorCode like concat('%', #{ doctorContent } ,'%') or doctorName like concat('%', #{ doctorContent } ,'%'))

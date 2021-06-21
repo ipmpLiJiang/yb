@@ -15,6 +15,7 @@ import cc.mrbird.febs.system.service.RoleService;
 import cc.mrbird.febs.system.service.UserConfigService;
 import cc.mrbird.febs.system.service.UserRoleService;
 import cc.mrbird.febs.system.service.UserService;
+import cc.mrbird.febs.yb.entity.YbAppealConfire;
 import cc.mrbird.febs.yb.entity.YbAppealManageView;
 import cc.mrbird.febs.yb.entity.YbPerson;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -256,8 +257,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     }
 
     @Override
-    public void saveConfUser(String[] userName,boolean isSaveOrDel) throws Exception {
+    public void saveConfUser(String[] userName,boolean isLly,boolean isSaveOrDel) throws Exception {
         List<Role> roleList = roleService.findRoleConfLists(8);
+
         if(roleList.size() > 0) {
             List<UserRole> userRoleList = this.userRoleService.findUserRoleLists(userName);
             if (userRoleList.size() > 0) {
@@ -273,7 +275,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
                 for(User user : userList) {
                     Long userId = user.getUserId();
                     List<UserRole> queryUserRoleList = userRoleList.stream().filter(s->s.getUserId().equals(userId)).collect(Collectors.toList());
-                    String roleId = this.getRoleId(roleList, queryUserRoleList, isSaveOrDel);
+                    String roleId = this.getRoleId(roleList, queryUserRoleList,isLly, isSaveOrDel);
                     if (roleId != null && !roleId.equals("")) {
                         user.setRoleId(roleId);
                         this.updateUser(user);
@@ -283,42 +285,85 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         }
     }
 
-    private String getRoleId(List<Role> roleList,List<UserRole> userRoleList,boolean isSaveOrDel){
+    private String getRoleId(List<Role> roleList,List<UserRole> userRoleList,boolean isLly,boolean isSaveOrDel){
         String roleId = "";
+        //原本角色
+        List<String> cleanRoleList = this.cleanRole(roleList,userRoleList);
         if(isSaveOrDel) {
             boolean isUpdate = false;
-            List<UserRole> query = new ArrayList<>();
-            for (Role item : roleList) {
-                query = userRoleList.stream().filter(s -> s.getRoleId().equals(item.getRoleId())).collect(Collectors.toList());
-                if (query.size() == 0) {
+            //去除原本角色
+            List<UserRole> cleanUserRoleList = this.cleanUserRole(cleanRoleList,userRoleList);
+            if(!isLly) {
+                // 1 代表 联络员 角色 0 代表非联络员 角色
+                roleList = roleList.stream().filter(s->s.getRemark().equals("0")).collect(Collectors.toList());
+            }
+            //原本无科室角色
+            if(cleanUserRoleList.size() == 0 || cleanUserRoleList.size() != roleList.size()){
+                for (Role role: roleList){
                     if (roleId.equals("")) {
-                        roleId = item.getRoleId().toString();
+                        roleId = role.getRoleId().toString();
                     } else {
-                        roleId += "," + item.getRoleId().toString();
+                        roleId += "," + role.getRoleId().toString();
                     }
-                    isUpdate = true;
+                }
+                for(String role : cleanRoleList) {
+                    roleId += "," + role;
                 }
             }
-            if(isUpdate){
-                for (UserRole userRole: userRoleList){
-                    roleId += "," + userRole.getRoleId();
-                }
-            }
+//            List<UserRole> query = new ArrayList<>();
+//            for (Role item : roleList) {
+//                query = userRoleList.stream().filter(s -> s.getRoleId().equals(item.getRoleId())).collect(Collectors.toList());
+//                if (query.size() == 0) {
+//                    if (roleId.equals("")) {
+//                        roleId = item.getRoleId().toString();
+//                    } else {
+//                        roleId += "," + item.getRoleId().toString();
+//                    }
+//                    isUpdate = true;
+//                }
+//            }
+//            if(isUpdate){
+//                for (UserRole userRole: userRoleList){
+//                    roleId += "," + userRole.getRoleId();
+//                }
+//            }
         }else{
-            List<Role> query = new ArrayList<>();
-            for (UserRole item : userRoleList) {
-                query = roleList.stream().filter(s -> s.getRoleId().equals(item.getRoleId())).collect(Collectors.toList());
-                if (query.size() == 0) {
-                    if (roleId.equals("")) {
-                        roleId = item.getRoleId().toString();
-                    } else {
-                        roleId += "," + item.getRoleId().toString();
-                    }
+            for(String role : cleanRoleList) {
+                if (roleId.equals("")) {
+                    roleId = role;
+                } else {
+                    roleId += "," + role;
                 }
             }
         }
 
         return  roleId;
+    }
+
+    private List<String> cleanRole(List<Role> roleList,List<UserRole> userRoleList){
+        List<Role> query = new ArrayList<>();
+        List<String> roleIdList = new ArrayList<>();
+        for (UserRole item : userRoleList) {
+            query = roleList.stream().filter(s -> s.getRoleId().equals(item.getRoleId())).collect(Collectors.toList());
+            if (query.size() == 0) {
+                roleIdList.add(item.getRoleId().toString());
+            }
+        }
+        return  roleIdList;
+    }
+
+    private List<UserRole> cleanUserRole(List<String> cleanRoleList,List<UserRole> userRoleList){
+        List<UserRole> list = new ArrayList<>();
+        for(UserRole userRole : userRoleList) {
+            String role = userRole.getRoleId().toString();
+            if(role!=null) {
+                long count = cleanRoleList.stream().filter(s -> s.equals(role)).count();
+                if (count == 0) {
+                    list.add(userRole);
+                }
+            }
+        }
+        return list;
     }
 
     @Override

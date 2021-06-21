@@ -21,7 +21,18 @@
     </select>
 
     <select id="findRoleConfList" resultType="cc.mrbird.febs.system.domain.Role">
-        select * from t_role where ROLE_NAME in(select stringField from com_configuremanage where configureType = #{configureType})
+        select
+        r.ROLE_ID,
+        r.ROLE_NAME,
+        c.intField REMARK,
+        r.CREATE_TIME,
+        r.MODIFY_TIME
+        from
+        t_role r
+        INNER join com_configuremanage c on
+        c.stringField = r.ROLE_NAME
+        where
+        c.configureType = #{configureType}
     </select>
 
 </mapper>

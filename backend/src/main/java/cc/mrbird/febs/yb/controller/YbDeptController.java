@@ -65,7 +65,21 @@ public class YbDeptController extends BaseController {
     public FebsResponse findDeptLists(YbDept ybDept) {
         List<YbDept> list = new ArrayList<>();
         try{
-        list = this.iYbDeptService.findDeptList(ybDept,1);
+            list = this.iYbDeptService.findDeptList(ybDept,1);
+
+        } catch (Exception e) {
+            log.error("获取科室失败", e);
+        }
+
+        return new FebsResponse().data(list);
+    }
+
+    @GetMapping("findDeptAppealConfireList")
+    public FebsResponse findAppealConfireLists(String comments, Integer areaType) {
+        List<YbDept> list = new ArrayList<>();
+        try{
+            User currentUser = FebsUtil.getCurrentUser();
+            list = this.iYbDeptService.findDeptAppealConfireList(currentUser.getUsername(),comments,areaType);
 
         } catch (Exception e) {
             log.error("获取科室失败", e);

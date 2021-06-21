@@ -35,4 +35,6 @@ public interface IYbDeptService extends IService<YbDept> {
         boolean createBatchDepts(List<YbDeptHis> list);
 
         List<String> findDeptCodeList(String value);
+
+        List<YbDept> findDeptAppealConfireList(String doctorCode,String comments, Integer areaType);
         }

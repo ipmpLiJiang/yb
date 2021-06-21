@@ -28,6 +28,9 @@ export default {
     type: {
       default: 1
     },
+    areaType: {
+      default: 0
+    },
     dept: {
       default: ''
     }
@@ -70,7 +73,22 @@ export default {
           })
         })
         // body = [{value: '101A', text: '测试科室1'}, {value: '102A', text: '测试科室2'}, {value: '103A', text: '测试科室3'}]
-      } else {
+      }
+      if (this.type === 3) {
+        params = {comments: keyword, areaType: this.areaType}
+        this.$get('ybDept/findDeptAppealConfireList', {
+          ...params
+        }).then((r) => {
+          r.data.data.forEach((item, i) => {
+            body.push({
+              value: item.deptId,
+              text: item.deptId + '-' + item.deptName
+            })
+          })
+        })
+        // body = [{value: '101A', text: '测试科室1'}, {value: '102A', text: '测试科室2'}, {value: '103A', text: '测试科室3'}]
+      }
+      if (this.type === 2) {
         params = {comments: keyword}
         if (this.dept !== '' && this.dept !== null) {
           params.deptName = this.dept

@@ -822,7 +822,7 @@ export default {
     selectChangeKeyVerify (selectedRowKeys) {
       this.selectedPcmRowKeys = selectedRowKeys
     },
-    handleVisibleChange (pcmVisible) {
+    handleVisibleChange () {
       if (this.selectedPcmRowKeys.length > 0) {
         this.pcmVisible = true
       } else {

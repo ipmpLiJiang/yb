@@ -1,5 +1,6 @@
 package cc.mrbird.febs.yb.service;
 
+import cc.mrbird.febs.system.domain.User;
 import cc.mrbird.febs.yb.entity.YbAppealConfire;
 import cc.mrbird.febs.yb.entity.YbAppealConfireData;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -28,7 +29,7 @@ public interface IYbAppealConfireService extends IService<YbAppealConfire> {
 
     IPage<YbAppealConfire> findAppealConfireView(QueryRequest request, String doctorContent, Integer adminType,Integer areaType, String deptContent);
 
-    IPage<YbAppealConfire> findAppealConfireUserView(QueryRequest request, String doctorContent, Integer adminType,Integer areaType, String deptContent, Long uid);
+    IPage<YbAppealConfire> findAppealConfireUserView(QueryRequest request, String doctorContent, Integer adminType,Integer areaType, String deptContent, User currentUser);
 
     void createYbAppealConfire(YbAppealConfire ybAppealConfire);
 
