@@ -1,59 +1,57 @@
-
 <template>
-  <!-- 已审核 表格区域 -->
-  <a-table
-    ref="TableInfo"
-    :columns="columns"
-    :rowKey="record => record.id"
-    :dataSource="dataSource"
-    :pagination="pagination"
-    :loading="loading"
-    :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
-    @change="handleTableChange"
-    :bordered="bordered"
-    :scroll="{ x: 900 }"
-  >
-    <template slot="operationDeductReason" slot-scope="text, record, index">
-      <span :title="record.deductReason">{{record.deductReason}}</span>
-    </template>
-    <template
-      slot="remark"
-      slot-scope="text, record"
-    >
-      <a-popover placement="topLeft">
-        <template slot="content">
-          <div style="max-width: 200px">{{text}}</div>
+  <div id="tab" style="margin: 0px!important">
+        <!-- 接受申请 表格区域 -->
+        <a-table
+          ref="TableInfo"
+          :columns="columns"
+          :rowKey="record => record.id"
+          :dataSource="dataSource"
+          :pagination="pagination"
+          :loading="loading"
+          :rowSelection="{type: 'radio', selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
+          @change="handleTableChange"
+          :bordered="bordered"
+          :customRow="handleClickRow"
+          :scroll="{ x: 900 }"
+        >
+        <template slot="operationDeductReason" slot-scope="text, record, index">
+          <span :title="record.deductReason">{{record.deductReason}}</span>
         </template>
-        <p style="width: 200px;margin-bottom: 0">{{text}}</p>
-      </a-popover>
-    </template>
-    <template
-      slot="operation"
-      slot-scope="text, record"
-    >
-      <a-popconfirm
-      title="确定发送？"
-      @confirm="() => send(record.id)"
-      >
-      <a>发送</a>
-      </a-popconfirm>
-    </template>
-  </a-table>
+          <template
+            slot="operation"
+            slot-scope="text, record, index"
+          >
+            <div class="editable-row-operations">
+              <span>
+                <a
+                  @click.stop="() => look(record,index)"
+                >查看详情</a>
+                <a-divider type="vertical" />
+                <a
+                  @click.stop="() => change(record,index)"
+                >变更</a>
+              </span>
+            </div>
+          </template>
+        </a-table>
+  </div>
 </template>
 
 <script>
 import moment from 'moment'
 export default {
-  name: 'YbHandleVerifyDataSend',
+  name: 'YbAppealManageChangeExpire',
   props: {
     applyDate: {
       default: ''
     },
-    searchText: {
-      default: ''
+    searchItem: {
+      default () {
+        return {}
+      }
     },
-    searchDataType: {
-      default: 0
+    searchTypeno: {
+      default: 1
     }
   },
   data () {
@@ -76,10 +74,12 @@ export default {
       },
       queryParams: {
       },
-      user: this.$store.state.account.user,
       loading: false,
       bordered: true,
-      ybReconsiderVerify: {}
+      ybAppealManage: {},
+      user: this.$store.state.account.user,
+      tableFormat1: 'YYYY-MM-DD HH:mm:ss',
+      tableFormat: 'YYYY-MM-DD'
     }
   },
   computed: {
@@ -109,6 +109,11 @@ export default {
         width: 170
       },
       {
+        title: '数量',
+        dataIndex: 'num',
+        width: 70
+      },
+      {
         title: '医保内金额',
         dataIndex: 'medicalPrice',
         width: 105
@@ -132,51 +137,91 @@ export default {
       {
         title: '费用日期',
         dataIndex: 'costDateStr',
-        width: 135
-      },
-      {
-        title: '科室名称',
-        dataIndex: 'deptName',
-        width: 100
-      },
-      {
-        title: '医生姓名',
-        dataIndex: 'doctorName',
-        width: 100
+        customRender: (text, row, index) => {
+          if (text !== '' && text !== null) {
+            if (isNaN(text) && !isNaN(Date.parse(text))) {
+              return moment(text).format(this.tableFormat)
+            } else {
+              return text
+            }
+          } else {
+            return text
+          }
+        },
+        width: 110
       },
       {
         title: '复议科室',
-        dataIndex: 'hvDeptName',
+        dataIndex: 'readyDeptName',
         customRender: (text, row, index) => {
           if (text !== '' && text !== null) {
-            return row.hvDeptCode + '-' + row.hvDeptName
+            return row.readyDeptCode + '-' + row.readyDeptName
           }
         },
         fixed: 'right',
-        width: 200
+        width: 160
       },
       {
         title: '复议医生',
-        dataIndex: 'hvDoctorName',
+        dataIndex: 'readyDoctorName',
         customRender: (text, row, index) => {
           if (text !== '' && text !== null) {
-            return row.hvDoctorCode + '-' + row.hvDoctorName
+            return row.readyDoctorCode + '-' + row.readyDoctorName
           }
         },
         fixed: 'right',
         width: 130
       },
       {
+        title: '复议截止日期',
+        dataIndex: 'applyEndDate',
+        customRender: (text, row, index) => {
+          if (text !== '' && text !== null) {
+            if (isNaN(text) && !isNaN(Date.parse(text))) {
+              return moment(text).format(this.tableFormat1)
+            } else {
+              return text
+            }
+          } else {
+            return text
+          }
+        },
+        fixed: 'right',
+        width: 120
+      },
+      {
+        title: '状态',
+        dataIndex: 'acceptState',
+        customRender: (text, row, index) => {
+          switch (text) {
+            case 0:
+              return '待接收'
+            case 1:
+              return '已接收'
+            case 2:
+              return '已拒绝'
+            case 6:
+              return '已完成'
+            case 7:
+              return '未申诉'
+            default:
+              return text
+          }
+        },
+        fixed: 'right',
+        width: 90
+      },
+      {
         title: '操作',
         dataIndex: 'operation',
         scopedSlots: { customRender: 'operation' },
         fixed: 'right',
-        width: 100
+        width: 150
       }]
     }
   },
   mounted () {
-    this.search()
+    // this.fetch()
   },
   methods: {
     moment,
@@ -184,93 +229,48 @@ export default {
       return (this.pagination.defaultCurrent - 1) *
             this.pagination.defaultPageSize + index + 1
     },
-    batchSend () {
-      this.loading = true
-      let selectedRowKeys = this.selectedRowKeys
-      if (selectedRowKeys.length > 0) {
-        let data = []
-        for (let key of selectedRowKeys) {
-          let target = this.dataSource.filter(item => key === item.id)[0]
-          if (target !== undefined) {
-            let arrData = {
-              id: target.id,
-              applyDataId: target.applyDataId,
-              verifyId: target.verifyId,
-              resetId: target.resetId,
-              doctorCode: target.hvDoctorCode,
-              doctorName: target.hvDoctorName,
-              deptCode: target.hvDeptCode,
-              deptName: target.hvDeptName,
-              dataType: target.dataType}
-
-            data.push(arrData)
+    handleClickRow (record, index) {
+      return {
+        on: {
+          click: () => {
+            let target = this.selectedRowKeys.filter(key => key === record.id)[0]
+            if (target === undefined) {
+              this.selectedRowKeys = []
+              this.selectedRowKeys.push(record.id)
+            } else {
+              this.selectedRowKeys.splice(this.selectedRowKeys.indexOf(record.id), 1)
+            }
           }
         }
-        if (data.length > 0) {
-          this.sendService(data)
-        } else {
-          this.$emit('closeSpin')
-          this.$message.warning('未找到对象')
-        }
-      } else {
-        this.$emit('closeSpin')
-        this.$message.warning('未选择行')
       }
-      this.selectedRowKeys = []
-      this.loading = false
-    },
-    batchSendA () {
-      if (this.dataSource.length > 0) {
-        this.$put('ybHandleVerifyData/updateASendState', {
-          applyDateStr: this.applyDate, state: 1, areaType: this.user.areaType.value
-        }).then(() => {
-          this.$message.success('发送成功')
-          this.$emit('closeSpin')
-          this.search()
-        }).catch(() => {
-          this.$emit('closeSpin')
-          this.loading = false
-        })
-      } else {
-        this.$emit('closeSpin')
-        this.$message.warning('无数据，无法全部发送!')
-      }
-    },
-    send (key) {
-      this.loading = true
-      let target = this.dataSource.filter(item => key === item.id)[0]
-      if (target !== undefined) {
-        let data = [{
-          id: target.id,
-          applyDataId: target.applyDataId,
-          verifyId: target.verifyId,
-          resetId: target.resetId,
-          doctorCode: target.hvDoctorCode,
-          doctorName: target.hvDoctorName,
-          deptCode: target.hvDeptCode,
-          deptName: target.hvDeptName,
-          dataType: target.dataType
-        }]
-        this.sendService(data)
-      } else {
-        this.$message.warning('未找到对象')
-      }
-    },
-    sendService (data) {
-      let jsonString = JSON.stringify(data)
-      this.$put('ybHandleVerifyData/updateSendState', {
-        dataJson: jsonString, applyDateStr: this.applyDate, areaType: this.user.areaType.value
-      }).then(() => {
-        this.$emit('closeSpin')
-        this.$message.success('发送成功')
-        this.search()
-      }).catch(() => {
-        this.$emit('closeSpin')
-        this.loading = false
-      })
     },
     onSelectChange (selectedRowKeys) {
       this.selectedRowKeys = selectedRowKeys
+    },
+    detail (record, index) {
+      record.rowNo = this.rowNo(index)
+      this.$emit('detail', record)
+    },
+    change (record, index) {
+      record.rowNo = this.rowNo(index)
+      this.$emit('adminChange', record, 7)
+    },
+    onHistory () {
+      let selectedRowKeys = this.selectedRowKeys
+      if (selectedRowKeys.length === 1) {
+        let target = this.dataSource.filter(item => selectedRowKeys[0] === item.id)[0]
+        let indOf = this.dataSource.indexOf(target)
+        target.rowNo = this.rowNo(indOf)
+        this.$emit('onHistoryLook', target)
+      } else if (selectedRowKeys.length === 0) {
+        this.$message.warning('未选择行')
+      } else {
+        this.$message.warning('请选择单行')
+      }
+    },
+    look (record, index) {
+      record.rowNo = this.rowNo(index)
+      this.$emit('look', record)
     },
     searchPage () {
       this.pagination.defaultCurrent = 1
@@ -322,12 +322,11 @@ export default {
     fetch (params = {}) {
       this.loading = true
       params.applyDateStr = this.applyDate
+      params.acceptState = 7 // 10 代表状态为 0 和 1
+      params.currencyField = this.searchItem.value
+      params.typeno = this.searchTypeno
       params.areaType = this.user.areaType.value
-      params.state = 1
-      if (this.searchDataType !== 2) {
-        params.dataType = this.searchDataType
-      }
-      params.currencyField = this.searchText
+      params.keyField = this.searchItem.keyField
       if (this.paginationInfo) {
         // 如果分页信息不为空，则设置表格当前第几页，每页条数，并设置查询分页参数
         this.$refs.TableInfo.pagination.current = this.paginationInfo.current
@@ -339,10 +338,9 @@ export default {
         params.pageSize = this.pagination.defaultPageSize
         params.pageNum = this.pagination.defaultCurrent
       }
-      // params.sortField = 'hvd.typeno,hvd.dataType,hvd.orderNum '
-      params.sortField = 'rrd.orderNum'
-      params.sortOrder = 'ascend'
-      this.$get('ybHandleVerifyDataView', {
+      // params.sortField = 'ad.orderNum'
+      // params.sortOrder = 'ascend'
+      this.$get('ybAppealManageView', {
         ...params
       }).then((r) => {
         let data = r.data
@@ -351,16 +349,20 @@ export default {
         this.loading = false
         this.dataSource = data.rows
         this.pagination = pagination
-        this.cacheData = this.dataSource.map(item => ({ ...item }))
       })
+      // this.$get('ybAppealManageView/appealManageCount', {
+      //   ...params
+      // }).then((r) => {
+      //   const pagination = { ...this.pagination }
+      //   pagination.total = r.data
+      //   this.pagination = pagination
+      // })
+      this.selectedRowKeys = []
     }
   }
 }
 </script>
 
-<style lang="less" scoped>
-@import "../../../../static/less/Common";
-</style>
 <style scoped>
 .editable-row-operations a {
   margin-right: 8px;

@@ -73,41 +73,32 @@
 
     <select id="findHandleVerifyDataView" resultType="cc.mrbird.febs.yb.entity.YbHandleVerifyDataView" parameterType="cc.mrbird.febs.yb.entity.YbHandleVerifyDataView">
         select
-            ad.serialNo,
-            ad.billNo,
-            ad.proposalCode,
-            ad.projectCode,
-            ad.projectName,
-            ad.num,
-            ad.medicalPrice,
-            ad.ruleName,
-            ad.deductPrice,
-            ad.deductReason,
-            ad.repaymentReason,
-            ad.doctorName,
-            ad.deptCode,
-            ad.deptName,
-            ad.enterHospitalDate,
-            ad.outHospitalDate,
-            ad.costDate,
-            ad.enterHospitalDateStr,
-            ad.outHospitalDateStr,
-            ad.costDateStr,
-            ad.hospitalizedNo,
-            ad.treatmentMode,
-            ad.settlementDate,
-            ad.settlementDateStr,
-            ad.personalNo,
-            ad.insuredName,
-            ad.cardNumber,
-            ad.areaName,
-            ad.versionNumber,
-            ad.backAppeal,
-            ad.typeno,
-            ad.insuredType,
-            ad.dataType,
-            ad.orderNumber,
-            ad.orderNum,
+            rrd.serialNo,
+            rrd.billNo,
+            rrd.projectCode,
+            rrd.projectName,
+            rrd.medicalPrice,
+            rrd.ruleName,
+            rrd.deductPrice,
+            rrd.deductReason,
+            rrd.repaymentReason,
+            rrd.doctorName,
+            rrd.deptCode,
+            rrd.deptName,
+            rrd.costDate,
+            rrd.costDateStr,
+            rrd.hospitalizedNo,
+            rrd.treatmentMode,
+            rrd.settlementDate,
+            rrd.settlementDateStr,
+            rrd.personalNo,
+            rrd.insuredName,
+            rrd.cardNumber,
+            rrd.areaName,
+            rrd.insuredType,
+            rrd.dataType,
+            rrd.orderNumber,
+            rrd.orderNum,
         #{ybHandleVerifyDataView.applyDateStr} applyDateStr,
           hvd.id,
             hvd.pid,
@@ -124,8 +115,8 @@
             '' currencyField
         from
             yb_handle_verify_data hvd
-            INNER JOIN yb_reconsider_apply_data ad ON
-                ad.id = hvd.applyDataId
+        INNER JOIN yb_reconsider_reset_data rrd ON
+            rrd.relatelDataId = hvd.relatelDataId
         WHERE
         <if test="ybHandleVerifyDataView.pid != null and ybHandleVerifyDataView.pid != ''">
             hvd.pid= #{ybHandleVerifyDataView.pid}
@@ -140,26 +131,23 @@
             and hvd.dataType= #{ybHandleVerifyDataView.dataType}
         </if>
         <if test="ybHandleVerifyDataView.dataType == 0 and ybHandleVerifyDataView.currencyField!= null and ybHandleVerifyDataView.currencyField!= ''">
-            and (ad.serialNo like concat('%', #{ ybHandleVerifyDataView.currencyField} ,'%')
-            or ad.proposalCode like concat('%', #{ ybHandleVerifyDataView.currencyField} ,'%')
-            or ad.billNo like concat('%', #{ ybHandleVerifyDataView.currencyField} ,'%')
-            or ad.projectCode like concat('%', #{ ybHandleVerifyDataView.currencyField} ,'%')
-            or ad.projectName like concat('%', #{ ybHandleVerifyDataView.currencyField} ,'%')
-            or ad.ruleName like concat('%', #{ ybHandleVerifyDataView.currencyField} ,'%'))
+            and (rrd.serialNo like concat('%', #{ ybHandleVerifyDataView.currencyField} ,'%')
+            or rrd.billNo like concat('%', #{ ybHandleVerifyDataView.currencyField} ,'%')
+            or rrd.projectCode like concat('%', #{ ybHandleVerifyDataView.currencyField} ,'%')
+            or rrd.projectName like concat('%', #{ ybHandleVerifyDataView.currencyField} ,'%')
+            or rrd.ruleName like concat('%', #{ ybHandleVerifyDataView.currencyField} ,'%'))
         </if>
         <if test="ybHandleVerifyDataView.dataType == 1 and ybHandleVerifyDataView.currencyField!= null and ybHandleVerifyDataView.currencyField!= ''">
-            and (ad.serialNo like concat('%', #{ ybHandleVerifyDataView.currencyField} ,'%')
-            or ad.proposalCode like concat('%', #{ ybHandleVerifyDataView.currencyField} ,'%')
-            or ad.billNo like concat('%', #{ ybHandleVerifyDataView.currencyField} ,'%')
-            or ad.ruleName like concat('%', #{ ybHandleVerifyDataView.currencyField} ,'%'))
+            and (rrd.serialNo like concat('%', #{ ybHandleVerifyDataView.currencyField} ,'%')
+            or rrd.billNo like concat('%', #{ ybHandleVerifyDataView.currencyField} ,'%')
+            or rrd.ruleName like concat('%', #{ ybHandleVerifyDataView.currencyField} ,'%'))
         </if>
         <if test="ybHandleVerifyDataView.dataType == null and ybHandleVerifyDataView.currencyField!= null and ybHandleVerifyDataView.currencyField!= ''">
-            and (ad.serialNo like concat('%', #{ ybHandleVerifyDataView.currencyField} ,'%')
-            or ad.proposalCode like concat('%', #{ ybHandleVerifyDataView.currencyField} ,'%')
-            or ad.billNo like concat('%', #{ ybHandleVerifyDataView.currencyField} ,'%')
-            or ad.projectCode like concat('%', #{ ybHandleVerifyDataView.currencyField} ,'%')
-            or ad.projectName like concat('%', #{ ybHandleVerifyDataView.currencyField} ,'%')
-            or ad.ruleName like concat('%', #{ ybHandleVerifyDataView.currencyField} ,'%'))
+            and (rrd.serialNo like concat('%', #{ ybHandleVerifyDataView.currencyField} ,'%')
+            or rrd.billNo like concat('%', #{ ybHandleVerifyDataView.currencyField} ,'%')
+            or rrd.projectCode like concat('%', #{ ybHandleVerifyDataView.currencyField} ,'%')
+            or rrd.projectName like concat('%', #{ ybHandleVerifyDataView.currencyField} ,'%')
+            or rrd.ruleName like concat('%', #{ ybHandleVerifyDataView.currencyField} ,'%'))
         </if>
     </select>
     <select id="findHandleVerifyDataCount" resultType="Integer" parameterType="cc.mrbird.febs.yb.entity.YbHandleVerifyDataView">
@@ -167,8 +155,8 @@
         count(1)
         from
         yb_handle_verify_data hvd
-        INNER JOIN yb_reconsider_apply_data ad ON
-        ad.id = hvd.applyDataId
+        INNER JOIN yb_reconsider_reset_data rrd ON
+            rrd.relatelDataId = hvd.relatelDataId
         WHERE
         <if test="ybHandleVerifyDataView.pid != null and ybHandleVerifyDataView.pid != ''">
             hvd.pid= #{ybHandleVerifyDataView.pid}
@@ -183,26 +171,23 @@
             and hvd.dataType= #{ybHandleVerifyDataView.dataType}
         </if>
         <if test="ybHandleVerifyDataView.dataType == 0 and ybHandleVerifyDataView.currencyField!= null and ybHandleVerifyDataView.currencyField!= ''">
-            and (ad.serialNo like concat('%', #{ ybHandleVerifyDataView.currencyField} ,'%')
-            or ad.proposalCode like concat('%', #{ ybHandleVerifyDataView.currencyField} ,'%')
-            or ad.billNo like concat('%', #{ ybHandleVerifyDataView.currencyField} ,'%')
-            or ad.projectCode like concat('%', #{ ybHandleVerifyDataView.currencyField} ,'%')
-            or ad.projectName like concat('%', #{ ybHandleVerifyDataView.currencyField} ,'%')
-            or ad.ruleName like concat('%', #{ ybHandleVerifyDataView.currencyField} ,'%'))
+            and (rrd.serialNo like concat('%', #{ ybHandleVerifyDataView.currencyField} ,'%')
+            or rrd.billNo like concat('%', #{ ybHandleVerifyDataView.currencyField} ,'%')
+            or rrd.projectCode like concat('%', #{ ybHandleVerifyDataView.currencyField} ,'%')
+            or rrd.projectName like concat('%', #{ ybHandleVerifyDataView.currencyField} ,'%')
+            or rrd.ruleName like concat('%', #{ ybHandleVerifyDataView.currencyField} ,'%'))
         </if>
         <if test="ybHandleVerifyDataView.dataType == 1 and ybHandleVerifyDataView.currencyField!= null and ybHandleVerifyDataView.currencyField!= ''">
-            and (ad.serialNo like concat('%', #{ ybHandleVerifyDataView.currencyField} ,'%')
-            or ad.proposalCode like concat('%', #{ ybHandleVerifyDataView.currencyField} ,'%')
-            or ad.billNo like concat('%', #{ ybHandleVerifyDataView.currencyField} ,'%')
-            or ad.ruleName like concat('%', #{ ybHandleVerifyDataView.currencyField} ,'%'))
+            and (rrd.serialNo like concat('%', #{ ybHandleVerifyDataView.currencyField} ,'%')
+            or rrd.billNo like concat('%', #{ ybHandleVerifyDataView.currencyField} ,'%')
+            or rrd.ruleName like concat('%', #{ ybHandleVerifyDataView.currencyField} ,'%'))
         </if>
         <if test="ybHandleVerifyDataView.dataType == null and ybHandleVerifyDataView.currencyField!= null and ybHandleVerifyDataView.currencyField!= ''">
-            and (ad.serialNo like concat('%', #{ ybHandleVerifyDataView.currencyField} ,'%')
-            or ad.proposalCode like concat('%', #{ ybHandleVerifyDataView.currencyField} ,'%')
-            or ad.billNo like concat('%', #{ ybHandleVerifyDataView.currencyField} ,'%')
-            or ad.projectCode like concat('%', #{ ybHandleVerifyDataView.currencyField} ,'%')
-            or ad.projectName like concat('%', #{ ybHandleVerifyDataView.currencyField} ,'%')
-            or ad.ruleName like concat('%', #{ ybHandleVerifyDataView.currencyField} ,'%'))
+            and (rrd.serialNo like concat('%', #{ ybHandleVerifyDataView.currencyField} ,'%')
+            or rrd.billNo like concat('%', #{ ybHandleVerifyDataView.currencyField} ,'%')
+            or rrd.projectCode like concat('%', #{ ybHandleVerifyDataView.currencyField} ,'%')
+            or rrd.projectName like concat('%', #{ ybHandleVerifyDataView.currencyField} ,'%')
+            or rrd.ruleName like concat('%', #{ ybHandleVerifyDataView.currencyField} ,'%'))
         </if>
     </select>
 

@@ -9,6 +9,7 @@ import cc.mrbird.febs.common.domain.QueryRequest;
 
 import cc.mrbird.febs.common.properties.FebsProperties;
 import cc.mrbird.febs.export.excel.ExportExcelUtils;
+import cc.mrbird.febs.yb.domain.ResponseResult;
 import cc.mrbird.febs.yb.domain.ResponseResultData;
 import cc.mrbird.febs.yb.entity.*;
 import cc.mrbird.febs.yb.service.IYbReconsiderResetDataService;
@@ -126,6 +127,27 @@ public class YbReconsiderResetDataController extends BaseController {
             log.error(message, e);
             throw new FebsException(message);
         }
+    }
+
+    @Log("删除")
+    @PutMapping("deleteAll")
+    @RequiresPermissions("ybReconsiderResetData:updateResetData")
+    public FebsResponse deleteAlls(@Valid YbReconsiderReset ybReconsiderReset) {
+        int success = 0;
+        try {
+            message = this.iYbReconsiderResetDataService.deleteAll(ybReconsiderReset.getApplyDateStr(),ybReconsiderReset.getAreaType());
+            if (message.equals("ok")) {
+                success = 1;
+                message = "数据删除成功.";
+            }
+        } catch (Exception e) {
+            message = "数据删除失败.";
+            log.error(message, e);
+        }
+        ResponseResult rr = new ResponseResult();
+        rr.setMessage(message);
+        rr.setSuccess(success);
+        return new FebsResponse().data(rr);
     }
 
     @PostMapping("excel")

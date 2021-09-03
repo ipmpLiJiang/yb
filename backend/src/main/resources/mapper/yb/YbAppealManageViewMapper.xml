@@ -207,7 +207,7 @@
         <if test="ybAppealManageView.typeno != null and ybAppealManageView.typeno==3">
             and am.sourceType = 1</if>
         <if test="ybAppealManageView.typeno != null and ybAppealManageView.typeno != 0 and ybAppealManageView.typeno!=3">
-            and am.typeno =#{ ybAppealManageView.typeno}</if>
+            and am.sourceType = 0 and am.typeno =#{ ybAppealManageView.typeno}</if>
         <if test="appealConfireId != null">
             and am.readyDeptCode in(SELECT deptId FROM yb_appeal_confire_data where pid = #{ appealConfireId})</if>
         order by am.typeno,am.dataType,am.orderNum asc
@@ -241,7 +241,7 @@
         <if test="ybAppealManageView.typeno != null and ybAppealManageView.typeno==3">
             and am.sourceType = 1</if>
         <if test="ybAppealManageView.typeno != null and ybAppealManageView.typeno != 0 and ybAppealManageView.typeno!=3">
-            and am.typeno =#{ ybAppealManageView.typeno}</if>
+            and am.sourceType = 0 and am.typeno =#{ ybAppealManageView.typeno}</if>
         <if test="appealConfireId != null">
             and am.readyDeptCode in(SELECT deptId FROM yb_appeal_confire_data where pid = #{ appealConfireId})</if>
     </select>
@@ -364,7 +364,7 @@
             and am.sourceType = 1
         </if>
         <if test="ybAppealManageView.typeno != null and ybAppealManageView.typeno != 0 and ybAppealManageView.typeno!=3">
-            and am.typeno =#{ ybAppealManageView.typeno}
+            and am.sourceType = 0 and am.typeno =#{ ybAppealManageView.typeno}
         </if>
         <if test="appealConfireId != null">
             and am.readyDeptCode in(SELECT deptId FROM yb_appeal_confire_data where pid = #{ appealConfireId})

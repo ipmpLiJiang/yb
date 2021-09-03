@@ -19,7 +19,7 @@
     :inpatientfeesModule="ybAppealManageLook"
     >
     </inpatientfees-module>
-    <div v-show="ybAppealManageLook.acceptState === 6 || ybAppealManageLook.acceptState === 1 || ybAppealManageLook.acceptState === 2?true:false">
+    <div v-show="ybAppealManageLook.acceptState === 6 || ybAppealManageLook.acceptState === 1 ||ybAppealManageLook.acceptState === 2?true:false">
       <br>
       <div style="padding-top:20px;padding-bottom:20px;border: 1px solid #e8e8e8;">
         <div v-show="ybAppealManageLook.acceptState === 6 || ybAppealManageLook.acceptState === 1?true:false">

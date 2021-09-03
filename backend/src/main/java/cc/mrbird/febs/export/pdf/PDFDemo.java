@@ -245,7 +245,7 @@ public class PDFDemo {
 
 
         document.add(table);
-
+/*
         //endregion
 
         //region 填表说明
@@ -3115,8 +3115,9 @@ public class PDFDemo {
 
         document.add(table);
         //endregion
-
+*/
         //region 合并添加PDF
+        /*
         if (mergeAddPdfList.size() > 0) {
             List<PdfReader> readers = new ArrayList<>();
             for (String fileurl : mergeAddPdfList) {
@@ -3124,6 +3125,7 @@ public class PDFDemo {
                 readers.add(reader);
             }
             PdfContentByte cb = writer.getDirectContent();
+
             int pageOfCurrentReaderPDF = 0;
             Iterator<PdfReader> iteratorPDFReader = readers.iterator();
 
@@ -3137,17 +3139,23 @@ public class PDFDemo {
                     pageOfCurrentReaderPDF++;
                     PdfImportedPage page = writer.getImportedPage(pdfReader,
                             pageOfCurrentReaderPDF);
+                    float width = page.getWidth();
+                    float height = page.getHeight();
+                    page.setWidth(595);
+                    page.setHeight(842);
                     cb.addTemplate(page, 0, 0);
                 }
                 pageOfCurrentReaderPDF = 0;
             }
         }
+        */
         //endregion
 
         out.flush();
         document.close();
         out.close();
         //region 水印和页码
+
         BaseFont bf = BaseFont.createFont("STSong-Light", "UniGB-UCS2-H", BaseFont.EMBEDDED);
         PdfReader reader = new PdfReader(fileName);
         PdfStamper stamp = new PdfStamper(reader, new FileOutputStream(outWatermarkFileName));
@@ -3186,6 +3194,7 @@ public class PDFDemo {
         }
         stamp.close();
         reader.close();
+
         //endregion
     }
 
@@ -5570,15 +5579,43 @@ public class PDFDemo {
     }
 
     public static void main(String[] args) throws Exception {
-        PDFDemo pdfDemo = new PDFDemo();
-        ArrayList<String> mergeAddPdfList = new ArrayList<>();
-        mergeAddPdfList.add("D:\\work\\java\\html\\demo-URL.pdf");
-        mergeAddPdfList.add("D:\\work\\java\\html\\tempcreatePDF.pdf");
-
-        pdfDemo.writePdf("D:\\work\\java\\html\\demo-111111.pdf","D:\\work\\java\\html\\demo-222222.pdf", mergeAddPdfList, "2020");
+//        PDFDemo pdfDemo = new PDFDemo();
+//        ArrayList<String> mergeAddPdfList = new ArrayList<>();
+//        mergeAddPdfList.add("D:\\123.pdf");
+//        mergeAddPdfList.add("D:\\33333.pdf");
+        String[] files = {  "D:\\123.pdf", "D:\\33333.pdf"};
+        String savepath = "D:\\test.pdf";
+        Boolean bool = mergePdfFiles(files, savepath);
+        System.out.println(bool);
+//        pdfDemo.writePdf("D:\\demo-111111.pdf","D:\\demo-222222.pdf", mergeAddPdfList, "2020");
         //pdfDemo.writePdf1("D:\\work\\java\\html\\demo-333333.pdf");
     }
 
+    public static boolean mergePdfFiles(String[] files, String newfile) {
+        boolean retValue = false;
+        Document document = null;
+        try {
+            document = new Document(new PdfReader(files[0]).getPageSize(1));
+            PdfCopy copy = new PdfCopy(document, new FileOutputStream(newfile));
+            document.open();
+            for (int i = 0; i < files.length; i++) {
+                PdfReader reader = new PdfReader(files[i]);
+                int n = reader.getNumberOfPages();
+                for (int j = 1; j <= n; j++) {
+                    document.newPage();
+                    PdfImportedPage page = copy.getImportedPage(reader, j);
+                    copy.addPage(page);
+                }
+            }
+            retValue = true;
+        } catch (Exception e) {
+            System.out.println(e);
+        } finally {
+            System.out.println("执行结束");
+            document.close();
+        }
+        return retValue;
+    }
     @Data
     public class TableValue {
         String field1;

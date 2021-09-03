@@ -469,8 +469,10 @@ public class ComFileController extends BaseController {
             if (list.size() > 0) {
                 ComFile comFile = list.get(list.size() - 1);
                 String code = comFile.getServerName();
+                int dian = code.lastIndexOf(".");
+                int lastDian = code.length() - dian;
                 int strNum = code.lastIndexOf("-");
-                String comFileName = code.substring(strNum + 1, code.length() - 4);
+                String comFileName = code.substring(strNum + 1, code.length() - lastDian);
                 num = Integer.parseInt(comFileName) + 1;
             }
             String newFileName = inUploadFile.getProposalCode();

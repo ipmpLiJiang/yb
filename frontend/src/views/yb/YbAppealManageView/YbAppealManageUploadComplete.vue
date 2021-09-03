@@ -92,7 +92,7 @@
                   <div class="clearfix">
                     <a-upload
                       list-type="picture-card"
-                      accept=".jpg, .jpeg"
+                      accept=".jpg"
                       :file-list="fileList"
                       :remove="handleImageRemove"
                       :beforeUpload="beforeUpload"
@@ -179,7 +179,7 @@ export default {
       // const isPNG = file.type === 'image/png'
       if (!(isJPG || isJPEG)) {
         this.$error({
-          title: '只能上传JPG 、JPEG 格式的图片~'
+          title: '只能上传JPG 格式的图片~'
         })
         return
       }

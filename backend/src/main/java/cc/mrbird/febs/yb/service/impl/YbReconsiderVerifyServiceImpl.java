@@ -1208,6 +1208,32 @@ public class YbReconsiderVerifyServiceImpl extends ServiceImpl<YbReconsiderVerif
         }
     }
 
+    //全部返回
+    @Override
+    @Transactional
+    public void updateBackStates(String applyDateStr, Integer areaType, int state, int dataType) {
+        YbReconsiderApply reconsiderApply = iYbReconsiderApplyService.findReconsiderApplyByApplyDateStrs(applyDateStr, areaType);
+        if (reconsiderApply != null) {
+            int applyState = reconsiderApply.getState();
+            int typeno = applyState == YbDefaultValue.APPLYSTATE_2 || applyState == YbDefaultValue.APPLYSTATE_3 ? YbDefaultValue.TYPENO_1 :
+                    applyState == YbDefaultValue.APPLYSTATE_4 || applyState == YbDefaultValue.APPLYSTATE_5 ? YbDefaultValue.TYPENO_2 : 0;
+
+            if (typeno == YbDefaultValue.TYPENO_1 || typeno == YbDefaultValue.TYPENO_2) {
+                List<YbReconsiderVerify> list = this.baseMapper.findReconsiderVerifyList(applyDateStr, areaType, dataType, state, typeno);
+                List<YbReconsiderVerify> updateList = new ArrayList<>();
+                for (YbReconsiderVerify item : list) {
+                    YbReconsiderVerify update = new YbReconsiderVerify();
+                    update.setId(item.getId());
+                    update.setState(YbDefaultValue.VERIFYSTATE_1);
+                    updateList.add(update);
+                }
+                if (updateList.size() > 0) {
+                    this.updateBatchById(updateList);
+                }
+            }
+        }
+    }
+
 
     @Override
     @Transactional
@@ -1290,17 +1316,17 @@ public class YbReconsiderVerifyServiceImpl extends ServiceImpl<YbReconsiderVerif
                         remark = bb + " 复议截止日期";
                         methodName = typeno == 1 ? "oneDate" : "twoDate";
                         beanName = "appealManageTask";
-                        cron = this.getCron(endDate, type, 5);
+                        cron = this.getCron(endDate, type, 5,areaType);
                     } else if (type == 2) {
                         remark = bb + " 确认截止日期";
                         beanName = "appealManageTask";
                         methodName = "enableDate";
-                        cron = this.getCron(enableDate, 2, null);
+                        cron = this.getCron(enableDate, 2, null,areaType);
                     } else if (type == 3) {
                         beanName = "smsTask";
                         remark = bb + " 提醒申诉";
                         methodName = "sendSmsWarnTask";
-                        cron = this.getCron(endDate, 3, null);
+                        cron = this.getCron(endDate, 3, null,areaType);
                     } else {
                         msg = "noType";
                         break;
@@ -1347,7 +1373,7 @@ public class YbReconsiderVerifyServiceImpl extends ServiceImpl<YbReconsiderVerif
     }
 
 
-    private String getCron(Date date, int type, Integer addTime) {
+    private String getCron(Date date, int type, Integer addTime,int areaType) {
         Calendar now = Calendar.getInstance();
         now.setTime(date);
         if (type == 1) {
@@ -1368,11 +1394,19 @@ public class YbReconsiderVerifyServiceImpl extends ServiceImpl<YbReconsiderVerif
         }
         //enableDate
         if (type == 2) {
-            cron = "0 5 0 " + ri + " " + yue + " ? " + nian + "-" + nian;
+            if(areaType==0) {
+                cron = "0 5 0 " + ri + " " + yue + " ? " + nian + "-" + nian;
+            } else {
+                cron = "0 5 1 " + ri + " " + yue + " ? " + nian + "-" + nian;
+            }
         }
         //
         if (type == 3) {
-            cron = "0 0/3 8 " + ri + " " + yue + " ? " + nian + "-" + nian;
+            if(areaType==0) {
+                cron = "0 0/3 8 " + ri + " " + yue + " ? " + nian + "-" + nian;
+            } else {
+                cron = "0 0/3 9 " + ri + " " + yue + " ? " + nian + "-" + nian;
+            }
         }
         return cron;
     }

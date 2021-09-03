@@ -24,7 +24,7 @@
             <div class="editable-row-operations">
               <span>
                 <a
-                  @click.stop="() => detail(record,index)"
+                  @click.stop="() => look(record,index)"
                 >查看详情</a>
                 <a-divider type="vertical" />
                 <a
@@ -40,7 +40,7 @@
 <script>
 import moment from 'moment'
 export default {
-  name: 'YbAppealManageChangeAdmin',
+  name: 'YbAppealManageChangeAdmin1',
   props: {
     applyDate: {
       default: ''
@@ -246,6 +246,10 @@ export default {
     detail (record, index) {
       record.rowNo = this.rowNo(index)
       this.$emit('detail', record)
+    },
+    look (record, index) {
+      record.rowNo = this.rowNo(index)
+      this.$emit('look', record)
     },
     change (record, index) {
       record.rowNo = this.rowNo(index)

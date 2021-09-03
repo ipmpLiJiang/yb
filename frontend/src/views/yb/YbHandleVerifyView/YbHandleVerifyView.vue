@@ -100,6 +100,7 @@
               :applyDate="searchApplyDate"
               :searchDataType="searchDataType"
               :searchText = "searchText"
+              @closeSpin ="closeSpin"
             >
             </ybHandleVerifyData-send>
           </a-tab-pane>
@@ -189,10 +190,15 @@ export default {
       })
     },
     batchSend () {
+      this.spinning = true
       this.$refs.ybHandleVerifyDataSend.batchSend()
     },
     batchSendA () {
+      this.spinning = true
       this.$refs.ybHandleVerifyDataSend.batchSendA()
+    },
+    closeSpin () {
+      this.spinning = false
     },
     callback (key) {
       this.tableSelectKey = key

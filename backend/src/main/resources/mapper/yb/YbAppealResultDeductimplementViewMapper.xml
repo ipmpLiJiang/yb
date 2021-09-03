@@ -134,6 +134,7 @@
         </if>
             INNER JOIN yb_appeal_result art ON
                 art.relatelDataId = rrd.relatelDataId
+                and art.sourceType = 0
         <if test="ybAppealResultDeductimplementView.arDoctorCode != null and ybAppealResultDeductimplementView.arDoctorCode != ''">
             and art.doctorCode=#{ ybAppealResultDeductimplementView.arDoctorCode}
         </if>
@@ -192,6 +193,7 @@
         </if>
         INNER JOIN yb_appeal_result art ON
             art.relatelDataId = rrd.relatelDataId
+            and art.sourceType = 0
         <if test="ybAppealResultDeductimplementView.arDoctorCode != null and ybAppealResultDeductimplementView.arDoctorCode != ''">
             and art.doctorCode=#{ ybAppealResultDeductimplementView.arDoctorCode}
         </if>
@@ -271,6 +273,7 @@
         yb_reconsider_reset_data rrd
         INNER JOIN yb_appeal_result art ON
         art.relatelDataId = rrd.relatelDataId
+        and art.sourceType = 0
         <if test="ybAppealResultDeductimplementView.arDoctorCode != null and ybAppealResultDeductimplementView.arDoctorCode != ''">
             and art.doctorCode=#{ ybAppealResultDeductimplementView.arDoctorCode}
         </if>
@@ -329,6 +332,7 @@
         yb_reconsider_reset_data rrd
         INNER JOIN yb_appeal_result art ON
         art.relatelDataId = rrd.relatelDataId
+        and art.sourceType = 0
         <if test="ybAppealResultDeductimplementView.arDoctorCode != null and ybAppealResultDeductimplementView.arDoctorCode != ''">
             and art.doctorCode=#{ ybAppealResultDeductimplementView.arDoctorCode}
         </if>

@@ -278,7 +278,6 @@ public class YbHandleVerifyDataServiceImpl extends ServiceImpl<YbHandleVerifyDat
                     ybAppealManage.setApplyDateStr(applyDateStr);
                     ybAppealManage.setAreaType(areaType);
 
-
                     ybAppealManage.setOrderDoctorCode(ybHandleVerifyData.getOrderDoctorCode());
                     ybAppealManage.setOrderDoctorName(ybHandleVerifyData.getOrderDoctorName());
                     ybAppealManage.setOrderDeptCode(ybHandleVerifyData.getOrderDeptCode());

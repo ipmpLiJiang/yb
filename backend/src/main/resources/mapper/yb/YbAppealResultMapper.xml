@@ -305,8 +305,8 @@
             WHERE
                 applyDateStr = #{applyDateStr}
                 AND areaType = #{areaType}
-                AND state = 2
                 AND sourceType = 0
+                AND state = 2
             GROUP BY
                 relatelDataId HAVING count(relatelDataId) > 1
         )

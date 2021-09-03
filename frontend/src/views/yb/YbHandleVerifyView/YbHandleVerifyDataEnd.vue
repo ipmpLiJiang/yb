@@ -98,11 +98,6 @@ export default {
         width: 170
       },
       {
-        title: '数量',
-        dataIndex: 'num',
-        width: 70
-      },
-      {
         title: '医保内金额',
         dataIndex: 'medicalPrice',
         width: 105

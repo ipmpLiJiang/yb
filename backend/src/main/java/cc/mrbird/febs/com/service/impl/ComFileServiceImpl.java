@@ -55,7 +55,7 @@ public class ComFileServiceImpl extends ServiceImpl<ComFileMapper, ComFile> impl
 
     @Override
     public List<ComFile> findListComFile(String Id) {
-        List<ComFile> list = new ArrayList<ComFile>();
+        List<ComFile> list = new ArrayList<>();
         try {
             LambdaQueryWrapper<ComFile> queryWrapper = new LambdaQueryWrapper<>();
             String sql = " IS_DELETEMARK = 1 and REF_TAB_ID = '"+Id+"'";
@@ -145,5 +145,9 @@ public class ComFileServiceImpl extends ServiceImpl<ComFileMapper, ComFile> impl
         return this.baseMapper.deleteById(Id);
     }
 
-
+    @Override
+    @Transactional
+    public int batchRefIdDelete(String refTabId){
+        return this.baseMapper.batchRefIdDelete(refTabId);
+    }
 }

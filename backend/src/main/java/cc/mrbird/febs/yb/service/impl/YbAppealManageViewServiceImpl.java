@@ -148,6 +148,8 @@ public class YbAppealManageViewServiceImpl extends ServiceImpl<YbAppealManageVie
                     }
                     ybAppealManageView.setTypeno(null);
                     typeno = null;
+                } else {
+                    ybAppealManageView.setSourceType(YbDefaultValue.SOURCETYPE_0);
                 }
                 Integer sourceType = ybAppealManageView.getSourceType();
                 Integer acceptState = ybAppealManageView.getAcceptState();
@@ -161,6 +163,9 @@ public class YbAppealManageViewServiceImpl extends ServiceImpl<YbAppealManageVie
                         queryWrapper.eq(YbAppealManage::getApplyDateStr,applyDateStr);
                         queryWrapper.eq(YbAppealManage::getAreaType,areaType);
                         queryWrapper.eq(YbAppealManage::getAcceptState,acceptState);
+                        if (sourceType != null) {
+                            queryWrapper.eq(YbAppealManage::getSourceType,sourceType);
+                        }
                         if (ybAppealManageView.getOrderDoctorCode() != null) {
                             queryWrapper.eq(YbAppealManage::getReadyDeptName,"手术室");
                             queryWrapper.eq(YbAppealManage::getOrderDoctorCode,ybAppealManageView.getOrderDoctorCode());
@@ -179,15 +184,15 @@ public class YbAppealManageViewServiceImpl extends ServiceImpl<YbAppealManageVie
                         if (dataType != null) {
                             queryWrapper.eq(YbAppealManage::getDataType,dataType);
                         }
-                        if (sourceType != null) {
-                            queryWrapper.eq(YbAppealManage::getSourceType,sourceType);
-                        }
                         manageList = iYbAppealManageService.list(queryWrapper);
                     } else {
                         YbAppealManage queryManage = new YbAppealManage();
                         queryManage.setApplyDateStr(applyDateStr);
                         queryManage.setAreaType(areaType);
                         queryManage.setAcceptState(acceptState);
+                        if (sourceType != null) {
+                            queryManage.setSourceType(sourceType);
+                        }
                         if (ybAppealManageView.getOrderDoctorCode() != null) {
                             queryManage.setReadyDeptName("手术室");
                             queryManage.setOrderDoctorCode(ybAppealManageView.getOrderDoctorCode());
@@ -207,9 +212,6 @@ public class YbAppealManageViewServiceImpl extends ServiceImpl<YbAppealManageVie
                         if (dataType != null) {
                             queryManage.setDataType(dataType);
                         }
-                        if (sourceType != null) {
-                            queryManage.setSourceType(sourceType);
-                        }
                         manageList = iYbAppealManageService.findAppealManageList(queryManage);
                     }
                 } else{
@@ -219,6 +221,9 @@ public class YbAppealManageViewServiceImpl extends ServiceImpl<YbAppealManageVie
                     queryWrapper.eq(YbAppealManage::getAcceptState,acceptState);
                     List<YbAppealConfireData> acdlist = iYbAppealConfireDataService.findAppealConfireDataByInDoctorCodeList(ybAppealManageView.getReadyDoctorCode(),areaType);
                     if (acdlist.size() > 0) {
+                        if (ybAppealManageView.getSourceType() != null) {
+                            queryWrapper.eq(YbAppealManage::getSourceType,sourceType);
+                        }
                         strList = new ArrayList<>();
                         for (YbAppealConfireData item : acdlist){
                             strList.add(item.getDeptId());
@@ -242,9 +247,6 @@ public class YbAppealManageViewServiceImpl extends ServiceImpl<YbAppealManageVie
                         }
                         if (dataType != null) {
                             queryWrapper.eq(YbAppealManage::getDataType,dataType);
-                        }
-                        if (ybAppealManageView.getSourceType() != null) {
-                            queryWrapper.eq(YbAppealManage::getSourceType,sourceType);
                         }
                         manageList = iYbAppealManageService.list(queryWrapper);
                     }

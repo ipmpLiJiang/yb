@@ -107,23 +107,23 @@ public class YbReconsiderResetDataServiceImpl extends ServiceImpl<YbReconsiderRe
     }
 
     @Override
-    public List<YbReconsiderResetData> findReconsiderResetDataList(String pid,String com) {
+    public List<YbReconsiderResetData> findReconsiderResetDataList(String pid, String com) {
         LambdaQueryWrapper<YbReconsiderResetData> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(YbReconsiderResetData::getPid,pid);
+        wrapper.eq(YbReconsiderResetData::getPid, pid);
 
         List<YbReconsiderResetData> list = this.list(wrapper);
-        if(list.size()>0){
+        if (list.size() > 0) {
             try {
-                ybApplyDataManager.saveResetDataCache(list,com);
-            }catch (Exception e){
+                ybApplyDataManager.saveResetDataCache(list, com);
+            } catch (Exception e) {
             }
         }
-        return  list;
+        return list;
     }
 
     @Override
-    public  List<YbReconsiderResetData> getResetDataListView(List<YbReconsiderResetData> resetDataList,String keyField,String value,Integer dataType){
-        if(value != null && value != "" && !keyField.equals("arDoctorCode") && !keyField.equals("arDoctorName")) {
+    public List<YbReconsiderResetData> getResetDataListView(List<YbReconsiderResetData> resetDataList, String keyField, String value, Integer dataType) {
+        if (value != null && value != "" && !keyField.equals("arDoctorCode") && !keyField.equals("arDoctorName")) {
             if (keyField.equals("orderNumber")) {
                 if (dataType != null) {
                     resetDataList = resetDataList.stream().filter(s -> s.getOrderNumber().equals(value) && s.getDataType().equals(dataType)).collect(Collectors.toList());
@@ -138,25 +138,32 @@ public class YbReconsiderResetDataServiceImpl extends ServiceImpl<YbReconsiderRe
                     resetDataList = resetDataList.stream().filter(s -> s.getSerialNo().equals(value)).collect(Collectors.toList());
                 }
             }
+            if (keyField.equals("billNo")) {
+                if (dataType != null) {
+                    resetDataList = resetDataList.stream().filter(s -> s.getBillNo().equals(value) && s.getDataType().equals(dataType)).collect(Collectors.toList());
+                } else {
+                    resetDataList = resetDataList.stream().filter(s -> s.getBillNo().equals(value)).collect(Collectors.toList());
+                }
+            }
             if (keyField.equals("projectCode")) {
                 if (dataType != null) {
-                    resetDataList = resetDataList.stream().filter(s -> s.getProjectCode() !=null && s.getProjectCode().equals(value) && s.getDataType().equals(dataType)).collect(Collectors.toList());
+                    resetDataList = resetDataList.stream().filter(s -> s.getProjectCode() != null && s.getProjectCode().equals(value) && s.getDataType().equals(dataType)).collect(Collectors.toList());
                 } else {
-                    resetDataList = resetDataList.stream().filter(s -> s.getProjectCode() !=null && s.getProjectCode().equals(value)).collect(Collectors.toList());
+                    resetDataList = resetDataList.stream().filter(s -> s.getProjectCode() != null && s.getProjectCode().equals(value)).collect(Collectors.toList());
                 }
             }
             if (keyField.equals("projectName")) {
                 if (dataType != null) {
-                    resetDataList = resetDataList.stream().filter(s -> s.getProjectName() !=null && s.getProjectName().equals(value) && s.getDataType().equals(dataType)).collect(Collectors.toList());
+                    resetDataList = resetDataList.stream().filter(s -> s.getProjectName() != null && s.getProjectName().equals(value) && s.getDataType().equals(dataType)).collect(Collectors.toList());
                 } else {
-                    resetDataList = resetDataList.stream().filter(s -> s.getProjectName() !=null && s.getProjectName().equals(value)).collect(Collectors.toList());
+                    resetDataList = resetDataList.stream().filter(s -> s.getProjectName() != null && s.getProjectName().equals(value)).collect(Collectors.toList());
                 }
             }
             if (keyField.equals("ruleName")) {
                 if (dataType == null) {
-                    resetDataList = resetDataList.stream().filter(s -> s.getProjectName() !=null && s.getRuleName().equals(value) && s.getDataType().equals(dataType)).collect(Collectors.toList());
+                    resetDataList = resetDataList.stream().filter(s -> s.getProjectName() != null && s.getRuleName().equals(value) && s.getDataType().equals(dataType)).collect(Collectors.toList());
                 } else {
-                    resetDataList = resetDataList.stream().filter(s -> s.getProjectName() !=null && s.getRuleName().equals(value)).collect(Collectors.toList());
+                    resetDataList = resetDataList.stream().filter(s -> s.getProjectName() != null && s.getRuleName().equals(value)).collect(Collectors.toList());
                 }
             }
         } else {
@@ -164,34 +171,34 @@ public class YbReconsiderResetDataServiceImpl extends ServiceImpl<YbReconsiderRe
                 resetDataList = resetDataList.stream().filter(s -> s.getDataType().equals(dataType)).collect(Collectors.toList());
             }
         }
-        return  resetDataList;
+        return resetDataList;
     }
 
 
     @Override
     public List<YbReconsiderResetData> findReconsiderResetDataByApplyDates(String applyDateStr, Integer areaType, Integer dataType) {
         List<YbReconsiderResetData> list = new ArrayList<>();
-        YbReconsiderReset reconsiderReset = iYbReconsiderResetService.findReconsiderResetByApplyDateStr(applyDateStr,areaType);
+        YbReconsiderReset reconsiderReset = iYbReconsiderResetService.findReconsiderResetByApplyDateStr(applyDateStr, areaType);
         if (reconsiderReset != null) {
             LambdaQueryWrapper<YbReconsiderResetData> wrapper = new LambdaQueryWrapper<>();
-            wrapper.eq(YbReconsiderResetData::getPid,reconsiderReset.getId());
-            if(dataType !=null){
-                wrapper.eq(YbReconsiderResetData::getDataType,dataType);
+            wrapper.eq(YbReconsiderResetData::getPid, reconsiderReset.getId());
+            if (dataType != null) {
+                wrapper.eq(YbReconsiderResetData::getDataType, dataType);
             }
             list = this.list(wrapper);
         }
-        return  list;
+        return list;
     }
 
     @Override
     public List<YbReconsiderResetData> findResetNotExistsRepayByApplyDates(String applyDateStr, Integer areaType, Integer dataType) {
-        return this.baseMapper.findResetNotExistsRepayByApplyDate(applyDateStr,areaType, dataType);
+        return this.baseMapper.findResetNotExistsRepayByApplyDate(applyDateStr, areaType, dataType);
     }
 
     @Override
-    public String updateHandleResetCancelData(String resetId, String applyDateStr,Integer areaType) {
+    public String updateHandleResetCancelData(String resetId, String applyDateStr, Integer areaType) {
         String message = "";
-        YbReconsiderReset reconsiderReset = iYbReconsiderResetService.findReconsiderResetByApplyDateStr(applyDateStr,areaType);
+        YbReconsiderReset reconsiderReset = iYbReconsiderResetService.findReconsiderResetByApplyDateStr(applyDateStr, areaType);
         if (reconsiderReset != null) {
             if (reconsiderReset.getState() == 0) {
                 LambdaQueryWrapper<YbReconsiderResetData> wrapperReset = new LambdaQueryWrapper<>();
@@ -206,8 +213,9 @@ public class YbReconsiderResetDataServiceImpl extends ServiceImpl<YbReconsiderRe
                         LambdaQueryWrapper<YbAppealResult> wrapperResult = new LambdaQueryWrapper<>();
                         wrapperResult.eq(YbAppealResult::getApplyDateStr, applyDateStr);
                         wrapperResult.eq(YbAppealResult::getAreaType, areaType);
+                        wrapperResult.eq(YbAppealResult::getSourceType, YbDefaultValue.SOURCETYPE_0);
+                        wrapperResult.eq(YbAppealResult::getState, YbDefaultValue.RESULTSTATE_2);
                         wrapperResult.eq(YbAppealResult::getRelatelDataId, resetData.getRelatelDataId());
-                        wrapperResult.eq(YbAppealResult::getIsDeletemark, 1);
                         List<YbAppealResult> resultList = this.iYbAppealResultService.list(wrapperResult);
                         if (resetDataList.size() > 0 && resultList.size() > 0) {
                             int count = 0;
@@ -319,10 +327,10 @@ public class YbReconsiderResetDataServiceImpl extends ServiceImpl<YbReconsiderRe
 
     @Override
     @Transactional
-    public String updateResetDatas(String applyDateStr,Integer areaType, Long uid, String uname, Integer dataType) {
+    public String updateResetDatas(String applyDateStr, Integer areaType, Long uid, String uname, Integer dataType) {
         String message = "";
-        YbReconsiderApply reconsiderApply = iYbReconsiderApplyService.findReconsiderApplyByApplyDateStrs(applyDateStr,areaType);
-        if(reconsiderApply!= null ) {
+        YbReconsiderApply reconsiderApply = iYbReconsiderApplyService.findReconsiderApplyByApplyDateStrs(applyDateStr, areaType);
+        if (reconsiderApply != null) {
             //判断复议申请状态已到审核二状态
             if (reconsiderApply.getState() == YbDefaultValue.APPLYSTATE_5) {
                 //判断复议申请明细未在复议核对中匹配
@@ -468,10 +476,37 @@ public class YbReconsiderResetDataServiceImpl extends ServiceImpl<YbReconsiderRe
             } else {
                 message = "复议流程" + applyDateStr + "需要审核一和审核二 两次复议完成才能进行剔除操作.";
             }
-        }else{
+        } else {
             message = "复议流程" + applyDateStr + "没有复议申请数据.";
         }
 
+        return message;
+    }
+
+
+    @Override
+    @Transactional
+    public String deleteAll(String applyDateStr, Integer areaType) {
+        String message = "ok";
+        YbReconsiderReset reconsiderReset = iYbReconsiderResetService.findReconsiderResetByApplyDateStr(applyDateStr, areaType);
+        if (reconsiderReset != null) {
+            if (reconsiderReset.getState() == 0) {
+                LambdaQueryWrapper<YbReconsiderResetData> wrapper = new LambdaQueryWrapper<>();
+                wrapper.eq(YbReconsiderResetData::getPid, reconsiderReset.getId());
+                List<YbReconsiderResetData> list = this.list(wrapper);
+                long count = list.stream().filter(s->s.getSeekState() == 0 && s.getState()==0).count();
+                if(list.size() == count) {
+                    this.iYbReconsiderResetService.getBaseMapper().deleteById(reconsiderReset.getId());
+                    this.baseMapper.delete(wrapper);
+                } else {
+                    message = applyDateStr + "已数据剔除中，无法删除.";
+                }
+            } else {
+                message = applyDateStr + "已完成剔除，无法删除.";
+            }
+        } else {
+            message = "未找到" + applyDateStr + "剔除数据，无法删除.";
+        }
         return message;
     }
 

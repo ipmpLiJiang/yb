@@ -103,4 +103,7 @@
         <if test="inUploadFile.sumId != null"> and yb_appeal_result.deptCode in (select deptId from yb_appeal_sumdept_data where pid =  #{inUploadFile.sumId}) </if>
     </select>
 
+    <delete id="batchRefIdDelete">
+        delete from com_file where REF_TAB_ID = #{refTabId}
+    </delete>
 </mapper>

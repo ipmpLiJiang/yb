@@ -22,10 +22,10 @@
             是否发送
           </a-checkbox>
           </a-col>
-          <a-col :span=5>
-            <a-input-search placeholder="请输入关键字" v-model="searchText" style="width: 200px" enter-button @search="searchTable" />
+          <a-col :span=4>
+            <a-input-search placeholder="请输入关键字" v-model="searchText" style="width: 180px" enter-button @search="searchTable" />
           </a-col>
-          <a-col :span=3 v-show="tableSelectKey==1||tableSelectKey==2?true:false">
+          <a-col :span=2 v-show="tableSelectKey==1||tableSelectKey==2?true:false">
             <template>
               <a-upload
                 name="file"
@@ -49,7 +49,17 @@
               <a-button type="primary">下载模板</a-button>
             </a-popconfirm>
           </a-col>
-          <a-col :span=3 v-show="tableSelectKey==1||tableSelectKey==2?true:false">
+          <a-col :span=2>
+            <a-popconfirm
+              title="确定删除数据？"
+              @confirm="deleteAll"
+              okText="确定"
+              cancelText="取消"
+            >
+              <a-button type="primary">删除数据</a-button>
+            </a-popconfirm>
+          </a-col>
+          <a-col :span=2 v-show="tableSelectKey==1||tableSelectKey==2?true:false">
             <a-popconfirm
               title="确定数据剔除？"
               @confirm="update"
@@ -90,7 +100,7 @@
               <a-button type="primary">发送短信</a-button>
             </a-popconfirm>
           </a-col>
-          <a-col :span=3 v-show="tableSelectKey==6?false:true">
+          <a-col :span=2 v-show="tableSelectKey==6?false:true">
             <a-popconfirm
               title="确定完成剔除？"
               @confirm="updateApplyState"
@@ -411,6 +421,27 @@ export default {
       }).catch(() => {
         this.spinning = false
         this.$message.error('剔除完成操作失败.')
+      })
+    },
+    deleteAll () {
+      let updateParam = {
+        applyDateStr: this.searchApplyDate,
+        areaType: this.user.areaType.value
+      }
+      this.spinning = true
+      this.$put('ybReconsiderResetData/deleteAll', {
+        ...updateParam
+      }).then((r) => {
+        if (r.data.data.success === 1) {
+          this.$message.success(r.data.data.message)
+        } else {
+          this.$message.error(r.data.data.message)
+        }
+        this.updateSearch()
+        this.spinning = false
+      }).catch(() => {
+        this.spinning = false
+        this.$message.error('数据删除失败.')
       })
     },
     handleExceptResetClose (isUpdate) {

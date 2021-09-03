@@ -1231,6 +1231,17 @@ public class YbReconsiderApplyDataServiceImpl extends ServiceImpl<YbReconsiderAp
                     applyDataList = applyDataList.stream().filter(s -> s.getSerialNo().equals(value)).collect(Collectors.toList());
                 }
             }
+            if (keyField.equals("billNo")) {
+                if (typeno != null && dataType == null) {
+                    applyDataList = applyDataList.stream().filter(s -> s.getBillNo().equals(value) && s.getTypeno().equals(typeno)).collect(Collectors.toList());
+                } else if (typeno == null && dataType != null) {
+                    applyDataList = applyDataList.stream().filter(s -> s.getBillNo().equals(value) && s.getDataType().equals(dataType)).collect(Collectors.toList());
+                } else if (typeno != null && dataType != null) {
+                    applyDataList = applyDataList.stream().filter(s -> s.getBillNo().equals(value) && s.getTypeno().equals(typeno) && s.getDataType().equals(dataType)).collect(Collectors.toList());
+                } else {
+                    applyDataList = applyDataList.stream().filter(s -> s.getBillNo().equals(value)).collect(Collectors.toList());
+                }
+            }
             if (keyField.equals("projectCode")) {
                 if (typeno != null && dataType == null) {
                     applyDataList = applyDataList.stream().filter(s -> s.getProjectCode() != null && s.getProjectCode().equals(value) && s.getTypeno().equals(typeno)).collect(Collectors.toList());

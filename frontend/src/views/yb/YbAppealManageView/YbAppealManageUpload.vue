@@ -111,7 +111,7 @@
                   <div class="clearfix">
                     <a-upload
                       list-type="picture-card"
-                      accept=".jpg, .jpeg"
+                      accept=".jpg"
                       :file-list="fileList"
                       :remove="handleImageRemove"
                       :beforeUpload="beforeUpload"
@@ -192,6 +192,7 @@ export default {
       this.form.resetFields()
     },
     beforeUpload (file) {
+      debugger
       // 限制图片 格式、size、分辨率
       const isJPG = file.type === 'image/jpg'
       const isJPEG = file.type === 'image/jpeg'
@@ -199,7 +200,7 @@ export default {
       // const isPNG = file.type === 'image/png'
       if (!(isJPG || isJPEG)) {
         this.$error({
-          title: '只能上传JPG 、JPEG 格式的图片~'
+          title: '只能上传JPG 格式的图片~'
         })
         return
       }

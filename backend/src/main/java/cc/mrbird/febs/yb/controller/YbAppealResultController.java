@@ -241,7 +241,7 @@ public class YbAppealResultController extends BaseController {
         ResponseResultData rrd = new ResponseResultData();
         rrd.setMessage(message);
         rrd.setSuccess(success);
-        if(ybAppealResult.getOperateReason()!=null) {
+        if(ybAppealResult!=null && ybAppealResult.getOperateReason()!=null) {
             rrd.setData(ybAppealResult.getOperateReason());
         }else{
             rrd.setData("");

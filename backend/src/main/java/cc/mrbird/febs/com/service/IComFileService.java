@@ -33,6 +33,8 @@ public interface IComFileService extends IService<ComFile> {
 
     int deleteComFile(String Id);
 
+    int batchRefIdDelete(String refTabId);
+
     List<ComFile> findListComFile(String Id);
 
 

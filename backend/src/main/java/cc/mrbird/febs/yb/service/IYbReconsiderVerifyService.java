@@ -53,4 +53,6 @@ public interface IYbReconsiderVerifyService extends IService<YbReconsiderVerify>
     String createEndJobState(String applyDateStr, Integer areaType,int[] jobTypeList);
 
     void deleteReconsiderVerifyState(YbReconsiderVerify delVerify);
+
+    void updateBackStates(String applyDateStr, Integer areaType, int state, int dataType);
 }

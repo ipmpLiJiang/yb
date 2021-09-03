@@ -43,4 +43,6 @@ public interface IYbReconsiderResetDataService extends IService<YbReconsiderRese
     List<YbReconsiderResetData> getResetDataListView(List<YbReconsiderResetData> resetDataList,String keyField,String value,Integer dataType);
 
     String updateHandleResetCancelData(String resetId,String applyDateStr,Integer areaType);
+
+    String deleteAll(String applyDateStr, Integer areaType);
 }

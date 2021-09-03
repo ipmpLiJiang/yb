@@ -355,4 +355,19 @@ public class DataTypeHelpers {
             e.printStackTrace();
         }
     }
+
+    public static boolean deleteFile(String sPath) {
+        boolean flag = false;
+        File file = new File(sPath);
+        // 路径为文件且不为空则进行删除
+        if (file.exists()) {
+            if (file.isFile()) {
+                file.delete();
+                flag = true;
+            }
+        } else {
+            flag = true;
+        }
+        return flag;
+    }
 }

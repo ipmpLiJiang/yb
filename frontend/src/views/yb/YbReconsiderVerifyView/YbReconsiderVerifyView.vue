@@ -100,6 +100,16 @@
               <a-button type="primary">全部核对</a-button>
             </a-popconfirm>
             <a-popconfirm
+              title="确定全部返回？"
+              style="margin-right: 15px"
+              v-show="tableSelectKey==3?true:false"
+              @confirm="batchAllBack"
+              okText="确定"
+              cancelText="取消"
+            >
+              <a-button type="primary">全部返回</a-button>
+            </a-popconfirm>
+            <a-popconfirm
               title="确定批量发送？"
               style="margin-right: 15px"
               v-show="tableSelectKey==2||tableSelectKey==3?true:false"
@@ -790,6 +800,10 @@ export default {
     },
     verifySpin () {
       this.spinning = false
+    },
+    batchAllBack () {
+      this.spinning = true
+      this.$refs.ybReconsiderSendStayed.batchAllBack()
     },
     batchVerify () {
       this.spinning = true

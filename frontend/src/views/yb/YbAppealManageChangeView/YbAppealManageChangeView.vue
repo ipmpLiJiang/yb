@@ -91,7 +91,7 @@
           <a-tab-pane
             key="3"
             :forceRender="true"
-            tab="管理员更改(待)"
+            tab="管理员更改(接受申请)"
           >
           <!-- 管理员更改 -->
           <ybAppealManageChange-admin
@@ -108,7 +108,7 @@
           <a-tab-pane
             key="4"
             :forceRender="true"
-            tab="管理员更改(已)"
+            tab="管理员更改(待申诉)"
           >
           <!-- 管理员更改 -->
           <ybAppealManageChange-admin1
@@ -119,8 +119,45 @@
               @detail="detail"
               @adminChange="adminChange"
               @onHistoryLook="onHistoryLook"
+              @look="look"
             >
             </ybAppealManageChange-admin1>
+          </a-tab-pane>
+          <a-tab-pane
+            key="5"
+            :forceRender="true"
+            tab="管理员更改(已申诉)"
+          >
+          <!-- 管理员更改 -->
+          <ybAppealManageChange-Completed
+              ref="ybAppealManageChangeCompleted"
+              :searchItem = 'searchItem'
+              :applyDate='searchApplyDate'
+              :searchTypeno='searchTypeno'
+              @detail="detail"
+              @adminChange="adminChange"
+              @onHistoryLook="onHistoryLook"
+              @look="look"
+            >
+            </ybAppealManageChange-Completed>
+          </a-tab-pane>
+          <a-tab-pane
+            key="6"
+            :forceRender="true"
+            tab="管理员更改(未申诉)"
+          >
+          <!-- 管理员更改 -->
+          <ybAppealManageChange-Expire
+              ref="ybAppealManageChangeExpire"
+              :searchItem = 'searchItem'
+              :applyDate='searchApplyDate'
+              :searchTypeno='searchTypeno'
+              @detail="detail"
+              @adminChange="adminChange"
+              @onHistoryLook="onHistoryLook"
+              @look="look"
+            >
+            </ybAppealManageChange-Expire>
           </a-tab-pane>
         </a-tabs>
       </div>
@@ -156,6 +193,14 @@
       :adminVisiable="adminVisiable"
     >
     </ybAppealManageChangeAdmin-handle>
+     <!-- 接受申请-查看 -->
+    <ybAppealManage-look
+      ref="ybAppealManageLook"
+      @close="handleLookClose"
+      @success="handleLookSuccess"
+      :lookVisiable="lookVisiable"
+    >
+    </ybAppealManage-look>
   </a-card>
 </template>
 
@@ -163,8 +208,11 @@
 import moment from 'moment'
 import YbAppealManageChange from './YbAppealManageChange'
 import YbAppealManageChangeEnd from './YbAppealManageChangeEnd'
+import YbAppealManageLook from './YbAppealManageLook'
 import YbAppealManageChangeAdmin from './YbAppealManageChangeAdmin'
 import YbAppealManageChangeAdmin1 from './YbAppealManageChangeAdmin1'
+import YbAppealManageChangeCompleted from './YbAppealManageChangeCompleted'
+import YbAppealManageChangeExpire from './YbAppealManageChangeExpire'
 import YbAppealManageChangeDetail from './YbAppealManageChangeDetail'
 import YbAppealManageChangeHandle from './YbAppealManageChangeHandle'
 import YbAppealManageChangeAdminHandle from './YbAppealManageChangeAdminHandle'
@@ -172,7 +220,7 @@ import YbAppealManageHistory from '../ybFunModule/YbAppealManageHistoryModule'
 export default {
   name: 'YbAppealManageChangeView',
   components: {
-    YbAppealManageChange, YbAppealManageChangeEnd, YbAppealManageChangeAdmin, YbAppealManageChangeAdmin1, YbAppealManageChangeHandle, YbAppealManageChangeDetail, YbAppealManageHistory, YbAppealManageChangeAdminHandle},
+    YbAppealManageChange, YbAppealManageChangeEnd, YbAppealManageChangeAdmin, YbAppealManageChangeAdmin1, YbAppealManageChangeHandle, YbAppealManageChangeDetail, YbAppealManageHistory, YbAppealManageChangeAdminHandle, YbAppealManageChangeCompleted, YbAppealManageLook, YbAppealManageChangeExpire},
   data () {
     return {
       monthFormat: 'YYYY-MM',
@@ -181,9 +229,11 @@ export default {
       handleVisiable: false,
       historyVisiable: false,
       adminVisiable: false,
+      lookVisiable: false,
       searchItem: {keyField: 'serialNo', value: ''},
       searchDropDataSource: [
         {text: '交易流水号', value: 'serialNo'},
+        {text: '单据号', value: 'billNo'},
         {text: '项目编码', value: 'projectCode'},
         {text: '项目名称', value: 'projectName'},
         {text: '医生工号', value: 'readyDoctorCode'},
@@ -240,8 +290,12 @@ export default {
         this.$refs.ybAppealManageChangeAdmin.searchPage()
       } else if (key === '4') {
         this.$refs.ybAppealManageChangeAdmin1.searchPage()
+      } else if (key === '5') {
+        this.$refs.ybAppealManageChangeCompleted.searchPage()
+      } else if (key === '6') {
+        this.$refs.ybAppealManageChangeExpire.searchPage()
       } else {
-        console.log('4')
+        console.log('7')
       }
     },
     handleExamineSuccess () {
@@ -269,8 +323,12 @@ export default {
       this.adminVisiable = false
       if (type === 0) {
         this.$refs.ybAppealManageChangeAdmin.search()
-      } else {
+      } else if (type === 1) {
         this.$refs.ybAppealManageChangeAdmin1.search()
+      } else if (type === 3) {
+        this.$refs.ybAppealManageChangeCompleted.search()
+      } else {
+        this.$refs.ybAppealManageChangeExpire.search()
       }
     },
     handleAdminClose () {
@@ -279,6 +337,16 @@ export default {
     adminChange (record, type) {
       this.adminVisiable = true
       this.$refs.ybAppealManageChangeAdminHandle.setFormValues(record, type)
+    },
+    handleLookSuccess () {
+      this.lookVisiable = false
+    },
+    handleLookClose () {
+      this.lookVisiable = false
+    },
+    look (record) {
+      this.lookVisiable = true
+      this.$refs.ybAppealManageLook.setFormValues(record)
     },
     searchTable () {
       this.callback(this.tableSelectKey)
@@ -303,8 +371,12 @@ export default {
         this.$refs.ybAppealManageChangeAdmin.onHistory()
       } else if (key === '4') {
         this.$refs.ybAppealManageChangeAdmin1.onHistory()
+      } else if (key === '5') {
+        this.$refs.ybAppealManageChangeCompleted.onHistory()
+      } else if (key === '6') {
+        this.$refs.ybAppealManageChangeExpire.onHistory()
       } else {
-        console.log('4')
+        console.log('7')
       }
     }
   }

@@ -38,8 +38,8 @@ spring:
   servlet:
     multipart:
       enabled: true
-      max-file-size: 5MB
-      max-request-size: 5MB
+      max-file-size: 6MB
+      max-request-size: 6MB
 
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
@@ -74,13 +74,12 @@ management:
       exposure:
         include: ['httptrace', 'metrics']
 
-
 febs:
   # 是否异步记录用户操作日志
   openAopLog: true
   uploadPath: D:/Yb/UploadFile/
   baseUrl: http://127.0.0.1:9527
-  openSms: 1
+  openSms: 2
   in0: hrp_hr
   in1: hrp_hr
   in2: MAC

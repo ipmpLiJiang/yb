@@ -291,6 +291,23 @@ export default {
         this.$message.warning('无数据，无法全部发送!')
       }
     },
+    batchAllBack () {
+      if (this.dataSource.length > 0) {
+        this.$put('ybReconsiderVerify/updateBackState', {
+          applyDateStr: this.applyDate, areaType: this.user.areaType.value
+        }).then(() => {
+          this.$message.success('返回状态成功')
+          this.$emit('verifySpin')
+          this.search()
+        }).catch(() => {
+          this.$emit('verifySpin')
+          this.loading = false
+        })
+      } else {
+        this.$emit('verifySpin')
+        this.$message.warning('无数据，无法全部返回!')
+      }
+    },
     onSelectChange (selectedRowKeys) {
       this.selectedRowKeys = selectedRowKeys
     },

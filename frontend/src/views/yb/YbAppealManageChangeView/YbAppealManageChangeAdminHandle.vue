@@ -28,12 +28,27 @@
         <a-row type="flex" justify="start">
           <a-col :span=24>
             <a-row>
-              <a-col :span=24>
+              <a-col :span=10>
                 <a-form-item
                   v-bind="formItemLayout"
                   label="变更人"
                 >
                 {{changePersons}}
+                </a-form-item>
+              </a-col>
+              <a-col :span=10>
+                <a-form-item
+                  v-bind="formItemLayout1"
+                  label="更新状态"
+                >
+                  <a-select v-model="acceptState" :disabled="accStateDisabled" style="width: 150px" @change="handleChange">
+                  <a-select-option
+                  v-for="d in selectAcceptStateDataSource"
+                  :key="d.value"
+                  >
+                  {{ d.text }}
+                  </a-select-option>
+                </a-select>
                 </a-form-item>
               </a-col>
             </a-row>
@@ -116,7 +131,7 @@ const formItemLayout1 = {
   wrapperCol: { span: 16 }
 }
 export default {
-  name: 'YbAppealManageChangeDetail',
+  name: 'YbAppealManageChangeAdminHandle',
   components: {
     AppealDataModule, InpatientfeesModule, InputSelect},
   props: {
@@ -132,6 +147,9 @@ export default {
       ybAppealManage: {},
       formItemLayout,
       formItemLayout1,
+      selectAcceptStateDataSource: [],
+      acceptState: 0,
+      accStateDisabled: true,
       spinning: false,
       type: 0,
       delayTime: 500,
@@ -147,13 +165,19 @@ export default {
     reset () {
       this.loading = false
       this.spinning = false
+      this.acceptState = 0
+      this.accStateDisabled = true
       this.ybAppealManageChangeDetail = {}
+      this.selectAcceptStateDataSource = []
       this.form.resetFields()
     },
     onClose () {
       this.ybAppealManageChangeDetail = {}
       this.ybAppealManage = {}
       this.$emit('close')
+    },
+    handleChange (val) {
+      this.acceptState = val
     },
     selectDoctorChang (item) {
       this.ybAppealManage.readyDoctorCode = item.value
@@ -165,6 +189,19 @@ export default {
     },
     setFormValues (ybAppealManageChangeDetail, type) {
       this.type = type
+      if (type === 0) {
+        this.selectAcceptStateDataSource = [{value: 0, text: '接受申请'}]
+        this.acceptState = 0
+        this.accStateDisabled = true
+      } else if (type === 7) {
+        this.selectAcceptStateDataSource = [{value: 6, text: '已申诉'}]
+        this.acceptState = 6
+        this.accStateDisabled = true
+      } else {
+        this.selectAcceptStateDataSource = [{value: 0, text: '接受申请'}, {value: 1, text: '待申诉'}]
+        this.acceptState = 0
+        this.accStateDisabled = false
+      }
       this.ybAppealManageChangeDetail = ybAppealManageChangeDetail
       this.ybAppealManage.id = ybAppealManageChangeDetail.id
       this.ybAppealManage.sourceType = ybAppealManageChangeDetail.sourceType
@@ -202,6 +239,7 @@ export default {
       this.loading = true
       this.spinning = true
       let ybAppealManage = this.ybAppealManage
+      ybAppealManage.acceptState = this.acceptState
       // ybAppealManage.id = this.ybAppealManageChangeDetail.id
       // ybAppealManage.sourceType = this.ybAppealManageChangeDetail.sourceType
       // ybAppealManage.verifyId = this.ybAppealManageChangeDetail.verifyId
@@ -210,14 +248,16 @@ export default {
       // ybAppealManage.readyDoctorName = this.ybAppealManageChangeDetail.readyDoctorName
       // ybAppealManage.readyDeptCode = this.ybAppealManageChangeDetail.readyDeptCode
       // ybAppealManage.readyDeptName = this.ybAppealManageChangeDetail.readyDeptName
-      if (ybAppealManage.readyDoctorCode === this.ybAppealManageChangeDetail.readyDoctorCode &&
-          ybAppealManage.readyDeptCode === this.ybAppealManageChangeDetail.readyDeptCode) {
-        this.$message.error('未更改 复议科室 和 复议医生 , 不可提交数据.')
-        this.loading = false
-        this.spinning = false
-        return
-      }
 
+      if (this.type === 0 || this.type === 3) {
+        if (ybAppealManage.readyDoctorCode === this.ybAppealManageChangeDetail.readyDoctorCode &&
+            ybAppealManage.readyDeptCode === this.ybAppealManageChangeDetail.readyDeptCode) {
+          this.$message.error('未更改 复议科室 和 复议医生 , 不可提交数据.')
+          this.loading = false
+          this.spinning = false
+          return
+        }
+      }
       this.$put('ybAppealManage/updateCreateAdminAppealManage', {
         ...ybAppealManage
       }).then(() => {

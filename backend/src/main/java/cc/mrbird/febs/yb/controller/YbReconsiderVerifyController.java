@@ -257,6 +257,23 @@ public class YbReconsiderVerifyController extends BaseController {
     }
 
     @Log("修改")
+    @PutMapping("updateBackState")
+    @RequiresPermissions("ybReconsiderVerify:stateUpdate")
+    public void updateBackState(String applyDateStr, Integer areaType) throws FebsException {
+        try {
+            User currentUser = FebsUtil.getCurrentUser();
+            Long uid = currentUser.getUserId();
+            String uname = currentUser.getUsername();
+
+            this.iYbReconsiderVerifyService.updateBackStates(applyDateStr, areaType, 2, 0);
+        } catch (Exception e) {
+            message = "发送失败";
+            log.error(message, e);
+            throw new FebsException(message);
+        }
+    }
+
+    @Log("修改")
     @PutMapping("updateASendState")
     @RequiresPermissions("ybReconsiderVerify:stateUpdate")
     public void updateASendState(String applyDateStr, Integer areaType, Integer state, Integer dataType) throws FebsException {

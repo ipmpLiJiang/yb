@@ -158,6 +158,7 @@
         WHERE
             yb_appeal_result.applyDateStr = #{ applyDateStr} AND
             yb_appeal_result.areaType = #{ areaType} AND
+            yb_appeal_result.sourceType = 0 AND
             yb_appeal_result.state =2
     </select>
 

@@ -21,12 +21,8 @@
           >
             <a-input
               placeholder="请输入汇总科室"
-              v-show="isEdit?false:true"
               v-decorator="['asName', {rules: [{ required: true, message: '汇总科室不能为空' }] }]"
             />
-            <p v-show="!isEdit?false:true">
-              {{txtValue}}
-            </p>
           </a-form-item>
         </a-col>
       </a-row>

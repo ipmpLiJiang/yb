@@ -181,6 +181,7 @@ export default {
       searchItem: {keyField: 'serialNo', value: ''},
       searchDropDataSource: [
         {text: '交易流水号', value: 'serialNo'},
+        {text: '单据号', value: 'billNo'},
         {text: '项目编码', value: 'projectCode'},
         {text: '项目名称', value: 'projectName'},
         {text: '医生工号', value: 'readyDoctorCode'},
