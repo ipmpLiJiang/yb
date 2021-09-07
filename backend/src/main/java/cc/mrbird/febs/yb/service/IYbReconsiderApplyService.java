@@ -68,4 +68,6 @@ public interface IYbReconsiderApplyService extends IService<YbReconsiderApply> {
     String createJobState(String applyDateStr,Integer areaType);
 
     int getReconsiderApplyTypeno(String applyDateStr,Integer areaType);
+
+    int getTypeno(YbReconsiderApply reconsiderApply);
 }

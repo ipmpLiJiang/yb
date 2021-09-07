@@ -116,6 +116,21 @@
             >
             </ybAppealResult-handle>
           </a-tab-pane>
+          <a-tab-pane
+            key="4"
+            :forceRender="true"
+            tab="人工复议1"
+          >
+            <ybAppealResult-handle1
+              ref="ybAppealResultHandle1"
+              :applyDate="searchApplyDate"
+              :searchItem ="searchItem"
+              :searchDataType="searchDataType"
+              @look="look"
+              @onHistoryLook="onHistoryLook"
+            >
+            </ybAppealResult-handle1>
+          </a-tab-pane>
         </a-tabs>
       </div>
     </template>
@@ -154,6 +169,7 @@ import YbAppealManageHistory from '../ybFunModule/YbAppealManageHistoryModule'
 import YbAppealResultTwo from './YbAppealResultTwo'
 import YbAppealResultOne from './YbAppealResultOne'
 import YbAppealResultHandle from './YbAppealResultHandle'
+import YbAppealResultHandle1 from './YbAppealResultHandle1'
 import YbAppealResultLook from './YbAppealResultLook'
 import YbAppealResultDownLoad from './YbAppealResultDownLoad'
 const formItemLayout = {
@@ -163,7 +179,7 @@ const formItemLayout = {
 export default {
   name: 'YbAppealResultView',
   components: {
-    YbAppealManageHistory, YbAppealResultOne, YbAppealResultTwo, YbAppealResultHandle, YbAppealResultLook, YbAppealResultDownLoad},
+    YbAppealManageHistory, YbAppealResultOne, YbAppealResultTwo, YbAppealResultHandle, YbAppealResultHandle1, YbAppealResultLook, YbAppealResultDownLoad},
   data () {
     return {
       formItemLayout,
@@ -235,6 +251,8 @@ export default {
         this.$refs.ybAppealResultTwo.exportExcel()
       } else if (this.tableSelectKey === '3') {
         this.$refs.ybAppealResultHandle.exportExcel()
+      } else if (this.tableSelectKey === '4') {
+        this.$refs.ybAppealResultHandle1.exportExcel()
       } else {
         console.log('exportExcel')
       }
@@ -264,6 +282,8 @@ export default {
         this.$refs.ybAppealResultTwo.onHistory()
       } else if (key === '3') {
         this.$refs.ybAppealResultHandle.onHistory()
+      } else if (key === '4') {
+        this.$refs.ybAppealResultHandle1.onHistory()
       } else {
         console.log('4444')
       }
@@ -282,6 +302,8 @@ export default {
         this.$refs.ybAppealResultTwo.searchPage()
       } else if (key === '3') {
         this.$refs.ybAppealResultHandle.searchPage()
+      } else if (key === '4') {
+        this.$refs.ybAppealResultHandle1.searchPage()
       } else {
         console.log('ok')
       }

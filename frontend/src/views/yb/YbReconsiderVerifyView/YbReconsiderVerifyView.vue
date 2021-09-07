@@ -20,6 +20,7 @@
                 placeholder="请输入复议年月"
                 style="width: 150px"
                 @change="monthChange"
+                v-model="searchApplyDate"
                 :default-value="searchApplyDate"
                 :format="monthFormat"
               />
@@ -31,10 +32,10 @@
               @click="showSearchModal"
             >筛选</a-button>
           </a-col>
-          <a-col :span=11>
+          <a-col :span=12>
           <a-button
             type="primary"
-            style="margin-right: 15px"
+            style="margin-right: 10px"
             @click.stop="hideMatch"
             v-show="tableSelectKey==1||tableSelectKey==2?true:false">
             自动匹配
@@ -61,7 +62,7 @@
             <a-popconfirm
               title="确定删除匹配？"
               slot="content"
-              style="margin-left: 15px"
+              style="margin-left: 10px"
               @confirm="deleteVerify"
               okText="确定"
               cancelText="取消"
@@ -72,13 +73,13 @@
           </a-popover>
             <a-button
               type="primary"
-              style="margin-right: 15px"
+              style="margin-right: 10px"
               v-show="tableSelectKey==1||tableSelectKey==2?true:false"
               @click="showUpdateModal"
             >手动匹配</a-button>
             <a-popconfirm
               title="确定批量核对?"
-              style="margin-right: 15px"
+              style="margin-right: 10px"
               :visible="pcmVisible"
               ok-text="确定"
               cancel-text="取消"
@@ -91,7 +92,7 @@
             </a-popconfirm>
             <a-popconfirm
               title="确定全部核对？"
-              style="margin-right: 15px"
+              style="margin-right: 10px"
               v-show="tableSelectKey==1?true:false"
               @confirm="batchVerifyA"
               okText="确定"
@@ -101,7 +102,7 @@
             </a-popconfirm>
             <a-popconfirm
               title="确定全部返回？"
-              style="margin-right: 15px"
+              style="margin-right: 10px"
               v-show="tableSelectKey==3?true:false"
               @confirm="batchAllBack"
               okText="确定"
@@ -111,7 +112,7 @@
             </a-popconfirm>
             <a-popconfirm
               title="确定批量发送？"
-              style="margin-right: 15px"
+              style="margin-right: 10px"
               v-show="tableSelectKey==2||tableSelectKey==3?true:false"
               @confirm="batchSend"
               okText="确定"
@@ -121,7 +122,7 @@
             </a-popconfirm>
             <a-popconfirm
               title="确定全部发送？"
-              style="margin-right: 15px"
+              style="margin-right: 10px"
               v-show="tableSelectKey==2||tableSelectKey==3?true:false"
               @confirm="batchSendA"
               okText="确定"
@@ -129,6 +130,7 @@
             >
               <a-button type="primary">全部发送</a-button>
             </a-popconfirm>
+            <a-button type="danger" @click="showDateModal" v-show="tableSelectKey==2||tableSelectKey==3?true:false" style="margin-right: 15px">日期</a-button>
             <a-select :value="searchDataType" style="width: 100px" @change="handleDataTypeChange"
             v-show="tableSelectKey==4?true:false"
             >
@@ -151,7 +153,7 @@
             </a-select>
             <a-button  v-show="tableSelectKey==5?false:true"
               type="primary"
-              style="margin-right: 15px"
+              style="margin-right: 10px"
               @click="searchTable"
             >刷新</a-button>
             <a-button type="primary" @click.stop="hideJob"  v-show="tableSelectKey==4?true:false">
@@ -161,7 +163,7 @@
             <a-popconfirm
               slot="content"
               title="确定开启复议截止服务？"
-              style="margin-right: 15px"
+              style="margin-right: 10px"
               @confirm="startJob(1)"
               okText="确定"
               cancelText="取消"
@@ -171,7 +173,7 @@
             <a-popconfirm
               slot="content"
               title="确定开启确认截止服务？"
-              style="margin-right: 15px"
+              style="margin-right: 10px"
               @confirm="startJob(2)"
               okText="确定"
               cancelText="取消"
@@ -181,7 +183,7 @@
             <a-popconfirm
               slot="content"
               title="确定开启截止提醒服务？"
-              style="margin-right: 15px"
+              style="margin-right: 10px"
               @confirm="startJob(3)"
               okText="确定"
               cancelText="取消"
@@ -191,7 +193,7 @@
             <a-popconfirm
               slot="content"
               title="确定开启1和2服务？"
-              style="margin-right: 15px"
+              style="margin-right: 10px"
               @confirm="startJob(4)"
               okText="确定"
               cancelText="取消"
@@ -201,7 +203,7 @@
             <a-popconfirm
               slot="content"
               title="确定开启全部服务？"
-              style="margin-right: 15px"
+              style="margin-right: 10px"
               @confirm="startJob(5)"
               okText="确定"
               cancelText="取消"
@@ -217,7 +219,7 @@
               title="确定发送短信？"
               @confirm="sendSms"
               okText="确定"
-              style="margin-left: 15px"
+              style="margin-left: 10px"
               cancelText="取消"
               v-show="tableSelectKey==5?true:false"
             >
@@ -228,7 +230,7 @@
             <a-upload
                 name="file"
                 accept=".xlsx,.xls"
-                style="margin-right: 15px"
+                style="margin-right: 10px"
                 :fileList="fileList"
                 :beforeUpload="beforeUpload"
               >
@@ -413,7 +415,7 @@
         </a-modal>
       </div>
     </template>
-    <!--变更Modal-->
+    <!--手动匹配Modal-->
     <template>
       <div>
         <a-modal
@@ -463,6 +465,101 @@
         </a-modal>
       </div>
     </template>
+    <!--变更日期Modal-->
+    <template>
+      <div>
+        <a-modal
+          v-model="visibleDate"
+          title="变更日期"
+          on-ok="handleDateOk"
+        >
+          <template slot="footer">
+            <a-button
+              key="back"
+              @click="handleDateCancel"
+            >
+              取消
+            </a-button>
+            <a-popconfirm
+              title="确定匹配？"
+              @confirm="handleDateOk"
+              :disabled="reconsiderApply.id == null?true:false"
+              okText="确定"
+              cancelText="取消"
+            >
+              <a-button type="primary" :disabled="reconsiderApply.id == null?true:false" style="margin-right: .8rem">确定</a-button>
+            </a-popconfirm>
+          </template>
+          <a-row>
+            <a-form-item
+              v-bind="formItemLayout"
+              label="复议年月"
+            >
+              <a-month-picker
+                placeholder="请输入复议年月"
+                style="width: 150px"
+                @change="monthChange"
+                v-model="searchApplyDate"
+                :default-value="searchApplyDate"
+                :format="monthFormat"
+              />
+            </a-form-item>
+          <a-form-item
+            v-bind="formItemLayout"
+            v-show="searchTypeno==1?true:false"
+            label="第一版结束日期"
+          >
+          <a-date-picker
+            placeholder="请输入第一版结束日期"
+            style="width:220px"
+            v-model="reconsiderApply.endDateOne"
+            show-time
+            :format="dayFormat"/>
+          </a-form-item>
+        </a-row>
+        <a-row>
+          <a-form-item
+            v-bind="formItemLayout"
+            v-show="searchTypeno==1?true:false"
+            label="第一版确认日期"
+          >
+          <a-date-picker
+            placeholder="请输入第一版确认日期"
+            style="width:220px"
+            v-model="reconsiderApply.enableDateOne"
+            :format="enableFormat"/>
+          </a-form-item>
+        </a-row>
+        <a-row>
+          <a-form-item
+            v-bind="formItemLayout"
+            v-show="searchTypeno==2?true:false"
+            label="第二版结束日期"
+          >
+          <a-date-picker
+            placeholder="请输入第二版结束日期"
+            style="width:220px"
+            v-model="reconsiderApply.endDateTwo"
+            show-time
+            :format="dayFormat"/>
+          </a-form-item>
+        </a-row>
+        <a-row>
+        <a-form-item
+          v-bind="formItemLayout"
+          v-show="searchTypeno==2?true:false"
+          label="第二版确认日期"
+        >
+        <a-date-picker
+          placeholder="请输入第二版确认日期"
+          style="width:220px"
+          v-model="reconsiderApply.enableDateTwo"
+          :format="enableFormat"/>
+        </a-form-item>
+      </a-row>
+        </a-modal>
+      </div>
+    </template>
   </a-card>
 </template>
 
@@ -487,6 +584,8 @@ export default {
       formItemLayout,
       loading: false,
       monthFormat: 'YYYY-MM',
+      enableFormat: 'YYYY-MM-DD',
+      dayFormat: 'YYYY-MM-DD HH:mm:ss',
       detailVisiable: false,
       ybReconsiderVerify: {},
       tableSelectKey: '1',
@@ -503,9 +602,11 @@ export default {
       fileList: [],
       searchTypeno: 1,
       searchDataType: 0,
+      reconsiderApply: {id: null},
       checked: false,
       searchText: '',
       selectSunxu: 1,
+      visibleDate: false,
       handleQueryXunxu: [
         {text: '1、规则项目科室', value: 1},
         {text: '2、科室项目规则', value: 2},
@@ -544,12 +645,29 @@ export default {
       this.initTypeno(dateString)
     },
     initTypeno (applyDateStr) {
-      this.$get('ybReconsiderApply/getTypeno', {
+      this.$get('ybReconsiderApply/getReconsiderApply', {
         applyDateStr: applyDateStr, areaType: this.user.areaType.value
       }).then((r) => {
         if (r.data.data.success === 1) {
-          let typeno = parseInt(r.data.data.data)
+          let typeno = parseInt(r.data.data.typeno)
           this.searchTypeno = typeno === 3 ? 2 : typeno
+          if (r.data.data.apply != null) {
+            if (this.searchTypeno === 1) {
+              this.reconsiderApply = {
+                id: r.data.data.apply.id,
+                endDateOne: r.data.data.apply.endDateOne,
+                enableDateOne: r.data.data.apply.enableDateOne
+              }
+            } else {
+              this.reconsiderApply = {
+                id: r.data.data.apply.id,
+                endDateTwo: r.data.data.apply.endDateTwo,
+                enableDateTwo: r.data.data.apply.enableDateTwo
+              }
+            }
+          } else {
+            this.reconsiderApply = {id: null}
+          }
         } else {
           this.searchTypeno = 1
         }
@@ -606,6 +724,62 @@ export default {
         this.$refs.ybReconsiderVerifyStayed.handImport(this.selectDate)
       } else {
         this.$refs.ybReconsiderSendStayedMain.handImport(this.selectDate)
+      }
+    },
+    handleDateOk (e) {
+      if (this.reconsiderApply.id !== null) {
+        if (this.searchTypeno === 1) {
+          if (this.reconsiderApply.endDateOne === null) {
+            this.$message.warning('当前' + this.searchApplyDate + ',第一版结束日期 不能为空.')
+            return false
+          } else {
+            this.reconsiderApply.endDateOne = moment(this.reconsiderApply.endDateOne)
+          }
+          if (this.reconsiderApply.enableDateOne === null) {
+            this.$message.warning('当前' + this.searchApplyDate + ',第一版确认日期 不能为空.')
+            return false
+          } else {
+            this.reconsiderApply.enableDateOne = moment(this.reconsiderApply.enableDateOne)
+          }
+        } else {
+          if (this.reconsiderApply.endDateTwo === null) {
+            this.$message.warning('当前' + this.searchApplyDate + ',第二版结束日期 不能为空.')
+            return false
+          } else {
+            this.reconsiderApply.endDateTwo = moment(this.reconsiderApply.endDateTwo)
+          }
+          if (this.reconsiderApply.enableDateTwo === null) {
+            this.$message.warning('当前' + this.searchApplyDate + ',第二版确认日期 不能为空.')
+            return false
+          } else {
+            this.reconsiderApply.enableDateTwo = moment(this.reconsiderApply.enableDateTwo)
+          }
+        }
+        let ybReconsiderApply = this.reconsiderApply
+        this.$put('ybReconsiderApply/updateReconsiderApply', {
+          ...ybReconsiderApply
+        }).then((r) => {
+          if (r.data.data.success === 1) {
+            this.$message.success('当前' + this.searchApplyDate + '修改日期成功.')
+            this.visibleDate = false
+          } else {
+            this.$message.warning(r.data.data.message)
+          }
+        }).catch(() => {
+          this.$message.error('当前' + this.searchApplyDate + '修改日期失败.')
+        })
+      } else {
+        this.$message.warning('当前' + this.searchApplyDate + '无法修改日期.')
+      }
+    },
+    handleDateCancel (e) {
+      this.visibleDate = false
+    },
+    showDateModal () {
+      if (this.reconsiderApply.id !== null) {
+        this.visibleDate = true
+      } else {
+        this.$message.error('当前' + this.searchApplyDate + '无复议申请数据.')
       }
     },
     hideJob () {

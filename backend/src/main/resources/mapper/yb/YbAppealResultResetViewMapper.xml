@@ -1,0 +1,339 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cc.mrbird.febs.yb.dao.YbAppealResultResetViewMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="cc.mrbird.febs.yb.entity.YbAppealResultResetView">
+        <result column="pid" property="pid"/>
+        <result column="serialNo" property="serialNo"/>
+        <result column="billNo" property="billNo"/>
+        <result column="proposalCode" property="proposalCode"/>
+        <result column="projectCode" property="projectCode"/>
+        <result column="projectName" property="projectName"/>
+        <result column="num" property="num"/>
+        <result column="medicalPrice" property="medicalPrice"/>
+        <result column="ruleName" property="ruleName"/>
+        <result column="deductPrice" property="deductPrice"/>
+        <result column="deductReason" property="deductReason"/>
+        <result column="repaymentReason" property="repaymentReason"/>
+        <result column="doctorName" property="doctorName"/>
+        <result column="deptCode" property="deptCode"/>
+        <result column="deptName" property="deptName"/>
+        <result column="enterHospitalDateStr" property="enterHospitalDateStr"/>
+        <result column="outHospitalDateStr" property="outHospitalDateStr"/>
+        <result column="costDateStr" property="costDateStr"/>
+        <result column="hospitalizedNo" property="hospitalizedNo"/>
+        <result column="treatmentMode" property="treatmentMode"/>
+        <result column="settlementDateStr" property="settlementDateStr"/>
+        <result column="personalNo" property="personalNo"/>
+        <result column="insuredName" property="insuredName"/>
+        <result column="cardNumber" property="cardNumber"/>
+        <result column="areaName" property="areaName"/>
+        <result column="versionNumber" property="versionNumber"/>
+        <result column="backAppeal" property="backAppeal"/>
+        <result column="typeno" property="typeno"/>
+        <result column="applyDateStr" property="applyDateStr"/>
+        <result column="id" property="id"/>
+        <result column="applyDataId" property="applyDataId"/>
+        <result column="arDoctorCode" property="arDoctorCode"/>
+        <result column="arDoctorName" property="arDoctorName"/>
+        <result column="arDeptCode" property="arDeptCode"/>
+        <result column="arDeptName" property="arDeptName"/>
+        <result column="operateReason" property="operateReason"/>
+        <result column="operateDate" property="operateDate"/>
+        <result column="currencyField" property="currencyField"/>
+        <result column="dataType" property="dataType"/>
+        <result column="orderNumber" property="orderNumber"/>
+        <result column="orderNum" property="orderNum"/>
+        <result column="relatelDataId" property="relatelDataId"/>
+        <result column="resetDataId" property="resetDataId"/>
+        <result column="areaType" property="areaType"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        pid, serialNo, billNo, proposalCode, projectCode, projectName, num, medicalPrice, ruleName, deductPrice, deductReason, repaymentReason, doctorName, deptCode, deptName,enterHospitalDateStr,outHospitalDateStr,costDateStr, hospitalizedNo, treatmentMode, settlementDateStr, personalNo, insuredName, cardNumber, areaName, versionNumber, backAppeal, typeno, applyDateStr, id, applyDataId,  arDoctorCode, arDoctorName, arDeptCode, arDeptName, operateReason, operateDate, currencyField,dataType,orderNumber,orderNum,relatelDataId,resetDataId,areaType
+    </sql>
+
+    <select id="findAppealResultResetView" resultType="cc.mrbird.febs.yb.entity.YbAppealResultResetView"
+            parameterType="cc.mrbird.febs.yb.entity.YbAppealResultResetView">
+        SELECT
+            rrd.id resetDataId,
+            rrd.pid,
+            rrd.serialNo,
+            rrd.billNo,
+            rrd.projectCode,
+            rrd.projectName,
+            rrd.medicalPrice,
+            rrd.ruleName,
+            rrd.deductPrice,
+            rrd.deductReason,
+            rrd.repaymentReason,
+            rrd.doctorName,
+            rrd.deptCode,
+            rrd.deptName,
+            rrd.costDate,
+            rrd.costDateStr,
+            rrd.hospitalizedNo,
+            rrd.treatmentMode,
+            rrd.settlementDate,
+            rrd.settlementDateStr,
+            rrd.personalNo,
+            rrd.insuredName,
+            rrd.cardNumber,
+            rrd.areaName,
+            rrd.insuredType,
+            rrd.orderNumber,
+            rrd.seekState,
+            rrd.repaymentPrice,
+            rrd.orderNum,
+            rrd.resetDate,
+            art.typeno,
+            art.applyDateStr,
+            rrd.dataType,
+            art.id,
+            art.applyDataId,
+            art.doctorCode arDoctorCode,
+            art.doctorName arDoctorName,
+            art.deptCode arDeptCode,
+            art.deptName arDeptName,
+            art.operateReason,
+            art.operateDate,
+            '' currencyField,
+            art.relatelDataId,
+            art.areaType
+        FROM
+            yb_reconsider_reset_data rrd
+            INNER JOIN yb_appeal_result art on
+                art.relatelDataId = rrd.relatelDataId AND art.sourceType = 1
+        WHERE
+            rrd.pid = #{ybAppealResultResetView.pid}
+        <if test="ybAppealResultResetView.dataType!= null and (ybAppealResultResetView.currencyField == null or ybAppealResultResetView.currencyField == '')">
+            and rrd.dataType = #{ybAppealResultResetView.dataType}
+        </if>
+        <if test="keyField == 'serialNo' and ybAppealResultResetView.currencyField != null and ybAppealResultResetView.currencyField != ''">
+            and rrd.id in (
+            select id from yb_reconsider_reset_data where pid = #{ybAppealResultResetView.pid} and serialNo = #{ ybAppealResultResetView.currencyField}
+            <if test="ybAppealResultResetView.dataType!= null">
+                and dataType = #{ybAppealResultResetView.dataType}
+            </if>
+            )
+        </if>
+        <if test="keyField == 'billNo' and ybAppealResultResetView.currencyField != null and ybAppealResultResetView.currencyField != ''">
+            and rrd.id in (
+            select id from yb_reconsider_reset_data where pid = #{ybAppealResultResetView.pid} and billNo = #{ ybAppealResultResetView.currencyField}
+            <if test="ybAppealResultResetView.dataType!= null">
+                and dataType = #{ybAppealResultResetView.dataType}
+            </if>
+            )
+        </if>
+        <if test="keyField == 'proposalCode' and ybAppealResultResetView.currencyField != null and ybAppealResultResetView.currencyField != ''">
+            and rrd.id in (
+            select id from yb_reconsider_reset_data where pid = #{ybAppealResultResetView.pid} and proposalCode = #{ ybAppealResultResetView.currencyField}
+            <if test="ybAppealResultResetView.dataType!= null">
+                and dataType = #{ybAppealResultResetView.dataType}
+            </if>
+            )
+        </if>
+        <if test="keyField == 'projectCode' and ybAppealResultResetView.currencyField != null and ybAppealResultResetView.currencyField != ''">
+            and rrd.id in (
+            select id from yb_reconsider_reset_data where pid = #{ybAppealResultResetView.pid} and projectCode = #{ ybAppealResultResetView.currencyField}
+            <if test="ybAppealResultResetView.dataType!= null">
+                and dataType = #{ybAppealResultResetView.dataType}
+            </if>
+            )
+        </if>
+        <if test="keyField == 'projectName' and ybAppealResultResetView.currencyField != null and ybAppealResultResetView.currencyField != ''">
+            and rrd.id in (
+            select id from yb_reconsider_reset_data where pid = #{ybAppealResultResetView.pid} and projectName = #{ ybAppealResultResetView.currencyField}
+            <if test="ybAppealResultResetView.dataType!= null">
+                and dataType = #{ybAppealResultResetView.dataType}
+            </if>
+            )
+        </if>
+        <if test="keyField == 'ruleName' and ybAppealResultResetView.currencyField != null and ybAppealResultResetView.currencyField != ''">
+            and rrd.id in (
+            select id from yb_reconsider_reset_data where pid = #{ybAppealResultResetView.pid} and ruleName = #{ ybAppealResultResetView.currencyField}
+            <if test="ybAppealResultResetView.dataType!= null">
+                and dataType = #{ybAppealResultResetView.dataType}
+            </if>
+            )
+        </if>
+        <if test="keyField == 'orderNumber' and ybAppealResultResetView.currencyField != null and ybAppealResultResetView.currencyField != ''">
+            and rrd.id in (
+            select id from yb_reconsider_reset_data where pid = #{ybAppealResultResetView.pid} and orderNumber = #{ ybAppealResultResetView.currencyField}
+            <if test="ybAppealResultResetView.dataType!= null">
+                and dataType = #{ybAppealResultResetView.dataType}
+            </if>
+            )
+        </if>
+            <if test="keyField == 'doctorCode' and ybAppealResultResetView.currencyField != null and ybAppealResultResetView.currencyField != ''">
+                and art.id in (
+                select id from yb_appeal_result where applyDateStr = #{ybAppealResultResetView.applyDateStr} and
+                areaType = #{ybAppealResultResetView.areaType} and sourceType = 1
+                and doctorCode = #{ ybAppealResultResetView.currencyField}
+                <if test="ybAppealResultResetView.dataType!= null">
+                    and dataType = #{ybAppealResultResetView.dataType}
+                </if>
+                )
+            </if>
+            <if test="keyField == 'doctorName' and ybAppealResultResetView.currencyField != null and ybAppealResultResetView.currencyField != ''">
+                and art.id in (
+                select id from yb_appeal_result where applyDateStr = #{ybAppealResultResetView.applyDateStr} and
+                areaType = #{ybAppealResultResetView.areaType} and sourceType = 1
+                and doctorName = #{ ybAppealResultResetView.currencyField}
+                <if test="ybAppealResultResetView.dataType!= null">
+                    and dataType = #{ybAppealResultResetView.dataType}
+                </if>
+                )
+            </if>
+    </select>
+
+    <select id="findAppealResultResetCount" resultType="Integer"
+            parameterType="cc.mrbird.febs.yb.entity.YbAppealResultResetView">
+        SELECT
+            count(1)
+        FROM
+            yb_reconsider_reset_data rrd
+        INNER JOIN yb_appeal_result art on
+            art.relatelDataId = rrd.relatelDataId AND art.sourceType = 1
+        WHERE
+        rrd.pid = #{ybAppealResultResetView.pid}
+        <if test="ybAppealResultResetView.dataType!= null and (ybAppealResultResetView.currencyField == null or ybAppealResultResetView.currencyField == '')">
+            and rrd.dataType = #{ybAppealResultResetView.dataType}
+        </if>
+        <if test="keyField == 'serialNo' and ybAppealResultResetView.currencyField != null and ybAppealResultResetView.currencyField != ''">
+            and rrd.id in (
+            select id from yb_reconsider_reset_data where pid = #{ybAppealResultResetView.pid} and serialNo = #{ ybAppealResultResetView.currencyField}
+            <if test="ybAppealResultResetView.dataType!= null">
+                and dataType = #{ybAppealResultResetView.dataType}
+            </if>
+            )
+        </if>
+        <if test="keyField == 'billNo' and ybAppealResultResetView.currencyField != null and ybAppealResultResetView.currencyField != ''">
+            and rrd.id in (
+            select id from yb_reconsider_reset_data where pid = #{ybAppealResultResetView.pid} and billNo = #{ ybAppealResultResetView.currencyField}
+            <if test="ybAppealResultResetView.dataType!= null">
+                and dataType = #{ybAppealResultResetView.dataType}
+            </if>
+            )
+        </if>
+        <if test="keyField == 'proposalCode' and ybAppealResultResetView.currencyField != null and ybAppealResultResetView.currencyField != ''">
+            and rrd.id in (
+            select id from yb_reconsider_reset_data where pid = #{ybAppealResultResetView.pid} and proposalCode = #{ ybAppealResultResetView.currencyField}
+            <if test="ybAppealResultResetView.dataType!= null">
+                and dataType = #{ybAppealResultResetView.dataType}
+            </if>
+            )
+        </if>
+        <if test="keyField == 'projectCode' and ybAppealResultResetView.currencyField != null and ybAppealResultResetView.currencyField != ''">
+            and rrd.id in (
+            select id from yb_reconsider_reset_data where pid = #{ybAppealResultResetView.pid} and projectCode = #{ ybAppealResultResetView.currencyField}
+            <if test="ybAppealResultResetView.dataType!= null">
+                and dataType = #{ybAppealResultResetView.dataType}
+            </if>
+            )
+        </if>
+        <if test="keyField == 'projectName' and ybAppealResultResetView.currencyField != null and ybAppealResultResetView.currencyField != ''">
+            and rrd.id in (
+            select id from yb_reconsider_reset_data where pid = #{ybAppealResultResetView.pid} and projectName = #{ ybAppealResultResetView.currencyField}
+            <if test="ybAppealResultResetView.dataType!= null">
+                and dataType = #{ybAppealResultResetView.dataType}
+            </if>
+            )
+        </if>
+        <if test="keyField == 'ruleName' and ybAppealResultResetView.currencyField != null and ybAppealResultResetView.currencyField != ''">
+            and rrd.id in (
+            select id from yb_reconsider_reset_data where pid = #{ybAppealResultResetView.pid} and ruleName = #{ ybAppealResultResetView.currencyField}
+            <if test="ybAppealResultResetView.dataType!= null">
+                and dataType = #{ybAppealResultResetView.dataType}
+            </if>
+            )
+        </if>
+        <if test="keyField == 'orderNumber' and ybAppealResultResetView.currencyField != null and ybAppealResultResetView.currencyField != ''">
+            and rrd.id in (
+            select id from yb_reconsider_reset_data where pid = #{ybAppealResultResetView.pid} and orderNumber = #{ ybAppealResultResetView.currencyField}
+            <if test="ybAppealResultResetView.dataType!= null">
+                and dataType = #{ybAppealResultResetView.dataType}
+            </if>
+            )
+        </if>
+        <if test="keyField == 'doctorCode' and ybAppealResultResetView.currencyField != null and ybAppealResultResetView.currencyField != ''">
+            and art.id in (
+            select id from yb_appeal_result where applyDateStr = #{ybAppealResultResetView.applyDateStr} and
+            areaType = #{ybAppealResultResetView.areaType} and sourceType = 1
+            and doctorCode = #{ ybAppealResultResetView.currencyField}
+            <if test="ybAppealResultResetView.dataType!= null">
+                and dataType = #{ybAppealResultResetView.dataType}
+            </if>
+            )
+        </if>
+        <if test="keyField == 'doctorName' and ybAppealResultResetView.currencyField != null and ybAppealResultResetView.currencyField != ''">
+            and art.id in (
+            select id from yb_appeal_result where applyDateStr = #{ybAppealResultResetView.applyDateStr} and
+            areaType = #{ybAppealResultResetView.areaType} and sourceType = 1
+            and doctorName = #{ ybAppealResultResetView.currencyField}
+            <if test="ybAppealResultResetView.dataType!= null">
+                and dataType = #{ybAppealResultResetView.dataType}
+            </if>
+            )
+        </if>
+    </select>
+
+    <select id="findAppealResultResetList" resultType="cc.mrbird.febs.yb.entity.YbAppealResultResetView"
+            parameterType="cc.mrbird.febs.yb.entity.YbAppealResultResetView">
+        SELECT
+        rrd.id resetDataId,
+        rrd.pid,
+        rrd.serialNo,
+        rrd.billNo,
+        rrd.projectCode,
+        rrd.projectName,
+        rrd.medicalPrice,
+        rrd.ruleName,
+        rrd.deductPrice,
+        rrd.deductReason,
+        rrd.repaymentReason,
+        rrd.doctorName,
+        rrd.deptCode,
+        rrd.deptName,
+        rrd.costDate,
+        rrd.costDateStr,
+        rrd.hospitalizedNo,
+        rrd.treatmentMode,
+        rrd.settlementDate,
+        rrd.settlementDateStr,
+        rrd.personalNo,
+        rrd.insuredName,
+        rrd.cardNumber,
+        rrd.areaName,
+        rrd.insuredType,
+        rrd.orderNumber,
+        rrd.seekState,
+        rrd.repaymentPrice,
+        rrd.orderNum,
+        rrd.resetDate,
+        art.typeno,
+        art.applyDateStr,
+        rrd.dataType,
+        art.id,
+        art.applyDataId,
+        art.doctorCode arDoctorCode,
+        art.doctorName arDoctorName,
+        art.deptCode arDeptCode,
+        art.deptName arDeptName,
+        art.operateReason,
+        art.operateDate,
+        '' currencyField,
+        art.relatelDataId,
+        art.areaType
+        FROM
+            yb_reconsider_reset_data rrd
+        LEFT JOIN yb_appeal_result art on
+            art.relatelDataId = rrd.relatelDataId
+            AND art.sourceType = 1
+        WHERE
+            rrd.pid = #{ybAppealResultResetView.pid}
+    </select>
+
+</mapper>

@@ -544,12 +544,17 @@ public class YbReconsiderApplyServiceImpl extends ServiceImpl<YbReconsiderApplyM
         int typeno = 1;
         YbReconsiderApply reconsiderApply = this.findReconsiderApplyByApplyDateStrs(applyDateStr, areaType);
         if (reconsiderApply != null) {
-            int state = reconsiderApply.getState() != null ? reconsiderApply.getState() : 1;
-            typeno = state == YbDefaultValue.APPLYSTATE_2 || state == YbDefaultValue.APPLYSTATE_3 ? YbDefaultValue.TYPENO_1 :
-                    state == YbDefaultValue.APPLYSTATE_4 || state == YbDefaultValue.APPLYSTATE_5 ? YbDefaultValue.TYPENO_2 :
-                            state > 5 ? 3 : 1;
+            typeno = this.getTypeno(reconsiderApply);
 
         }
+        return typeno;
+    }
+    @Override
+    public int getTypeno(YbReconsiderApply reconsiderApply){
+        int state = reconsiderApply.getState() != null ? reconsiderApply.getState() : 1;
+        int typeno = state == YbDefaultValue.APPLYSTATE_2 || state == YbDefaultValue.APPLYSTATE_3 ? YbDefaultValue.TYPENO_1 :
+                state == YbDefaultValue.APPLYSTATE_4 || state == YbDefaultValue.APPLYSTATE_5 ? YbDefaultValue.TYPENO_2 :
+                        state > 5 ? 3 : 1;
         return typeno;
     }
 

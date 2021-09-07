@@ -19,6 +19,7 @@ import com.wuwenze.poi.ExcelKit;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.ui.ModelMap;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -252,4 +253,46 @@ public class YbReconsiderApplyController extends BaseController {
         rr.setMessage(message);
         return  new FebsResponse().data(rr);
     }
+
+    @GetMapping("getReconsiderApply")
+    public FebsResponse getReconsiderApplys(String applyDateStr,Integer areaType) {
+        ModelMap map = new ModelMap();
+        int success = 0;
+        int typeno = 1;
+        YbReconsiderApply reconsiderApply = null;
+        try {
+            reconsiderApply = this.iYbReconsiderApplyService.findReconsiderApplyByApplyDateStrs(applyDateStr, areaType);
+            if(reconsiderApply != null) {
+                typeno = this.iYbReconsiderApplyService.getTypeno(reconsiderApply);
+            }
+            success = 1;
+            message = "";
+        }catch (Exception e){
+            message = "获取状态值失败";
+            log.error(message, e);
+        }
+        map.put("apply",reconsiderApply);
+        map.put("message",message);
+        map.put("success",success);
+        map.put("typeno",typeno);
+        return  new FebsResponse().data(map);
+    }
+    @Log("修改")
+    @PutMapping("updateReconsiderApply")
+    @RequiresPermissions("ybReconsiderApply:update")
+    public FebsResponse updateReconsiderApplys(@Valid YbReconsiderApply ybReconsiderApply){
+        int success = 0;
+        try {
+            this.iYbReconsiderApplyService.updateYbReconsiderApply(ybReconsiderApply);
+            success = 1;
+        } catch (Exception e) {
+            message = "修改失败";
+            log.error(message, e);
+        }
+        ResponseResult rr = new ResponseResult();
+        rr.setSuccess(success);
+        rr.setMessage(message);
+        return  new FebsResponse().data(rr);
+    }
+
 }

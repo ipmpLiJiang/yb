@@ -170,7 +170,7 @@ export default {
     border: 1px solid #ccc;
   }
   .editorContent {
-    height:350px;
+    height:380px;
     max-height:380px;
     border:1px solid #ccc;
     word-wrap: break-all;
