@@ -233,7 +233,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             if (user.getXmname() != null) {
                 queryWrapper.eq(User::getXmname, user.getXmname());
             }
-            if (user.getMobile()!= null) {
+            if (user.getMobile() != null) {
                 queryWrapper.eq(User::getMobile, user.getMobile());
             }
             list = this.list(queryWrapper);
@@ -243,12 +243,15 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
     @Override
     @Transactional
-    public void resetPassword(String[] usernames) throws Exception {
+    public void resetPassword(String[] usernames,String pwd) throws Exception {
         for (String username : usernames) {
 
             User user = new User();
-            user.setPassword(MD5Util.encrypt(username, User.DEFAULT_PASSWORD));
-
+            if(pwd == null || pwd.equals("")) {
+                user.setPassword(MD5Util.encrypt(username, User.DEFAULT_PASSWORD));
+            } else {
+                user.setPassword(MD5Util.encrypt(username, pwd));
+            }
             this.baseMapper.update(user, new LambdaQueryWrapper<User>().eq(User::getUsername, username));
             // 重新将用户信息加载到 redis中
             cacheService.saveUser(username);
@@ -257,25 +260,25 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     }
 
     @Override
-    public void saveConfUser(String[] userName,boolean isLly,boolean isSaveOrDel) throws Exception {
+    public void saveConfUser(String[] userName, boolean isLly, boolean isSaveOrDel) throws Exception {
         List<Role> roleList = roleService.findRoleConfLists(8);
 
-        if(roleList.size() > 0) {
+        if (roleList.size() > 0) {
             List<UserRole> userRoleList = this.userRoleService.findUserRoleLists(userName);
             if (userRoleList.size() > 0) {
                 List<Long> idList = new ArrayList<>();
-                for (UserRole item:userRoleList){
-                    if(idList.stream().filter(s->s.equals(item.getUserId())).count()==0){
+                for (UserRole item : userRoleList) {
+                    if (idList.stream().filter(s -> s.equals(item.getUserId())).count() == 0) {
                         idList.add(item.getUserId());
                     }
                 }
                 LambdaQueryWrapper<User> queryUserWrapper = new LambdaQueryWrapper<>();
-                queryUserWrapper.in(User::getUserId,idList);
+                queryUserWrapper.in(User::getUserId, idList);
                 List<User> userList = this.list(queryUserWrapper);
-                for(User user : userList) {
+                for (User user : userList) {
                     Long userId = user.getUserId();
-                    List<UserRole> queryUserRoleList = userRoleList.stream().filter(s->s.getUserId().equals(userId)).collect(Collectors.toList());
-                    String roleId = this.getRoleId(roleList, queryUserRoleList,isLly, isSaveOrDel);
+                    List<UserRole> queryUserRoleList = userRoleList.stream().filter(s -> s.getUserId().equals(userId)).collect(Collectors.toList());
+                    String roleId = this.getRoleId(roleList, queryUserRoleList, isLly, isSaveOrDel);
                     if (roleId != null && !roleId.equals("")) {
                         user.setRoleId(roleId);
                         this.updateUser(user);
@@ -285,28 +288,28 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         }
     }
 
-    private String getRoleId(List<Role> roleList,List<UserRole> userRoleList,boolean isLly,boolean isSaveOrDel){
+    private String getRoleId(List<Role> roleList, List<UserRole> userRoleList, boolean isLly, boolean isSaveOrDel) {
         String roleId = "";
         //原本角色
-        List<String> cleanRoleList = this.cleanRole(roleList,userRoleList);
-        if(isSaveOrDel) {
+        List<String> cleanRoleList = this.cleanRole(roleList, userRoleList);
+        if (isSaveOrDel) {
             boolean isUpdate = false;
             //去除原本角色
-            List<UserRole> cleanUserRoleList = this.cleanUserRole(cleanRoleList,userRoleList);
-            if(!isLly) {
+            List<UserRole> cleanUserRoleList = this.cleanUserRole(cleanRoleList, userRoleList);
+            if (!isLly) {
                 // 1 代表 联络员 角色 0 代表非联络员 角色
-                roleList = roleList.stream().filter(s->s.getRemark().equals("0")).collect(Collectors.toList());
+                roleList = roleList.stream().filter(s -> s.getRemark().equals("0")).collect(Collectors.toList());
             }
             //原本无科室角色
-            if(cleanUserRoleList.size() == 0 || cleanUserRoleList.size() != roleList.size()){
-                for (Role role: roleList){
+            if (cleanUserRoleList.size() == 0 || cleanUserRoleList.size() != roleList.size()) {
+                for (Role role : roleList) {
                     if (roleId.equals("")) {
                         roleId = role.getRoleId().toString();
                     } else {
                         roleId += "," + role.getRoleId().toString();
                     }
                 }
-                for(String role : cleanRoleList) {
+                for (String role : cleanRoleList) {
                     roleId += "," + role;
                 }
             }
@@ -327,8 +330,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 //                    roleId += "," + userRole.getRoleId();
 //                }
 //            }
-        }else{
-            for(String role : cleanRoleList) {
+        } else {
+            for (String role : cleanRoleList) {
                 if (roleId.equals("")) {
                     roleId = role;
                 } else {
@@ -337,10 +340,10 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             }
         }
 
-        return  roleId;
+        return roleId;
     }
 
-    private List<String> cleanRole(List<Role> roleList,List<UserRole> userRoleList){
+    private List<String> cleanRole(List<Role> roleList, List<UserRole> userRoleList) {
         List<Role> query = new ArrayList<>();
         List<String> roleIdList = new ArrayList<>();
         for (UserRole item : userRoleList) {
@@ -349,14 +352,14 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
                 roleIdList.add(item.getRoleId().toString());
             }
         }
-        return  roleIdList;
+        return roleIdList;
     }
 
-    private List<UserRole> cleanUserRole(List<String> cleanRoleList,List<UserRole> userRoleList){
+    private List<UserRole> cleanUserRole(List<String> cleanRoleList, List<UserRole> userRoleList) {
         List<UserRole> list = new ArrayList<>();
-        for(UserRole userRole : userRoleList) {
+        for (UserRole userRole : userRoleList) {
             String role = userRole.getRoleId().toString();
-            if(role!=null) {
+            if (role != null) {
                 long count = cleanRoleList.stream().filter(s -> s.equals(role)).count();
                 if (count == 0) {
                     list.add(userRole);
@@ -418,9 +421,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
                     User user = new User();
                     user.setCreateTime(new Date());
                     user.setAvatar(User.DEFAULT_AVATAR);
-                    if(userRole.getPassword()!=null && !"".equals(userRole.getPassword())) {
+                    if (userRole.getPassword() != null && !"".equals(userRole.getPassword())) {
                         user.setPassword(MD5Util.encrypt(userRole.getUserName(), userRole.getPassword()));
-                    }else{
+                    } else {
                         user.setPassword(MD5Util.encrypt(userRole.getUserName(), User.DEFAULT_PASSWORD));
                     }
                     searchDeptList = deptList.stream().filter(
@@ -471,6 +474,22 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         return msg;
     }
 
+    //    @Override
+//    @Transactional
+    public String updateUserPwd(List<UserRolesImport> userRoleList) throws Exception {
+        List<User> userList = this.list();
+
+        for (UserRolesImport userRole : userRoleList) {
+            User user = new User();
+            user.setPassword(MD5Util.encrypt(userRole.getUserName(), userRole.getPassword()));
+
+            this.baseMapper.update(user, new LambdaQueryWrapper<User>().eq(User::getUsername, userRole.getUserName()));
+            // 重新将用户信息加载到 redis中
+            cacheService.saveUser(userRole.getUserName());
+        }
+        return "";
+    }
+
     private void setUserRoles(User user, String[] roles) {
         Arrays.stream(roles).forEach(roleId -> {
             UserRole ur = new UserRole();
@@ -481,23 +500,23 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     }
 
     @Override
-    public List<User> findUserList(User user){
+    public List<User> findUserList(User user) {
         List<User> list = new ArrayList<>();
         LambdaQueryWrapper<User> wrapper = new LambdaQueryWrapper<>();
 
-        if(user.getUsername()!=null){
-            wrapper.eq(User::getUsername,user.getUsername());
+        if (user.getUsername() != null) {
+            wrapper.eq(User::getUsername, user.getUsername());
         }
-        if(user.getUserId()!=null){
-            wrapper.eq(User::getUserId,user.getUserId());
+        if (user.getUserId() != null) {
+            wrapper.eq(User::getUserId, user.getUserId());
         }
-        if(user.getXmname()!=null){
-            wrapper.eq(User::getXmname,user.getXmname());
+        if (user.getXmname() != null) {
+            wrapper.eq(User::getXmname, user.getXmname());
         }
-        if(user.getMobile()!=null){
-            wrapper.eq(User::getMobile,user.getMobile());
+        if (user.getMobile() != null) {
+            wrapper.eq(User::getMobile, user.getMobile());
         }
-        wrapper.eq(User::getStatus,User.STATUS_VALID);
+        wrapper.eq(User::getStatus, User.STATUS_VALID);
         list = this.list(wrapper);
         return list;
     }

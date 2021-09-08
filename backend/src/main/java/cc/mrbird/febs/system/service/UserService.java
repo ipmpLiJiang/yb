@@ -94,7 +94,7 @@ public interface UserService extends IService<User> {
      *
      * @param usernames 用户集合
      */
-    void resetPassword(String[] usernames) throws Exception;
+    void resetPassword(String[] usernames,String pwd) throws Exception;
 
     List<User> findUserList(User user, int type);
 

@@ -278,10 +278,10 @@ public class UserController extends BaseController {
 
     @PutMapping("password/reset")
     @RequiresPermissions("user:reset")
-    public void resetPassword(@NotBlank(message = "{required}") String usernames) throws FebsException {
+    public void resetPassword(@NotBlank(message = "{required}") String usernames,String pwd) throws FebsException {
         try {
             String[] usernameArr = usernames.split(StringPool.COMMA);
-            this.userService.resetPassword(usernameArr);
+            this.userService.resetPassword(usernameArr,pwd);
         } catch (Exception e) {
             message = "重置用户密码失败";
             log.error(message, e);

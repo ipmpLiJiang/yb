@@ -64,6 +64,7 @@
               上传用户
             </a-upload>
             </a-menu-item>
+            <a-menu-item v-hasPermission="['user:reset']" key="password-reset1" @click="showPwd">密码重置1</a-menu-item>
           </a-menu>
           <a-button>
             更多操作 <a-icon type="down" />
@@ -115,6 +116,43 @@
       @success="handleUserEditSuccess"
       :userEditVisiable="userEdit.visiable">
     </user-edit>
+    <!--修改密码Modal-->
+    <template>
+      <div>
+        <a-modal
+          v-model="visiblePwd"
+          title="默认修改密码 1234qwer"
+          on-ok="pwdOk"
+        >
+          <template slot="footer">
+            <a-button
+              key="back"
+              @click="pwdCancel"
+            >
+              取消
+            </a-button>
+            <a-popconfirm
+              title="确定修改密码？"
+              @confirm="pwdOk"
+              okText="确定"
+              cancelText="取消"
+            >
+              <a-button type="primary" >确定</a-button>
+            </a-popconfirm>
+          </template>
+          <a-row>
+            {{selectUserName}}
+          </a-row>
+          <a-row>
+            <a-form-item
+              label="密码"
+            >
+              <a-input-password placeholder="输入新密码" v-model="userPwd" />
+            </a-form-item>
+      </a-row>
+        </a-modal>
+      </div>
+    </template>
   </a-card>
 </template>
 
@@ -146,6 +184,9 @@ export default {
       sortedInfo: null,
       paginationInfo: null,
       dataSource: [],
+      userPwd: '1234qwer',
+      visiblePwd: false,
+      selectUserName: '',
       selectedRowKeys: [],
       loading: false,
       fileList: [],
@@ -245,6 +286,67 @@ export default {
     this.fetch()
   },
   methods: {
+    showPwd () {
+      if (!this.selectedRowKeys.length) {
+        this.$message.warning('请选择需要重置密码的用户')
+        return
+      }
+      this.selectUserName = ''
+      let isAdm = false
+      let selectedRowKeysStr = ',' + this.selectedRowKeys.join(',') + ','
+      this.dataSource.filter(f => { return selectedRowKeysStr.indexOf(',' + f.userId + ',') > -1 }).map(m => {
+        if (this.selectUserName === '') {
+          this.selectUserName += '您已选择：' + m.username + '' + m.xmname
+        } else {
+          this.selectUserName += ' , ' + m.username + '' + m.xmname
+        }
+        if (m.username === 'mrbird') {
+          isAdm = true
+        }
+      })
+      if (isAdm) {
+        this.$message.warning('不能选择mrbird用户修改密码.')
+        return
+      }
+      this.userPwd = '1234qwer'
+      this.visiblePwd = true
+    },
+    pwdCancel () {
+      this.visiblePwd = false
+    },
+    pwdOk () {
+      if (!this.selectedRowKeys.length) {
+        this.$message.warning('请选择需要重置密码的用户')
+        return
+      }
+      let that = this
+      let isAdm = false
+      let usernames = []
+      let selectedRowKeysStr = ',' + that.selectedRowKeys.join(',') + ','
+      usernames.push(
+        that.dataSource.filter(f => { return selectedRowKeysStr.indexOf(',' + f.userId + ',') > -1 }).map(m => {
+          if (m.username !== 'mrbird') {
+            return m.username
+          } else {
+            isAdm = true
+            return m.username
+          }
+        })
+      )
+      if (isAdm) {
+        this.$message.warning('不能选择mrbird用户修改密码.')
+        return
+      }
+      that.$put('user/password/reset', {
+        usernames: usernames.join(','),
+        pwd: this.userPwd
+      }).then(() => {
+        that.$message.success('重置用户密码成功')
+        that.selectedRowKeys = []
+        this.visiblePwd = false
+      })
+      this.userPwd = '1234qwer'
+    },
     exportUserTemp () {
       this.$download('user/exportUser', {
       }, '用户信息.xlsx')
