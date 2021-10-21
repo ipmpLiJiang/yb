@@ -187,8 +187,8 @@ public class YbReconsiderVerifyServiceImpl extends ServiceImpl<YbReconsiderVerif
                     intList.add(4);// 住院默认顺序
                     intList.add(7);// 门诊默认顺序
                     List<ComConfiguremanage> configListA = this.iComConfiguremanageService.getConfigLists(intList);
-                    List<ComConfiguremanage> configZyList = configListA.stream().filter(s->s.getConfigureType().equals(4)).collect(Collectors.toList());
-                    List<ComConfiguremanage> configMzList = configListA.stream().filter(s->s.getConfigureType().equals(7)).collect(Collectors.toList());
+                    List<ComConfiguremanage> configZyList = configListA.stream().filter(s -> s.getConfigureType().equals(4)).collect(Collectors.toList());
+                    List<ComConfiguremanage> configMzList = configListA.stream().filter(s -> s.getConfigureType().equals(7)).collect(Collectors.toList());
                     List<ComConfiguremanage> configList = new ArrayList<>();
 
                     List<YbReconsiderVerify> createList = new ArrayList<>();
@@ -717,7 +717,7 @@ public class YbReconsiderVerifyServiceImpl extends ServiceImpl<YbReconsiderVerif
 //        List<YbPerson> personList = iYbPersonService.findPersonList(new YbPerson(), 0);
 //        List<YbPerson> queryPersonList = new ArrayList<>();
 
-                List<YbDept> createDeptList = new ArrayList<>();
+        List<YbDept> createDeptList = new ArrayList<>();
         List<YbReconsiderVerify> queryList = new ArrayList<>();
         List<YbReconsiderVerify> createList = new ArrayList<>();
         List<YbReconsiderVerify> updateList = new ArrayList<>();
@@ -1082,26 +1082,26 @@ public class YbReconsiderVerifyServiceImpl extends ServiceImpl<YbReconsiderVerif
                                 if (userCodeList.stream().filter(s -> s.equals(ybReconsiderVerify.getVerifyDoctorCode())).count() == 0) {
                                     if (smsList.stream().filter(s -> s.getSendcode().equals(ybReconsiderVerify.getVerifyDoctorCode())).count() == 0) {
                                         userCodeList.add(ybReconsiderVerify.getVerifyDoctorCode());
-
-                                        if (Validator.isMobile(queryPersonList.get(0).getTel())) {
-                                            ComSms comSms = new ComSms();
-                                            comSms.setId(UUID.randomUUID().toString());
-                                            comSms.setSendcode(queryPersonList.get(0).getPersonCode());
-                                            comSms.setSendname(queryPersonList.get(0).getPersonName());
-                                            comSms.setMobile(queryPersonList.get(0).getTel());
-                                            comSms.setSendType(ComSms.SENDTYPE_1);
-                                            comSms.setState(ComSms.STATE_0);
-                                            ;
-                                            comSms.setSendcontent(sendContent);
-                                            comSms.setOperatorId(uId);
-                                            comSms.setOperatorName(Uname);
-                                            comSms.setIsDeletemark(1);
-                                            comSms.setCreateUserId(uId);
-                                            comSms.setCreateTime(thisDate);
-                                            comSms.setAreaType(areaType);
-                                            comSms.setApplyDateStr(reconsiderApply.getApplyDateStr());
-                                            comSms.setTypeno(typeno);
-                                            iComSmsService.save(comSms);
+                                        if (queryPersonList.get(0).getTel() != null && !queryPersonList.get(0).getTel().equals("")) {
+                                            if (Validator.isMobile(queryPersonList.get(0).getTel())) {
+                                                ComSms comSms = new ComSms();
+                                                comSms.setId(UUID.randomUUID().toString());
+                                                comSms.setSendcode(queryPersonList.get(0).getPersonCode());
+                                                comSms.setSendname(queryPersonList.get(0).getPersonName());
+                                                comSms.setMobile(queryPersonList.get(0).getTel());
+                                                comSms.setSendType(ComSms.SENDTYPE_1);
+                                                comSms.setState(ComSms.STATE_0);
+                                                comSms.setSendcontent(sendContent);
+                                                comSms.setOperatorId(uId);
+                                                comSms.setOperatorName(Uname);
+                                                comSms.setIsDeletemark(1);
+                                                comSms.setCreateUserId(uId);
+                                                comSms.setCreateTime(thisDate);
+                                                comSms.setAreaType(areaType);
+                                                comSms.setApplyDateStr(reconsiderApply.getApplyDateStr());
+                                                comSms.setTypeno(typeno);
+                                                iComSmsService.save(comSms);
+                                            }
                                         }
                                     }
                                 }
@@ -1316,17 +1316,17 @@ public class YbReconsiderVerifyServiceImpl extends ServiceImpl<YbReconsiderVerif
                         remark = bb + " 复议截止日期";
                         methodName = typeno == 1 ? "oneDate" : "twoDate";
                         beanName = "appealManageTask";
-                        cron = this.getCron(endDate, type, 5,areaType);
+                        cron = this.getCron(endDate, type, 5, areaType);
                     } else if (type == 2) {
                         remark = bb + " 确认截止日期";
                         beanName = "appealManageTask";
                         methodName = "enableDate";
-                        cron = this.getCron(enableDate, 2, null,areaType);
+                        cron = this.getCron(enableDate, 2, null, areaType);
                     } else if (type == 3) {
                         beanName = "smsTask";
                         remark = bb + " 提醒申诉";
                         methodName = "sendSmsWarnTask";
-                        cron = this.getCron(endDate, 3, null,areaType);
+                        cron = this.getCron(endDate, 3, null, areaType);
                     } else {
                         msg = "noType";
                         break;
@@ -1373,7 +1373,7 @@ public class YbReconsiderVerifyServiceImpl extends ServiceImpl<YbReconsiderVerif
     }
 
 
-    private String getCron(Date date, int type, Integer addTime,int areaType) {
+    private String getCron(Date date, int type, Integer addTime, int areaType) {
         Calendar now = Calendar.getInstance();
         now.setTime(date);
         if (type == 1) {
@@ -1394,7 +1394,7 @@ public class YbReconsiderVerifyServiceImpl extends ServiceImpl<YbReconsiderVerif
         }
         //enableDate
         if (type == 2) {
-            if(areaType==0) {
+            if (areaType == 0) {
                 cron = "0 5 0 " + ri + " " + yue + " ? " + nian + "-" + nian;
             } else {
                 cron = "0 5 1 " + ri + " " + yue + " ? " + nian + "-" + nian;
@@ -1402,7 +1402,7 @@ public class YbReconsiderVerifyServiceImpl extends ServiceImpl<YbReconsiderVerif
         }
         //
         if (type == 3) {
-            if(areaType==0) {
+            if (areaType == 0) {
                 cron = "0 0/3 8 " + ri + " " + yue + " ? " + nian + "-" + nian;
             } else {
                 cron = "0 0/3 9 " + ri + " " + yue + " ? " + nian + "-" + nian;

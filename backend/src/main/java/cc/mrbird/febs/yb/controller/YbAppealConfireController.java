@@ -149,8 +149,6 @@ public class YbAppealConfireController extends BaseController {
         rrd.setMessage(message);
         rrd.setData(id);
         return new FebsResponse().data(rrd);
-
-
     }
 
     @Log("修改")

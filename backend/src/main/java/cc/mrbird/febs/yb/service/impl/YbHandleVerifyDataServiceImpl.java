@@ -294,25 +294,27 @@ public class YbHandleVerifyDataServiceImpl extends ServiceImpl<YbHandleVerifyDat
                             if (smsList.stream().filter(s -> s.getSendcode().equals(ybHandleVerifyData.getDoctorCode())).count() == 0) {
                                 userCodeList.add(ybHandleVerifyData.getDoctorCode());
 
-                                if (Validator.isMobile(queryPersonList.get(0).getTel())) {
-                                    ComSms comSms = new ComSms();
-                                    comSms.setId(UUID.randomUUID().toString());
-                                    comSms.setSendcode(queryPersonList.get(0).getPersonCode());
-                                    comSms.setSendname(queryPersonList.get(0).getPersonName());
-                                    comSms.setMobile(queryPersonList.get(0).getTel());
-                                    comSms.setSendType(ComSms.SENDTYPE_6);
-                                    comSms.setState(ComSms.STATE_0);
-                                    comSms.setAreaType(areaType);
+                                if (queryPersonList.get(0).getTel() != null && !queryPersonList.get(0).getTel().equals("")) {
+                                    if (Validator.isMobile(queryPersonList.get(0).getTel())) {
+                                        ComSms comSms = new ComSms();
+                                        comSms.setId(UUID.randomUUID().toString());
+                                        comSms.setSendcode(queryPersonList.get(0).getPersonCode());
+                                        comSms.setSendname(queryPersonList.get(0).getPersonName());
+                                        comSms.setMobile(queryPersonList.get(0).getTel());
+                                        comSms.setSendType(ComSms.SENDTYPE_6);
+                                        comSms.setState(ComSms.STATE_0);
+                                        comSms.setAreaType(areaType);
 
-                                    comSms.setSendcontent("医保管理平台提醒您，" + applyDateStr + "人工复议任务已发布，请尽快处理。");
-                                    comSms.setOperatorId(uId);
-                                    comSms.setOperatorName(Uname);
-                                    comSms.setIsDeletemark(1);
-                                    comSms.setCreateUserId(uId);
-                                    comSms.setCreateTime(thisDate);
-                                    comSms.setApplyDateStr(applyDateStr);
+                                        comSms.setSendcontent("医保管理平台提醒您，" + applyDateStr + "人工复议任务已发布，请尽快处理。");
+                                        comSms.setOperatorId(uId);
+                                        comSms.setOperatorName(Uname);
+                                        comSms.setIsDeletemark(1);
+                                        comSms.setCreateUserId(uId);
+                                        comSms.setCreateTime(thisDate);
+                                        comSms.setApplyDateStr(applyDateStr);
 //                                    comSms.setTypeno(typeno);人工复议无
-                                    saveSmsList.add(comSms);
+                                        saveSmsList.add(comSms);
+                                    }
                                 }
                             }
                         }
@@ -418,25 +420,26 @@ public class YbHandleVerifyDataServiceImpl extends ServiceImpl<YbHandleVerifyDat
                             if (userCodeList.stream().filter(s -> s.equals(ybHandleVerifyData.getDoctorCode())).count() == 0) {
                                 if (smsList.stream().filter(s -> s.getSendcode().equals(ybHandleVerifyData.getDoctorCode())).count() == 0) {
                                     userCodeList.add(ybHandleVerifyData.getDoctorCode());
-
-                                    if (Validator.isMobile(queryPersonList.get(0).getTel())) {
-                                        ComSms comSms = new ComSms();
-                                        comSms.setId(UUID.randomUUID().toString());
-                                        comSms.setSendcode(queryPersonList.get(0).getPersonCode());
-                                        comSms.setSendname(queryPersonList.get(0).getPersonName());
-                                        comSms.setMobile(queryPersonList.get(0).getTel());
-                                        comSms.setSendType(ComSms.SENDTYPE_6);
-                                        comSms.setState(ComSms.STATE_0);
-                                        comSms.setAreaType(handleVerify.getAreaType());
-                                        comSms.setSendcontent("医保管理平台提醒您，" + applyDateStr + " 人工复议任务已发布，请尽快处理。");
-                                        comSms.setOperatorId(uId);
-                                        comSms.setOperatorName(Uname);
-                                        comSms.setIsDeletemark(1);
-                                        comSms.setCreateUserId(uId);
-                                        comSms.setCreateTime(thisDate);
-                                        comSms.setApplyDateStr(applyDateStr);
+                                    if (queryPersonList.get(0).getTel() != null && !queryPersonList.get(0).getTel().equals("")) {
+                                        if (Validator.isMobile(queryPersonList.get(0).getTel())) {
+                                            ComSms comSms = new ComSms();
+                                            comSms.setId(UUID.randomUUID().toString());
+                                            comSms.setSendcode(queryPersonList.get(0).getPersonCode());
+                                            comSms.setSendname(queryPersonList.get(0).getPersonName());
+                                            comSms.setMobile(queryPersonList.get(0).getTel());
+                                            comSms.setSendType(ComSms.SENDTYPE_6);
+                                            comSms.setState(ComSms.STATE_0);
+                                            comSms.setAreaType(handleVerify.getAreaType());
+                                            comSms.setSendcontent("医保管理平台提醒您，" + applyDateStr + " 人工复议任务已发布，请尽快处理。");
+                                            comSms.setOperatorId(uId);
+                                            comSms.setOperatorName(Uname);
+                                            comSms.setIsDeletemark(1);
+                                            comSms.setCreateUserId(uId);
+                                            comSms.setCreateTime(thisDate);
+                                            comSms.setApplyDateStr(applyDateStr);
 //                                        comSms.setTypeno(typeno);//人工复议无
-                                        saveSmsList.add(comSms);
+                                            saveSmsList.add(comSms);
+                                        }
                                     }
                                 }
                             }

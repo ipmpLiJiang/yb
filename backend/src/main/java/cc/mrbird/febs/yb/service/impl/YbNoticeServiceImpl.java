@@ -383,7 +383,7 @@ public class YbNoticeServiceImpl extends ServiceImpl<YbNoticeMapper, YbNotice> i
         if (queryPersonList.size() > 0) {
             count = createSms.stream().filter(s -> s.getSendcode().equals(personCode)).count();
             if (count == 0) {
-                if (queryPersonList.get(0).getTel() != null && queryPersonList.get(0).getTel() != "") {
+                if (queryPersonList.get(0).getTel() != null && !queryPersonList.get(0).getTel().equals("")) {
                     if (Validator.isMobile(queryPersonList.get(0).getTel())) {
                         ComSms comSms = new ComSms();
                         comSms.setId(UUID.randomUUID().toString());

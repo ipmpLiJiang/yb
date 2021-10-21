@@ -130,7 +130,7 @@
             >
               <a-button type="primary">全部发送</a-button>
             </a-popconfirm>
-            <a-button type="danger" @click="showDateModal" v-show="tableSelectKey==2||tableSelectKey==3?true:false" style="margin-right: 15px">日期</a-button>
+            <a-button type="danger" @click="showDateModal" v-show="tableSelectKey==2||tableSelectKey==3||tableSelectKey==4?true:false" style="margin-right: 15px">日期</a-button>
             <a-select :value="searchDataType" style="width: 100px" @change="handleDataTypeChange"
             v-show="tableSelectKey==4?true:false"
             >

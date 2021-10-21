@@ -9,6 +9,7 @@ import cc.mrbird.febs.system.domain.User;
 import cc.mrbird.febs.yb.entity.*;
 import cc.mrbird.febs.yb.dao.YbReconsiderResetMapper;
 import cc.mrbird.febs.yb.service.*;
+import cn.hutool.core.lang.Validator;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -172,23 +173,27 @@ public class YbReconsiderResetServiceImpl extends ServiceImpl<YbReconsiderResetM
                             if (isOpenSms) {
                                 List<YbPerson> personList = iYbPersonService.findPersonResultList(ybReconsiderReset.getApplyDateStr(),ybReconsiderReset.getAreaType());
                                 for(YbPerson person : personList) {
-                                    ComSms sms = new ComSms();
-                                    sms.setId(UUID.randomUUID().toString());
-                                    sms.setSendcode(person.getPersonCode());
-                                    sms.setSendname(person.getPersonName());
-                                    sms.setMobile(person.getTel());
-                                    sms.setSendcontent(sendContent);
-                                    sms.setState(ComSms.STATE_0);
-                                    sms.setSendType(ComSms.SENDTYPE_5);
-                                    sms.setAreaType(reconsiderApply.getAreaType());
-                                    sms.setOperatorId(currentUser.getUserId());
-                                    sms.setOperatorName(currentUser.getXmname());
-                                    sms.setCreateUserId(currentUser.getUserId());
-                                    sms.setCreateTime(thisDate);
-                                    sms.setIsDeletemark(1);
-                                    sms.setApplyDateStr(reconsiderApply.getApplyDateStr());
+                                    if(person.getTel() != null && !person.getTel().equals("")) {
+                                        if (Validator.isMobile(person.getTel())) {
+                                            ComSms sms = new ComSms();
+                                            sms.setId(UUID.randomUUID().toString());
+                                            sms.setSendcode(person.getPersonCode());
+                                            sms.setSendname(person.getPersonName());
+                                            sms.setMobile(person.getTel());
+                                            sms.setSendcontent(sendContent);
+                                            sms.setState(ComSms.STATE_0);
+                                            sms.setSendType(ComSms.SENDTYPE_5);
+                                            sms.setAreaType(reconsiderApply.getAreaType());
+                                            sms.setOperatorId(currentUser.getUserId());
+                                            sms.setOperatorName(currentUser.getXmname());
+                                            sms.setCreateUserId(currentUser.getUserId());
+                                            sms.setCreateTime(thisDate);
+                                            sms.setIsDeletemark(1);
+                                            sms.setApplyDateStr(reconsiderApply.getApplyDateStr());
 //                                    sms.setTypeno(typeno);//剔除无
-                                    createSmsList.add(sms);
+                                            createSmsList.add(sms);
+                                        }
+                                    }
                                 }
                             }
 

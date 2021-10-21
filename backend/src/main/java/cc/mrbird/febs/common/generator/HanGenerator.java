@@ -22,7 +22,7 @@ public class HanGenerator {
     // 数据库密码scm_d_plan
     private static final String PASSWORD = "123456";
 
-    private static final String PageUrl = "D:/work/java/FEBS-Vue/frontend/src/views/";
+    private static final String PageUrl = "D:/java/FEBS-Vue/frontend/src/views/";
 
     public static void main(String[] args) {
 

@@ -40,7 +40,7 @@ public class Demo4URL2PDF {
         String blogURL = "http://www.micmiu.com/os/linux/shell-dev-null/";
 
         // 直接把网页内容转为PDF文件
-        String pdfFile = "D:/work/java/html/demo-URL.pdf";
+        String pdfFile = "D:/java/html/demo-URL.pdf";
         Demo4URL2PDF.parseURL2PDFFile(pdfFile, blogURL);
 
         // 把网页内容转为PDF中的Elements

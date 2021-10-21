@@ -217,7 +217,7 @@ public class ComSmsServiceImpl extends ServiceImpl<ComSmsMapper, ComSms> impleme
                     comSms.setCreateTime(new Date());
                     comSms.setTypeno(typeno);
                     comSms.setApplyDateStr(applyDateStr);
-                    if (item.getTel() != null) {
+                    if (item.getTel() != null && !item.getTel().equals("")) {
                         createList.add(comSms);
                     }
                 }
@@ -475,7 +475,7 @@ public class ComSmsServiceImpl extends ServiceImpl<ComSmsMapper, ComSms> impleme
                                 if (list.size() > 0) {
                                     long uid = 1;
                                     for (YbPerson item : list) {
-                                        if(item.getTel()!=null && item.getTel()!="") {
+                                        if(item.getTel()!=null && !item.getTel().equals("")) {
                                             ComSms comSms = new ComSms();
                                             comSms.setId(UUID.randomUUID().toString());
                                             comSms.setSendcode(item.getPersonCode());
