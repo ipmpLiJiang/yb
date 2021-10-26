@@ -344,6 +344,13 @@ private static final long serialVersionUID=1L;
     //@ExcelField(value ="是否门诊")
     private Integer isOutpfees;
 
+    /**
+     * 就诊卡号
+     */
+    @TableField("jzkh")
+    //@ExcelField(value ="就诊卡号")
+    private String jzkh;
+
     public static final String ID ="id" ;
 
     public static final String INPATIENTID ="inpatientId" ;
@@ -408,4 +415,5 @@ private static final long serialVersionUID=1L;
 
     public static final String ISOUTPFEES = "isOutpfees";
 
+    public static final String JZKH = "jzkh";
         }

@@ -15,7 +15,7 @@
     <a slot="action" slot-scope="text">action</a>
     <template
         slot="remark"
-        slot-scope="text, record"
+        slot-scope="text,record"
     >
         <a-popover placement="topLeft">
         <template slot="content">
@@ -143,6 +143,11 @@ export default {
       {
         title: '项目类型',
         dataIndex: 'itemTypeName',
+        width: 100
+      },
+      {
+        title: '门诊卡号',
+        dataIndex: 'jzkh',
         width: 100
       },
       {

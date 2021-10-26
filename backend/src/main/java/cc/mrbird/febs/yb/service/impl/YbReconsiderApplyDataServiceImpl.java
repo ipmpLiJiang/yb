@@ -404,7 +404,7 @@ public class YbReconsiderApplyDataServiceImpl extends ServiceImpl<YbReconsiderAp
                         ).collect(Collectors.toList());
                     }
                 }
-            }else {
+            } else {
                 queryRifDataList = rifDataList.stream().filter(
                         s -> s.getTransNo().equals(item.getSerialNo()) &&
                                 s.getItemName().equals(item.getProjectName()) &&
@@ -505,6 +505,7 @@ public class YbReconsiderApplyDataServiceImpl extends ServiceImpl<YbReconsiderAp
                 reconsiderInpatientfees.setState(state);
                 reconsiderInpatientfees.setAreaType(areaType);
                 reconsiderInpatientfees.setIsOutpfees(isOutpfees);
+                reconsiderInpatientfees.setJzkh(obj.getJzkh());
                 createList.add(reconsiderInpatientfees);
             }
         }

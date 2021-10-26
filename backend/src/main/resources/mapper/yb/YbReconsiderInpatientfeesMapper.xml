@@ -48,11 +48,12 @@
             <result column="IS_DELETEMARK" property="isDeletemark"/>
             <result column="areaType" property="areaType"/>
             <result column="isOutpfees" property="isOutpfees"/>
+            <result column="jzkh" property="jzkh"/>
         </resultMap>
 
         <!-- 通用查询结果列 -->
         <sql id="Base_Column_List">
-        id, inpatientId, patientName, settlementId, billNo, transNo, itemId, itemCode, itemName, itemCount, itemPrice, itemAmount, feeDate, deptId, deptName, orderDocId, orderDocName, excuteDeptId, excuteDeptName, excuteDocId, excuteDocName, settlementDate,applyDateStr,dataType,typeno,orderNumber,applyDataId,miCode,hisName,miName,dyyz,attendDocId,attendDocName,itemTypeCode,itemTypeName,feeOperatorId,feeOperatorName,feeDeptId,feeDeptName, COMMENTS, STATE, IS_DELETEMARK, areaType,isOutpfees
+        id, inpatientId, patientName, settlementId, billNo, transNo, itemId, itemCode, itemName, itemCount, itemPrice, itemAmount, feeDate, deptId, deptName, orderDocId, orderDocName, excuteDeptId, excuteDeptName, excuteDocId, excuteDocName, settlementDate,applyDateStr,dataType,typeno,orderNumber,applyDataId,miCode,hisName,miName,dyyz,attendDocId,attendDocName,itemTypeCode,itemTypeName,feeOperatorId,feeOperatorName,feeDeptId,feeDeptName, COMMENTS, STATE, IS_DELETEMARK, areaType,isOutpfees,jzkh
     </sql>
     <update id="updateYbReconsiderInpatientfees" parameterType="cc.mrbird.febs.yb.entity.YbReconsiderInpatientfees">
         update yb_reconsider_inpatientfees
@@ -100,6 +101,7 @@
 <if test="isDeletemark != null">IS_DELETEMARK=#{isDeletemark},</if>
             <if test="areaType != null">areaType=#{areaType},</if>
             <if test="isOutpfees != null">isOutpfees=#{isOutpfees},</if>
+            <if test="jzkh != null">jzkh=#{jzkh},</if>
         </trim>
                 where id=#{id}
 
@@ -186,6 +188,9 @@
         <if test="ybReconsiderInpatientfees.state != null"> and STATE =#{ ybReconsiderInpatientfees.state} </if>
         <if test="ybReconsiderInpatientfees.isDeletemark != null"> and IS_DELETEMARK =#{ ybReconsiderInpatientfees.isDeletemark} </if>
         <if test="ybReconsiderInpatientfees.areaType != null">and ybReconsiderInpatientfees.areaType =#{ ybReconsiderInpatientfees.areaType}</if>
+        <if test="ybReconsiderInpatientfees.jzkh != null and ybReconsiderInpatientfees.jzkh != ''">and ybReconsiderInpatientfees.jzkh =#{ ybReconsiderInpatientfees.jzkh}</if>
+
+
     </select>
 
 </mapper>

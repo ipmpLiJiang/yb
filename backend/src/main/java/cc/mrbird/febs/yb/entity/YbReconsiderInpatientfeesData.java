@@ -265,5 +265,11 @@ public class YbReconsiderInpatientfeesData implements Serializable {
     @ExcelField(value = "计费科室名称")
     private String feeDeptName;
 
+    /**
+     * 就诊卡号
+     */
+    @TableField("jzkh")
+    @ExcelField(value = "就诊卡号")
+    private String jzkh;
 
 }
