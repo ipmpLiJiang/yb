@@ -26,7 +26,7 @@
               />
             </a-form-item>
           </a-col>
-          <a-col :span=2 v-show="tableSelectKey==5?false:true">
+          <a-col :span=2 v-show="tableSelectKey==4?false:true">
             <a-button
               type="primary"
               @click="showSearchModal"
@@ -37,18 +37,10 @@
             type="primary"
             style="margin-right: 10px"
             @click.stop="hideMatch"
-            v-show="tableSelectKey==1||tableSelectKey==2?true:false">
+            v-show="tableSelectKey==1?true:false">
             自动匹配
           </a-button>
-          <a-popover v-model="visibleMatch" trigger="click" :title="tableSelectKey==1? '明细自动匹配':'主单自动匹配'">
-            <p slot="content" v-show="tableSelectKey==1?true:false">执行顺序：</p>
-            <p slot="content" v-show="tableSelectKey==1?true:false">
-              <a-select style="width: 180px" v-model="selectSunxu">
-                <a-select-option v-for="item in handleQueryXunxu" :key="item.value" :value="item.value">
-                  {{item.text}}
-                </a-select-option>
-              </a-select>
-            </p>
+          <a-popover v-model="visibleMatch" trigger="click" title="自动匹配">
             <p slot="content">
             <a-popconfirm
               title="确定执行匹配？"
@@ -74,7 +66,7 @@
             <a-button
               type="primary"
               style="margin-right: 10px"
-              v-show="tableSelectKey==1||tableSelectKey==2?true:false"
+              v-show="tableSelectKey==1?true:false"
               @click="showUpdateModal"
             >手动匹配</a-button>
             <a-popconfirm
@@ -103,7 +95,7 @@
             <a-popconfirm
               title="确定全部返回？"
               style="margin-right: 10px"
-              v-show="tableSelectKey==3?true:false"
+              v-show="tableSelectKey==2?true:false"
               @confirm="batchAllBack"
               okText="确定"
               cancelText="取消"
@@ -113,7 +105,7 @@
             <a-popconfirm
               title="确定批量发送？"
               style="margin-right: 10px"
-              v-show="tableSelectKey==2||tableSelectKey==3?true:false"
+              v-show="tableSelectKey==2?true:false"
               @confirm="batchSend"
               okText="确定"
               cancelText="取消"
@@ -123,40 +115,20 @@
             <a-popconfirm
               title="确定全部发送？"
               style="margin-right: 10px"
-              v-show="tableSelectKey==2||tableSelectKey==3?true:false"
+              v-show="tableSelectKey==2?true:false"
               @confirm="batchSendA"
               okText="确定"
               cancelText="取消"
             >
               <a-button type="primary">全部发送</a-button>
             </a-popconfirm>
-            <a-button type="danger" @click="showDateModal" v-show="tableSelectKey==2||tableSelectKey==3||tableSelectKey==4?true:false" style="margin-right: 15px">日期</a-button>
-            <a-select :value="searchDataType" style="width: 100px" @change="handleDataTypeChange"
-            v-show="tableSelectKey==4?true:false"
-            >
-              <a-select-option
-              v-for="d in selectDataTypeDataSource"
-              :key="d.value"
-              >
-              {{ d.text }}
-              </a-select-option>
-            </a-select>
-            <a-select :value="searchTypeno" style="width: 100px" @change="handleTypenoChange"
-            v-show="tableSelectKey==4 || tableSelectKey==5?true:false"
-            >
-              <a-select-option
-              v-for="d in selectTypenoDataSource"
-              :key="d.value"
-              >
-              {{ d.text }}
-              </a-select-option>
-            </a-select>
-            <a-button  v-show="tableSelectKey==5?false:true"
+            <a-button type="danger" @click="showDateModal" v-show="tableSelectKey==2||tableSelectKey==3||tableSelectKey==4?true:false" style="margin-right: 15px">DRG日期</a-button>
+            <a-button  v-show="tableSelectKey==4?false:true"
               type="primary"
               style="margin-right: 10px"
               @click="searchTable"
             >刷新</a-button>
-            <a-button type="primary" @click.stop="hideJob"  v-show="tableSelectKey==4?true:false">
+            <a-button type="primary" @click.stop="hideJob"  v-show="tableSelectKey==3?true:false">
               开启服务
             </a-button>
           <a-popover v-model="visibleJob" trigger="click" title="开启服务">
@@ -211,7 +183,7 @@
             <a>全部服务</a>
             </a-popconfirm>
           </a-popover>
-          <a-checkbox :checked="checked"  @change="onChange" v-show="tableSelectKey==5?true:false">
+          <a-checkbox :checked="checked"  @change="onChange" v-show="tableSelectKey==4?true:false">
             是否发送
           </a-checkbox>
           <a-input-search placeholder="请输入关键字" v-model="searchText" style="width: 200px" enter-button @search="searchTable" v-show="tableSelectKey==5?true:false" />
@@ -221,12 +193,12 @@
               okText="确定"
               style="margin-left: 10px"
               cancelText="取消"
-              v-show="tableSelectKey==5?true:false"
+              v-show="tableSelectKey==4?true:false"
             >
               <a-button type="primary">发送短信</a-button>
             </a-popconfirm>
           </a-col>
-          <a-col :span=2 v-show="tableSelectKey==1||tableSelectKey==2?true:false">
+          <a-col :span=2 v-show="tableSelectKey==1?true:false">
             <a-upload
                 name="file"
                 accept=".xlsx,.xls"
@@ -238,7 +210,7 @@
                   <a-icon type="upload" /> 上传 </a-button>
               </a-upload>
           </a-col>
-          <a-col :span=2 v-show="tableSelectKey==1||tableSelectKey==2?true:false">
+          <a-col :span=2 v-show="tableSelectKey==1?true:false">
             <a-popconfirm
               title="确定导出数据？"
               @confirm="exportExcel"
@@ -261,10 +233,10 @@
         >
           <a-tab-pane
             key="1"
-            tab="明细待核对"
+            tab="DRG待核对"
           >
-            <ybReconsiderVerify-stayed
-              ref="ybReconsiderVerifyStayed"
+            <ybDrgVerify-stayed
+              ref="ybDrgVerifyStayed"
               :applyDate='searchApplyDate'
               :searchItem='searchItem'
               @selectChangeKeyVerify="selectChangeKeyVerify"
@@ -275,74 +247,56 @@
               @batchVerifyA="batchVerifyA"
               @verifySpin="verifySpin"
             >
-            </ybReconsiderVerify-stayed>
+            </ybDrgVerify-stayed>
           </a-tab-pane>
           <a-tab-pane
             key="2"
             :forceRender="true"
-            tab="主单待核对"
+            tab="DRG已核对"
           >
-            <ybReconsiderSendStayed-main
-              ref="ybReconsiderSendStayedMain"
-              :applyDate='searchApplyDate'
+            <ybDrgSend-stayed
+              ref="ybDrgSendStayed"
               :searchItem='searchItem'
-              @showImport="showImport"
-              @handImport="handImport"
+              :applyDate='searchApplyDate'
               @verifySpin="verifySpin"
             >
-            </ybReconsiderSendStayed-main>
+            </ybDrgSend-stayed>
           </a-tab-pane>
           <a-tab-pane
             key="3"
             :forceRender="true"
-            tab="已核对"
+            tab="DRG已完成"
           >
-            <ybReconsiderSend-stayed
-              ref="ybReconsiderSendStayed"
+            <ybDrgSend-end
+              ref="ybDrgSendEnd"
               :searchItem='searchItem'
               :applyDate='searchApplyDate'
-              @verifySpin="verifySpin"
             >
-            </ybReconsiderSend-stayed>
+            </ybDrgSend-end>
           </a-tab-pane>
           <a-tab-pane
             key="4"
             :forceRender="true"
-            tab="已完成"
+            tab="DRG核对短信"
           >
-            <ybReconsiderSend-end
-              ref="ybReconsiderSendEnd"
-              :searchItem='searchItem'
-              :applyDate='searchApplyDate'
-              :searchTypeno='searchTypeno'
-              :searchDataType='searchDataType'
-            >
-            </ybReconsiderSend-end>
-          </a-tab-pane>
-          <a-tab-pane
-            key="5"
-            :forceRender="true"
-            tab="核对短信"
-          >
-            <ybReconsiderVerify-sms
-              ref="ybReconsiderVerifySms"
+            <ybDrgVerify-sms
+              ref="ybDrgVerifySms"
               :applyDateStr="searchApplyDate"
               :searchText="searchText"
               :checked="checked"
-              :searchTypeno="searchTypeno"
             >
-            </ybReconsiderVerify-sms>
+            </ybDrgVerify-sms>
           </a-tab-pane>
         </a-tabs>
       </div>
       <!-- 修改字典 -->
-      <ybReconsiderVerifyView-detail
-        ref="ybReconsiderVerifyViewDetail"
+      <ybDrgVerify-detail
+        ref="ybDrgVerifyDetail"
         @close="handleDetailClose"
         @success="handleDetailSuccess"
         :detailVisiable="detailVisiable"
       >
-      </ybReconsiderVerifyView-detail>
+      </ybDrgVerify-detail>
     </template>
     <!--筛选Modal-->
     <template>
@@ -371,21 +325,21 @@
           <p>
             <a-form-item
               v-bind="formItemLayout"
-              label="交易流水号"
+              label="科室"
             >
-              <a-input style="width: 255px"  v-model="searchItem.serial.serialNo" />
+              <a-input style="width: 255px"  v-model="searchItem.item.ks" />
             </a-form-item>
             <a-form-item
               v-bind="formItemLayout"
-              label="项目名称："
+              label="就诊记录号"
             >
-              <a-input style="width: 255px"  v-model="searchItem.project.projectName" />
+              <a-input style="width: 255px"  v-model="searchItem.item.jzjlh" />
             </a-form-item>
             <a-form-item
               v-bind="formItemLayout"
-              label="规则名称："
+              label="病案号"
             >
-              <a-input style="width: 255px" v-model="searchItem.rule.ruleName" />
+              <a-input style="width: 255px" v-model="searchItem.item.bah" />
             </a-form-item>
             <a-form-item
               v-bind="formItemLayout"
@@ -483,11 +437,11 @@
             <a-popconfirm
               title="确定匹配？"
               @confirm="handleDateOk"
-              :disabled="reconsiderApply.id == null?true:false"
+              :disabled="drgApply.id == null?true:false"
               okText="确定"
               cancelText="取消"
             >
-              <a-button type="primary" :disabled="reconsiderApply.id == null?true:false" style="margin-right: .8rem">确定</a-button>
+              <a-button type="primary" :disabled="drgApply.id == null?true:false" style="margin-right: .8rem">确定</a-button>
             </a-popconfirm>
           </template>
           <a-row>
@@ -506,13 +460,12 @@
             </a-form-item>
           <a-form-item
             v-bind="formItemLayout"
-            v-show="searchTypeno==1?true:false"
-            label="第一版截止日期"
+            label="截止日期"
           >
           <a-date-picker
-            placeholder="请输入第一版截止日期"
+            placeholder="请输入截止日期"
             style="width:220px"
-            v-model="reconsiderApply.endDateOne"
+            v-model="drgApply.endDate"
             show-time
             :format="dayFormat"/>
           </a-form-item>
@@ -520,43 +473,15 @@
         <a-row>
           <a-form-item
             v-bind="formItemLayout"
-            v-show="searchTypeno==1?true:false"
-            label="第一版确认日期"
+            label="确认日期"
           >
           <a-date-picker
-            placeholder="请输入第一版确认日期"
+            placeholder="请输入确认日期"
             style="width:220px"
-            v-model="reconsiderApply.enableDateOne"
+            v-model="drgApply.enableDate"
             :format="enableFormat"/>
           </a-form-item>
         </a-row>
-        <a-row>
-          <a-form-item
-            v-bind="formItemLayout"
-            v-show="searchTypeno==2?true:false"
-            label="第二版截止日期"
-          >
-          <a-date-picker
-            placeholder="请输入第二版截止日期"
-            style="width:220px"
-            v-model="reconsiderApply.endDateTwo"
-            show-time
-            :format="dayFormat"/>
-          </a-form-item>
-        </a-row>
-        <a-row>
-        <a-form-item
-          v-bind="formItemLayout"
-          v-show="searchTypeno==2?true:false"
-          label="第二版确认日期"
-        >
-        <a-date-picker
-          placeholder="请输入第二版确认日期"
-          style="width:220px"
-          v-model="reconsiderApply.enableDateTwo"
-          :format="enableFormat"/>
-        </a-form-item>
-      </a-row>
         </a-modal>
       </div>
     </template>
@@ -565,20 +490,19 @@
 
 <script>
 import moment from 'moment'
-import YbReconsiderVerifyStayed from './YbReconsiderVerifyStayed'
-import YbReconsiderSendStayed from './YbReconsiderSendStayed'
-import YbReconsiderSendStayedMain from './YbReconsiderSendStayedMain'
-import YbReconsiderSendEnd from './YbReconsiderSendEnd'
-import YbReconsiderVerifyViewDetail from './YbReconsiderVerifyViewDetail'
-import YbReconsiderVerifySms from './YbReconsiderVerifySms'
+import YbDrgVerifyStayed from './YbDrgVerifyStayed'
+import YbDrgSendStayed from './YbDrgSendStayed'
+import YbDrgSendEnd from './YbDrgSendEnd'
+import YbDrgVerifyDetail from './YbDrgVerifyDetail'
+import YbDrgVerifySms from './YbDrgVerifySms'
 import InputSelect from '../../common/InputSelect'
 const formItemLayout = {
   labelCol: { span: 6 },
   wrapperCol: { span: 15, offset: 1 }
 }
 export default {
-  name: 'YbReconsiderVerifyView',
-  components: { InputSelect, YbReconsiderVerifyViewDetail, YbReconsiderVerifyStayed, YbReconsiderSendStayed, YbReconsiderSendStayedMain, YbReconsiderSendEnd, YbReconsiderVerifySms },
+  name: 'ybDrgVerify',
+  components: { InputSelect, YbDrgVerifyDetail, YbDrgVerifyStayed, YbDrgSendStayed, YbDrgSendEnd, YbDrgVerifySms },
   data () {
     return {
       formItemLayout,
@@ -587,7 +511,7 @@ export default {
       enableFormat: 'YYYY-MM-DD',
       dayFormat: 'YYYY-MM-DD HH:mm:ss',
       detailVisiable: false,
-      ybReconsiderVerify: {},
+      ybDrgVerify: {},
       tableSelectKey: '1',
       searchApplyDate: this.formatDate(),
       visibleSearch: false,
@@ -600,27 +524,12 @@ export default {
       delayTime: 500,
       selectDate: {},
       fileList: [],
-      searchTypeno: 1,
-      searchDataType: 0,
-      reconsiderApply: {id: null},
+      drgApply: {id: null},
       checked: false,
       searchText: '',
-      selectSunxu: 1,
       visibleDate: false,
-      handleQueryXunxu: [
-        {text: '1、规则项目科室', value: 1},
-        {text: '2、科室项目规则', value: 2},
-        {text: '3、科室规则项目', value: 3},
-        {text: '4、项目科室规则', value: 4},
-        {text: '5、项目规则科室', value: 5},
-        {text: '6、规则科室项目', value: 6}
-      ],
-      selectTypenoDataSource: [{text: '版本一', value: 1}, {text: '版本二', value: 2}],
-      selectDataTypeDataSource: [{text: '明细扣款', value: 0}, {text: '主单扣款', value: 1}],
       searchItem: {
-        serial: {serialNo: ''},
-        project: {projectName: ''},
-        rule: {ruleName: ''},
+        item: {ks: '', jzjlh: '', bah: ''},
         dept: {deptName: ''},
         doctor: {docName: '', docCode: ''},
         order: {orderNumber: ''}
@@ -631,8 +540,7 @@ export default {
   computed: {
   },
   mounted () {
-    this.initTypeno(this.searchApplyDate)
-    this.selectSunxu = this.user.areaType.value === 0 ? 1 : 2
+    this.initApplyDate(this.searchApplyDate)
   },
   methods: {
     moment,
@@ -642,42 +550,25 @@ export default {
     },
     monthChange (date, dateString) {
       this.searchApplyDate = dateString
-      this.initTypeno(dateString)
+      this.initApplyDate(dateString)
     },
-    initTypeno (applyDateStr) {
-      this.$get('ybReconsiderApply/getReconsiderApply', {
+    initApplyDate (applyDateStr) {
+      this.$get('ybDrgApply/getDrgApply', {
         applyDateStr: applyDateStr, areaType: this.user.areaType.value
       }).then((r) => {
         if (r.data.data.success === 1) {
-          let typeno = parseInt(r.data.data.typeno)
-          this.searchTypeno = typeno === 3 ? 2 : typeno
           if (r.data.data.apply != null) {
-            if (this.searchTypeno === 1) {
-              this.reconsiderApply = {
-                id: r.data.data.apply.id,
-                endDateOne: r.data.data.apply.endDateOne,
-                enableDateOne: r.data.data.apply.enableDateOne
-              }
-            } else {
-              this.reconsiderApply = {
-                id: r.data.data.apply.id,
-                endDateTwo: r.data.data.apply.endDateTwo,
-                enableDateTwo: r.data.data.apply.enableDateTwo
-              }
+            this.drgApply = {
+              id: r.data.data.apply.id,
+              endDate: r.data.data.apply.endDate,
+              enableDate: r.data.data.apply.enableDate
             }
           } else {
-            this.reconsiderApply = {id: null}
+            this.drgApply = {id: null}
           }
         } else {
-          this.searchTypeno = 1
         }
       })
-    },
-    handleTypenoChange (value) {
-      this.searchTypeno = value
-    },
-    handleDataTypeChange (value) {
-      this.searchDataType = value
     },
     showImport (data) {
       this.visibleUpdate = true
@@ -713,51 +604,28 @@ export default {
     },
     showUpdateModal () {
       this.selectDate = {}
-      if (this.tableSelectKey === '1') {
-        this.$refs.ybReconsiderVerifyStayed.showImport()
-      } else {
-        this.$refs.ybReconsiderSendStayedMain.showImport()
-      }
+      this.$refs.ybDrgVerifyStayed.showImport()
     },
     handleUpdateOk (e) {
-      if (this.tableSelectKey === '1') {
-        this.$refs.ybReconsiderVerifyStayed.handImport(this.selectDate)
-      } else {
-        this.$refs.ybReconsiderSendStayedMain.handImport(this.selectDate)
-      }
+      this.$refs.ybDrgVerifyStayed.handImport(this.selectDate)
     },
     handleDateOk (e) {
-      if (this.reconsiderApply.id !== null) {
-        if (this.searchTypeno === 1) {
-          if (this.reconsiderApply.endDateOne === null) {
-            this.$message.warning('当前' + this.searchApplyDate + ',第一版截止日期 不能为空.')
-            return false
-          } else {
-            this.reconsiderApply.endDateOne = moment(this.reconsiderApply.endDateOne)
-          }
-          if (this.reconsiderApply.enableDateOne === null) {
-            this.$message.warning('当前' + this.searchApplyDate + ',第一版确认日期 不能为空.')
-            return false
-          } else {
-            this.reconsiderApply.enableDateOne = moment(this.reconsiderApply.enableDateOne)
-          }
+      if (this.drgApply.id !== null) {
+        if (this.drgApply.endDate === null) {
+          this.$message.warning('当前' + this.searchApplyDate + ',截止日期 不能为空.')
+          return false
         } else {
-          if (this.reconsiderApply.endDateTwo === null) {
-            this.$message.warning('当前' + this.searchApplyDate + ',第二版截止日期 不能为空.')
-            return false
-          } else {
-            this.reconsiderApply.endDateTwo = moment(this.reconsiderApply.endDateTwo)
-          }
-          if (this.reconsiderApply.enableDateTwo === null) {
-            this.$message.warning('当前' + this.searchApplyDate + ',第二版确认日期 不能为空.')
-            return false
-          } else {
-            this.reconsiderApply.enableDateTwo = moment(this.reconsiderApply.enableDateTwo)
-          }
+          this.drgApply.endDate = moment(this.drgApply.endDate)
         }
-        let ybReconsiderApply = this.reconsiderApply
-        this.$put('ybReconsiderApply/updateReconsiderApply', {
-          ...ybReconsiderApply
+        if (this.drgApply.enableDate === null) {
+          this.$message.warning('当前' + this.searchApplyDate + ',确认日期 不能为空.')
+          return false
+        } else {
+          this.drgApply.enableDate = moment(this.drgApply.enableDate)
+        }
+        let ybDrgApply = this.drgApply
+        this.$put('ybDrgApply/updateDrgApply', {
+          ...ybDrgApply
         }).then((r) => {
           if (r.data.data.success === 1) {
             this.$message.success('当前' + this.searchApplyDate + '修改日期成功.')
@@ -776,7 +644,7 @@ export default {
       this.visibleDate = false
     },
     showDateModal () {
-      if (this.reconsiderApply.id !== null) {
+      if (this.drgApply.id !== null) {
         this.visibleDate = true
       } else {
         this.$message.error('当前' + this.searchApplyDate + '无复议申请数据.')
@@ -796,7 +664,7 @@ export default {
       if (type === 5) {
         types = [1, 2, 3]
       }
-      this.$put('ybReconsiderVerify/startJob', {
+      this.$put('ybDrgVerify/startJob', {
         applyDateStr: this.searchApplyDate,
         areaType: this.user.areaType.value,
         jobTypeList: types
@@ -813,17 +681,12 @@ export default {
     deleteVerify () {
       let param = {
         applyDateStr: this.searchApplyDate,
-        areaType: this.user.areaType.value,
-        dataType: this.tableSelectKey === '2' ? 1 : 0
+        areaType: this.user.areaType.value
       }
-      this.$delete('ybReconsiderVerify/deleteVerifyState', param).then((r) => {
+      this.$delete('ybDrgVerify/deleteVerifyState', param).then((r) => {
         if (r.data.data.success === 1) {
           this.$message.success('删除成功.')
-          if (this.tableSelectKey === '2') {
-            this.$refs.ybReconsiderSendStayedMain.searchPage()
-          } else {
-            this.$refs.ybReconsiderVerifyStayed.searchPage()
-          }
+          this.$refs.ybDrgVerifyStayed.searchPage()
         } else {
           this.$message.warning(r.data.data.message)
         }
@@ -851,13 +714,13 @@ export default {
     },
     handleDetailSuccess () {
       this.detailVisiable = false
-      this.$refs.ybReconsiderVerifyStayed.search()
+      this.$refs.ybDrgVerifyStayed.search()
     },
     handleDetailClose () {
       this.detailVisiable = false
     },
     detail (record) {
-      this.$refs.ybReconsiderVerifyViewDetail.setFormValues(record)
+      this.$refs.ybDrgVerifyDetail.setFormValues(record)
       this.detailVisiable = true
     },
     beforeUpload (file) {
@@ -889,19 +752,13 @@ export default {
       const formData = new FormData()
       formData.append('file', file)
       formData.append('applyDateStr', this.searchApplyDate)
-      let dataType = this.tableSelectKey === '1' ? 0 : 1
-      formData.append('dataType', dataType)
       formData.append('areaType', this.user.areaType.value)
 
-      this.$upload('ybReconsiderVerify/importReconsiderDataVerify', formData).then((r) => {
+      this.$upload('ybDrgVerify/importDrgDataVerify', formData).then((r) => {
         if (r.data.data.success === 1) {
           this.$message.success('Excel导入成功.')
           this.spinning = false
-          if (dataType === 0) {
-            this.$refs.ybReconsiderVerifyStayed.searchPage()
-          } else {
-            this.$refs.ybReconsiderSendStayedMain.searchPage()
-          }
+          this.$refs.ybDrgVerifyStayed.searchPage()
         } else {
           this.$message.error(r.data.data.message)
           this.spinning = false
@@ -922,50 +779,20 @@ export default {
       let queryParams = {}
       queryParams.applyDateStr = this.searchApplyDate
       queryParams.state = 1
-      let dataType = this.tableSelectKey === '1' ? 0 : 1
-      queryParams.dataType = dataType
       queryParams.areaType = this.user.areaType.value
-      this.$export('ybReconsiderVerifyView/exportVerify', {
+      this.$export('ybDrgVerifyView/exportVerify', {
         ...queryParams
       })
     },
     addImport () {
       this.spinning = true
-      let url = ''
-      let param = {}
-      if (this.tableSelectKey === '2') {
-        url = 'importMainReconsiderVerify'
-        param = {
-          applyDate: this.searchApplyDate, areaType: this.user.areaType.value
-        }
-      } else {
-        let sumxu = []
-        if (this.selectSunxu === 1) {
-          sumxu = [1, 2, 3] // 1、规则项目科室
-        } else if (this.selectSunxu === 2) {
-          sumxu = [3, 2, 1] // 2、科室项目规则
-        } else if (this.selectSunxu === 3) {
-          sumxu = [3, 1, 2] // 3、科室规则项目
-        } else if (this.selectSunxu === 4) {
-          sumxu = [2, 3, 1] // 4、项目科室规则
-        } else if (this.selectSunxu === 5) {
-          sumxu = [2, 1, 3] // 5、项目规则科室
-        } else {
-          sumxu = [1, 3, 2] // 6、规则科室项目
-        }
-        url = 'importReconsiderVerify'
-        param = {
-          applyDate: this.searchApplyDate, areaType: this.user.areaType.value, sumxu: sumxu
-        }
+      let param = {
+        applyDate: this.searchApplyDate, areaType: this.user.areaType.value
       }
-      this.$post('ybReconsiderVerify/' + url, param).then(() => {
+      this.$post('ybDrgVerify/importDrgVerify', param).then(() => {
         this.spinning = false
         this.$message.success('匹配完成')
-        if (this.tableSelectKey === '2') {
-          this.$refs.ybReconsiderSendStayedMain.searchPage()
-        } else {
-          this.$refs.ybReconsiderVerifyStayed.searchPage()
-        }
+        this.$refs.ybDrgVerifyStayed.searchPage()
       }).catch(() => {
         this.spinning = false
         this.$message.error('自动匹配操作失败.')
@@ -977,32 +804,24 @@ export default {
     },
     batchAllBack () {
       this.spinning = true
-      this.$refs.ybReconsiderSendStayed.batchAllBack()
+      this.$refs.ybDrgSendStayed.batchAllBack()
     },
     batchVerify () {
       this.spinning = true
-      this.$refs.ybReconsiderVerifyStayed.batchVerify()
+      this.$refs.ybDrgVerifyStayed.batchVerify()
       this.pcmVisible = false
     },
     batchVerifyA () {
       this.spinning = true
-      this.$refs.ybReconsiderVerifyStayed.batchVerifyA()
+      this.$refs.ybDrgVerifyStayed.batchVerifyA()
     },
     batchSend () {
       this.spinning = true
-      if (this.tableSelectKey === '2') {
-        this.$refs.ybReconsiderSendStayedMain.batchSend()
-      } else {
-        this.$refs.ybReconsiderSendStayed.batchSend()
-      }
+      this.$refs.ybDrgSendStayed.batchSend()
     },
     batchSendA () {
       this.spinning = true
-      if (this.tableSelectKey === '2') {
-        this.$refs.ybReconsiderSendStayedMain.batchSendA()
-      } else {
-        this.$refs.ybReconsiderSendStayed.batchSendA()
-      }
+      this.$refs.ybDrgSendStayed.batchSendA()
     },
     confirmCancel () {
       this.pcmVisible = false
@@ -1018,9 +837,9 @@ export default {
       }
     },
     clearValue () {
-      this.searchItem.serial.serialNo = ''
-      this.searchItem.project.projectName = ''
-      this.searchItem.rule.ruleName = ''
+      this.searchItem.item.ks = ''
+      this.searchItem.item.jzjlh = ''
+      this.searchItem.item.bah = ''
       this.searchItem.dept.deptName = ''
       this.searchItem.doctor.docCode = ''
       this.searchItem.doctor.docName = ''
@@ -1033,7 +852,6 @@ export default {
         this.$put('comSms/sendSms', {
           applyDateStr: this.searchApplyDate,
           areaType: this.user.areaType.value,
-          typeno: this.searchTypeno,
           sendType: 1,
           state: 0
         }).then((r) => {
@@ -1060,15 +878,13 @@ export default {
     },
     searchPageService (key) {
       if (key === '1') {
-        this.$refs.ybReconsiderVerifyStayed.searchPage()
+        this.$refs.ybDrgVerifyStayed.searchPage()
       } else if (key === '2') {
-        this.$refs.ybReconsiderSendStayedMain.searchPage()
+        this.$refs.ybDrgSendStayed.searchPage()
       } else if (key === '3') {
-        this.$refs.ybReconsiderSendStayed.searchPage()
+        this.$refs.ybDrgSendEnd.searchPage()
       } else if (key === '4') {
-        this.$refs.ybReconsiderSendEnd.searchPage()
-      } else if (key === '5') {
-        this.$refs.ybReconsiderVerifySms.searchPage()
+        this.$refs.ybDrgVerifySms.searchPage()
       } else {
         console.log('ok')
       }

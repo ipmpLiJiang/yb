@@ -135,15 +135,15 @@ public class YbReconsiderApplyDataController extends BaseController {
     public FebsResponse getHiss(String applyDateStr, Integer areaType, Integer typeno, Integer isOutpfees) {
         int success = 0;
         try {
-            String msg = this.iYbReconsiderApplyDataService.findReconsiderApplyDataTask(applyDateStr, areaType, typeno,isOutpfees);
+            String msg = this.iYbReconsiderApplyDataService.findReconsiderApplyDataTask(applyDateStr, areaType, typeno, isOutpfees);
             if (msg.equals("no")) {
-                msg = iYbReconsiderApplyDataService.findReconsiderApplyDataNotTask(applyDateStr, areaType, typeno,isOutpfees);
+                msg = iYbReconsiderApplyDataService.findReconsiderApplyDataNotTask(applyDateStr, areaType, typeno, isOutpfees);
                 if (msg.equals("ok")) {
                     success = 1;
                 } else if (msg.equals("")) {
                     message = "未找到相关" + applyDateStr + "数据或已完成复议.";
                 } else if (msg.equals("no")) {
-                    msg = iYbReconsiderApplyDataService.findReconsiderApplyProjCodeTask(applyDateStr, areaType, typeno,isOutpfees);
+                    msg = iYbReconsiderApplyDataService.findReconsiderApplyProjCodeTask(applyDateStr, areaType, typeno, isOutpfees);
                     if (msg.equals("ok")) {
                         success = 1;
                     } else if (msg.equals("")) {
@@ -589,7 +589,7 @@ public class YbReconsiderApplyDataController extends BaseController {
                                                 ybReconsiderApply.setId(pid);
 
                                                 this.iYbReconsiderApplyDataService.importReconsiderApply(ybReconsiderApply, ListData, ListMain);
-                                                this.ybApplyDataManager.loadgetApplyDataCache(pid,queryReconsiderApply.getApplyDateStr() + "-" + areaType);
+                                                this.ybApplyDataManager.loadgetApplyDataCache(pid, queryReconsiderApply.getApplyDateStr() + "-" + areaType);
                                                 success = 1;
                                                 message = "Excel导入成功.";
                                             } else {

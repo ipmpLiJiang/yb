@@ -1,5 +1,7 @@
-package cc.mrbird.febs.com.entity;
+package cc.mrbird.febs.drg.entity;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import com.baomidou.mybatisplus.annotation.TableField;
 import java.io.Serializable;
 
@@ -16,100 +18,37 @@ import com.wuwenze.poi.annotation.ExcelField;
  * </p>
  *
  * @author viki
- * @since 2020-11-13
+ * @since 2021-11-23
  */
 
-@Excel("com_sms")
+@Excel("yb_drg_apply")
 @Data
 @Accessors(chain = true)
-public class ComSms implements Serializable , Comparable<ComSms>{
+public class YbDrgApply implements Serializable , Comparable<YbDrgApply>{
 
 private static final long serialVersionUID=1L;
 
     /**
-     * 1 核对发送
+     * 规则编号
      */
-    public static final int SENDTYPE_1 = 1 ;
-    /**
-     * 2 人工复议发送
-     */
-
-    public static final int SENDTYPE_2 = 2 ;
-    /**
-     * 3 医保办变更
-     */
-    public static final int SENDTYPE_3 = 3 ;
-
-    /**
-     * 4 管理员变更
-     */
-    public static final int SENDTYPE_4 = 4 ;
-
-    /**
-     * 5 完成剔除
-     */
-    public static final int SENDTYPE_5 = 5 ;
-
-    /**
-     * 6 人工复议
-     */
-    public static final int SENDTYPE_6 = 6 ;
-
-    /**
-     * 7 培训通知
-     */
-    public static final int SENDTYPE_7 = 7 ;
-
-    /**
-     * 8 截止日期提醒
-     */
-    public static final int SENDTYPE_8 = 8 ;
-
-    /**
-     * 10 DRG核对发生
-     */
-    public static final int SENDTYPE_10 = 10 ;
-
-    /**
-     * 0 未发送
-     */
-    public static final int STATE_0 = 0 ;
-    /**
-     * 1 已发送
-     */
-
-    public static final int STATE_1 = 1 ;
-
-    /**
-     * 信息ID
-     */
-                                @ExcelField(value ="信息ID")
+                                @ExcelField(value ="规则编号")
     private String id;
 
     /**
-     * 发送账户
+     * drg年月
      */
-            @ExcelField(value ="发送账户")
-    private String sendcode;
+    @TableField("applyDate")
+            @ExcelField(value ="drg年月")
+    private Date applyDate;
+    private transient String applyDateFrom;
+    private transient String applyDateTo;
 
     /**
-     * 发送人
+     * drg年月Str
      */
-            @ExcelField(value ="发送人")
-    private String sendname;
-
-    /**
-     * 电话号码
-     */
-            @ExcelField(value ="手机号码")
-    private String mobile;
-
-    /**
-     * 发送类型
-     */
-    @TableField("sendType")
-            @ExcelField(value ="发送类型")
-    private Integer sendType;
+    @TableField("applyDateStr")
+            @ExcelField(value ="drg年月Str")
+    private String applyDateStr;
 
     /**
      * 操作员代码
@@ -126,10 +65,27 @@ private static final long serialVersionUID=1L;
     private String operatorName;
 
     /**
-     * 发送内容
+     * 上传名称
      */
-            @ExcelField(value ="发送内容")
-    private String sendcontent;
+    @TableField("uploadFileName")
+            @ExcelField(value ="上传名称")
+    private String uploadFileName;
+
+    /**
+     * 截止时间
+     */
+    @TableField("endDate")
+            @ExcelField(value ="截止时间")
+    private Date endDate;
+    private transient String endDateFrom;
+    private transient String endDateTo;
+
+    /**
+     * 任务状态
+     */
+    @TableField("taskState")
+            @ExcelField(value ="任务状态")
+    private Integer taskState;
 
     /**
      * 备注
@@ -188,46 +144,35 @@ private static final long serialVersionUID=1L;
      * 院区
      */
     @TableField("areaType")
-    @ExcelField(value = "院区")
+            @ExcelField(value ="院区")
     private Integer areaType;
 
-
     /**
-     * 复议年月Str
+     * 确认时间
      */
-    @TableField("applyDateStr")
-    @ExcelField(value = "复议年月Str")
-    private String applyDateStr;
+    @TableField("enableDate")
+            @ExcelField(value ="确认时间")
+    private Date enableDate;
+    private transient String enableDateFrom;
+    private transient String enableDateTo;
 
-    /**
-     * 版本类型
-     */
-    @TableField("typeno")
-    //@ExcelField(value ="版本类型")
-    private Integer typeno;
 
-    /**
-     * 记录ID
-     */
-    @TableField("refTableId")
-    @ExcelField(value ="记录ID")
-    private String refTableId;
 
     public static final String ID ="id" ;
 
-    public static final String SENDCODE ="sendcode" ;
+    public static final String APPLYDATE ="applyDate" ;
 
-    public static final String SENDNAME ="sendname" ;
-
-    public static final String MOBILE ="mobile" ;
-
-    public static final String SENDTYPE ="sendType" ;
+    public static final String APPLYDATESTR ="applyDateStr" ;
 
     public static final String OPERATORID ="operatorId" ;
 
     public static final String OPERATORNAME ="operatorName" ;
 
-    public static final String SENDCONTENT ="sendcontent" ;
+    public static final String UPLOADFILENAME ="uploadFileName" ;
+
+    public static final String ENDDATE ="endDate" ;
+
+    public static final String TASKSTATE ="taskState" ;
 
     public static final String COMMENTS ="COMMENTS" ;
 
@@ -245,14 +190,10 @@ private static final long serialVersionUID=1L;
 
     public static final String AREATYPE ="areaType" ;
 
-    public static final String APPLYDATESTR = "applyDateStr";
-
-    public static final String TYPENO = "typeno";
-
-    public static final String REFTABLEID ="refTableId" ;
+    public static final String ENABLEDATE ="enableDate" ;
 
 @Override
-public int compareTo(ComSms o) {
+public int compareTo(YbDrgApply o) {
         if (this.getId() != null && o.getId() != null) {
         return this.getId().compareTo(o.getId());
         } else if (this.getId() != null) {

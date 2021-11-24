@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cc.mrbird.febs.drg.dao.YbDrgApplyDataMapper">
+
+        <!-- 通用查询映射结果 -->
+        <resultMap id="BaseResultMap" type="cc.mrbird.febs.drg.entity.YbDrgApplyData">
+                    <id column="id" property="id"/>
+                    <result column="pid" property="pid"/>
+                    <result column="orderNumber" property="orderNumber"/>
+                    <result column="orderNum" property="orderNum"/>
+                    <result column="ks" property="ks"/>
+                    <result column="jzjlh" property="jzjlh"/>
+                    <result column="bah" property="bah"/>
+                    <result column="wglx" property="wglx"/>
+                    <result column="wtms" property="wtms"/>
+                    <result column="ylzfy" property="ylzfy"/>
+                    <result column="wgje" property="wgje"/>
+                    <result column="sfbmzczjcw" property="sfbmzczjcw"/>
+                    <result column="ly" property="ly"/>
+        </resultMap>
+
+        <!-- 通用查询结果列 -->
+        <sql id="Base_Column_List">
+        id, pid, orderNumber, orderNum, ks, jzjlh, bah, wglx, wtms, ylzfy, wgje, sfbmzczjcw, ly
+    </sql>
+    <update id="updateYbDrgApplyData" parameterType="cc.mrbird.febs.drg.entity.YbDrgApplyData">
+        update yb_drg_apply_data
+        <trim prefix="set" suffixOverrides=",">
+<if test="pid != null">pid=#{pid},</if>
+<if test="orderNumber != null">orderNumber=#{orderNumber},</if>
+<if test="orderNum != null">orderNum=#{orderNum},</if>
+<if test="ks != null">ks=#{ks},</if>
+<if test="jzjlh != null">jzjlh=#{jzjlh},</if>
+<if test="bah != null">bah=#{bah},</if>
+<if test="wglx != null">wglx=#{wglx},</if>
+<if test="wtms != null">wtms=#{wtms},</if>
+<if test="ylzfy != null">ylzfy=#{ylzfy},</if>
+<if test="wgje != null">wgje=#{wgje},</if>
+<if test="sfbmzczjcw != null">sfbmzczjcw=#{sfbmzczjcw},</if>
+<if test="ly != null">ly=#{ly},</if>
+        </trim>
+                where id=#{id}
+
+    </update>
+    <select id="findYbDrgApplyData" resultType="cc.mrbird.febs.drg.entity.YbDrgApplyData" parameterType="cc.mrbird.febs.drg.entity.YbDrgApplyData">
+        select  *  from yb_drg_apply_data
+        where  1=1
+            <if test="ybDrgApplyData.id != null and ybDrgApplyData.id != ''"> and id =#{ ybDrgApplyData.id} </if>
+            <if test="ybDrgApplyData.pid != null and ybDrgApplyData.pid != ''"> and pid like concat('%', #{ ybDrgApplyData.pid} ,'%')</if>
+            <if test="ybDrgApplyData.orderNumber != null and ybDrgApplyData.orderNumber != ''"> and orderNumber like concat('%', #{ ybDrgApplyData.orderNumber} ,'%')</if>
+        <if test="ybDrgApplyData.orderNum != null"> and orderNum =#{ ybDrgApplyData.orderNum} </if>
+            <if test="ybDrgApplyData.ks != null and ybDrgApplyData.ks != ''"> and ks like concat('%', #{ ybDrgApplyData.ks} ,'%')</if>
+            <if test="ybDrgApplyData.jzjlh != null and ybDrgApplyData.jzjlh != ''"> and jzjlh like concat('%', #{ ybDrgApplyData.jzjlh} ,'%')</if>
+            <if test="ybDrgApplyData.bah != null and ybDrgApplyData.bah != ''"> and bah like concat('%', #{ ybDrgApplyData.bah} ,'%')</if>
+            <if test="ybDrgApplyData.wglx != null and ybDrgApplyData.wglx != ''"> and wglx like concat('%', #{ ybDrgApplyData.wglx} ,'%')</if>
+            <if test="ybDrgApplyData.wtms != null and ybDrgApplyData.wtms != ''"> and wtms like concat('%', #{ ybDrgApplyData.wtms} ,'%')</if>
+            <if test="ybDrgApplyData.sfbmzczjcw != null and ybDrgApplyData.sfbmzczjcw != ''"> and sfbmzczjcw like concat('%', #{ ybDrgApplyData.sfbmzczjcw} ,'%')</if>
+            <if test="ybDrgApplyData.ly != null and ybDrgApplyData.ly != ''"> and ly like concat('%', #{ ybDrgApplyData.ly} ,'%')</if>
+    </select>
+
+    <select id="findDrgApplyDataByNotVerify" resultType="cc.mrbird.febs.drg.entity.YbDrgApplyData">
+        select
+          *
+        from
+            yb_drg_apply_data
+            WHERE
+            pid= #{pid}
+            AND id not in(
+                select applyDataId from yb_drg_verify where
+                applyDateStr = #{applyDateStr} and areaType = #{areaType}
+            )
+    </select>
+
+</mapper>

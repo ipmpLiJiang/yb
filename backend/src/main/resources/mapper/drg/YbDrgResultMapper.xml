@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cc.mrbird.febs.drg.dao.YbDrgResultMapper">
+
+        <!-- 通用查询映射结果 -->
+        <resultMap id="BaseResultMap" type="cc.mrbird.febs.drg.entity.YbDrgResult">
+                    <id column="id" property="id"/>
+                    <result column="applyDataId" property="applyDataId"/>
+                    <result column="verifyId" property="verifyId"/>
+                    <result column="manageId" property="manageId"/>
+                    <result column="doctorCode" property="doctorCode"/>
+                    <result column="doctorName" property="doctorName"/>
+                    <result column="deptCode" property="deptCode"/>
+                    <result column="deptName" property="deptName"/>
+                    <result column="operateReason" property="operateReason"/>
+                    <result column="operateDate" property="operateDate"/>
+                    <result column="STATE" property="state"/>
+                    <result column="applyDateStr" property="applyDateStr"/>
+                    <result column="orderNumber" property="orderNumber"/>
+                    <result column="orderNum" property="orderNum"/>
+                    <result column="areaType" property="areaType"/>
+        </resultMap>
+
+        <!-- 通用查询结果列 -->
+        <sql id="Base_Column_List">
+        id, applyDataId, verifyId, manageId, doctorCode, doctorName, deptCode, deptName, operateReason, operateDate, STATE, applyDateStr, orderNumber, orderNum, areaType
+    </sql>
+    <update id="updateYbDrgResult" parameterType="cc.mrbird.febs.drg.entity.YbDrgResult">
+        update yb_drg_result
+        <trim prefix="set" suffixOverrides=",">
+<if test="applyDataId != null">applyDataId=#{applyDataId},</if>
+<if test="verifyId != null">verifyId=#{verifyId},</if>
+<if test="manageId != null">manageId=#{manageId},</if>
+<if test="doctorCode != null">doctorCode=#{doctorCode},</if>
+<if test="doctorName != null">doctorName=#{doctorName},</if>
+<if test="deptCode != null">deptCode=#{deptCode},</if>
+<if test="deptName != null">deptName=#{deptName},</if>
+<if test="operateReason != null">operateReason=#{operateReason},</if>
+<if test="operateDate != null">operateDate=#{operateDate},</if>
+<if test="state != null">STATE=#{state},</if>
+<if test="applyDateStr != null">applyDateStr=#{applyDateStr},</if>
+<if test="orderNumber != null">orderNumber=#{orderNumber},</if>
+<if test="orderNum != null">orderNum=#{orderNum},</if>
+<if test="areaType != null">areaType=#{areaType},</if>
+        </trim>
+                where id=#{id}
+
+    </update>
+    <select id="findYbDrgResult" resultType="cc.mrbird.febs.drg.entity.YbDrgResult" parameterType="cc.mrbird.febs.drg.entity.YbDrgResult">
+        select  *  from yb_drg_result
+        where  1=1
+            <if test="ybDrgResult.id != null and ybDrgResult.id != ''"> and id =#{ ybDrgResult.id} </if>
+            <if test="ybDrgResult.applyDataId != null and ybDrgResult.applyDataId != ''"> and applyDataId like concat('%', #{ ybDrgResult.applyDataId} ,'%')</if>
+            <if test="ybDrgResult.verifyId != null and ybDrgResult.verifyId != ''"> and verifyId like concat('%', #{ ybDrgResult.verifyId} ,'%')</if>
+            <if test="ybDrgResult.manageId != null and ybDrgResult.manageId != ''"> and manageId like concat('%', #{ ybDrgResult.manageId} ,'%')</if>
+            <if test="ybDrgResult.doctorCode != null and ybDrgResult.doctorCode != ''"> and doctorCode like concat('%', #{ ybDrgResult.doctorCode} ,'%')</if>
+            <if test="ybDrgResult.doctorName != null and ybDrgResult.doctorName != ''"> and doctorName like concat('%', #{ ybDrgResult.doctorName} ,'%')</if>
+            <if test="ybDrgResult.deptCode != null and ybDrgResult.deptCode != ''"> and deptCode like concat('%', #{ ybDrgResult.deptCode} ,'%')</if>
+            <if test="ybDrgResult.deptName != null and ybDrgResult.deptName != ''"> and deptName like concat('%', #{ ybDrgResult.deptName} ,'%')</if>
+            <if test="ybDrgResult.operateReason != null and ybDrgResult.operateReason != ''"> and operateReason like concat('%', #{ ybDrgResult.operateReason} ,'%')</if>
+        <if test="ybDrgResult.operateDateFrom!= null">
+            AND ybDrgResult.operateDate <![CDATA[ >= ]]>  operateDateFrom}
+        </if>
+        <if test="ybDrgResult.operateDateTo!= null">
+            AND ybDrgResult.operateDate <![CDATA[ <= ]]>  operateDateTo}
+        </if>
+        <if test="ybDrgResult.state != null"> and STATE =#{ ybDrgResult.state} </if>
+            <if test="ybDrgResult.applyDateStr != null and ybDrgResult.applyDateStr != ''"> and applyDateStr like concat('%', #{ ybDrgResult.applyDateStr} ,'%')</if>
+            <if test="ybDrgResult.orderNumber != null and ybDrgResult.orderNumber != ''"> and orderNumber like concat('%', #{ ybDrgResult.orderNumber} ,'%')</if>
+        <if test="ybDrgResult.orderNum != null"> and orderNum =#{ ybDrgResult.orderNum} </if>
+        <if test="ybDrgResult.areaType != null"> and areaType =#{ ybDrgResult.areaType} </if>
+</select>
+
+</mapper>

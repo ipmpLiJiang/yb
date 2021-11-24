@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cc.mrbird.febs.drg.dao.YbDrgVerifyMapper">
+
+        <!-- 通用查询映射结果 -->
+        <resultMap id="BaseResultMap" type="cc.mrbird.febs.drg.entity.YbDrgVerify">
+                    <id column="id" property="id"/>
+                    <result column="applyDataId" property="applyDataId"/>
+                    <result column="verifyDoctorCode" property="verifyDoctorCode"/>
+                    <result column="verifyDoctorName" property="verifyDoctorName"/>
+                    <result column="verifyDeptCode" property="verifyDeptCode"/>
+                    <result column="verifyDeptName" property="verifyDeptName"/>
+                    <result column="STATE" property="state"/>
+                    <result column="applyDateStr" property="applyDateStr"/>
+                    <result column="orderNumber" property="orderNumber"/>
+                    <result column="orderNum" property="orderNum"/>
+                    <result column="areaType" property="areaType"/>
+                    <result column="sendPersonId" property="sendPersonId"/>
+                    <result column="sendPersonName" property="sendPersonName"/>
+                    <result column="sendDate" property="sendDate"/>
+        </resultMap>
+
+        <!-- 通用查询结果列 -->
+        <sql id="Base_Column_List">
+        id, applyDataId, verifyDoctorCode, verifyDoctorName, verifyDeptCode, verifyDeptName, STATE, applyDateStr, orderNumber, orderNum, areaType, sendPersonId, sendPersonName, sendDate
+    </sql>
+    <update id="updateYbDrgVerify" parameterType="cc.mrbird.febs.drg.entity.YbDrgVerify">
+        update yb_drg_verify
+        <trim prefix="set" suffixOverrides=",">
+<if test="applyDataId != null">applyDataId=#{applyDataId},</if>
+<if test="verifyDoctorCode != null">verifyDoctorCode=#{verifyDoctorCode},</if>
+<if test="verifyDoctorName != null">verifyDoctorName=#{verifyDoctorName},</if>
+<if test="verifyDeptCode != null">verifyDeptCode=#{verifyDeptCode},</if>
+<if test="verifyDeptName != null">verifyDeptName=#{verifyDeptName},</if>
+<if test="state != null">STATE=#{state},</if>
+<if test="applyDateStr != null">applyDateStr=#{applyDateStr},</if>
+<if test="orderNumber != null">orderNumber=#{orderNumber},</if>
+<if test="orderNum != null">orderNum=#{orderNum},</if>
+<if test="areaType != null">areaType=#{areaType},</if>
+<if test="sendPersonId != null">sendPersonId=#{sendPersonId},</if>
+<if test="sendPersonName != null">sendPersonName=#{sendPersonName},</if>
+<if test="sendDate != null">sendDate=#{sendDate},</if>
+        </trim>
+                where id=#{id}
+
+    </update>
+    <select id="findYbDrgVerify" resultType="cc.mrbird.febs.drg.entity.YbDrgVerify" parameterType="cc.mrbird.febs.drg.entity.YbDrgVerify">
+        select  *  from yb_drg_verify
+        where  1=1
+            <if test="ybDrgVerify.id != null and ybDrgVerify.id != ''"> and id =#{ ybDrgVerify.id} </if>
+            <if test="ybDrgVerify.applyDataId != null and ybDrgVerify.applyDataId != ''"> and applyDataId like concat('%', #{ ybDrgVerify.applyDataId} ,'%')</if>
+            <if test="ybDrgVerify.verifyDoctorCode != null and ybDrgVerify.verifyDoctorCode != ''"> and verifyDoctorCode like concat('%', #{ ybDrgVerify.verifyDoctorCode} ,'%')</if>
+            <if test="ybDrgVerify.verifyDoctorName != null and ybDrgVerify.verifyDoctorName != ''"> and verifyDoctorName like concat('%', #{ ybDrgVerify.verifyDoctorName} ,'%')</if>
+            <if test="ybDrgVerify.verifyDeptCode != null and ybDrgVerify.verifyDeptCode != ''"> and verifyDeptCode like concat('%', #{ ybDrgVerify.verifyDeptCode} ,'%')</if>
+            <if test="ybDrgVerify.verifyDeptName != null and ybDrgVerify.verifyDeptName != ''"> and verifyDeptName like concat('%', #{ ybDrgVerify.verifyDeptName} ,'%')</if>
+        <if test="ybDrgVerify.state != null"> and STATE =#{ ybDrgVerify.state} </if>
+            <if test="ybDrgVerify.applyDateStr != null and ybDrgVerify.applyDateStr != ''"> and applyDateStr like concat('%', #{ ybDrgVerify.applyDateStr} ,'%')</if>
+            <if test="ybDrgVerify.orderNumber != null and ybDrgVerify.orderNumber != ''"> and orderNumber like concat('%', #{ ybDrgVerify.orderNumber} ,'%')</if>
+        <if test="ybDrgVerify.orderNum != null"> and orderNum =#{ ybDrgVerify.orderNum} </if>
+        <if test="ybDrgVerify.areaType != null"> and areaType =#{ ybDrgVerify.areaType} </if>
+            <if test="ybDrgVerify.sendPersonName != null and ybDrgVerify.sendPersonName != ''"> and sendPersonName like concat('%', #{ ybDrgVerify.sendPersonName} ,'%')</if>
+        <if test="ybDrgVerify.sendDateFrom!= null">
+            AND ybDrgVerify.sendDate <![CDATA[ >= ]]>  sendDateFrom}
+        </if>
+        <if test="ybDrgVerify.sendDateTo!= null">
+            AND ybDrgVerify.sendDate <![CDATA[ <= ]]>  sendDateTo}
+        </if>
+</select>
+
+    <select id="findDrgVerifyList" resultType="cc.mrbird.febs.drg.entity.YbDrgVerify" >
+        SELECT
+        *
+        FROM
+        yb_drg_verify
+        WHERE
+        applyDateStr = #{ applyDateStr }
+        <if test="areaType != null"> and areaType =#{ areaType } </if>
+        <if test="state != null"> and state =#{ state } </if>
+    </select>
+
+</mapper>

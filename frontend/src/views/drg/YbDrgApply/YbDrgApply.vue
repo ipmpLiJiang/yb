@@ -1,49 +1,14 @@
 <template>
-  <a-card
-    :bordered="false"
-    class="card-area"
-  >
+  <a-card :bordered="false" class="card-area">
     <div :class="advanced ? 'search' : null">
       <a-form layout="horizontal">
         <a-row>
-          <div :class="advanced ? null: 'fold'">
-            <a-col
-              :md="8"
-              :sm="24"
-            >
-              <a-form-item
-                label="操作时间"
-                v-bind="formItemLayout"
-              >
-                <a-date-picker v-model="queryParams.createTimeFrom" @change="oncreateTimeFromChange" />
-              </a-form-item>
-            </a-col>
-            <a-col
-              :md="8"
-              :sm="24"
-            >
-              <a-form-item
-                label="至"
-                v-bind="formItemLayout"
-              >
-                <a-date-picker v-model="queryParams.createTimeTo" @change="oncreateTimeToChange" />
-              </a-form-item>
-            </a-col>
-          </div>
-          <span style="float: right; margin-top: 3px;">
-            <a-button
-              type="primary"
-              @click="searchPage"
-            >查询</a-button>
-            <a-button
-              style="margin-left: 8px"
-              @click="reset"
-            >重置</a-button>
-            <a
-              @click="toggleAdvanced"
-              style="margin-left: 8px"
-            >
-              {{advanced ? '收起' : '展开'}}
+          <div :class="advanced ? null : 'fold'"></div>
+          <span style="float: right; margin-top: 3px">
+            <a-button type="primary" @click="search">查询</a-button>
+            <a-button style="margin-left: 8px" @click="reset">重置</a-button>
+            <a @click="toggleAdvanced" style="margin-left: 8px">
+              {{ advanced ? "收起" : "展开" }}
               <a-icon :type="advanced ? 'up' : 'down'" />
             </a>
           </span>
@@ -53,21 +18,20 @@
     <div>
       <div class="operator">
         <a-button
-          v-hasPermission="['ybReconsiderApply:add']"
+          v-hasPermission="['ybDrgApply:add']"
           type="primary"
           ghost
           @click="add"
-        >新增</a-button>
-        <a-button
-          v-hasPermission="['ybReconsiderApply:delete']"
-          @click="batchDelete"
-        >删除</a-button>
-        <a-dropdown v-hasPermission="['ybReconsiderApply:export']">
+          >新增</a-button
+        >
+        <a-button v-hasPermission="['ybDrgApply:delete']" @click="batchDelete"
+          >删除</a-button
+        >
+        <a-dropdown v-hasPermission="['ybDrgApply:export']">
           <a-menu slot="overlay">
-            <a-menu-item
-              key="export-data"
-              @click="exportExcel"
-            >导出Excel</a-menu-item>
+            <a-menu-item key="export-data" @click="exportExcel"
+              >导出Excel</a-menu-item
+            >
           </a-menu>
           <a-button>
             更多操作
@@ -79,32 +43,29 @@
       <a-table
         ref="TableInfo"
         :columns="columns"
-        :rowKey="record => record. id                      "
+        :rowKey="(record) => record.id"
         :dataSource="dataSource"
         :pagination="pagination"
         :loading="loading"
-        :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
+        :rowSelection="{
+          selectedRowKeys: selectedRowKeys,
+          onChange: onSelectChange,
+        }"
         @change="handleTableChange"
         :bordered="bordered"
         :scroll="{ x: 900 }"
       >
-        <template
-          slot="remark"
-          slot-scope="text, record"
-        >
+        <template slot="remark" slot-scope="text, record">
           <a-popover placement="topLeft">
             <template slot="content">
-              <div style="max-width: 200px">{{text}}</div>
+              <div style="max-width: 200px">{{ text }}</div>
             </template>
-            <p style="width: 200px;margin-bottom: 0">{{text}}</p>
+            <p style="width: 200px; margin-bottom: 0">{{ text }}</p>
           </a-popover>
         </template>
-        <template
-          slot="operation"
-          slot-scope="text, record"
-        >
+        <template slot="operation" slot-scope="text, record">
           <a-icon
-            v-hasPermission="['ybReconsiderApply:update']"
+            v-hasPermission="['ybDrgApply:update']"
             type="setting"
             theme="twoTone"
             twoToneColor="#4a9ff5"
@@ -125,14 +86,9 @@
           ></a-icon>
           </a>
           <a-divider type="vertical" />
-          <a @click="goto(record,1)">{{record.state==1||record.state==2?'上传第一版':'查看第一版'}}</a>
-          <a-divider type="vertical" />
-          <!-- 1待复议 2上传一 3申述一 4上传二 5申述二 6已剔除 7已还款 -->
-          <a @click="goto(record,2)" :disabled="record.state==3||record.state==4||record.state==5||record.state==6||record.state==7?false:true">
-            {{record.state==1||record.state==2||record.state==3||record.state==4?'上传第二版':'查看第二版'}}
-          </a>
+          <a @click="goto(record)">上传数据</a>
           <a-badge
-            v-hasNoPermission="['ybReconsiderApply:update']"
+            v-hasNoPermission="['ybDrgApply:update']"
             status="warning"
             text="无权限"
           ></a-badge>
@@ -140,24 +96,24 @@
       </a-table>
     </div>
     <!-- 新增字典 -->
-    <ybReconsiderApply-add
-      ref="ybReconsiderApplyAdd"
+    <ybDrgApply-add
+      ref="ybDrgApplyAdd"
       @close="handleAddClose"
       @success="handleAddSuccess"
       :addVisiable="addVisiable"
     >
-    </ybReconsiderApply-add>
+    </ybDrgApply-add>
     <!-- 修改字典 -->
-    <ybReconsiderApply-edit
-      ref="ybReconsiderApplyEdit"
+    <ybDrgApply-edit
+      ref="ybDrgApplyEdit"
       @close="handleEditClose"
       @success="handleEditSuccess"
       :editVisiable="editVisiable"
     >
-    </ybReconsiderApply-edit>
+    </ybDrgApply-edit>
     <!-- 审核字典 -->
     <a-modal
-      :title="uploadTitle"
+      title="上传数据"
       :visible="gotoVisiable"
       :footer="null"
       width="99%"
@@ -165,28 +121,37 @@
       :maskClosable="false"
       @cancel="handleCancel"
     >
-      <ybReconsiderApply-upload
-      ref="ybReconsiderApplyUpload"
+      <ybDrgApply-upload
+      ref="ybDrgApplyUpload"
       @cancel="handleCancel"
       >
-      </ybReconsiderApply-upload>
+      </ybDrgApply-upload>
     </a-modal>
   </a-card>
 </template>
 
 <script>
 import moment from 'moment'
-import YbReconsiderApplyAdd from './YbReconsiderApplyAdd'
-import YbReconsiderApplyEdit from './YbReconsiderApplyEdit'
-import YbReconsiderApplyUpload from './YbReconsiderApplyUpload'
+import YbDrgApplyAdd from './YbDrgApplyAdd'
+import YbDrgApplyEdit from './YbDrgApplyEdit'
+import YbDrgApplyUpload from './YbDrgApplyUpload'
 
 const formItemLayout = {
-  labelCol: { span: 8 },
-  wrapperCol: { span: 15, offset: 1 }
+  labelCol: {
+    span: 8
+  },
+  wrapperCol: {
+    span: 15,
+    offset: 1
+  }
 }
 export default {
-  name: 'YbReconsiderApply',
-  components: { YbReconsiderApplyAdd, YbReconsiderApplyEdit, YbReconsiderApplyUpload },
+  name: 'YbDrgApply',
+  components: {
+    YbDrgApplyAdd,
+    YbDrgApplyEdit,
+    YbDrgApplyUpload
+  },
   data () {
     return {
       advanced: false,
@@ -195,39 +160,25 @@ export default {
       sortedInfo: null,
       paginationInfo: null,
       formItemLayout,
+      tableFormat: 'YYYY-MM-DD',
+      tableFormat1: 'YYYY-MM-DD HH:mm:ss',
+      user: this.$store.state.account.user,
       pagination: {
         pageSizeOptions: ['10', '20', '30', '40', '100'],
         defaultCurrent: 1,
         defaultPageSize: 10,
         showQuickJumper: true,
         showSizeChanger: true,
-        onChange: (current, size) => {
-          this.pagination.defaultCurrent = current
-          this.pagination.defaultPageSize = size
-        },
         showTotal: (total, range) => `显示 ${range[0]} ~ ${range[1]} 条记录，共 ${total} 条记录`
       },
-      queryParams: {
-      },
+      queryParams: {},
       addVisiable: false,
       editVisiable: false,
+      gotoVisiable: false,
       loading: false,
-      bordered: true,
-      uploadTitle: '上传第一版',
-      tableFormat: 'YYYY-MM-DD',
-      tableFormat1: 'YYYY-MM-DD HH:mm:ss',
-      user: this.$store.state.account.user,
-      gotoVisiable: false
+      bordered: true
     }
   },
-  // watch: {
-  //   'user.areaType': {
-  //     handler (newValue, oldValue) {
-  //       console.log('旧' + oldValue + ',新' + newValue)
-  //       this.searchPage()
-  //     }
-  //   }
-  // },
   computed: {
     columns () {
       return [{
@@ -255,19 +206,9 @@ export default {
         customRender: (text, row, index) => {
           switch (text) {
             case 1:
-              return '待复议'
+              return '待上传'
             case 2:
-              return '上传一'
-            case 3:
-              return '申述一'
-            case 4:
-              return '上传二'
-            case 5:
-              return '申述二'
-            case 6:
-              return '已剔除'
-            case 7:
-              return '还款中'
+              return '已上传'
             default:
               return text
           }
@@ -275,8 +216,8 @@ export default {
         width: 80
       },
       {
-        title: '第一版截止日期',
-        dataIndex: 'endDateOne',
+        title: '截止日期',
+        dataIndex: 'endDate',
         customRender: (text, row, index) => {
           if (text !== '' && text !== null) {
             if (isNaN(text) && !isNaN(Date.parse(text))) {
@@ -288,43 +229,11 @@ export default {
             return text
           }
         },
-        width: 135
+        width: 160
       },
       {
-        title: '第一版确认日期',
-        dataIndex: 'enableDateOne',
-        customRender: (text, row, index) => {
-          if (text !== '' && text !== null) {
-            if (isNaN(text) && !isNaN(Date.parse(text))) {
-              return moment(text).format(this.tableFormat)
-            } else {
-              return text
-            }
-          } else {
-            return text
-          }
-        },
-        width: 135
-      },
-      {
-        title: '第二版截止日期',
-        dataIndex: 'endDateTwo',
-        customRender: (text, row, index) => {
-          if (text !== '' && text !== null) {
-            if (isNaN(text) && !isNaN(Date.parse(text))) {
-              return moment(text).format(this.tableFormat1)
-            } else {
-              return text
-            }
-          } else {
-            return text
-          }
-        },
-        width: 135
-      },
-      {
-        title: '第二版确认日期',
-        dataIndex: 'enableDateTwo',
+        title: '确认日期',
+        dataIndex: 'enableDate',
         customRender: (text, row, index) => {
           if (text !== '' && text !== null) {
             if (isNaN(text) && !isNaN(Date.parse(text))) {
@@ -359,7 +268,7 @@ export default {
         dataIndex: 'operation',
         scopedSlots: { customRender: 'operation' },
         fixed: 'right',
-        width: 300
+        width: 200
       }]
     }
   },
@@ -377,11 +286,16 @@ export default {
         this.queryParams.comments = ''
       }
     },
-    oncreateTimeFromChange (date, dateString) {
-      this.queryParams.createTimeFrom = dateString
+    handleCancel () {
+      this.gotoVisiable = false
+      // this.$message.success('审核上传成功')
+      this.search()
     },
-    oncreateTimeToChange (date, dateString) {
-      this.queryParams.createTimeTo = dateString
+    goto (record) {
+      setTimeout(() => {
+        this.$refs.ybDrgApplyUpload.setFormValues(record)
+      }, 200)
+      this.gotoVisiable = true
     },
     handleAddSuccess () {
       this.addVisiable = false
@@ -392,37 +306,8 @@ export default {
       this.addVisiable = false
     },
     add () {
-      this.$refs.ybReconsiderApplyAdd.setFormValues()
+      this.$refs.ybDrgApplyAdd.setFormValues()
       this.addVisiable = true
-    },
-    handleEditSuccess () {
-      this.editVisiable = false
-      // this.$message.success('修改成功')
-      this.search()
-    },
-    handleEditClose () {
-      this.editVisiable = false
-    },
-    edit (record) {
-      this.$refs.ybReconsiderApplyEdit.setFormValues(record)
-      this.editVisiable = true
-    },
-    handleCancel () {
-      this.gotoVisiable = false
-      // this.$message.success('审核上传成功')
-      this.search()
-    },
-    handleGotoClose () {
-      this.gotoVisiable = false
-      // 审核上传页面关闭刷新列表
-      this.search()
-    },
-    goto (record, typeno) {
-      this.uploadTitle = typeno === 1 ? '上传第一版' : '上传第二版'
-      setTimeout(() => {
-        this.$refs.ybReconsiderApplyUpload.setFormValues(record, typeno)
-      }, 200)
-      this.gotoVisiable = true
     },
     del (record) {
       let that = this
@@ -432,7 +317,7 @@ export default {
         centered: true,
         onOk () {
           let ybReconsiderApplyIds = record.id
-          that.$delete('ybReconsiderApply/' + ybReconsiderApplyIds).then(() => {
+          that.$delete('ybDrgApply/' + ybReconsiderApplyIds).then(() => {
             that.$message.success('删除成功')
             that.selectedRowKeys = []
             that.search()
@@ -440,6 +325,18 @@ export default {
           )
         }
       })
+    },
+    handleEditSuccess () {
+      this.editVisiable = false
+      this.$message.success('修改成功')
+      this.search()
+    },
+    handleEditClose () {
+      this.editVisiable = false
+    },
+    edit (record) {
+      this.$refs.ybDrgApplyEdit.setFormValues(record)
+      this.editVisiable = true
     },
     batchDelete () {
       if (!this.selectedRowKeys.length) {
@@ -452,13 +349,12 @@ export default {
         content: '当您点击确定按钮后，这些记录将会被彻底删除',
         centered: true,
         onOk () {
-          let ybReconsiderApplyIds = that.selectedRowKeys.join(',')
-          that.$delete('ybReconsiderApply/' + ybReconsiderApplyIds).then(() => {
+          let ybDrgApplyIds = that.selectedRowKeys.join(',')
+          that.$delete('ybDrgApply/' + ybDrgApplyIds).then(() => {
             that.$message.success('删除成功')
             that.selectedRowKeys = []
             that.search()
-          }
-          )
+          })
         },
         onCancel () {
           that.selectedRowKeys = []
@@ -466,28 +362,25 @@ export default {
       })
     },
     exportExcel () {
-      let { sortedInfo } = this
+      let {
+        sortedInfo
+      } = this
       let sortField, sortOrder
       // 获取当前列的排序和列的过滤规则
       if (sortedInfo) {
         sortField = sortedInfo.field
         sortOrder = sortedInfo.order
       }
-      this.$export('ybReconsiderApply/excel', {
+      this.$export('ybDrgApply/excel', {
         sortField: sortField,
         sortOrder: sortOrder,
         ...this.queryParams
       })
     },
-    searchPage () {
-      this.pagination.defaultCurrent = 1
-      if (this.paginationInfo) {
-        this.paginationInfo.current = this.pagination.defaultCurrent
-      }
-      this.search()
-    },
     search () {
-      let { sortedInfo } = this
+      let {
+        sortedInfo
+      } = this
       let sortField, sortOrder
       // 获取当前列的排序和列的过滤规则
       if (sortedInfo) {
@@ -504,7 +397,6 @@ export default {
       // 取消选中
       this.selectedRowKeys = []
       // 重置分页
-      this.pagination.defaultCurrent = 1
       this.$refs.TableInfo.pagination.current = this.pagination.defaultCurrent
       if (this.paginationInfo) {
         this.paginationInfo.current = this.pagination.defaultCurrent
@@ -539,21 +431,18 @@ export default {
         params.pageSize = this.pagination.defaultPageSize
         params.pageNum = this.pagination.defaultCurrent
       }
-      params.sortField = 'create_Time'
-      params.sortOrder = 'descend'
-      // params.sortOrder = 'ascend'
-      params.areaType = this.user.areaType.value
-      this.$get('ybReconsiderApply', {
+      this.$get('ybDrgApply', {
         ...params
       }).then((r) => {
         let data = r.data
-        const pagination = { ...this.pagination }
+        const pagination = {
+          ...this.pagination
+        }
         pagination.total = data.total
         this.loading = false
         this.dataSource = data.rows
         this.pagination = pagination
-      }
-      )
+      })
     }
   }
 }
@@ -561,10 +450,4 @@ export default {
 
 <style lang="less" scoped>
 @import "../../../../static/less/Common";
-</style>
-<style scoped>
-.ant-card-body {
-    padding-top: 0px;
-    zoom: 1;
-}
 </style>

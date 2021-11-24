@@ -1,22 +1,14 @@
 package cc.mrbird.febs.yb.entity;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
-
-import java.time.LocalDateTime;
-
 import com.baomidou.mybatisplus.annotation.TableField;
-
-import java.io.Serializable;
-
-
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.wuwenze.poi.annotation.Excel;
+import com.wuwenze.poi.annotation.ExcelField;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
+import java.io.Serializable;
 import java.util.Date;
-
-import com.wuwenze.poi.annotation.Excel;
-import com.wuwenze.poi.annotation.ExcelField;
 
 /**
  * <p>
@@ -27,10 +19,10 @@ import com.wuwenze.poi.annotation.ExcelField;
  * @since 2020-07-23
  */
 
-@Excel("yb_reconsider_apply")
+@Excel("yb_drg_apply")
 @Data
 @Accessors(chain = true)
-public class YbReconsiderApply implements Serializable {
+public class YbDrgApply implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -45,11 +37,6 @@ public class YbReconsiderApply implements Serializable {
     public static final int TASK_STATE_1 = 1;
 
     /**
-     * 2 审核二任务
-     */
-    public static final int TASK_STATE_2 = 2;
-
-    /**
      * id
      */
     @TableId(value = "id")
@@ -57,10 +44,10 @@ public class YbReconsiderApply implements Serializable {
     private String id;
 
     /**
-     * 复议年月
+     * drg年月
      */
     @TableField("applyDate")
-    @ExcelField(value = "复议年月")
+    @ExcelField(value = "drg年月")
     private Date applyDate;
     private transient String applyDateFrom;
     private transient String applyDateTo;
@@ -93,27 +80,6 @@ public class YbReconsiderApply implements Serializable {
     @TableField("STATE")
     @ExcelField(value = "状态")
     private Integer state;
-
-    /**
-     * 剔除状态
-     */
-    @TableField("resetState")
-    @ExcelField(value = "剔除状态")
-    private Integer resetState;
-
-    /**
-     * 申诉状态
-     */
-    @TableField("resultState")
-    @ExcelField(value = "申诉状态")
-    private Integer resultState;
-
-    /**
-     * 还款状态
-     */
-    @TableField("repayState")
-    @ExcelField(value = "还款状态")
-    private Integer repayState;
 
     /**
      * 任务状态
@@ -170,56 +136,30 @@ public class YbReconsiderApply implements Serializable {
     private String applyDateStr;
 
     /**
-     * 第一版上传名称
+     * 上传名称
      */
-    @TableField("uploadFileNameOne")
-    @ExcelField(value = "第一版上传名称")
-    private String uploadFileNameOne;
+    @TableField("uploadFileName")
+    @ExcelField(value = "上传名称")
+    private String uploadFileName;
 
     /**
-     * 第二版上传名称
+     * 结束时间
      */
-    @TableField("uploadFileNameTwo")
-    @ExcelField(value = "第二版上传名称")
-    private String uploadFileNameTwo;
-
+    @TableField("endDate")
+    @ExcelField(value = "结束时间")
+    private Date endDate;
+    private transient String endDateFrom;
+    private transient String endDateTo;
 
     /**
-     * 第一版结束时间
+     * 确认时间
      */
-    @TableField("endDateOne")
-    @ExcelField(value = "第一版结束时间")
-    private Date endDateOne;
-    private transient String endDateOneFrom;
-    private transient String endDateOneTo;
+    @TableField("enableDate")
+    @ExcelField(value = "确认时间")
+    private Date enableDate;
+    private transient String enableDateFrom;
+    private transient String enableDateTo;
 
-    /**
-     * 第二版结束时间
-     */
-    @TableField("endDateTwo")
-    @ExcelField(value = "第二版结束时间")
-    private Date endDateTwo;
-    private transient String endDateTwoFrom;
-    private transient String endDateTwoTo;
-
-
-    /**
-     * 第一版确认时间
-     */
-    @TableField("enableDateOne")
-    @ExcelField(value = "第一版确认时间")
-    private Date enableDateOne;
-    private transient String enableDateOneFrom;
-    private transient String enableDateOneTo;
-
-    /**
-     * 第二版确认时间
-     */
-    @TableField("enableDateTwo")
-    @ExcelField(value = "第二版确认时间")
-    private Date enableDateTwo;
-    private transient String enableDateTwoFrom;
-    private transient String enableDateTwoTo;
 
     /**
      * 院区
@@ -242,12 +182,6 @@ public class YbReconsiderApply implements Serializable {
 
     public static final String STATE = "STATE";
 
-    public static final String RESETSTATE = "resetState";
-
-    public static final String RESULTSTATE = "resultState";
-
-    public static final String REPAYSTATE = "repayState";
-
     public static final String TASKSTATE = "taskState";
 
     public static final String IS_DELETEMARK = "IS_DELETEMARK";
@@ -262,17 +196,11 @@ public class YbReconsiderApply implements Serializable {
 
     public static final String APPLYDATESTR = "applyDateStr";
 
-    public static final String UPLOADFILENAMEONE = "uploadFileNameOne";
+    public static final String UPLOADFILENAMEONE = "uploadFileName";
 
-    public static final String UPLOADFILENAMETWO = "uploadFileNameTwo";
+    public static final String ENDDATE = "endDate";
 
-    public static final String ENDDATEONE = "endDateOne";
-
-    public static final String ENDDATETWO = "endDateTwo";
-
-    public static final String ENABLEDATEONE = "enableDateOne";
-
-    public static final String ENABLEDATETWO = "enableDateTwo";
+    public static final String ENABLEDATE = "enableDate";
 
     public static final String AREATYPE = "areaType";
 

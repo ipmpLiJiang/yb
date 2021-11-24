@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cc.mrbird.febs.drg.dao.YbDrgVerifyViewMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="cc.mrbird.febs.drg.entity.YbDrgVerifyView">
+        <result column="id" property="id"/>
+        <result column="pid" property="pid"/>
+        <result column="applyDataId" property="applyDataId"/>
+        <result column="applyDateStr" property="applyDateStr"/>
+        <result column="ks" property="ks"/>
+        <result column="jzjlh" property="jzjlh"/>
+        <result column="bah" property="bah"/>
+        <result column="wglx" property="wglx"/>
+        <result column="wtms" property="wtms"/>
+        <result column="ylzfy" property="ylzfy"/>
+        <result column="wgje" property="wgje"/>
+        <result column="sfbmzczjcw" property="sfbmzczjcw"/>
+        <result column="ly" property="ly"/>
+        <result column="sendPersonId" property="sendPersonId"/>
+        <result column="sendPersonName" property="sendPersonName"/>
+        <result column="sendDate" property="sendDate"/>
+        <result column="verifyDoctorCode" property="verifyDoctorCode"/>
+        <result column="verifyDoctorName" property="verifyDoctorName"/>
+        <result column="verifyDeptCode" property="verifyDeptCode"/>
+        <result column="verifyDeptName" property="verifyDeptName"/>
+        <result column="orderNumber" property="orderNumber"/>
+        <result column="orderNum" property="orderNum"/>
+        <result column="isVerify" property="isVerify"/>
+        <result column="isPerson" property="isPerson"/>
+        <result column="STATE" property="state"/>
+        <result column="areaType" property="areaType"/>
+    </resultMap>
+
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, pid, applyDataId, applyDateStr, ks, jzjlh, bah, wglx, wtms, ylzfy, wgje, sfbmzczjcw, ly,
+        orderNumber, orderNum, verifyDoctorCode, verifyDoctorName, verifyDeptCode, verifyDeptName, isVerify,isPerson, sendPersonId, sendPersonName, sendDate,STATE, areaType
+    </sql>
+
+    <select id="findDrgVerifyView" resultType="cc.mrbird.febs.drg.entity.YbDrgVerifyView"
+            parameterType="cc.mrbird.febs.drg.entity.YbDrgVerifyView">
+        select
+            case when rv.id is null then UUID() else rv.id end id,
+            ad.pid,
+            ad.id applyDataId,
+            #{ ybDrgVerifyView.applyDateStr} applyDateStr,
+            ad.ks,
+            ad.jzjlh,
+            ad.bah,
+            ad.wglx,
+            ad.wtms,
+            ad.ylzfy,
+            ad.wgje,
+            ad.sfbmzczjcw,
+            ad.ly,
+            ad.orderNumber,
+            ad.orderNum,
+            rv.verifyDoctorCode,
+            concat(rv.verifyDoctorCode,'-',rv.verifyDoctorName) verifyDoctorName,
+            rv.verifyDeptCode,
+            concat(rv.verifyDeptCode,'-',rv.verifyDeptName) verifyDeptName,
+            case when rv.id is null then 0 else 1 end isVerify,
+            case when yp.id is null then 0 else 1 end isPerson,
+            rv.sendPersonId,
+            rv.sendPersonName,
+            rv.sendDate,
+            rv.STATE,
+            rv.areaType
+        from
+        yb_drg_verify rv
+        INNER JOIN yb_drg_apply_data ad ON
+            ad.id = rv.applyDataId and
+            ad.pid =  #{ ybDrgVerifyView.pid}
+        <if test="ybDrgVerifyView.orderNumber != null and ybDrgVerifyView.orderNumber != ''">
+            and ad.orderNumber = #{ ybDrgVerifyView.orderNumber}
+        </if>
+        <if test="ybDrgVerifyView.ks != null and ybDrgVerifyView.ks != ''">
+            and ad.ks = #{ ybDrgVerifyView.ks}
+        </if>
+        <if test="ybDrgVerifyView.jzjlh != null and ybDrgVerifyView.jzjlh != ''">
+            and ad.jzjlh = #{ ybDrgVerifyView.jzjlh}
+        </if>
+        <if test="ybDrgVerifyView.bah != null and ybDrgVerifyView.bah != ''">
+            and ad.bah = #{ ybDrgVerifyView.bah}
+        </if>
+        LEFT join yb_person yp on
+            rv.verifyDoctorCode = yp.personCode
+        where
+            rv.applyDateStr = #{ ybDrgVerifyView.applyDateStr}
+        <if test="ybDrgVerifyView.areaType != null">and rv.areaType = #{ ybDrgVerifyView.areaType}</if>
+        <if test="ybDrgVerifyView.state != null">and rv.state =#{ ybDrgVerifyView.state}</if>
+        <if test="ybDrgVerifyView.orderNumber != null and ybDrgVerifyView.orderNumber != ''">
+            and rv.orderNumber = #{ ybDrgVerifyView.orderNumber}
+        </if>
+        <if test="ybDrgVerifyView.verifyDoctorCode != null and ybDrgVerifyView.verifyDoctorCode != ''">
+            and rv.verifyDoctorCode = #{ ybDrgVerifyView.verifyDoctorCode}
+        </if>
+        <if test="ybDrgVerifyView.verifyDoctorName != null and ybDrgVerifyView.verifyDoctorName != ''">
+            and rv.verifyDoctorName = #{ ybDrgVerifyView.verifyDoctorName}
+        </if>
+        <if test="ybDrgVerifyView.verifyDeptName != null and ybDrgVerifyView.verifyDeptName != ''">
+            and rv.verifyDeptName = #{ ybDrgVerifyView.verifyDeptName}
+        </if>
+        order by rv.orderNum
+    </select>
+
+    <select id="findDrgVerifyCount" resultType="Integer"
+            parameterType="cc.mrbird.febs.drg.entity.YbDrgVerifyView">
+        select
+        count(1)
+        from
+        yb_drg_verify rv
+        inner JOIN yb_drg_apply_data ad ON
+        ad.id = rv.applyDataId and
+        ad.pid =  #{ ybDrgVerifyView.pid}
+        <if test="ybDrgVerifyView.orderNumber != null and ybDrgVerifyView.orderNumber != ''">
+            and ad.orderNumber = #{ ybDrgVerifyView.orderNumber}
+        </if>
+        <if test="ybDrgVerifyView.ks != null and ybDrgVerifyView.ks != ''">
+            and ad.ks = #{ ybDrgVerifyView.ks}
+        </if>
+        <if test="ybDrgVerifyView.jzjlh != null and ybDrgVerifyView.jzjlh != ''">
+            and ad.jzjlh = #{ ybDrgVerifyView.jzjlh}
+        </if>
+        <if test="ybDrgVerifyView.bah != null and ybDrgVerifyView.bah != ''">
+            and ad.bah = #{ ybDrgVerifyView.bah}
+        </if>
+        where
+        rv.applyDateStr = #{ ybDrgVerifyView.applyDateStr}
+        <if test="ybDrgVerifyView.areaType != null">and rv.areaType = #{ ybDrgVerifyView.areaType}</if>
+        <if test="ybDrgVerifyView.state != null">and rv.state =#{ ybDrgVerifyView.state}</if>
+        <if test="ybDrgVerifyView.orderNumber != null and ybDrgVerifyView.orderNumber != ''">
+            and rv.orderNumber = #{ ybDrgVerifyView.orderNumber}
+        </if>
+        <if test="ybDrgVerifyView.verifyDoctorCode != null and ybDrgVerifyView.verifyDoctorCode != ''">
+            and rv.verifyDoctorCode = #{ ybDrgVerifyView.verifyDoctorCode}
+        </if>
+        <if test="ybDrgVerifyView.verifyDoctorName != null and ybDrgVerifyView.verifyDoctorName != ''">
+            and rv.verifyDoctorName = #{ ybDrgVerifyView.verifyDoctorName}
+        </if>
+        <if test="ybDrgVerifyView.verifyDeptName != null and ybDrgVerifyView.verifyDeptName != ''">
+            and rv.verifyDeptName = #{ ybDrgVerifyView.verifyDeptName}
+        </if>
+    </select>
+
+    <select id="findDrgVerifyViewList" resultType="cc.mrbird.febs.drg.entity.YbDrgVerifyView"
+            parameterType="cc.mrbird.febs.drg.entity.YbDrgVerifyView">
+        select
+            case when rv.id is null then UUID() else rv.id end id,
+            ad.pid,
+            ad.id applyDataId,
+            #{ ybDrgVerifyView.applyDateStr} applyDateStr,
+            ad.ks,
+            ad.jzjlh,
+            ad.bah,
+            ad.wglx,
+            ad.wtms,
+            ad.ylzfy,
+            ad.wgje,
+            ad.sfbmzczjcw,
+            ad.ly,
+            ad.orderNumber,
+            ad.orderNum,
+            rv.verifyDoctorCode,
+            concat(rv.verifyDoctorCode,'-',rv.verifyDoctorName) verifyDoctorName,
+            rv.verifyDeptCode,
+            concat(rv.verifyDeptCode,'-',rv.verifyDeptName) verifyDeptName,
+            case when rv.id is null then 0 else 1 end isVerify,
+            rv.sendPersonId,
+            rv.sendPersonName,
+            rv.sendDate,
+            rv.STATE,
+            rv.areaType
+        from
+            yb_drg_apply_data ad
+            LEFT JOIN yb_drg_verify rv ON
+                ad.id = rv.applyDataId
+        where
+            ad.pid = #{ybDrgVerifyView.pid} and
+            rv.state = #{ybDrgVerifyView.state}
+    </select>
+
+    <select id="findDrgVerifyApplyDateCount" resultType="Integer">
+    select
+        count(1)
+    from
+        yb_drg_verify
+    WHERE
+        applyDateStr= #{ybDrgVerifyView.applyDateStr} and
+        areaType = #{ ybDrgVerifyView.areaType}
+</select>
+</mapper>

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cc.mrbird.febs.drg.dao.YbDrgApplyTaskMapper">
+
+        <!-- 通用查询映射结果 -->
+        <resultMap id="BaseResultMap" type="cc.mrbird.febs.drg.entity.YbDrgApplyTask">
+                    <id column="id" property="id"/>
+                    <result column="applyDateStr" property="applyDateStr"/>
+                    <result column="startNum" property="startNum"/>
+                    <result column="endNum" property="endNum"/>
+                    <result column="totalRow" property="totalRow"/>
+                    <result column="currentPage" property="currentPage"/>
+                    <result column="pageSize" property="pageSize"/>
+                    <result column="totalPage" property="totalPage"/>
+                    <result column="COMMENTS" property="comments"/>
+                    <result column="STATE" property="state"/>
+                    <result column="areaType" property="areaType"/>
+                    <result column="hisCount" property="hisCount"/>
+        </resultMap>
+
+        <!-- 通用查询结果列 -->
+        <sql id="Base_Column_List">
+        id, applyDateStr, startNum, endNum, totalRow, currentPage, pageSize, totalPage, COMMENTS, STATE, areaType, hisCount
+    </sql>
+    <update id="updateYbDrgApplyTask" parameterType="cc.mrbird.febs.drg.entity.YbDrgApplyTask">
+        update yb_drg_apply_task
+        <trim prefix="set" suffixOverrides=",">
+<if test="applyDateStr != null">applyDateStr=#{applyDateStr},</if>
+<if test="startNum != null">startNum=#{startNum},</if>
+<if test="endNum != null">endNum=#{endNum},</if>
+<if test="totalRow != null">totalRow=#{totalRow},</if>
+<if test="currentPage != null">currentPage=#{currentPage},</if>
+<if test="pageSize != null">pageSize=#{pageSize},</if>
+<if test="totalPage != null">totalPage=#{totalPage},</if>
+<if test="comments != null">COMMENTS=#{comments},</if>
+<if test="state != null">STATE=#{state},</if>
+<if test="areaType != null">areaType=#{areaType},</if>
+<if test="hisCount != null">hisCount=#{hisCount},</if>
+        </trim>
+                where id=#{id}
+
+    </update>
+    <select id="findYbDrgApplyTask" resultType="cc.mrbird.febs.drg.entity.YbDrgApplyTask" parameterType="cc.mrbird.febs.drg.entity.YbDrgApplyTask">
+        select  *  from yb_drg_apply_task
+        where  1=1
+            <if test="ybDrgApplyTask.id != null and ybDrgApplyTask.id != ''"> and id =#{ ybDrgApplyTask.id} </if>
+            <if test="ybDrgApplyTask.applyDateStr != null and ybDrgApplyTask.applyDateStr != ''"> and applyDateStr like concat('%', #{ ybDrgApplyTask.applyDateStr} ,'%')</if>
+        <if test="ybDrgApplyTask.startNum != null"> and startNum =#{ ybDrgApplyTask.startNum} </if>
+        <if test="ybDrgApplyTask.endNum != null"> and endNum =#{ ybDrgApplyTask.endNum} </if>
+        <if test="ybDrgApplyTask.totalRow != null"> and totalRow =#{ ybDrgApplyTask.totalRow} </if>
+        <if test="ybDrgApplyTask.currentPage != null"> and currentPage =#{ ybDrgApplyTask.currentPage} </if>
+        <if test="ybDrgApplyTask.pageSize != null"> and pageSize =#{ ybDrgApplyTask.pageSize} </if>
+        <if test="ybDrgApplyTask.totalPage != null"> and totalPage =#{ ybDrgApplyTask.totalPage} </if>
+            <if test="ybDrgApplyTask.comments != null and ybDrgApplyTask.comments != ''"> and COMMENTS like concat('%', #{ ybDrgApplyTask.comments} ,'%')</if>
+        <if test="ybDrgApplyTask.state != null"> and STATE =#{ ybDrgApplyTask.state} </if>
+        <if test="ybDrgApplyTask.areaType != null"> and areaType =#{ ybDrgApplyTask.areaType} </if>
+        <if test="ybDrgApplyTask.hisCount != null"> and hisCount =#{ ybDrgApplyTask.hisCount} </if>
+</select>
+
+</mapper>

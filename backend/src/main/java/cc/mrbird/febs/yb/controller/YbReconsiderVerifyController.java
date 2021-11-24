@@ -261,13 +261,9 @@ public class YbReconsiderVerifyController extends BaseController {
     @RequiresPermissions("ybReconsiderVerify:stateUpdate")
     public void updateBackState(String applyDateStr, Integer areaType) throws FebsException {
         try {
-            User currentUser = FebsUtil.getCurrentUser();
-            Long uid = currentUser.getUserId();
-            String uname = currentUser.getUsername();
-
-            this.iYbReconsiderVerifyService.updateBackStates(applyDateStr, areaType, 2, 0);
+            this.iYbReconsiderVerifyService.updateBackStates(applyDateStr, areaType, YbDefaultValue.VERIFYSTATE_2, 0);
         } catch (Exception e) {
-            message = "发送失败";
+            message = "退回失败";
             log.error(message, e);
             throw new FebsException(message);
         }

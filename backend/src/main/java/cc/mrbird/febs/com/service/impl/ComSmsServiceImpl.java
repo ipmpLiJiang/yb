@@ -457,7 +457,7 @@ public class ComSmsServiceImpl extends ServiceImpl<ComSmsMapper, ComSms> impleme
                     String thisDateStr = dateFormat.format(new Date());
                     String endDateStr = dateFormat.format(endDate);
                     if(thisDateStr.equals(endDateStr)){
-                        int sendType = 8;
+                        int sendType = ComSms.SENDTYPE_8;
                         ComSms querySms = new ComSms();
                         querySms.setApplyDateStr(applyDateStr);
                         querySms.setAreaType(areaType);
