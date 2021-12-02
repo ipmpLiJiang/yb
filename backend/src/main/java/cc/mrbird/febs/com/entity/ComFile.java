@@ -102,7 +102,12 @@ private static final long serialVersionUID=1L;
             @ExcelField(value ="表名")
     private String refTabTable;
 
-
+    /**
+     * 类型
+     */
+    @TableField("REF_TYPE")
+    @ExcelField(value ="类型")
+    private String refType;
 
     public static final String ID ="ID" ;
 
@@ -123,6 +128,8 @@ private static final long serialVersionUID=1L;
     public static final String REF_TAB_ID ="REF_TAB_ID" ;
 
     public static final String REF_TAB_TABLE ="REF_TAB_TABLE" ;
+
+    public static final String REF_TYPE ="REF_TYPE" ;
 
     @Override
     public int compareTo(ComFile o) {

@@ -38,4 +38,6 @@ public interface IYbDrgApplyDataService extends IService<YbDrgApplyData> {
     List<YbDrgApplyData> getApplyDatas(YbDrgApply ybDrgApply, YbDrgVerifyView ybDrgVerifyView);
 
     List<YbDrgApplyData> findDrgApplyDataByNotVerifys(String pid, String applyDateStr, Integer areaType);
+
+    List<YbDrgApplyData> getApplyDataByKeyFieldList(String pid, String keyField, String value);
 }

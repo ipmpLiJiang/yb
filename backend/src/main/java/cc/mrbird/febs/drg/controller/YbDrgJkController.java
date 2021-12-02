@@ -130,4 +130,11 @@ public class YbDrgJkController extends BaseController {
         YbDrgJk ybDrgJk = this.iYbDrgJkService.getById(id);
         return ybDrgJk;
     }
+
+    @GetMapping("getJkData")
+    @RequiresPermissions("ybDrgJk:look")
+    public YbDrgJk detailByApplyDataId(String applyDataId) {
+        YbDrgJk ybDrgJk = this.iYbDrgJkService.findYbDrgJkByApplyDataId(applyDataId);
+        return ybDrgJk;
+    }
 }

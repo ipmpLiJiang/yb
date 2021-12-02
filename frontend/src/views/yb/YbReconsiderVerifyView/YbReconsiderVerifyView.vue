@@ -130,7 +130,8 @@
             >
               <a-button type="primary">全部发送</a-button>
             </a-popconfirm>
-            <a-button type="danger" @click="showDateModal" v-show="tableSelectKey==2||tableSelectKey==3||tableSelectKey==4?true:false" style="margin-right: 15px">日期</a-button>
+            <a-button type="danger" @click="showDateModal"
+            v-show="tableSelectKey==2||tableSelectKey==3||tableSelectKey==4||tableSelectKey==5?true:false" style="margin-right: 15px">日期</a-button>
             <a-select :value="searchDataType" style="width: 100px" @change="handleDataTypeChange"
             v-show="tableSelectKey==4?true:false"
             >
@@ -557,6 +558,14 @@
           :format="enableFormat"/>
         </a-form-item>
       </a-row>
+      <a-row  v-show="tableSelectKey==5?true:false">
+        <a-form-item
+          v-bind="formItemLayout"
+          label="是否更改短信日期"
+        >
+        <a-checkbox :checked="dateChecked" @change="onIsDateChange" />
+        </a-form-item>
+      </a-row>
         </a-modal>
       </div>
     </template>
@@ -606,6 +615,7 @@ export default {
       checked: false,
       searchText: '',
       selectSunxu: 1,
+      dateChecked: false,
       visibleDate: false,
       handleQueryXunxu: [
         {text: '1、规则项目科室', value: 1},
@@ -673,6 +683,9 @@ export default {
         }
       })
     },
+    onIsDateChange () {
+      this.dateChecked = !this.dateChecked
+    },
     handleTypenoChange (value) {
       this.searchTypeno = value
     },
@@ -727,6 +740,15 @@ export default {
       }
     },
     handleDateOk (e) {
+      if (this.tableSelectKey !== '5') {
+        this.dateChecked = false
+        this.reconsiderApply.isChangDate = 0
+      }
+      if (this.dateChecked) {
+        this.reconsiderApply.isChangDate = 1
+      } else {
+        this.reconsiderApply.isChangDate = 0
+      }
       if (this.reconsiderApply.id !== null) {
         if (this.searchTypeno === 1) {
           if (this.reconsiderApply.endDateOne === null) {
@@ -755,6 +777,7 @@ export default {
             this.reconsiderApply.enableDateTwo = moment(this.reconsiderApply.enableDateTwo)
           }
         }
+        this.reconsiderApply.areaType = this.user.areaType.value
         let ybReconsiderApply = this.reconsiderApply
         this.$put('ybReconsiderApply/updateReconsiderApply', {
           ...ybReconsiderApply
@@ -762,6 +785,9 @@ export default {
           if (r.data.data.success === 1) {
             this.$message.success('当前' + this.searchApplyDate + '修改日期成功.')
             this.visibleDate = false
+            if (this.dateChecked && this.tableSelectKey === '5') {
+              this.$refs.ybReconsiderVerifySms.searchPage()
+            }
           } else {
             this.$message.warning(r.data.data.message)
           }
@@ -776,6 +802,7 @@ export default {
       this.visibleDate = false
     },
     showDateModal () {
+      this.dateChecked = false
       if (this.reconsiderApply.id !== null) {
         this.visibleDate = true
       } else {

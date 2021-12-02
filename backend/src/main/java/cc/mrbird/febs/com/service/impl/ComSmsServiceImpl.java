@@ -81,7 +81,7 @@ public class ComSmsServiceImpl extends ServiceImpl<ComSmsMapper, ComSms> impleme
 //                queryWrapper.eq(ComSms::getState, comSms.getState());
                 sql += " and state = " + comSms.getState();
             }
-            if (comSms.getComments() != null && comSms.getComments() != "") {
+            if (comSms.getComments() != null && !comSms.getComments().equals("")) {
                 sql += " and (sendcode = '" + comSms.getComments() + "' or sendname = '" + comSms.getComments() + "' or mobile = '" + comSms.getComments() + "')";
             }
 //            queryWrapper.eq(ComSms::getIsDeletemark, 1);//1是未删 0是已删
@@ -111,6 +111,18 @@ public class ComSmsServiceImpl extends ServiceImpl<ComSmsMapper, ComSms> impleme
     public List<ComSms> findLmdSmsList(ComSms comSms) {
         List<ComSms> list = new ArrayList<>();
         LambdaQueryWrapper<ComSms> wrapper = new LambdaQueryWrapper<>();
+        if (comSms.getApplyDateStr() != null) {
+            wrapper.eq(ComSms::getApplyDateStr, comSms.getApplyDateStr());
+        }
+        if (comSms.getAreaType() != null) {
+            wrapper.eq(ComSms::getAreaType, comSms.getAreaType());
+        }
+        if (comSms.getSendType() != null) {
+            wrapper.eq(ComSms::getSendType, comSms.getSendType());
+        }
+        if (comSms.getState() != null) {
+            wrapper.eq(ComSms::getState, comSms.getState());
+        }
         if (comSms.getSendcode() != null) {
             wrapper.eq(ComSms::getSendcode, comSms.getSendcode());
         }
@@ -120,15 +132,7 @@ public class ComSmsServiceImpl extends ServiceImpl<ComSmsMapper, ComSms> impleme
         if (comSms.getMobile() != null) {
             wrapper.eq(ComSms::getMobile, comSms.getMobile());
         }
-        if (comSms.getSendType() != null) {
-            wrapper.eq(ComSms::getSendType, comSms.getSendType());
-        }
-        if (comSms.getState() != null) {
-            wrapper.eq(ComSms::getState, comSms.getState());
-        }
-        if (comSms.getAreaType() != null) {
-            wrapper.eq(ComSms::getAreaType, comSms.getAreaType());
-        }
+
         wrapper.eq(ComSms::getIsDeletemark, 1);
         list = this.list(wrapper);
         return list;
@@ -415,7 +419,8 @@ public class ComSmsServiceImpl extends ServiceImpl<ComSmsMapper, ComSms> impleme
                         }
                     }
                 }
-                msg = sendMsg(mobiles, t1.getSendcontent());
+//                msg = sendMsg(mobiles, t1.getSendcontent());
+                msg = "0";
 
                 if (msg.equals("0")) {
                     this.updateBatchById(updateList);

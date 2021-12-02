@@ -104,7 +104,7 @@
           <a-tab-pane
             key="3"
             :forceRender="true"
-            tab="人工复议"
+            tab="非常规复议"
           >
             <ybAppealResult-handle
               ref="ybAppealResultHandle"
@@ -119,7 +119,7 @@
           <a-tab-pane
             key="4"
             :forceRender="true"
-            tab="人工复议1"
+            tab="非常规复议1"
           >
             <ybAppealResult-handle1
               ref="ybAppealResultHandle1"

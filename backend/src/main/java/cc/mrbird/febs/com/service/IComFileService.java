@@ -35,7 +35,7 @@ public interface IComFileService extends IService<ComFile> {
 
     int batchRefIdDelete(String refTabId);
 
-    List<ComFile> findListComFile(String Id);
+    List<ComFile> findListComFile(String Id,String refType);
 
 
     ComFile findComFileById(String Id);

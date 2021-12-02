@@ -1,6 +1,6 @@
 <template>
   <a-drawer
-    title="核对"
+    title="DRG核对"
     :maskClosable="false"
     width=70%
     placement="right"
@@ -9,20 +9,21 @@
     :visible="detailVisiable"
     style="height: calc(100% - 15px);overflow: auto;padding-bottom: 53px;"
   >
-    <appealData-module
-    ref="appealDataModule"
-    :ybAppealDataModule="ybDrgVerifyView"
+    <ybDrgData-module
+    ref="ybDrgDataModule"
+    :ybDrgData="ybDrgVerifyView"
     >
-    </appealData-module>
-    <inpatientfees-module
-    ref="inpatientfeesModule"
-    :inpatientfeesModule="ybDrgVerifyView"
+    </ybDrgData-module>
+    <ybDrgJk-module
+    ref="ybDrgJkModule"
+    :ybDrgData="ybDrgVerifyView"
     >
-    </inpatientfees-module>
+    </ybDrgJk-module>
     <template>
       <a-spin tip="Loading..." :spinning="spinning" :delay="delayTime">
       <div>
         <a-form :form="form" >
+          <a-divider>更改科室/医生</a-divider>
           <div style="margin:20px 0px">
             <a-row
               justify="center"
@@ -34,7 +35,7 @@
                     labelCol: { span: 7 },
                     wrapperCol: { span: 16 }
                   }"
-                  label="参考复议科室">
+                  label="复议科室">
                     <input-select
                       ref="inputSelectVerifyDept"
                       :type=1
@@ -49,7 +50,7 @@
                     labelCol: { span: 7 },
                     wrapperCol: { span: 16 }
                   }"
-                  label="参考复议医生">
+                  label="复议医生">
                   <input-select
                   ref="inputSelectVerifyDoctor"
                   :type=2
@@ -91,13 +92,13 @@
 <script>
 import moment from 'moment'
 import InputSelect from '../../common/InputSelect'
-import AppealDataModule from '../../yb/ybFunModule/AppealDataModule'
-import InpatientfeesModule from '../../yb/ybFunModule/InpatientfeesModule'
+import YbDrgDataModule from '../YbDrgFunModule/YbDrgDataModule'
+import YbDrgJkModule from '../YbDrgFunModule/YbDrgJkModule'
 
 export default {
   name: 'YbDrgVerifyDetail',
   components: {
-    AppealDataModule, InpatientfeesModule, InputSelect },
+    YbDrgDataModule, YbDrgJkModule, InputSelect },
   props: {
     detailVisiable: {
       default: false
@@ -202,7 +203,7 @@ export default {
         state: 2
       }
 
-      this.$refs.inpatientfeesModule.search()
+      this.$refs.ybDrgJkModule.search()
     }
   }
 }

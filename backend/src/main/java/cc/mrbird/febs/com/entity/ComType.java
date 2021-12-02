@@ -123,6 +123,14 @@ public class ComType implements Serializable, Comparable<ComType> {
     private Long modifyUserId;
 
 
+    /**
+     * 排序
+     */
+    @TableField("orderNum")
+    @ExcelField(value = "排序")
+    private Integer orderNum;
+
+
     public static final String ID = "id";
 
     public static final String CTCODE = "ctCode";
@@ -146,6 +154,9 @@ public class ComType implements Serializable, Comparable<ComType> {
     public static final String CREATE_USER_ID = "CREATE_USER_ID";
 
     public static final String MODIFY_USER_ID = "MODIFY_USER_ID";
+
+    public static final String ORDERNUM = "orderNum";
+
 
     @Override
     public int compareTo(ComType o) {

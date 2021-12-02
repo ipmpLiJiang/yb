@@ -17,9 +17,9 @@
                 :format="monthFormat"
               />
           </a-col>
-          <a-col :span=4>
+          <a-col :span=5>
             版本类型：
-            <a-select :value="searchTypeno" style="width: 100px" @change="handleTypenoChange">
+            <a-select :value="searchTypeno" style="width: 110px" @change="handleTypenoChange">
               <a-select-option
               v-for="d in selectTypenoDataSource"
               :key="d.value"
@@ -232,7 +232,7 @@ export default {
       selectedRowKeys: [],
       hasSelected: false,
       user: this.$store.state.account.user,
-      selectTypenoDataSource: [{text: '全部', value: 0}, {text: '版本一', value: 1}, {text: '版本二', value: 2}, {text: '人工复议', value: 3}]
+      selectTypenoDataSource: [{text: '全部', value: 0}, {text: '版本一', value: 1}, {text: '版本二', value: 2}, {text: '非常规复议', value: 3}]
     }
   },
   computed: {

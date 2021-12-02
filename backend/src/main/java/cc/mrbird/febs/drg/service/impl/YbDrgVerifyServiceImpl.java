@@ -13,6 +13,7 @@ import cc.mrbird.febs.drg.entity.YbDrgVerify;
 import cc.mrbird.febs.drg.dao.YbDrgVerifyMapper;
 import cc.mrbird.febs.drg.service.IYbDrgApplyDataService;
 import cc.mrbird.febs.drg.service.IYbDrgApplyService;
+import cc.mrbird.febs.drg.service.IYbDrgManageService;
 import cc.mrbird.febs.drg.service.IYbDrgVerifyService;
 import cc.mrbird.febs.yb.entity.YbDefaultValue;
 import cc.mrbird.febs.yb.entity.YbDept;
@@ -66,6 +67,9 @@ public class YbDrgVerifyServiceImpl extends ServiceImpl<YbDrgVerifyMapper, YbDrg
 
     @Autowired
     IComSmsService iComSmsService;
+
+    @Autowired
+    IYbDrgManageService iYbDrgManageService;
 
     @Override
     public IPage<YbDrgVerify> findYbDrgVerifys(QueryRequest request, YbDrgVerify ybDrgVerify) {
@@ -255,10 +259,10 @@ public class YbDrgVerifyServiceImpl extends ServiceImpl<YbDrgVerifyMapper, YbDrg
     @Transactional
     public void updateDrgVerifyImports(List<YbDrgVerify> list) {
         for (YbDrgVerify item : list) {
-            if (item.getVerifyDeptCode() != "" && item.getVerifyDeptCode() != null &&
-                    item.getVerifyDeptName() != "" && item.getVerifyDeptName() != null &&
-                    item.getVerifyDoctorCode() != "" && item.getVerifyDoctorCode() != null &&
-                    item.getVerifyDoctorName() != "" && item.getVerifyDoctorName() != null) {
+            if (item.getVerifyDeptCode() != null && !item.getVerifyDeptCode().equals("") &&
+                    item.getVerifyDeptName() != null && !item.getVerifyDeptName().equals("") &&
+                    item.getVerifyDoctorCode() != null && !item.getVerifyDoctorCode().equals("") &&
+                    item.getVerifyDoctorName() != null && !item.getVerifyDoctorName().equals("")) {
                 item.setState(YbDefaultValue.VERIFYSTATE_1);
 
                 String strVerifyDeptName = DataTypeHelpers.stringReplaceSetString(item.getVerifyDeptName(), item.getVerifyDeptCode() + "-");
@@ -289,7 +293,7 @@ public class YbDrgVerifyServiceImpl extends ServiceImpl<YbDrgVerifyMapper, YbDrg
         List<YbPerson> personList = new ArrayList<>();
         ArrayList<String> personCodeList = new ArrayList<>();
         for (YbDrgVerify item : list) {
-            if (item.getVerifyDoctorCode() != "" && item.getVerifyDoctorCode() != null) {
+            if (item.getVerifyDoctorCode() != null && !item.getVerifyDoctorCode().equals("")) {
                 if (personCodeList.stream().filter(s -> s.equals(item.getVerifyDoctorCode())).count() == 0) {
                     personCodeList.add(item.getVerifyDoctorCode());
                 }
@@ -305,11 +309,11 @@ public class YbDrgVerifyServiceImpl extends ServiceImpl<YbDrgVerifyMapper, YbDrg
     @Transactional
     public void updateSendStates(List<YbDrgVerify> list, Integer areaType, Long uId, String Uname) {
         String applyDateStr = list.get(0).getApplyDateStr();
-        YbDrgApply reconsiderApply = iYbDrgApplyService.findDrgApplyByApplyDateStrs(applyDateStr, areaType);
-        if (reconsiderApply != null) {
+        YbDrgApply drgApply = iYbDrgApplyService.findDrgApplyByApplyDateStrs(applyDateStr, areaType);
+        if (drgApply != null) {
             Date thisDate = new java.sql.Timestamp(new Date().getTime());
 
-            Date addDate = DataTypeHelpers.addDateMethod(reconsiderApply.getEnableDate(), 1);
+            Date addDate = DataTypeHelpers.addDateMethod(drgApply.getEnableDate(), 1);
             List<YbPerson> personList = this.findPerson(list);
             List<YbPerson> queryPersonList = new ArrayList<>();
             List<ComSms> smsList = new ArrayList<>();
@@ -320,18 +324,19 @@ public class YbDrgVerifyServiceImpl extends ServiceImpl<YbDrgVerifyMapper, YbDrg
             String sendContent = "";
             if (isOpenSms && list.size() > 0) {
                 ComSms qu = new ComSms();
-                qu.setState(ComSms.STATE_0);
-                qu.setSendType(ComSms.SENDTYPE_10);
+                qu.setApplyDateStr(applyDateStr);
                 qu.setAreaType(areaType);
+                qu.setSendType(ComSms.SENDTYPE_10);
+                qu.setState(ComSms.STATE_0);
                 smsList = iComSmsService.findLmdSmsList(qu);
-                applyDateStr = list.get(0).getApplyDateStr();
+                sendContent = this.iYbDrgApplyService.getSendMessage(applyDateStr, addDate, areaType, false);
 
             }
             for (YbDrgVerify ybDrgVerify : list) {
-                if (ybDrgVerify.getVerifyDeptCode() != "" && ybDrgVerify.getVerifyDeptCode() != null &&
-                        ybDrgVerify.getVerifyDeptName() != "" && ybDrgVerify.getVerifyDeptName() != null &&
-                        ybDrgVerify.getVerifyDoctorCode() != "" && ybDrgVerify.getVerifyDoctorCode() != null &&
-                        ybDrgVerify.getVerifyDoctorName() != "" && ybDrgVerify.getVerifyDoctorName() != null) {
+                if (ybDrgVerify.getVerifyDeptCode() != null && !ybDrgVerify.getVerifyDeptCode().equals("") &&
+                        ybDrgVerify.getVerifyDeptName() != null && !ybDrgVerify.getVerifyDeptName().equals("") &&
+                        ybDrgVerify.getVerifyDoctorCode() != null && !ybDrgVerify.getVerifyDoctorCode().equals("") &&
+                        ybDrgVerify.getVerifyDoctorName() != null && !ybDrgVerify.getVerifyDoctorName().equals("")) {
                     queryPersonList = personList.stream().filter(
                             s -> s.getPersonCode().equals(ybDrgVerify.getVerifyDoctorCode())
                     ).collect(Collectors.toList());
@@ -356,11 +361,11 @@ public class YbDrgVerifyServiceImpl extends ServiceImpl<YbDrgVerifyMapper, YbDrg
 
                         ybDrgManage.setOperateDate(thisDate);
                         ybDrgManage.setOperateProcess("发送操作-接受申请");
-                        ybDrgManage.setState(YbDefaultValue.ACCEPTSTATE_0);
+                        ybDrgManage.setState(YbDefaultValue.AMSTATE_0);
                         ybDrgManage.setEnableDate(addDate);
                         ybDrgManage.setAreaType(areaType);
 
-//                        iYbDrgManageService.createYbDrgManage(ybDrgManage);
+                        iYbDrgManageService.createYbDrgManage(ybDrgManage);
                         LambdaQueryWrapper<YbDrgVerify> queryWrapper = new LambdaQueryWrapper<>();
                         queryWrapper.eq(YbDrgVerify::getId, ybDrgVerify.getId());
                         queryWrapper.eq(YbDrgVerify::getState, YbDefaultValue.VERIFYSTATE_2);
@@ -385,7 +390,7 @@ public class YbDrgVerifyServiceImpl extends ServiceImpl<YbDrgVerifyMapper, YbDrg
                                         comSms.setCreateUserId(uId);
                                         comSms.setCreateTime(thisDate);
                                         comSms.setAreaType(areaType);
-                                        comSms.setApplyDateStr(reconsiderApply.getApplyDateStr());
+                                        comSms.setApplyDateStr(drgApply.getApplyDateStr());
                                         iComSmsService.save(comSms);
                                     }
                                 }
@@ -407,10 +412,10 @@ public class YbDrgVerifyServiceImpl extends ServiceImpl<YbDrgVerifyMapper, YbDrg
     @Transactional
     public void updateAllSendStates(String applyDateStr, Integer areaType, Integer state, Long uId, String Uname) {
         Date thisDate = new java.sql.Timestamp(new Date().getTime());
-        YbDrgApply reconsiderApply = iYbDrgApplyService.findDrgApplyByApplyDateStrs(applyDateStr, areaType);
+        YbDrgApply drgApply = iYbDrgApplyService.findDrgApplyByApplyDateStrs(applyDateStr, areaType);
 
-        if (reconsiderApply != null) {
-            Date addDate = DataTypeHelpers.addDateMethod(reconsiderApply.getEnableDate(), 1);
+        if (drgApply != null) {
+            Date addDate = DataTypeHelpers.addDateMethod(drgApply.getEnableDate(), 1);
             List<YbPerson> personList = iYbPersonService.findPersonList(new YbPerson(), 0);
             List<YbPerson> queryPersonList = new ArrayList<>();
             List<ComSms> smsList = new ArrayList<>();
@@ -422,11 +427,11 @@ public class YbDrgVerifyServiceImpl extends ServiceImpl<YbDrgVerifyMapper, YbDrg
             boolean isOpenSms = nOpenSms == 1 ? true : false;
             if (isOpenSms && list.size() > 0) {
                 ComSms qu = new ComSms();
-                qu.setState(ComSms.STATE_0);
-                qu.setSendType(ComSms.SENDTYPE_1);
+                qu.setApplyDateStr(applyDateStr);
                 qu.setAreaType(areaType);
+                qu.setSendType(ComSms.SENDTYPE_10);
+                qu.setState(ComSms.STATE_0);
                 smsList = iComSmsService.findLmdSmsList(qu);
-
                 sendContent = this.iYbDrgApplyService.getSendMessage(applyDateStr, addDate, areaType, false);
             }
             for (YbDrgVerify ybDrgVerify : list) {
@@ -456,11 +461,11 @@ public class YbDrgVerifyServiceImpl extends ServiceImpl<YbDrgVerifyMapper, YbDrg
 
                         ybDrgManage.setOperateDate(thisDate);
                         ybDrgManage.setOperateProcess("发送操作-接受申请");
-                        ybDrgManage.setState(YbDefaultValue.ACCEPTSTATE_0);
+                        ybDrgManage.setState(YbDefaultValue.AMSTATE_0);
                         ybDrgManage.setEnableDate(addDate);
                         ybDrgManage.setAreaType(areaType);
 
-//                            iYbDrgManageService.createYbDrgManage(ybDrgManage);
+                        iYbDrgManageService.createYbDrgManage(ybDrgManage);
 
                         LambdaQueryWrapper<YbDrgVerify> queryWrapper = new LambdaQueryWrapper<>();
                         queryWrapper.eq(YbDrgVerify::getId, ybDrgVerify.getId());
@@ -485,7 +490,7 @@ public class YbDrgVerifyServiceImpl extends ServiceImpl<YbDrgVerifyMapper, YbDrg
                                             comSms.setCreateUserId(uId);
                                             comSms.setCreateTime(thisDate);
                                             comSms.setAreaType(areaType);
-                                            comSms.setApplyDateStr(reconsiderApply.getApplyDateStr());
+                                            comSms.setApplyDateStr(drgApply.getApplyDateStr());
                                             iComSmsService.save(comSms);
                                         }
                                     }
@@ -511,10 +516,10 @@ public class YbDrgVerifyServiceImpl extends ServiceImpl<YbDrgVerifyMapper, YbDrg
     public void updateReviewerStates(List<YbDrgVerify> list) {
         List<YbPerson> personList = this.findPerson(list);
         for (YbDrgVerify item : list) {
-            if (item.getVerifyDeptCode() != "" && item.getVerifyDeptCode() != null &&
-                    item.getVerifyDeptName() != "" && item.getVerifyDeptName() != null &&
-                    item.getVerifyDoctorCode() != "" && item.getVerifyDoctorCode() != null &&
-                    item.getVerifyDoctorName() != "" && item.getVerifyDoctorName() != null) {
+            if (item.getVerifyDeptCode() != null && !item.getVerifyDeptCode().equals("") &&
+                    item.getVerifyDeptName() != null && !item.getVerifyDeptName().equals("") &&
+                    item.getVerifyDoctorCode() != null && !item.getVerifyDoctorCode().equals("") &&
+                    item.getVerifyDoctorName() != null && !item.getVerifyDoctorName().equals("")) {
                 if (personList.stream().filter(s -> s.getPersonCode().equals(item.getVerifyDoctorCode())).count() > 0) {
                     String strVerifyDeptName = DataTypeHelpers.stringReplaceSetString(item.getVerifyDeptName(), item.getVerifyDeptCode() + "-");
                     item.setVerifyDeptName(strVerifyDeptName);
@@ -549,16 +554,16 @@ public class YbDrgVerifyServiceImpl extends ServiceImpl<YbDrgVerifyMapper, YbDrg
     @Override
     @Transactional
     public void updateAllReviewerStates(String applyDateStr, Integer areaType, int state) {
-        YbDrgApply reconsiderApply = iYbDrgApplyService.findDrgApplyByApplyDateStrs(applyDateStr, areaType);
-        if (reconsiderApply != null) {
+        YbDrgApply drgApply = iYbDrgApplyService.findDrgApplyByApplyDateStrs(applyDateStr, areaType);
+        if (drgApply != null) {
             List<YbDrgVerify> list = this.baseMapper.findDrgVerifyList(applyDateStr, areaType, state);
             List<YbDrgVerify> updateList = new ArrayList<>();
             List<YbPerson> personList = this.iYbPersonService.findPersonList(new YbPerson(), 0);
             for (YbDrgVerify item : list) {
-                if (item.getVerifyDeptCode() != "" && item.getVerifyDeptCode() != null &&
-                        item.getVerifyDeptName() != "" && item.getVerifyDeptName() != null &&
-                        item.getVerifyDoctorCode() != "" && item.getVerifyDoctorCode() != null &&
-                        item.getVerifyDoctorName() != "" && item.getVerifyDoctorName() != null) {
+                if (item.getVerifyDeptCode() != null && !item.getVerifyDeptCode().equals("") &&
+                        item.getVerifyDeptName() != null && !item.getVerifyDeptName().equals("") &&
+                        item.getVerifyDoctorCode() != null && !item.getVerifyDoctorCode().equals("") &&
+                        item.getVerifyDoctorName() != null && !item.getVerifyDoctorName().equals("")) {
                     if (personList.stream().filter(s -> s.getPersonCode().equals(item.getVerifyDoctorCode())).count() > 0) {
                         YbDrgVerify update = new YbDrgVerify();
                         update.setId(item.getId());
@@ -577,8 +582,8 @@ public class YbDrgVerifyServiceImpl extends ServiceImpl<YbDrgVerifyMapper, YbDrg
     @Override
     @Transactional
     public void updateBackStates(String applyDateStr, Integer areaType, int state) {
-        YbDrgApply reconsiderApply = iYbDrgApplyService.findDrgApplyByApplyDateStrs(applyDateStr, areaType);
-        if (reconsiderApply != null) {
+        YbDrgApply drgApply = iYbDrgApplyService.findDrgApplyByApplyDateStrs(applyDateStr, areaType);
+        if (drgApply != null) {
             List<YbDrgVerify> list = this.baseMapper.findDrgVerifyList(applyDateStr, areaType, state);
             List<YbDrgVerify> updateList = new ArrayList<>();
             for (YbDrgVerify item : list) {

@@ -61,7 +61,8 @@ public class YbAppealManageViewServiceImpl extends ServiceImpl<YbAppealManageVie
             if (reconsiderApply != null) {
                 ybAppealManageView.setPid(reconsiderApply.getId());
                 boolean isLike = false;
-                if (ybAppealManageView.getCurrencyField() != null && ybAppealManageView.getCurrencyField() != "") {
+                String val = ybAppealManageView.getCurrencyField();
+                if (val!= null && !val.equals("")) {
                     if(!keyField.equals("readyDoctorCode") && !keyField.equals("readyDoctorName") ) {
                         isLike = true;
                     }
@@ -93,7 +94,7 @@ public class YbAppealManageViewServiceImpl extends ServiceImpl<YbAppealManageVie
             if (reconsiderApply != null) {
                 ybAppealManageView.setPid(reconsiderApply.getId());
                 boolean isLike = false;
-                if (ybAppealManageView.getCurrencyField() != null && ybAppealManageView.getCurrencyField() != "") {
+                if (ybAppealManageView.getCurrencyField() != null && !ybAppealManageView.getCurrencyField().equals("")) {
                     if(!keyField.equals("readyDoctorCode") && !keyField.equals("readyDoctorName") ) {
                         isLike = true;
                     }
@@ -158,7 +159,7 @@ public class YbAppealManageViewServiceImpl extends ServiceImpl<YbAppealManageVie
                 List<YbAppealManageView> list = new ArrayList<>();
                 List<YbAppealManage> manageList = new ArrayList<>();
                 if(!isConf) {
-                    if (value != null && value != "" && keyField.equals("readyDoctorName")) {
+                    if (value != null && !value.equals("") && keyField.equals("readyDoctorName")) {
                         LambdaQueryWrapper<YbAppealManage> queryWrapper = new LambdaQueryWrapper<>();
                         queryWrapper.eq(YbAppealManage::getApplyDateStr,applyDateStr);
                         queryWrapper.eq(YbAppealManage::getAreaType,areaType);
@@ -197,13 +198,13 @@ public class YbAppealManageViewServiceImpl extends ServiceImpl<YbAppealManageVie
                             queryManage.setReadyDeptName("手术室");
                             queryManage.setOrderDoctorCode(ybAppealManageView.getOrderDoctorCode());
                         }
-                        if (value != null && value != "" && keyField.equals("readyDoctorCode")) {
+                        if (value != null && !value.equals("") && keyField.equals("readyDoctorCode")) {
                             queryManage.setReadyDoctorCode(value);
                         }
                         if (ybAppealManageView.getReadyDoctorCode() != null) {
                             queryManage.setReadyDoctorCode(ybAppealManageView.getReadyDoctorCode());
                         }
-                        if (value != null && value != "" && keyField.equals("orderNumber")) {
+                        if (value != null && !value.equals("") && keyField.equals("orderNumber")) {
                             queryManage.setOrderNumber(value);
                         }
                         if (typeno != null) {
@@ -229,7 +230,7 @@ public class YbAppealManageViewServiceImpl extends ServiceImpl<YbAppealManageVie
                             strList.add(item.getDeptId());
                         }
                         queryWrapper.in(YbAppealManage::getReadyDeptCode,strList);
-                        if (value != null && value != "" && keyField.equals("readyDoctorName")) {
+                        if (value != null && !value.equals("") && keyField.equals("readyDoctorName")) {
                             strList = this.iYbPersonService.findPersonCodeList(value);
                             if(strList.size()>0){
                                 if(strList.size() == 1){
@@ -239,7 +240,7 @@ public class YbAppealManageViewServiceImpl extends ServiceImpl<YbAppealManageVie
                                 }
                             }
                         }
-                        if (value != null && value != "" && keyField.equals("orderNumber")) {
+                        if (value != null && !value.equals("") && keyField.equals("orderNumber")) {
                             queryWrapper.eq(YbAppealManage::getOrderNumber,value);
                         }
                         if (typeno != null) {
@@ -416,7 +417,7 @@ public class YbAppealManageViewServiceImpl extends ServiceImpl<YbAppealManageVie
             if (reconsiderApply != null) {
                 ybAppealManageView.setPid(reconsiderApply.getId());
                 boolean isLike = false;
-                if (ybAppealManageView.getCurrencyField() != null && ybAppealManageView.getCurrencyField() != "") {
+                if (ybAppealManageView.getCurrencyField() != null && !ybAppealManageView.getCurrencyField().equals("")) {
                     isLike = true;
                 }
 
@@ -457,7 +458,7 @@ public class YbAppealManageViewServiceImpl extends ServiceImpl<YbAppealManageVie
 //                未完成
                 ybAppealManageView.setReadyDeptName("手术室");
                 boolean isLike = false;
-                if (ybAppealManageView.getCurrencyField() != null && ybAppealManageView.getCurrencyField() != "") {
+                if (ybAppealManageView.getCurrencyField() != null && !ybAppealManageView.getCurrencyField().equals("")) {
                     if(!keyField.equals("readyDoctorCode") && !keyField.equals("readyDoctorName") ) {
                         isLike = true;
                     }
@@ -506,7 +507,7 @@ public class YbAppealManageViewServiceImpl extends ServiceImpl<YbAppealManageVie
                     String appealConfireId = acdlist.get(0).getPid();
                     ybAppealManageView.setPid(reconsiderApply.getId());
                     boolean isLike = false;
-                    if (ybAppealManageView.getCurrencyField() != null && ybAppealManageView.getCurrencyField() != "") {
+                    if (ybAppealManageView.getCurrencyField() != null && !ybAppealManageView.getCurrencyField().equals("")) {
                         if(!keyField.equals("readyDoctorCode") && !keyField.equals("readyDoctorName") ) {
                             isLike = true;
                         }

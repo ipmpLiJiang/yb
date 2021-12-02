@@ -186,7 +186,7 @@
           <a-checkbox :checked="checked"  @change="onChange" v-show="tableSelectKey==4?true:false">
             是否发送
           </a-checkbox>
-          <a-input-search placeholder="请输入关键字" v-model="searchText" style="width: 200px" enter-button @search="searchTable" v-show="tableSelectKey==5?true:false" />
+          <a-input-search placeholder="请输入关键字" v-model="searchText" style="width: 200px" enter-button @search="searchTable" v-show="tableSelectKey==4?true:false" />
           <a-popconfirm
               title="确定发送短信？"
               @confirm="sendSms"
@@ -195,7 +195,7 @@
               cancelText="取消"
               v-show="tableSelectKey==4?true:false"
             >
-              <a-button type="primary">发送短信</a-button>
+              <a-button type="primary">DRG发送短信</a-button>
             </a-popconfirm>
           </a-col>
           <a-col :span=2 v-show="tableSelectKey==1?true:false">
@@ -303,7 +303,7 @@
       <div>
         <a-modal
           v-model="visibleSearch"
-          title="筛选"
+          title="DRG筛选"
           width="35%"
           on-ok="handleSearchOk"
         >
@@ -325,7 +325,7 @@
           <p>
             <a-form-item
               v-bind="formItemLayout"
-              label="科室"
+              label="DRG科室"
             >
               <a-input style="width: 255px"  v-model="searchItem.item.ks" />
             </a-form-item>
@@ -374,7 +374,7 @@
       <div>
         <a-modal
           v-model="visibleUpdate"
-          title="手动匹配"
+          title="DRG手动匹配"
           on-ok="handleUpdateOk"
         >
           <template slot="footer">
@@ -424,7 +424,7 @@
       <div>
         <a-modal
           v-model="visibleDate"
-          title="变更日期"
+          title="DRG变更日期"
           on-ok="handleDateOk"
         >
           <template slot="footer">
@@ -482,6 +482,14 @@
             :format="enableFormat"/>
           </a-form-item>
         </a-row>
+        <a-row  v-show="tableSelectKey==4?true:false">
+        <a-form-item
+          v-bind="formItemLayout"
+          label="是否更改短信日期"
+        >
+        <a-checkbox :checked="dateChecked" @change="onIsDateChange" />
+        </a-form-item>
+      </a-row>
         </a-modal>
       </div>
     </template>
@@ -526,6 +534,7 @@ export default {
       fileList: [],
       drgApply: {id: null},
       checked: false,
+      dateChecked: false,
       searchText: '',
       visibleDate: false,
       searchItem: {
@@ -602,6 +611,9 @@ export default {
       this.selectDate.deptCode = item.value
       this.selectDate.deptName = item.text
     },
+    onIsDateChange () {
+      this.dateChecked = !this.dateChecked
+    },
     showUpdateModal () {
       this.selectDate = {}
       this.$refs.ybDrgVerifyStayed.showImport()
@@ -610,6 +622,15 @@ export default {
       this.$refs.ybDrgVerifyStayed.handImport(this.selectDate)
     },
     handleDateOk (e) {
+      if (this.tableSelectKey !== '4') {
+        this.dateChecked = false
+        this.drgApply.isChangDate = 0
+      }
+      if (this.dateChecked) {
+        this.drgApply.isChangDate = 1
+      } else {
+        this.drgApply.isChangDate = 0
+      }
       if (this.drgApply.id !== null) {
         if (this.drgApply.endDate === null) {
           this.$message.warning('当前' + this.searchApplyDate + ',截止日期 不能为空.')
@@ -630,6 +651,9 @@ export default {
           if (r.data.data.success === 1) {
             this.$message.success('当前' + this.searchApplyDate + '修改日期成功.')
             this.visibleDate = false
+            if (this.dateChecked && this.tableSelectKey === '4') {
+              this.searchTable()
+            }
           } else {
             this.$message.warning(r.data.data.message)
           }
@@ -644,6 +668,7 @@ export default {
       this.visibleDate = false
     },
     showDateModal () {
+      this.dateChecked = false
       if (this.drgApply.id !== null) {
         this.visibleDate = true
       } else {
@@ -852,7 +877,7 @@ export default {
         this.$put('comSms/sendSms', {
           applyDateStr: this.searchApplyDate,
           areaType: this.user.areaType.value,
-          sendType: 1,
+          sendType: 10,
           state: 0
         }).then((r) => {
           if (r.data.data.success === 1) {

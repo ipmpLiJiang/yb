@@ -2,47 +2,54 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cc.mrbird.febs.com.dao.ComFileMapper">
 
-        <!-- 通用查询映射结果 -->
-        <resultMap id="BaseResultMap" type="cc.mrbird.febs.com.entity.ComFile">
-                    <id column="ID" property="id"/>
-                    <result column="CLIENT_NAME" property="clientName"/>
-                    <result column="SERVER_NAME" property="serverName"/>
-                    <result column="IS_DELETEMARK" property="isDeletemark"/>
-                    <result column="CREATE_TIME" property="createTime"/>
-                    <result column="MODIFY_TIME" property="modifyTime"/>
-                    <result column="CREATE_USER_ID" property="createUserId"/>
-                    <result column="MODIFY_USER_ID" property="modifyUserId"/>
-                    <result column="REF_TAB_ID" property="refTabId"/>
-                    <result column="REF_TAB_TABLE" property="refTabTable"/>
-        </resultMap>
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="cc.mrbird.febs.com.entity.ComFile">
+        <id column="ID" property="id"/>
+        <result column="CLIENT_NAME" property="clientName"/>
+        <result column="SERVER_NAME" property="serverName"/>
+        <result column="IS_DELETEMARK" property="isDeletemark"/>
+        <result column="CREATE_TIME" property="createTime"/>
+        <result column="MODIFY_TIME" property="modifyTime"/>
+        <result column="CREATE_USER_ID" property="createUserId"/>
+        <result column="MODIFY_USER_ID" property="modifyUserId"/>
+        <result column="REF_TAB_ID" property="refTabId"/>
+        <result column="REF_TAB_TABLE" property="refTabTable"/>
+        <result column="REF_TYPE" property="refType"/>
+    </resultMap>
 
-        <!-- 通用查询结果列 -->
-        <sql id="Base_Column_List">
-        ID, CLIENT_NAME, SERVER_NAME, IS_DELETEMARK, CREATE_TIME, MODIFY_TIME, CREATE_USER_ID, MODIFY_USER_ID, REF_TAB_ID, REF_TAB_TABLE
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        ID, CLIENT_NAME, SERVER_NAME, IS_DELETEMARK, CREATE_TIME, MODIFY_TIME, CREATE_USER_ID, MODIFY_USER_ID, REF_TAB_ID, REF_TAB_TABLE, REF_TYPE
     </sql>
     <update id="updateComFile" parameterType="cc.mrbird.febs.com.entity.ComFile">
         update com_file
         <trim prefix="set" suffixOverrides=",">
-<if test="clientName != null">CLIENT_NAME=#{clientName},</if>
-<if test="serverName != null">SERVER_NAME=#{serverName},</if>
-<if test="isDeletemark != null">IS_DELETEMARK=#{isDeletemark},</if>
-<if test="createTime != null">CREATE_TIME=#{createTime},</if>
-<if test="modifyTime != null">MODIFY_TIME=#{modifyTime},</if>
-<if test="createUserId != null">CREATE_USER_ID=#{createUserId},</if>
-<if test="modifyUserId != null">MODIFY_USER_ID=#{modifyUserId},</if>
-<if test="refTabId != null">REF_TAB_ID=#{refTabId},</if>
-<if test="refTabTable != null">REF_TAB_TABLE=#{refTabTable},</if>
+            <if test="clientName != null">CLIENT_NAME=#{clientName},</if>
+            <if test="serverName != null">SERVER_NAME=#{serverName},</if>
+            <if test="isDeletemark != null">IS_DELETEMARK=#{isDeletemark},</if>
+            <if test="createTime != null">CREATE_TIME=#{createTime},</if>
+            <if test="modifyTime != null">MODIFY_TIME=#{modifyTime},</if>
+            <if test="createUserId != null">CREATE_USER_ID=#{createUserId},</if>
+            <if test="modifyUserId != null">MODIFY_USER_ID=#{modifyUserId},</if>
+            <if test="refTabId != null">REF_TAB_ID=#{refTabId},</if>
+            <if test="refTabTable != null">REF_TAB_TABLE=#{refTabTable},</if>
+            <if test="refType != null">REF_TYPE=#{refType},</if>
         </trim>
-                where ID=#{id}
+        where ID=#{id}
 
     </update>
-    <select id="findComFile" resultType="cc.mrbird.febs.com.entity.ComFile" parameterType="cc.mrbird.febs.com.entity.ComFile">
-        select  *  from com_file
-        where  1=1
-            <if test="comFile.id != null and comFile.id != ''"> and ID =#{ comFile.id} </if>
-            <if test="comFile.clientName != null and comFile.clientName != ''"> and CLIENT_NAME like concat('%', #{ comFile.clientName} ,'%')</if>
-            <if test="comFile.serverName != null and comFile.serverName != ''"> and SERVER_NAME like concat('%', #{ comFile.serverName} ,'%')</if>
-        <if test="comFile.isDeletemark != null"> and IS_DELETEMARK =#{ comFile.isDeletemark} </if>
+    <select id="findComFile" resultType="cc.mrbird.febs.com.entity.ComFile"
+            parameterType="cc.mrbird.febs.com.entity.ComFile">
+        select * from com_file
+        where 1=1
+        <if test="comFile.id != null and comFile.id != ''">and ID =#{ comFile.id}</if>
+        <if test="comFile.clientName != null and comFile.clientName != ''">and CLIENT_NAME like concat('%',
+            #{ comFile.clientName} ,'%')
+        </if>
+        <if test="comFile.serverName != null and comFile.serverName != ''">and SERVER_NAME like concat('%',
+            #{ comFile.serverName} ,'%')
+        </if>
+        <if test="comFile.isDeletemark != null">and IS_DELETEMARK =#{ comFile.isDeletemark}</if>
         <if test="comFile.createTimeFrom!= null">
             AND comFile.CREATE_TIME <![CDATA[ >= ]]>  createTimeFrom}
         </if>
@@ -55,34 +62,19 @@
         <if test="comFile.modifyTimeTo!= null">
             AND comFile.MODIFY_TIME <![CDATA[ <= ]]>  modifyTimeTo}
         </if>
-        <if test="comFile.createUserId != null"> and CREATE_USER_ID =#{ comFile.createUserId} </if>
-        <if test="comFile.modifyUserId != null"> and MODIFY_USER_ID =#{ comFile.modifyUserId} </if>
-            <if test="comFile.refTabId != null and comFile.refTabId != ''"> and REF_TAB_ID like concat('%', #{ comFile.refTabId} ,'%')</if>
-            <if test="comFile.refTabTable != null and comFile.refTabTable != ''"> and REF_TAB_TABLE like concat('%', #{ comFile.refTabTable} ,'%')</if>
-</select>
-
-    <select id="findAppealResultComFile" resultType="cc.mrbird.febs.com.entity.ComFile" parameterType="cc.mrbird.febs.com.entity.InUploadFile">
-        SELECT
-        com_file.*
-        FROM
-            com_file
-        INNER JOIN yb_appeal_result ON
-            com_file.REF_TAB_ID = yb_appeal_result.id
-        WHERE
-            com_file.IS_DELETEMARK = 1
-            <if test="inUploadFile.id != null"> and com_file.REF_TAB_ID = #{inUploadFile.id} </if>
-            <if test="inUploadFile.applyDateStr != null"> and yb_appeal_result.applyDateStr = #{inUploadFile.applyDateStr} </if>
-            <if test="inUploadFile.areaType != null"> and yb_appeal_result.areaType = #{inUploadFile.areaType} </if>
-            <if test="inUploadFile.sourceType != null"> and yb_appeal_result.sourceType = #{inUploadFile.sourceType} </if>
-            <if test="inUploadFile.typeno != null and inUploadFile.typeno != 3"> and yb_appeal_result.typeno = #{inUploadFile.typeno} </if>
-            <if test="inUploadFile.dataType != null"> and yb_appeal_result.dataType = #{inUploadFile.dataType} </if>
-            <if test="inUploadFile.state != null and inUploadFile.state==12"> and yb_appeal_result.STATE IN (1,2) </if>
-            <if test="inUploadFile.state != null and inUploadFile.state==1"> and yb_appeal_result.STATE = 1 </if>
-            <if test="inUploadFile.state != null and inUploadFile.state==2"> and yb_appeal_result.STATE = 2 </if>
-            <if test="inUploadFile.deptId != null"> and yb_appeal_result.deptCode = #{inUploadFile.deptId} </if>
+        <if test="comFile.createUserId != null">and CREATE_USER_ID =#{ comFile.createUserId}</if>
+        <if test="comFile.modifyUserId != null">and MODIFY_USER_ID =#{ comFile.modifyUserId}</if>
+        <if test="comFile.refTabId != null and comFile.refTabId != ''">and REF_TAB_ID like concat('%',
+            #{ comFile.refTabId} ,'%')
+        </if>
+        <if test="comFile.refTabTable != null and comFile.refTabTable != ''">and REF_TAB_TABLE like concat('%',
+            #{ comFile.refTabTable} ,'%')
+        </if>
+        <if test="comFile.refType != null">and REF_TYPE =#{ comFile.refType}</if>
     </select>
 
-    <select id="findAppealResultSumComFile" resultType="cc.mrbird.febs.com.entity.ComFile" parameterType="cc.mrbird.febs.com.entity.InUploadFile">
+    <select id="findAppealResultComFile" resultType="cc.mrbird.febs.com.entity.ComFile"
+            parameterType="cc.mrbird.febs.com.entity.InUploadFile">
         SELECT
         com_file.*
         FROM
@@ -91,16 +83,46 @@
         com_file.REF_TAB_ID = yb_appeal_result.id
         WHERE
         com_file.IS_DELETEMARK = 1
-        <if test="inUploadFile.id != null"> and com_file.REF_TAB_ID = #{inUploadFile.id} </if>
-        <if test="inUploadFile.applyDateStr != null"> and yb_appeal_result.applyDateStr = #{inUploadFile.applyDateStr} </if>
-        <if test="inUploadFile.areaType != null"> and yb_appeal_result.areaType = #{inUploadFile.areaType} </if>
-        <if test="inUploadFile.sourceType != null"> and yb_appeal_result.sourceType = #{inUploadFile.sourceType} </if>
-        <if test="inUploadFile.typeno != null and inUploadFile.typeno != 3"> and yb_appeal_result.typeno = #{inUploadFile.typeno} </if>
-        <if test="inUploadFile.dataType != null"> and yb_appeal_result.dataType = #{inUploadFile.dataType} </if>
-        <if test="inUploadFile.state != null and inUploadFile.state==12"> and yb_appeal_result.STATE IN (1,2) </if>
-        <if test="inUploadFile.state != null and inUploadFile.state==1"> and yb_appeal_result.STATE = 1 </if>
-        <if test="inUploadFile.state != null and inUploadFile.state==2"> and yb_appeal_result.STATE = 2 </if>
-        <if test="inUploadFile.sumId != null"> and yb_appeal_result.deptCode in (select deptId from yb_appeal_sumdept_data where pid =  #{inUploadFile.sumId}) </if>
+        <if test="inUploadFile.id != null">and com_file.REF_TAB_ID = #{inUploadFile.id}</if>
+        <if test="inUploadFile.applyDateStr != null">and yb_appeal_result.applyDateStr = #{inUploadFile.applyDateStr}
+        </if>
+        <if test="inUploadFile.areaType != null">and yb_appeal_result.areaType = #{inUploadFile.areaType}</if>
+        <if test="inUploadFile.sourceType != null">and yb_appeal_result.sourceType = #{inUploadFile.sourceType}</if>
+        <if test="inUploadFile.typeno != null and inUploadFile.typeno != 3">and yb_appeal_result.typeno =
+            #{inUploadFile.typeno}
+        </if>
+        <if test="inUploadFile.dataType != null">and yb_appeal_result.dataType = #{inUploadFile.dataType}</if>
+        <if test="inUploadFile.state != null and inUploadFile.state==12">and yb_appeal_result.STATE IN (1,2)</if>
+        <if test="inUploadFile.state != null and inUploadFile.state==1">and yb_appeal_result.STATE = 1</if>
+        <if test="inUploadFile.state != null and inUploadFile.state==2">and yb_appeal_result.STATE = 2</if>
+        <if test="inUploadFile.deptId != null">and yb_appeal_result.deptCode = #{inUploadFile.deptId}</if>
+    </select>
+
+    <select id="findAppealResultSumComFile" resultType="cc.mrbird.febs.com.entity.ComFile"
+            parameterType="cc.mrbird.febs.com.entity.InUploadFile">
+        SELECT
+        com_file.*
+        FROM
+        com_file
+        INNER JOIN yb_appeal_result ON
+        com_file.REF_TAB_ID = yb_appeal_result.id
+        WHERE
+        com_file.IS_DELETEMARK = 1
+        <if test="inUploadFile.id != null">and com_file.REF_TAB_ID = #{inUploadFile.id}</if>
+        <if test="inUploadFile.applyDateStr != null">and yb_appeal_result.applyDateStr = #{inUploadFile.applyDateStr}
+        </if>
+        <if test="inUploadFile.areaType != null">and yb_appeal_result.areaType = #{inUploadFile.areaType}</if>
+        <if test="inUploadFile.sourceType != null">and yb_appeal_result.sourceType = #{inUploadFile.sourceType}</if>
+        <if test="inUploadFile.typeno != null and inUploadFile.typeno != 3">and yb_appeal_result.typeno =
+            #{inUploadFile.typeno}
+        </if>
+        <if test="inUploadFile.dataType != null">and yb_appeal_result.dataType = #{inUploadFile.dataType}</if>
+        <if test="inUploadFile.state != null and inUploadFile.state==12">and yb_appeal_result.STATE IN (1,2)</if>
+        <if test="inUploadFile.state != null and inUploadFile.state==1">and yb_appeal_result.STATE = 1</if>
+        <if test="inUploadFile.state != null and inUploadFile.state==2">and yb_appeal_result.STATE = 2</if>
+        <if test="inUploadFile.sumId != null">and yb_appeal_result.deptCode in (select deptId from
+            yb_appeal_sumdept_data where pid = #{inUploadFile.sumId})
+        </if>
     </select>
 
     <delete id="batchRefIdDelete">

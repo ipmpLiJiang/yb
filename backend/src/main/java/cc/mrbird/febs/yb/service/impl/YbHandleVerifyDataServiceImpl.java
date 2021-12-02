@@ -185,7 +185,7 @@ public class YbHandleVerifyDataServiceImpl extends ServiceImpl<YbHandleVerifyDat
         List<YbPerson> personList = new ArrayList<>();
         ArrayList<String> personCodeList = new ArrayList<>();
         for (YbHandleVerifyData item : list) {
-            if (item.getDoctorCode() != "" && item.getDoctorCode() != null) {
+            if (item.getDoctorCode() != null && !item.getDoctorCode().equals("")) {
                 if (personCodeList.stream().filter(s -> s.equals(item.getDoctorCode())).count() == 0) {
                     personCodeList.add(item.getDoctorCode());
                 }
@@ -234,9 +234,10 @@ public class YbHandleVerifyDataServiceImpl extends ServiceImpl<YbHandleVerifyDat
         boolean isOpenSms = nOpenSms == 1 ? true : false;
         if (isOpenSms) {
             ComSms qu = new ComSms();
-            qu.setState(ComSms.STATE_0);
-            qu.setSendType(ComSms.SENDTYPE_6);
+            qu.setApplyDateStr(applyDateStr);
             qu.setAreaType(areaType);
+            qu.setSendType(ComSms.SENDTYPE_6);
+            qu.setState(ComSms.STATE_0);
             smsList = iComSmsService.findLmdSmsList(qu);
         }
 
@@ -305,14 +306,14 @@ public class YbHandleVerifyDataServiceImpl extends ServiceImpl<YbHandleVerifyDat
                                         comSms.setState(ComSms.STATE_0);
                                         comSms.setAreaType(areaType);
 
-                                        comSms.setSendcontent("医保管理平台提醒您，" + applyDateStr + "人工复议任务已发布，请尽快处理。");
+                                        comSms.setSendcontent("医保管理平台提醒您，" + applyDateStr + "非常规复议任务已发布，请尽快处理。");
                                         comSms.setOperatorId(uId);
                                         comSms.setOperatorName(Uname);
                                         comSms.setIsDeletemark(1);
                                         comSms.setCreateUserId(uId);
                                         comSms.setCreateTime(thisDate);
                                         comSms.setApplyDateStr(applyDateStr);
-//                                    comSms.setTypeno(typeno);人工复议无
+//                                    comSms.setTypeno(typeno);非常规复议无
                                         saveSmsList.add(comSms);
                                     }
                                 }
@@ -355,9 +356,10 @@ public class YbHandleVerifyDataServiceImpl extends ServiceImpl<YbHandleVerifyDat
             boolean isOpenSms = nOpenSms == 1 ? true : false;
             if (isOpenSms) {
                 ComSms qu = new ComSms();
-                qu.setState(ComSms.STATE_0);
-                qu.setSendType(ComSms.SENDTYPE_6);
+                qu.setApplyDateStr(applyDateStr);
                 qu.setAreaType(areaType);
+                qu.setSendType(ComSms.SENDTYPE_6);
+                qu.setState(ComSms.STATE_0);
                 smsList = iComSmsService.findLmdSmsList(qu);
             }
             long count = 0;
@@ -430,14 +432,14 @@ public class YbHandleVerifyDataServiceImpl extends ServiceImpl<YbHandleVerifyDat
                                             comSms.setSendType(ComSms.SENDTYPE_6);
                                             comSms.setState(ComSms.STATE_0);
                                             comSms.setAreaType(handleVerify.getAreaType());
-                                            comSms.setSendcontent("医保管理平台提醒您，" + applyDateStr + " 人工复议任务已发布，请尽快处理。");
+                                            comSms.setSendcontent("医保管理平台提醒您，" + applyDateStr + " 非常规复议任务已发布，请尽快处理。");
                                             comSms.setOperatorId(uId);
                                             comSms.setOperatorName(Uname);
                                             comSms.setIsDeletemark(1);
                                             comSms.setCreateUserId(uId);
                                             comSms.setCreateTime(thisDate);
                                             comSms.setApplyDateStr(applyDateStr);
-//                                        comSms.setTypeno(typeno);//人工复议无
+//                                        comSms.setTypeno(typeno);//非常规复议无
                                             saveSmsList.add(comSms);
                                         }
                                     }

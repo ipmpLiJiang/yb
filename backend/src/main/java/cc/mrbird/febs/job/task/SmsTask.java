@@ -28,11 +28,11 @@ public class SmsTask {
 
     public void sendSmsTask(String params) {
         if(params != null) {
-            int areaType = Integer.parseInt(params);
-            iComSmsService.sendSms(ComSms.SENDTYPE_1, areaType);
-            iComSmsService.sendSms(ComSms.SENDTYPE_5, areaType);
+//            int areaType = Integer.parseInt(params);
+//            iComSmsService.sendSms(ComSms.SENDTYPE_1, areaType);
+//            iComSmsService.sendSms(ComSms.SENDTYPE_5, areaType);
 //        iComSmsService.sendSms(ComSms.SENDTYPE_6,areaType);
-            iComSmsService.sendSms(ComSms.SENDTYPE_7, areaType);
+//            iComSmsService.sendSms(ComSms.SENDTYPE_7, areaType);
         }
     }
 

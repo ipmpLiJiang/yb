@@ -190,7 +190,7 @@ public class YbAppealResultDeductimplementViewServiceImpl extends ServiceImpl<Yb
                     ybAppealResultDeductimplementView.setImplementDateFrom(applyDateStrForm);
                     ybAppealResultDeductimplementView.setImplementDateTo(applyDateStrTo);
                 }
-                if (!isUser && ybAppealResultDeductimplementView.getCurrencyField() != null && ybAppealResultDeductimplementView.getCurrencyField() != "") {
+                if (!isUser && ybAppealResultDeductimplementView.getCurrencyField() != null && !ybAppealResultDeductimplementView.getCurrencyField().equals("")) {
                     if (keyField.equals("arDoctorCode")) {
                         ybAppealResultDeductimplementView.setArDoctorCode(ybAppealResultDeductimplementView.getCurrencyField());
                     }
@@ -225,7 +225,7 @@ public class YbAppealResultDeductimplementViewServiceImpl extends ServiceImpl<Yb
             if (reset != null && reset.getState() == 1) {
                 ybAppealResultDeductimplementView.setPid(reset.getId());
                 ybAppealResultDeductimplementView.setApplyDateStr(reset.getApplyDateStr());
-                if (ybAppealResultDeductimplementView.getCurrencyField() != null && ybAppealResultDeductimplementView.getCurrencyField() != "") {
+                if (ybAppealResultDeductimplementView.getCurrencyField() != null && !ybAppealResultDeductimplementView.getCurrencyField().equals("")) {
                     if (keyField.equals("arDoctorCode")) {
                         ybAppealResultDeductimplementView.setArDoctorCode(ybAppealResultDeductimplementView.getCurrencyField());
                     }
@@ -284,7 +284,7 @@ public class YbAppealResultDeductimplementViewServiceImpl extends ServiceImpl<Yb
             sql = " id not in(select resetDataId from yb_appeal_result_deductimplement where applyDateStr in(" + dateStr + ") and areaType = " + areaType + sqlWhere1 + ")";
         }
         sql += " and relatelDataId in(" + relatelDataStr + ")";
-        if (value != null && value != "" && !keyField.equals("readyDoctorCode") && !keyField.equals("readyDoctorName") && !keyField.equals("orderNumber")) {
+        if (value != null && !value.equals("") && !keyField.equals("readyDoctorCode") && !keyField.equals("readyDoctorName") && !keyField.equals("orderNumber")) {
             if (keyField.equals("serialNo")) {
                 sql += " and serialNo = '" + value + "'";
 //                wrapperResetData.eq(YbReconsiderResetData::getSerialNo, value);
@@ -388,7 +388,7 @@ public class YbAppealResultDeductimplementViewServiceImpl extends ServiceImpl<Yb
                 String sql = "";
                 LambdaQueryWrapper<YbAppealResult> queryWrapper = new LambdaQueryWrapper<>();
                 sql = " applyDateStr = '" + applyDateStr + "' and areaType = " + areaType + " and state = 2 ";
-                if (value != null && value != "" && keyField.equals("arDoctorCode")) {
+                if (value != null && !value.equals("") && keyField.equals("arDoctorCode")) {
                     queryWrapper.eq(YbAppealResult::getDoctorCode, value);
                 }
                 if (ybAppealResultDeductimplementView.getArDoctorCode() != null) {
@@ -397,7 +397,7 @@ public class YbAppealResultDeductimplementViewServiceImpl extends ServiceImpl<Yb
                 if (dataType != null) {
                     sql += " and dataType = " + dataType;
                 }
-                if (value != null && value != "" && keyField.equals("arDoctorName")) {
+                if (value != null && !value.equals("") && keyField.equals("arDoctorName")) {
                     strList = this.iYbPersonService.findPersonCodeList(value);
                     if (strList.size() > 0) {
                         String docIn = "";

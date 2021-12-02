@@ -24,6 +24,7 @@
       <div>
         <a-form :form="form" >
           <div style="margin:20px 0px">
+            <a-divider>更改科室/医生</a-divider>
             <a-row
               justify="center"
               type="flex"

@@ -215,17 +215,17 @@ public  class YbDefaultValue {
     public static final Integer VERIFYSTATE_3 = 3;
 
     /**
-     * 人工复议 状态 1 待审核
+     * 非常规复议 状态 1 待审核
      */
     public static final Integer VERIFYDATASTATE_1 = 1;
 
     /**
-     * 人工复议 状态 2 已审核
+     * 非常规复议 状态 2 已审核
      */
     public static final Integer VERIFYDATASTATE_2 = 2;
 
     /**
-     * 人工复议 状态 3 已发送
+     * 非常规复议 状态 3 已发送
      */
     public static final Integer VERIFYDATASTATE_3 = 3;
 
@@ -290,5 +290,36 @@ public  class YbDefaultValue {
      * 院区 2 其他
      */
     public static final Integer AREATYPE_2 = 2;
+
+
+
+    /**
+     * 申诉状态 0 待接收
+     */
+    public static final Integer AMSTATE_0 = 0;
+    /**
+     * 申诉状态 1 接受
+     */
+    public static final Integer AMSTATE_1 = 1;
+    /**
+     * 申诉状态 2 不接受
+     */
+    public static final Integer AMSTATE_2 = 2;
+    /**
+     * 申诉状态 3 管理员更改
+     */
+    public static final Integer AMSTATE_3 = 3;
+    /**
+     * 申诉状态 4 医保拒绝
+     */
+    public static final Integer AMSTATE_4 = 4;
+    /**
+     * 申诉状态 6 已上传(已申诉)
+     */
+    public static final Integer AMSTATE_6 = 6;
+    /**
+     * 申诉状态 7 未申诉
+     */
+    public static final Integer AMSTATE_7 = 7;
 
 }

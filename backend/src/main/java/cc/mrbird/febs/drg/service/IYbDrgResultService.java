@@ -27,4 +27,6 @@ public interface IYbDrgResultService extends IService<YbDrgResult> {
         void updateYbDrgResult(YbDrgResult ybDrgResult);
 
         void deleteYbDrgResults(String[]Ids);
+
+        List<YbDrgResult> findDrgResultList(YbDrgResult drgResult);
         }

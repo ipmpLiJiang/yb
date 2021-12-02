@@ -188,7 +188,7 @@ public class YbAppealResultReportViewServiceImpl extends ServiceImpl<YbAppealRes
             }
             ybAppealResultReportView.setPid(pid);
             boolean isLike = false;
-            if (ybAppealResultReportView.getCurrencyField() != null && ybAppealResultReportView.getCurrencyField() != "") {
+            if (ybAppealResultReportView.getCurrencyField() != null && !ybAppealResultReportView.getCurrencyField().equals("")) {
                 if (!keyField.equals("arDoctorCode") && !keyField.equals("arDoctorName")) {
                     isLike = true;
                 }
@@ -255,14 +255,14 @@ public class YbAppealResultReportViewServiceImpl extends ServiceImpl<YbAppealRes
                 sql = " applyDateStr = '" + applyDateStr + "' and areaType = " + areaType;
 //                queryWrapper.eq(YbAppealResult::getApplyDateStr, applyDateStr);
 //                queryWrapper.eq(YbAppealResult::getAreaType, areaType);
-                if (value != null && value != "" && keyField.equals("arDoctorCode")) {
+                if (value != null && !value.equals("") && keyField.equals("arDoctorCode")) {
                     queryWrapper.eq(YbAppealResult::getDoctorCode, value);
                 }
                 if (ybAppealResultReportView.getArDoctorCode() != null) {
                     sql += " and doctorCode = '" + ybAppealResultReportView.getArDoctorCode() + "'";
 //                    queryWrapper.eq(YbAppealResult::getDoctorCode, ybAppealResultReportView.getArDoctorCode());
                 }
-                if (value != null && value != "" && keyField.equals("orderNumber")) {
+                if (value != null && !value.equals("") && keyField.equals("orderNumber")) {
                     sql += " and orderNumber = '" + value + "'";
 //                    queryWrapper.eq(YbAppealResult::getOrderNumber, value);
                 }
@@ -303,7 +303,7 @@ public class YbAppealResultReportViewServiceImpl extends ServiceImpl<YbAppealRes
                         sql += " and 1 = 2";
                     }
                 }
-                if (value != null && value != "" && keyField.equals("arDoctorName")) {
+                if (value != null && !value.equals("") && keyField.equals("arDoctorName")) {
                     List<String> strList = this.iYbPersonService.findPersonCodeList(value);
                     if (strList.size() > 0) {
                         if(strList.size() == 1){
@@ -411,7 +411,7 @@ public class YbAppealResultReportViewServiceImpl extends ServiceImpl<YbAppealRes
                 }
                 sql = " applyDateStr in(" + dateStrIn + ") and areaType = " + areaType;
                 sql += " and doctorCode = '" + ybAppealResultReportView.getArDoctorCode() + "'";
-                if (value != null && value != "" && keyField.equals("orderNumber")) {
+                if (value != null && !value.equals("") && keyField.equals("orderNumber")) {
                     sql += " and orderNumber = '" + value + "'";
 //                    queryWrapper.eq(YbAppealResult::getOrderNumber, value);
                 }
@@ -491,7 +491,7 @@ public class YbAppealResultReportViewServiceImpl extends ServiceImpl<YbAppealRes
             dateList.add(item.getApplyDataId());
         }
         wrapperApplyData.in(YbReconsiderApplyData::getId, dateList);
-        if (value != null && value != "" && !keyField.equals("readyDoctorCode") && !keyField.equals("readyDoctorName") && !keyField.equals("orderNumber")) {
+        if (value != null && !value.equals("") && !keyField.equals("readyDoctorCode") && !keyField.equals("readyDoctorName") && !keyField.equals("orderNumber")) {
             if (keyField.equals("serialNo")) {
                 wrapperApplyData.eq(YbReconsiderApplyData::getSerialNo, value);
             }
@@ -638,7 +638,7 @@ public class YbAppealResultReportViewServiceImpl extends ServiceImpl<YbAppealRes
             if (pid != null) {
                 ybAppealResultReportView.setPid(pid);
                 boolean isLike = false;
-                if (ybAppealResultReportView.getCurrencyField() != null && ybAppealResultReportView.getCurrencyField() != "") {
+                if (ybAppealResultReportView.getCurrencyField() != null && !ybAppealResultReportView.getCurrencyField().equals("")) {
                     if (!keyField.equals("arDoctorCode") && !keyField.equals("arDoctorName")) {
                         isLike = true;
                     }

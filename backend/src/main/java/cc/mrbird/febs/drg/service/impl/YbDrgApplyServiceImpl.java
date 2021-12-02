@@ -1,13 +1,20 @@
 package cc.mrbird.febs.drg.service.impl;
 
+import cc.mrbird.febs.com.controller.DataTypeHelpers;
+import cc.mrbird.febs.com.entity.ComSms;
 import cc.mrbird.febs.com.service.IComConfiguremanageService;
+import cc.mrbird.febs.com.service.IComSmsService;
 import cc.mrbird.febs.common.domain.QueryRequest;
 import cc.mrbird.febs.common.properties.FebsProperties;
 import cc.mrbird.febs.common.utils.SortUtil;
 import cc.mrbird.febs.drg.entity.YbDrgApply;
 import cc.mrbird.febs.drg.dao.YbDrgApplyMapper;
+import cc.mrbird.febs.drg.entity.YbDrgManage;
 import cc.mrbird.febs.drg.service.IYbDrgApplyService;
+import cc.mrbird.febs.drg.service.IYbDrgManageService;
 import cc.mrbird.febs.yb.entity.YbDefaultValue;
+import cn.hutool.core.date.DateUnit;
+import cn.hutool.core.date.DateUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -43,6 +50,12 @@ public class YbDrgApplyServiceImpl extends ServiceImpl<YbDrgApplyMapper, YbDrgAp
 
     @Autowired
     IComConfiguremanageService iComConfiguremanageService;
+
+    @Autowired
+    IYbDrgManageService iYbDrgManageService;
+
+    @Autowired
+    IComSmsService iComSmsService;
 
     @Override
     public IPage<YbDrgApply> findYbDrgApplys(QueryRequest request, YbDrgApply ybDrgApply) {
@@ -83,9 +96,68 @@ public class YbDrgApplyServiceImpl extends ServiceImpl<YbDrgApplyMapper, YbDrgAp
 
     @Override
     @Transactional
-    public void updateYbDrgApply(YbDrgApply ybDrgApply) {
+    public void updateYbDrgApply(YbDrgApply ybDrgApply, Integer isChangDate) {
         ybDrgApply.setModifyTime(new Date());
-        this.baseMapper.updateYbDrgApply(ybDrgApply);
+        long endMinute = 0;
+        long enableDay = 0;
+        YbDrgApply entity = this.getById(ybDrgApply.getId());
+        if (entity !=null && entity.getState() == YbDefaultValue.APPLYSTATE_3) {
+            endMinute = DateUtil.between(ybDrgApply.getEndDate(), entity.getEndDate(), DateUnit.MINUTE);
+            enableDay = DateUtil.between(ybDrgApply.getEnableDate(), entity.getEnableDate(), DateUnit.DAY);
+            if (isChangDate != null && isChangDate == 1) {
+                List<ComSms> updateSmsList = new ArrayList<>();
+                List<YbDrgManage> updateAmList = new ArrayList<>();
+                List<ComSms> smsList = new ArrayList<>();
+                List<YbDrgManage> drgManageList = new ArrayList<>();
+                if (enableDay != 0 || endMinute != 0) {
+                    LambdaQueryWrapper<ComSms> wrapperSms = new LambdaQueryWrapper<>();
+                    wrapperSms.eq(ComSms::getApplyDateStr, entity.getApplyDateStr());
+                    wrapperSms.eq(ComSms::getAreaType, entity.getAreaType());
+                    wrapperSms.eq(ComSms::getSendType, ComSms.SENDTYPE_10);
+                    wrapperSms.eq(ComSms::getState, ComSms.STATE_0);
+                    smsList = this.iComSmsService.list(wrapperSms);
+                }
+                if (enableDay != 0) {
+                    LambdaQueryWrapper<YbDrgManage> wrapperAm = new LambdaQueryWrapper<>();
+                    wrapperAm.eq(YbDrgManage::getApplyDateStr, entity.getApplyDateStr());
+                    wrapperAm.eq(YbDrgManage::getAreaType, entity.getAreaType());
+                    drgManageList = iYbDrgManageService.list(wrapperAm);
+                }
+                Date enableDate = ybDrgApply.getEnableDate();
+                Date endDate = ybDrgApply.getEndDate();
+                enableDate = DataTypeHelpers.addDateMethod(enableDate, 1);
+
+                if (smsList.size() > 0) {
+                    String sendContent = this.getChangSendMessage(entity.getApplyDateStr(), endDate, enableDate, entity.getAreaType(), false);
+                    for (ComSms item : smsList) {
+                        ComSms update = new ComSms();
+                        update.setId(item.getId());
+                        update.setSendcontent(sendContent);
+                        updateSmsList.add(update);
+                    }
+                }
+                if (drgManageList.size() > 0) {
+                    for (YbDrgManage item : drgManageList) {
+                        YbDrgManage update = new YbDrgManage();
+                        update.setId(item.getId());
+                        update.setEnableDate(enableDate);
+                        updateAmList.add(update);
+                    }
+
+                }
+                if (updateSmsList.size() > 0) {
+                    iComSmsService.updateBatchById(updateSmsList);
+                }
+
+                if (updateAmList.size() > 0) {
+                    iYbDrgManageService.updateBatchById(updateAmList);
+                }
+            }
+            if (enableDay != 0 || endMinute != 0) {
+                this.baseMapper.updateYbDrgApply(ybDrgApply);
+            }
+        }
+
     }
 
     @Override
@@ -139,6 +211,10 @@ public class YbDrgApplyServiceImpl extends ServiceImpl<YbDrgApplyMapper, YbDrgAp
     public String getSendMessage(String applyDateStr, Date enableDate, Integer areaType, boolean isChange) {
         YbDrgApply entity = this.findDrgApplyByApplyDateStrs(applyDateStr, areaType);
         Date endDate = entity.getEndDate();
+        return this.getChangSendMessage(applyDateStr, endDate, enableDate, areaType, isChange);
+    }
+
+    public String getChangSendMessage(String applyDateStr, Date endDate, Date enableDate, Integer areaType, boolean isChange) {
         SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy年MM月dd日 E HH:mm点");//HH时mm分ss秒
         SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy年MM月dd日 E");
 
@@ -166,6 +242,18 @@ public class YbDrgApplyServiceImpl extends ServiceImpl<YbDrgApplyMapper, YbDrgAp
     public String areaMsg(Integer areaType) {
         String areaName = iComConfiguremanageService.getConfigAreaName(areaType);
         return "院区请选择“" + areaName + "”。（" + areaName + "）";
+    }
+
+    @Override
+    public boolean findDrgApplyCheckEndDate(String appltDateStr, Integer areaType) {
+        YbDrgApply drgApply = this.findDrgApplyByApplyDateStrs(appltDateStr, areaType);
+        boolean isUpdate = false;
+        Date thisDate = new Date();
+        Date compareDate = drgApply.getEndDate();
+        if (compareDate.compareTo(thisDate) == 1) {
+            isUpdate = true;
+        }
+        return isUpdate;
     }
 
 

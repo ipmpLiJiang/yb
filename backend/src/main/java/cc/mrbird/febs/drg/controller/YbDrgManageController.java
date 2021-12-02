@@ -2,12 +2,17 @@ package cc.mrbird.febs.drg.controller;
 
 import cc.mrbird.febs.common.annotation.Log;
 import cc.mrbird.febs.common.controller.BaseController;
+import cc.mrbird.febs.common.domain.FebsResponse;
 import cc.mrbird.febs.common.domain.router.VueRouter;
 import cc.mrbird.febs.common.exception.FebsException;
 import cc.mrbird.febs.common.domain.QueryRequest;
 
 import cc.mrbird.febs.drg.service.IYbDrgManageService;
 import cc.mrbird.febs.drg.entity.YbDrgManage;
+
+import cc.mrbird.febs.yb.domain.ResponseResult;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.TypeReference;
 
 import cc.mrbird.febs.common.utils.FebsUtil;
 import cc.mrbird.febs.system.domain.User;
@@ -130,4 +135,48 @@ public class YbDrgManageController extends BaseController {
         YbDrgManage ybDrgManage = this.iYbDrgManageService.getById(id);
         return ybDrgManage;
     }
+
+    @Log("修改")
+    @PutMapping("updateAcceptRejectState")
+    @RequiresPermissions("ybDrgManage:acceptRejectStateUpdate")
+    public void updateAcceptRejectState(String dataJson) throws FebsException {
+        try {
+            List<YbDrgManage> list = JSON.parseObject(dataJson, new TypeReference<List<YbDrgManage>>() {
+            });
+
+            this.iYbDrgManageService.updateAcceptRejectStates(list);
+        } catch (Exception e) {
+            message = "操作失败";
+            log.error(message, e);
+            throw new FebsException(message);
+        }
+    }
+
+
+    @Log("修改")
+    @PutMapping("updateUploadState")
+    @RequiresPermissions("ybDrgManage:uploadState")
+    public FebsResponse updateUploadState(String dataJson) {
+        int success = 0;
+        try {
+            YbDrgManage ybDrgManage = JSON.parseObject(dataJson, new TypeReference<YbDrgManage>() {
+            });
+
+            message = this.iYbDrgManageService.updateUploadStates(ybDrgManage);
+            if (message.equals("ok")) {
+                success = 1;
+                message = "操作成功.";
+            }
+        } catch (Exception e) {
+            message = "操作失败.";
+            log.error(message, e);
+        }
+
+        ResponseResult rr = new ResponseResult();
+        rr.setMessage(message);
+        rr.setSuccess(success);
+
+        return new FebsResponse().data(rr);
+    }
+
 }

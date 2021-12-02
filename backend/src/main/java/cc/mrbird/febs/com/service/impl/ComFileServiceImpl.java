@@ -54,11 +54,14 @@ public class ComFileServiceImpl extends ServiceImpl<ComFileMapper, ComFile> impl
     }
 
     @Override
-    public List<ComFile> findListComFile(String Id) {
+    public List<ComFile> findListComFile(String Id,String refType) {
         List<ComFile> list = new ArrayList<>();
         try {
             LambdaQueryWrapper<ComFile> queryWrapper = new LambdaQueryWrapper<>();
             String sql = " IS_DELETEMARK = 1 and REF_TAB_ID = '"+Id+"'";
+            if(refType != null && !refType.equals("")){
+                sql += " AND REF_TYPE = '" + refType + "'";
+            }
             queryWrapper.apply(sql);
 
             list = this.baseMapper.selectList(queryWrapper);
@@ -117,7 +120,7 @@ public class ComFileServiceImpl extends ServiceImpl<ComFileMapper, ComFile> impl
     @Override
     @Transactional
     public void createComFile(ComFile comFile) {
-        if (comFile.getId() == null || comFile.getId() == "") {
+        if (comFile.getId() == null || comFile.getId().equals("")) {
             comFile.setId(UUID.randomUUID().toString());
         }
         comFile.setCreateTime(new Date());

@@ -12,6 +12,7 @@ import cc.mrbird.febs.common.domain.QueryRequest;
 import cc.mrbird.febs.common.properties.FebsProperties;
 
 import cc.mrbird.febs.common.utils.FebsUtil;
+import cc.mrbird.febs.drg.service.IYbDrgApplyService;
 import cc.mrbird.febs.system.domain.User;
 import cc.mrbird.febs.yb.domain.ResponseResult;
 import cc.mrbird.febs.yb.entity.YbAppealResultView;
@@ -70,6 +71,9 @@ public class ComFileController extends BaseController {
 
     @Autowired
     public IYbReconsiderApplyService iYbReconsiderApplyService;
+
+    @Autowired
+    IYbDrgApplyService iYbDrgApplyService;
 
     /**
      * 分页查询数据
@@ -154,7 +158,7 @@ public class ComFileController extends BaseController {
     @PostMapping("excel1")
     public void export1(QueryRequest request, ComFile comFile, HttpServletResponse response) throws FebsException {
         try {
-            List<ComFile> comFiles = this.iComFileService.findListComFile(comFile.getId());
+            List<ComFile> comFiles = this.iComFileService.findListComFile(comFile.getId(), null);
             ExcelWriter writer = ExcelUtil.getWriter(true);
             writer.addHeaderAlias("id", "ID");
             writer.addHeaderAlias("clientName", "客户端名称");
@@ -190,10 +194,10 @@ public class ComFileController extends BaseController {
     public void fileImgZip(QueryRequest request, InUploadFile inUploadFile, HttpServletResponse response) throws FebsException {
         int sourceType = inUploadFile.getSourceType();
         String strSourceType = sourceType == 0 ? "In" : "Out";
-        if(inUploadFile.getAreaType() != 0){
+        if (inUploadFile.getAreaType() != 0) {
             strSourceType += inUploadFile.getAreaType();
         }
-        if(sourceType==1){
+        if (sourceType == 1) {
             inUploadFile.setTypeno(3);
         }
         String deptName = inUploadFile.getDeptName();
@@ -202,14 +206,14 @@ public class ComFileController extends BaseController {
         //String address = path + inUploadFile.getApplyDateStr() + "/" + deptName;
         String address = path + inUploadFile.getApplyDateStr() + "/";
         String fileName = "";
-        if (inUploadFile.getFileName() != null && inUploadFile.getFileName() != "") {
+        if (inUploadFile.getFileName() != null && !inUploadFile.getFileName().equals("")) {
             fileName = inUploadFile.getFileName() + ".zip";
         } else {
             fileName = UUID.randomUUID().toString() + ".zip";
         }
         Random r = new Random();
         int nxt = r.nextInt(10000);
-        String filePath = address + deptName + "-" + inUploadFile.getTypeno()+ "-" + inUploadFile.getAreaType()+"-"+nxt + ".zip";
+        String filePath = address + deptName + "-" + inUploadFile.getTypeno() + "-" + inUploadFile.getAreaType() + "-" + nxt + ".zip";
         try {
             List<ComFile> list = this.iComFileService.findAppealResultComFiles(inUploadFile);
             if (list.size() > 0) {
@@ -236,10 +240,10 @@ public class ComFileController extends BaseController {
     public void fileSumImgZip(QueryRequest request, InUploadFile inUploadFile, HttpServletResponse response) throws FebsException {
         int sourceType = inUploadFile.getSourceType();
         String strSourceType = sourceType == 0 ? "In" : "Out";
-        if(inUploadFile.getAreaType() != 0){
+        if (inUploadFile.getAreaType() != 0) {
             strSourceType += inUploadFile.getAreaType();
         }
-        if(sourceType==1){
+        if (sourceType == 1) {
             inUploadFile.setTypeno(3);
         }
         String deptName = inUploadFile.getDeptName();
@@ -247,14 +251,14 @@ public class ComFileController extends BaseController {
         //String address = path + inUploadFile.getApplyDateStr() + "/" + deptName;
         String address = path + inUploadFile.getApplyDateStr() + "/";
         String fileName = "";
-        if (inUploadFile.getFileName() != null && inUploadFile.getFileName() != "") {
+        if (inUploadFile.getFileName() != null && !inUploadFile.getFileName().equals("")) {
             fileName = inUploadFile.getFileName() + ".zip";
         } else {
             fileName = UUID.randomUUID().toString() + ".zip";
         }
         Random r = new Random();
         int nxt = r.nextInt(10000);
-        String filePath = address + deptName + "-" + inUploadFile.getTypeno()+ "-" + inUploadFile.getAreaType()+"-"+nxt + ".zip";
+        String filePath = address + deptName + "-" + inUploadFile.getTypeno() + "-" + inUploadFile.getAreaType() + "-" + nxt + ".zip";
         try {
             List<ComFile> list = this.iComFileService.findAppealResultSumComFiles(inUploadFile);
             if (list.size() > 0) {
@@ -363,7 +367,7 @@ public class ComFileController extends BaseController {
     @GetMapping("findFileList")
     public FebsResponse findFileList(String refTabId) {
         List<OutComFile> outList = new ArrayList<>();
-        List<ComFile> list = this.iComFileService.findListComFile(refTabId);
+        List<ComFile> list = this.iComFileService.findListComFile(refTabId, null);
         for (ComFile item : list) {
             OutComFile outComFile = new OutComFile();
             outComFile.setUid(item.getId());
@@ -378,11 +382,11 @@ public class ComFileController extends BaseController {
     public FebsResponse findImgListComFiles(InUploadFile inUploadFile) {
         List<OutComFile> outList = new ArrayList<>();
         try {
-            List<ComFile> list = this.iComFileService.findListComFile(inUploadFile.getId());
+            List<ComFile> list = this.iComFileService.findListComFile(inUploadFile.getId(),null);
             String strId = inUploadFile.getId();
             int sourceType = inUploadFile.getSourceType();
             String strSourceType = sourceType == 0 ? "In" : "Out";
-            if(inUploadFile.getAreaType() != 0){
+            if (inUploadFile.getAreaType() != 0) {
                 strSourceType += inUploadFile.getAreaType();
             }
             //String deptName = inUploadFile.getDeptName() + strId + strSourceType;
@@ -454,7 +458,7 @@ public class ComFileController extends BaseController {
         Date thisDate = new Date();
         OutComFile outComFile = new OutComFile();
         if (inUploadFile.getIsCheck() == 1) {
-            isUpdate = iYbReconsiderApplyService.findReconsiderApplyCheckEndDate(inUploadFile.getApplyDateStr(),inUploadFile.getAreaType(), inUploadFile.getTypeno());
+            isUpdate = iYbReconsiderApplyService.findReconsiderApplyCheckEndDate(inUploadFile.getApplyDateStr(), inUploadFile.getAreaType(), inUploadFile.getTypeno());
             if (inUploadFile.getTypeno() == YbDefaultValue.TYPENO_1) {
                 mms = "第一版";
             } else {
@@ -465,7 +469,7 @@ public class ComFileController extends BaseController {
         }
         if (isUpdate || inUploadFile.getSourceType() == YbDefaultValue.SOURCETYPE_1) {
             int num = 1;
-            List<ComFile> list = this.iComFileService.findListComFile(inUploadFile.getId());
+            List<ComFile> list = this.iComFileService.findListComFile(inUploadFile.getId(),null);
             if (list.size() > 0) {
                 ComFile comFile = list.get(list.size() - 1);
                 String code = comFile.getServerName();
@@ -487,7 +491,7 @@ public class ComFileController extends BaseController {
             User currentUser = FebsUtil.getCurrentUser();
             int sourceType = inUploadFile.getSourceType();
             String strSourceType = sourceType == 0 ? "In" : "Out";
-            if(inUploadFile.getAreaType() != 0){
+            if (inUploadFile.getAreaType() != 0) {
                 strSourceType += inUploadFile.getAreaType();
             }
             // String deptName = inUploadFile.getDeptName() + strId + strSourceType;
@@ -540,7 +544,7 @@ public class ComFileController extends BaseController {
             boolean isUpdate = false;
             String mms = "";
             if (inUploadFile.getIsCheck() == 1) {
-                isUpdate = iYbReconsiderApplyService.findReconsiderApplyCheckEndDate(inUploadFile.getApplyDateStr(),inUploadFile.getAreaType(), inUploadFile.getTypeno());
+                isUpdate = iYbReconsiderApplyService.findReconsiderApplyCheckEndDate(inUploadFile.getApplyDateStr(), inUploadFile.getAreaType(), inUploadFile.getTypeno());
                 if (inUploadFile.getTypeno() == YbDefaultValue.TYPENO_1) {
                     mms = "第一版";
                 } else {
@@ -556,7 +560,7 @@ public class ComFileController extends BaseController {
 //                    String strRefId = comFile.getRefTabId();
                     int sourceType = inUploadFile.getSourceType();
                     String strSourceType = sourceType == 0 ? "In" : "Out";
-                    if(inUploadFile.getAreaType() != 0){
+                    if (inUploadFile.getAreaType() != 0) {
                         strSourceType += inUploadFile.getAreaType();
                     }
                     User currentUser = FebsUtil.getCurrentUser();
@@ -574,6 +578,127 @@ public class ComFileController extends BaseController {
                 }
             } else {
                 message = "当前已过 " + mms + " 截止日期，无法删除图片.";
+            }
+        } catch (Exception e) {
+            message = "删除失败.";
+            log.error(message, e);
+        }
+        ResponseResult rr = new ResponseResult();
+        rr.setMessage(message);
+        rr.setSuccess(success);
+        return new FebsResponse().data(rr);
+    }
+
+    @PostMapping("listDrgImgComFile")
+    public FebsResponse findDrgImgListComFiles(InUploadFile inUploadFile) {
+        List<OutComFile> outList = new ArrayList<>();
+        try {
+            List<ComFile> list = this.iComFileService.findListComFile(inUploadFile.getId(), inUploadFile.getRefType());
+            if (list.size() > 0) {
+                for (ComFile item : list) {
+                    String fileUrl = "uploadFile/" + inUploadFile.getApplyDateStr() + "/DRG" + inUploadFile.getAreaType() + "/" + item.getServerName();
+                    OutComFile outComFile = new OutComFile();
+                    outComFile.setUid(item.getId());
+                    outComFile.setName(item.getServerName());
+                    outComFile.setStatus("done");
+                    outComFile.setUrl(fileUrl);
+                    outComFile.setSerName(item.getServerName());
+                    outComFile.setThumbUrl(fileUrl);
+                    outList.add(outComFile);
+                }
+            }
+        } catch (Exception e) {
+            log.error(message, e);
+        }
+        return new FebsResponse().data(outList);
+    }
+
+
+    @PostMapping("uploadDrgImg")
+    public FebsResponse UploadDrgImg(@RequestParam("file") MultipartFile file, InUploadFile inUploadFile) throws FebsException {
+        if (file.isEmpty()) {
+            throw new FebsException("空文件");
+        }
+        boolean isUpdate = false;
+        Date thisDate = new Date();
+        OutComFile outComFile = new OutComFile();
+        if (inUploadFile.getIsCheck() == 1) {
+            isUpdate = iYbDrgApplyService.findDrgApplyCheckEndDate(inUploadFile.getApplyDateStr(), inUploadFile.getAreaType());
+        } else {
+            isUpdate = true;
+        }
+        if (isUpdate) {
+            String strId = inUploadFile.getId();
+            String refTab = inUploadFile.getRefTab();
+            String refType = inUploadFile.getRefType();
+            String fileName2 = file.getOriginalFilename();  // 文件名
+            String suffixName = fileName2.substring(fileName2.lastIndexOf("."));  // 后缀名
+            String filePath = febsProperties.getUploadPath(); // 上传后的路径
+            String fileName = UUID.randomUUID().toString() + suffixName; // 新文件名
+            File dest = new File(filePath + inUploadFile.getApplyDateStr() + "/DRG" + inUploadFile.getAreaType() + "/" + fileName);
+            String Id = UUID.randomUUID().toString();
+            if (!dest.getParentFile().exists()) {
+                dest.getParentFile().mkdirs();
+            }
+            try {
+                file.transferTo(dest);
+                ComFile cf = new ComFile();
+                cf.setId(Id);
+                cf.setCreateTime(thisDate);
+                cf.setClientName(fileName2);//客户端的名称
+                cf.setServerName(fileName);
+                cf.setRefTabId(strId);
+                cf.setRefTabTable(refTab);
+                cf.setRefType(refType);
+                iComFileService.createComFile(cf);
+
+            } catch (IOException e) {
+                throw new FebsException(e.getMessage());
+            }
+            String fileUrl = febsProperties.getBaseUrl() + "/uploadFile/" + inUploadFile.getApplyDateStr() + "/DRG" + inUploadFile.getAreaType() + "/" + fileName;
+
+            outComFile.setSuccess(1);
+            outComFile.setUid(Id);
+            outComFile.setName(fileName2);
+            outComFile.setStatus("done");
+            outComFile.setUrl(fileUrl);
+            outComFile.setThumbUrl(fileUrl);
+            outComFile.setSerName(fileName);
+        } else {
+            outComFile.setSuccess(0);
+            outComFile.setMessage("当前已过截止日期，无法上传图片.");
+        }
+
+        return new FebsResponse().put("data", outComFile);
+    }
+
+    @Log("删除")
+    @PostMapping("deleteDrgImg")
+    public FebsResponse deleteDrgImgComFile(InUploadFile inUploadFile) {
+        int success = 0;
+        try {
+            boolean isUpdate = false;
+            if (inUploadFile.getIsCheck() == 1) {
+                isUpdate = iYbDrgApplyService.findDrgApplyCheckEndDate(inUploadFile.getApplyDateStr(), inUploadFile.getAreaType());
+            } else {
+                isUpdate = true;
+            }
+            if (isUpdate) {
+                String strId = inUploadFile.getId();
+                ComFile comFile = this.iComFileService.findComFileById(strId);
+                if (comFile != null) {
+                    String filePath = febsProperties.getUploadPath(); // 上传后的路径
+                    String fileUrl = filePath + inUploadFile.getApplyDateStr() + "/DRG" + inUploadFile.getAreaType() + "/" + inUploadFile.getSerName();
+                    boolean blFile = deleteFile(fileUrl);
+                    if (blFile) {
+                        int count = this.iComFileService.deleteComFile(inUploadFile.getId());
+                        if (count > 0) {
+                            success = 1;
+                        }
+                    }
+                }
+            } else {
+                message = "当前已过截止日期，无法删除图片.";
             }
         } catch (Exception e) {
             message = "删除失败.";

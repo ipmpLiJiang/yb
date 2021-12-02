@@ -295,7 +295,7 @@ public class YbReconsiderVerifyServiceImpl extends ServiceImpl<YbReconsiderVerif
                         ybReconsiderVerify.setAreaType(areaType);
                         ybReconsiderVerify.setIsDeletemark(1);
 
-                        if (ybReconsiderVerify.getVerifyDeptCode() != null && ybReconsiderVerify.getVerifyDeptCode() != "") {
+                        if (ybReconsiderVerify.getVerifyDeptCode() != null && !ybReconsiderVerify.getVerifyDeptCode().equals("")) {
                             String deptCode = ybReconsiderVerify.getVerifyDeptCode();
                             count = deptList.stream().filter(s -> s.getDeptId().equals(deptCode)).count();
                             if (count == 0) {
@@ -809,7 +809,7 @@ public class YbReconsiderVerifyServiceImpl extends ServiceImpl<YbReconsiderVerif
         List<YbPerson> personList = new ArrayList<>();
         ArrayList<String> personCodeList = new ArrayList<>();
         for (YbReconsiderVerify item : list) {
-            if (item.getVerifyDoctorCode() != "" && item.getVerifyDoctorCode() != null) {
+            if (item.getVerifyDoctorCode() != null && !item.getVerifyDoctorCode().equals("")) {
                 if (personCodeList.stream().filter(s -> s.equals(item.getVerifyDoctorCode())).count() == 0) {
                     personCodeList.add(item.getVerifyDoctorCode());
                 }
@@ -858,19 +858,20 @@ public class YbReconsiderVerifyServiceImpl extends ServiceImpl<YbReconsiderVerif
             String sendContent = "";
             if (isOpenSms && list.size() > 0) {
                 ComSms qu = new ComSms();
-                qu.setState(ComSms.STATE_0);
-                qu.setSendType(ComSms.SENDTYPE_1);
+                qu.setApplyDateStr(applyDateStr);
                 qu.setAreaType(areaType);
+                qu.setSendType(ComSms.SENDTYPE_1);
+                qu.setState(ComSms.STATE_0);
                 smsList = iComSmsService.findLmdSmsList(qu);
                 typeno = list.get(0).getTypeno();
                 applyDateStr = list.get(0).getApplyDateStr();
                 sendContent = this.iYbReconsiderApplyService.getSendMessage(applyDateStr, addDate, areaType, typeno, false);
             }
             for (YbReconsiderVerify ybReconsiderVerify : list) {
-                if (ybReconsiderVerify.getVerifyDeptCode() != "" && ybReconsiderVerify.getVerifyDeptCode() != null &&
-                        ybReconsiderVerify.getVerifyDeptName() != "" && ybReconsiderVerify.getVerifyDeptName() != null &&
-                        ybReconsiderVerify.getVerifyDoctorCode() != "" && ybReconsiderVerify.getVerifyDoctorCode() != null &&
-                        ybReconsiderVerify.getVerifyDoctorName() != "" && ybReconsiderVerify.getVerifyDoctorName() != null) {
+                if (ybReconsiderVerify.getVerifyDeptCode() != null && !ybReconsiderVerify.getVerifyDeptCode().equals("") &&
+                        ybReconsiderVerify.getVerifyDeptName() != null && !ybReconsiderVerify.getVerifyDeptName().equals("") &&
+                        ybReconsiderVerify.getVerifyDoctorCode() != null && !ybReconsiderVerify.getVerifyDoctorCode().equals("") &&
+                        ybReconsiderVerify.getVerifyDoctorName() != null && !ybReconsiderVerify.getVerifyDoctorName().equals("")) {
                     queryPersonList = personList.stream().filter(
                             s -> s.getPersonCode().equals(ybReconsiderVerify.getVerifyDoctorCode())
                     ).collect(Collectors.toList());
@@ -1005,9 +1006,10 @@ public class YbReconsiderVerifyServiceImpl extends ServiceImpl<YbReconsiderVerif
                 boolean isOpenSms = nOpenSms == 1 ? true : false;
                 if (isOpenSms && list.size() > 0) {
                     ComSms qu = new ComSms();
-                    qu.setState(ComSms.STATE_0);
-                    qu.setSendType(ComSms.SENDTYPE_1);
+                    qu.setApplyDateStr(applyDateStr);
                     qu.setAreaType(areaType);
+                    qu.setSendType(ComSms.SENDTYPE_1);
+                    qu.setState(ComSms.STATE_0);
                     smsList = iComSmsService.findLmdSmsList(qu);
 
                     sendContent = this.iYbReconsiderApplyService.getSendMessage(applyDateStr, addDate, areaType, typeno, false);
@@ -1125,10 +1127,10 @@ public class YbReconsiderVerifyServiceImpl extends ServiceImpl<YbReconsiderVerif
     public void updateReviewerStates(List<YbReconsiderVerify> list, Long uId, String Uname) {
         List<YbPerson> personList = this.findPerson(list);
         for (YbReconsiderVerify item : list) {
-            if (item.getVerifyDeptCode() != "" && item.getVerifyDeptCode() != null &&
-                    item.getVerifyDeptName() != "" && item.getVerifyDeptName() != null &&
-                    item.getVerifyDoctorCode() != "" && item.getVerifyDoctorCode() != null &&
-                    item.getVerifyDoctorName() != "" && item.getVerifyDoctorName() != null) {
+            if ( item.getVerifyDeptCode() != null && !item.getVerifyDeptCode().equals("") &&
+                    item.getVerifyDeptName() != null && !item.getVerifyDeptName().equals("") &&
+                    item.getVerifyDoctorCode() != null && !item.getVerifyDoctorCode().equals("") &&
+                    item.getVerifyDoctorName() != null && !item.getVerifyDoctorName().equals("")) {
                 if (personList.stream().filter(s -> s.getPersonCode().equals(item.getVerifyDoctorCode())).count() > 0) {
                     String strVerifyDeptName = DataTypeHelpers.stringReplaceSetString(item.getVerifyDeptName(), item.getVerifyDeptCode() + "-");
                     item.setVerifyDeptName(strVerifyDeptName);
@@ -1186,10 +1188,10 @@ public class YbReconsiderVerifyServiceImpl extends ServiceImpl<YbReconsiderVerif
                 List<YbReconsiderVerify> updateList = new ArrayList<>();
                 List<YbPerson> personList = this.iYbPersonService.findPersonList(new YbPerson(), 0);
                 for (YbReconsiderVerify item : list) {
-                    if (item.getVerifyDeptCode() != "" && item.getVerifyDeptCode() != null &&
-                            item.getVerifyDeptName() != "" && item.getVerifyDeptName() != null &&
-                            item.getVerifyDoctorCode() != "" && item.getVerifyDoctorCode() != null &&
-                            item.getVerifyDoctorName() != "" && item.getVerifyDoctorName() != null) {
+                    if (item.getVerifyDeptCode() != null && !item.getVerifyDeptCode().equals("") &&
+                            item.getVerifyDeptName() != null && !item.getVerifyDeptName().equals("") &&
+                            item.getVerifyDoctorCode() != null && !item.getVerifyDoctorCode().equals("") &&
+                            item.getVerifyDoctorName() != null && !item.getVerifyDoctorName().equals("")) {
                         if (personList.stream().filter(s -> s.getPersonCode().equals(item.getVerifyDoctorCode())).count() > 0) {
                             YbReconsiderVerify update = new YbReconsiderVerify();
                             update.setId(item.getId());
@@ -1240,10 +1242,10 @@ public class YbReconsiderVerifyServiceImpl extends ServiceImpl<YbReconsiderVerif
     public void updateReconsiderVerifyImports(List<YbReconsiderVerify> list, Long uId, String Uname) {
         for (YbReconsiderVerify item : list) {
 //            Date thisDate = new Date();
-            if (item.getVerifyDeptCode() != "" && item.getVerifyDeptCode() != null &&
-                    item.getVerifyDeptName() != "" && item.getVerifyDeptName() != null &&
-                    item.getVerifyDoctorCode() != "" && item.getVerifyDoctorCode() != null &&
-                    item.getVerifyDoctorName() != "" && item.getVerifyDoctorName() != null) {
+            if (item.getVerifyDeptCode() != null && !item.getVerifyDeptCode().equals("") &&
+                    item.getVerifyDeptName() != null && !item.getVerifyDeptName().equals("") &&
+                    item.getVerifyDoctorCode() != null && !item.getVerifyDoctorCode().equals("") &&
+                    item.getVerifyDoctorName() != null && !item.getVerifyDoctorName().equals("")) {
                 item.setState(YbDefaultValue.VERIFYSTATE_1);
 //                item.setModifyTime(thisDate);
 //                item.setModifyUserId(uId);

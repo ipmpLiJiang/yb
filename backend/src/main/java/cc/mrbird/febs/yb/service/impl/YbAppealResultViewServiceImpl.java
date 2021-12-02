@@ -204,7 +204,7 @@ public class YbAppealResultViewServiceImpl extends ServiceImpl<YbAppealResultVie
             if (reconsiderApply != null) {
                 ybAppealResultView.setPid(reconsiderApply.getId());
                 boolean isLike = false;
-                if (ybAppealResultView.getCurrencyField() != null && ybAppealResultView.getCurrencyField() != "") {
+                if (ybAppealResultView.getCurrencyField() != null && !ybAppealResultView.getCurrencyField().equals("")) {
                     if (!keyField.equals("doctorCode") && !keyField.equals("doctorName")) {
                         isLike = true;
                     }
@@ -259,7 +259,7 @@ public class YbAppealResultViewServiceImpl extends ServiceImpl<YbAppealResultVie
                 List<YbReconsiderApplyData> applyDataList = ybApplyDataManager.getApplyDatas(reconsiderApply.getId(), applyDateStr + "-" + areaType);
                 List<YbAppealResultView> list = new ArrayList<>();
                 List<YbAppealResult> resultList = new ArrayList<>();
-                if (value != null && value != "" && keyField.equals("doctorName")) {
+                if (value != null && !value.equals("") && keyField.equals("doctorName")) {
                     LambdaQueryWrapper<YbAppealResult> queryWrapper = new LambdaQueryWrapper<>();
                     queryWrapper.eq(YbAppealResult::getApplyDateStr, applyDateStr);
                     queryWrapper.eq(YbAppealResult::getAreaType, areaType);
@@ -287,13 +287,13 @@ public class YbAppealResultViewServiceImpl extends ServiceImpl<YbAppealResultVie
                     YbAppealResult queryResult = new YbAppealResult();
                     queryResult.setApplyDateStr(applyDateStr);
                     queryResult.setAreaType(areaType);
-                    if (value != null && value != "" && keyField.equals("doctorCode")) {
+                    if (value != null && !value.equals("") && keyField.equals("doctorCode")) {
                         queryResult.setDoctorCode(value);
                     }
                     if (ybAppealResultView.getArDoctorCode() != null) {
                         queryResult.setDoctorCode(ybAppealResultView.getArDoctorCode());
                     }
-                    if (value != null && value != "" && keyField.equals("orderNumber")) {
+                    if (value != null && !value.equals("") && keyField.equals("orderNumber")) {
                         queryResult.setOrderNumber(value);
                     }
                     if (typeno != null) {

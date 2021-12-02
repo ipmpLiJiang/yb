@@ -131,19 +131,22 @@
             and hvd.dataType= #{ybHandleVerifyDataView.dataType}
         </if>
         <if test="ybHandleVerifyDataView.dataType == 0 and ybHandleVerifyDataView.currencyField!= null and ybHandleVerifyDataView.currencyField!= ''">
-            and (rrd.serialNo like concat('%', #{ ybHandleVerifyDataView.currencyField} ,'%')
+            and (rrd.orderNumber like concat('%', #{ ybHandleVerifyDataView.currencyField} ,'%')
+            or rrd.serialNo like concat('%', #{ ybHandleVerifyDataView.currencyField} ,'%')
             or rrd.billNo like concat('%', #{ ybHandleVerifyDataView.currencyField} ,'%')
             or rrd.projectCode like concat('%', #{ ybHandleVerifyDataView.currencyField} ,'%')
             or rrd.projectName like concat('%', #{ ybHandleVerifyDataView.currencyField} ,'%')
             or rrd.ruleName like concat('%', #{ ybHandleVerifyDataView.currencyField} ,'%'))
         </if>
         <if test="ybHandleVerifyDataView.dataType == 1 and ybHandleVerifyDataView.currencyField!= null and ybHandleVerifyDataView.currencyField!= ''">
-            and (rrd.serialNo like concat('%', #{ ybHandleVerifyDataView.currencyField} ,'%')
+            and (rrd.orderNumber like concat('%', #{ ybHandleVerifyDataView.currencyField} ,'%')
+            or rrd.serialNo like concat('%', #{ ybHandleVerifyDataView.currencyField} ,'%')
             or rrd.billNo like concat('%', #{ ybHandleVerifyDataView.currencyField} ,'%')
             or rrd.ruleName like concat('%', #{ ybHandleVerifyDataView.currencyField} ,'%'))
         </if>
         <if test="ybHandleVerifyDataView.dataType == null and ybHandleVerifyDataView.currencyField!= null and ybHandleVerifyDataView.currencyField!= ''">
-            and (rrd.serialNo like concat('%', #{ ybHandleVerifyDataView.currencyField} ,'%')
+            and (rrd.orderNumber like concat('%', #{ ybHandleVerifyDataView.currencyField} ,'%')
+            or rrd.serialNo like concat('%', #{ ybHandleVerifyDataView.currencyField} ,'%')
             or rrd.billNo like concat('%', #{ ybHandleVerifyDataView.currencyField} ,'%')
             or rrd.projectCode like concat('%', #{ ybHandleVerifyDataView.currencyField} ,'%')
             or rrd.projectName like concat('%', #{ ybHandleVerifyDataView.currencyField} ,'%')
@@ -171,19 +174,22 @@
             and hvd.dataType= #{ybHandleVerifyDataView.dataType}
         </if>
         <if test="ybHandleVerifyDataView.dataType == 0 and ybHandleVerifyDataView.currencyField!= null and ybHandleVerifyDataView.currencyField!= ''">
-            and (rrd.serialNo like concat('%', #{ ybHandleVerifyDataView.currencyField} ,'%')
+            and (rrd.orderNumber like concat('%', #{ ybHandleVerifyDataView.currencyField} ,'%')
+            or rrd.serialNo like concat('%', #{ ybHandleVerifyDataView.currencyField} ,'%')
             or rrd.billNo like concat('%', #{ ybHandleVerifyDataView.currencyField} ,'%')
             or rrd.projectCode like concat('%', #{ ybHandleVerifyDataView.currencyField} ,'%')
             or rrd.projectName like concat('%', #{ ybHandleVerifyDataView.currencyField} ,'%')
             or rrd.ruleName like concat('%', #{ ybHandleVerifyDataView.currencyField} ,'%'))
         </if>
         <if test="ybHandleVerifyDataView.dataType == 1 and ybHandleVerifyDataView.currencyField!= null and ybHandleVerifyDataView.currencyField!= ''">
-            and (rrd.serialNo like concat('%', #{ ybHandleVerifyDataView.currencyField} ,'%')
+            and (rrd.orderNumber like concat('%', #{ ybHandleVerifyDataView.currencyField} ,'%')
+            or rrd.serialNo like concat('%', #{ ybHandleVerifyDataView.currencyField} ,'%')
             or rrd.billNo like concat('%', #{ ybHandleVerifyDataView.currencyField} ,'%')
             or rrd.ruleName like concat('%', #{ ybHandleVerifyDataView.currencyField} ,'%'))
         </if>
         <if test="ybHandleVerifyDataView.dataType == null and ybHandleVerifyDataView.currencyField!= null and ybHandleVerifyDataView.currencyField!= ''">
-            and (rrd.serialNo like concat('%', #{ ybHandleVerifyDataView.currencyField} ,'%')
+            and (rrd.orderNumber like concat('%', #{ ybHandleVerifyDataView.currencyField} ,'%')
+            or rrd.serialNo like concat('%', #{ ybHandleVerifyDataView.currencyField} ,'%')
             or rrd.billNo like concat('%', #{ ybHandleVerifyDataView.currencyField} ,'%')
             or rrd.projectCode like concat('%', #{ ybHandleVerifyDataView.currencyField} ,'%')
             or rrd.projectName like concat('%', #{ ybHandleVerifyDataView.currencyField} ,'%')

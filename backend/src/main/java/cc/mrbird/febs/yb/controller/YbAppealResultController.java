@@ -173,14 +173,14 @@ public class YbAppealResultController extends BaseController {
 
             String loadId = ybAppealResult.getId();//获得传过来的 sourceType==1 的 manageId
             //获取当前是否上传过附件 sourceType==1
-            List<ComFile> comFileList = this.iComFileService.findListComFile(loadId);
+            List<ComFile> comFileList = this.iComFileService.findListComFile(loadId,null);
             if (comFileList.size() == 0) {
                 String applyDateStr = ybAppealResult.getApplyDateStr(); //获得传过来的 applyDateStr
                 //获得之前申诉记录
                 ybAppealResult = this.iYbAppealResultService.findLoadLastAppealResulData(ybAppealResult);
                 if (ybAppealResult != null) {
                     User currentUser = FebsUtil.getCurrentUser();
-                    comFileList = this.iComFileService.findListComFile(ybAppealResult.getId());
+                    comFileList = this.iComFileService.findListComFile(ybAppealResult.getId(),null);
                     if (comFileList.size() > 0) {
                         List<ComFile> loadLastList = new ArrayList<ComFile>();
 

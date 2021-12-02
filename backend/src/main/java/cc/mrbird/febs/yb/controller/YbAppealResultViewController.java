@@ -66,7 +66,7 @@ public class YbAppealResultViewController extends BaseController {
     @GetMapping
     @RequiresPermissions("ybAppealResultView:view")
     public Map<String, Object> List(QueryRequest request, YbAppealResultView ybAppealResultView, String keyField) {
-        if (ybAppealResultView.getCurrencyField() != null && ybAppealResultView.getCurrencyField() != "") {
+        if (ybAppealResultView.getCurrencyField() != null && !ybAppealResultView.getCurrencyField().equals("")) {
             System.out.println("View-New");
             return getDataTable(this.iYbAppealResultViewService.findAppealResultViewNew(request, ybAppealResultView, keyField));
         } else {

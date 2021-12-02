@@ -614,7 +614,7 @@ public class YbAppealManageServiceImpl extends ServiceImpl<YbAppealManageMapper,
             if (entity.getAcceptState() == YbDefaultValue.ACCEPTSTATE_1 ||
                     entity.getAcceptState() == YbDefaultValue.ACCEPTSTATE_6) {
                 iYbAppealResultService.getBaseMapper().deleteById(entity.getId());
-                List<ComFile> list = this.iComFileService.findListComFile(entity.getId());
+                List<ComFile> list = this.iComFileService.findListComFile(entity.getId(),null);
                 if (list.size() > 0) {
                     this.iComFileService.batchRefIdDelete(entity.getId());
                 }

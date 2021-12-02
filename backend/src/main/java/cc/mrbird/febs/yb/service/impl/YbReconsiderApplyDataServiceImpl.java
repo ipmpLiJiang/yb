@@ -112,7 +112,7 @@ public class YbReconsiderApplyDataServiceImpl extends ServiceImpl<YbReconsiderAp
 //        }
 //        this.baseMapper.createBatchData(list);
 
-        iYbReconsiderApplyService.updateYbReconsiderApply(ybReconsiderApply);
+        iYbReconsiderApplyService.updateYbReconsiderApply(ybReconsiderApply,null);
     }
 
     @Override
@@ -147,7 +147,7 @@ public class YbReconsiderApplyDataServiceImpl extends ServiceImpl<YbReconsiderAp
                 YbReconsiderApply updateApply = new YbReconsiderApply();
                 updateApply.setId(applyList.get(0).getId());
                 updateApply.setState(state);
-                iYbReconsiderApplyService.updateYbReconsiderApply(updateApply);
+                iYbReconsiderApplyService.updateYbReconsiderApply(updateApply,null);
                 count = 1;
             }
         }
@@ -270,7 +270,7 @@ public class YbReconsiderApplyDataServiceImpl extends ServiceImpl<YbReconsiderAp
             rrData.setIsDeletemark(1);
             rrData.setState(item.getState());
             createDataList.add(rrData);
-            if(rrData.getTreatmentMode() != null && rrData.getTreatmentMode() != "") {
+            if(rrData.getTreatmentMode() != null && !rrData.getTreatmentMode().equals("")) {
                 if(comConfiguremanageList.size()>0) {
                     isOutpfees = false;
                     for(ComConfiguremanage comf : comConfiguremanageList) {
@@ -348,7 +348,7 @@ public class YbReconsiderApplyDataServiceImpl extends ServiceImpl<YbReconsiderAp
         if (createMainList.size() > 0) {
             this.saveBatch(createMainList);
         }
-        this.iYbReconsiderApplyService.updateYbReconsiderApply(ybReconsiderApply);
+        this.iYbReconsiderApplyService.updateYbReconsiderApply(ybReconsiderApply,null);
     }
 
     private List<YbPerson> getPersonList(){
@@ -390,7 +390,7 @@ public class YbReconsiderApplyDataServiceImpl extends ServiceImpl<YbReconsiderAp
                     ).collect(Collectors.toList());
                 }
             } else if (state == 2) {
-                if(item.getProjectCode() != null && item.getProjectCode() != "") {
+                if(item.getProjectCode() != null && !item.getProjectCode().equals("")) {
                     queryRifDataList = rifDataList.stream().filter(
                             s -> s.getTransNo().equals(item.getSerialNo()) &&
                                     s.getItemCode().equals(item.getProjectCode().toUpperCase()) &&
@@ -1209,7 +1209,7 @@ public class YbReconsiderApplyDataServiceImpl extends ServiceImpl<YbReconsiderAp
 
     @Override
     public List<YbReconsiderApplyData> getApplyDataListView(List<YbReconsiderApplyData> applyDataList, String keyField, String value, Integer typeno, Integer dataType) {
-        if (value != null && value != "" && !keyField.equals("readyDoctorCode") && !keyField.equals("readyDoctorName")) {
+        if (value != null && !value.equals("") && !keyField.equals("readyDoctorCode") && !keyField.equals("readyDoctorName")) {
             if (keyField.equals("orderNumber")) {
                 if (typeno != null && dataType == null) {
                     applyDataList = applyDataList.stream().filter(s -> s.getOrderNumber().equals(value) && s.getTypeno().equals(typeno)).collect(Collectors.toList());

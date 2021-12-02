@@ -137,7 +137,7 @@ export default {
           f = f + '_主单扣款'
         }
       } else {
-        f = '人工复议'
+        f = '非常规复议'
         formData.state = 1
         formData.sourceType = 1
       }

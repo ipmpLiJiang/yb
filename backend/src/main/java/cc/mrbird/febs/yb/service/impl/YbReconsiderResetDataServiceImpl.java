@@ -123,7 +123,7 @@ public class YbReconsiderResetDataServiceImpl extends ServiceImpl<YbReconsiderRe
 
     @Override
     public List<YbReconsiderResetData> getResetDataListView(List<YbReconsiderResetData> resetDataList, String keyField, String value, Integer dataType) {
-        if (value != null && value != "" && !keyField.equals("arDoctorCode") && !keyField.equals("arDoctorName")) {
+        if (value != null && !value.equals("") && !keyField.equals("arDoctorCode") && !keyField.equals("arDoctorName")) {
             if (keyField.equals("orderNumber")) {
                 if (dataType != null) {
                     resetDataList = resetDataList.stream().filter(s -> s.getOrderNumber().equals(value) && s.getDataType().equals(dataType)).collect(Collectors.toList());

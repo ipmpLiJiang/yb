@@ -181,13 +181,13 @@ export default {
             case 0:
               return '网上复议'
             case 1:
-              return '人工复议'
+              return '非常规复议'
             default:
               return text
           }
         },
         fixed: 'right',
-        width: 90
+        width: 100
       },
       {
         title: '操作',

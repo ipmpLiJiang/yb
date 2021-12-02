@@ -155,4 +155,9 @@ public class ComTypeController extends BaseController {
         ComType comType = this.iComTypeService.getById(id);
         return comType;
     }
+
+    @GetMapping("getComTypeList")
+    public List<ComType> findComTypes(@Valid ComType comType) {
+        return this.iComTypeService.findComTypeList(comType);
+    }
 }

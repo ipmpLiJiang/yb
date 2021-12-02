@@ -105,7 +105,7 @@ public class YbDrgApplyController extends BaseController {
             String appDateStr = sdf.format(ybDrgApply.getApplyDate());
             ybDrgApply.setApplyDateStr(appDateStr);
 
-            this.iYbDrgApplyService.updateYbDrgApply(ybDrgApply);
+            this.iYbDrgApplyService.updateYbDrgApply(ybDrgApply,null);
         } catch (Exception e) {
             message = "修改失败";
             log.error(message, e);
@@ -150,10 +150,10 @@ public class YbDrgApplyController extends BaseController {
     @Log("修改")
     @PutMapping("updateDrgApply")
     @RequiresPermissions("ybDrgApply:update")
-    public FebsResponse updateDrgApplys(@Valid YbDrgApply ybDrgApply){
+    public FebsResponse updateDrgApplys(@Valid YbDrgApply ybDrgApply, Integer isChangDate){
         int success = 0;
         try {
-            this.iYbDrgApplyService.updateYbDrgApply(ybDrgApply);
+            this.iYbDrgApplyService.updateYbDrgApply(ybDrgApply,isChangDate);
             success = 1;
         } catch (Exception e) {
             message = "修改失败";

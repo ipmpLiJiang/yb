@@ -280,10 +280,10 @@ public class YbReconsiderApplyController extends BaseController {
     @Log("修改")
     @PutMapping("updateReconsiderApply")
     @RequiresPermissions("ybReconsiderApply:update")
-    public FebsResponse updateReconsiderApplys(@Valid YbReconsiderApply ybReconsiderApply){
+    public FebsResponse updateReconsiderApplys(@Valid YbReconsiderApply ybReconsiderApply,Integer isChangDate){
         int success = 0;
         try {
-            this.iYbReconsiderApplyService.updateYbReconsiderApply(ybReconsiderApply);
+            this.iYbReconsiderApplyService.updateYbReconsiderApply(ybReconsiderApply,isChangDate);
             success = 1;
         } catch (Exception e) {
             message = "修改失败";

@@ -52,7 +52,7 @@ public class YbAppealManageViewController extends BaseController {
     @GetMapping
     @RequiresPermissions("ybAppealManageView:view")
     public Map<String, Object> List(QueryRequest request, YbAppealManageView ybAppealManageView, String keyField) {
-        if (ybAppealManageView.getCurrencyField() != null && ybAppealManageView.getCurrencyField() != "") {
+        if (ybAppealManageView.getCurrencyField() != null && !ybAppealManageView.getCurrencyField().equals("")) {
             System.out.println("View-New");
             return getDataTable(this.iYbAppealManageViewService.findAppealManageViewNew(request, ybAppealManageView, keyField, false));
         } else {

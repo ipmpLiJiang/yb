@@ -26,7 +26,7 @@ public interface IYbDrgApplyService extends IService<YbDrgApply> {
 
     void createYbDrgApply(YbDrgApply ybDrgApply);
 
-    void updateYbDrgApply(YbDrgApply ybDrgApply);
+    void updateYbDrgApply(YbDrgApply ybDrgApply,Integer isChangDate);
 
     void deleteYbDrgApplys(String[] Ids,int state);
 
@@ -37,5 +37,7 @@ public interface IYbDrgApplyService extends IService<YbDrgApply> {
     void updateDrgApplyState3(YbDrgApply drgApply);
 
     String getSendMessage(String applyDateStr, Date enableDate, Integer areaType, boolean isChange);
+
+    boolean findDrgApplyCheckEndDate(String appltDateStr, Integer areaType);
 
 }

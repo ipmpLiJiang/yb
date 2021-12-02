@@ -110,7 +110,7 @@ public class YbDrgApplyDataServiceImpl extends ServiceImpl<YbDrgApplyDataMapper,
                 YbDrgApply updateApply = new YbDrgApply();
                 updateApply.setId(applyList.get(0).getId());
                 updateApply.setState(YbDefaultValue.APPLYSTATE_1);
-                iYbDrgApplyService.updateYbDrgApply(updateApply);
+                iYbDrgApplyService.updateYbDrgApply(updateApply,null);
                 count = 1;
             }
         }
@@ -134,7 +134,7 @@ public class YbDrgApplyDataServiceImpl extends ServiceImpl<YbDrgApplyDataMapper,
             this.saveBatch(listData);
         }
 
-        this.iYbDrgApplyService.updateYbDrgApply(ybDrgApply);
+        this.iYbDrgApplyService.updateYbDrgApply(ybDrgApply,null);
     }
 
     @Override
@@ -144,28 +144,49 @@ public class YbDrgApplyDataServiceImpl extends ServiceImpl<YbDrgApplyDataMapper,
         String p = ybDrgVerifyView.getBah();
         String o = ybDrgVerifyView.getOrderNumber();
 
-        LambdaQueryWrapper<YbDrgApplyData> wrapperApplyData = new LambdaQueryWrapper<>();
-        wrapperApplyData.eq(YbDrgApplyData::getPid,ybDrgApply.getId());
+        LambdaQueryWrapper<YbDrgApplyData> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(YbDrgApplyData::getPid,ybDrgApply.getId());
         if(k != null && !k.equals("")) {
-            wrapperApplyData.eq(YbDrgApplyData::getKs,k);
+            wrapper.eq(YbDrgApplyData::getKs,k);
         }
         if(j != null && !j.equals("")) {
-            wrapperApplyData.eq(YbDrgApplyData::getJzjlh,j);
+            wrapper.eq(YbDrgApplyData::getJzjlh,j);
         }
         if(p != null && !p.equals("")) {
-            wrapperApplyData.eq(YbDrgApplyData::getBah,p);
+            wrapper.eq(YbDrgApplyData::getBah,p);
         }
         if(o != null && !o.equals("")) {
-            wrapperApplyData.eq(YbDrgApplyData::getOrderNumber,o);
+            wrapper.eq(YbDrgApplyData::getOrderNumber,o);
         }
 
-        return this.list(wrapperApplyData);
+        return this.list(wrapper);
     }
 
 
     @Override
     public List<YbDrgApplyData> findDrgApplyDataByNotVerifys(String pid, String applyDateStr, Integer areaType) {
         return this.baseMapper.findDrgApplyDataByNotVerify(pid, applyDateStr, areaType);
+    }
+
+    @Override
+    public List<YbDrgApplyData> getApplyDataByKeyFieldList(String pid, String keyField, String value) {
+        LambdaQueryWrapper<YbDrgApplyData> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(YbDrgApplyData::getPid,pid);
+        if (value != null && !value.equals("") && !keyField.equals("readyDoctorCode") && !keyField.equals("readyDoctorName")) {
+            if (keyField.equals("orderNumber")) {
+                wrapper.eq(YbDrgApplyData::getOrderNumber,value);
+            }
+            if (keyField.equals("ks")) {
+                wrapper.eq(YbDrgApplyData::getKs,value);
+            }
+            if (keyField.equals("jzjlh")) {
+                wrapper.eq(YbDrgApplyData::getJzjlh,value);
+            }
+            if (keyField.equals("bah")) {
+                wrapper.eq(YbDrgApplyData::getBah,value);
+            }
+        }
+        return this.list(wrapper);
     }
 
 

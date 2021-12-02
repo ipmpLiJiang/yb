@@ -43,7 +43,6 @@ public class YbDrgJkServiceImpl extends ServiceImpl<YbDrgJkMapper, YbDrgJk> impl
             LambdaQueryWrapper<YbDrgJk> queryWrapper = new LambdaQueryWrapper<>();
 //            queryWrapper.eq(YbDrgJk::getIsDeletemark, 1);//1是未删 0是已删
 
-
             Page<YbDrgJk> page = new Page<>();
             SortUtil.handlePageSort(request, page, false);//true 是属性  false是数据库字段可两个
             return this.page(page, queryWrapper);
@@ -88,5 +87,16 @@ public class YbDrgJkServiceImpl extends ServiceImpl<YbDrgJkMapper, YbDrgJk> impl
         this.baseMapper.deleteBatchIds(list);
     }
 
+    @Override
+    public YbDrgJk findYbDrgJkByApplyDataId(String applyDataId) {
+        LambdaQueryWrapper<YbDrgJk> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(YbDrgJk::getApplyDataId, applyDataId);
+        List<YbDrgJk> list = this.baseMapper.selectList(queryWrapper);
+        if (list.size() > 0) {
+            return list.get(0);
+        } else {
+            return null;
+        }
+    }
 
 }

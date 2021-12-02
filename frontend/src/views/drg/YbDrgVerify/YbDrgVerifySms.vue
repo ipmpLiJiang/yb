@@ -168,7 +168,7 @@ export default {
       this.loading = true
       params.applyDateStr = this.applyDateStr
       params.areaType = this.user.areaType.value
-      params.sendType = 1
+      params.sendType = 10
       params.comments = this.searchText
       if (this.checked) {
         params.state = 1

@@ -523,10 +523,10 @@ public class YbReconsiderVerifyController extends BaseController {
                         List<YbReconsiderInpatientfees> queryRifList = new ArrayList<>();
                         queryRifList = rifList.stream().filter(s -> s.getApplyDataId().equals(entity.getId())).collect(Collectors.toList());
                         if (queryRifList.size() > 0) {
-                            strOrderDeptCode = strOrderDeptCode == "" || strOrderDeptCode == null ? queryRifList.get(0).getDeptId() : strOrderDeptCode;
-                            strOrderDeptName = strOrderDeptName == "" || strOrderDeptName == null ? queryRifList.get(0).getDeptName() : strOrderDeptName;
-                            strOrderDoctorCode = strOrderDoctorCode == "" || strOrderDoctorCode == null ? queryRifList.get(0).getOrderDocId() : strOrderDoctorCode;
-                            strOrderDoctorName = strOrderDoctorName == "" || strOrderDoctorName == null ? queryRifList.get(0).getOrderDocName() : strOrderDoctorName;
+                            strOrderDeptCode = strOrderDeptCode == null || strOrderDeptCode.equals("") ? queryRifList.get(0).getDeptId() : strOrderDeptCode;
+                            strOrderDeptName = strOrderDeptName == null || strOrderDeptName.equals("") ? queryRifList.get(0).getDeptName() : strOrderDeptName;
+                            strOrderDoctorCode = strOrderDoctorCode == null || strOrderDoctorCode.equals("") ? queryRifList.get(0).getOrderDocId() : strOrderDoctorCode;
+                            strOrderDoctorName = strOrderDoctorName == null || strOrderDoctorName.equals("") ? queryRifList.get(0).getOrderDocName() : strOrderDoctorName;
                         }
                     }
 

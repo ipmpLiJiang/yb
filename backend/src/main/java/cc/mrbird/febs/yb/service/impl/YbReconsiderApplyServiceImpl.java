@@ -2,7 +2,9 @@ package cc.mrbird.febs.yb.service.impl;
 
 import cc.mrbird.febs.com.controller.DataTypeHelpers;
 import cc.mrbird.febs.com.entity.ComConfiguremanage;
+import cc.mrbird.febs.com.entity.ComSms;
 import cc.mrbird.febs.com.service.IComConfiguremanageService;
+import cc.mrbird.febs.com.service.IComSmsService;
 import cc.mrbird.febs.common.domain.QueryRequest;
 import cc.mrbird.febs.common.properties.FebsProperties;
 import cc.mrbird.febs.common.utils.SortUtil;
@@ -16,6 +18,8 @@ import cc.mrbird.febs.yb.entity.YbReconsiderApply;
 import cc.mrbird.febs.yb.service.IYbAppealManageService;
 import cc.mrbird.febs.yb.service.IYbAppealManageViewService;
 import cc.mrbird.febs.yb.service.IYbReconsiderApplyService;
+import cn.hutool.core.date.DateUnit;
+import cn.hutool.core.date.DateUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -60,6 +64,9 @@ public class YbReconsiderApplyServiceImpl extends ServiceImpl<YbReconsiderApplyM
 
     @Autowired
     IComConfiguremanageService iComConfiguremanageService;
+
+    @Autowired
+    private IComSmsService iComSmsService;
 
     @Override
     public IPage<YbReconsiderApply> findYbReconsiderApplys(QueryRequest request, YbReconsiderApply ybReconsiderApply) {
@@ -156,9 +163,79 @@ public class YbReconsiderApplyServiceImpl extends ServiceImpl<YbReconsiderApplyM
 
     @Override
     @Transactional
-    public void updateYbReconsiderApply(YbReconsiderApply ybReconsiderApply) {
+    public void updateYbReconsiderApply(YbReconsiderApply ybReconsiderApply, Integer isChangDate) {
         ybReconsiderApply.setModifyTime(new Date());
-        this.baseMapper.updateYbReconsiderApply(ybReconsiderApply);
+        YbReconsiderApply entity = this.getById(ybReconsiderApply.getId());
+        if (entity !=null && (entity.getState() == YbDefaultValue.APPLYSTATE_3 || entity.getState() == YbDefaultValue.APPLYSTATE_5)) {
+            long endMinute = 0;
+            long enableDay = 0;
+            int typeno = entity.getState() == YbDefaultValue.APPLYSTATE_3 ? 1 : 2;
+            // 当前Apply日期
+            Date enableDate = typeno == 1 ? entity.getEnableDateOne() : entity.getEnableDateTwo();
+            Date endDate = typeno == 1 ? entity.getEndDateOne() : entity.getEndDateTwo();
+            // 更改日期
+            Date upEnableDate = typeno == 1 ? ybReconsiderApply.getEnableDateOne() : ybReconsiderApply.getEnableDateTwo();
+            Date upEndDate = typeno == 1 ? ybReconsiderApply.getEndDateOne() : ybReconsiderApply.getEndDateTwo();
+
+            endMinute = DateUtil.between(upEndDate, endDate, DateUnit.MINUTE);
+            enableDay = DateUtil.between(upEnableDate, enableDate, DateUnit.DAY);
+
+            if (isChangDate != null && isChangDate == 1) {
+                List<ComSms> updateSmsList = new ArrayList<>();
+                List<YbAppealManage> updateAmList = new ArrayList<>();
+
+                List<ComSms> smsList = new ArrayList<>();
+                List<YbAppealManage> appealManageList = new ArrayList<>();
+                if (enableDay != 0 || endMinute != 0) {
+                    LambdaQueryWrapper<ComSms> wrapperSms = new LambdaQueryWrapper<>();
+                    wrapperSms.eq(ComSms::getApplyDateStr, entity.getApplyDateStr());
+                    wrapperSms.eq(ComSms::getAreaType, entity.getAreaType());
+                    wrapperSms.eq(ComSms::getTypeno, typeno);
+                    wrapperSms.eq(ComSms::getSendType, ComSms.SENDTYPE_1);
+                    wrapperSms.eq(ComSms::getState, ComSms.STATE_0);
+                    smsList = this.iComSmsService.list(wrapperSms);
+                }
+
+                if (enableDay != 0) {
+                    LambdaQueryWrapper<YbAppealManage> wrapperAm = new LambdaQueryWrapper<>();
+                    wrapperAm.eq(YbAppealManage::getApplyDateStr, entity.getApplyDateStr());
+                    wrapperAm.eq(YbAppealManage::getAreaType, entity.getAreaType());
+                    wrapperAm.eq(YbAppealManage::getTypeno, typeno);
+                    appealManageList = iYbAppealManageService.list(wrapperAm);
+                }
+
+                enableDate = DataTypeHelpers.addDateMethod(upEnableDate, 1);
+
+                if (smsList.size() > 0) {
+                    String sendContent = this.getChangSendMessage(entity.getApplyDateStr(), upEndDate, enableDate, entity.getAreaType(), typeno, false);
+                    for (ComSms item : smsList) {
+                        ComSms update = new ComSms();
+                        update.setId(item.getId());
+                        update.setSendcontent(sendContent);
+                        updateSmsList.add(update);
+                    }
+                }
+                if (appealManageList.size() > 0) {
+                    for (YbAppealManage item : appealManageList) {
+                        YbAppealManage update = new YbAppealManage();
+                        update.setId(item.getId());
+                        update.setEnableDate(enableDate);
+                        updateAmList.add(update);
+                    }
+                }
+
+                if (updateSmsList.size() > 0) {
+                    iComSmsService.updateBatchById(updateSmsList);
+                }
+
+                if (updateAmList.size() > 0) {
+                    iYbAppealManageService.updateBatchById(updateAmList);
+                }
+            }
+            if (enableDay != 0 || endMinute != 0) {
+                this.baseMapper.updateYbReconsiderApply(ybReconsiderApply);
+            }
+        }
     }
 
     @Override
@@ -448,15 +525,52 @@ public class YbReconsiderApplyServiceImpl extends ServiceImpl<YbReconsiderApplyM
     public String getSendMessage(String applyDateStr, Date enableDate, Integer areaType, int typeno, boolean isChange) {
         YbReconsiderApply entity = this.findReconsiderApplyByApplyDateStrs(applyDateStr, areaType);
         Date endDate = new Date();
+        if (typeno == YbDefaultValue.TYPENO_1) {
+            endDate = entity.getEndDateOne();
+        } else {
+            endDate = entity.getEndDateTwo();
+        }
+        return this.getChangSendMessage(applyDateStr, endDate, enableDate, areaType, typeno, isChange);
+
+//        SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy年MM月dd日 E HH:mm点");//HH时mm分ss秒
+//        SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy年MM月dd日 E");
+//        String ssm = "";
+//        if (typeno == YbDefaultValue.TYPENO_1) {
+//            ssm = "第一版";
+//            endDate = entity.getEndDateOne();
+//        } else {
+//            ssm = "第二版";
+//            endDate = entity.getEndDateTwo();
+//        }
+//        String date1 = sdf1.format(endDate);
+//
+//        String wangz = febsProperties.getSmsWebsite();
+//        applyDateStr = applyDateStr.replace("-", "年");
+//        if (!isChange) {
+//            Calendar cal = Calendar.getInstance();//使用默认时区和语言环境获得一个日历。
+//            cal.setTime(enableDate);
+//            cal.add(Calendar.DATE, -1);
+//
+//            String date2 = sdf2.format(cal.getTime()) + " 24:00 ";
+//            if (enableDate.compareTo(endDate) == 1) {
+//                ssm = "武汉市医保" + applyDateStr + "月" + ssm + " 复议数据已发给您，请在复议截止时间前完成 责任人确认工作和复议工作，此次复议截止时间是 " + date1 + "，请及时登录医保管理系统处理。" + wangz;
+//            } else {
+//                ssm = "武汉市医保" + applyDateStr + "月" + ssm + " 复议数据已发给您，请在 " + date2 + "前完成责任人确认工作，否则默认责任人为本人。此次复议截止时间是 " + date1 + "，请及时登录医保管理系统处理。" + wangz;
+//            }
+//        } else {
+//            ssm = "您有其他医生转发的医保违规项目需复议，此次复议截止时间是" + date1 + "，请及时登录医保管理系统处理。" + wangz;
+//        }
+//        return ssm + this.areaMsg(areaType);
+    }
+
+    public String getChangSendMessage(String applyDateStr, Date endDate, Date enableDate, Integer areaType, int typeno, boolean isChange) {
         SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy年MM月dd日 E HH:mm点");//HH时mm分ss秒
         SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy年MM月dd日 E");
         String ssm = "";
         if (typeno == YbDefaultValue.TYPENO_1) {
             ssm = "第一版";
-            endDate = entity.getEndDateOne();
         } else {
             ssm = "第二版";
-            endDate = entity.getEndDateTwo();
         }
         String date1 = sdf1.format(endDate);
 
@@ -478,6 +592,7 @@ public class YbReconsiderApplyServiceImpl extends ServiceImpl<YbReconsiderApplyM
         }
         return ssm + this.areaMsg(areaType);
     }
+
 
     /**
      * 复议截止当天短信内容
@@ -530,7 +645,7 @@ public class YbReconsiderApplyServiceImpl extends ServiceImpl<YbReconsiderApplyM
     @Override
     public String getSendNoticeMessage(String title, Integer areaType) {
         String wangz = febsProperties.getSmsWebsite();
-        String ssm = "医保办发布了新通知《"+title+"》，请登陆医保管理系统及时查看并处理。" + wangz;
+        String ssm = "医保办发布了新通知《" + title + "》，请登陆医保管理系统及时查看并处理。" + wangz;
         return ssm + this.areaMsg(areaType);
     }
 
@@ -549,8 +664,9 @@ public class YbReconsiderApplyServiceImpl extends ServiceImpl<YbReconsiderApplyM
         }
         return typeno;
     }
+
     @Override
-    public int getTypeno(YbReconsiderApply reconsiderApply){
+    public int getTypeno(YbReconsiderApply reconsiderApply) {
         int state = reconsiderApply.getState() != null ? reconsiderApply.getState() : 1;
         int typeno = state == YbDefaultValue.APPLYSTATE_2 || state == YbDefaultValue.APPLYSTATE_3 ? YbDefaultValue.TYPENO_1 :
                 state == YbDefaultValue.APPLYSTATE_4 || state == YbDefaultValue.APPLYSTATE_5 ? YbDefaultValue.TYPENO_2 :

@@ -31,7 +31,7 @@ private static final long serialVersionUID=1L;
      */
     public static final int SENDTYPE_1 = 1 ;
     /**
-     * 2 人工复议发送
+     * 2 非常规复议发送
      */
 
     public static final int SENDTYPE_2 = 2 ;
@@ -51,7 +51,7 @@ private static final long serialVersionUID=1L;
     public static final int SENDTYPE_5 = 5 ;
 
     /**
-     * 6 人工复议
+     * 6 非常规复议
      */
     public static final int SENDTYPE_6 = 6 ;
 

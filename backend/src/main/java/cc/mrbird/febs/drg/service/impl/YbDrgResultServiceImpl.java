@@ -88,5 +88,55 @@ public class YbDrgResultServiceImpl extends ServiceImpl<YbDrgResultMapper, YbDrg
         this.baseMapper.deleteBatchIds(list);
     }
 
+    @Override
+    public List<YbDrgResult> findDrgResultList(YbDrgResult drgResult) {
+        LambdaQueryWrapper<YbDrgResult> wrapper = new LambdaQueryWrapper<>();
+        if (drgResult.getApplyDateStr() != null) {
+            wrapper.eq(YbDrgResult::getApplyDateStr, drgResult.getApplyDateStr());
+        }
+
+        if (drgResult.getAreaType() != null) {
+            wrapper.eq(YbDrgResult::getAreaType, drgResult.getAreaType());
+        }
+
+        if (drgResult.getState() != null) {
+            wrapper.eq(YbDrgResult::getState, drgResult.getState());
+        }
+
+        if (drgResult.getOrderNumber() != null) {
+            wrapper.eq(YbDrgResult::getOrderNumber, drgResult.getOrderNumber());
+        }
+
+        if (drgResult.getOrderNum() != null) {
+            wrapper.eq(YbDrgResult::getOrderNum, drgResult.getOrderNum());
+        }
+
+        if (drgResult.getApplyDataId() != null) {
+            wrapper.eq(YbDrgResult::getApplyDataId, drgResult.getApplyDataId());
+        }
+
+        if (drgResult.getId() != null) {
+            wrapper.eq(YbDrgResult::getId, drgResult.getId());
+        }
+
+        if (drgResult.getDoctorCode() != null) {
+            wrapper.eq(YbDrgResult::getDoctorCode, drgResult.getDoctorCode());
+        }
+
+        if (drgResult.getDoctorName() != null) {
+            wrapper.eq(YbDrgResult::getDoctorName, drgResult.getDoctorName());
+        }
+
+        if (drgResult.getDeptCode() != null) {
+            wrapper.eq(YbDrgResult::getDeptCode, drgResult.getDeptCode());
+        }
+
+        if (drgResult.getDeptName() != null) {
+            wrapper.eq(YbDrgResult::getDeptName, drgResult.getDeptName());
+        }
+
+        return this.list(wrapper);
+    }
+
 
 }
