@@ -1,6 +1,6 @@
 <template>
   <div id="tab" style="margin: 0px!important">
-        <!-- 已拒绝 表格区域 -->
+        <!-- 待申诉 表格区域 -->
         <a-table
           ref="TableInfo"
           :columns="columns"
@@ -17,7 +17,7 @@
           <template slot="operationLy" slot-scope="text, record, index">
             <span :title="record.ly">{{record.ly}}</span>
           </template>
-        <template
+          <template
             slot="operation"
             slot-scope="text, record, index"
           >
@@ -36,7 +36,7 @@
 <script>
 import moment from 'moment'
 export default {
-  name: 'YbDrgManageRefused',
+  name: 'YbDrgManageStayed',
   props: {
     applyDate: {
       default: ''
@@ -134,23 +134,6 @@ export default {
         width: 250
       },
       {
-        title: '确认截止时间',
-        dataIndex: 'enableDate',
-        customRender: (text, row, index) => {
-          if (text !== '' && text !== null) {
-            if (row.isEnableDate === 1) {
-              return moment(text).format(this.tableFormat) + ' 24:00'
-            } else {
-              return moment(row.applyEndDate).format(this.tableFormat1)
-            }
-          } else {
-            return text
-          }
-        },
-        fixed: 'right',
-        width: 120
-      },
-      {
         title: '复议截止日期',
         dataIndex: 'applyEndDate',
         customRender: (text, row, index) => {
@@ -166,6 +149,28 @@ export default {
         },
         fixed: 'right',
         width: 120
+      },
+      {
+        title: '复议科室',
+        dataIndex: 'readyDeptName',
+        customRender: (text, row, index) => {
+          if (text !== '' && text !== null) {
+            return row.readyDeptCode + '-' + row.readyDeptName
+          }
+        },
+        fixed: 'right',
+        width: 160
+      },
+      {
+        title: '复议医生',
+        dataIndex: 'readyDoctorName',
+        customRender: (text, row, index) => {
+          if (text !== '' && text !== null) {
+            return row.readyDoctorCode + '-' + row.readyDoctorName
+          }
+        },
+        fixed: 'right',
+        width: 130
       },
       {
         title: '操作',
@@ -185,10 +190,6 @@ export default {
       return (this.pagination.defaultCurrent - 1) *
             this.pagination.defaultPageSize + index + 1
     },
-    look (record, index) {
-      record.rowNo = this.rowNo(index)
-      this.$emit('look', record)
-    },
     handleClickRow (record, index) {
       return {
         on: {
@@ -206,6 +207,10 @@ export default {
     },
     onSelectChange (selectedRowKeys) {
       this.selectedRowKeys = selectedRowKeys
+    },
+    look (record, index) {
+      record.rowNo = this.rowNo(index)
+      this.$emit('look', record)
     },
     onHistory () {
       let selectedRowKeys = this.selectedRowKeys
@@ -270,7 +275,7 @@ export default {
     fetch (params = {}) {
       this.loading = true
       params.applyDateStr = this.applyDate
-      params.state = 2
+      params.state = 1
       params.currencyField = this.searchItem.value
       params.areaType = this.user.areaType.value
       params.keyField = this.searchItem.keyField
@@ -287,7 +292,7 @@ export default {
       }
       // params.sortField = 'ad.orderNum'
       // params.sortOrder = 'ascend'
-      this.$get('ybDrgManageView/drgManageUserView', {
+      this.$get('ybDrgManageView', {
         ...params
       }).then((r) => {
         let data = r.data

@@ -168,6 +168,28 @@ export default {
         width: 120
       },
       {
+        title: '复议科室',
+        dataIndex: 'readyDeptName',
+        customRender: (text, row, index) => {
+          if (text !== '' && text !== null) {
+            return row.readyDeptCode + '-' + row.readyDeptName
+          }
+        },
+        fixed: 'right',
+        width: 160
+      },
+      {
+        title: '复议医生',
+        dataIndex: 'readyDoctorName',
+        customRender: (text, row, index) => {
+          if (text !== '' && text !== null) {
+            return row.readyDoctorCode + '-' + row.readyDoctorName
+          }
+        },
+        fixed: 'right',
+        width: 130
+      },
+      {
         title: '操作',
         dataIndex: 'operation',
         scopedSlots: { customRender: 'operation' },
@@ -287,7 +309,7 @@ export default {
       }
       // params.sortField = 'ad.orderNum'
       // params.sortOrder = 'ascend'
-      this.$get('ybDrgManageView/drgManageUserView', {
+      this.$get('ybDrgManageView', {
         ...params
       }).then((r) => {
         let data = r.data

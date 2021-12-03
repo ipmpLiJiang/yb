@@ -1,6 +1,6 @@
 <template>
   <div id="tab" style="margin: 0px!important">
-        <!-- 已拒绝 表格区域 -->
+        <!-- 接受申请 表格区域 -->
         <a-table
           ref="TableInfo"
           :columns="columns"
@@ -17,7 +17,7 @@
           <template slot="operationLy" slot-scope="text, record, index">
             <span :title="record.ly">{{record.ly}}</span>
           </template>
-        <template
+          <template
             slot="operation"
             slot-scope="text, record, index"
           >
@@ -36,7 +36,7 @@
 <script>
 import moment from 'moment'
 export default {
-  name: 'YbDrgManageRefused',
+  name: 'YbDrgManageAccept',
   props: {
     applyDate: {
       default: ''
@@ -69,6 +69,7 @@ export default {
       },
       loading: false,
       bordered: true,
+      isDisabled: false,
       ybDrgManage: {},
       user: this.$store.state.account.user,
       tableFormat1: 'YYYY-MM-DD HH:mm:ss',
@@ -134,23 +135,6 @@ export default {
         width: 250
       },
       {
-        title: '确认截止时间',
-        dataIndex: 'enableDate',
-        customRender: (text, row, index) => {
-          if (text !== '' && text !== null) {
-            if (row.isEnableDate === 1) {
-              return moment(text).format(this.tableFormat) + ' 24:00'
-            } else {
-              return moment(row.applyEndDate).format(this.tableFormat1)
-            }
-          } else {
-            return text
-          }
-        },
-        fixed: 'right',
-        width: 120
-      },
-      {
         title: '复议截止日期',
         dataIndex: 'applyEndDate',
         customRender: (text, row, index) => {
@@ -168,26 +152,50 @@ export default {
         width: 120
       },
       {
+        title: '复议科室',
+        dataIndex: 'readyDeptName',
+        customRender: (text, row, index) => {
+          if (text !== '' && text !== null) {
+            return row.readyDeptCode + '-' + row.readyDeptName
+          }
+        },
+        fixed: 'right',
+        width: 160
+      },
+      {
+        title: '复议医生',
+        dataIndex: 'readyDoctorName',
+        customRender: (text, row, index) => {
+          if (text !== '' && text !== null) {
+            return row.readyDoctorCode + '-' + row.readyDoctorName
+          }
+        },
+        fixed: 'right',
+        width: 130
+      },
+      {
         title: '操作',
         dataIndex: 'operation',
         scopedSlots: { customRender: 'operation' },
         fixed: 'right',
-        width: 90
+        width: 100
       }]
     }
   },
   mounted () {
-    // this.fetch()
+    this.fetch()
   },
   methods: {
     moment,
+    warning () {
+      this.$warning({
+        title: '操作提示',
+        content: '当前时间已超过可操作时间'
+      })
+    },
     rowNo (index) {
       return (this.pagination.defaultCurrent - 1) *
             this.pagination.defaultPageSize + index + 1
-    },
-    look (record, index) {
-      record.rowNo = this.rowNo(index)
-      this.$emit('look', record)
     },
     handleClickRow (record, index) {
       return {
@@ -206,6 +214,10 @@ export default {
     },
     onSelectChange (selectedRowKeys) {
       this.selectedRowKeys = selectedRowKeys
+    },
+    look (record, index) {
+      record.rowNo = this.rowNo(index)
+      this.$emit('look', record)
     },
     onHistory () {
       let selectedRowKeys = this.selectedRowKeys
@@ -270,7 +282,7 @@ export default {
     fetch (params = {}) {
       this.loading = true
       params.applyDateStr = this.applyDate
-      params.state = 2
+      params.state = 0
       params.currencyField = this.searchItem.value
       params.areaType = this.user.areaType.value
       params.keyField = this.searchItem.keyField
@@ -287,7 +299,7 @@ export default {
       }
       // params.sortField = 'ad.orderNum'
       // params.sortOrder = 'ascend'
-      this.$get('ybDrgManageView/drgManageUserView', {
+      this.$get('ybDrgManageView', {
         ...params
       }).then((r) => {
         let data = r.data

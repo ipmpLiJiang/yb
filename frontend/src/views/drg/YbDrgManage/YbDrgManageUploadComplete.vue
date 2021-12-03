@@ -1,12 +1,12 @@
 <template>
   <a-drawer
-    title="DRG申诉填报"
+    title="DRG申诉更改"
     :maskClosable="false"
     width=85%
     placement="right"
     :closable="true"
     @close="onClose"
-    :visible="drgVisiable"
+    :visible="drgCompleteVisiable"
     style="height: calc(100% - 15px);overflow: auto;padding-bottom: 53px;"
   >
   <ybDrgData-module
@@ -63,22 +63,11 @@
                 </a-form-item>
               </a-col>
             </a-row>
-            <br>
             <!--按钮-->
-            <a-row type="flex" justify="center">
-              <a-col :span=5>
-                <a-popconfirm
-                  title="确定提交数据？提交后不可更改！"
-                  @confirm="handleSubmit(1)"
-                  okText="确定"
-                  cancelText="取消"
-                >
-                  <a-button type="primary" style="margin-right: .8rem">提交</a-button>
-                </a-popconfirm>
-              </a-col>
+            <a-row type="flex" justify="end">
               <a-col :span=5>
                 <a-button
-                  @click="handleSubmit(0)"
+                  @click="handleSubmit"
                   type="primary"
                   :loading="loading"
                 >保存</a-button>
@@ -108,8 +97,7 @@
             </a-row>
             <br>
             <a-row type="flex" justify="center">
-              <a-col :span=3>&nbsp;</a-col>
-              <a-col :span=18>
+              <a-col>
                 <template>
                   <!--上传图片-->
                   <div class="clearfix">
@@ -136,7 +124,6 @@
                   </div>
                 </template>
               </a-col>
-              <a-col :span=3>&nbsp;</a-col>
             </a-row>
             </div>
           </a-col>
@@ -169,7 +156,7 @@ export default {
   components: {
     YbDrgDataModule, YbDrgJkModule},
   props: {
-    drgVisiable: {
+    drgCompleteVisiable: {
       default: false
     }
   },
@@ -182,8 +169,8 @@ export default {
       previewVisible: false,
       previewImage: '',
       fileList: [],
-      ftype: '',
       typeList: [],
+      ftype: '',
       user: this.$store.state.account.user,
       form: this.$form.createForm(this)
     }
@@ -229,6 +216,7 @@ export default {
       formData.append('areaType', this.user.areaType.value)
       this.uploading = true
       let that = this
+
       this.$upload('comFile/uploadDrgImg', formData).then((r) => {
         if (r.data.data.success === 1) {
           that.fileList.push(r.data.data)
@@ -290,41 +278,27 @@ export default {
       this.loading = false
       this.ybDrgManage = {}
       this.ybDrgManageUpload = {}
-      this.typeList = []
       this.fileList = []
+      this.typeList = []
       this.previewVisible = false
       this.previewImage = ''
       this.$emit('close')
     },
-    handleSubmit (type) {
+    handleSubmit () {
       this.form.validateFields((err, values) => {
         if (!err) {
           let fromData = this.form.getFieldsValue(['operateReason'])
-          let state = type === 0 ? 1 : 6 // 1 保存 6提交
           let data = {
             id: this.ybDrgManageUpload.id,
-            state: state,
-            applyDataId: this.ybDrgManageUpload.applyDataId,
-            verifyId: this.ybDrgManageUpload.verifyId,
-            readyDeptCode: this.ybDrgManageUpload.readyDeptCode,
-            readyDeptName: this.ybDrgManageUpload.readyDeptName,
-            readyDoctorCode: this.ybDrgManageUpload.readyDoctorCode,
-            readyDoctorName: this.ybDrgManageUpload.readyDoctorName,
             operateReason: fromData.operateReason
           }
           let jsonString = JSON.stringify(data)
-          this.$put('ybDrgManage/updateUploadState', {
+          this.$put('ybDrgManage/updateUploadStateCompleted', {
             dataJson: jsonString
           }).then((r) => {
             if (r.data.data.success === 1) {
-              if (state === 6) {
-                this.$message.success('提交成功！')
-                this.onClose()
-                this.$emit('success')
-              } else {
-                this.loading = false
-                this.$message.success('保存成功！')
-              }
+              this.loading = false
+              this.$message.success('保存成功！')
             } else {
               this.$message.error(r.data.data.message)
             }
@@ -370,30 +344,6 @@ export default {
     typeChange (e) {
       this.ftype = e.target.value
       this.findFileList(this.ybDrgManageUpload.id)
-    },
-    findCreate (ybDrgResult) {
-      // 列表点击申诉时创建复议审核上传数据，业务需求变更不调用此方法,更改为提交时创建复议审核上传数据
-      this.$post('ybDrgResult/findCreateDrgResult', {
-        ...ybDrgResult
-      }).then((r) => {
-        if (r.data.data.success === 0) {
-          this.$message.error('查询创建失败!')
-          this.onClose()
-        } else {
-          ybDrgResult = r.data.data.data
-          this.ybDrgManageUpload.operateReason = ybDrgResult.operateReason
-          this.ybDrgManageUpload.readyDeptCode = ybDrgResult.deptCode
-          this.ybDrgManageUpload.readyDeptName = ybDrgResult.deptName
-          this.ybDrgManageUpload.readyDoctorCode = ybDrgResult.doctorCode
-          this.ybDrgManageUpload.readyDoctorName = ybDrgResult.doctorName
-
-          this.form.setFieldsValue({
-            'operateReason': ybDrgResult.operateReason
-          })
-        }
-      }).catch(() => {
-        this.loading = false
-      })
     },
     findFileList (id) {
       let formData = {}

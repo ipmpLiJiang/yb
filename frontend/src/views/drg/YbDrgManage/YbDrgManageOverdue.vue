@@ -14,8 +14,8 @@
           :customRow="handleClickRow"
           :scroll="{ x: 900 }"
         >
-          <template slot="operationDeductReason" slot-scope="text, record, index">
-            <span :title="record.deductReason">{{record.deductReason}}</span>
+          <template slot="operationLy" slot-scope="text, record, index">
+            <span :title="record.ly">{{record.ly}}</span>
           </template>
           <template
             slot="operation"
@@ -84,74 +84,54 @@ export default {
         width: 70
       },
       {
-        title: '交易流水号',
-        dataIndex: 'serialNo',
+        title: '科室',
+        dataIndex: 'ks',
         fixed: 'left',
-        width: 150
-      },
-      {
-        title: '项目编码',
-        dataIndex: 'projectCode',
-        fixed: 'left',
-        width: 130
-      },
-      {
-        title: '项目名称',
-        dataIndex: 'projectName',
-        fixed: 'left',
-        width: 170
-      },
-      {
-        title: '数量',
-        dataIndex: 'num',
-        width: 70
-      },
-      {
-        title: '医保内金额',
-        dataIndex: 'medicalPrice',
-        width: 105
-      },
-      {
-        title: '规则名称',
-        dataIndex: 'ruleName',
         width: 140
       },
       {
-        title: '扣除金额',
-        dataIndex: 'deductPrice',
+        title: '就诊记录号',
+        dataIndex: 'jzjlh',
+        fixed: 'left',
+        width: 105
+      },
+      {
+        title: '病案号',
+        dataIndex: 'bah',
+        fixed: 'left',
+        width: 90
+      },
+      {
+        title: '违规类型',
+        dataIndex: 'wglx',
+        width: 90
+      },
+      {
+        title: '问题描述',
+        dataIndex: 'wtms',
+        width: 300
+      },
+      {
+        title: '医疗总费用',
+        dataIndex: 'ylzfy',
         width: 100
       },
       {
-        title: '扣除原因',
-        scopedSlots: { customRender: 'operationDeductReason' },
-        ellipsis: true,
-        width: 250
+        title: '违规金额',
+        dataIndex: 'wgje',
+        width: 100
       },
       {
-        title: '费用日期',
-        dataIndex: 'costDateStr',
-        customRender: (text, row, index) => {
-          if (text !== '' && text !== null) {
-            if (isNaN(text) && !isNaN(Date.parse(text))) {
-              return moment(text).format(this.tableFormat)
-            } else {
-              return text
-            }
-          } else {
-            return text
-          }
-        },
+        title: '是否编码造成直接错误',
+        dataIndex: 'sfbmzczjcw',
         width: 110
       },
       {
-        title: '科室名称',
-        dataIndex: 'deptName',
-        width: 100
-      },
-      {
-        title: '医生姓名',
-        dataIndex: 'doctorName',
-        width: 100
+        title: '理由',
+        dataIndex: 'ly',
+        scopedSlots: { customRender: 'operationLy' },
+        ellipsis: true,
+        width: 250
       },
       {
         title: '复议截止日期',

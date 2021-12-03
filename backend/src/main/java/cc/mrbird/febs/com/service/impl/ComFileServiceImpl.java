@@ -65,7 +65,8 @@ public class ComFileServiceImpl extends ServiceImpl<ComFileMapper, ComFile> impl
             queryWrapper.apply(sql);
 
             list = this.baseMapper.selectList(queryWrapper);
-            Collections.sort(list);
+            if (list.size() > 0)
+                Collections.sort(list);
 
             return list;
         } catch (Exception e) {

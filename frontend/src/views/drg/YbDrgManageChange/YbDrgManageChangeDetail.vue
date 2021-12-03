@@ -1,6 +1,6 @@
 <template>
   <a-drawer
-    title="变更详情"
+    title="DRG变更详情"
     :maskClosable="false"
     width=70%
     placement="right"
@@ -9,18 +9,18 @@
     :visible="detailVisiable"
     style="height: calc(100% - 15px);overflow: auto;padding-bottom: 53px;"
   >
-    <appealData-module
-    ref="appealDataModule"
-    :ybAppealDataModule="ybAppealManageChangeDetail"
+    <ybDrgData-module
+    ref="ybDrgDataModule"
+    :ybDrgData="ybDrgManageChangeDetail"
     >
-    </appealData-module>
-    <inpatientfees-module
-    ref="inpatientfeesModule"
-    :inpatientfeesModule="ybAppealManageChangeDetail"
+    </ybDrgData-module>
+    <ybDrgJk-module
+    ref="ybDrgJkModule"
+    :ybDrgData="ybDrgManageChangeDetail"
     >
-    </inpatientfees-module>
-    <div v-show="ybAppealManageChangeDetail.acceptState === 4?true:false">
-    <br>
+    </ybDrgJk-module>
+    <div v-show="ybDrgManageChangeDetail.state === 4?true:false">
+    <a-divider>变更信息</a-divider>
     <div style="padding-top:20px;padding-bottom:20px;border: 1px solid #e8e8e8;">
     <a-row type="flex" justify="start">
     <a-col :span=22>
@@ -31,7 +31,7 @@
             v-bind="formItemLayout"
             label="申请科室"
           >
-            {{ybAppealManageChangeDetail.readyDeptCode}}-{{ybAppealManageChangeDetail.readyDeptName}}
+            {{ybDrgManageChangeDetail.readyDeptCode}}-{{ybDrgManageChangeDetail.readyDeptName}}
           </a-form-item>
         </a-col>
         <a-col :span=4>
@@ -39,7 +39,7 @@
             v-bind="formItemLayout"
             label="申请人"
           >
-            {{ybAppealManageChangeDetail.readyDoctorCode}}-{{ybAppealManageChangeDetail.readyDoctorName}}
+            {{ybDrgManageChangeDetail.readyDoctorCode}}-{{ybDrgManageChangeDetail.readyDoctorName}}
           </a-form-item>
         </a-col>
         <a-col :span=8>
@@ -47,7 +47,7 @@
             v-bind="formItemLayout"
             label="更改科室"
           >
-            {{ybAppealManageChangeDetail.changeDeptCode}}-{{ybAppealManageChangeDetail.changeDeptName}}
+            {{ybDrgManageChangeDetail.changeDeptCode}}-{{ybDrgManageChangeDetail.changeDeptName}}
           </a-form-item>
         </a-col>
         <a-col :span=4>
@@ -55,7 +55,7 @@
             v-bind="formItemLayout"
             label="更改人"
           >
-            {{ybAppealManageChangeDetail.changeDoctorCode}}-{{ybAppealManageChangeDetail.changeDoctorName}}
+            {{ybDrgManageChangeDetail.changeDoctorCode}}-{{ybDrgManageChangeDetail.changeDoctorName}}
           </a-form-item>
         </a-col>
       </a-row>
@@ -68,7 +68,7 @@
             }"
             label="审核结果"
           >
-          {{ybAppealManageChangeDetail.approvalState === 1 ? '同意' : '拒绝'}}
+          {{ybDrgManageChangeDetail.approvalState === 1 ? '同意' : '拒绝'}}
           </a-form-item>
         </a-col>
       </a-row>
@@ -82,11 +82,11 @@
             }"
             label="申请理由"
           >
-          {{ybAppealManageChangeDetail.operateReason}}
+          {{ybDrgManageChangeDetail.operateReason}}
           </a-form-item>
         </a-col>
       </a-row>
-      <a-row type="flex" justify="start" v-if="ybAppealManageChangeDetail.approvalState === 1 ? false : true">
+      <a-row type="flex" justify="start"  v-if="ybDrgManageChangeDetail.approvalState === 1 ? false : true">
         <a-col :span=22>
             <a-form-item
             v-bind="{
@@ -95,7 +95,7 @@
             }"
             label="拒绝理由"
           >
-          {{ybAppealManageChangeDetail.refuseReason}}
+          {{ybDrgManageChangeDetail.refuseReason}}
           </a-form-item>
         </a-col>
       </a-row>
@@ -120,16 +120,16 @@
 
 <script>
 import moment from 'moment'
-import AppealDataModule from '../ybFunModule/AppealDataModule'
-import InpatientfeesModule from '../ybFunModule/InpatientfeesModule'
+import YbDrgDataModule from '../YbDrgFunModule/YbDrgDataModule'
+import YbDrgJkModule from '../YbDrgFunModule/YbDrgJkModule'
 const formItemLayout = {
   labelCol: { span: 9 },
   wrapperCol: { span: 14, offset: 1 }
 }
 export default {
-  name: 'YbAppealManageChangeDetail',
+  name: 'YbDrgManageChangeDetail',
   components: {
-    AppealDataModule, InpatientfeesModule},
+    YbDrgDataModule, YbDrgJkModule},
   props: {
     detailVisiable: {
       default: false
@@ -138,7 +138,7 @@ export default {
   data () {
     return {
       formItemLayout,
-      ybAppealManageChangeDetail: {}
+      ybDrgManageChangeDetail: {}
     }
   },
   computed: {
@@ -148,13 +148,13 @@ export default {
   methods: {
     moment,
     onClose () {
-      this.ybAppealManageChangeDetail = {}
+      this.ybDrgManageChangeDetail = {}
       this.$emit('close')
     },
-    setFormValues ({ ...ybAppealManageChangeDetail }) {
-      this.ybAppealManageChangeDetail = ybAppealManageChangeDetail
+    setFormValues ({ ...ybDrgManageChangeDetail }) {
+      this.ybDrgManageChangeDetail = ybDrgManageChangeDetail
       setTimeout(() => {
-        this.$refs.inpatientfeesModule.search()
+        this.$refs.ybDrgJkModule.search()
       }, 200)
     }
   }

@@ -1,6 +1,6 @@
 <template>
   <div id="tab" style="margin: 0px!important">
-        <!-- 已拒绝 表格区域 -->
+        <!-- 已审核记录 表格区域 -->
         <a-table
           ref="TableInfo"
           :columns="columns"
@@ -24,8 +24,8 @@
             <div class="editable-row-operations">
               <span>
                 <a
-                  @click.stop="() => look(record,index)"
-                >查看</a>
+                  @click.stop="() => detail(record,index)"
+                >变更详情</a>
               </span>
             </div>
           </template>
@@ -36,7 +36,7 @@
 <script>
 import moment from 'moment'
 export default {
-  name: 'YbDrgManageRefused',
+  name: 'YbDrgManageChangeEnd',
   props: {
     applyDate: {
       default: ''
@@ -134,23 +134,6 @@ export default {
         width: 250
       },
       {
-        title: '确认截止时间',
-        dataIndex: 'enableDate',
-        customRender: (text, row, index) => {
-          if (text !== '' && text !== null) {
-            if (row.isEnableDate === 1) {
-              return moment(text).format(this.tableFormat) + ' 24:00'
-            } else {
-              return moment(row.applyEndDate).format(this.tableFormat1)
-            }
-          } else {
-            return text
-          }
-        },
-        fixed: 'right',
-        width: 120
-      },
-      {
         title: '复议截止日期',
         dataIndex: 'applyEndDate',
         customRender: (text, row, index) => {
@@ -166,6 +149,44 @@ export default {
         },
         fixed: 'right',
         width: 120
+      },
+      {
+        title: '复议科室',
+        dataIndex: 'readyDeptName',
+        customRender: (text, row, index) => {
+          if (text !== '' && text !== null) {
+            return row.readyDeptCode + '-' + row.readyDeptName
+          }
+        },
+        fixed: 'right',
+        width: 160
+      },
+      {
+        title: '申请人',
+        dataIndex: 'readyDoctorName',
+        customRender: (text, row, index) => {
+          if (text !== '' && text !== null) {
+            return row.readyDoctorCode + '-' + row.readyDoctorName
+          }
+        },
+        fixed: 'right',
+        width: 130
+      },
+      {
+        title: '审核结果',
+        dataIndex: 'approvalState',
+        customRender: (text, row, index) => {
+          switch (text) {
+            case 1:
+              return '同意'
+            case 2:
+              return '拒绝'
+            default:
+              return text
+          }
+        },
+        fixed: 'right',
+        width: 90
       },
       {
         title: '操作',
@@ -188,6 +209,10 @@ export default {
     look (record, index) {
       record.rowNo = this.rowNo(index)
       this.$emit('look', record)
+    },
+    detail (record, index) {
+      record.rowNo = this.rowNo(index)
+      this.$emit('detail', record)
     },
     handleClickRow (record, index) {
       return {
@@ -270,7 +295,7 @@ export default {
     fetch (params = {}) {
       this.loading = true
       params.applyDateStr = this.applyDate
-      params.state = 2
+      params.state = 4
       params.currencyField = this.searchItem.value
       params.areaType = this.user.areaType.value
       params.keyField = this.searchItem.keyField
@@ -287,7 +312,7 @@ export default {
       }
       // params.sortField = 'ad.orderNum'
       // params.sortOrder = 'ascend'
-      this.$get('ybDrgManageView/drgManageUserView', {
+      this.$get('ybDrgManageView', {
         ...params
       }).then((r) => {
         let data = r.data

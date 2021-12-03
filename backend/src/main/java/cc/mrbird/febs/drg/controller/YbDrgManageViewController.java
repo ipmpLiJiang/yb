@@ -37,6 +37,12 @@ public class YbDrgManageViewController extends BaseController {
     @Autowired
     public IYbDrgManageViewService iYbDrgManageViewService;
 
+    @GetMapping()
+    @RequiresPermissions("ybDrgManageView:View")
+    public Map<String, Object> List(QueryRequest request, YbDrgManageView ybDrgManageView, String keyField) {
+        return getDataTable(this.iYbDrgManageViewService.findDrgManageView(request, ybDrgManageView, keyField));
+    }
+
     @GetMapping("drgManageUserView")
     @RequiresPermissions("ybDrgManageView:userView")
     public Map<String, Object> userList(QueryRequest request, YbDrgManageView ybDrgManageView, String keyField) {

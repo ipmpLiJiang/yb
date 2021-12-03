@@ -42,6 +42,9 @@ public class YbAppealResultResetViewServiceImpl extends ServiceImpl<YbAppealResu
     @Autowired
     IYbReconsiderResetService iYbReconsiderResetService;
 
+    @Autowired
+    IYbAppealManageService iYbAppealManageService;
+
     @Override
     public IPage<YbAppealResultResetView> findAppealResultResetViews(QueryRequest request, YbAppealResultResetView ybAppealResultResetView, String keyField) {
         try {
@@ -70,11 +73,34 @@ public class YbAppealResultResetViewServiceImpl extends ServiceImpl<YbAppealResu
     }
 
     @Override
-    public List<YbAppealResultResetView> findAppealResultResetLists(YbAppealResultResetView appealResultResetView){
+    public List<YbAppealResultResetView> findAppealResultResetLists(YbAppealResultResetView appealResultResetView) {
         YbReconsiderReset reconsiderReset = iYbReconsiderResetService.findReconsiderResetByApplyDateStr(appealResultResetView.getApplyDateStr(), appealResultResetView.getAreaType());
         if (reconsiderReset != null && reconsiderReset.getState() == 1) {
             appealResultResetView.setPid(reconsiderReset.getId());
-            return this.baseMapper.findAppealResultResetList(appealResultResetView);
+            // 与 Result 做管理 ApplyDataId 无值
+            List<YbAppealResultResetView> list = this.baseMapper.findAppealResultResetList(appealResultResetView);
+            /*
+            LambdaQueryWrapper<YbAppealManage> wrapperManage = new LambdaQueryWrapper<>();
+            wrapperManage.eq(YbAppealManage::getApplyDateStr, reconsiderReset.getApplyDateStr());
+            wrapperManage.eq(YbAppealManage::getAreaType, reconsiderReset.getAreaType());
+            wrapperManage.eq(YbAppealManage::getSourceType, YbDefaultValue.SOURCETYPE_1);
+            List<YbAppealManage> manageList = iYbAppealManageService.list(wrapperManage);
+            List<YbAppealManage> queryManageList = new ArrayList<>();
+            if(manageList.size() > 0) {
+                for (YbAppealResultResetView item : list) {
+                    queryManageList = manageList.stream().filter(s -> s.getApplyDataId().equals(item.getApplyDataId())).collect(Collectors.toList());
+                    if (queryManageList.size() > 0) {
+                        if (item.getArDoctorCode() == null || item.getArDoctorCode().equals("")) {
+                            item.setArDoctorCode(queryManageList.get(0).getReadyDoctorCode());
+                            item.setArDoctorName(queryManageList.get(0).getReadyDoctorName());
+                            item.setArDeptCode(queryManageList.get(0).getReadyDeptCode());
+                            item.setArDeptName(queryManageList.get(0).getReadyDeptName());
+                        }
+                    }
+                }
+            }
+            */
+            return list;
         }
         return new ArrayList<>();
     }

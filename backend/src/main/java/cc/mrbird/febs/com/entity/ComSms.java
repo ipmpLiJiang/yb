@@ -71,6 +71,11 @@ private static final long serialVersionUID=1L;
     public static final int SENDTYPE_10 = 10 ;
 
     /**
+     * 10 DRG医保办变更
+     */
+    public static final int SENDTYPE_11 = 11 ;
+
+    /**
      * 0 未发送
      */
     public static final int STATE_0 = 0 ;

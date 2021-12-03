@@ -33,4 +33,8 @@ public interface IYbDrgManageService extends IService<YbDrgManage> {
         void updateAcceptRejectStates(List<YbDrgManage> list);
 
         String updateUploadStates(YbDrgManage ybDrgManage);
+
+        String updateUploadStateCompleteds(YbDrgManage ybDrgManage);
+
+        void updateCreateDrgManage(YbDrgManage ybDrgManage, Long uId, String Uname, Integer type);
         }

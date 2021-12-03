@@ -1,6 +1,6 @@
 <template>
   <div id="tab" style="margin: 0px!important">
-        <!-- 已拒绝 表格区域 -->
+        <!-- 已完成 表格区域 -->
         <a-table
           ref="TableInfo"
           :columns="columns"
@@ -17,7 +17,7 @@
           <template slot="operationLy" slot-scope="text, record, index">
             <span :title="record.ly">{{record.ly}}</span>
           </template>
-        <template
+          <template
             slot="operation"
             slot-scope="text, record, index"
           >
@@ -32,11 +32,10 @@
         </a-table>
   </div>
 </template>
-
 <script>
 import moment from 'moment'
 export default {
-  name: 'YbDrgManageRefused',
+  name: 'YbDrgManageCompleted',
   props: {
     applyDate: {
       default: ''
@@ -70,6 +69,7 @@ export default {
       loading: false,
       bordered: true,
       ybDrgManage: {},
+      className: '',
       user: this.$store.state.account.user,
       tableFormat1: 'YYYY-MM-DD HH:mm:ss',
       tableFormat: 'YYYY-MM-DD'
@@ -134,23 +134,6 @@ export default {
         width: 250
       },
       {
-        title: '确认截止时间',
-        dataIndex: 'enableDate',
-        customRender: (text, row, index) => {
-          if (text !== '' && text !== null) {
-            if (row.isEnableDate === 1) {
-              return moment(text).format(this.tableFormat) + ' 24:00'
-            } else {
-              return moment(row.applyEndDate).format(this.tableFormat1)
-            }
-          } else {
-            return text
-          }
-        },
-        fixed: 'right',
-        width: 120
-      },
-      {
         title: '复议截止日期',
         dataIndex: 'applyEndDate',
         customRender: (text, row, index) => {
@@ -168,11 +151,33 @@ export default {
         width: 120
       },
       {
+        title: '复议科室',
+        dataIndex: 'readyDeptName',
+        customRender: (text, row, index) => {
+          if (text !== '' && text !== null) {
+            return row.readyDeptCode + '-' + row.readyDeptName
+          }
+        },
+        fixed: 'right',
+        width: 160
+      },
+      {
+        title: '复议医生',
+        dataIndex: 'readyDoctorName',
+        customRender: (text, row, index) => {
+          if (text !== '' && text !== null) {
+            return row.readyDoctorCode + '-' + row.readyDoctorName
+          }
+        },
+        fixed: 'right',
+        width: 130
+      },
+      {
         title: '操作',
         dataIndex: 'operation',
         scopedSlots: { customRender: 'operation' },
         fixed: 'right',
-        width: 90
+        width: 100
       }]
     }
   },
@@ -270,7 +275,7 @@ export default {
     fetch (params = {}) {
       this.loading = true
       params.applyDateStr = this.applyDate
-      params.state = 2
+      params.state = 6
       params.currencyField = this.searchItem.value
       params.areaType = this.user.areaType.value
       params.keyField = this.searchItem.keyField
@@ -287,7 +292,7 @@ export default {
       }
       // params.sortField = 'ad.orderNum'
       // params.sortOrder = 'ascend'
-      this.$get('ybDrgManageView/drgManageUserView', {
+      this.$get('ybDrgManageView', {
         ...params
       }).then((r) => {
         let data = r.data
@@ -307,3 +312,4 @@ export default {
 .editable-row-operations a {
   margin-right: 8px;
 }
+</style>

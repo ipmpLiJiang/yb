@@ -29,17 +29,6 @@
             =
             <a-input-search placeholder="请输入关键字" v-model="searchItem.value" style="width: 170px" enter-button @search="searchTable" />
           </a-col>
-          <a-col :span=3 v-show="tableSelectKey==1?true:false">
-            <a-popconfirm
-              title="确定批量接受？"
-              @confirm="batchAccept"
-              okText="确定"
-              cancelText="取消"
-              :disabled="!hasSelected"
-            >
-              <a-button type="primary" :disabled="!hasSelected" style="margin-right: 15px">批量接受</a-button>
-            </a-popconfirm>
-          </a-col>
           <a-col :span=3 >
             <a-button
             type="primary"
@@ -65,8 +54,6 @@
               :applyDate='searchApplyDate'
               :searchItem='searchItem'
               @look="look"
-              @acceptSelectedRow="acceptSelectedRow"
-              @reject="reject"
               @onHistoryLook="onHistoryLook"
             >
             </ybDrgManage-accept>
@@ -96,8 +83,8 @@
               ref="ybDrgManageStayed"
               :searchItem='searchItem'
               :applyDate='searchApplyDate'
-              @drg='drg'
               @onHistoryLook="onHistoryLook"
+              @look="look"
             >
             </ybDrgManage-stayed>
           </a-tab-pane>
@@ -111,7 +98,6 @@
               ref="ybDrgManageCompleted"
               :searchItem='searchItem'
               :applyDate='searchApplyDate'
-              @drgComplete='drgComplete'
               @onHistoryLook="onHistoryLook"
               @look="look"
             >
@@ -143,14 +129,6 @@
       :lookVisiable="lookVisiable"
     >
     </ybDrgManage-look>
-    <!-- 接受申请-拒绝 -->
-    <ybDrgManage-reject
-      ref="ybDrgManageReject"
-      @close="handleRejectClose"
-      @success="handleRejectSuccess"
-      :rejectVisiable="rejectVisiable"
-    >
-    </ybDrgManage-reject>
     <!-- 历史 -->
     <ybDrgManage-history
       ref="ybDrgManageHistory"
@@ -159,19 +137,6 @@
       :historyVisiable="historyVisiable"
     >
     </ybDrgManage-history>
-    <ybDrgManage-upload
-      ref="ybDrgManageUpload"
-      @close="handleDrgClose"
-      @success="handleDrgSuccess"
-      :drgVisiable="drgVisiable"
-    >
-    </ybDrgManage-upload>
-    <ybDrgManageUpload-complete
-      ref="ybDrgManageUploadComplete"
-      @close="handleDrgCompleteClose"
-      :drgCompleteVisiable="drgCompleteVisiable"
-    >
-    </ybDrgManageUpload-complete>
   </a-card>
 </template>
 
@@ -182,36 +147,31 @@ import YbDrgManageRefused from './YbDrgManageRefused'
 import YbDrgManageStayed from './YbDrgManageStayed'
 import YbDrgManageCompleted from './YbDrgManageCompleted'
 import YbDrgManageLook from './YbDrgManageLook'
-import YbDrgManageReject from './YbDrgManageReject'
 import YbDrgManageHistory from '../YbDrgFunModule/YbDrgManageHistoryModule'
-import YbDrgManageUpload from './YbDrgManageUpload'
-import YbDrgManageUploadComplete from './YbDrgManageUploadComplete'
 import YbDrgManageOverdue from './YbDrgManageOverdue'
 
 export default {
-  name: 'YbDrgManageView',
+  name: 'YbDrgManage',
   components: {
-    YbDrgManageLook, YbDrgManageAccept, YbDrgManageRefused, YbDrgManageReject, YbDrgManageStayed, YbDrgManageCompleted, YbDrgManageOverdue, YbDrgManageUpload, YbDrgManageUploadComplete, YbDrgManageHistory},
+    YbDrgManageLook, YbDrgManageAccept, YbDrgManageRefused, YbDrgManageStayed, YbDrgManageCompleted, YbDrgManageOverdue, YbDrgManageHistory},
   data () {
     return {
       monthFormat: 'YYYY-MM',
       searchApplyDate: this.formatDate(),
       ybDrgManage: {},
-      rejectVisiable: false,
       lookVisiable: false,
       historyVisiable: false,
-      drgVisiable: false,
-      drgCompleteVisiable: false,
       searchItem: {keyField: 'ks', value: ''},
       searchDropDataSource: [
         {text: '科室', value: 'ks'},
         {text: '就诊记录号', value: 'jzjlh'},
         {text: '病案号', value: 'bah'},
+        {text: '医生工号', value: 'readyDoctorCode'},
+        {text: '医生姓名', value: 'readyDoctorName'},
         {text: '序号', value: 'orderNumber'}
       ],
       tableSelectKey: '1',
       selectedRowKeys: [],
-      hasSelected: false,
       user: this.$store.state.account.user
     }
   },
@@ -224,9 +184,6 @@ export default {
     formatDate () {
       let datemonth = moment().subtract(1, 'months').format('YYYY-MM')
       return datemonth
-    },
-    acceptSelectedRow (isDisabled) {
-      this.hasSelected = isDisabled
     },
     monthChange (date, dateString) {
       this.searchApplyDate = dateString
@@ -265,44 +222,8 @@ export default {
       this.historyVisiable = true
       this.$refs.ybDrgManageHistory.setFormValues(record)
     },
-    handleDrgSuccess () {
-      this.drgVisiable = false
-      this.$refs.ybDrgManageStayed.search()
-    },
-    handleDrgClose () {
-      this.drgVisiable = false
-      // 保存数据返回时，申诉理由未更新，刷新后更新数据
-      this.$refs.ybDrgManageStayed.search()
-    },
-    drg (record) {
-      this.drgVisiable = true
-      this.$refs.ybDrgManageUpload.setFormValues(record)
-    },
-    handleDrgCompleteClose () {
-      this.drgCompleteVisiable = false
-      // 保存数据返回时，申诉理由未更新，刷新后更新数据
-      this.$refs.ybDrgManageCompleted.search()
-    },
-    drgComplete (record) {
-      this.drgCompleteVisiable = true
-      this.$refs.ybDrgManageUploadComplete.setFormValues(record)
-    },
-    handleRejectSuccess () {
-      this.rejectVisiable = false
-      this.$refs.ybDrgManageAccept.search()
-    },
-    handleRejectClose () {
-      this.rejectVisiable = false
-    },
-    reject (record) {
-      this.rejectVisiable = true
-      this.$refs.ybDrgManageReject.setFormValues(record)
-    },
     searchTable () {
       this.callback(this.tableSelectKey)
-    },
-    batchAccept () {
-      this.$refs.ybDrgManageAccept.batchAccept()
     },
     onHistory () {
       let key = this.tableSelectKey

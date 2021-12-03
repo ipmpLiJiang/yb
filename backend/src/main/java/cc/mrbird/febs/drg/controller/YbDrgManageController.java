@@ -179,4 +179,48 @@ public class YbDrgManageController extends BaseController {
         return new FebsResponse().data(rr);
     }
 
+
+    @Log("修改")
+    @PutMapping("updateUploadStateCompleted")
+    @RequiresPermissions("ybDrgManage:uploadState")
+    public FebsResponse updateUploadStateCompleted(String dataJson) {
+        int success = 0;
+        try {
+            YbDrgManage ybDrgManage = JSON.parseObject(dataJson, new TypeReference<YbDrgManage>() {
+            });
+
+            message = this.iYbDrgManageService.updateUploadStateCompleteds(ybDrgManage);
+            if (message.equals("ok")) {
+                success = 1;
+                message = "操作成功.";
+            }
+        } catch (Exception e) {
+            message = "操作失败.";
+            log.error(message, e);
+        }
+
+        ResponseResult rr = new ResponseResult();
+        rr.setMessage(message);
+        rr.setSuccess(success);
+
+        return new FebsResponse().data(rr);
+    }
+
+    @Log("修改")
+    @PutMapping("updateCreateDrgManage")
+    @RequiresPermissions("ybDrgManage:amCreateUpdate")
+    public void updateCreateDrgManage(@Valid YbDrgManage ybDrgManage, Integer type) throws FebsException {
+        try {
+            User currentUser = FebsUtil.getCurrentUser();
+            Long uid = currentUser.getUserId();
+            String uname = currentUser.getUsername();
+
+            this.iYbDrgManageService.updateCreateDrgManage(ybDrgManage, uid, uname, type);
+        } catch (Exception e) {
+            message = "修改失败";
+            log.error(message, e);
+            throw new FebsException(message);
+        }
+    }
+
 }

@@ -14,8 +14,8 @@
           :customRow="handleClickRow"
           :scroll="{ x: 900 }"
         >
-          <template slot="operationDeductReason" slot-scope="text, record, index">
-            <span :title="record.deductReason">{{record.deductReason}}</span>
+          <template slot="operationLy" slot-scope="text, record, index">
+            <span :title="record.ly">{{record.ly}}</span>
           </template>
           <template
             slot="operation"

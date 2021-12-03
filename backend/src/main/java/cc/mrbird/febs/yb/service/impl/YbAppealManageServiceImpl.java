@@ -482,7 +482,10 @@ public class YbAppealManageServiceImpl extends ServiceImpl<YbAppealManageMapper,
         LambdaQueryWrapper<YbAppealManage> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(YbAppealManage::getApplyDateStr, ybAppealManage.getApplyDateStr());
         queryWrapper.eq(YbAppealManage::getAreaType, ybAppealManage.getAreaType());
-        queryWrapper.eq(YbAppealManage::getAcceptState, ybAppealManage.getAcceptState());
+
+        if(ybAppealManage.getAcceptState() != null) {
+            queryWrapper.eq(YbAppealManage::getAcceptState, ybAppealManage.getAcceptState());
+        }
         if (ybAppealManage.getReadyDoctorCode() != null) {
             queryWrapper.eq(YbAppealManage::getReadyDoctorCode, ybAppealManage.getReadyDoctorCode());
         }
