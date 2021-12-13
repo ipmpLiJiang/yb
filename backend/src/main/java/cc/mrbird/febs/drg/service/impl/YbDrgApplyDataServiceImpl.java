@@ -102,14 +102,14 @@ public class YbDrgApplyDataServiceImpl extends ServiceImpl<YbDrgApplyDataMapper,
         wrapperApply.eq(YbDrgApply::getId, ybDrgApplyData.getPid());
         List<YbDrgApply> applyList = iYbDrgApplyService.list(wrapperApply);
         if (applyList.size() > 0) {
-            if (applyList.get(0).getState() == YbDefaultValue.APPLYSTATE_2) {
+            if (applyList.get(0).getState() == YbDefaultValue.DRGAPPLYSTATE_2) {
                 LambdaQueryWrapper<YbDrgApplyData> wrapper = new LambdaQueryWrapper<>();
                 wrapper.eq(YbDrgApplyData::getPid, applyList.get(0).getId());
                 this.baseMapper.delete(wrapper);
 
                 YbDrgApply updateApply = new YbDrgApply();
                 updateApply.setId(applyList.get(0).getId());
-                updateApply.setState(YbDefaultValue.APPLYSTATE_1);
+                updateApply.setState(YbDefaultValue.DRGAPPLYSTATE_1);
                 iYbDrgApplyService.updateYbDrgApply(updateApply,null);
                 count = 1;
             }

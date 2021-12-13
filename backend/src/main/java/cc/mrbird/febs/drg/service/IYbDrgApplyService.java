@@ -38,6 +38,10 @@ public interface IYbDrgApplyService extends IService<YbDrgApply> {
 
     String getSendMessage(String applyDateStr, Date enableDate, Integer areaType, boolean isChange);
 
+    String getSendMessage(String applyDateStr, Date endDate,Integer areaType);
+
     boolean findDrgApplyCheckEndDate(String appltDateStr, Integer areaType);
+
+
 
 }

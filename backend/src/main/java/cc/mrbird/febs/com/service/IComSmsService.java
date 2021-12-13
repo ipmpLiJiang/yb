@@ -44,4 +44,7 @@ public interface IComSmsService extends IService<ComSms> {
         void sendSmsService(String applyDateStr,Integer typeno,ArrayList<String> personCodeList, int sendType,int areaType, String sendContent, Long uId, String Uname);
 
         void sendSmsService(String applyDateStr,Integer typeno,String personCode, int sendType,int areaType, String sendContent, Long uId, String Uname);
+
+
+        String sendDrgManageWarnSms(String applyDateStr, Integer areaType);
 }

@@ -223,4 +223,21 @@ public class YbDrgManageController extends BaseController {
         }
     }
 
+    @Log("修改")
+    @PutMapping("updateCreateAdminDrgManage")
+    @RequiresPermissions("ybDrgManage:amCreateUpdate")
+    public void updateCreateAdminDrgManage(@Valid YbDrgManage ybDrgManage) throws FebsException {
+        try {
+            User currentUser = FebsUtil.getCurrentUser();
+            Long uid = currentUser.getUserId();
+            String uname = currentUser.getUsername();
+
+            this.iYbDrgManageService.updateCreateAdminDrgManage(ybDrgManage, uid, uname);
+        } catch (Exception e) {
+            message = "更改失败";
+            log.error(message, e);
+            throw new FebsException(message);
+        }
+    }
+
 }

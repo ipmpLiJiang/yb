@@ -251,7 +251,9 @@ export default {
         value: item.readyDoctorCode
       }]
       this.$refs.inputSelectChangeDoctor.value = item.readyDoctorCode
-      this.$refs.ybDrgJkModule.search()
+      setTimeout(() => {
+        this.$refs.ybDrgJkModule.search()
+      }, 200)
     }
   }
 }

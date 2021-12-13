@@ -8,6 +8,8 @@ import cc.mrbird.febs.common.utils.SortUtil;
 import cc.mrbird.febs.com.entity.ComSms;
 import cc.mrbird.febs.com.dao.ComSmsMapper;
 import cc.mrbird.febs.com.service.IComSmsService;
+import cc.mrbird.febs.drg.entity.YbDrgApply;
+import cc.mrbird.febs.drg.service.IYbDrgApplyService;
 import cc.mrbird.febs.yb.entity.YbPerson;
 import cc.mrbird.febs.yb.entity.YbReconsiderApply;
 import cc.mrbird.febs.yb.entity.YbReconsiderApplyTask;
@@ -52,6 +54,9 @@ public class ComSmsServiceImpl extends ServiceImpl<ComSmsMapper, ComSms> impleme
 
     @Autowired
     IYbReconsiderApplyService iYbReconsiderApplyService;
+
+    @Autowired
+    IYbDrgApplyService iYbDrgApplyService;
 
     @Override
     public IPage<ComSms> findComSmss(QueryRequest request, ComSms comSms) {
@@ -230,6 +235,7 @@ public class ComSmsServiceImpl extends ServiceImpl<ComSmsMapper, ComSms> impleme
                     String msg = sendMsg(mobiles, sendContent);
                     if (msg.equals("0")) {
                         this.saveBatch(createList);
+                        log.info("sendSmsService personList 发送成功.");
                     } else {
                         //0 0/3 21-23 1/1 * ? //0 0/3 * * * ?
                         log.error("发短信Error Service", msg);
@@ -303,6 +309,7 @@ public class ComSmsServiceImpl extends ServiceImpl<ComSmsMapper, ComSms> impleme
                         String msg = sendMsg(item.getTel(), sendContent);
                         if (msg.equals("0")) {
                             this.save(comSms);
+                            log.info("sendSmsService 发送成功.");
                         } else {
                             //0 0/3 21-23 1/1 * ? //0 0/3 * * * ?
                             log.error("发短信Error Service", msg);
@@ -375,6 +382,7 @@ public class ComSmsServiceImpl extends ServiceImpl<ComSmsMapper, ComSms> impleme
 
                 if (msg.equals("0")) {
                     this.updateBatchById(updateList);
+                    log.info("短信sendSms 发送成功.");
                 } else {
                     //0 0/3 21-23 1/1 * ? //0 0/3 * * * ?
                     log.error("发短信Error", msg);
@@ -419,12 +427,12 @@ public class ComSmsServiceImpl extends ServiceImpl<ComSmsMapper, ComSms> impleme
                         }
                     }
                 }
-//                msg = sendMsg(mobiles, t1.getSendcontent());
-                msg = "0";
+                msg = sendMsg(mobiles, t1.getSendcontent());
 
                 if (msg.equals("0")) {
                     this.updateBatchById(updateList);
                     msg = "ok";
+                    log.info("短信sendSms list发送成功.");
                 } else {
                     //0 0/3 21-23 1/1 * ? //0 0/3 * * * ?
                     log.error("发短信Error", msg);
@@ -437,6 +445,8 @@ public class ComSmsServiceImpl extends ServiceImpl<ComSmsMapper, ComSms> impleme
     }
 
     private Lock lockSendWarn = new ReentrantLock();
+
+    private Lock lockDrgSendWarn = new ReentrantLock();
 
     @Override
     @Transactional
@@ -510,6 +520,7 @@ public class ComSmsServiceImpl extends ServiceImpl<ComSmsMapper, ComSms> impleme
                             }
                         } else {
                             msg = this.sendSms(null, querySmsList);
+                            log.info("复议提醒短信发送成功.");
                         }
                     } else {
                         msg = applyDateStr + "年月,还未到执行日期.";
@@ -529,4 +540,91 @@ public class ComSmsServiceImpl extends ServiceImpl<ComSmsMapper, ComSms> impleme
         System.out.println("sendAppealManageWarnSms:" + msg);
         return msg;
     }
+
+    @Override
+    @Transactional
+    public String sendDrgManageWarnSms(String applyDateStr, Integer areaType) {
+        String msg = "ok";
+        if (lockDrgSendWarn.tryLock()) {
+            try {
+                YbDrgApply drgApply = this.iYbDrgApplyService.findDrgApplyByApplyDateStrs(applyDateStr, areaType);
+
+                if (drgApply != null) {
+                    Date endDate = null;
+                    if (drgApply.getState() == 2 || drgApply.getState() == 3) {
+                        endDate = drgApply.getEndDate();
+                    } else {
+                        return "该" + applyDateStr + "年月已完成复议";
+                    }
+                    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
+                    String thisDateStr = dateFormat.format(new Date());
+                    String endDateStr = dateFormat.format(endDate);
+                    if(thisDateStr.equals(endDateStr)){
+                        int sendType = ComSms.SENDTYPE_12;
+                        ComSms querySms = new ComSms();
+                        querySms.setApplyDateStr(applyDateStr);
+                        querySms.setAreaType(areaType);
+                        querySms.setSendType(sendType);
+                        querySms.setState(ComSms.STATE_0);
+                        List<ComSms> querySmsList = this.findSmsTopLists(querySms);
+                        if (querySmsList.size() == 0) {
+                            querySms.setState(ComSms.STATE_1);
+                            querySmsList = this.findSmsTopLists(querySms);
+                            if (querySmsList.size() == 0) {
+                                String sendContent = iYbDrgApplyService.getSendMessage(applyDateStr, endDate, areaType);
+                                List<YbPerson> list = iYbPersonService.findDrgPersonWarnLists(applyDateStr, areaType, 1);
+                                List<ComSms> smsList = new ArrayList<>();
+                                if (list.size() > 0) {
+                                    long uid = 1;
+                                    for (YbPerson item : list) {
+                                        if(item.getTel()!=null && !item.getTel().equals("")) {
+                                            ComSms comSms = new ComSms();
+                                            comSms.setId(UUID.randomUUID().toString());
+                                            comSms.setSendcode(item.getPersonCode());
+                                            comSms.setSendname(item.getPersonName());
+                                            comSms.setMobile(item.getTel());
+
+                                            comSms.setSendType(sendType);
+                                            comSms.setState(ComSms.STATE_0);
+                                            comSms.setSendcontent(sendContent);
+                                            comSms.setAreaType(areaType);
+                                            comSms.setOperatorId(uid);
+                                            comSms.setOperatorName("mrbird");
+                                            comSms.setIsDeletemark(1);
+                                            comSms.setCreateUserId(uid);
+                                            comSms.setCreateTime(new Date());
+                                            comSms.setApplyDateStr(applyDateStr);
+                                            smsList.add(comSms);
+                                        }
+                                    }
+                                    this.saveBatch(smsList);
+                                } else {
+                                    msg = "未找到" + applyDateStr + "年月申诉数据.";
+                                }
+                            } else {
+                                msg = "该" + applyDateStr + "年月已经创建过截止提醒.";
+                            }
+                        } else {
+                            msg = this.sendSms(null, querySmsList);
+                            log.info("DRG复议提醒短信发送成功.");
+                        }
+                    } else {
+                        msg = applyDateStr + "年月,还未到执行日期.";
+                    }
+                } else {
+                    msg = "未找到" + applyDateStr + "年月数据.";
+                }
+            } catch (Exception e) {
+                msg = e.getMessage();
+                log.error(msg);
+            } finally {
+                lockDrgSendWarn.unlock();
+            }
+        } else {
+            msg = "未获取到数据.";
+        }
+        System.out.println("sendDrgManageWarnSms:" + msg);
+        return msg;
+    }
+
 }

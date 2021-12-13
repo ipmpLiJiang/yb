@@ -292,6 +292,19 @@ public  class YbDefaultValue {
     public static final Integer AREATYPE_2 = 2;
 
 
+    /**
+     * DRG复议申请 1 待复议
+     */
+    public static final Integer DRGAPPLYSTATE_1 = 1;
+    /**
+     * DRG复议申请 2 上传
+     */
+    public static final Integer DRGAPPLYSTATE_2 = 2;
+    /**
+     * DRG复议申请 3 申述
+     */
+    public static final Integer DRGAPPLYSTATE_3 = 3;
+
 
     /**
      * 申诉状态 0 待接收

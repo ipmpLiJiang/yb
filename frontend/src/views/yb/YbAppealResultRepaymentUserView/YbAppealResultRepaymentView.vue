@@ -52,7 +52,7 @@
               </a-form-item>
           </a-col>
           <a-col :span=5>
-            <a-input-search placeholder="请输入关键字" v-model="searchText" style="width: 200px" enter-button @search="searchTable" />
+            <a-input-search placeholder="请输入关键字" v-model="searchText" style="width: 15px" enter-button @search="searchTable" />
           </a-col>
         </a-row>
       </a-form>

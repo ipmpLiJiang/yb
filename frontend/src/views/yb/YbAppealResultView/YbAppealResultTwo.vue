@@ -203,18 +203,14 @@ export default {
       this.selectedRowKeys = selectedRowKeys
     },
     exportExcel () {
-      if (this.dataSource.length > 0) {
-        let queryParams = {}
-        queryParams.applyDateStr = this.applyDate
-        queryParams.typeno = 2
-        queryParams.sourceType = 0
-        queryParams.areaType = this.user.areaType.value
-        this.$export('ybAppealResultView/excel1', {
-          ...queryParams
-        })
-      } else {
-        this.$message.warning('导出Excel，无数据!')
-      }
+      let queryParams = {}
+      queryParams.applyDateStr = this.applyDate
+      queryParams.typeno = 2
+      queryParams.sourceType = 0
+      queryParams.areaType = this.user.areaType.value
+      this.$export('ybAppealResultView/excel1', {
+        ...queryParams
+      })
     },
     look (record, index) {
       record.rowNo = this.rowNo(index)

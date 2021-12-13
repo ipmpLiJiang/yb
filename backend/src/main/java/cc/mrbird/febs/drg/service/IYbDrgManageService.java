@@ -37,4 +37,11 @@ public interface IYbDrgManageService extends IService<YbDrgManage> {
         String updateUploadStateCompleteds(YbDrgManage ybDrgManage);
 
         void updateCreateDrgManage(YbDrgManage ybDrgManage, Long uId, String Uname, Integer type);
+
+        void updateCreateAdminDrgManage(YbDrgManage ybDrgManage, Long uId, String Uname);
+
+        void updateDrgApplyEndDate(String applyDateStr, Integer areaType);
+
+        void updateDrgEnableOverdue(String applyDateStr, Integer areaType);
+
         }

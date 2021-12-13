@@ -17,11 +17,13 @@
                     <result column="MODIFY_USER_ID" property="modifyUserId"/>
                     <result column="currencyField" property="currencyField"/>
             <result column="areaType" property="areaType"/>
+            <result column="operatorId" property="operatorId"/>
+            <result column="operatorName" property="operatorName"/>
         </resultMap>
 
         <!-- 通用查询结果列 -->
         <sql id="Base_Column_List">
-        id, doctorCode, doctorName, adminType, COMMENTS, STATE, IS_DELETEMARK, MODIFY_TIME, CREATE_TIME, CREATE_USER_ID, MODIFY_USER_ID, currencyField,areaType
+        id, doctorCode, doctorName, adminType, COMMENTS, STATE, IS_DELETEMARK, MODIFY_TIME, CREATE_TIME, CREATE_USER_ID, MODIFY_USER_ID, currencyField,areaType,operatorId,operatorName
     </sql>
     <update id="updateYbAppealConfire" parameterType="cc.mrbird.febs.yb.entity.YbAppealConfire">
         update yb_appeal_confire
@@ -82,7 +84,9 @@
         p.CREATE_USER_ID,
         p.MODIFY_USER_ID,
         GROUP_CONCAT(CONCAT(d.deptId,'-',d.deptName)) currencyField,
-        p.areaType
+        p.areaType,
+        p.operatorId,
+        p.operatorName
        FROM yb_appeal_confire p
          left join yb_appeal_confire_data d on
             p.id = d.pid
@@ -100,8 +104,16 @@
             <if test="deptContent != null and deptContent != ''">
                 and p.id in(select DISTINCT pid from yb_appeal_confire_data where deptName like concat('%', #{ deptContent } ,'%'))
              </if>
+            <if test="operatorName != null and operatorName != ''">
+                and p.operatorName like concat('%', #{ operatorName } ,'%')
+            </if>
        GROUP BY p.id
-        order by p.create_time desc
+        <if test="type == null">
+            order by p.create_time desc
+        </if>
+        <if test="type != null and type == 'excel'">
+            order by p.operatorId desc
+        </if>
     </select>
 
     <select id="findAppealConfireCount" resultType="Integer" >
@@ -121,6 +133,9 @@
         </if>
         <if test="deptContent != null and deptContent != ''">
             and id in(select DISTINCT pid from yb_appeal_confire_data where deptName like concat('%', #{ deptContent } ,'%'))
+        </if>
+        <if test="operatorName != null and operatorName != ''">
+            and operatorName like concat('%', #{ operatorName } ,'%')
         </if>
     </select>
 
@@ -156,7 +171,9 @@
         p.CREATE_USER_ID,
         p.MODIFY_USER_ID,
         GROUP_CONCAT(CONCAT(d.deptId,'-',d.deptName)) currencyField,
-        p.areaType
+        p.areaType,
+        p.operatorId,
+        p.operatorName
         FROM yb_appeal_confire p
         left join yb_appeal_confire_data d on
         p.id = d.pid
@@ -180,8 +197,16 @@
         <if test="deptContent != null and deptContent != ''">
             and p.id in(select DISTINCT pid from yb_appeal_confire_data where deptName like concat('%', #{ deptContent } ,'%'))
         </if>
+        <if test="operatorName != null and operatorName != ''">
+            and p.operatorName like concat('%', #{ operatorName } ,'%')
+        </if>
         GROUP BY p.id
-        order by p.create_time desc
+        <if test="type == null">
+            order by p.create_time desc
+        </if>
+        <if test="type != null and type == 'excel'">
+            order by p.operatorId desc
+        </if>
     </select>
     <select id="findAppealConfireUserCount" resultType="Integer" >
         SELECT
@@ -206,6 +231,9 @@
         </if>
         <if test="deptContent != null and deptContent != ''">
             and id in(select DISTINCT pid from yb_appeal_confire_data where deptName like concat('%', #{ deptContent } ,'%'))
+        </if>
+        <if test="operatorName != null and operatorName != ''">
+            and operatorName like concat('%', #{ operatorName } ,'%')
         </if>
     </select>
 </mapper>

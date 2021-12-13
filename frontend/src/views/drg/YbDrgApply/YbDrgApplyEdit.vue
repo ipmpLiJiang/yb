@@ -132,6 +132,7 @@ export default {
       this.form.validateFields((err, values) => {
         if (!err) {
           let ybDrgApply = this.form.getFieldsValue()
+          debugger
           ybDrgApply.id = this.ybDrgApply.id
           ybDrgApply.areaType = this.user.areaType.value
           this.$put('ybDrgApply', {

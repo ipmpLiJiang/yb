@@ -186,7 +186,7 @@ public class YbDrgApplyDataController extends BaseController {
 
             if (queryDrgApply != null) {
                 int state = queryDrgApply.getState();
-                if (state == YbDefaultValue.APPLYSTATE_1 || state == YbDefaultValue.APPLYSTATE_2) {
+                if (state == YbDefaultValue.DRGAPPLYSTATE_1 || state == YbDefaultValue.DRGAPPLYSTATE_2) {
                     uploadFileName = file.getOriginalFilename();
                     boolean blError = false;
                     try {
@@ -253,7 +253,7 @@ public class YbDrgApplyDataController extends BaseController {
                                 if (!blError) {
                                     if (ListData.size() > 0) {
                                         YbDrgApply ybDrgApply = new YbDrgApply();
-                                        ybDrgApply.setState(YbDefaultValue.APPLYSTATE_2);
+                                        ybDrgApply.setState(YbDefaultValue.DRGAPPLYSTATE_2);
                                         ybDrgApply.setId(pid);
                                         ybDrgApply.setUploadFileName(uploadFileName);
 

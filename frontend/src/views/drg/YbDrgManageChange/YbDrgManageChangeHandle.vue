@@ -238,7 +238,9 @@ export default {
       this.ybDrgManageChangeHandle.changeDeptCode = deptCode
       this.ybDrgManageChangeHandle.changeDeptName = deptName
 
-      this.$refs.ybDrgJkModule.search()
+      setTimeout(() => {
+        this.$refs.ybDrgJkModule.search()
+      }, 200)
     },
     selectDoctorChang (item) {
       this.ybDrgManageChangeHandle.changeDoctorCode = item.value

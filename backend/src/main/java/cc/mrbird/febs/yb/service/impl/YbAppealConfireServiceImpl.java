@@ -74,14 +74,14 @@ public class YbAppealConfireServiceImpl extends ServiceImpl<YbAppealConfireMappe
 
 
     @Override
-    public IPage<YbAppealConfire> findAppealConfireView(QueryRequest request, String doctorContent, Integer adminType, Integer areaType, String deptContent) {
+    public IPage<YbAppealConfire> findAppealConfireView(QueryRequest request, String doctorContent, Integer adminType, Integer areaType, String deptContent,String operatorName,String type) {
         try {
             Page<YbAppealConfire> page = new Page<>();
-            int count = this.baseMapper.findAppealConfireCount(doctorContent, adminType, areaType, deptContent);
+            int count = this.baseMapper.findAppealConfireCount(doctorContent, adminType, areaType, deptContent,operatorName);
             if (count > 0) {
                 page.setSearchCount(false);
                 SortUtil.handlePageSort(request, page, false);//true 是属性  false是数据库字段可两个
-                IPage<YbAppealConfire> pg = this.baseMapper.findAppealConfireView(page, doctorContent, adminType, areaType, deptContent);
+                IPage<YbAppealConfire> pg = this.baseMapper.findAppealConfireView(page, doctorContent, adminType, areaType, deptContent,operatorName,type);
                 pg.setTotal(count);
                 return pg;
             }
@@ -93,7 +93,7 @@ public class YbAppealConfireServiceImpl extends ServiceImpl<YbAppealConfireMappe
     }
 
     @Override
-    public IPage<YbAppealConfire> findAppealConfireUserView(QueryRequest request, String doctorContent, Integer adminType, Integer areaType, String deptContent, User currentUser) {
+    public IPage<YbAppealConfire> findAppealConfireUserView(QueryRequest request, String doctorContent, Integer adminType, Integer areaType, String deptContent, User currentUser,String operatorName,String type) {
         try {
             Page<YbAppealConfire> page = new Page<>();
 //            YbAppealConfire query = new YbAppealConfire();
@@ -106,11 +106,11 @@ public class YbAppealConfireServiceImpl extends ServiceImpl<YbAppealConfireMappe
 //                doctorCode = currentUser.getUsername();
 //            }
             String doctorCode = currentUser.getUsername();
-            int count = this.baseMapper.findAppealConfireUserCount(doctorContent, adminType, areaType, deptContent, currentUser.getUserId(),doctorCode);
+            int count = this.baseMapper.findAppealConfireUserCount(doctorContent, adminType, areaType, deptContent, currentUser.getUserId(),doctorCode,operatorName);
             if (count > 0) {
                 page.setSearchCount(false);
                 SortUtil.handlePageSort(request, page, false);//true 是属性  false是数据库字段可两个
-                IPage<YbAppealConfire> pg = this.baseMapper.findAppealConfireUserView(page, doctorContent, adminType, areaType, deptContent, currentUser.getUserId(),doctorCode);
+                IPage<YbAppealConfire> pg = this.baseMapper.findAppealConfireUserView(page, doctorContent, adminType, areaType, deptContent, currentUser.getUserId(),doctorCode,operatorName,type);
                 pg.setTotal(count);
                 return pg;
             }

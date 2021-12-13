@@ -2,7 +2,9 @@ package cc.mrbird.febs.yb.controller;
 
 import cc.mrbird.febs.com.controller.DataTypeHelpers;
 import cc.mrbird.febs.com.entity.ComConfiguremanage;
+import cc.mrbird.febs.com.entity.ComType;
 import cc.mrbird.febs.com.service.IComConfiguremanageService;
+import cc.mrbird.febs.com.service.IComTypeService;
 import cc.mrbird.febs.common.annotation.Log;
 import cc.mrbird.febs.common.controller.BaseController;
 import cc.mrbird.febs.common.domain.FebsResponse;
@@ -10,6 +12,7 @@ import cc.mrbird.febs.common.domain.router.VueRouter;
 import cc.mrbird.febs.common.exception.FebsException;
 import cc.mrbird.febs.common.domain.QueryRequest;
 
+import cc.mrbird.febs.export.excel.ExportExcelUtils;
 import cc.mrbird.febs.yb.domain.ResponseImportResultData;
 import cc.mrbird.febs.yb.domain.ResponseResultData;
 import cc.mrbird.febs.yb.entity.*;
@@ -56,6 +59,9 @@ public class YbAppealConfireController extends BaseController {
     @Autowired
     public IComConfiguremanageService iComConfiguremanageService;
 
+    @Autowired
+    IComTypeService iComTypeService;
+
     /**
      * 分页查询数据
      *
@@ -64,15 +70,15 @@ public class YbAppealConfireController extends BaseController {
      */
     @GetMapping
     @RequiresPermissions("ybAppealConfire:view")
-    public Map<String, Object> List(QueryRequest request, String doctorContent, Integer adminType, Integer areaType, String deptContent) {
-        return getDataTable(this.iYbAppealConfireService.findAppealConfireView(request, doctorContent, adminType, areaType, deptContent));
+    public Map<String, Object> List(QueryRequest request, String doctorContent, Integer adminType, Integer areaType, String deptContent, String operatorName) {
+        return getDataTable(this.iYbAppealConfireService.findAppealConfireView(request, doctorContent, adminType, areaType, deptContent, operatorName, null));
     }
 
     @GetMapping("findAppealConfireView")
     @RequiresPermissions("ybAppealConfire:userView")
-    public Map<String, Object> findUserList(QueryRequest request, String doctorContent, Integer adminType, Integer areaType, String deptContent) {
+    public Map<String, Object> findUserList(QueryRequest request, String doctorContent, Integer adminType, Integer areaType, String deptContent, String operatorName) {
         User currentUser = FebsUtil.getCurrentUser();
-        return getDataTable(this.iYbAppealConfireService.findAppealConfireUserView(request, doctorContent, adminType, areaType, deptContent, currentUser));
+        return getDataTable(this.iYbAppealConfireService.findAppealConfireUserView(request, doctorContent, adminType, areaType, deptContent, currentUser, operatorName, null));
     }
 
     /**
@@ -88,6 +94,8 @@ public class YbAppealConfireController extends BaseController {
         try {
             User currentUser = FebsUtil.getCurrentUser();
             ybAppealConfire.setCreateUserId(currentUser.getUserId());
+            ybAppealConfire.setOperatorId(currentUser.getUserId());
+            ybAppealConfire.setOperatorName(currentUser.getUsername() + "-" + currentUser.getXmname());
             this.iYbAppealConfireService.createYbAppealConfire(ybAppealConfire);
         } catch (Exception e) {
             message = "新增/按钮失败";
@@ -123,6 +131,8 @@ public class YbAppealConfireController extends BaseController {
                 create.setIsDeletemark(1);
                 create.setCreateTime(new Date());
                 create.setCreateUserId(currentUser.getUserId());
+                create.setOperatorId(currentUser.getUserId());
+                create.setOperatorName(currentUser.getUsername() + "-" + currentUser.getXmname());
                 for (YbAppealConfireDataJson item : appealConfireJson.getChild()) {
                     YbAppealConfireData createData = new YbAppealConfireData();
                     createData.setId(UUID.randomUUID().toString());
@@ -202,7 +212,7 @@ public class YbAppealConfireController extends BaseController {
                         success = 1;
                     } else {
                         message = iComConfiguremanageService.getConfigAreaName(appealConfireJson.getAreaType());
-                        message = message + " " +createDataList.get(0).getDeptId() + "-" + createDataList.get(0).getDeptName() + " 科室已存在!";
+                        message = message + " " + createDataList.get(0).getDeptId() + "-" + createDataList.get(0).getDeptName() + " 科室已存在!";
                     }
                 }
             } else {
@@ -275,4 +285,80 @@ public class YbAppealConfireController extends BaseController {
         YbAppealConfire ybAppealConfire = this.iYbAppealConfireService.getById(id);
         return ybAppealConfire;
     }
+
+    @PostMapping("exportAppealConfire")
+    @RequiresPermissions("ybAppealConfire:add")
+    public void exportAppealConfire(QueryRequest request, String doctorContent, Integer adminType, Integer areaType, String deptContent, String operatorName,HttpServletResponse response) throws FebsException {
+        try {
+            request.setPageSize(-1);
+            List<YbAppealConfire> list = list = this.iYbAppealConfireService.findAppealConfireView(request, doctorContent, adminType, areaType, deptContent, operatorName, "excel").getRecords();
+
+            List<YbAppealConfireExport> exportList = new ArrayList<>();
+            if (list.size() > 0) {
+                List<ComType> ctQuery = new ArrayList<>();
+                ComType query = new ComType();
+                query.setCtType(1);
+                List<ComType> ctList = iComTypeService.findComTypeList(query);
+                for (YbAppealConfire item : list) {
+                    YbAppealConfireExport dataExport = new YbAppealConfireExport();
+                    dataExport.setDoctorCode(item.getDoctorCode());
+                    dataExport.setDoctorName(item.getDoctorName());
+                    ctQuery = ctList.stream().filter(s -> s.getId().equals(item.getAdminType())).collect(Collectors.toList());
+                    if (ctQuery.size() > 0) {
+                        dataExport.setAdminTypeName(ctQuery.get(0).getCtName());
+                    }
+                    dataExport.setDeptNames(item.getCurrencyField());
+                    dataExport.setOperatorName(item.getOperatorName());
+
+                    exportList.add(dataExport);
+                }
+            }
+            ExportExcelUtils.exportExcel(response, YbAppealConfireExport.class, exportList, "医管人员明细数据");
+
+        } catch (Exception e) {
+            message = "导出Excel失败";
+            log.error(message, e);
+            throw new FebsException(message);
+        }
+
+    }
+
+    @PostMapping("exportUserAppealConfire")
+    @RequiresPermissions("ybAppealConfire:add")
+    public void exportUserAppealConfire(QueryRequest request, String doctorContent, Integer adminType, Integer areaType, String deptContent, String operatorName,HttpServletResponse response) throws FebsException {
+        try {
+            request.setPageSize(-1);
+            User currentUser = FebsUtil.getCurrentUser();
+            List<YbAppealConfire> list = this.iYbAppealConfireService.findAppealConfireUserView(request, doctorContent, adminType, areaType, deptContent, currentUser, operatorName, "excel").getRecords();
+
+            List<YbAppealConfireExport> exportList = new ArrayList<>();
+            if (list.size() > 0) {
+                List<ComType> ctQuery = new ArrayList<>();
+                ComType query = new ComType();
+                query.setCtType(1);
+                List<ComType> ctList = iComTypeService.findComTypeList(query);
+                for (YbAppealConfire item : list) {
+                    YbAppealConfireExport dataExport = new YbAppealConfireExport();
+                    dataExport.setDoctorCode(item.getDoctorCode());
+                    dataExport.setDoctorName(item.getDoctorName());
+                    ctQuery = ctList.stream().filter(s -> s.getId().equals(item.getAdminType())).collect(Collectors.toList());
+                    if (ctQuery.size() > 0) {
+                        dataExport.setAdminTypeName(ctQuery.get(0).getCtName());
+                    }
+                    dataExport.setDeptNames(item.getCurrencyField());
+                    dataExport.setOperatorName(item.getOperatorName());
+
+                    exportList.add(dataExport);
+                }
+            }
+            ExportExcelUtils.exportExcel(response, YbAppealConfireExport.class, exportList, "医管人员明细数据");
+
+        } catch (Exception e) {
+            message = "导出Excel失败";
+            log.error(message, e);
+            throw new FebsException(message);
+        }
+
+    }
+
 }

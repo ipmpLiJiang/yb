@@ -2,128 +2,194 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cc.mrbird.febs.drg.dao.YbDrgManageMapper">
 
-        <!-- 通用查询映射结果 -->
-        <resultMap id="BaseResultMap" type="cc.mrbird.febs.drg.entity.YbDrgManage">
-                    <id column="id" property="id"/>
-                    <result column="applyDataId" property="applyDataId"/>
-                    <result column="verifyId" property="verifyId"/>
-                    <result column="readyDoctorCode" property="readyDoctorCode"/>
-                    <result column="readyDoctorName" property="readyDoctorName"/>
-                    <result column="readyDeptCode" property="readyDeptCode"/>
-                    <result column="readyDeptName" property="readyDeptName"/>
-                    <result column="changeDoctorCode" property="changeDoctorCode"/>
-                    <result column="changeDoctorName" property="changeDoctorName"/>
-                    <result column="changeDeptCode" property="changeDeptCode"/>
-                    <result column="changeDeptName" property="changeDeptName"/>
-                    <result column="operateReason" property="operateReason"/>
-                    <result column="operateDate" property="operateDate"/>
-                    <result column="refuseId" property="refuseId"/>
-                    <result column="refuseName" property="refuseName"/>
-                    <result column="refuseReason" property="refuseReason"/>
-                    <result column="refuseDate" property="refuseDate"/>
-                    <result column="adminPersonId" property="adminPersonId"/>
-                    <result column="adminPersonName" property="adminPersonName"/>
-                    <result column="adminChangeDate" property="adminChangeDate"/>
-                    <result column="adminReason" property="adminReason"/>
-                    <result column="STATE" property="state"/>
-                    <result column="enableDate" property="enableDate"/>
-                    <result column="operateProcess" property="operateProcess"/>
-                    <result column="approvalState" property="approvalState"/>
-                    <result column="applyDateStr" property="applyDateStr"/>
-                    <result column="orderNumber" property="orderNumber"/>
-                    <result column="orderNum" property="orderNum"/>
-                    <result column="areaType" property="areaType"/>
-        </resultMap>
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="cc.mrbird.febs.drg.entity.YbDrgManage">
+        <id column="id" property="id"/>
+        <result column="applyDataId" property="applyDataId"/>
+        <result column="verifyId" property="verifyId"/>
+        <result column="readyDoctorCode" property="readyDoctorCode"/>
+        <result column="readyDoctorName" property="readyDoctorName"/>
+        <result column="readyDeptCode" property="readyDeptCode"/>
+        <result column="readyDeptName" property="readyDeptName"/>
+        <result column="changeDoctorCode" property="changeDoctorCode"/>
+        <result column="changeDoctorName" property="changeDoctorName"/>
+        <result column="changeDeptCode" property="changeDeptCode"/>
+        <result column="changeDeptName" property="changeDeptName"/>
+        <result column="operateReason" property="operateReason"/>
+        <result column="operateDate" property="operateDate"/>
+        <result column="refuseId" property="refuseId"/>
+        <result column="refuseName" property="refuseName"/>
+        <result column="refuseReason" property="refuseReason"/>
+        <result column="refuseDate" property="refuseDate"/>
+        <result column="adminPersonId" property="adminPersonId"/>
+        <result column="adminPersonName" property="adminPersonName"/>
+        <result column="adminChangeDate" property="adminChangeDate"/>
+        <result column="adminReason" property="adminReason"/>
+        <result column="STATE" property="state"/>
+        <result column="enableDate" property="enableDate"/>
+        <result column="operateProcess" property="operateProcess"/>
+        <result column="approvalState" property="approvalState"/>
+        <result column="applyDateStr" property="applyDateStr"/>
+        <result column="orderNumber" property="orderNumber"/>
+        <result column="orderNum" property="orderNum"/>
+        <result column="areaType" property="areaType"/>
+    </resultMap>
 
-        <!-- 通用查询结果列 -->
-        <sql id="Base_Column_List">
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
         id, applyDataId, verifyId, readyDoctorCode, readyDoctorName, readyDeptCode, readyDeptName, changeDoctorCode, changeDoctorName, changeDeptCode, changeDeptName, operateReason, operateDate, refuseId, refuseName, refuseReason, refuseDate, adminPersonId, adminPersonName, adminChangeDate, adminReason, STATE, enableDate, operateProcess, approvalState, applyDateStr, orderNumber, orderNum, areaType
     </sql>
     <update id="updateYbDrgManage" parameterType="cc.mrbird.febs.drg.entity.YbDrgManage">
         update yb_drg_manage
         <trim prefix="set" suffixOverrides=",">
-<if test="applyDataId != null">applyDataId=#{applyDataId},</if>
-<if test="verifyId != null">verifyId=#{verifyId},</if>
-<if test="readyDoctorCode != null">readyDoctorCode=#{readyDoctorCode},</if>
-<if test="readyDoctorName != null">readyDoctorName=#{readyDoctorName},</if>
-<if test="readyDeptCode != null">readyDeptCode=#{readyDeptCode},</if>
-<if test="readyDeptName != null">readyDeptName=#{readyDeptName},</if>
-<if test="changeDoctorCode != null">changeDoctorCode=#{changeDoctorCode},</if>
-<if test="changeDoctorName != null">changeDoctorName=#{changeDoctorName},</if>
-<if test="changeDeptCode != null">changeDeptCode=#{changeDeptCode},</if>
-<if test="changeDeptName != null">changeDeptName=#{changeDeptName},</if>
-<if test="operateReason != null">operateReason=#{operateReason},</if>
-<if test="operateDate != null">operateDate=#{operateDate},</if>
-<if test="refuseId != null">refuseId=#{refuseId},</if>
-<if test="refuseName != null">refuseName=#{refuseName},</if>
-<if test="refuseReason != null">refuseReason=#{refuseReason},</if>
-<if test="refuseDate != null">refuseDate=#{refuseDate},</if>
-<if test="adminPersonId != null">adminPersonId=#{adminPersonId},</if>
-<if test="adminPersonName != null">adminPersonName=#{adminPersonName},</if>
-<if test="adminChangeDate != null">adminChangeDate=#{adminChangeDate},</if>
-<if test="adminReason != null">adminReason=#{adminReason},</if>
-<if test="state != null">STATE=#{state},</if>
-<if test="enableDate != null">enableDate=#{enableDate},</if>
-<if test="operateProcess != null">operateProcess=#{operateProcess},</if>
-<if test="approvalState != null">approvalState=#{approvalState},</if>
-<if test="applyDateStr != null">applyDateStr=#{applyDateStr},</if>
-<if test="orderNumber != null">orderNumber=#{orderNumber},</if>
-<if test="orderNum != null">orderNum=#{orderNum},</if>
-<if test="areaType != null">areaType=#{areaType},</if>
+            <if test="applyDataId != null">applyDataId=#{applyDataId},</if>
+            <if test="verifyId != null">verifyId=#{verifyId},</if>
+            <if test="readyDoctorCode != null">readyDoctorCode=#{readyDoctorCode},</if>
+            <if test="readyDoctorName != null">readyDoctorName=#{readyDoctorName},</if>
+            <if test="readyDeptCode != null">readyDeptCode=#{readyDeptCode},</if>
+            <if test="readyDeptName != null">readyDeptName=#{readyDeptName},</if>
+            <if test="changeDoctorCode != null">changeDoctorCode=#{changeDoctorCode},</if>
+            <if test="changeDoctorName != null">changeDoctorName=#{changeDoctorName},</if>
+            <if test="changeDeptCode != null">changeDeptCode=#{changeDeptCode},</if>
+            <if test="changeDeptName != null">changeDeptName=#{changeDeptName},</if>
+            <if test="operateReason != null">operateReason=#{operateReason},</if>
+            <if test="operateDate != null">operateDate=#{operateDate},</if>
+            <if test="refuseId != null">refuseId=#{refuseId},</if>
+            <if test="refuseName != null">refuseName=#{refuseName},</if>
+            <if test="refuseReason != null">refuseReason=#{refuseReason},</if>
+            <if test="refuseDate != null">refuseDate=#{refuseDate},</if>
+            <if test="adminPersonId != null">adminPersonId=#{adminPersonId},</if>
+            <if test="adminPersonName != null">adminPersonName=#{adminPersonName},</if>
+            <if test="adminChangeDate != null">adminChangeDate=#{adminChangeDate},</if>
+            <if test="adminReason != null">adminReason=#{adminReason},</if>
+            <if test="state != null">STATE=#{state},</if>
+            <if test="enableDate != null">enableDate=#{enableDate},</if>
+            <if test="operateProcess != null">operateProcess=#{operateProcess},</if>
+            <if test="approvalState != null">approvalState=#{approvalState},</if>
+            <if test="applyDateStr != null">applyDateStr=#{applyDateStr},</if>
+            <if test="orderNumber != null">orderNumber=#{orderNumber},</if>
+            <if test="orderNum != null">orderNum=#{orderNum},</if>
+            <if test="areaType != null">areaType=#{areaType},</if>
         </trim>
-                where id=#{id}
+        where id=#{id}
 
     </update>
-    <select id="findYbDrgManage" resultType="cc.mrbird.febs.drg.entity.YbDrgManage" parameterType="cc.mrbird.febs.drg.entity.YbDrgManage">
-        select  *  from yb_drg_manage
-        where  1=1
-            <if test="ybDrgManage.id != null and ybDrgManage.id != ''"> and id =#{ ybDrgManage.id} </if>
-            <if test="ybDrgManage.applyDataId != null and ybDrgManage.applyDataId != ''"> and applyDataId like concat('%', #{ ybDrgManage.applyDataId} ,'%')</if>
-            <if test="ybDrgManage.verifyId != null and ybDrgManage.verifyId != ''"> and verifyId like concat('%', #{ ybDrgManage.verifyId} ,'%')</if>
-            <if test="ybDrgManage.readyDoctorCode != null and ybDrgManage.readyDoctorCode != ''"> and readyDoctorCode like concat('%', #{ ybDrgManage.readyDoctorCode} ,'%')</if>
-            <if test="ybDrgManage.readyDoctorName != null and ybDrgManage.readyDoctorName != ''"> and readyDoctorName like concat('%', #{ ybDrgManage.readyDoctorName} ,'%')</if>
-            <if test="ybDrgManage.readyDeptCode != null and ybDrgManage.readyDeptCode != ''"> and readyDeptCode like concat('%', #{ ybDrgManage.readyDeptCode} ,'%')</if>
-            <if test="ybDrgManage.readyDeptName != null and ybDrgManage.readyDeptName != ''"> and readyDeptName like concat('%', #{ ybDrgManage.readyDeptName} ,'%')</if>
-            <if test="ybDrgManage.changeDoctorCode != null and ybDrgManage.changeDoctorCode != ''"> and changeDoctorCode like concat('%', #{ ybDrgManage.changeDoctorCode} ,'%')</if>
-            <if test="ybDrgManage.changeDoctorName != null and ybDrgManage.changeDoctorName != ''"> and changeDoctorName like concat('%', #{ ybDrgManage.changeDoctorName} ,'%')</if>
-            <if test="ybDrgManage.changeDeptCode != null and ybDrgManage.changeDeptCode != ''"> and changeDeptCode like concat('%', #{ ybDrgManage.changeDeptCode} ,'%')</if>
-            <if test="ybDrgManage.changeDeptName != null and ybDrgManage.changeDeptName != ''"> and changeDeptName like concat('%', #{ ybDrgManage.changeDeptName} ,'%')</if>
-            <if test="ybDrgManage.operateReason != null and ybDrgManage.operateReason != ''"> and operateReason like concat('%', #{ ybDrgManage.operateReason} ,'%')</if>
+    <select id="findYbDrgManage" resultType="cc.mrbird.febs.drg.entity.YbDrgManage"
+            parameterType="cc.mrbird.febs.drg.entity.YbDrgManage">
+        select * from yb_drg_manage
+        where 1=1
+        <if test="ybDrgManage.id != null and ybDrgManage.id != ''">and id =#{ ybDrgManage.id}</if>
+        <if test="ybDrgManage.applyDataId != null and ybDrgManage.applyDataId != ''">and applyDataId like concat('%',
+            #{ ybDrgManage.applyDataId} ,'%')
+        </if>
+        <if test="ybDrgManage.verifyId != null and ybDrgManage.verifyId != ''">and verifyId like concat('%',
+            #{ ybDrgManage.verifyId} ,'%')
+        </if>
+        <if test="ybDrgManage.readyDoctorCode != null and ybDrgManage.readyDoctorCode != ''">and readyDoctorCode like
+            concat('%', #{ ybDrgManage.readyDoctorCode} ,'%')
+        </if>
+        <if test="ybDrgManage.readyDoctorName != null and ybDrgManage.readyDoctorName != ''">and readyDoctorName like
+            concat('%', #{ ybDrgManage.readyDoctorName} ,'%')
+        </if>
+        <if test="ybDrgManage.readyDeptCode != null and ybDrgManage.readyDeptCode != ''">and readyDeptCode like
+            concat('%', #{ ybDrgManage.readyDeptCode} ,'%')
+        </if>
+        <if test="ybDrgManage.readyDeptName != null and ybDrgManage.readyDeptName != ''">and readyDeptName like
+            concat('%', #{ ybDrgManage.readyDeptName} ,'%')
+        </if>
+        <if test="ybDrgManage.changeDoctorCode != null and ybDrgManage.changeDoctorCode != ''">and changeDoctorCode like
+            concat('%', #{ ybDrgManage.changeDoctorCode} ,'%')
+        </if>
+        <if test="ybDrgManage.changeDoctorName != null and ybDrgManage.changeDoctorName != ''">and changeDoctorName like
+            concat('%', #{ ybDrgManage.changeDoctorName} ,'%')
+        </if>
+        <if test="ybDrgManage.changeDeptCode != null and ybDrgManage.changeDeptCode != ''">and changeDeptCode like
+            concat('%', #{ ybDrgManage.changeDeptCode} ,'%')
+        </if>
+        <if test="ybDrgManage.changeDeptName != null and ybDrgManage.changeDeptName != ''">and changeDeptName like
+            concat('%', #{ ybDrgManage.changeDeptName} ,'%')
+        </if>
+        <if test="ybDrgManage.operateReason != null and ybDrgManage.operateReason != ''">and operateReason like
+            concat('%', #{ ybDrgManage.operateReason} ,'%')
+        </if>
         <if test="ybDrgManage.operateDateFrom!= null">
             AND ybDrgManage.operateDate <![CDATA[ >= ]]>  operateDateFrom}
         </if>
         <if test="ybDrgManage.operateDateTo!= null">
             AND ybDrgManage.operateDate <![CDATA[ <= ]]>  operateDateTo}
         </if>
-            <if test="ybDrgManage.refuseName != null and ybDrgManage.refuseName != ''"> and refuseName like concat('%', #{ ybDrgManage.refuseName} ,'%')</if>
-            <if test="ybDrgManage.refuseReason != null and ybDrgManage.refuseReason != ''"> and refuseReason like concat('%', #{ ybDrgManage.refuseReason} ,'%')</if>
+        <if test="ybDrgManage.refuseName != null and ybDrgManage.refuseName != ''">and refuseName like concat('%',
+            #{ ybDrgManage.refuseName} ,'%')
+        </if>
+        <if test="ybDrgManage.refuseReason != null and ybDrgManage.refuseReason != ''">and refuseReason like concat('%',
+            #{ ybDrgManage.refuseReason} ,'%')
+        </if>
         <if test="ybDrgManage.refuseDateFrom!= null">
             AND ybDrgManage.refuseDate <![CDATA[ >= ]]>  refuseDateFrom}
         </if>
         <if test="ybDrgManage.refuseDateTo!= null">
             AND ybDrgManage.refuseDate <![CDATA[ <= ]]>  refuseDateTo}
         </if>
-            <if test="ybDrgManage.adminPersonName != null and ybDrgManage.adminPersonName != ''"> and adminPersonName like concat('%', #{ ybDrgManage.adminPersonName} ,'%')</if>
+        <if test="ybDrgManage.adminPersonName != null and ybDrgManage.adminPersonName != ''">and adminPersonName like
+            concat('%', #{ ybDrgManage.adminPersonName} ,'%')
+        </if>
         <if test="ybDrgManage.adminChangeDateFrom!= null">
             AND ybDrgManage.adminChangeDate <![CDATA[ >= ]]>  adminChangeDateFrom}
         </if>
         <if test="ybDrgManage.adminChangeDateTo!= null">
             AND ybDrgManage.adminChangeDate <![CDATA[ <= ]]>  adminChangeDateTo}
         </if>
-            <if test="ybDrgManage.adminReason != null and ybDrgManage.adminReason != ''"> and adminReason like concat('%', #{ ybDrgManage.adminReason} ,'%')</if>
-        <if test="ybDrgManage.state != null"> and STATE =#{ ybDrgManage.state} </if>
+        <if test="ybDrgManage.adminReason != null and ybDrgManage.adminReason != ''">and adminReason like concat('%',
+            #{ ybDrgManage.adminReason} ,'%')
+        </if>
+        <if test="ybDrgManage.state != null">and STATE =#{ ybDrgManage.state}</if>
         <if test="ybDrgManage.enableDateFrom!= null">
             AND ybDrgManage.enableDate <![CDATA[ >= ]]>  enableDateFrom}
         </if>
         <if test="ybDrgManage.enableDateTo!= null">
             AND ybDrgManage.enableDate <![CDATA[ <= ]]>  enableDateTo}
         </if>
-            <if test="ybDrgManage.operateProcess != null and ybDrgManage.operateProcess != ''"> and operateProcess like concat('%', #{ ybDrgManage.operateProcess} ,'%')</if>
-        <if test="ybDrgManage.approvalState != null"> and approvalState =#{ ybDrgManage.approvalState} </if>
-            <if test="ybDrgManage.applyDateStr != null and ybDrgManage.applyDateStr != ''"> and applyDateStr like concat('%', #{ ybDrgManage.applyDateStr} ,'%')</if>
-            <if test="ybDrgManage.orderNumber != null and ybDrgManage.orderNumber != ''"> and orderNumber like concat('%', #{ ybDrgManage.orderNumber} ,'%')</if>
-        <if test="ybDrgManage.orderNum != null"> and orderNum =#{ ybDrgManage.orderNum} </if>
-        <if test="ybDrgManage.areaType != null"> and areaType =#{ ybDrgManage.areaType} </if>
-</select>
+        <if test="ybDrgManage.operateProcess != null and ybDrgManage.operateProcess != ''">and operateProcess like
+            concat('%', #{ ybDrgManage.operateProcess} ,'%')
+        </if>
+        <if test="ybDrgManage.approvalState != null">and approvalState =#{ ybDrgManage.approvalState}</if>
+        <if test="ybDrgManage.applyDateStr != null and ybDrgManage.applyDateStr != ''">and applyDateStr like concat('%',
+            #{ ybDrgManage.applyDateStr} ,'%')
+        </if>
+        <if test="ybDrgManage.orderNumber != null and ybDrgManage.orderNumber != ''">and orderNumber like concat('%',
+            #{ ybDrgManage.orderNumber} ,'%')
+        </if>
+        <if test="ybDrgManage.orderNum != null">and orderNum =#{ ybDrgManage.orderNum}</if>
+        <if test="ybDrgManage.areaType != null">and areaType =#{ ybDrgManage.areaType}</if>
+    </select>
+
+    <select id="findDrgManageApplyEndDateList" resultType="cc.mrbird.febs.drg.entity.YbDrgManage">
+        SELECT
+			yb_drg_manage.*
+		FROM
+			yb_drg_manage
+			INNER JOIN yb_drg_apply_data ON
+				yb_drg_manage.applyDataId = yb_drg_apply_data.id
+		WHERE
+			yb_drg_apply_data.pid= #{pid} and
+			yb_drg_manage.applyDateStr = #{applyDateStr} AND
+			yb_drg_manage.areaType = #{areaType} AND
+			yb_drg_manage.state in(0,1,2);
+    </select>
+
+    <select id="findDrgManageEnableOverdueList" resultType="cc.mrbird.febs.drg.entity.YbDrgManage">
+        SELECT
+            yb_drg_manage.*
+        FROM
+            yb_drg_manage
+        INNER JOIN yb_drg_apply_data ON
+            yb_drg_manage.applyDataId = yb_drg_apply_data.id
+        WHERE
+            yb_drg_apply_data.pid = #{pid} AND
+            yb_drg_manage.applyDateStr = #{applyDateStr} AND
+            yb_drg_manage.areaType = #{areaType} AND
+            yb_drg_manage.state = 0 AND
+            yb_drg_manage.enableDate <![CDATA[ <= ]]>  STR_TO_DATE( #{enableDate}, '%Y-%m-%d' )
+    </select>
 
 </mapper>

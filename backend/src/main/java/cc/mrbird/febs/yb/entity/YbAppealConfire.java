@@ -125,6 +125,20 @@ public class YbAppealConfire implements Serializable, Comparable<YbAppealConfire
     @ExcelField(value = "院区")
     private Integer areaType;
 
+    /**
+     * 操作员代码
+     */
+    @TableField("operatorId")
+    @ExcelField(value = "操作员代码")
+    private Long operatorId;
+
+    /**
+     * 操作员名称
+     */
+    @TableField("operatorName")
+    @ExcelField(value = "操作员名称")
+    private String operatorName;
+
 
     public static final String ID = "id";
 
@@ -151,6 +165,10 @@ public class YbAppealConfire implements Serializable, Comparable<YbAppealConfire
     public static final String CURRENCYFIELD = "currencyField";
 
     public static final String AREATYPE = "areaType";
+
+    public static final String OPERATORID = "operatorId";
+
+    public static final String OPERATORNAME = "operatorName";
 
     @Override
     public int compareTo(YbAppealConfire o) {

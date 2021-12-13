@@ -26,13 +26,13 @@
               />
             </a-form-item>
           </a-col>
-          <a-col :span=2 v-show="tableSelectKey==5?false:true">
+          <a-col :span=15>
             <a-button
               type="primary"
+              style="margin-right: 10px"
+              v-show="tableSelectKey==5?false:true"
               @click="showSearchModal"
             >筛选</a-button>
-          </a-col>
-          <a-col :span=12>
           <a-button
             type="primary"
             style="margin-right: 10px"
@@ -157,65 +157,10 @@
               style="margin-right: 10px"
               @click="searchTable"
             >刷新</a-button>
-            <a-button type="primary" @click.stop="hideJob"  v-show="tableSelectKey==4?true:false">
-              开启服务
-            </a-button>
-          <a-popover v-model="visibleJob" trigger="click" title="开启服务">
-            <a-popconfirm
-              slot="content"
-              title="确定开启复议截止服务？"
-              style="margin-right: 10px"
-              @confirm="startJob(1)"
-              okText="确定"
-              cancelText="取消"
-            >
-            <a>1.复议截止服务</a>
-            </a-popconfirm>
-            <a-popconfirm
-              slot="content"
-              title="确定开启确认截止服务？"
-              style="margin-right: 10px"
-              @confirm="startJob(2)"
-              okText="确定"
-              cancelText="取消"
-            >
-            <a>2.确认截止服务</a>
-            </a-popconfirm>
-            <a-popconfirm
-              slot="content"
-              title="确定开启截止提醒服务？"
-              style="margin-right: 10px"
-              @confirm="startJob(3)"
-              okText="确定"
-              cancelText="取消"
-            >
-            <a>3.截止提醒服务</a>
-            </a-popconfirm>
-            <a-popconfirm
-              slot="content"
-              title="确定开启1和2服务？"
-              style="margin-right: 10px"
-              @confirm="startJob(4)"
-              okText="确定"
-              cancelText="取消"
-            >
-            <a>1和2服务</a>
-            </a-popconfirm>
-            <a-popconfirm
-              slot="content"
-              title="确定开启全部服务？"
-              style="margin-right: 10px"
-              @confirm="startJob(5)"
-              okText="确定"
-              cancelText="取消"
-            >
-            <a>全部服务</a>
-            </a-popconfirm>
-          </a-popover>
           <a-checkbox :checked="checked"  @change="onChange" v-show="tableSelectKey==5?true:false">
             是否发送
           </a-checkbox>
-          <a-input-search placeholder="请输入关键字" v-model="searchText" style="width: 200px" enter-button @search="searchTable" v-show="tableSelectKey==5?true:false" />
+          <a-input-search placeholder="请输入关键字" v-model="searchText" style="width: 170px" enter-button @search="searchTable" v-show="tableSelectKey==5?true:false" />
           <a-popconfirm
               title="确定发送短信？"
               @confirm="sendSms"
@@ -226,6 +171,61 @@
             >
               <a-button type="primary">发送短信</a-button>
             </a-popconfirm>
+            <a-button type="primary" style="margin-left: 15px" @click.stop="hideJob"  v-show="tableSelectKey==4 || tableSelectKey==5?true:false">
+              开启服务
+            </a-button>
+            <a-popover v-model="visibleJob" placement="top" trigger="click" title="开启服务">
+              <a-popconfirm
+                slot="content"
+                title="确定开启复议截止服务？"
+                style="margin-right: 10px"
+                @confirm="startJob(1)"
+                okText="确定"
+                cancelText="取消"
+              >
+              <a>1.复议截止服务</a>
+              </a-popconfirm>
+              <a-popconfirm
+                slot="content"
+                title="确定开启确认截止服务？"
+                style="margin-right: 10px"
+                @confirm="startJob(2)"
+                okText="确定"
+                cancelText="取消"
+              >
+              <a>2.确认截止服务</a>
+              </a-popconfirm>
+              <a-popconfirm
+                slot="content"
+                title="确定开启截止提醒服务？"
+                style="margin-right: 10px"
+                @confirm="startJob(3)"
+                okText="确定"
+                cancelText="取消"
+              >
+              <a>3.截止提醒服务</a>
+              </a-popconfirm>
+              <!-- <a-popconfirm
+                slot="content"
+                title="确定开启1和2服务？"
+                style="margin-right: 10px"
+                @confirm="startJob(4)"
+                okText="确定"
+                cancelText="取消"
+              >
+              <a>1和2服务</a>
+              </a-popconfirm> -->
+              <a-popconfirm
+                slot="content"
+                title="确定开启全部服务？"
+                style="margin-right: 10px"
+                @confirm="startJob(5)"
+                okText="确定"
+                cancelText="取消"
+              >
+              <a>全部服务</a>
+              </a-popconfirm>
+            </a-popover>
           </a-col>
           <a-col :span=2 v-show="tableSelectKey==1||tableSelectKey==2?true:false">
             <a-upload

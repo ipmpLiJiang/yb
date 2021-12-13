@@ -193,7 +193,7 @@ export default {
         dataIndex: 'operation',
         scopedSlots: { customRender: 'operation' },
         fixed: 'right',
-        width: 90
+        width: 100
       }]
     }
   },

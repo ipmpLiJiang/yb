@@ -184,15 +184,11 @@ export default {
       }
     },
     exportExcel () {
-      if (this.dataSource.length > 0) {
-        let queryParams = {}
-        queryParams.applyDateStr = this.applyDate
-        this.$export('ybAppealResultResetView/excelAppealResultReset', {
-          ...queryParams
-        })
-      } else {
-        this.$message.warning('导出Excel，无数据!')
-      }
+      let queryParams = {}
+      queryParams.applyDateStr = this.applyDate
+      this.$export('ybAppealResultResetView/excelAppealResultReset', {
+        ...queryParams
+      })
     },
     onSelectChange (selectedRowKeys) {
       this.selectedRowKeys = selectedRowKeys

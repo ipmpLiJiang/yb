@@ -1,11 +1,14 @@
 package cc.mrbird.febs.drg.service.impl;
 
 import cc.mrbird.febs.com.controller.DataTypeHelpers;
+import cc.mrbird.febs.com.entity.ComFile;
 import cc.mrbird.febs.com.entity.ComSms;
+import cc.mrbird.febs.com.service.IComFileService;
 import cc.mrbird.febs.com.service.IComSmsService;
 import cc.mrbird.febs.common.domain.QueryRequest;
 import cc.mrbird.febs.common.properties.FebsProperties;
 import cc.mrbird.febs.common.utils.SortUtil;
+import cc.mrbird.febs.drg.entity.YbDrgApply;
 import cc.mrbird.febs.drg.entity.YbDrgManage;
 import cc.mrbird.febs.drg.dao.YbDrgManageMapper;
 import cc.mrbird.febs.drg.entity.YbDrgResult;
@@ -26,8 +29,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.time.LocalDate;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.Collectors;
 
 /**
@@ -54,6 +60,10 @@ public class YbDrgManageServiceImpl extends ServiceImpl<YbDrgManageMapper, YbDrg
 
     @Autowired
     IComSmsService iComSmsService;
+
+    @Autowired
+    IComFileService iComFileService;
+
 
     @Override
     public IPage<YbDrgManage> findYbDrgManages(QueryRequest request, YbDrgManage ybDrgManage) {
@@ -322,7 +332,7 @@ public class YbDrgManageServiceImpl extends ServiceImpl<YbDrgManageMapper, YbDrg
             newDrgManage.setVerifyId(ybDrgManage.getVerifyId());
             newDrgManage.setState(YbDefaultValue.AMSTATE_0);
 
-            Date newDate = this.addSecond(thisDate,10);
+            Date newDate = this.addSecond(thisDate, 10);
             newDrgManage.setOperateDate(newDate);
             newDrgManage.setAreaType(entity.getAreaType());
 
@@ -390,11 +400,287 @@ public class YbDrgManageServiceImpl extends ServiceImpl<YbDrgManageMapper, YbDrg
         }
     }
 
-    private Date addSecond(Date date,int t){
+    @Override
+    @Transactional
+    public void updateCreateAdminDrgManage(YbDrgManage ybDrgManage, Long uId, String Uname) {
+        Date thisDate = new Date();
+        YbDrgManage entity = this.getById(ybDrgManage.getId());
+        if (entity != null && (entity.getState() == YbDefaultValue.AMSTATE_0 ||
+                entity.getState() == YbDefaultValue.AMSTATE_1 ||
+                entity.getState() == YbDefaultValue.AMSTATE_6 ||
+                entity.getState() == YbDefaultValue.AMSTATE_7)) {
+            YbDrgManage updateDrgManage = new YbDrgManage();
+            updateDrgManage.setId(ybDrgManage.getId());
+            String strReadyDeptName = DataTypeHelpers.stringReplaceSetString(ybDrgManage.getReadyDeptName(), ybDrgManage.getReadyDeptCode() + "-");
+            String strReadyDoctorName = DataTypeHelpers.stringReplaceSetString(ybDrgManage.getReadyDoctorName(), ybDrgManage.getReadyDoctorCode() + "-");
+            boolean isChang = false;
+
+            if (!entity.getReadyDoctorCode().equals(ybDrgManage.getReadyDoctorCode()) ||
+                    !entity.getReadyDeptCode().equals(ybDrgManage.getReadyDeptCode())) {
+                isChang = true;
+            }
+            int n7State = 10;
+            if (entity.getState() == YbDefaultValue.AMSTATE_0) {
+                n7State = 0;
+            }
+            if (n7State != 0 && entity.getState() == YbDefaultValue.AMSTATE_7) {
+                n7State = 7;
+                if (isChang) {
+                    n7State = 71;
+                }
+            }
+            // 变更管理，未申诉，不新增，只修改
+            if (n7State != 0 && n7State != 7 && n7State != 71 && isChang) {
+                n7State = 0;
+            }
+
+            if (n7State != 0) {
+                //修改当前 Change值
+                if (n7State == 71) {
+                    updateDrgManage.setReadyDoctorCode(ybDrgManage.getReadyDoctorCode());
+                    updateDrgManage.setReadyDoctorName(strReadyDoctorName);
+                    updateDrgManage.setReadyDeptCode(ybDrgManage.getReadyDeptCode());
+                    updateDrgManage.setReadyDeptName(strReadyDeptName);
+                    updateDrgManage.setChangeDoctorCode(entity.getReadyDoctorCode());
+                    updateDrgManage.setChangeDoctorName(entity.getReadyDoctorName());
+                    updateDrgManage.setChangeDeptCode(entity.getReadyDeptCode());
+                    updateDrgManage.setChangeDeptName(entity.getReadyDeptName());
+                }
+                updateDrgManage.setState(ybDrgManage.getState());
+                updateDrgManage.setOperateReason("");
+            } else {
+                updateDrgManage.setState(YbDefaultValue.AMSTATE_3);
+                updateDrgManage.setChangeDoctorCode(ybDrgManage.getReadyDoctorCode());
+                updateDrgManage.setChangeDoctorName(strReadyDoctorName);
+                updateDrgManage.setChangeDeptCode(ybDrgManage.getReadyDeptCode());
+                updateDrgManage.setChangeDeptName(strReadyDeptName);
+            }
+            if (entity.getState() == YbDefaultValue.AMSTATE_7 && ybDrgManage.getState() == YbDefaultValue.AMSTATE_6) {
+                updateDrgManage.setOperateProcess("未申诉-已申诉");
+            }
+            if (entity.getState() == YbDefaultValue.AMSTATE_6 && ybDrgManage.getState() == YbDefaultValue.AMSTATE_1) {
+                updateDrgManage.setOperateProcess("已申诉-待申诉");
+            }
+            if (entity.getState() == YbDefaultValue.AMSTATE_6 && ybDrgManage.getState() == YbDefaultValue.AMSTATE_0) {
+                updateDrgManage.setOperateProcess("已申诉-接受申请");
+            }
+            if (entity.getState() == YbDefaultValue.AMSTATE_1 && ybDrgManage.getState() == YbDefaultValue.AMSTATE_0) {
+                updateDrgManage.setOperateProcess("待申诉-接受申请");
+            }
+            if (entity.getState() == ybDrgManage.getState()) {
+                updateDrgManage.setOperateProcess("非状态变更");
+            }
+            updateDrgManage.setOperateDate(thisDate);
+            updateDrgManage.setAdminPersonId(uId);
+            updateDrgManage.setAdminPersonName(Uname);
+            String adminReason = "管理员更改";
+            if (entity.getState() == YbDefaultValue.AMSTATE_0) {
+                adminReason += "-接受申请";
+            } else if (entity.getState() == YbDefaultValue.AMSTATE_1) {
+                adminReason += "-待申诉";
+            } else if (entity.getState() == YbDefaultValue.AMSTATE_6) {
+                adminReason += "-已申请";
+            } else {
+                adminReason += "-未申请";
+            }
+
+            updateDrgManage.setAdminReason(adminReason);
+            updateDrgManage.setAdminChangeDate(thisDate);
+            //方法 更改状态为0的数据 业务更改 管理员更改状态为1的数据 所有不调用该方法
+            //方法 更改状态为1的数据
+            LambdaQueryWrapper<YbDrgManage> queryWrapper = new LambdaQueryWrapper<>();
+            queryWrapper.eq(YbDrgManage::getState, entity.getState());
+            queryWrapper.eq(YbDrgManage::getId, ybDrgManage.getId());
+            this.baseMapper.update(updateDrgManage, queryWrapper);
+            // 未申诉，修改结果 科室、人员 值
+            if (n7State == 71) {
+                YbDrgResult ybDrgResult = new YbDrgResult();
+                ybDrgResult.setId(entity.getId());
+                ybDrgResult.setOperateReason("");
+                ybDrgResult.setDoctorCode(ybDrgManage.getReadyDoctorCode());
+                ybDrgResult.setDoctorName(strReadyDoctorName);
+                ybDrgResult.setDeptCode(ybDrgManage.getReadyDeptCode());
+                ybDrgResult.setDeptName(strReadyDeptName);
+                iYbDrgResultService.updateById(ybDrgResult);
+            }
+            // 待申诉 和 已申诉 删除 结果和附件
+            if (entity.getState() == YbDefaultValue.AMSTATE_1 ||
+                    entity.getState() == YbDefaultValue.AMSTATE_6) {
+                iYbDrgResultService.getBaseMapper().deleteById(entity.getId());
+                List<ComFile> list = this.iComFileService.findListComFile(entity.getId(), null);
+                if (list.size() > 0) {
+                    this.iComFileService.batchRefIdDelete(entity.getId());
+                }
+
+                String filePath = febsProperties.getUploadPath(); // 上传后的路径
+                for (ComFile cf : list) {
+                    String fileUrl = filePath + entity.getApplyDateStr() + "/DRG" + entity.getAreaType() +
+                            "/" + entity.getOrderNumber() + "/" + cf.getRefType() + "/" + cf.getServerName();
+                    DataTypeHelpers.deleteFile(fileUrl);
+                }
+            }
+            // 管理员变更 复制新增 数据
+            if (n7State == 0) {
+                YbDrgManage newDrgManage = new YbDrgManage();
+                newDrgManage.setId(UUID.randomUUID().toString());
+                newDrgManage.setApplyDataId(ybDrgManage.getApplyDataId());
+                newDrgManage.setVerifyId(ybDrgManage.getVerifyId());
+
+//            int day = iComConfiguremanageService.getConfigDay();
+                ////变更日期不变 this.addDateMethod(thisDate, day);
+                Date enableDate = entity.getEnableDate();
+                newDrgManage.setEnableDate(enableDate);
+                newDrgManage.setState(ybDrgManage.getState());
+
+                thisDate = this.addSecond(thisDate, 10);
+                newDrgManage.setOperateDate(thisDate);
+
+                newDrgManage.setApplyDateStr(entity.getApplyDateStr());
+                newDrgManage.setOrderNum(entity.getOrderNum());
+                newDrgManage.setOrderNumber(entity.getOrderNumber());
+
+                ybDrgManage.setReadyDeptName(strReadyDeptName);
+                ybDrgManage.setReadyDoctorName(strReadyDoctorName);
+
+                newDrgManage.setReadyDeptCode(ybDrgManage.getReadyDeptCode());
+                newDrgManage.setReadyDeptName(ybDrgManage.getReadyDeptName());
+                newDrgManage.setReadyDoctorCode(ybDrgManage.getReadyDoctorCode());
+                newDrgManage.setReadyDoctorName(ybDrgManage.getReadyDoctorName());
+
+                newDrgManage.setAreaType(entity.getAreaType());
+                newDrgManage.setOperateProcess("管理员更改-创建");
+
+                String personCode = newDrgManage.getReadyDoctorCode();
+
+                this.save(newDrgManage);
+
+                int nOpenSms = febsProperties.getOpenSms();
+                boolean isOpenSms = nOpenSms == 1 ? true : false;
+                if (isOpenSms) {
+                    if (entity.getState() == YbDefaultValue.AMSTATE_1) {
+                        enableDate = null;
+                    }
+                    String sendContent = this.iYbDrgApplyService.getSendMessage(entity.getApplyDateStr(), enableDate, entity.getAreaType(), true);
+                    iComSmsService.sendSmsService(entity.getApplyDateStr(), null, personCode, ComSms.SENDTYPE_13, entity.getAreaType(), sendContent, uId, Uname);
+                }
+            }
+        }
+    }
+
+
+    private Date addSecond(Date date, int t) {
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);
         cal.add(Calendar.SECOND, t);// 24小时制
         return cal.getTime();
+    }
+
+    private Lock lockDrgApplyEndDate = new ReentrantLock();
+
+    private Lock lockDrgEnableOverdue = new ReentrantLock();
+
+    @Override
+    @Transactional
+    public void updateDrgApplyEndDate(String applyDateStr, Integer areaType) {
+        if (applyDateStr != null && !applyDateStr.equals("") && areaType != null) {
+            if (lockDrgApplyEndDate.tryLock()) {
+                try {
+                    YbDrgApply drgApply = this.iYbDrgApplyService.findDrgApplyByApplyDateStrs(applyDateStr, areaType);
+                    if (drgApply != null) {
+                        Date thisDate = new Date();
+                        if (thisDate.compareTo(drgApply.getEndDate()) > 0) {
+                            List<YbDrgManage> list = this.baseMapper.findDrgManageApplyEndDateList(drgApply.getId(), applyDateStr, areaType);
+                            List<YbDrgManage> updateList = new ArrayList<>();
+                            List<YbDrgResult> createList = new ArrayList<>();
+                            for (YbDrgManage item : list) {
+                                YbDrgManage update = new YbDrgManage();
+                                update.setId(item.getId());
+                                update.setState(YbDefaultValue.AMSTATE_7);
+                                update.setOperateDate(thisDate);
+                                update.setOperateReason("");
+                                update.setOperateProcess(
+                                        item.getState() == 0 ? "接受申请-未申诉" : item.getState() == 1 ? "待申诉-未申诉" : "已拒绝-未申诉"
+                                );
+                                updateList.add(update);
+
+                                YbDrgResult create = new YbDrgResult();
+                                create.setId(item.getId());
+                                create.setApplyDataId(item.getApplyDataId());
+                                create.setVerifyId(item.getVerifyId());
+                                create.setManageId(item.getId());
+                                create.setDoctorCode(item.getReadyDoctorCode());
+                                create.setDoctorName(item.getReadyDoctorName());
+                                create.setDeptCode(item.getReadyDeptCode());
+                                create.setDeptName(item.getReadyDeptName());
+                                create.setOperateReason("未申诉");
+                                create.setOperateDate(thisDate);
+                                create.setState(1);
+                                create.setApplyDateStr(item.getApplyDateStr());
+                                create.setOrderNum(item.getOrderNum());
+                                create.setOrderNumber(item.getOrderNumber());
+                                create.setAreaType(item.getAreaType());
+                                createList.add(create);
+                            }
+                            if (updateList.size() > 0) {
+                                this.updateBatchById(updateList);
+                            }
+
+                            if (createList.size() > 0) {
+                                this.iYbDrgResultService.saveBatch(createList);
+                            }
+                        }
+                    } else {
+                        log.error("DRG确认截止日期: 未查询到DRG申请数据");
+                    }
+                } catch (Exception e) {
+                    log.error("DRG截止日期:" + e.getMessage());
+                } finally {
+                    lockDrgApplyEndDate.unlock();
+                }
+            }
+        } else {
+            log.info("DRG截止日期，传入的参数有误.");
+        }
+    }
+
+    @Override
+    @Transactional
+    public void updateDrgEnableOverdue(String applyDateStr, Integer areaType) {
+        if (applyDateStr != null && !applyDateStr.equals("") && areaType != null) {
+            if (lockDrgEnableOverdue.tryLock()) {
+                try {
+                    YbDrgApply drgApply = this.iYbDrgApplyService.findDrgApplyByApplyDateStrs(applyDateStr, areaType);
+                    if (drgApply != null) {
+                        Date thisDate = new Date();
+                        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+                        String enableDate = formatter.format(thisDate);
+                        List<YbDrgManage> list = this.baseMapper.findDrgManageEnableOverdueList(drgApply.getId(), applyDateStr, areaType, enableDate);
+                        List<YbDrgManage> updateList = new ArrayList<>();
+                        for (YbDrgManage item : list) {
+                            YbDrgManage update = new YbDrgManage();
+                            update.setId(item.getId());
+                            update.setState(YbDefaultValue.AMSTATE_1);
+                            update.setOperateReason("");
+                            update.setOperateDate(thisDate);
+                            update.setOperateProcess("待申诉-自动接受");
+                            updateList.add(update);
+                        }
+
+                        if (updateList.size() > 0) {
+                            this.updateBatchById(updateList);
+                        }
+                    } else {
+                        log.error("DRG确认截止日期: 未查询到DRG申请数据");
+                    }
+                } catch (Exception e) {
+                    log.error("DRG确认截止日期:" + e.getMessage());
+                } finally {
+                    lockDrgEnableOverdue.unlock();
+                }
+            } else {
+                log.info("DRG确认截止日期，传入的参数有误.");
+            }
+        }
     }
 
 }

@@ -238,7 +238,9 @@ export default {
       this.ybAppealManageChangeHandle.changeDeptCode = deptCode
       this.ybAppealManageChangeHandle.changeDeptName = deptName
 
-      this.$refs.inpatientfeesModule.search()
+      setTimeout(() => {
+        this.$refs.inpatientfeesModule.search()
+      }, 200)
     },
     selectDoctorChang (item) {
       this.ybAppealManageChangeHandle.changeDoctorCode = item.value

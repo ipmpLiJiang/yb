@@ -253,7 +253,9 @@ export default {
         value: item.readyDoctorCode
       }]
       this.$refs.inputSelectChangeDoctor.value = item.readyDoctorCode
-      this.$refs.inpatientfeesModule.search()
+      setTimeout(() => {
+        this.$refs.inpatientfeesModule.search()
+      }, 200)
     }
   }
 }

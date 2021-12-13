@@ -1282,6 +1282,7 @@ public class YbReconsiderVerifyServiceImpl extends ServiceImpl<YbReconsiderVerif
     }
 
     @Override
+    @Transactional
     public String createEndJobState(String applyDateStr, Integer areaType, int[] jobTypeList) {
         String msg = "ok";
         YbReconsiderApply reconsiderApply = this.iYbReconsiderApplyService.findReconsiderApplyByApplyDateStrs(applyDateStr, areaType);
@@ -1412,4 +1413,5 @@ public class YbReconsiderVerifyServiceImpl extends ServiceImpl<YbReconsiderVerif
         }
         return cron;
     }
+
 }

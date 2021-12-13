@@ -203,7 +203,9 @@ export default {
         state: 2
       }
 
-      this.$refs.ybDrgJkModule.search()
+      setTimeout(() => {
+        this.$refs.ybDrgJkModule.search()
+      }, 200)
     }
   }
 }

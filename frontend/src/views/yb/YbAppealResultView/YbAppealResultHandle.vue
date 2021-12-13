@@ -200,17 +200,13 @@ export default {
       }
     },
     exportExcel () {
-      if (this.dataSource.length > 0) {
-        let queryParams = {}
-        queryParams.applyDateStr = this.applyDate
-        queryParams.sourceType = 1
-        queryParams.areaType = this.user.areaType.value
-        this.$export('ybAppealResultView/excel1', {
-          ...queryParams
-        })
-      } else {
-        this.$message.warning('导出Excel，无数据!')
-      }
+      let queryParams = {}
+      queryParams.applyDateStr = this.applyDate
+      queryParams.sourceType = 1
+      queryParams.areaType = this.user.areaType.value
+      this.$export('ybAppealResultView/excel1', {
+        ...queryParams
+      })
     },
     onSelectChange (selectedRowKeys) {
       this.selectedRowKeys = selectedRowKeys

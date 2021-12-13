@@ -8,7 +8,7 @@
         <a-row>
           <div :class="advanced ? null: 'fold'">
             <a-col
-              :md="6"
+              :md="5"
               :sm="24"
             >
               <a-form-item
@@ -19,7 +19,7 @@
               </a-form-item>
             </a-col>
             <a-col
-              :md="6"
+              :md="5"
               :sm="24"
             >
               <a-form-item
@@ -30,14 +30,25 @@
               </a-form-item>
             </a-col>
             <a-col
-              :md="8"
+              :md="5"
+              :sm="24"
+            >
+              <a-form-item
+                label="操作员"
+                v-bind="formItemLayout"
+              >
+                <a-input v-model="queryParams.operatorName" />
+              </a-form-item>
+            </a-col>
+            <a-col
+              :md="6"
               :sm="24"
             >
               <a-form-item
                 label="管理员类型"
                 v-bind="formItemLayout"
               >
-                <a-select v-model="queryParams.adminType" style="width: 150px" @change="handleAdminTypeChange"
+                <a-select v-model="queryParams.adminType" style="width: 110px" @change="handleAdminTypeChange"
                 >
                   <a-select-option
                   v-for="d in queryAdminTypeDataSource"
@@ -49,13 +60,13 @@
               </a-form-item>
             </a-col>
             <a-col
-              :md="3"
+              :md="2"
               :sm="24"
             >
               <a-button
                 type="primary"
                 @click="showModal"
-              >管理员类型维护</a-button>
+              >类型维护</a-button>
             </a-col>
           </div>
           <span style="float: right; margin-top: 3px;">
@@ -90,6 +101,11 @@
           v-hasPermission="['ybAppealConfire:delete']"
           @click="batchDelete"
         >删除</a-button>
+        <a-button
+          v-hasPermission="['ybAppealConfire:add']"
+          type="primary"
+          @click="exportExcel1"
+        >导出</a-button>
         <a-dropdown v-hasPermission="['ybAppealConfire:export']">
           <a-menu slot="overlay">
             <a-menu-item
@@ -260,6 +276,11 @@ export default {
         dataIndex: 'currencyField'
       },
       {
+        title: '操作员',
+        dataIndex: 'operatorName',
+        width: 140
+      },
+      {
         title: '操作',
         dataIndex: 'operation',
         scopedSlots: { customRender: 'operation' },
@@ -424,6 +445,16 @@ export default {
         adminType: 0
       }
       this.fetch()
+    },
+    exportExcel1 () {
+      let query = this.queryParams
+      if (query.adminType === 0 || query.adminType === undefined) {
+        query.adminType = null
+      }
+      query.areaType = this.user.areaType.value
+      this.$export('ybAppealConfire/exportAppealConfire', {
+        ...query
+      })
     },
     handleTableChange (pagination, filters, sorter) {
       this.sortedInfo = sorter

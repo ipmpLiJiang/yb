@@ -71,9 +71,19 @@ private static final long serialVersionUID=1L;
     public static final int SENDTYPE_10 = 10 ;
 
     /**
-     * 10 DRG医保办变更
+     * 11 DRG医保办变更
      */
     public static final int SENDTYPE_11 = 11 ;
+
+    /**
+     * 12 DRG截止日期提醒
+     */
+    public static final int SENDTYPE_12 = 12 ;
+
+    /**
+     * 13 DRG管理员变更
+     */
+    public static final int SENDTYPE_13 = 13 ;
 
     /**
      * 0 未发送

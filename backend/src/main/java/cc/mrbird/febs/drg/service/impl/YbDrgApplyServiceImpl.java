@@ -101,7 +101,7 @@ public class YbDrgApplyServiceImpl extends ServiceImpl<YbDrgApplyMapper, YbDrgAp
         long endMinute = 0;
         long enableDay = 0;
         YbDrgApply entity = this.getById(ybDrgApply.getId());
-        if (entity !=null && entity.getState() == YbDefaultValue.APPLYSTATE_3) {
+        if (entity != null && entity.getState() == YbDefaultValue.DRGAPPLYSTATE_3) {
             endMinute = DateUtil.between(ybDrgApply.getEndDate(), entity.getEndDate(), DateUnit.MINUTE);
             enableDay = DateUtil.between(ybDrgApply.getEnableDate(), entity.getEnableDate(), DateUnit.DAY);
             if (isChangDate != null && isChangDate == 1) {
@@ -201,8 +201,8 @@ public class YbDrgApplyServiceImpl extends ServiceImpl<YbDrgApplyMapper, YbDrgAp
     public void updateDrgApplyState3(YbDrgApply drgApply) {
         YbDrgApply updateEntity = new YbDrgApply();
         updateEntity.setId(drgApply.getId());
-        if (drgApply.getState() == YbDefaultValue.APPLYSTATE_2) { //上传
-            updateEntity.setState(YbDefaultValue.APPLYSTATE_3);//核对
+        if (drgApply.getState() == YbDefaultValue.DRGAPPLYSTATE_2) { //上传
+            updateEntity.setState(YbDefaultValue.DRGAPPLYSTATE_3);//核对
         }
         this.updateById(updateEntity);
     }
@@ -245,8 +245,24 @@ public class YbDrgApplyServiceImpl extends ServiceImpl<YbDrgApplyMapper, YbDrgAp
     }
 
     @Override
-    public boolean findDrgApplyCheckEndDate(String appltDateStr, Integer areaType) {
-        YbDrgApply drgApply = this.findDrgApplyByApplyDateStrs(appltDateStr, areaType);
+    public String getSendMessage(String applyDateStr, Date endDate,Integer areaType) {
+        applyDateStr = applyDateStr.replace("-", "年");
+        String wangz = febsProperties.getSmsWebsite();
+        String ssm = "";
+        Calendar now = Calendar.getInstance();
+        now.setTime(endDate);
+        String fen = "" + now.get(Calendar.MINUTE);
+        if (fen.length() == 1) {
+            fen = "0" + fen;
+        }
+        String shi = "" + now.get(Calendar.HOUR_OF_DAY);
+        ssm = "武汉市医保" + applyDateStr + "月 DRG 复议将于今天" + shi + ":" + fen + "截止，您尚有未处理的扣款，请登陆系统及时查看并处理。" + wangz;
+        return ssm + this.areaMsg(areaType);
+    }
+
+    @Override
+    public boolean findDrgApplyCheckEndDate(String applyDateStr, Integer areaType) {
+        YbDrgApply drgApply = this.findDrgApplyByApplyDateStrs(applyDateStr, areaType);
         boolean isUpdate = false;
         Date thisDate = new Date();
         Date compareDate = drgApply.getEndDate();
@@ -255,6 +271,7 @@ public class YbDrgApplyServiceImpl extends ServiceImpl<YbDrgApplyMapper, YbDrgAp
         }
         return isUpdate;
     }
+
 
 
 }

@@ -27,6 +27,12 @@
                   @click.stop="() => look(record,index)"
                 >查看</a>
               </span>
+              <a-divider type="vertical" />
+              <span>
+                <a
+                  @click.stop="() => change(record,index)"
+                >变更</a>
+              </span>
             </div>
           </template>
         </a-table>
@@ -177,7 +183,7 @@ export default {
         dataIndex: 'operation',
         scopedSlots: { customRender: 'operation' },
         fixed: 'right',
-        width: 90
+        width: 120
       }]
     }
   },
@@ -193,6 +199,10 @@ export default {
     look (record, index) {
       record.rowNo = this.rowNo(index)
       this.$emit('look', record)
+    },
+    change (record, index) {
+      record.rowNo = this.rowNo(index)
+      this.$emit('adminChange', record, 7)
     },
     handleClickRow (record, index) {
       return {

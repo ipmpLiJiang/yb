@@ -201,19 +201,15 @@ export default {
       }
     },
     exportExcel () {
-      if (this.dataSource.length > 0) {
-        let queryParams = {}
-        queryParams.applyDateStr = this.applyDate
-        queryParams.typeno = 1
-        queryParams.state = 12 // IN(1,2)
-        queryParams.sourceType = 0
-        queryParams.areaType = this.user.areaType.value
-        this.$export('ybAppealResultView/excel1', {
-          ...queryParams
-        })
-      } else {
-        this.$message.warning('导出Excel，无数据!')
-      }
+      let queryParams = {}
+      queryParams.applyDateStr = this.applyDate
+      queryParams.typeno = 1
+      queryParams.state = 12 // IN(1,2)
+      queryParams.sourceType = 0
+      queryParams.areaType = this.user.areaType.value
+      this.$export('ybAppealResultView/excel1', {
+        ...queryParams
+      })
     },
     onSelectChange (selectedRowKeys) {
       this.selectedRowKeys = selectedRowKeys

@@ -27,9 +27,9 @@ public interface IYbAppealConfireService extends IService<YbAppealConfire> {
 
     IPage<YbAppealConfire> findYbAppealConfireList(QueryRequest request, YbAppealConfire ybAppealConfire);
 
-    IPage<YbAppealConfire> findAppealConfireView(QueryRequest request, String doctorContent, Integer adminType,Integer areaType, String deptContent);
+    IPage<YbAppealConfire> findAppealConfireView(QueryRequest request, String doctorContent, Integer adminType,Integer areaType, String deptContent,String operatorName,String type);
 
-    IPage<YbAppealConfire> findAppealConfireUserView(QueryRequest request, String doctorContent, Integer adminType,Integer areaType, String deptContent, User currentUser);
+    IPage<YbAppealConfire> findAppealConfireUserView(QueryRequest request, String doctorContent, Integer adminType,Integer areaType, String deptContent, User currentUser,String operatorName,String type);
 
     void createYbAppealConfire(YbAppealConfire ybAppealConfire);
 

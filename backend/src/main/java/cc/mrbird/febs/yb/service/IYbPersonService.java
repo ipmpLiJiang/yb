@@ -47,4 +47,6 @@ public interface IYbPersonService extends IService<YbPerson> {
     boolean importPerson(User logUser) throws Exception;
 
     YbPerson findByName(String personCode);
+
+    List<YbPerson> findDrgPersonWarnLists(String applyDateStr,Integer areaType, Integer state);
 }

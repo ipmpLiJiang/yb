@@ -10,23 +10,34 @@ import java.util.List;
 
 /**
  * <p>
- *  Mapper 接口
+ * Mapper 接口
  * </p>
  *
  * @author viki
  * @since 2021-01-11
  */
 public interface YbAppealConfireMapper extends BaseMapper<YbAppealConfire> {
-        void updateYbAppealConfire(YbAppealConfire ybAppealConfire);
-        IPage<YbAppealConfire> findYbAppealConfire(Page page, @Param("ybAppealConfire") YbAppealConfire ybAppealConfire);
+    void updateYbAppealConfire(YbAppealConfire ybAppealConfire);
 
-        IPage<YbAppealConfire>  findAppealConfireView(Page page, @Param("doctorContent") String doctorContent, @Param("adminType") Integer adminType,@Param("areaType") Integer areaType, @Param("deptContent") String deptContent);
+    IPage<YbAppealConfire> findYbAppealConfire(Page page, @Param("ybAppealConfire") YbAppealConfire ybAppealConfire);
 
-        IPage<YbAppealConfire>  findAppealConfireUserView(Page page, @Param("doctorContent") String doctorContent, @Param("adminType") Integer adminType,@Param("areaType") Integer areaType, @Param("deptContent") String deptContent, @Param("uid") Long uid, @Param("doctorCode") String doctorCode);
+    IPage<YbAppealConfire> findAppealConfireView(Page page, @Param("doctorContent") String doctorContent, @Param("adminType") Integer adminType,
+                                                 @Param("areaType") Integer areaType, @Param("deptContent") String deptContent,
+                                                 @Param("operatorName") String operatorName,@Param("type") String type);
 
-        int  findAppealConfireCount(@Param("doctorContent") String doctorContent, @Param("adminType") Integer adminType,@Param("areaType") Integer areaType, @Param("deptContent") String deptContent);
+    IPage<YbAppealConfire> findAppealConfireUserView(Page page, @Param("doctorContent") String doctorContent, @Param("adminType") Integer adminType,
+                                                     @Param("areaType") Integer areaType, @Param("deptContent") String deptContent,
+                                                     @Param("uid") Long uid, @Param("doctorCode") String doctorCode,
+                                                     @Param("operatorName") String operatorName,@Param("type") String type);
 
-        int  findAppealConfireUserCount(@Param("doctorContent") String doctorContent, @Param("adminType") Integer adminType,@Param("areaType") Integer areaType, @Param("deptContent") String deptContent, @Param("uid") Long uid, @Param("doctorCode") String doctorCode);
+    int findAppealConfireCount(@Param("doctorContent") String doctorContent, @Param("adminType") Integer adminType,
+                               @Param("areaType") Integer areaType, @Param("deptContent") String deptContent,
+                               @Param("operatorName") String operatorName);
 
-        List<YbAppealConfire> findAppealConfireLlyList(@Param("ybAppealConfire") YbAppealConfire ybAppealConfire);
+    int findAppealConfireUserCount(@Param("doctorContent") String doctorContent, @Param("adminType") Integer adminType,
+                                   @Param("areaType") Integer areaType, @Param("deptContent") String deptContent,
+                                   @Param("uid") Long uid, @Param("doctorCode") String doctorCode,
+                                   @Param("operatorName") String operatorName);
+
+    List<YbAppealConfire> findAppealConfireLlyList(@Param("ybAppealConfire") YbAppealConfire ybAppealConfire);
 }

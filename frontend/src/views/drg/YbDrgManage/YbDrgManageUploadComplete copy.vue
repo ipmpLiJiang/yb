@@ -1,152 +1,136 @@
 <template>
   <a-drawer
-    title="DRG申诉更改"
+    title="DRG申诉更改222"
     :maskClosable="false"
-    width="85%"
+    width=85%
     placement="right"
     :closable="true"
     @close="onClose"
     :visible="drgCompleteVisiable"
-    style="height: calc(100% - 15px); overflow: auto; padding-bottom: 53px"
+    style="height: calc(100% - 15px);overflow: auto;padding-bottom: 53px;"
   >
-    <ybDrgData-module ref="ybDrgDataModule" :ybDrgData="ybDrgManageUpload">
+  <ybDrgData-module
+    ref="ybDrgDataModule"
+    :ybDrgData="ybDrgManageUpload"
+    >
     </ybDrgData-module>
-    <ybDrgJk-module ref="ybDrgJkModule" :ybDrgData="ybDrgManageUpload">
+    <ybDrgJk-module
+    ref="ybDrgJkModule"
+    :ybDrgData="ybDrgManageUpload"
+    >
     </ybDrgJk-module>
-    <div style="margin-top: 10px">
-      <div
-        style="
-          padding-top: 15px;
-          padding-bottom: 15px;
-          border: 1px solid #e8e8e8;
-        "
-      >
-        <template>
-          <a-form :form="form">
-            <a-row type="flex" justify="start">
-              <a-col :span="20">
-                <!--复议科室、医生-->
-                <a-row type="flex" justify="center">
-                  <a-col :span="9">
-                    <a-form-item v-bind="formItemLayout" label="复议科室">
-                      {{ ybDrgManageUpload.readyDeptCode }}-{{
-                        ybDrgManageUpload.readyDeptName
-                      }}
-                    </a-form-item>
-                  </a-col>
-                  <a-col :span="9">
-                    <a-form-item v-bind="formItemLayout" label="复议医生">
-                      {{ ybDrgManageUpload.readyDoctorCode }}-{{
-                        ybDrgManageUpload.readyDoctorName
-                      }}
-                    </a-form-item>
-                  </a-col>
-                  <a-col :span="5"> &nbsp; </a-col>
-                </a-row>
-                <!--医院意见-->
-                <a-row type="flex" justify="center">
-                  <a-col :span="18">
-                    <a-form-item
-                      v-bind="{
-                        labelCol: { span: 4 },
-                        wrapperCol: { span: 19, offset: 1 },
-                      }"
-                      label="医院意见"
-                    >
-                      <a-textarea
-                        placeholder="请输入医院意见"
-                        style="width: 100%"
-                        :rows="5"
-                        v-decorator="[
-                          'operateReason',
-                          {
-                            rules: [
-                              { required: true, message: '医院意见不能为空' },
-                            ],
-                          },
-                        ]"
-                      />
-                    </a-form-item>
-                  </a-col>
-                  <a-col :span="5"> &nbsp; </a-col>
-                </a-row>
-                <!--上传显示图片-->
-                <a-row type="flex" justify="start">
-                  <a-col :span="1"> &nbsp; </a-col>
-                  <a-col :span="23">
-                    <div style="color: red">
-                      *&nbsp;DRG复议上传图片：图片大小不得大于300KB，图片格式为.jpg
-                    </div>
-                    <div
-                      style="margin-top: 10px; margin-left: 10px; height: 100%"
-                    >
-                      <a-row type="flex" justify="center">
-                        <a-col :span="1"> &nbsp; </a-col>
-                        <a-col :span="20">
-                          佐证资料：<br />资料类型(勾选)：
-                          <a-radio-group
-                            v-model="ftype"
-                            @change="typeChange"
-                            :options="typeList"
-                            size="large"
-                          />
-                        </a-col>
-                        <a-col :span="3"> &nbsp; </a-col>
-                      </a-row>
-                      <br />
-                      <a-row type="flex" justify="center">
-                        <a-col :span="24">
-                          <template>
-                            <!--上传图片-->
-                            <div class="clearfix">
-                              <a-upload
-                                list-type="picture"
-                                accept=".jpg"
-                                :file-list="fileList"
-                                :remove="handleImageRemove"
-                                :beforeUpload="beforeUpload"
-                                @preview="handlePreview"
-                                class="upload-list-inline"
-                              >
-                                <a-button>
-                                  <a-icon type="upload" /> 上传图片
-                                </a-button>
-                                <span style="color:red">{{ftypeName}}</span>
-                              </a-upload>
-                              <a-modal width="85%" :visible="previewVisible" :footer="null" @cancel="handleCancel">
-                              <div style="text-align:center">
-                                <img alt="example" style="width: auto; height: auto; max-width: 100%; max-height: 100%;" :src="previewImage" />
-                              </div>
-                            </a-modal>
-                            </div>
-                          </template>
-                        </a-col>
-                      </a-row>
-                    </div>
-                  </a-col>
-                </a-row>
-                <br />
-                <!--按钮-->
-                <a-row type="flex" justify="center">
-                  <a-col :span="5">
-                    <a-button
-                      @click="handleSubmit"
-                      type="primary"
-                      :loading="loading"
-                      >保存</a-button
-                    >
-                  </a-col>
-                  <a-col :span="3">
-                    <a-button style="margin-right: 0.8rem" @click="onClose">
-                      取消
-                    </a-button>
-                  </a-col>
-                </a-row>
+    <div style="margin-top:20px;">
+    <div style="padding-top:20px;padding-bottom:20px;border: 1px solid #e8e8e8;">
+      <template>
+        <a-form :form="form">
+        <a-row type="flex" justify="start">
+          <a-col :span=11>
+            <!--复议科室、医生-->
+            <a-row>
+              <a-col :span=13>
+                <a-form-item
+                  v-bind="formItemLayout"
+                  label="复议科室"
+                >
+                  {{ybDrgManageUpload.readyDeptCode}}-{{ybDrgManageUpload.readyDeptName}}
+                </a-form-item>
+              </a-col>
+              <a-col :span=11>
+                <a-form-item
+                  v-bind="formItemLayout"
+                  label="复议医生"
+                >
+                  {{ybDrgManageUpload.readyDoctorCode}}-{{ybDrgManageUpload.readyDoctorName}}
+                </a-form-item>
               </a-col>
             </a-row>
-          </a-form>
-        </template>
-      </div>
+            <!--医院意见-->
+            <a-row type="flex" justify="start">
+              <a-col :span=24>
+                 <a-form-item
+                  v-bind="{
+                    labelCol: { span: 4 },
+                    wrapperCol: { span: 19, offset: 1 }
+                  }"
+                  label="医院意见"
+                >
+                <a-textarea
+                  placeholder="请输入医院意见"
+                  style="width:100%;"
+                  :rows="8"
+                  v-decorator="['operateReason', {rules: [{ required: true, message: '医院意见不能为空' }] }]"
+                />
+                </a-form-item>
+              </a-col>
+            </a-row>
+            <!--按钮-->
+            <a-row type="flex" justify="end">
+              <a-col :span=5>
+                <a-button
+                  @click="handleSubmit"
+                  type="primary"
+                  :loading="loading"
+                >保存</a-button>
+              </a-col>
+              <a-col :span=3>
+                <a-button
+                  style="margin-right: .8rem"
+                  @click="onClose"
+                >
+                  取消
+                </a-button>
+              </a-col>
+            </a-row>
+          </a-col>
+          <a-col :span=13>
+            <div style="color:red">*&nbsp;DRG复议上传图片：一个资料类型，最多上传8张，图片大小不得大于300KB，图片格式为.jpg</div>
+            <div style="margin-top:10px;margin-left:20px;height:100%">
+            <a-row>
+              <a-col :span=24>
+                佐证资料：<br>资料类型(勾选)：
+                <a-radio-group v-model="ftype" @change="typeChange" size="large">
+                  <a-radio v-for="item in typeList" :key="item.value" :value="item.value">
+                    {{item.text}}
+                  </a-radio>
+                </a-radio-group>
+              </a-col>
+            </a-row>
+            <br>
+            <a-row type="flex" justify="center">
+              <a-col>
+                <template>
+                  <!--上传图片-->
+                  <div class="clearfix">
+                    <a-upload
+                      list-type="picture-card"
+                      accept=".jpg"
+                      :file-list="fileList"
+                      :remove="handleImageRemove"
+                      :beforeUpload="beforeUpload"
+                      @preview="handlePreview"
+                    >
+                      <div v-if="fileList.length < 8">
+                        <a-icon type="plus" />
+                        <div class="ant-upload-text">
+                          Upload
+                        </div>
+                      </div>
+                    </a-upload>
+                    <a-modal width="85%" :visible="previewVisible" :footer="null" @cancel="handleCancel">
+                      <div style="text-align:center">
+                        <img alt="example" style="width: auto; height: auto; max-width: 100%; max-height: 100%;" :src="previewImage" />
+                      </div>
+                    </a-modal>
+                  </div>
+                </template>
+              </a-col>
+            </a-row>
+            </div>
+          </a-col>
+        </a-row>
+        </a-form>
+      </template>
+    </div>
     </div>
   </a-drawer>
 </template>
@@ -156,15 +140,9 @@ import moment from 'moment'
 import YbDrgDataModule from '../YbDrgFunModule/YbDrgDataModule'
 import YbDrgJkModule from '../YbDrgFunModule/YbDrgJkModule'
 const formItemLayout = {
-  labelCol: {
-    span: 8
-  },
-  wrapperCol: {
-    span: 15,
-    offset: 1
-  }
+  labelCol: { span: 8 },
+  wrapperCol: { span: 14, offset: 1 }
 }
-
 function getBase64 (file) {
   return new Promise((resolve, reject) => {
     const reader = new FileReader()
@@ -176,9 +154,7 @@ function getBase64 (file) {
 export default {
   name: 'YbDrgManageUpload',
   components: {
-    YbDrgDataModule,
-    YbDrgJkModule
-  },
+    YbDrgDataModule, YbDrgJkModule},
   props: {
     drgCompleteVisiable: {
       default: false
@@ -195,13 +171,14 @@ export default {
       fileList: [],
       typeList: [],
       ftype: '',
-      ftypeName: '',
       user: this.$store.state.account.user,
       form: this.$form.createForm(this)
     }
   },
-  computed: {},
-  mounted () { },
+  computed: {
+  },
+  mounted () {
+  },
   methods: {
     moment,
     reset () {
@@ -234,16 +211,16 @@ export default {
       formData.append('id', this.ybDrgManageUpload.id)
       formData.append('refTab', 'yb_drg_result')
       formData.append('refType', this.ftype)
-      formData.append('refTypeName', this.ftypeName)
       formData.append('orderNumber', this.ybDrgManageUpload.orderNumber)
       formData.append('applyDateStr', this.ybDrgManageUpload.applyDateStr)
       formData.append('isCheck', 1)
       formData.append('areaType', this.user.areaType.value)
       this.uploading = true
       let that = this
+
       this.$upload('comFile/uploadDrgImg', formData).then((r) => {
         if (r.data.data.success === 1) {
-          that.fileList.unshift(r.data.data)
+          that.fileList.push(r.data.data)
           this.uploading = false
           this.$message.success('上传成功.')
         } else {
@@ -285,7 +262,8 @@ export default {
             that.$message.error('删除失败.')
           })
         },
-        onCancel () { }
+        onCancel () {
+        }
       })
     },
     handleCancel () {
@@ -332,9 +310,7 @@ export default {
         }
       })
     },
-    setFormValues ({
-      ...ybDrgManageUpload
-    }) {
+    setFormValues ({ ...ybDrgManageUpload }) {
       this.ybDrgManageUpload = ybDrgManageUpload
 
       this.form.getFieldDecorator('operateReason')
@@ -349,21 +325,14 @@ export default {
     },
     getType (id) {
       this.ftype = ''
-      this.ftypeName = ''
       this.typeList = []
-      this.$get('comType/getComTypeList', {
-        ctType: 2
-      }).then((r) => {
+      this.$get('comType/getComTypeList', {ctType: 2}).then((r) => {
         if (r.data.length > 0) {
           for (var i in r.data) {
-            var type = {
-              label: r.data[i].ctName,
-              value: r.data[i].id.toString()
-            }
+            var type = {text: r.data[i].ctName, value: r.data[i].id.toString()}
             this.typeList.push(type)
             if (this.ftype === '') {
               this.ftype = type.value
-              this.ftypeName = type.label
               this.findFileList(id)
             }
           }
@@ -376,8 +345,6 @@ export default {
     },
     typeChange (e) {
       this.ftype = e.target.value
-      let target = this.typeList.filter(item => item.value === this.ftype)[0]
-      this.ftypeName = target.label
       // this.findFileList(this.ybDrgManageUpload.id)
     },
     findFileList (id) {
@@ -404,18 +371,16 @@ export default {
 
 <style lang="less" scoped>
 @import "../../../../static/less/Common";
-</style><style scoped>
-.upload-list-inline >>> .ant-upload-list-item {
-  float: left;
-  width: 230px;
-  margin-right: 8px;
+</style>
+<style scoped>
+/* you can make up upload button and sample style by using stylesheets */
+.ant-upload-select-picture-card i {
+  font-size: 32px;
+  color: #999;
 }
 
-.upload-list-inline >>> .ant-upload-animate-enter {
-  animation-name: uploadAnimateInlineIn;
-}
-
-.upload-list-inline >>> .ant-upload-animate-leave {
-  animation-name: uploadAnimateInlineOut;
+.ant-upload-select-picture-card .ant-upload-text {
+  margin-top: 8px;
+  color: #666;
 }
 </style>

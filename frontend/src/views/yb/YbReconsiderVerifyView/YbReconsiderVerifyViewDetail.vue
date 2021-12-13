@@ -205,7 +205,9 @@ export default {
         state: 2
       }
 
-      this.$refs.inpatientfeesModule.search()
+      setTimeout(() => {
+        this.$refs.inpatientfeesModule.search()
+      }, 200)
     }
   }
 }

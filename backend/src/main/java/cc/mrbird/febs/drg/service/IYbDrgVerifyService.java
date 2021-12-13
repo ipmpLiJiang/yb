@@ -47,4 +47,6 @@ public interface IYbDrgVerifyService extends IService<YbDrgVerify> {
     void updateBackStates(String applyDateStr, Integer areaType, int state);
 
     void updateDrgVerifyImports(List<YbDrgVerify> list);
+
+    String createEndJobState(String applyDateStr, Integer areaType, int[] jobTypeList);
 }

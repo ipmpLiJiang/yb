@@ -1,6 +1,6 @@
 <template>
   <a-drawer
-    title="管理员变更详情"
+    title="DRG管理员变更详情"
     :maskClosable="false"
     width=70%
     placement="right"
@@ -9,16 +9,16 @@
     :visible="adminVisiable"
     style="height: calc(100% - 15px);overflow: auto;padding-bottom: 53px;"
   >
-    <appealData-module
-    ref="appealDataModule"
-    :ybAppealDataModule="ybAppealManageChangeDetail"
+    <ybDrgData-module
+    ref="ybDrgDataModule"
+    :ybDrgData="ybDrgManageChangeAdminHandle"
     >
-    </appealData-module>
-    <inpatientfees-module
-    ref="inpatientfeesModule"
-    :inpatientfeesModule="ybAppealManageChangeDetail"
+    </ybDrgData-module>
+    <ybDrgJk-module
+    ref="ybDrgJkModule"
+    :ybDrgData="ybDrgManageChangeAdminHandle"
     >
-    </inpatientfees-module>
+    </ybDrgJk-module>
     <a-spin tip="Loading..." :spinning="spinning" :delay="delayTime">
       <div>
     <div style="margin-top:20px;padding-bottom:20px;border: 1px solid #e8e8e8;">
@@ -41,7 +41,7 @@
                   v-bind="formItemLayout1"
                   label="更新状态"
                 >
-                  <a-select v-model="acceptState" :disabled="accStateDisabled" style="width: 150px" @change="handleChange">
+                  <a-select v-model="state" :disabled="accStateDisabled" style="width: 150px" @change="handleChange">
                   <a-select-option
                   v-for="d in selectAcceptStateDataSource"
                   :key="d.value"
@@ -120,8 +120,8 @@
 <script>
 import moment from 'moment'
 import InputSelect from '../../common/InputSelect'
-import AppealDataModule from '../ybFunModule/AppealDataModule'
-import InpatientfeesModule from '../ybFunModule/InpatientfeesModule'
+import YbDrgDataModule from '../YbDrgFunModule/YbDrgDataModule'
+import YbDrgJkModule from '../YbDrgFunModule/YbDrgJkModule'
 const formItemLayout = {
   labelCol: { span: 3 },
   wrapperCol: { span: 20 }
@@ -131,9 +131,9 @@ const formItemLayout1 = {
   wrapperCol: { span: 16 }
 }
 export default {
-  name: 'YbAppealManageChangeAdminHandle',
+  name: 'YbDrgManageChangeAdminHandle',
   components: {
-    AppealDataModule, InpatientfeesModule, InputSelect},
+    YbDrgDataModule, YbDrgJkModule, InputSelect},
   props: {
     adminVisiable: {
       default: false
@@ -143,12 +143,12 @@ export default {
     return {
       loading: false,
       form: this.$form.createForm(this),
-      ybAppealManageChangeDetail: {},
-      ybAppealManage: {},
+      ybDrgManageChangeAdminHandle: {},
+      ybDrgManage: {},
       formItemLayout,
       formItemLayout1,
       selectAcceptStateDataSource: [],
-      acceptState: 0,
+      state: 0,
       accStateDisabled: true,
       spinning: false,
       type: 0,
@@ -165,53 +165,51 @@ export default {
     reset () {
       this.loading = false
       this.spinning = false
-      this.acceptState = 0
+      this.state = 0
       this.accStateDisabled = true
-      this.ybAppealManageChangeDetail = {}
+      this.ybDrgManageChangeAdminHandle = {}
       this.selectAcceptStateDataSource = []
       this.form.resetFields()
     },
     onClose () {
-      this.ybAppealManageChangeDetail = {}
-      this.ybAppealManage = {}
+      this.ybDrgManageChangeAdminHandle = {}
+      this.ybDrgManage = {}
       this.$emit('close')
     },
     handleChange (val) {
-      this.acceptState = val
+      this.state = val
     },
     selectDoctorChang (item) {
-      this.ybAppealManage.readyDoctorCode = item.value
-      this.ybAppealManage.readyDoctorName = item.text
+      this.ybDrgManage.readyDoctorCode = item.value
+      this.ybDrgManage.readyDoctorName = item.text
     },
     selectDeptChang (item) {
-      this.ybAppealManage.readyDeptCode = item.value
-      this.ybAppealManage.readyDeptName = item.text
+      this.ybDrgManage.readyDeptCode = item.value
+      this.ybDrgManage.readyDeptName = item.text
     },
-    setFormValues (ybAppealManageChangeDetail, type) {
+    setFormValues (ybDrgManageChangeAdminHandle, type) {
       this.type = type
       if (type === 0) {
         this.selectAcceptStateDataSource = [{value: 0, text: '接受申请'}]
-        this.acceptState = 0
+        this.state = 0
         this.accStateDisabled = true
       } else if (type === 7) {
         this.selectAcceptStateDataSource = [{value: 6, text: '已申诉'}]
-        this.acceptState = 6
+        this.state = 6
         this.accStateDisabled = true
       } else {
         this.selectAcceptStateDataSource = [{value: 0, text: '接受申请'}, {value: 1, text: '待申诉'}]
-        this.acceptState = 0
+        this.state = 0
         this.accStateDisabled = false
       }
-      this.ybAppealManageChangeDetail = ybAppealManageChangeDetail
-      this.ybAppealManage.id = ybAppealManageChangeDetail.id
-      this.ybAppealManage.sourceType = ybAppealManageChangeDetail.sourceType
-      this.ybAppealManage.dataType = ybAppealManageChangeDetail.dataType
-      this.ybAppealManage.verifyId = ybAppealManageChangeDetail.verifyId
-      this.ybAppealManage.applyDataId = ybAppealManageChangeDetail.applyDataId
-      this.ybAppealManage.acceptState = ybAppealManageChangeDetail.acceptState
-      this.changePersons = this.ybAppealManageChangeDetail.readyDeptCode + '-' + this.ybAppealManageChangeDetail.readyDeptName + ' - ' + this.ybAppealManageChangeDetail.readyDoctorCode + '-' + this.ybAppealManageChangeDetail.readyDoctorName
+      this.ybDrgManageChangeAdminHandle = ybDrgManageChangeAdminHandle
+      this.ybDrgManage.id = ybDrgManageChangeAdminHandle.id
+      this.ybDrgManage.verifyId = ybDrgManageChangeAdminHandle.verifyId
+      this.ybDrgManage.applyDataId = ybDrgManageChangeAdminHandle.applyDataId
+      this.ybDrgManage.state = ybDrgManageChangeAdminHandle.state
+      this.changePersons = this.ybDrgManageChangeAdminHandle.readyDeptCode + '-' + this.ybDrgManageChangeAdminHandle.readyDeptName + ' - ' + this.ybDrgManageChangeAdminHandle.readyDoctorCode + '-' + this.ybDrgManageChangeAdminHandle.readyDoctorName
       setTimeout(() => {
-        this.setForms(ybAppealManageChangeDetail)
+        this.setForms(ybDrgManageChangeAdminHandle)
       }, 200)
     },
     setForms (target) {
@@ -227,41 +225,41 @@ export default {
       }]
       this.$refs.inputSelectVerifyDoctor.value = target.readyDoctorCode
 
-      this.ybAppealManage.readyDoctorCode = target.readyDoctorCode
-      this.ybAppealManage.readyDoctorName = target.readyDoctorName
+      this.ybDrgManage.readyDoctorCode = target.readyDoctorCode
+      this.ybDrgManage.readyDoctorName = target.readyDoctorName
 
-      this.ybAppealManage.readyDeptCode = target.readyDeptCode
-      this.ybAppealManage.readyDeptName = target.readyDeptName
+      this.ybDrgManage.readyDeptCode = target.readyDeptCode
+      this.ybDrgManage.readyDeptName = target.readyDeptName
 
       setTimeout(() => {
-        this.$refs.inpatientfeesModule.search()
+        this.$refs.ybDrgJkModule.search()
       }, 200)
     },
     handleSubmit () {
       this.loading = true
       this.spinning = true
-      let ybAppealManage = this.ybAppealManage
-      ybAppealManage.acceptState = this.acceptState
-      // ybAppealManage.id = this.ybAppealManageChangeDetail.id
-      // ybAppealManage.sourceType = this.ybAppealManageChangeDetail.sourceType
-      // ybAppealManage.verifyId = this.ybAppealManageChangeDetail.verifyId
-      // ybAppealManage.applyDataId = this.ybAppealManageChangeDetail.applyDataId
-      // ybAppealManage.readyDoctorCode = this.ybAppealManageChangeDetail.readyDoctorCode
-      // ybAppealManage.readyDoctorName = this.ybAppealManageChangeDetail.readyDoctorName
-      // ybAppealManage.readyDeptCode = this.ybAppealManageChangeDetail.readyDeptCode
-      // ybAppealManage.readyDeptName = this.ybAppealManageChangeDetail.readyDeptName
+      let ybDrgManage = this.ybDrgManage
+      ybDrgManage.state = this.state
+      // ybDrgManage.id = this.ybDrgManageChangeAdminHandle.id
+      // ybDrgManage.sourceType = this.ybDrgManageChangeAdminHandle.sourceType
+      // ybDrgManage.verifyId = this.ybDrgManageChangeAdminHandle.verifyId
+      // ybDrgManage.applyDataId = this.ybDrgManageChangeAdminHandle.applyDataId
+      // ybDrgManage.readyDoctorCode = this.ybDrgManageChangeAdminHandle.readyDoctorCode
+      // ybDrgManage.readyDoctorName = this.ybDrgManageChangeAdminHandle.readyDoctorName
+      // ybDrgManage.readyDeptCode = this.ybDrgManageChangeAdminHandle.readyDeptCode
+      // ybDrgManage.readyDeptName = this.ybDrgManageChangeAdminHandle.readyDeptName
 
       if (this.type === 0 || this.type === 3) {
-        if (ybAppealManage.readyDoctorCode === this.ybAppealManageChangeDetail.readyDoctorCode &&
-            ybAppealManage.readyDeptCode === this.ybAppealManageChangeDetail.readyDeptCode) {
+        if (ybDrgManage.readyDoctorCode === this.ybDrgManageChangeAdminHandle.readyDoctorCode &&
+            ybDrgManage.readyDeptCode === this.ybDrgManageChangeAdminHandle.readyDeptCode) {
           this.$message.error('未更改 复议科室 和 复议医生 , 不可提交数据.')
           this.loading = false
           this.spinning = false
           return
         }
       }
-      this.$put('ybAppealManage/updateCreateAdminAppealManage', {
-        ...ybAppealManage
+      this.$put('ybDrgManage/updateCreateAdminDrgManage', {
+        ...ybDrgManage
       }).then(() => {
         this.reset()
         this.$emit('success', this.type)

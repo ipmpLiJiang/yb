@@ -2,6 +2,7 @@ package cc.mrbird.febs.com.controller;
 
 import cc.mrbird.febs.com.entity.*;
 import cc.mrbird.febs.com.service.IComFileService;
+import cc.mrbird.febs.com.service.IComTypeService;
 import cc.mrbird.febs.common.annotation.Log;
 import cc.mrbird.febs.common.controller.BaseController;
 import cc.mrbird.febs.common.domain.FebsResponse;
@@ -47,6 +48,7 @@ import javax.validation.constraints.NotBlank;
 import java.io.*;
 import java.net.URLEncoder;
 import java.util.*;
+import java.util.stream.Collectors;
 import java.util.zip.ZipFile;
 
 /**
@@ -74,6 +76,9 @@ public class ComFileController extends BaseController {
 
     @Autowired
     IYbDrgApplyService iYbDrgApplyService;
+
+    @Autowired
+    IComTypeService iComTypeService;
 
     /**
      * 分页查询数据
@@ -382,7 +387,7 @@ public class ComFileController extends BaseController {
     public FebsResponse findImgListComFiles(InUploadFile inUploadFile) {
         List<OutComFile> outList = new ArrayList<>();
         try {
-            List<ComFile> list = this.iComFileService.findListComFile(inUploadFile.getId(),null);
+            List<ComFile> list = this.iComFileService.findListComFile(inUploadFile.getId(), null);
             String strId = inUploadFile.getId();
             int sourceType = inUploadFile.getSourceType();
             String strSourceType = sourceType == 0 ? "In" : "Out";
@@ -469,7 +474,7 @@ public class ComFileController extends BaseController {
         }
         if (isUpdate || inUploadFile.getSourceType() == YbDefaultValue.SOURCETYPE_1) {
             int num = 1;
-            List<ComFile> list = this.iComFileService.findListComFile(inUploadFile.getId(),null);
+            List<ComFile> list = this.iComFileService.findListComFile(inUploadFile.getId(), null);
             if (list.size() > 0) {
                 ComFile comFile = list.get(list.size() - 1);
                 String code = comFile.getServerName();
@@ -590,16 +595,30 @@ public class ComFileController extends BaseController {
     }
 
     @PostMapping("listDrgImgComFile")
-    public FebsResponse findDrgImgListComFiles(InUploadFile inUploadFile) {
+    public FebsResponse findDrgImgListComFiles(InDrgUploadFile inUploadFile) {
         List<OutComFile> outList = new ArrayList<>();
         try {
             List<ComFile> list = this.iComFileService.findListComFile(inUploadFile.getId(), inUploadFile.getRefType());
+            String fn = "";
             if (list.size() > 0) {
+                list = list.stream().sorted(Comparator.comparing(ComFile::getCreateTime).reversed()).collect(Collectors.toList());
+                ComType query = new ComType();
+                query.setCtType(2);
+                List<ComType> typeList = iComTypeService.findComTypeList(query);
+                List<ComType> queryList = new ArrayList<>();
                 for (ComFile item : list) {
-                    String fileUrl = "uploadFile/" + inUploadFile.getApplyDateStr() + "/DRG" + inUploadFile.getAreaType() + "/" + item.getServerName();
+                    String fileUrl = "uploadFile/" + inUploadFile.getApplyDateStr() + "/DRG" + inUploadFile.getAreaType() +
+                            "/" + inUploadFile.getOrderNumber() + "/" + item.getRefType() + "/" + item.getServerName();
                     OutComFile outComFile = new OutComFile();
                     outComFile.setUid(item.getId());
-                    outComFile.setName(item.getServerName());
+                    queryList = typeList.stream().filter(s -> s.getId().equals(Integer.parseInt(item.getRefType()))).collect(Collectors.toList());
+
+                    fn = item.getClientName().substring(0, item.getClientName().lastIndexOf("."));
+                    if (queryList.size() > 0) {
+                        outComFile.setName(queryList.get(0).getCtName() + " " + fn);
+                    } else {
+                        outComFile.setName(item.getClientName());
+                    }
                     outComFile.setStatus("done");
                     outComFile.setUrl(fileUrl);
                     outComFile.setSerName(item.getServerName());
@@ -615,7 +634,7 @@ public class ComFileController extends BaseController {
 
 
     @PostMapping("uploadDrgImg")
-    public FebsResponse UploadDrgImg(@RequestParam("file") MultipartFile file, InUploadFile inUploadFile) throws FebsException {
+    public FebsResponse UploadDrgImg(@RequestParam("file") MultipartFile file, InDrgUploadFile inUploadFile) throws FebsException {
         if (file.isEmpty()) {
             throw new FebsException("空文件");
         }
@@ -635,7 +654,9 @@ public class ComFileController extends BaseController {
             String suffixName = fileName2.substring(fileName2.lastIndexOf("."));  // 后缀名
             String filePath = febsProperties.getUploadPath(); // 上传后的路径
             String fileName = UUID.randomUUID().toString() + suffixName; // 新文件名
-            File dest = new File(filePath + inUploadFile.getApplyDateStr() + "/DRG" + inUploadFile.getAreaType() + "/" + fileName);
+            String furl = filePath + inUploadFile.getApplyDateStr() + "/DRG" + inUploadFile.getAreaType() +
+                    "/" + inUploadFile.getOrderNumber() + "/" + inUploadFile.getRefType() + "/" + fileName;
+            File dest = new File(furl);
             String Id = UUID.randomUUID().toString();
             if (!dest.getParentFile().exists()) {
                 dest.getParentFile().mkdirs();
@@ -655,11 +676,13 @@ public class ComFileController extends BaseController {
             } catch (IOException e) {
                 throw new FebsException(e.getMessage());
             }
-            String fileUrl = febsProperties.getBaseUrl() + "/uploadFile/" + inUploadFile.getApplyDateStr() + "/DRG" + inUploadFile.getAreaType() + "/" + fileName;
+            String fileUrl = febsProperties.getBaseUrl() + "/uploadFile/" + inUploadFile.getApplyDateStr() + "/DRG" + inUploadFile.getAreaType() +
+                    "/" + inUploadFile.getOrderNumber() + "/" + inUploadFile.getRefType() + "/" + fileName;
 
             outComFile.setSuccess(1);
             outComFile.setUid(Id);
-            outComFile.setName(fileName2);
+            String fn = fileName2.substring(0, fileName2.lastIndexOf("."));
+            outComFile.setName(inUploadFile.getRefTypeName() + " " + fn);
             outComFile.setStatus("done");
             outComFile.setUrl(fileUrl);
             outComFile.setThumbUrl(fileUrl);
@@ -674,7 +697,7 @@ public class ComFileController extends BaseController {
 
     @Log("删除")
     @PostMapping("deleteDrgImg")
-    public FebsResponse deleteDrgImgComFile(InUploadFile inUploadFile) {
+    public FebsResponse deleteDrgImgComFile(InDrgUploadFile inUploadFile) {
         int success = 0;
         try {
             boolean isUpdate = false;
@@ -688,7 +711,8 @@ public class ComFileController extends BaseController {
                 ComFile comFile = this.iComFileService.findComFileById(strId);
                 if (comFile != null) {
                     String filePath = febsProperties.getUploadPath(); // 上传后的路径
-                    String fileUrl = filePath + inUploadFile.getApplyDateStr() + "/DRG" + inUploadFile.getAreaType() + "/" + inUploadFile.getSerName();
+                    String fileUrl = filePath + inUploadFile.getApplyDateStr() + "/DRG" + inUploadFile.getAreaType() + "/" +
+                            "/" + inUploadFile.getOrderNumber() + "/" + comFile.getRefType() + "/" + comFile.getServerName();
                     boolean blFile = deleteFile(fileUrl);
                     if (blFile) {
                         int count = this.iComFileService.deleteComFile(inUploadFile.getId());

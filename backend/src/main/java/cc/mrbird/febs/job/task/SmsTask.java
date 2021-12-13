@@ -48,4 +48,16 @@ public class SmsTask {
         }
     }
 
+    public void sendDrgSmsWarnTask(String params) {
+        if(params != null && params!=""){
+            String[] arr = params.split("\\|");
+            if(arr.length == 2) {
+                params = arr[0];
+                int areaType = Integer.parseInt(arr[1]);
+                //写方法
+                iComSmsService.sendDrgManageWarnSms(params,areaType);
+            }
+        }
+    }
+
 }

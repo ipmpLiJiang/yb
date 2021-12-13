@@ -2,7 +2,7 @@
   <a-drawer
     title="查看"
     :maskClosable="false"
-    width=70%
+    width=75%
     placement="right"
     :closable="true"
     @close="onClose"
@@ -240,6 +240,7 @@ export default {
       let formData = {}
       formData.id = ybDrgManageLook.id
       formData.applyDateStr = ybDrgManageLook.applyDateStr
+      formData.orderNumber = ybDrgManageLook.orderNumber
       formData.areaType = this.user.areaType.value
       this.$post('comFile/listDrgImgComFile', {
         ...formData

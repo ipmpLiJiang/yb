@@ -6,6 +6,8 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.List;
+
 /**
  * <p>
  *  Mapper 接口
@@ -17,4 +19,10 @@ import org.apache.ibatis.annotations.Param;
 public interface YbDrgManageMapper extends BaseMapper<YbDrgManage> {
         void updateYbDrgManage(YbDrgManage ybDrgManage);
         IPage<YbDrgManage> findYbDrgManage(Page page, @Param("ybDrgManage") YbDrgManage ybDrgManage);
+
+        List<YbDrgManage> findDrgManageApplyEndDateList(@Param("pid") String pid,@Param("applyDateStr") String applyDateStr,
+                                                        @Param("areaType") Integer areaType);
+
+        List<YbDrgManage> findDrgManageEnableOverdueList(@Param("pid") String pid,@Param("applyDateStr") String applyDateStr,
+                                                        @Param("areaType") Integer areaType,@Param("enableDate") String enableDate);
         }

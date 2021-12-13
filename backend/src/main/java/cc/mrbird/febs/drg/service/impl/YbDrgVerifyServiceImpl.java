@@ -2,6 +2,7 @@ package cc.mrbird.febs.drg.service.impl;
 
 import cc.mrbird.febs.com.controller.DataTypeHelpers;
 import cc.mrbird.febs.com.entity.ComSms;
+import cc.mrbird.febs.com.service.IComConfiguremanageService;
 import cc.mrbird.febs.com.service.IComSmsService;
 import cc.mrbird.febs.common.domain.QueryRequest;
 import cc.mrbird.febs.common.properties.FebsProperties;
@@ -15,6 +16,8 @@ import cc.mrbird.febs.drg.service.IYbDrgApplyDataService;
 import cc.mrbird.febs.drg.service.IYbDrgApplyService;
 import cc.mrbird.febs.drg.service.IYbDrgManageService;
 import cc.mrbird.febs.drg.service.IYbDrgVerifyService;
+import cc.mrbird.febs.job.domain.Job;
+import cc.mrbird.febs.job.service.JobService;
 import cc.mrbird.febs.yb.entity.YbDefaultValue;
 import cc.mrbird.febs.yb.entity.YbDept;
 import cc.mrbird.febs.yb.entity.YbPerson;
@@ -70,6 +73,12 @@ public class YbDrgVerifyServiceImpl extends ServiceImpl<YbDrgVerifyMapper, YbDrg
 
     @Autowired
     IYbDrgManageService iYbDrgManageService;
+
+    @Autowired
+    IComConfiguremanageService iComConfiguremanageService;
+
+    @Autowired
+    JobService jobService;
 
     @Override
     public IPage<YbDrgVerify> findYbDrgVerifys(QueryRequest request, YbDrgVerify ybDrgVerify) {
@@ -213,7 +222,7 @@ public class YbDrgVerifyServiceImpl extends ServiceImpl<YbDrgVerifyMapper, YbDrg
             isCreate = true;
         }
         int state = drgApply.getState();
-        if ((state == YbDefaultValue.APPLYSTATE_2) && isCreate) {
+        if ((state == YbDefaultValue.DRGAPPLYSTATE_2) && isCreate) {
             this.iYbDrgApplyService.updateDrgApplyState3(drgApply);
         }
     }
@@ -225,7 +234,7 @@ public class YbDrgVerifyServiceImpl extends ServiceImpl<YbDrgVerifyMapper, YbDrg
         boolean isCreate = true;
         if (ybDrgApply != null) {
             int state = ybDrgApply.getState();
-            if (state == YbDefaultValue.APPLYSTATE_2) {
+            if (state == YbDefaultValue.DRGAPPLYSTATE_2) {
                 List<YbDrgApplyData> radList = iYbDrgApplyDataService.findDrgApplyDataByNotVerifys(ybDrgApply.getId(), ybDrgApply.getApplyDateStr(), areaType);
                 if (radList.size() > 0) {
                     List<YbDrgVerify> createList = new ArrayList<>();
@@ -249,7 +258,7 @@ public class YbDrgVerifyServiceImpl extends ServiceImpl<YbDrgVerifyMapper, YbDrg
                     }
                 }
             }
-            if ((state == YbDefaultValue.APPLYSTATE_2) && isCreate) {
+            if ((state == YbDefaultValue.DRGAPPLYSTATE_2) && isCreate) {
                 this.iYbDrgApplyService.updateDrgApplyState3(ybDrgApply);
             }
         }
@@ -597,6 +606,124 @@ public class YbDrgVerifyServiceImpl extends ServiceImpl<YbDrgVerifyMapper, YbDrg
             }
 
         }
+    }
+
+    @Override
+    @Transactional
+    public String createEndJobState(String applyDateStr, Integer areaType, int[] jobTypeList) {
+        String msg = "ok";
+        YbDrgApply drgApply = this.iYbDrgApplyService.findDrgApplyByApplyDateStrs(applyDateStr, areaType);
+        if (drgApply != null) {
+            String cron = "";
+            Date thisDate = new Date();
+            Date endDate = drgApply.getEndDate();
+            Date enableDate = DataTypeHelpers.addDateMethod(drgApply.getEnableDate(), 1);
+            String areaName = iComConfiguremanageService.getConfigAreaName(areaType);
+
+            String bb = "DRG " + applyDateStr + " " + areaName;
+            String remark = "";
+            String methodName = "";
+            String beanName = "";
+            // Job state 0.正常    1.暂停
+            //复议截止日期
+            try {
+                for (int type : jobTypeList) {
+                    if (type == 1) {
+                        remark = bb + " 截止日期";
+                        methodName = "endDate";
+                        beanName = "drgManageTask";
+                        cron = this.getCron(endDate, type, 6, areaType);
+                    } else if (type == 2) {
+                        remark = bb + " 确认日期";
+                        beanName = "drgManageTask";
+                        methodName = "enableDate";
+                        cron = this.getCron(enableDate, 2, null, areaType);
+                    } else if (type == 3) {
+                        beanName = "smsTask";
+                        remark = bb + " 提醒申诉";
+                        methodName = "sendDrgSmsWarnTask";
+                        cron = this.getCron(endDate, 3, null, areaType);
+                    } else {
+                        msg = "noType";
+                        break;
+                    }
+                    Job job = new Job();
+                    job.setBeanName(beanName);
+                    job.setMethodName(methodName);
+                    job.setParams(applyDateStr + "|" + Integer.toString(areaType));
+                    //查询当前正在运行的任务
+                    List<Job> findList = jobService.jobList(job);
+                    job.setCronExpression(cron);
+                    job.setStatus("0");
+                    job.setCreateTime(thisDate);
+                    job.setRemark(remark);
+                    //将正在运行的任务关闭/删除
+                    if (findList.size() > 0) {
+                        findList = findList.stream().filter(s -> s.getStatus().equals("0")).collect(Collectors.toList());
+                        if (findList.size() > 0) {
+                            String[] jobs = new String[findList.size()];
+                            int j = 0;
+                            for (Job item : findList) {
+                                jobs[j] = item.getJobId().toString();
+                            }
+                            //将正在运行的任务关闭
+                            if (jobs != null) {
+                                jobService.deleteJobs(jobs);
+                            }
+                        }
+                    }
+                    //创建任务
+                    jobService.createJob(job);
+                    //启用当前任务
+                    List<Job> jobList = jobService.jobList(job);
+                    jobService.resume(jobList.get(0).getJobId().toString());
+                }
+            } catch (Exception e) {
+                msg = e.getMessage();
+                log.error(msg);
+            }
+        } else {
+            msg = "noApply";
+        }
+        return msg;
+    }
+
+    private String getCron(Date date, int type, Integer addTime, int areaType) {
+        Calendar now = Calendar.getInstance();
+        now.setTime(date);
+        if (type == 1) {
+            now.add(now.MINUTE, addTime);
+        }
+        String fen = "" + now.get(Calendar.MINUTE);
+        String shi = "" + now.get(Calendar.HOUR_OF_DAY);
+        String ri = "" + now.get(Calendar.DAY_OF_MONTH);
+        String yue = "" + (now.get(Calendar.MONTH) + 1);
+        String nian = "" + now.get(Calendar.YEAR);
+//        String miao = "" + now.get(Calendar.SECOND);
+//        String haomiao = "" + now.getTimeInMillis();
+
+        String cron = "";
+        // drgDate
+        if (type == 1) {
+            cron = "0 " + fen + " " + shi + " " + ri + " " + yue + " ? " + nian + "-" + nian;
+        }
+        //enableDate
+        if (type == 2) {
+            if (areaType == 0) {
+                cron = "0 10 0 " + ri + " " + yue + " ? " + nian + "-" + nian;
+            } else {
+                cron = "0 15 0 " + ri + " " + yue + " ? " + nian + "-" + nian;
+            }
+        }
+        //
+        if (type == 3) {
+            if (areaType == 0) {
+                cron = "0 0/3 6 " + ri + " " + yue + " ? " + nian + "-" + nian;
+            } else {
+                cron = "0 0/3 7 " + ri + " " + yue + " ? " + nian + "-" + nian;
+            }
+        }
+        return cron;
     }
 
 

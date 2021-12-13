@@ -418,5 +418,38 @@ public class YbDrgVerifyController extends BaseController {
         }
     }
 
+    @Log("创建Job")
+    @PutMapping("startJob")
+    @RequiresPermissions("ybDrgVerify:stateUpdate")
+    public FebsResponse cStartJob(String applyDateStr, Integer areaType, int[] jobTypeList) {
+        int success = 0;
+        try {
+            String msg = this.iYbDrgVerifyService.createEndJobState(applyDateStr, areaType, jobTypeList);
+//            ok,"",noApply,noType
+            if (msg.equals("ok")) {
+                success = 1;
+            } else if (msg.equals("")) {
+                message = "该" + applyDateStr + "年月已完成复议.";
+            } else {
+                if (msg.equals("noApply")) {
+                    message = "未找到" + applyDateStr + "年月数据.";
+                } else if (msg.equals("noType")) {
+                    message = "未找到传入的类型.";
+                } else {
+                    message = msg;
+                }
+            }
+        } catch (Exception e) {
+            message = "创建Job失败";
+            log.error(message, e);
+        }
+
+        ResponseResult rr = new ResponseResult();
+        rr.setSuccess(success);
+        rr.setMessage(message);
+        return new FebsResponse().data(rr);
+    }
+
+
 
 }
