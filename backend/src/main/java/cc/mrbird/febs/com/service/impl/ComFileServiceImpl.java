@@ -96,6 +96,11 @@ public class ComFileServiceImpl extends ServiceImpl<ComFileMapper, ComFile> impl
     }
 
     @Override
+    public List<ComFile> findDrgResultComFiles(String applyDateStr,Integer areaType){
+        return this.baseMapper.findDrgResultComFile(applyDateStr,areaType);
+    }
+
+    @Override
     public List<ComFile> findAppealResultSumComFiles(InUploadFile iup) {
         List<ComFile> list = this.baseMapper.findAppealResultSumComFile(iup);
         return list;

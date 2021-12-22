@@ -186,6 +186,7 @@ export default {
     exportExcel () {
       let queryParams = {}
       queryParams.applyDateStr = this.applyDate
+      queryParams.areaType = this.user.areaType.value
       this.$export('ybAppealResultResetView/excelAppealResultReset', {
         ...queryParams
       })

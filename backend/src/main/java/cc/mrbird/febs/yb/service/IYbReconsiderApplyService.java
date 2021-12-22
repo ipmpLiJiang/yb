@@ -33,6 +33,8 @@ public interface IYbReconsiderApplyService extends IService<YbReconsiderApply> {
 
     void updateYbReconsiderApply(YbReconsiderApply ybReconsiderApply, Integer isChangDate);
 
+    void updateYbReconsiderApply(YbReconsiderApply ybReconsiderApply);
+
     void deleteYbReconsiderApplys(String[] Ids);
 
     void updateReconsiderApplyState2345(YbReconsiderApply reconsiderApply);

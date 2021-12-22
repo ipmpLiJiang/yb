@@ -159,6 +159,13 @@ public class YbDrgApplyServiceImpl extends ServiceImpl<YbDrgApplyMapper, YbDrgAp
         }
 
     }
+    @Override
+    @Transactional
+    public void updateYbDrgApply(YbDrgApply ybDrgApply){
+        ybDrgApply.setModifyTime(new Date());
+        this.baseMapper.updateYbDrgApply(ybDrgApply);
+    }
+
 
     @Override
     @Transactional

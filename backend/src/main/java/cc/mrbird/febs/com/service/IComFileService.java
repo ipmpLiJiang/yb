@@ -42,6 +42,8 @@ public interface IComFileService extends IService<ComFile> {
 
     List<ComFile> findAppealResultComFiles(InUploadFile inUploadFile);
 
+    List<ComFile> findDrgResultComFiles(String applyDateStr,Integer areaType);
+
     List<ComFile> findAppealResultSumComFiles(InUploadFile inUploadFile);
 
     boolean loadLastComFiles(List<ComFile> listComFile);

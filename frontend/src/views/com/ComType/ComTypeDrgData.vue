@@ -13,7 +13,19 @@
         />
       </a-form-item>
       </a-col>
-      <a-col :span=12>
+      <a-col :span=6>
+      <a-form-item
+        v-bind="formItemLayout"
+        label="排序"
+      >
+        <a-input-number
+          placeholder="请输入排序"
+          :step="1" :min="1"
+          v-decorator="['orderNum', {rules: [{ required: true, message: '排序不能为空' }] }]"
+        />
+      </a-form-item>
+      </a-col>
+      <a-col>
         <a-button
             @click="handleSubmit"
             type="primary"
@@ -26,6 +38,23 @@
           >
             <a-button style="margin-right: .8rem">返回列表</a-button>
           </a-popconfirm>
+      </a-col>
+    </a-row>
+    <a-row type="flex" justify="start">
+      <a-col :span=8>
+        <a-form-item
+          v-bind="formItemLayout"
+          label="查询"
+        >
+          <a-checkbox style="margin-left: 20px" :checked="checked"  @change="onIsYxChange" >
+            是否有效
+          </a-checkbox>
+          <a-button
+            style="margin-left: 20px"
+            @click="search"
+            type="primary"
+          >刷新</a-button>
+        </a-form-item>
       </a-col>
     </a-row>
     </a-form>
@@ -43,22 +72,41 @@
       :scroll="{ x: 900 }"
     >
       <template
-      v-for="col in ['ctName']"
-      :slot="col"
-      slot-scope="text, record"
-    >
-      <div :key="col">
-        <a-input
-          v-if="record.editable"
-          style="margin: -5px 0"
-          :value="text"
-          @change="e => handleChange(e.target.value, record.id, col)"
-        />
-        <template v-else>
-          {{ text }}
-        </template>
-      </div>
-    </template>
+        slot="orderNum"
+        slot-scope="text, record"
+      >
+        <div key="orderNum">
+          <a-input-number
+            v-if="record.editable"
+            style="margin: -5px 0"
+            :value="text"
+            :step="1" :min="1"
+            @change="val => handleChange(val, record.id, 'orderNum')"
+          />
+          <template v-else>
+            {{ text }}
+          </template>
+        </div>
+      </template>
+      <template
+        slot="isDeletemark"
+        slot-scope="text, record"
+      >
+        <div key="isDeletemark">
+          <a-select
+            v-if="record.editable"
+            v-model="record.isDeletemark"
+            style="width: 90px"
+            @change="e => handleChange(e, record.id, 'isDeletemark')"
+          >
+            <a-select-option :value="1"> 有效 </a-select-option>
+            <a-select-option :value="2"> 无效 </a-select-option>
+          </a-select>
+          <template v-else>
+            {{ record.isDeletemark ===1 ? '有效' : '无效' }}
+          </template>
+        </div>
+      </template>
       <template slot="operation" slot-scope="text, record">
       <div class="editable-row-operations">
         <span v-if="record.editable">
@@ -89,7 +137,7 @@ const formItemLayout = {
   wrapperCol: { span: 16 }
 }
 export default {
-  name: 'ComTypeData',
+  name: 'ComTypeDrgData',
   props: {
   },
   data () {
@@ -114,8 +162,10 @@ export default {
       queryParams: {
       },
       ctType: 0,
+      defOrderNum: 1,
       editingKey: '',
       cacheData: [],
+      checked: true,
       loading: false,
       bordered: true,
       form: this.$form.createForm(this),
@@ -135,7 +185,18 @@ export default {
       {
         title: '名称',
         dataIndex: 'ctName',
-        scopedSlots: { customRender: 'ctName' }
+        scopedSlots: { customRender: 'ctName' },
+        width: 300
+      },
+      {
+        title: '排序',
+        dataIndex: 'orderNum',
+        scopedSlots: { customRender: 'orderNum' }
+      },
+      {
+        title: '是否有效',
+        dataIndex: 'isDeletemark',
+        scopedSlots: { customRender: 'isDeletemark' }
       },
       {
         title: '操作',
@@ -183,17 +244,21 @@ export default {
       }
       )
     },
+    onIsYxChange () {
+      this.checked = !this.checked
+      this.searchPage(this.ctType)
+    },
     onClose () {
       this.form.resetFields()
       this.editingKey = ''
       this.cacheData = ''
       this.$emit('close')
     },
-    handleChange (value, key, column) {
+    handleChange (val, key, column) {
       const newData = [...this.dataSource]
       const target = newData.filter(item => key === item.id)[0]
       if (target) {
-        target[column] = value
+        target[column] = val
         this.dataSource = newData
       }
     },
@@ -212,27 +277,41 @@ export default {
 
       const target = newData.filter(item => key === item.id)[0]
       if (target !== undefined) {
-        const targetCache = newCacheData.filter(item => key === item.id)[0]
-        if (target && targetCache) {
-          delete target.editable
-          let comTy = { id: target.id, ctName: target.ctName, ctType: target.ctType }
-          this.$put('comType', {
-            ...comTy
-          }).then((r) => {
-            if (r.data.data.success === 1) {
-              this.$message.success('操作成功.')
-              this.dataSource = newData
-              Object.assign(targetCache, target)
-              this.cacheData = newCacheData
-            } else {
-              this.$message.error(r.data.data.message)
-              this.dataSource = newCacheData
-              Object.assign(target, targetCache)
-              this.cacheData = newData
+        var numReg = /^[0-9]*$/
+        var numRe = new RegExp(numReg)
+        if (numRe.test(target.orderNum)) {
+          if (target.orderNum > 0) {
+            const targetCache = newCacheData.filter(item => key === item.id)[0]
+            if (target && targetCache) {
+              delete target.editable
+              let comTy = {
+                id: target.id,
+                ctName: target.ctName,
+                orderNum: target.orderNum,
+                ctType: target.ctType,
+                isDeletemark: target.isDeletemark
+              }
+              this.$put('comType/updateDrgType', {
+                ...comTy
+              }).then((r) => {
+                if (r.data.data.success === 1) {
+                  this.$message.success('操作成功.')
+                  this.search()
+                } else {
+                  this.$message.error(r.data.data.message)
+                  this.dataSource = newCacheData
+                  Object.assign(target, targetCache)
+                  this.cacheData = newData
+                }
+              }).catch(() => {
+                this.$message.error('操作失败.')
+              })
             }
-          }).catch(() => {
-            this.$message.error('操作失败.')
-          })
+          } else {
+            this.$message.error('您输入的整数必须大于0 .')
+          }
+        } else {
+          this.$message.error('您输入的不是整数.')
         }
         this.editingKey = ''
       } else {
@@ -254,10 +333,11 @@ export default {
         if (!err) {
           let comTy = this.form.getFieldsValue()
           comTy.ctType = this.ctType
-          this.$put('comType', {
+          this.$put('comType/updateDrgType', {
             ...comTy
           }).then((r) => {
             if (r.data.data.success === 1) {
+              this.checked = true
               this.searchPage(this.ctType)
               this.form.resetFields()
             } else {
@@ -303,6 +383,11 @@ export default {
       })
     },
     fetch (params = {}) {
+      if (this.checked) {
+        params.isDeletemark = 1
+      } else {
+        params.isDeletemark = 2
+      }
       params.ctType = this.ctType
       this.loading = true
       this.editingKey = ''
@@ -317,7 +402,8 @@ export default {
         params.pageSize = this.pagination.defaultPageSize
         params.pageNum = this.pagination.defaultCurrent
       }
-
+      params.sortField = 'IS_DELETEMARK asc, orderNum'
+      params.sortOrder = 'ascend'
       this.$get('comType', {
         ...params
       }).then((r) => {

@@ -577,8 +577,6 @@ public class YbDrgManageServiceImpl extends ServiceImpl<YbDrgManageMapper, YbDrg
 
     private Lock lockDrgApplyEndDate = new ReentrantLock();
 
-    private Lock lockDrgEnableOverdue = new ReentrantLock();
-
     @Override
     @Transactional
     public void updateDrgApplyEndDate(String applyDateStr, Integer areaType) {
@@ -590,8 +588,14 @@ public class YbDrgManageServiceImpl extends ServiceImpl<YbDrgManageMapper, YbDrg
                         Date thisDate = new Date();
                         if (thisDate.compareTo(drgApply.getEndDate()) > 0) {
                             List<YbDrgManage> list = this.baseMapper.findDrgManageApplyEndDateList(drgApply.getId(), applyDateStr, areaType);
+                            LambdaQueryWrapper<YbDrgResult> resultWrapper = new LambdaQueryWrapper<>();
+                            resultWrapper.eq(YbDrgResult::getApplyDateStr,applyDateStr);
+                            resultWrapper.eq(YbDrgResult::getAreaType,areaType);
+                            List<YbDrgResult> resultList = iYbDrgResultService.list(resultWrapper);
+
                             List<YbDrgManage> updateList = new ArrayList<>();
                             List<YbDrgResult> createList = new ArrayList<>();
+                            List<YbDrgResult> resultQueryList = new ArrayList<>();
                             for (YbDrgManage item : list) {
                                 YbDrgManage update = new YbDrgManage();
                                 update.setId(item.getId());
@@ -599,27 +603,30 @@ public class YbDrgManageServiceImpl extends ServiceImpl<YbDrgManageMapper, YbDrg
                                 update.setOperateDate(thisDate);
                                 update.setOperateReason("");
                                 update.setOperateProcess(
-                                        item.getState() == 0 ? "接受申请-未申诉" : item.getState() == 1 ? "待申诉-未申诉" : "已拒绝-未申诉"
+                                    item.getState() == 0 ? "接受申请-未申诉" : item.getState() == 1 ? "待申诉-未申诉" : "已拒绝-未申诉"
                                 );
                                 updateList.add(update);
 
-                                YbDrgResult create = new YbDrgResult();
-                                create.setId(item.getId());
-                                create.setApplyDataId(item.getApplyDataId());
-                                create.setVerifyId(item.getVerifyId());
-                                create.setManageId(item.getId());
-                                create.setDoctorCode(item.getReadyDoctorCode());
-                                create.setDoctorName(item.getReadyDoctorName());
-                                create.setDeptCode(item.getReadyDeptCode());
-                                create.setDeptName(item.getReadyDeptName());
-                                create.setOperateReason("未申诉");
-                                create.setOperateDate(thisDate);
-                                create.setState(1);
-                                create.setApplyDateStr(item.getApplyDateStr());
-                                create.setOrderNum(item.getOrderNum());
-                                create.setOrderNumber(item.getOrderNumber());
-                                create.setAreaType(item.getAreaType());
-                                createList.add(create);
+                                resultQueryList = resultList.stream().filter(s->s.getId().equals(item.getId())).collect(Collectors.toList());
+                                if(resultQueryList.size() == 0) {
+                                    YbDrgResult create = new YbDrgResult();
+                                    create.setId(item.getId());
+                                    create.setApplyDataId(item.getApplyDataId());
+                                    create.setVerifyId(item.getVerifyId());
+                                    create.setManageId(item.getId());
+                                    create.setDoctorCode(item.getReadyDoctorCode());
+                                    create.setDoctorName(item.getReadyDoctorName());
+                                    create.setDeptCode(item.getReadyDeptCode());
+                                    create.setDeptName(item.getReadyDeptName());
+                                    create.setOperateReason("未申诉");
+                                    create.setOperateDate(thisDate);
+                                    create.setState(1);
+                                    create.setApplyDateStr(item.getApplyDateStr());
+                                    create.setOrderNum(item.getOrderNum());
+                                    create.setOrderNumber(item.getOrderNumber());
+                                    create.setAreaType(item.getAreaType());
+                                    createList.add(create);
+                                }
                             }
                             if (updateList.size() > 0) {
                                 this.updateBatchById(updateList);
@@ -627,21 +634,29 @@ public class YbDrgManageServiceImpl extends ServiceImpl<YbDrgManageMapper, YbDrg
 
                             if (createList.size() > 0) {
                                 this.iYbDrgResultService.saveBatch(createList);
+                                log.info(applyDateStr + " DRG截止日期: OK");
+                                System.out.println(applyDateStr + " DRG截止日期: OK");
                             }
                         }
                     } else {
-                        log.error("DRG确认截止日期: 未查询到DRG申请数据");
+                        log.error(applyDateStr + " DRG截止日期: 未查询到DRG申请数据");
+                        System.out.println(applyDateStr + " DRG截止日期: 未查询到DRG申请数据");
                     }
                 } catch (Exception e) {
-                    log.error("DRG截止日期:" + e.getMessage());
+                    log.error(applyDateStr + " DRG截止日期:" + e.getMessage());
+                    System.out.println(applyDateStr + " DRG截止日期:" + e.getMessage());
                 } finally {
                     lockDrgApplyEndDate.unlock();
+                    System.out.println(applyDateStr + " DRG截止日期: 执行结束");
                 }
             }
         } else {
-            log.info("DRG截止日期，传入的参数有误.");
+            log.info(applyDateStr + " DRG截止日期，传入的参数有误.");
+            System.out.println(applyDateStr + " DRG截止日期，传入的参数有误.");
         }
     }
+
+    private Lock lockDrgEnableOverdue = new ReentrantLock();
 
     @Override
     @Transactional
@@ -668,17 +683,23 @@ public class YbDrgManageServiceImpl extends ServiceImpl<YbDrgManageMapper, YbDrg
 
                         if (updateList.size() > 0) {
                             this.updateBatchById(updateList);
+                            log.info(applyDateStr + " DRG确认截止日期: OK");
+                            System.out.println(applyDateStr + " DRG确认截止日期: OK");
                         }
                     } else {
-                        log.error("DRG确认截止日期: 未查询到DRG申请数据");
+                        log.error(applyDateStr + " DRG确认截止日期: 未查询到DRG申请数据");
+                        System.out.println(applyDateStr + " DRG确认截止日期: 未查询到DRG申请数据");
                     }
                 } catch (Exception e) {
-                    log.error("DRG确认截止日期:" + e.getMessage());
+                    log.error(applyDateStr + " DRG确认截止日期:" + e.getMessage());
+                    System.out.println(applyDateStr + " DRG确认截止日期:" + e.getMessage());
                 } finally {
                     lockDrgEnableOverdue.unlock();
+                    System.out.println(applyDateStr + " DRG确认截止日期: 执行结束");
                 }
             } else {
-                log.info("DRG确认截止日期，传入的参数有误.");
+                log.info(applyDateStr + " DRG确认截止日期，传入的参数有误.");
+                System.out.println(applyDateStr + " DRG确认截止日期，传入的参数有误.");
             }
         }
     }

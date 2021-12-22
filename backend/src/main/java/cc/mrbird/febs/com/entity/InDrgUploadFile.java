@@ -22,4 +22,7 @@ public class InDrgUploadFile implements Serializable {
     private Integer state;
     private String orderNumber;
     private Integer isCheck = 0;
+    private Integer isOn;//类型排序
+    private Integer startOrderNumber;
+    private Integer endOrderNumber;
 }

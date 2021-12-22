@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cc.mrbird.febs.drg.dao.YbDrgResultViewMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="cc.mrbird.febs.drg.entity.YbDrgResultView">
+        <result column="id" property="id"/>
+        <result column="pid" property="pid"/>
+        <result column="applyDataId" property="applyDataId"/>
+        <result column="applyDateStr" property="applyDateStr"/>
+        <result column="ks" property="ks"/>
+        <result column="jzjlh" property="jzjlh"/>
+        <result column="bah" property="bah"/>
+        <result column="wglx" property="wglx"/>
+        <result column="wtms" property="wtms"/>
+        <result column="ylzfy" property="ylzfy"/>
+        <result column="wgje" property="wgje"/>
+        <result column="sfbmzczjcw" property="sfbmzczjcw"/>
+        <result column="ly" property="ly"/>
+        <result column="doctorCode" property="doctorCode"/>
+        <result column="doctorName" property="doctorName"/>
+        <result column="deptCode" property="deptCode"/>
+        <result column="deptName" property="deptName"/>
+        <result column="orderNumber" property="orderNumber"/>
+        <result column="orderNum" property="orderNum"/>
+        <result column="STATE" property="state"/>
+        <result column="areaType" property="areaType"/>
+        <result column="operateReason" property="operateReason"/>
+        <result column="operateDate" property="operateDate"/>
+    </resultMap>
+
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, pid, applyDataId, applyDateStr, ks, jzjlh, bah, wglx, wtms, ylzfy, wgje, sfbmzczjcw, ly,
+        orderNumber, orderNum, doctorCode, doctorName, deptCode, deptName,STATE, areaType,operateReason,operateDate
+    </sql>
+
+    <select id="findDrgResultViewList" resultType="cc.mrbird.febs.drg.entity.YbDrgResultView"
+                     parameterType="cc.mrbird.febs.drg.entity.YbDrgResultView">
+        select
+            dr.id,
+            ad.pid,
+            ad.id applyDataId,
+            #{ ybDrgResultView.applyDateStr} applyDateStr,
+            ad.ks,
+            ad.jzjlh,
+            ad.bah,
+            ad.wglx,
+            ad.wtms,
+            ad.ylzfy,
+            ad.wgje,
+            ad.sfbmzczjcw,
+            ad.ly,
+            ad.orderNumber,
+            ad.orderNum,
+            dr.doctorCode,
+            concat(dr.doctorCode,'-',dr.doctorName) doctorName,
+            dr.deptCode,
+            concat(dr.deptCode,'-',dr.deptName) deptName,
+            dr.operateReason,
+            dr.operateDate,
+            dr.STATE,
+            dr.areaType
+        from
+            yb_drg_apply_data ad
+            LEFT JOIN yb_drg_result dr ON
+                ad.id = dr.applyDataId
+        where
+            ad.pid = #{ybDrgResultView.pid}
+    </select>
+
+    <select id="findDrgResultViewInnerList" resultType="cc.mrbird.febs.drg.entity.YbDrgResultView"
+            parameterType="cc.mrbird.febs.drg.entity.YbDrgResultView">
+        select
+            dr.id,
+            ad.pid,
+            ad.id applyDataId,
+            #{ ybDrgResultView.applyDateStr} applyDateStr,
+            ad.ks,
+            ad.jzjlh,
+            ad.bah,
+            ad.wglx,
+            ad.wtms,
+            ad.ylzfy,
+            ad.wgje,
+            ad.sfbmzczjcw,
+            ad.ly,
+            ad.orderNumber,
+            ad.orderNum,
+            dr.doctorCode,
+            concat(dr.doctorCode,'-',dr.doctorName) doctorName,
+            dr.deptCode,
+            concat(dr.deptCode,'-',dr.deptName) deptName,
+            dr.operateReason,
+            dr.operateDate,
+            dr.STATE,
+            dr.areaType
+        from
+            yb_drg_apply_data ad
+            INNER JOIN yb_drg_result dr ON
+                ad.id = dr.applyDataId
+        where
+            ad.pid = #{ybDrgResultView.pid}
+    </select>
+</mapper>

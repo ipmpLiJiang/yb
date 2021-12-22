@@ -27,6 +27,11 @@
         <a-button v-hasPermission="['ybDrgApply:delete']" @click="batchDelete"
           >删除</a-button
         >
+        <a-button
+          type="primary"
+          style="margin-left: 30px"
+          @click="showModal"
+        >上传类型维护</a-button>
         <a-dropdown v-hasPermission="['ybDrgApply:export']">
           <a-menu slot="overlay">
             <a-menu-item key="export-data" @click="exportExcel"
@@ -127,6 +132,17 @@
       >
       </ybDrgApply-upload>
     </a-modal>
+    <template>
+      <div>
+        <a-modal width="60%" :maskClosable="false" :footer="null" v-model="typeVisible" title="上传类型维护" @cancel="handleOk">
+          <comType-data
+          ref="comTypeData"
+          @close="handleOk"
+          >
+          </comType-data>
+        </a-modal>
+      </div>
+    </template>
   </a-card>
 </template>
 
@@ -135,6 +151,7 @@ import moment from 'moment'
 import YbDrgApplyAdd from './YbDrgApplyAdd'
 import YbDrgApplyEdit from './YbDrgApplyEdit'
 import YbDrgApplyUpload from './YbDrgApplyUpload'
+import ComTypeData from '../../com/ComType/ComTypeDrgData'
 
 const formItemLayout = {
   labelCol: {
@@ -150,7 +167,8 @@ export default {
   components: {
     YbDrgApplyAdd,
     YbDrgApplyEdit,
-    YbDrgApplyUpload
+    YbDrgApplyUpload,
+    ComTypeData
   },
   data () {
     return {
@@ -175,6 +193,8 @@ export default {
       addVisiable: false,
       editVisiable: false,
       gotoVisiable: false,
+      typeVisible: false,
+      ctType: 2,
       loading: false,
       bordered: true
     }
@@ -285,6 +305,15 @@ export default {
       if (!this.advanced) {
         this.queryParams.comments = ''
       }
+    },
+    showModal () {
+      this.typeVisible = true
+      setTimeout(() => {
+        this.$refs.comTypeData.searchPage(this.ctType)
+      }, 200)
+    },
+    handleOk (e) {
+      this.typeVisible = false
     },
     handleCancel () {
       this.gotoVisiable = false

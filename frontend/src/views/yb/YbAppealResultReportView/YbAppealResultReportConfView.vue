@@ -13,7 +13,7 @@
             >
               <a-month-picker
                 placeholder="请选择复议年月"
-                style="width: 170px"
+                style="width: 150px"
                 @change="monthChange"
                 :default-value="defaultApplyDate"
                 :format="monthFormat"

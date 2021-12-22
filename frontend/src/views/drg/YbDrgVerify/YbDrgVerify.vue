@@ -18,7 +18,7 @@
             >
               <a-month-picker
                 placeholder="请输入复议年月"
-                style="width: 150px"
+                style="width: 120px"
                 @change="monthChange"
                 v-model="searchApplyDate"
                 :default-value="searchApplyDate"
@@ -451,7 +451,7 @@
             >
               <a-month-picker
                 placeholder="请输入复议年月"
-                style="width: 150px"
+                style="width: 120px"
                 @change="monthChange"
                 v-model="searchApplyDate"
                 :default-value="searchApplyDate"
@@ -871,7 +871,7 @@ export default {
       this.searchItem.order.orderNumber = ''
     },
     sendSms () {
-      if (this.tableSelectKey === '5') {
+      if (this.tableSelectKey === '4') {
         this.spinning = true
         let key = this.tableSelectKey
         this.$put('comSms/sendSms', {

@@ -112,7 +112,7 @@ public class YbReconsiderApplyDataServiceImpl extends ServiceImpl<YbReconsiderAp
 //        }
 //        this.baseMapper.createBatchData(list);
 
-        iYbReconsiderApplyService.updateYbReconsiderApply(ybReconsiderApply,null);
+        iYbReconsiderApplyService.updateYbReconsiderApply(ybReconsiderApply);
     }
 
     @Override
@@ -147,7 +147,7 @@ public class YbReconsiderApplyDataServiceImpl extends ServiceImpl<YbReconsiderAp
                 YbReconsiderApply updateApply = new YbReconsiderApply();
                 updateApply.setId(applyList.get(0).getId());
                 updateApply.setState(state);
-                iYbReconsiderApplyService.updateYbReconsiderApply(updateApply,null);
+                iYbReconsiderApplyService.updateYbReconsiderApply(updateApply);
                 count = 1;
             }
         }
@@ -348,7 +348,7 @@ public class YbReconsiderApplyDataServiceImpl extends ServiceImpl<YbReconsiderAp
         if (createMainList.size() > 0) {
             this.saveBatch(createMainList);
         }
-        this.iYbReconsiderApplyService.updateYbReconsiderApply(ybReconsiderApply,null);
+        this.iYbReconsiderApplyService.updateYbReconsiderApply(ybReconsiderApply);
     }
 
     private List<YbPerson> getPersonList(){

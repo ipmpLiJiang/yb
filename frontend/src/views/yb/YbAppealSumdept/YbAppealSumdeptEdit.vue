@@ -120,7 +120,6 @@ export default {
       this.ybAcData.deptName = item.text
     },
     setFormValues (obj, areaType) {
-      debugger
       this.isUpdate = false
       this.form.getFieldDecorator('asName')
       this.ybAppealSumdept.areaType = areaType

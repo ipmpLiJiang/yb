@@ -13,7 +13,9 @@ import cc.mrbird.febs.common.domain.QueryRequest;
 import cc.mrbird.febs.common.properties.FebsProperties;
 
 import cc.mrbird.febs.common.utils.FebsUtil;
+import cc.mrbird.febs.drg.entity.YbDrgResult;
 import cc.mrbird.febs.drg.service.IYbDrgApplyService;
+import cc.mrbird.febs.drg.service.IYbDrgResultService;
 import cc.mrbird.febs.system.domain.User;
 import cc.mrbird.febs.yb.domain.ResponseResult;
 import cc.mrbird.febs.yb.entity.YbAppealResultView;
@@ -28,6 +30,7 @@ import cn.hutool.core.net.multipart.UploadFile;
 import cn.hutool.core.util.ZipUtil;
 import cn.hutool.poi.excel.ExcelUtil;
 import cn.hutool.poi.excel.ExcelWriter;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.StringPool;
 import com.wuwenze.poi.ExcelKit;
 import lombok.extern.slf4j.Slf4j;
@@ -79,6 +82,9 @@ public class ComFileController extends BaseController {
 
     @Autowired
     IComTypeService iComTypeService;
+
+    @Autowired
+    IYbDrgResultService iYbDrgResultService;
 
     /**
      * 分页查询数据
@@ -285,7 +291,6 @@ public class ComFileController extends BaseController {
         }
     }
 
-
     private void downFile(HttpServletResponse response, String filePath, String fileName, boolean isDel) {
         try {
             File file = new File(filePath);
@@ -381,7 +386,6 @@ public class ComFileController extends BaseController {
         }
         return new FebsResponse().data(outList);
     }
-
 
     @PostMapping("listImgComFile")
     public FebsResponse findImgListComFiles(InUploadFile inUploadFile) {
@@ -601,24 +605,34 @@ public class ComFileController extends BaseController {
             List<ComFile> list = this.iComFileService.findListComFile(inUploadFile.getId(), inUploadFile.getRefType());
             String fn = "";
             if (list.size() > 0) {
-                list = list.stream().sorted(Comparator.comparing(ComFile::getCreateTime).reversed()).collect(Collectors.toList());
                 ComType query = new ComType();
                 query.setCtType(2);
                 List<ComType> typeList = iComTypeService.findComTypeList(query);
                 List<ComType> queryList = new ArrayList<>();
                 for (ComFile item : list) {
-                    String fileUrl = "uploadFile/" + inUploadFile.getApplyDateStr() + "/DRG" + inUploadFile.getAreaType() +
-                            "/" + inUploadFile.getOrderNumber() + "/" + item.getRefType() + "/" + item.getServerName();
-                    OutComFile outComFile = new OutComFile();
-                    outComFile.setUid(item.getId());
                     queryList = typeList.stream().filter(s -> s.getId().equals(Integer.parseInt(item.getRefType()))).collect(Collectors.toList());
 
                     fn = item.getClientName().substring(0, item.getClientName().lastIndexOf("."));
                     if (queryList.size() > 0) {
-                        outComFile.setName(queryList.get(0).getCtName() + " " + fn);
+                        item.setClientName(queryList.get(0).getCtName() + " " + fn);
+                        item.setOrderNum(queryList.get(0).getOrderNum());
                     } else {
-                        outComFile.setName(item.getClientName());
+                        item.setOrderNum(typeList.size() + 1);
                     }
+                }
+
+                if (inUploadFile.getIsOn() == null) {
+                    list = list.stream().sorted(Comparator.comparing(ComFile::getCreateTime).reversed()).collect(Collectors.toList());
+                } else {
+                    list = list.stream().sorted(Comparator.comparing(ComFile::getOrderNum)).collect(Collectors.toList());
+                }
+
+                for (ComFile item : list) {
+                    String fileUrl = "uploadFile/" + inUploadFile.getApplyDateStr() + "/DRG" + inUploadFile.getAreaType() +
+                            "/" + inUploadFile.getOrderNumber() + "/" + item.getRefType() + "/" + item.getServerName();
+                    OutComFile outComFile = new OutComFile();
+                    outComFile.setUid(item.getId());
+                    outComFile.setName(item.getClientName());
                     outComFile.setStatus("done");
                     outComFile.setUrl(fileUrl);
                     outComFile.setSerName(item.getServerName());
@@ -733,6 +747,116 @@ public class ComFileController extends BaseController {
         rr.setSuccess(success);
         return new FebsResponse().data(rr);
     }
+
+    @PostMapping("fileDrgImgZip")
+    public void fileDrgImgZip(QueryRequest request, InDrgUploadFile inUploadFile, HttpServletResponse response) throws FebsException {
+        String path = febsProperties.getUploadPath();
+        String address = path + inUploadFile.getApplyDateStr() + "/DRG" + inUploadFile.getAreaType() + "/";
+        String fileName = "";
+        if (inUploadFile.getFileName() != null && !inUploadFile.getFileName().equals("")) {
+            fileName = inUploadFile.getFileName();
+        } else {
+            fileName = UUID.randomUUID().toString();
+        }
+        Random r = new Random();
+        int nxt = r.nextInt(10000);
+        String filePath = address + fileName + "-" + nxt + ".zip";
+
+        fileName = fileName + ".zip";
+        try {
+            List<ComFile> list = this.iComFileService.findListComFile(inUploadFile.getId(), inUploadFile.getRefType());
+            if (list.size() > 0) {
+                File[] fileUtils = new File[list.size()];
+                for (int i = 0; i < list.size(); i++) {
+                    ComFile comFile = list.get(i);
+                    File file = new File(address + inUploadFile.getOrderNumber() + "/" + comFile.getRefType() + "/" + comFile.getServerName());
+                    fileUtils[i] = file;
+                }
+                ZipUtil.zip(FileUtil.file(filePath), false, fileUtils);
+                //ZipUtil.zip(address, filePath);
+                this.downFile(response, filePath, fileName, true);
+            }
+        } catch (Exception e) {
+            message = "导出失败";
+            log.error(message, e);
+            throw new FebsException(message);
+        }
+    }
+
+    @PostMapping("fileDrgSumImgZip")
+    public void fileDrgSumImgZip(QueryRequest request, InDrgUploadFile inUploadFile, HttpServletResponse response) throws FebsException {
+        List<String> orderNumberList = new ArrayList<>();
+        Integer startOrderNumber = inUploadFile.getStartOrderNumber();
+        Integer endOrderNumber = inUploadFile.getEndOrderNumber();
+        if(startOrderNumber == endOrderNumber) {
+            orderNumberList.add(startOrderNumber.toString());
+        } else {
+            while (startOrderNumber <= endOrderNumber) {
+                orderNumberList.add(startOrderNumber.toString());
+                startOrderNumber++;
+            }
+        }
+        String path = febsProperties.getUploadPath();
+        String address = path + inUploadFile.getApplyDateStr() + "/DRG" + inUploadFile.getAreaType() + "/";
+        String fileName = orderNumberList.get(0) + "-" + inUploadFile.getEndOrderNumber().toString();
+        Random r = new Random();
+        int nxt = r.nextInt(10000);
+        String filePath = address + fileName + "-" + nxt + ".zip";
+
+        fileName = inUploadFile.getApplyDateStr() + "-" + inUploadFile.getAreaType() + "-" + fileName + "-" + nxt + ".zip";
+        try {
+            LambdaQueryWrapper<YbDrgResult> wrapperResult = new LambdaQueryWrapper<>();
+            wrapperResult.eq(YbDrgResult::getApplyDateStr, inUploadFile.getApplyDateStr());
+            wrapperResult.eq(YbDrgResult::getAreaType, inUploadFile.getAreaType());
+            List<YbDrgResult> resultAllList = iYbDrgResultService.list(wrapperResult);
+            List<YbDrgResult> resultList = this.getInResult(resultAllList,orderNumberList);
+            if (resultList.size() > 0) {
+                List<ComFile> fileList = iComFileService.findDrgResultComFiles(inUploadFile.getApplyDateStr(), inUploadFile.getAreaType());
+                if(fileList.size() > 0) {
+                    List<ComFile> list = this.getInFile(resultList,fileList);
+                    File[] fileUtils = new File[list.size()];
+                    for (int i = 0; i < list.size(); i++) {
+                        ComFile comFile = list.get(i);
+                        File file = new File(address + comFile.getOrderNumber() + "/" + comFile.getRefType() + "/" + comFile.getServerName());
+                        fileUtils[i] = file;
+                    }
+                    ZipUtil.zip(FileUtil.file(filePath), false, fileUtils);
+                    //ZipUtil.zip(address, filePath);
+                    this.downFile(response, filePath, fileName, true);
+                }
+            }
+        } catch (Exception e) {
+            message = "导出失败";
+            log.error(message, e);
+            throw new FebsException(message);
+        }
+    }
+
+    private List<YbDrgResult> getInResult(List<YbDrgResult> resultList,List<String> orderNumberList){
+        List<YbDrgResult> list = new ArrayList<>();
+        List<YbDrgResult> query = new ArrayList<>();
+        for (String orderNumber : orderNumberList) {
+            query = resultList.stream().filter(s->s.getOrderNumber().equals(orderNumber)).collect(Collectors.toList());
+            if(query.size() > 0) {
+                list.add(query.get(0));
+            }
+        }
+        return list;
+    }
+
+    private List<ComFile> getInFile(List<YbDrgResult> resultList,List<ComFile> fileList){
+        List<ComFile> list = new ArrayList<>();
+        List<ComFile> query = new ArrayList<>();
+        for (YbDrgResult result : resultList) {
+            query = fileList.stream().filter(s->s.getRefTabId().equals(result.getId())).collect(Collectors.toList());
+            for (ComFile comFile : query) {
+                comFile.setOrderNumber(result.getOrderNumber());
+                list.add(comFile);
+            }
+        }
+        return list;
+    }
+
 
     /**
      * 删除单个文件

@@ -15,6 +15,7 @@
             >
               <a-month-picker
                 @change="monthChange"
+                style="width: 130px"
                 :default-value="defaultApplyDate"
                 :format="monthFormat"
               />

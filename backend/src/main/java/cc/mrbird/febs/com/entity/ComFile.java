@@ -109,6 +109,13 @@ private static final long serialVersionUID=1L;
     @ExcelField(value ="类型")
     private String refType;
 
+
+    private transient Integer orderNum;
+
+    private transient String refTypeName;
+
+    private transient String orderNumber;
+
     public static final String ID ="ID" ;
 
     public static final String CLIENT_NAME ="CLIENT_NAME" ;

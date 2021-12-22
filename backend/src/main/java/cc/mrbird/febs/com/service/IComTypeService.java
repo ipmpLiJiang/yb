@@ -29,6 +29,8 @@ public interface IComTypeService extends IService<ComType> {
 
         void editComType(ComType comType, User currentUser);
 
+        void editDrgComType(ComType comType,List<ComType> list, User currentUser);
+
         void deleteComTypes(String[]Ids);
 
         List<ComType> findComTypeList(ComType comType);

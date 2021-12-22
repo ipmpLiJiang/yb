@@ -11,20 +11,18 @@
   >
     <ybDrgData-module
     ref="ybDrgDataModule"
-    :ybDrgData="ybDrgManageLook"
+    :ybDrgData="ybDrgResultLook"
     >
     </ybDrgData-module>
     <ybDrgJk-module
     ref="ybDrgJkModule"
-    :ybDrgData="ybDrgManageLook"
+    :ybDrgData="ybDrgResultLook"
     >
     </ybDrgJk-module>
-    <a-divider v-show="ybDrgManageLook.state === 2?true:false">变更信息</a-divider>
-    <div v-show="ybDrgManageLook.state === 6 || ybDrgManageLook.state === 1 || ybDrgManageLook.state === 2?true:false">
+    <a-divider>复议信息</a-divider>
+    <div>
       <div style="padding-bottom:20px;border: 1px solid #e8e8e8;">
-        <br>
-        <div v-show="ybDrgManageLook.state === 6 || ybDrgManageLook.state === 1 ?true:false">
-          <a-row type="flex" justify="start">
+        <a-row type="flex" justify="start">
           <a-col :span=20>
             <!--科室、医生-->
             <a-row>
@@ -33,7 +31,7 @@
                   v-bind="formItemLayout"
                   label="科室名称"
                 >
-                  {{ybDrgManageLook.readyDeptCode}}-{{ybDrgManageLook.readyDeptName}}
+                  {{ybDrgResultLook.deptCode}}-{{ybDrgResultLook.deptName}}
                 </a-form-item>
               </a-col>
               <a-col :span=14>
@@ -41,11 +39,11 @@
                   v-bind="formItemLayout"
                   label="医生姓名"
                 >
-                  {{ybDrgManageLook.readyDoctorCode}}-{{ybDrgManageLook.readyDoctorName}}
+                  {{ybDrgResultLook.doctorCode}}-{{ybDrgResultLook.doctorName}}
                 </a-form-item>
               </a-col>
             </a-row>
-            <!--申诉理由-->
+            <!--医院意见-->
             <a-row type="flex" justify="start">
               <a-col :span=24>
                   <a-form-item
@@ -53,9 +51,9 @@
                     labelCol: { span: 4 },
                     wrapperCol: { span: 19, offset: 1 }
                   }"
-                  label="申诉理由"
+                  label="医院意见"
                 >
-                {{ybDrgManageLook.operateReason}}
+                {{ybDrgResultLook.operateReason}}
                 </a-form-item>
               </a-col>
             </a-row>
@@ -89,67 +87,13 @@
               </a-row>
               </div>
             </a-col>
-          </a-row>
-        </div>
-        <!--拒绝-->
-        <div v-show="ybDrgManageLook.state === 2?true:false">
-        <a-row type="flex" justify="start">
-        <a-col :span=20>
-          <!--科室、医生-->
-          <a-row>
-            <a-col :span=6>
-              <a-form-item
-                v-bind="formItemLayout"
-                label="申请科室"
-              >
-                {{ybDrgManageLook.readyDeptCode}}-{{ybDrgManageLook.readyDeptName}}
-              </a-form-item>
-            </a-col>
-            <a-col :span=6>
-              <a-form-item
-                v-bind="formItemLayout"
-                label="申请人"
-              >
-                {{ybDrgManageLook.readyDoctorCode}}-{{ybDrgManageLook.readyDoctorName}}
-              </a-form-item>
-            </a-col>
-            <a-col :span=6>
-              <a-form-item
-                v-bind="formItemLayout"
-                label="更改科室"
-              >
-                {{ybDrgManageLook.changeDeptCode}}-{{ybDrgManageLook.changeDeptName}}
-              </a-form-item>
-            </a-col>
-            <a-col :span=6>
-              <a-form-item
-                v-bind="formItemLayout"
-                label="更改人"
-              >
-                {{ybDrgManageLook.changeDoctorCode}}-{{ybDrgManageLook.changeDoctorName}}
-              </a-form-item>
-            </a-col>
-          </a-row>
-          <!--医院意见-->
-          <a-row type="flex" justify="start">
-            <a-col :span=20>
-                <a-form-item
-                v-bind="{
-                  labelCol: { span: 3 },
-                  wrapperCol: { span: 19 }
-                }"
-                label="医院意见"
-              >
-              {{ybDrgManageLook.operateReason}}
-              </a-form-item>
-            </a-col>
-          </a-row>
-        </a-col>
         </a-row>
-        </div>
         <br>
         <!--按钮-->
         <a-row type="flex" justify="center">
+          <a-col :span=3>
+            <a-button type="primary" v-show="showDownLoad" @click="downloadFile" style="margin-right: .10rem">下载</a-button>
+          </a-col>
           <a-col :span=3>
             <a-button
               style="margin-right: .8rem"
@@ -196,8 +140,9 @@ export default {
       fileList: [],
       previewVisible: false,
       previewImage: '',
-      ybDrgManageLook: {},
+      ybDrgResultLook: {},
       user: this.$store.state.account.user,
+      showDownLoad: true,
       ybDrgManage: {}
     }
   },
@@ -212,7 +157,7 @@ export default {
       this.fileList = []
       this.previewImage = ''
       this.ybDrgManage = {}
-      this.ybDrgManageLook = {}
+      this.ybDrgResultLook = {}
       this.$emit('close')
     },
     handleCancel () {
@@ -225,23 +170,32 @@ export default {
       this.previewImage = file.url || file.preview
       this.previewVisible = true
     },
-    setFormValues ({ ...ybDrgManageLook }) {
-      this.ybDrgManageLook = ybDrgManageLook
+    setFormValues ({ ...ybDrgResultLook }) {
+      this.ybDrgResultLook = ybDrgResultLook
       setTimeout(() => {
         this.$refs.ybDrgJkModule.search()
       }, 200)
-      if (ybDrgManageLook.state === 6 || ybDrgManageLook.state === 1) {
-        this.previewVisible = false
-        this.fileList = []
-        this.previewImage = ''
-        this.findFileList(ybDrgManageLook)
-      }
+      this.previewVisible = false
+      this.fileList = []
+      this.previewImage = ''
+      this.findFileList(ybDrgResultLook)
     },
-    findFileList (ybDrgManageLook) {
+    downloadFile () {
       let formData = {}
-      formData.id = ybDrgManageLook.id
-      formData.applyDateStr = ybDrgManageLook.applyDateStr
-      formData.orderNumber = ybDrgManageLook.orderNumber
+      formData.id = this.ybDrgResultLook.id
+      formData.applyDateStr = this.ybDrgResultLook.applyDateStr
+      formData.orderNumber = this.ybDrgResultLook.orderNumber
+      formData.areaType = this.user.areaType.value
+      formData.fileName = formData.applyDateStr + '-' + this.ybDrgResultLook.deptName + '-' + this.ybDrgResultLook.doctorCode + this.ybDrgResultLook.doctorName
+      this.$download('comFile/fileDrgImgZip', {
+        ...formData
+      }, formData.fileName + '.zip')
+    },
+    findFileList (ybDrgResultLook) {
+      let formData = {}
+      formData.id = ybDrgResultLook.id
+      formData.applyDateStr = ybDrgResultLook.applyDateStr
+      formData.orderNumber = ybDrgResultLook.orderNumber
       formData.areaType = this.user.areaType.value
       formData.isOn = 1
       this.$post('comFile/listDrgImgComFile', {

@@ -28,6 +28,7 @@ import javax.validation.constraints.NotBlank;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * @author viki
@@ -110,7 +111,7 @@ public class ComTypeController extends BaseController {
                 success = 1;
             }else{
                 success = 0;
-                message = "已存在，操作失败.";
+                message = comType.getCtName() + ", 已存在，操作失败.";
             }
         } catch (Exception e) {
             message = "操作失败.";
@@ -122,6 +123,33 @@ public class ComTypeController extends BaseController {
         return new FebsResponse().data(rr);
     }
 
+    @Log("修改")
+    @PutMapping("updateDrgType")
+    @RequiresPermissions("comType:update")
+    public FebsResponse updateDrgComType(@Valid ComType comType) {
+        int success = 0;
+        try {
+            ComType query = new ComType();
+            query.setCtType(comType.getCtType());
+            List<ComType> listAll = this.iComTypeService.findComTypeList(query);
+            List<ComType> list = listAll.stream().filter(s->s.getCtName().equals(comType.getCtName())).collect(Collectors.toList());
+            if(list.size()==0 || comType.getId() != null) {
+                User currentUser = FebsUtil.getCurrentUser();
+                this.iComTypeService.editDrgComType(comType, listAll ,currentUser);
+                success = 1;
+            }else{
+                success = 0;
+                message = comType.getCtName() + ", 已存在，操作失败.";
+            }
+        } catch (Exception e) {
+            message = "操作失败.";
+            log.error(message, e);
+        }
+        ResponseResult rr = new ResponseResult();
+        rr.setSuccess(success);
+        rr.setMessage(message);
+        return new FebsResponse().data(rr);
+    }
 
     @Log("删除")
     @DeleteMapping("/{ids}")

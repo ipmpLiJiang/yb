@@ -137,6 +137,9 @@ public class ComSmsServiceImpl extends ServiceImpl<ComSmsMapper, ComSms> impleme
         if (comSms.getMobile() != null) {
             wrapper.eq(ComSms::getMobile, comSms.getMobile());
         }
+        if (comSms.getTypeno() != null) {
+            wrapper.eq(ComSms::getTypeno, comSms.getTypeno());
+        }
 
         wrapper.eq(ComSms::getIsDeletemark, 1);
         list = this.list(wrapper);
@@ -520,7 +523,7 @@ public class ComSmsServiceImpl extends ServiceImpl<ComSmsMapper, ComSms> impleme
                             }
                         } else {
                             msg = this.sendSms(null, querySmsList);
-                            log.info("复议提醒短信发送成功.");
+                            log.info(applyDateStr + " 复议提醒短信发送成功.");
                         }
                     } else {
                         msg = applyDateStr + "年月,还未到执行日期.";
@@ -606,7 +609,7 @@ public class ComSmsServiceImpl extends ServiceImpl<ComSmsMapper, ComSms> impleme
                             }
                         } else {
                             msg = this.sendSms(null, querySmsList);
-                            log.info("DRG复议提醒短信发送成功.");
+                            log.info(applyDateStr + " DRG复议提醒短信发送成功.");
                         }
                     } else {
                         msg = applyDateStr + "年月,还未到执行日期.";

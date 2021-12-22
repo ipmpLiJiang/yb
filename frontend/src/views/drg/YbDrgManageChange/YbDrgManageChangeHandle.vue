@@ -88,7 +88,7 @@
                     <a-col :span=24>
                       <a-form-item
                         v-bind="formItemLayout1"
-                        label="申请理由"
+                        label="医院意见"
                       >
                         {{ybDrgManageChangeHandle.operateReason}}
                       </a-form-item>

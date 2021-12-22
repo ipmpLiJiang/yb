@@ -105,7 +105,7 @@ public class YbDrgApplyController extends BaseController {
             String appDateStr = sdf.format(ybDrgApply.getApplyDate());
             ybDrgApply.setApplyDateStr(appDateStr);
 
-            this.iYbDrgApplyService.updateYbDrgApply(ybDrgApply,null);
+            this.iYbDrgApplyService.updateYbDrgApply(ybDrgApply);
         } catch (Exception e) {
             message = "修改失败";
             log.error(message, e);

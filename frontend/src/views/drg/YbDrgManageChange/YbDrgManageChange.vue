@@ -182,7 +182,7 @@ export default {
     }
   },
   mounted () {
-    // this.fetch()
+    this.fetch()
   },
   methods: {
     moment,

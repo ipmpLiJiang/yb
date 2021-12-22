@@ -451,6 +451,7 @@ export default {
       // formData.refType = this.ftype
       formData.orderNumber = this.ybDrgManageUpload.orderNumber
       formData.areaType = this.user.areaType.value
+      formData.isOn = 1
       this.$post('comFile/listDrgImgComFile', {
         ...formData
       }).then((r) => {

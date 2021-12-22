@@ -225,6 +225,7 @@ export default {
         this.$delete('ybReconsiderApplyData/deleteData', params).then((r) => {
           if (r.data.data.success === 1) {
             this.$message.success('删除明细成功')
+            this.uploadFileName = ''
             this.searchTable()
             this.showBtn = true
             this.showDelBtn = false

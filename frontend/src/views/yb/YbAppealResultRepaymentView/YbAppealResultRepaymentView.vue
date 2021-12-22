@@ -7,7 +7,7 @@
     <template>
       <a-form layout="horizontal">
         <a-row justify="center" type="flex">
-          <a-col :span=5>
+          <a-col :span=4>
             <a-form-item
               label="复议年月"
               v-bind="formItemLayout"

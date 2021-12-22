@@ -110,7 +110,7 @@ public class YbDrgApplyDataServiceImpl extends ServiceImpl<YbDrgApplyDataMapper,
                 YbDrgApply updateApply = new YbDrgApply();
                 updateApply.setId(applyList.get(0).getId());
                 updateApply.setState(YbDefaultValue.DRGAPPLYSTATE_1);
-                iYbDrgApplyService.updateYbDrgApply(updateApply,null);
+                iYbDrgApplyService.updateYbDrgApply(updateApply);
                 count = 1;
             }
         }
@@ -134,7 +134,7 @@ public class YbDrgApplyDataServiceImpl extends ServiceImpl<YbDrgApplyDataMapper,
             this.saveBatch(listData);
         }
 
-        this.iYbDrgApplyService.updateYbDrgApply(ybDrgApply,null);
+        this.iYbDrgApplyService.updateYbDrgApply(ybDrgApply);
     }
 
     @Override

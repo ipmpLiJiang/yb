@@ -2,7 +2,7 @@
   <a-drawer
     title="查看"
     :maskClosable="false"
-    width=75%
+    width=85%
     placement="right"
     :closable="true"
     @close="onClose"
@@ -64,17 +64,18 @@
           <br>
           <a-row>
             <a-col :span=24>
-              <div style="margin:25px">
-              <a-row type="flex" justify="center">
+              <div style="margin:0px 60px">
+              <a-row>
                 <a-col>
                   <template>
                     <!--上传图片-->
                     <div>
                       <a-upload
-                        list-type="picture-card"
+                        list-type="picture"
                         :file-list="fileList"
                         disabled="disabled"
                         @preview="handlePreview"
+                        class="upload-list-inline"
                       >
                       </a-upload>
                       <a-modal width="85%" :visible="previewVisible" :footer="null" @cancel="handleCancel">
@@ -129,7 +130,7 @@
               </a-form-item>
             </a-col>
           </a-row>
-          <!--申请理由-->
+          <!--医院意见-->
           <a-row type="flex" justify="start">
             <a-col :span=20>
                 <a-form-item
@@ -137,7 +138,7 @@
                   labelCol: { span: 3 },
                   wrapperCol: { span: 19 }
                 }"
-                label="申请理由"
+                label="医院意见"
               >
               {{ybDrgManageLook.operateReason}}
               </a-form-item>
@@ -242,6 +243,7 @@ export default {
       formData.applyDateStr = ybDrgManageLook.applyDateStr
       formData.orderNumber = ybDrgManageLook.orderNumber
       formData.areaType = this.user.areaType.value
+      formData.isOn = 1
       this.$post('comFile/listDrgImgComFile', {
         ...formData
       }).then((r) => {
@@ -265,4 +267,18 @@ export default {
 
 <style lang="less" scoped>
 @import "../../../../static/less/Common";
+</style><style scoped>
+.upload-list-inline >>> .ant-upload-list-item {
+  float: left;
+  width: 230px;
+  margin-right: 8px;
+}
+
+.upload-list-inline >>> .ant-upload-animate-enter {
+  animation-name: uploadAnimateInlineIn;
+}
+
+.upload-list-inline >>> .ant-upload-animate-leave {
+  animation-name: uploadAnimateInlineOut;
+}
 </style>

@@ -7,15 +7,9 @@ import cc.mrbird.febs.com.service.IComSmsService;
 import cc.mrbird.febs.common.domain.QueryRequest;
 import cc.mrbird.febs.common.properties.FebsProperties;
 import cc.mrbird.febs.common.utils.SortUtil;
-import cc.mrbird.febs.drg.entity.YbDrgApply;
-import cc.mrbird.febs.drg.entity.YbDrgApplyData;
-import cc.mrbird.febs.drg.entity.YbDrgManage;
-import cc.mrbird.febs.drg.entity.YbDrgVerify;
+import cc.mrbird.febs.drg.entity.*;
 import cc.mrbird.febs.drg.dao.YbDrgVerifyMapper;
-import cc.mrbird.febs.drg.service.IYbDrgApplyDataService;
-import cc.mrbird.febs.drg.service.IYbDrgApplyService;
-import cc.mrbird.febs.drg.service.IYbDrgManageService;
-import cc.mrbird.febs.drg.service.IYbDrgVerifyService;
+import cc.mrbird.febs.drg.service.*;
 import cc.mrbird.febs.job.domain.Job;
 import cc.mrbird.febs.job.service.JobService;
 import cc.mrbird.febs.yb.entity.YbDefaultValue;
@@ -79,6 +73,9 @@ public class YbDrgVerifyServiceImpl extends ServiceImpl<YbDrgVerifyMapper, YbDrg
 
     @Autowired
     JobService jobService;
+
+    @Autowired
+    IYbDrgJkService iYbDrgJkService;
 
     @Override
     public IPage<YbDrgVerify> findYbDrgVerifys(QueryRequest request, YbDrgVerify ybDrgVerify) {
@@ -234,9 +231,15 @@ public class YbDrgVerifyServiceImpl extends ServiceImpl<YbDrgVerifyMapper, YbDrg
         boolean isCreate = true;
         if (ybDrgApply != null) {
             int state = ybDrgApply.getState();
-            if (state == YbDefaultValue.DRGAPPLYSTATE_2) {
+            if (state == YbDefaultValue.DRGAPPLYSTATE_2 || state == YbDefaultValue.DRGAPPLYSTATE_3) {
                 List<YbDrgApplyData> radList = iYbDrgApplyDataService.findDrgApplyDataByNotVerifys(ybDrgApply.getId(), ybDrgApply.getApplyDateStr(), areaType);
                 if (radList.size() > 0) {
+                    LambdaQueryWrapper<YbDrgJk> wrapper = new LambdaQueryWrapper<>();
+                    wrapper.eq(YbDrgJk::getApplyDateStr, applyDateStr);
+                    wrapper.eq(YbDrgJk::getAreaType, areaType);
+                    List<YbDrgJk> jkList = iYbDrgJkService.list(wrapper);
+
+                    List<YbDrgJk> queryJkList = new ArrayList<>();
                     List<YbDrgVerify> createList = new ArrayList<>();
 
                     for (YbDrgApplyData item : radList) {
@@ -249,6 +252,13 @@ public class YbDrgVerifyServiceImpl extends ServiceImpl<YbDrgVerifyMapper, YbDrg
                         ybDrgVerify.setState(YbDefaultValue.VERIFYSTATE_1);
                         ybDrgVerify.setAreaType(areaType);
 
+                        queryJkList = jkList.stream().filter(s -> s.getApplyDataId().equals(item.getId())).collect(Collectors.toList());
+                        if (queryJkList.size() > 0 && this.isNotNull(queryJkList.get(0))) {
+                            ybDrgVerify.setVerifyDoctorCode(queryJkList.get(0).getZzysbm());
+                            ybDrgVerify.setVerifyDoctorName(queryJkList.get(0).getZzysmc());
+                            ybDrgVerify.setVerifyDeptCode(queryJkList.get(0).getKsbm());
+                            ybDrgVerify.setVerifyDeptName(queryJkList.get(0).getKsmc());
+                        }
                         createList.add(ybDrgVerify);
                     }
 
@@ -262,6 +272,16 @@ public class YbDrgVerifyServiceImpl extends ServiceImpl<YbDrgVerifyMapper, YbDrg
                 this.iYbDrgApplyService.updateDrgApplyState3(ybDrgApply);
             }
         }
+    }
+
+    private boolean isNotNull(YbDrgJk jk) {
+        if (jk.getZzysbm() != null && !jk.getZzysbm().equals("") &&
+                jk.getZzysmc() != null && !jk.getZzysmc().equals("") &&
+                jk.getKsbm() != null && !jk.getKsbm().equals("") &&
+                jk.getKsmc() != null && !jk.getKsmc().equals("")){
+            return  true;
+        }
+            return false;
     }
 
     @Override

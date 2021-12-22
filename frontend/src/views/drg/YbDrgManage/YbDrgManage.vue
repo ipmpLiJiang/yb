@@ -12,12 +12,12 @@
               <a-month-picker
                 placeholder="请输入复议年月"
                 @change="monthChange"
-                style="width: 150px"
+                style="width: 120px"
                 :default-value="searchApplyDate"
                 :format="monthFormat"
               />
           </a-col>
-          <a-col :span=7>
+          <a-col :span=8>
             <a-select v-model="searchItem.keyField" style="width: 115px">
               <a-select-option
               v-for="d in searchDropDataSource"

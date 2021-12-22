@@ -116,12 +116,8 @@ public class YbDrgVerifyViewController extends BaseController {
 
                     exportList.add(dataExport);
                 }
-                if (exportList.size() == 0) {
-                    isError = true;
-                    message = "未找到DRG核对明细数据";
-                } else {
-                    ExportExcelUtils.exportExcel(response, YbDrgApplyDataVerify.class, exportList, "DRG核对明细数据");
-                }
+                ExportExcelUtils.exportExcel(response, YbDrgApplyDataVerify.class, exportList, "DRG核对明细数据");
+
             } else {
                 isError = true;
                 message = "未找到 " + ybDrgVerifyView.getApplyDateStr() + " 上传数据.";

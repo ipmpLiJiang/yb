@@ -66,7 +66,7 @@
               <a-button
                 type="primary"
                 @click="showModal"
-              >类型维护</a-button>
+              >医管类型维护</a-button>
             </a-col>
           </div>
           <span style="float: right; margin-top: 3px;">

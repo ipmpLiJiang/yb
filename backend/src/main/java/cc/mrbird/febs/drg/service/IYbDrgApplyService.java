@@ -28,6 +28,8 @@ public interface IYbDrgApplyService extends IService<YbDrgApply> {
 
     void updateYbDrgApply(YbDrgApply ybDrgApply,Integer isChangDate);
 
+    void updateYbDrgApply(YbDrgApply ybDrgApply);
+
     void deleteYbDrgApplys(String[] Ids,int state);
 
     List<YbDrgApply> findDrgApplyList(YbDrgApply ybDrgApply);

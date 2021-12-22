@@ -13,7 +13,7 @@
               placeholder="请输入复议年月"
               @change="monthChange"
               :default-value="formatDate()"
-              style="width: 130px"
+              style="width: 120px"
               :format="monthFormat"
             />
           </a-col>

@@ -192,7 +192,6 @@ export default {
       this.form.resetFields()
     },
     beforeUpload (file) {
-      debugger
       // 限制图片 格式、size、分辨率
       const isJPG = file.type === 'image/jpg'
       const isJPEG = file.type === 'image/jpeg'

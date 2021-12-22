@@ -4,7 +4,7 @@
       <a-row v-if="isData">
         <a-row class="tbMarginBottom">
           <a-col :span=3>
-            入院日期：
+            入&nbsp;&nbsp;院&nbsp;&nbsp;&nbsp;日&nbsp;&nbsp;期：
           </a-col>
           <a-col :span=8>
             {{ybDrgJkModule.ryrq}}
@@ -13,7 +13,7 @@
             &nbsp;
           </a-col>
           <a-col :span=3>
-            出院日期：
+            出&nbsp;&nbsp;院&nbsp;&nbsp;&nbsp;日&nbsp;&nbsp;期：
           </a-col>
           <a-col :span=9>
             {{ybDrgJkModule.cyrq}}
@@ -106,7 +106,7 @@
         </a-row>
         <a-row class="tbMarginBottom">
           <a-col :span=2>
-            科&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;室：
+            科&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;室：
           </a-col>
           <a-col :span=4>
             {{ybDrgJkModule.ksmc}}

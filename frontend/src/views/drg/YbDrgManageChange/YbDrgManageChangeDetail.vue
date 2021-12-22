@@ -72,7 +72,7 @@
           </a-form-item>
         </a-col>
       </a-row>
-      <!--申诉理由-->
+      <!--医院意见-->
       <a-row type="flex" justify="start">
         <a-col :span=22>
             <a-form-item
@@ -80,7 +80,7 @@
               labelCol: { span: 3 },
               wrapperCol: { span: 19 }
             }"
-            label="申请理由"
+            label="医院意见"
           >
           {{ybDrgManageChangeDetail.operateReason}}
           </a-form-item>

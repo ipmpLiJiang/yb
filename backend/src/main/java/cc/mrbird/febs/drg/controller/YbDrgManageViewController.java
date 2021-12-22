@@ -38,7 +38,7 @@ public class YbDrgManageViewController extends BaseController {
     public IYbDrgManageViewService iYbDrgManageViewService;
 
     @GetMapping()
-    @RequiresPermissions("ybDrgManageView:View")
+    @RequiresPermissions("ybDrgManageView:view")
     public Map<String, Object> List(QueryRequest request, YbDrgManageView ybDrgManageView, String keyField) {
         return getDataTable(this.iYbDrgManageViewService.findDrgManageView(request, ybDrgManageView, keyField));
     }

@@ -185,6 +185,7 @@ export default {
         this.$delete('ybDrgApplyData/deleteData', params).then((r) => {
           if (r.data.data.success === 1) {
             this.$message.success('删除明细成功')
+            this.uploadFileName = ''
             this.searchTable()
             this.showBtn = true
             this.showDelBtn = false
@@ -291,6 +292,7 @@ export default {
       formData.append('pid', this.ybDrgApply.id)
       this.$upload('ybDrgApplyData/importDrgApplyData', formData).then((r) => {
         if (r.data.data.success === 1) {
+          this.ybDrgApply.state = 2
           this.uploadFileName = r.data.data.fileName
           this.showBtn = false
           this.searchTable()

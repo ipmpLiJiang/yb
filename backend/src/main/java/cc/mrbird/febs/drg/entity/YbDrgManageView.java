@@ -141,13 +141,6 @@ public class YbDrgManageView implements Serializable {
     private transient String operateDateTo;
 
     /**
-     * 接受状态
-     */
-    @TableField("acceptState")
-    @ExcelField(value = "接受状态")
-    private Integer acceptState;
-
-    /**
      * 医保人代码
      */
     @TableField("refuseId")

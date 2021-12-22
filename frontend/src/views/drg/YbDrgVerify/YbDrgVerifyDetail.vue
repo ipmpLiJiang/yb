@@ -2,7 +2,7 @@
   <a-drawer
     title="DRG核对"
     :maskClosable="false"
-    width=70%
+    width=85%
     placement="right"
     :closable="true"
     @close="onClose"

@@ -11,7 +11,7 @@
               复议年月：
               <a-month-picker
                 placeholder="请输入复议年月"
-                style="width: 150px"
+                style="width: 120px"
                 @change="monthChange"
                 :default-value="searchApplyDate"
                 :format="monthFormat"

@@ -18,11 +18,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.time.LocalDate;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -42,8 +40,13 @@ public class ComTypeServiceImpl extends ServiceImpl<ComTypeMapper, ComType> impl
     public IPage<ComType> findComTypes(QueryRequest request, ComType comType) {
         try {
             LambdaQueryWrapper<ComType> queryWrapper = new LambdaQueryWrapper<>();
-            queryWrapper.eq(ComType::getIsDeletemark, 1);//1是未删 0是已删
-
+            if (comType.getCtType() != 2) {
+                queryWrapper.eq(ComType::getIsDeletemark, 1);//1是未删 0是已删
+            } else {
+                if(comType.getIsDeletemark() != null) {
+                    queryWrapper.eq(ComType::getIsDeletemark, comType.getIsDeletemark());
+                }
+            }
             if (comType.getCtType() != null) {
                 queryWrapper.eq(ComType::getCtType, comType.getCtType());
             } else {
@@ -107,10 +110,200 @@ public class ComTypeServiceImpl extends ServiceImpl<ComTypeMapper, ComType> impl
     }
 
     @Override
+    @Transactional
+    public void editDrgComType(ComType comType, List<ComType> list, User currentUser) {
+        Date thisDate = new Date();
+        List<ComType> updateList = new ArrayList<>();
+        List<ComType> yxList = list.stream().filter(s -> s.getIsDeletemark() == 1).collect(Collectors.toList());
+        List<ComType> wxList = list.stream().filter(s -> s.getIsDeletemark() != 1).collect(Collectors.toList());
+        if (yxList.size() > 0) {
+            yxList = yxList.stream().sorted(Comparator.comparing(ComType::getOrderNum)).collect(Collectors.toList());
+        }
+        if (wxList.size() > 0) {
+            wxList = wxList.stream().sorted(Comparator.comparing(ComType::getOrderNum)).collect(Collectors.toList());
+        }
+
+        if (comType.getId() == null) {
+            boolean isUpdate = false;
+            comType.setIsDeletemark(1);
+            comType.setCreateTime(thisDate);
+            comType.setCreateUserId(currentUser.getUserId());
+            if (yxList.size() == 0) {
+                comType.setOrderNum(1);
+            } else {
+                if (comType.getOrderNum() > yxList.size()) {
+                    comType.setOrderNum(yxList.size() + 1);
+                } else {
+                    isUpdate = true;
+                }
+            }
+            this.setCreateUpdateComType(comType, updateList, yxList, isUpdate);
+            this.save(comType);
+        } else {
+            comType.setModifyTime(thisDate);
+            comType.setModifyUserId(currentUser.getUserId());
+
+            this.setUpdateComType(comType, updateList, yxList, wxList);
+            this.baseMapper.updateComType(comType);
+        }
+        if (updateList.size() > 0) {
+            this.updateBatchById(updateList);
+        }
+
+    }
+
+    private void setCreateUpdateComType(ComType comType, List<ComType> updateList, List<ComType> yxList,  boolean isUpdate) {
+        int orderNum = comType.getOrderNum();
+        if (isUpdate) {
+            isUpdate = false;
+            for (ComType item : yxList) {
+                if (!isUpdate && item.getOrderNum() == comType.getOrderNum()) {
+                    isUpdate = true;
+                }
+                if (isUpdate) {
+                    ComType udpate = new ComType();
+                    orderNum += 1;
+                    udpate.setOrderNum(orderNum);
+                    udpate.setId(item.getId());
+                    updateList.add(udpate);
+                }
+            }
+        }
+//        排序都按 1 开始，新增不会新增无效数据 注释(原来是连续排序，改为按1开始)
+//        orderNum = 0;
+//        for (ComType item : wxList) {
+//            ComType udpate = new ComType();
+//            orderNum += 1;
+//            udpate.setOrderNum(orderNum);
+//            udpate.setId(item.getId());
+//            updateList.add(udpate);
+//        }
+    }
+
+    private void setUpdateComType(ComType comType, List<ComType> updateList, List<ComType> yxList, List<ComType> wxList) {
+        int lodOrderNum = 0;
+        int lodIsDeletemark = 0;
+        int orderNum = 0;
+
+        List<ComType> query = yxList.stream().filter(s -> s.getId().equals(comType.getId())).collect(Collectors.toList());
+        int maxOrderNum = 0;
+        int minOrderNum = 0;
+        if (query.size() > 0) {
+            lodIsDeletemark = query.get(0).getIsDeletemark();
+            lodOrderNum = query.get(0).getOrderNum();
+            if (comType.getIsDeletemark() == 1 && lodIsDeletemark == 1) {
+                if (comType.getOrderNum() > yxList.size()) {
+                    comType.setOrderNum(yxList.size());
+                }
+                orderNum = comType.getOrderNum();
+                this.setXiangTongUpdate(orderNum, lodOrderNum, yxList, updateList);
+            } else {
+                int dqOrderNum = lodOrderNum + 1;
+                for (ComType item : yxList) {
+                    if (item.getOrderNum() == dqOrderNum) {
+                        ComType udpate = new ComType();
+                        udpate.setOrderNum(item.getOrderNum() - 1);
+                        udpate.setId(item.getId());
+                        updateList.add(udpate);
+                        dqOrderNum = item.getOrderNum() + 1;
+                    }
+                }
+                if (wxList.size() > 0) {
+                    maxOrderNum = wxList.stream().max(Comparator.comparing(ComType::getOrderNum)).get().getOrderNum();
+                    dqOrderNum = comType.getOrderNum();
+                    if (dqOrderNum > maxOrderNum) {
+                        comType.setOrderNum(maxOrderNum + 1);
+                    } else {
+                        for (ComType item : wxList) {
+                            if (item.getOrderNum() == dqOrderNum) {
+                                ComType udpate = new ComType();
+                                udpate.setOrderNum(item.getOrderNum() + 1);
+                                udpate.setId(item.getId());
+                                updateList.add(udpate);
+                                dqOrderNum = udpate.getOrderNum();
+                            }
+                        }
+                    }
+                } else {
+                    comType.setOrderNum(1);
+                }
+            }
+        } else {
+            query = wxList.stream().filter(s -> s.getId().equals(comType.getId())).collect(Collectors.toList());
+            lodIsDeletemark = query.get(0).getIsDeletemark();
+            lodOrderNum = query.get(0).getOrderNum();
+            if (comType.getIsDeletemark() == 2 && lodIsDeletemark == 2) {
+                maxOrderNum = wxList.stream().max(Comparator.comparing(ComType::getOrderNum)).get().getOrderNum();
+                minOrderNum = wxList.stream().min(Comparator.comparing(ComType::getOrderNum)).get().getOrderNum();
+                if (comType.getOrderNum() > maxOrderNum) {
+                    comType.setOrderNum(maxOrderNum);
+                }
+                if (comType.getOrderNum() < minOrderNum) {
+                    comType.setOrderNum(minOrderNum);
+                }
+                orderNum = comType.getOrderNum();
+                this.setXiangTongUpdate(orderNum, lodOrderNum, wxList, updateList);
+            } else {
+                int dqOrderNum = lodOrderNum + 1;
+                for (ComType item : wxList) {
+                    if (item.getOrderNum() == dqOrderNum) {
+                        ComType udpate = new ComType();
+                        udpate.setOrderNum(item.getOrderNum() - 1);
+                        udpate.setId(item.getId());
+                        updateList.add(udpate);
+                        dqOrderNum = item.getOrderNum() + 1;
+                    }
+                }
+                if (yxList.size() > 0) {
+                    maxOrderNum = yxList.stream().max(Comparator.comparing(ComType::getOrderNum)).get().getOrderNum();
+                    dqOrderNum = comType.getOrderNum();
+                    if (dqOrderNum > maxOrderNum) {
+                        comType.setOrderNum(maxOrderNum + 1);
+                    } else {
+                        for (ComType item : yxList) {
+                            if (item.getOrderNum() == dqOrderNum) {
+                                ComType udpate = new ComType();
+                                udpate.setOrderNum(item.getOrderNum() + 1);
+                                udpate.setId(item.getId());
+                                updateList.add(udpate);
+                                dqOrderNum = udpate.getOrderNum();
+                            }
+                        }
+                    }
+                } else {
+                    comType.setOrderNum(1);
+                }
+            }
+        }
+    }
+
+    private void setXiangTongUpdate(int orderNum, int lodOrderNum, List<ComType> list, List<ComType> updateList) {
+        for (ComType item : list) {
+            if (orderNum < lodOrderNum) {
+                if (item.getOrderNum() >= orderNum && item.getOrderNum() < lodOrderNum) {
+                    ComType udpate = new ComType();
+                    udpate.setOrderNum(item.getOrderNum() + 1);
+                    udpate.setId(item.getId());
+                    updateList.add(udpate);
+                }
+            }
+            if (orderNum > lodOrderNum) {
+                if (item.getOrderNum() <= orderNum && item.getOrderNum() > lodOrderNum) {
+                    ComType udpate = new ComType();
+                    udpate.setOrderNum(item.getOrderNum() - 1);
+                    udpate.setId(item.getId());
+                    updateList.add(udpate);
+                }
+            }
+        }
+    }
+
+    @Override
     public List<ComType> findComTypeList(ComType comType) {
         LambdaQueryWrapper<ComType> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(ComType::getIsDeletemark, 1);//1是未删 0是已删
-
+        if (comType.getCtType() != 2) {
+            queryWrapper.eq(ComType::getIsDeletemark, 1);//1是未删 0是已删
+        }
         if (comType.getCtType() != null) {
             queryWrapper.eq(ComType::getCtType, comType.getCtType());
         } else {

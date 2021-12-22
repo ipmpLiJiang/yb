@@ -53,6 +53,7 @@
             >
             <a-input
                 placeholder="复议年月"
+                style="width: 130px"
                 v-model="searchBelongDateStr"
                 disabled="disabled"
               />

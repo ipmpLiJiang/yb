@@ -195,6 +195,7 @@ export default {
       this.selectedRowKeys = selectedRowKeys
     },
     setFormValues ({ ...ybDrgManageHistory }) {
+      console.log(ybDrgManageHistory)
       this.ybDrgManageHistory = ybDrgManageHistory
       this.fetch()
       setTimeout(() => {

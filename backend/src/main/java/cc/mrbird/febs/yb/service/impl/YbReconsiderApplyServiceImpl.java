@@ -35,6 +35,8 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.Collectors;
 
 /**
@@ -166,7 +168,7 @@ public class YbReconsiderApplyServiceImpl extends ServiceImpl<YbReconsiderApplyM
     public void updateYbReconsiderApply(YbReconsiderApply ybReconsiderApply, Integer isChangDate) {
         ybReconsiderApply.setModifyTime(new Date());
         YbReconsiderApply entity = this.getById(ybReconsiderApply.getId());
-        if (entity !=null && (entity.getState() == YbDefaultValue.APPLYSTATE_3 || entity.getState() == YbDefaultValue.APPLYSTATE_5)) {
+        if (entity != null && (entity.getState() == YbDefaultValue.APPLYSTATE_3 || entity.getState() == YbDefaultValue.APPLYSTATE_5)) {
             long endMinute = 0;
             long enableDay = 0;
             int typeno = entity.getState() == YbDefaultValue.APPLYSTATE_3 ? 1 : 2;
@@ -232,6 +234,7 @@ public class YbReconsiderApplyServiceImpl extends ServiceImpl<YbReconsiderApplyM
                     iYbAppealManageService.updateBatchById(updateAmList);
                 }
             }
+
             if (enableDay != 0 || endMinute != 0) {
                 this.baseMapper.updateYbReconsiderApply(ybReconsiderApply);
             }
@@ -239,42 +242,88 @@ public class YbReconsiderApplyServiceImpl extends ServiceImpl<YbReconsiderApplyM
     }
 
     @Override
+    @Transactional
+    public void updateYbReconsiderApply(YbReconsiderApply ybReconsiderApply) {
+        ybReconsiderApply.setModifyTime(new Date());
+        this.baseMapper.updateYbReconsiderApply(ybReconsiderApply);
+    }
+
+    private Lock lockEnableOverdue = new ReentrantLock();
+
+    @Override
     public void updateEnableOverdue(String applyDateStr, int areaType) {
         if (applyDateStr == null || "".equals(applyDateStr)) {
             applyDateStr = DataTypeHelpers.getUpNianYue();
         }
-        Map<String, Object> map = new HashMap<>();
-        map.put("applyDateStr", applyDateStr);
-        map.put("areaType", areaType);
-        this.baseMapper.updateAppealManageEnableOverdue(map);
-        String message = (String) map.get("message");
-        log.info(message);
+        if (lockEnableOverdue.tryLock()) {
+            try {
+                Map<String, Object> map = new HashMap<>();
+                map.put("applyDateStr", applyDateStr);
+                map.put("areaType", areaType);
+                this.baseMapper.updateAppealManageEnableOverdue(map);
+                String message = (String) map.get("message");
+                log.info(applyDateStr + " 复议确认截止日期:" + message);
+                System.out.println(applyDateStr + " 复议确认截止日期:" + message);
+            } catch (Exception e) {
+                log.error(applyDateStr + " 复议确认截止日期:" + e.getMessage());
+                System.out.println(applyDateStr + " 复议确认截止日期:" + e.getMessage());
+            } finally {
+                lockEnableOverdue.unlock();
+                System.out.println(applyDateStr + " 复议确认截止日期: 执行结束");
+            }
+        }
     }
+
+    private Lock lockApplyEndDateOne = new ReentrantLock();
 
     @Override
     public void updateApplyEndDateOne(String applyDateStr, int areaType) {
         if (applyDateStr == null || "".equals(applyDateStr)) {
             applyDateStr = DataTypeHelpers.getUpNianYue();
         }
-        Map<String, Object> map = new HashMap<>();
-        map.put("applyDateStr", applyDateStr);
-        map.put("areaType", areaType);
-        this.baseMapper.updateAppealManageApplyEndDateOne(map);
-        String message = (String) map.get("message");
-        log.info(message);
+        if (lockApplyEndDateOne.tryLock()) {
+            try {
+                Map<String, Object> map = new HashMap<>();
+                map.put("applyDateStr", applyDateStr);
+                map.put("areaType", areaType);
+                this.baseMapper.updateAppealManageApplyEndDateOne(map);
+                String message = (String) map.get("message");
+                log.info(applyDateStr + " One复议截止日期:" +message);
+                System.out.println(applyDateStr + " One复议截止日期:" +message);
+            } catch (Exception e) {
+                log.error(applyDateStr + " One复议截止日期:" + e.getMessage());
+                System.out.println(applyDateStr + " One复议截止日期:" + e.getMessage());
+            } finally {
+                lockApplyEndDateOne.unlock();
+                System.out.println(applyDateStr + " One复议截止日期: 执行结束");
+            }
+        }
     }
+
+    private Lock lockApplyEndDateTwo = new ReentrantLock();
 
     @Override
     public void updateApplyEndDateTwo(String applyDateStr, int areaType) {
         if (applyDateStr == null || "".equals(applyDateStr)) {
             applyDateStr = DataTypeHelpers.getUpNianYue();
         }
-        Map<String, Object> map = new HashMap<>();
-        map.put("applyDateStr", applyDateStr);
-        map.put("areaType", areaType);
-        this.baseMapper.updateAppealManageApplyEndDateTwo(map);
-        String message = (String) map.get("message");
-        log.info(message);
+        if (lockApplyEndDateTwo.tryLock()) {
+            try {
+                Map<String, Object> map = new HashMap<>();
+                map.put("applyDateStr", applyDateStr);
+                map.put("areaType", areaType);
+                this.baseMapper.updateAppealManageApplyEndDateTwo(map);
+                String message = (String) map.get("message");
+                log.info(applyDateStr + " Two复议截止日期:" + message);
+                System.out.println(applyDateStr + " Two复议截止日期:" + message);
+            } catch (Exception e) {
+                log.error(applyDateStr + " Two复议截止日期:" + e.getMessage());
+                System.out.println(applyDateStr + " Two复议截止日期:" + e.getMessage());
+            } finally {
+                lockApplyEndDateTwo.unlock();
+                System.out.println(applyDateStr + " Two复议截止日期: 执行结束");
+            }
+        }
     }
 
 
