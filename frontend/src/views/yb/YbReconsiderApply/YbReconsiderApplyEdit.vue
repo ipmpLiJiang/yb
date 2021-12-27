@@ -75,14 +75,40 @@
         </a-form-item>
       </a-row>
       <a-row>
+        <a-col :span=12>
         <a-form-item
-          v-bind="formItemLayout"
+          v-bind="{
+            labelCol: {
+              span: 8
+            },
+            wrapperCol: {
+              span: 13
+            }
+          }"
           label="未申诉更新"
         >
-        <a-checkbox :checked="checked" @change="onChange">
-          是否更新
-        </a-checkbox>
+        <a-tooltip>
+          <template slot="title">
+            打钩后提交数据，将会把未申诉数据更新至待申诉中，
+            使用此操作需要重新启动复议截止服务，请谨慎使用.
+          </template>
+          <a-checkbox :checked="checked" @change="onChange">
+            是否更新
+          </a-checkbox>
+        </a-tooltip>
         </a-form-item>
+        </a-col>
+        <a-col :span=12 style="margin-top:10px">
+          <a-popconfirm
+          v-show="isJob"
+          title="确定开启截止服务？"
+          @confirm="startJob"
+          okText="确定"
+          cancelText="取消"
+        >
+        <a>复议截止服务</a>
+        </a-popconfirm>
+        </a-col>
       </a-row>
     </a-form>
     <div class="drawer-bootom-button">
@@ -122,6 +148,7 @@ export default {
       form: this.$form.createForm(this),
       ybReconsiderApply: {},
       checked: false,
+      isJob: false,
       user: this.$store.state.account.user,
       monthFormat: 'YYYY-MM',
       enableFormat: 'YYYY-MM-DD',
@@ -138,11 +165,27 @@ export default {
       this.reset()
       this.$emit('close')
     },
+    startJob () {
+      this.$put('ybReconsiderVerify/startJob', {
+        applyDateStr: this.ybReconsiderApply.applyDateStr,
+        areaType: this.user.areaType.value,
+        jobTypeList: [1]
+      }).then((r) => {
+        if (r.data.data.success === 1) {
+          this.$message.success('启动Job成功')
+        } else {
+          this.$message.warning(r.data.data.message)
+        }
+      }).catch(() => {
+        this.$message.error('启动Job失败')
+      })
+    },
     onChange () {
       this.checked = !this.checked
     },
     setFormValues ({ ...ybReconsiderApply }) {
       this.checked = false
+      this.isJob = false
       let fields = ['applyDate', 'endDateOne', 'endDateTwo', 'enableDateOne', 'enableDateTwo']
       let fieldDates = ['applyDate', 'endDateOne', 'endDateTwo', 'enableDateOne', 'enableDateTwo']
       Object.keys(ybReconsiderApply).forEach((key) => {
@@ -162,6 +205,7 @@ export default {
         }
       })
       this.ybReconsiderApply.id = ybReconsiderApply.id
+      this.ybReconsiderApply.applyDateStr = ybReconsiderApply.applyDateStr
     },
     handleSubmit () {
       this.form.validateFields((err, values) => {
@@ -185,6 +229,7 @@ export default {
                 }
               } else {
                 if (r.data.data.message === 'ok') {
+                  this.isJob = true
                   this.$message.success('修改成功')
                 } else {
                   this.$message.warning(r.data.data.message)

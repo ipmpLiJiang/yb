@@ -55,6 +55,11 @@ public class YbDrgJkController extends BaseController {
         return getDataTable(this.iYbDrgJkService.findYbDrgJks(request, ybDrgJk));
     }
 
+    @GetMapping("findDrgJkList")
+    public Map<String, Object> findDrgJks(QueryRequest request, YbDrgJk ybDrgJk) {
+        return getDataTable(this.iYbDrgJkService.findYbDrgJkList(request, ybDrgJk));
+    }
+
     /**
      * 添加
      *

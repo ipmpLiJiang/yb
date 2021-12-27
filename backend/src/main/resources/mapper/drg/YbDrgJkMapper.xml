@@ -2,88 +2,87 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cc.mrbird.febs.drg.dao.YbDrgJkMapper">
 
-        <!-- 通用查询映射结果 -->
-        <resultMap id="BaseResultMap" type="cc.mrbird.febs.drg.entity.YbDrgJk">
-                    <id column="id" property="id"/>
-                    <result column="applyDateStr" property="applyDateStr"/>
-                    <result column="orderNumber" property="orderNumber"/>
-                    <result column="applyDataId" property="applyDataId"/>
-                    <result column="areaType" property="areaType"/>
-                    <result column="ryrq" property="ryrq"/>
-                    <result column="cyrq" property="cyrq"/>
-                    <result column="fzbm" property="fzbm"/>
-                    <result column="fzmc" property="fzmc"/>
-                    <result column="zyzdbm" property="zyzdbm"/>
-                    <result column="zyzdmc" property="zyzdmc"/>
-                    <result column="zssbm" property="zssbm"/>
-                    <result column="zssmc" property="zssmc"/>
-                    <result column="qtzdbm" property="qtzdbm"/>
-                    <result column="qtzdmc" property="qtzdmc"/>
-                    <result column="qtssbm" property="qtssbm"/>
-                    <result column="qtssmc" property="qtssmc"/>
-                    <result column="ksbm" property="ksbm"/>
-                    <result column="bqbm" property="bqbm"/>
-                    <result column="qz" property="qz"/>
-                    <result column="kzrbm" property="kzrbm"/>
-                    <result column="zrysbm" property="zrysbm"/>
-                    <result column="zzysbm" property="zzysbm"/>
-                    <result column="zyysbm" property="zyysbm"/>
-                    <result column="ksmc" property="ksmc"/>
-                    <result column="kzrmc" property="kzrmc"/>
-                    <result column="zrysmc" property="zrysmc"/>
-                    <result column="zzysmc" property="zzysmc"/>
-                    <result column="zyysmc" property="zyysmc"/>
-                    <result column="bqmc" property="bqmc"/>
-        </resultMap>
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="cc.mrbird.febs.drg.entity.YbDrgJk">
+        <id column="id" property="id"/>
+        <result column="applyDateStr" property="applyDateStr"/>
+        <result column="orderNumber" property="orderNumber"/>
+        <result column="orderNum" property="orderNum"/>
+        <result column="applyDataId" property="applyDataId"/>
+        <result column="areaType" property="areaType"/>
+        <result column="ryrq" property="ryrq"/>
+        <result column="cyrq" property="cyrq"/>
+        <result column="fzbm" property="fzbm"/>
+        <result column="fzmc" property="fzmc"/>
+        <result column="zyzdbm" property="zyzdbm"/>
+        <result column="zyzdmc" property="zyzdmc"/>
+        <result column="zssbm" property="zssbm"/>
+        <result column="zssmc" property="zssmc"/>
+        <result column="qtzdbm" property="qtzdbm"/>
+        <result column="qtzdmc" property="qtzdmc"/>
+        <result column="qtssbm" property="qtssbm"/>
+        <result column="qtssmc" property="qtssmc"/>
+        <result column="ksbm" property="ksbm"/>
+        <result column="bqbm" property="bqbm"/>
+        <result column="qz" property="qz"/>
+        <result column="kzrbm" property="kzrbm"/>
+        <result column="zrysbm" property="zrysbm"/>
+        <result column="zzysbm" property="zzysbm"/>
+        <result column="zyysbm" property="zyysbm"/>
+        <result column="ksmc" property="ksmc"/>
+        <result column="kzrmc" property="kzrmc"/>
+        <result column="zrysmc" property="zrysmc"/>
+        <result column="zzysmc" property="zzysmc"/>
+        <result column="zyysmc" property="zyysmc"/>
+        <result column="bqmc" property="bqmc"/>
+    </resultMap>
 
-        <!-- 通用查询结果列 -->
-        <sql id="Base_Column_List">
-        id, applyDateStr, orderNumber, applyDataId, areaType, ryrq, cyrq, fzbm, fzmc, zyzdbm, zyzdmc, zssbm, zssmc, qtzdbm, qtzdmc, qtssbm, qtssmc, ksbm, bqbm, qz, kzrbm, zrysbm, zzysbm, zyysbm, ksmc, kzrmc, zrysmc, zzysmc, zyysmc, bqmc
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, applyDateStr, orderNumber, orderNum, applyDataId, areaType, ryrq, cyrq, fzbm, fzmc, zyzdbm, zyzdmc, zssbm, zssmc, qtzdbm, qtzdmc, qtssbm, qtssmc, ksbm, bqbm, qz, kzrbm, zrysbm, zzysbm, zyysbm, ksmc, kzrmc, zrysmc, zzysmc, zyysmc, bqmc
     </sql>
     <update id="updateYbDrgJk" parameterType="cc.mrbird.febs.drg.entity.YbDrgJk">
         update yb_drg_jk
         <trim prefix="set" suffixOverrides=",">
-<if test="applyDateStr != null">applyDateStr=#{applyDateStr},</if>
-<if test="orderNumber != null">orderNumber=#{orderNumber},</if>
-<if test="applyDataId != null">applyDataId=#{applyDataId},</if>
-<if test="areaType != null">areaType=#{areaType},</if>
-<if test="ryrq != null">ryrq=#{ryrq},</if>
-<if test="cyrq != null">cyrq=#{cyrq},</if>
-<if test="fzbm != null">fzbm=#{fzbm},</if>
-<if test="fzmc != null">fzmc=#{fzmc},</if>
-<if test="zyzdbm != null">zyzdbm=#{zyzdbm},</if>
-<if test="zyzdmc != null">zyzdmc=#{zyzdmc},</if>
-<if test="zssbm != null">zssbm=#{zssbm},</if>
-<if test="zssmc != null">zssmc=#{zssmc},</if>
-<if test="qtzdbm != null">qtzdbm=#{qtzdbm},</if>
-<if test="qtzdmc != null">qtzdmc=#{qtzdmc},</if>
-<if test="qtssbm != null">qtssbm=#{qtssbm},</if>
-<if test="qtssmc != null">qtssmc=#{qtssmc},</if>
-<if test="ksbm != null">ksbm=#{ksbm},</if>
-<if test="bqbm != null">bqbm=#{bqbm},</if>
-<if test="qz != null">qz=#{qz},</if>
-<if test="kzrbm != null">kzrbm=#{kzrbm},</if>
-<if test="zrysbm != null">zrysbm=#{zrysbm},</if>
-<if test="zzysbm != null">zzysbm=#{zzysbm},</if>
-<if test="zyysbm != null">zyysbm=#{zyysbm},</if>
-<if test="ksmc != null">ksmc=#{ksmc},</if>
-<if test="kzrmc != null">kzrmc=#{kzrmc},</if>
-<if test="zrysmc != null">zrysmc=#{zrysmc},</if>
-<if test="zzysmc != null">zzysmc=#{zzysmc},</if>
-<if test="zyysmc != null">zyysmc=#{zyysmc},</if>
-<if test="bqmc != null">bqmc=#{bqmc},</if>
+            <if test="applyDateStr != null">applyDateStr=#{applyDateStr},</if>
+            <if test="orderNumber != null">orderNumber=#{orderNumber},</if>
+            <if test="orderNum != null">orderNum=#{orderNum},</if>
+            <if test="applyDataId != null">applyDataId=#{applyDataId},</if>
+            <if test="areaType != null">areaType=#{areaType},</if>
+            <if test="ryrq != null">ryrq=#{ryrq},</if>
+            <if test="cyrq != null">cyrq=#{cyrq},</if>
+            <if test="fzbm != null">fzbm=#{fzbm},</if>
+            <if test="fzmc != null">fzmc=#{fzmc},</if>
+            <if test="zyzdbm != null">zyzdbm=#{zyzdbm},</if>
+            <if test="zyzdmc != null">zyzdmc=#{zyzdmc},</if>
+            <if test="zssbm != null">zssbm=#{zssbm},</if>
+            <if test="zssmc != null">zssmc=#{zssmc},</if>
+            <if test="qtzdbm != null">qtzdbm=#{qtzdbm},</if>
+            <if test="qtzdmc != null">qtzdmc=#{qtzdmc},</if>
+            <if test="qtssbm != null">qtssbm=#{qtssbm},</if>
+            <if test="qtssmc != null">qtssmc=#{qtssmc},</if>
+            <if test="ksbm != null">ksbm=#{ksbm},</if>
+            <if test="bqbm != null">bqbm=#{bqbm},</if>
+            <if test="qz != null">qz=#{qz},</if>
+            <if test="kzrbm != null">kzrbm=#{kzrbm},</if>
+            <if test="zrysbm != null">zrysbm=#{zrysbm},</if>
+            <if test="zzysbm != null">zzysbm=#{zzysbm},</if>
+            <if test="zyysbm != null">zyysbm=#{zyysbm},</if>
+            <if test="ksmc != null">ksmc=#{ksmc},</if>
+            <if test="kzrmc != null">kzrmc=#{kzrmc},</if>
+            <if test="zrysmc != null">zrysmc=#{zrysmc},</if>
+            <if test="zzysmc != null">zzysmc=#{zzysmc},</if>
+            <if test="zyysmc != null">zyysmc=#{zyysmc},</if>
+            <if test="bqmc != null">bqmc=#{bqmc},</if>
         </trim>
-                where id=#{id}
+        where id=#{id}
 
     </update>
-    <select id="findYbDrgJk" resultType="cc.mrbird.febs.drg.entity.YbDrgJk" parameterType="cc.mrbird.febs.drg.entity.YbDrgJk">
-        select  *  from yb_drg_jk
-        where  1=1
-            <if test="ybDrgJk.id != null and ybDrgJk.id != ''"> and id =#{ ybDrgJk.id} </if>
-            <if test="ybDrgJk.applyDateStr != null and ybDrgJk.applyDateStr != ''"> and applyDateStr like concat('%', #{ ybDrgJk.applyDateStr} ,'%')</if>
-            <if test="ybDrgJk.orderNumber != null and ybDrgJk.orderNumber != ''"> and orderNumber like concat('%', #{ ybDrgJk.orderNumber} ,'%')</if>
-            <if test="ybDrgJk.applyDataId != null and ybDrgJk.applyDataId != ''"> and applyDataId like concat('%', #{ ybDrgJk.applyDataId} ,'%')</if>
-        <if test="ybDrgJk.areaType != null"> and areaType =#{ ybDrgJk.areaType} </if>
+    <select id="findYbDrgJk" resultType="cc.mrbird.febs.drg.entity.YbDrgJk"
+            parameterType="cc.mrbird.febs.drg.entity.YbDrgJk">
+        select * from yb_drg_jk
+        where applyDateStr = #{ ybDrgJk.applyDateStr} and areaType =#{ ybDrgJk.areaType}
+        <if test="ybDrgJk.applyDataId != null and ybDrgJk.applyDataId != ''">and applyDataId =#{ ybDrgJk.applyDataId} </if>
         <if test="ybDrgJk.ryrqFrom!= null">
             AND ybDrgJk.ryrq <![CDATA[ >= ]]>  ryrqFrom}
         </if>
@@ -96,28 +95,52 @@
         <if test="ybDrgJk.cyrqTo!= null">
             AND ybDrgJk.cyrq <![CDATA[ <= ]]>  cyrqTo}
         </if>
-            <if test="ybDrgJk.fzbm != null and ybDrgJk.fzbm != ''"> and fzbm like concat('%', #{ ybDrgJk.fzbm} ,'%')</if>
-            <if test="ybDrgJk.fzmc != null and ybDrgJk.fzmc != ''"> and fzmc like concat('%', #{ ybDrgJk.fzmc} ,'%')</if>
-            <if test="ybDrgJk.zyzdbm != null and ybDrgJk.zyzdbm != ''"> and zyzdbm like concat('%', #{ ybDrgJk.zyzdbm} ,'%')</if>
-            <if test="ybDrgJk.zyzdmc != null and ybDrgJk.zyzdmc != ''"> and zyzdmc like concat('%', #{ ybDrgJk.zyzdmc} ,'%')</if>
-            <if test="ybDrgJk.zssbm != null and ybDrgJk.zssbm != ''"> and zssbm like concat('%', #{ ybDrgJk.zssbm} ,'%')</if>
-            <if test="ybDrgJk.zssmc != null and ybDrgJk.zssmc != ''"> and zssmc like concat('%', #{ ybDrgJk.zssmc} ,'%')</if>
-            <if test="ybDrgJk.qtzdbm != null and ybDrgJk.qtzdbm != ''"> and qtzdbm like concat('%', #{ ybDrgJk.qtzdbm} ,'%')</if>
-            <if test="ybDrgJk.qtzdmc != null and ybDrgJk.qtzdmc != ''"> and qtzdmc like concat('%', #{ ybDrgJk.qtzdmc} ,'%')</if>
-            <if test="ybDrgJk.qtssbm != null and ybDrgJk.qtssbm != ''"> and qtssbm like concat('%', #{ ybDrgJk.qtssbm} ,'%')</if>
-            <if test="ybDrgJk.qtssmc != null and ybDrgJk.qtssmc != ''"> and qtssmc like concat('%', #{ ybDrgJk.qtssmc} ,'%')</if>
-            <if test="ybDrgJk.ksbm != null and ybDrgJk.ksbm != ''"> and ksbm like concat('%', #{ ybDrgJk.ksbm} ,'%')</if>
-            <if test="ybDrgJk.bqbm != null and ybDrgJk.bqbm != ''"> and bqbm like concat('%', #{ ybDrgJk.bqbm} ,'%')</if>
-            <if test="ybDrgJk.kzrbm != null and ybDrgJk.kzrbm != ''"> and kzrbm like concat('%', #{ ybDrgJk.kzrbm} ,'%')</if>
-            <if test="ybDrgJk.zrysbm != null and ybDrgJk.zrysbm != ''"> and zrysbm like concat('%', #{ ybDrgJk.zrysbm} ,'%')</if>
-            <if test="ybDrgJk.zzysbm != null and ybDrgJk.zzysbm != ''"> and zzysbm like concat('%', #{ ybDrgJk.zzysbm} ,'%')</if>
-            <if test="ybDrgJk.zyysbm != null and ybDrgJk.zyysbm != ''"> and zyysbm like concat('%', #{ ybDrgJk.zyysbm} ,'%')</if>
-            <if test="ybDrgJk.ksmc != null and ybDrgJk.ksmc != ''"> and ksmc like concat('%', #{ ybDrgJk.ksmc} ,'%')</if>
-            <if test="ybDrgJk.kzrmc != null and ybDrgJk.kzrmc != ''"> and kzrmc like concat('%', #{ ybDrgJk.kzrmc} ,'%')</if>
-            <if test="ybDrgJk.zrysmc != null and ybDrgJk.zrysmc != ''"> and zrysmc like concat('%', #{ ybDrgJk.zrysmc} ,'%')</if>
-            <if test="ybDrgJk.zzysmc != null and ybDrgJk.zzysmc != ''"> and zzysmc like concat('%', #{ ybDrgJk.zzysmc} ,'%')</if>
-            <if test="ybDrgJk.zyysmc != null and ybDrgJk.zyysmc != ''"> and zyysmc like concat('%', #{ ybDrgJk.zyysmc} ,'%')</if>
-            <if test="ybDrgJk.bqmc != null and ybDrgJk.bqmc != ''"> and bqmc like concat('%', #{ ybDrgJk.bqmc} ,'%')</if>
-</select>
+        <if test="ybDrgJk.fzbm != null and ybDrgJk.fzbm != ''">and fzbm like concat('%', #{ ybDrgJk.fzbm} ,'%')</if>
+        <if test="ybDrgJk.fzmc != null and ybDrgJk.fzmc != ''">and fzmc like concat('%', #{ ybDrgJk.fzmc} ,'%')</if>
+        <if test="ybDrgJk.zyzdbm != null and ybDrgJk.zyzdbm != ''">and zyzdbm like concat('%', #{ ybDrgJk.zyzdbm}
+            ,'%')
+        </if>
+        <if test="ybDrgJk.zyzdmc != null and ybDrgJk.zyzdmc != ''">and zyzdmc like concat('%', #{ ybDrgJk.zyzdmc}
+            ,'%')
+        </if>
+        <if test="ybDrgJk.zssbm != null and ybDrgJk.zssbm != ''">and zssbm like concat('%', #{ ybDrgJk.zssbm} ,'%')</if>
+        <if test="ybDrgJk.zssmc != null and ybDrgJk.zssmc != ''">and zssmc like concat('%', #{ ybDrgJk.zssmc} ,'%')</if>
+        <if test="ybDrgJk.qtzdbm != null and ybDrgJk.qtzdbm != ''">and qtzdbm like concat('%', #{ ybDrgJk.qtzdbm}
+            ,'%')
+        </if>
+        <if test="ybDrgJk.qtzdmc != null and ybDrgJk.qtzdmc != ''">and qtzdmc like concat('%', #{ ybDrgJk.qtzdmc}
+            ,'%')
+        </if>
+        <if test="ybDrgJk.qtssbm != null and ybDrgJk.qtssbm != ''">and qtssbm like concat('%', #{ ybDrgJk.qtssbm}
+            ,'%')
+        </if>
+        <if test="ybDrgJk.qtssmc != null and ybDrgJk.qtssmc != ''">and qtssmc like concat('%', #{ ybDrgJk.qtssmc}
+            ,'%')
+        </if>
+        <if test="ybDrgJk.ksbm != null and ybDrgJk.ksbm != ''">and ksbm like concat('%', #{ ybDrgJk.ksbm} ,'%')</if>
+        <if test="ybDrgJk.bqbm != null and ybDrgJk.bqbm != ''">and bqbm like concat('%', #{ ybDrgJk.bqbm} ,'%')</if>
+        <if test="ybDrgJk.kzrbm != null and ybDrgJk.kzrbm != ''">and kzrbm like concat('%', #{ ybDrgJk.kzrbm} ,'%')</if>
+        <if test="ybDrgJk.zrysbm != null and ybDrgJk.zrysbm != ''">and zrysbm like concat('%', #{ ybDrgJk.zrysbm}
+            ,'%')
+        </if>
+        <if test="ybDrgJk.zzysbm != null and ybDrgJk.zzysbm != ''">and zzysbm like concat('%', #{ ybDrgJk.zzysbm}
+            ,'%')
+        </if>
+        <if test="ybDrgJk.zyysbm != null and ybDrgJk.zyysbm != ''">and zyysbm like concat('%', #{ ybDrgJk.zyysbm}
+            ,'%')
+        </if>
+        <if test="ybDrgJk.ksmc != null and ybDrgJk.ksmc != ''">and ksmc like concat('%', #{ ybDrgJk.ksmc} ,'%')</if>
+        <if test="ybDrgJk.kzrmc != null and ybDrgJk.kzrmc != ''">and kzrmc like concat('%', #{ ybDrgJk.kzrmc} ,'%')</if>
+        <if test="ybDrgJk.zrysmc != null and ybDrgJk.zrysmc != ''">and zrysmc like concat('%', #{ ybDrgJk.zrysmc}
+            ,'%')
+        </if>
+        <if test="ybDrgJk.zzysmc != null and ybDrgJk.zzysmc != ''">and zzysmc like concat('%', #{ ybDrgJk.zzysmc}
+            ,'%')
+        </if>
+        <if test="ybDrgJk.zyysmc != null and ybDrgJk.zyysmc != ''">and zyysmc like concat('%', #{ ybDrgJk.zyysmc}
+            ,'%')
+        </if>
+        <if test="ybDrgJk.bqmc != null and ybDrgJk.bqmc != ''">and bqmc like concat('%', #{ ybDrgJk.bqmc} ,'%')</if>
+    </select>
 
 </mapper>

@@ -301,8 +301,8 @@ public class ComTypeServiceImpl extends ServiceImpl<ComTypeMapper, ComType> impl
     @Override
     public List<ComType> findComTypeList(ComType comType) {
         LambdaQueryWrapper<ComType> queryWrapper = new LambdaQueryWrapper<>();
-        if (comType.getCtType() != 2) {
-            queryWrapper.eq(ComType::getIsDeletemark, 1);//1是未删 0是已删
+        if (comType.getIsDeletemark() != null) {
+            queryWrapper.eq(ComType::getIsDeletemark, comType.getIsDeletemark());//1是未删 0是已删
         }
         if (comType.getCtType() != null) {
             queryWrapper.eq(ComType::getCtType, comType.getCtType());

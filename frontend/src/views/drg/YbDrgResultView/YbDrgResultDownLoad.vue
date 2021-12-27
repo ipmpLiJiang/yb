@@ -52,7 +52,7 @@ export default {
         title: '序号',
         dataIndex: 'orderNumber',
         fixed: 'left',
-        width: 70
+        width: 100
       },
       {
         title: '科室',

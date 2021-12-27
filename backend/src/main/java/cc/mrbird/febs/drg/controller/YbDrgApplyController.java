@@ -85,6 +85,35 @@ public class YbDrgApplyController extends BaseController {
         }
     }
 
+    @Log("新增/按钮")
+    @PostMapping("addYbDrgApplyCheck")
+    @RequiresPermissions("ybDrgApply:add")
+    public FebsResponse addYbDrgApplyCheck(@Valid YbDrgApply ybDrgApply) {
+        int success = 0;
+        try {
+            User currentUser = FebsUtil.getCurrentUser();
+            ybDrgApply.setCreateUserId(currentUser.getUserId());
+            ybDrgApply.setOperatorId(currentUser.getUserId());
+            ybDrgApply.setOperatorName(currentUser.getUsername() + "-" + currentUser.getXmname());
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM");
+            String appDateStr = sdf.format(ybDrgApply.getApplyDate());
+            ybDrgApply.setApplyDateStr(appDateStr);
+            message = this.iYbDrgApplyService.createDrgApplyCheck(ybDrgApply);
+            if(message.equals("ok")){
+                success = 1;
+                message = "新增成功.";
+            }
+        } catch (Exception e) {
+            message = "新增/按钮失败";
+            log.error(message, e);
+        }
+        ResponseResult rr =new ResponseResult();
+        rr.setSuccess(success);
+        rr.setMessage(message);
+        return new FebsResponse().data(rr);
+    }
+
+
     /**
      * 修改
      *
@@ -94,7 +123,8 @@ public class YbDrgApplyController extends BaseController {
     @Log("修改")
     @PutMapping
     @RequiresPermissions("ybDrgApply:update")
-    public void updateYbDrgApply(@Valid YbDrgApply ybDrgApply) throws FebsException {
+    public FebsResponse updateYbDrgApply(@Valid YbDrgApply ybDrgApply,boolean isUpOverdue) throws FebsException {
+        int success = 0;
         try {
             User currentUser = FebsUtil.getCurrentUser();
             ybDrgApply.setModifyUserId(currentUser.getUserId());
@@ -104,13 +134,26 @@ public class YbDrgApplyController extends BaseController {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM");
             String appDateStr = sdf.format(ybDrgApply.getApplyDate());
             ybDrgApply.setApplyDateStr(appDateStr);
-
-            this.iYbDrgApplyService.updateYbDrgApply(ybDrgApply);
+            this.message = this.iYbDrgApplyService.updateYbDrgApply(ybDrgApply, isUpOverdue);
+            if(this.message.equals("") || this.message.equals("ok")){
+                this.message = "ok";
+            }else if(this.message.equals("date")){
+                this.message = "当前结束日期应大于之前结束日期";
+            }else if(this.message.equals("nodata")){
+                this.message = "当前没有未申诉数据";
+            }else if(this.message.equals("nostate")){
+                this.message = "当前状态无法进行未申诉更新";
+            }
+            success = 1;
         } catch (Exception e) {
             message = "修改失败";
             log.error(message, e);
-            throw new FebsException(message);
+//            throw new FebsException(message);
         }
+        ResponseResult rr= new ResponseResult();
+        rr.setSuccess(success);
+        rr.setMessage(message);
+        return new FebsResponse().data(rr);
     }
 
 

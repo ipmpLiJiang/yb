@@ -221,7 +221,7 @@ public class YbDrgResultViewServiceImpl extends ServiceImpl<YbDrgResultViewMappe
                     size = 0;
                     fileQuery = fileList.stream().filter(s -> s.getRefTabId().equals(item.getId())).collect(Collectors.toList());
                     for(ComFile cf :fileQuery) {
-                        File file = new File(address + item.getOrderNumber() + "/" + cf.getRefType() + "/" + cf.getServerName());
+                        File file = new File(address + item.getOrderNumber() + "/" + cf.getServerName());
                         FileInputStream fis = new FileInputStream(file);
                         size += fis.available();
                     }

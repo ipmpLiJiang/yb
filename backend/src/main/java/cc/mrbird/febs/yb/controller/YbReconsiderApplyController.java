@@ -162,6 +162,8 @@ public class YbReconsiderApplyController extends BaseController {
                 this.message = "ok";
             }else if(this.message.equals("date")){
                 this.message = "当前结束日期应大于之前结束日期";
+            }else if(this.message.equals("nodata")){
+                this.message = "当前没有未申诉数据";
             }else if(this.message.equals("nostate")){
                 this.message = "当前状态无法进行未申诉更新";
             }

@@ -102,5 +102,6 @@
                 ad.id = dr.applyDataId
         where
             ad.pid = #{ybDrgResultView.pid}
+            and dr.operateReason != '未申诉'
     </select>
 </mapper>

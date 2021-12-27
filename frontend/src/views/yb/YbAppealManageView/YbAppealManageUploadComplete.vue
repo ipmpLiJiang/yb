@@ -63,9 +63,12 @@
                 </a-form-item>
               </a-col>
             </a-row>
+            <a-row type="flex" justify="center">
+              <p style="color:red">{{lableErr}}</p>
+            </a-row>
             <!--按钮-->
             <a-row type="flex" justify="end">
-              <a-col :span=5>
+              <a-col :span=7>
                 <a-button
                   @click="handleSubmit"
                   type="primary"
@@ -158,6 +161,7 @@ export default {
       previewVisible: false,
       previewImage: '',
       fileList: [],
+      lableErr: '',
       user: this.$store.state.account.user,
       form: this.$form.createForm(this)
     }
@@ -212,6 +216,7 @@ export default {
           that.fileList.push(r.data.data)
           this.uploading = false
           this.$message.success('上传成功.')
+          this.lableErr = ''
         } else {
           this.$message.error(r.data.data.message)
         }
@@ -223,6 +228,7 @@ export default {
     handleImageRemove (file) {
       if (this.fileList.length === 1) {
         this.$message.warning('复议图片无法删除，请确认保，至少存在一张复议图片！')
+        this.lableErr = '复议图片无法删除，请确认保，至少存在一张复议图片！'
         return false
       }
       let that = this
@@ -281,6 +287,13 @@ export default {
       this.$emit('close')
     },
     handleSubmit () {
+      this.lableErr = ''
+      // 复议判断图片必须上传
+      if (this.fileList.length < 1) {
+        this.$message.warning('未上传复议图片，无法保存！')
+        this.lableErr = '未上传复议图片，无法保存！'
+        return false
+      }
       this.form.validateFields((err, values) => {
         if (!err) {
           let fromData = this.form.getFieldsValue(['operateReason'])
@@ -305,6 +318,7 @@ export default {
       })
     },
     setFormValues ({ ...ybAppealManageUpload }) {
+      this.lableErr = ''
       this.ybAppealManageUpload = ybAppealManageUpload
 
       this.form.getFieldDecorator('operateReason')

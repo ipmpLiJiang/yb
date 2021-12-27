@@ -107,14 +107,14 @@
           <a-tab-pane
             key="2"
             :forceRender="true"
-            tab="His数据"
+            tab="DRG数据"
           >
-            <ybDrgApply-task
-              ref="ybDrgApplyTask"
+            <ybDrg-jk
+              ref="ybDrgJk"
               :applyDateStr="ybDrgApply.applyDateStr"
               :areaType="ybDrgApply.areaType"
             >
-            </ybDrgApply-task>
+            </ybDrg-jk>
           </a-tab-pane>
         </a-tabs>
       </div>
@@ -125,14 +125,14 @@
 <script>
 import moment from 'moment'
 import YbDrgApplyData from './YbDrgApplyData'
-import YbDrgApplyTask from './YbDrgApplyTask'
+import YbDrgJk from './YbDrgJk'
 const formItemLayout = {
   labelCol: { span: 8 },
   wrapperCol: { span: 14, offset: 1 }
 }
 export default {
   name: 'YbDrgApplyUpload',
-  components: {YbDrgApplyData, YbDrgApplyTask},
+  components: {YbDrgApplyData, YbDrgJk},
   props: {
   },
   data () {
@@ -234,7 +234,7 @@ export default {
       if (key === '1') {
         this.$refs.ybDrgApplyData.searchPage()
       } else if (key === '2') {
-        this.$refs.ybDrgApplyTask.searchPage()
+        this.$refs.ybDrgJk.searchPage()
       } else {
         console.log('ok')
       }

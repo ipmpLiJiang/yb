@@ -698,7 +698,7 @@ public class YbAppealManageServiceImpl extends ServiceImpl<YbAppealManageMapper,
         cal.add(Calendar.SECOND, t);// 24小时制
         return cal.getTime();
     }
-    //未使用
+
     @Override
     public List<YbAppealManage> getUpdateAppealManageList(List<YbAppealManageView> appealManageList, Date endDateOne) {
         List<YbAppealManage> updateAppealManageList = new ArrayList<>();

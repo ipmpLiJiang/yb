@@ -298,6 +298,7 @@ public class YbAppealConfireController extends BaseController {
                 List<ComType> ctQuery = new ArrayList<>();
                 ComType query = new ComType();
                 query.setCtType(1);
+                query.setIsDeletemark(1);
                 List<ComType> ctList = iComTypeService.findComTypeList(query);
                 for (YbAppealConfire item : list) {
                     YbAppealConfireExport dataExport = new YbAppealConfireExport();
@@ -336,6 +337,7 @@ public class YbAppealConfireController extends BaseController {
                 List<ComType> ctQuery = new ArrayList<>();
                 ComType query = new ComType();
                 query.setCtType(1);
+                query.setIsDeletemark(1);
                 List<ComType> ctList = iComTypeService.findComTypeList(query);
                 for (YbAppealConfire item : list) {
                     YbAppealConfireExport dataExport = new YbAppealConfireExport();

@@ -73,6 +73,9 @@
               </a-col>
             </a-row>
             <!--按钮-->
+            <a-row type="flex" justify="center">
+              <p style="color:red">{{lableErr}}</p>
+            </a-row>
             <a-row type="flex" justify="end">
               <a-col :span=5>
                 <a-popconfirm
@@ -178,6 +181,7 @@ export default {
       previewImage: '',
       isShow: false,
       fileList: [],
+      lableErr: '',
       user: this.$store.state.account.user,
       form: this.$form.createForm(this)
     }
@@ -231,6 +235,7 @@ export default {
           that.fileList.push(r.data.data)
           this.uploading = false
           this.$message.success('上传成功.')
+          this.lableErr = ''
         } else {
           this.$message.error(r.data.data.message)
         }
@@ -242,6 +247,7 @@ export default {
     handleImageRemove (file) {
       if (this.fileList.length === 1) {
         this.$message.warning('复议图片无法删除，请确认保，至少存在一张复议图片！')
+        this.lableErr = '复议图片无法删除，请确认保，至少存在一张复议图片！'
         return false
       }
       let that = this
@@ -329,6 +335,7 @@ export default {
       }
     },
     handleSubmit (type) {
+      this.lableErr = ''
       this.form.validateFields((err, values) => {
         if (!err) {
           let fromData = this.form.getFieldsValue(['operateReason'])
@@ -336,6 +343,7 @@ export default {
           // 复议判断图片必须上传
           if (acceptState === 6 && this.fileList.length < 1) {
             this.$message.warning('未上传复议图片，无法提交！')
+            this.lableErr = '未上传复议图片，无法保存！'
             return false
           }
           let data = {
@@ -374,6 +382,7 @@ export default {
       })
     },
     setFormValues ({ ...ybAppealManageUpload }) {
+      this.lableErr = ''
       this.ybAppealManageUpload = ybAppealManageUpload
 
       if (this.ybAppealManageUpload.sourceType === 1) {

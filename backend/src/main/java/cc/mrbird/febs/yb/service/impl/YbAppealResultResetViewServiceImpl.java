@@ -79,18 +79,23 @@ public class YbAppealResultResetViewServiceImpl extends ServiceImpl<YbAppealResu
             appealResultResetView.setPid(reconsiderReset.getId());
             // 与 Result 做管理 ApplyDataId 无值
             List<YbAppealResultResetView> list = this.baseMapper.findAppealResultResetList(appealResultResetView);
-            /*
+
             LambdaQueryWrapper<YbAppealManage> wrapperManage = new LambdaQueryWrapper<>();
             wrapperManage.eq(YbAppealManage::getApplyDateStr, reconsiderReset.getApplyDateStr());
             wrapperManage.eq(YbAppealManage::getAreaType, reconsiderReset.getAreaType());
             wrapperManage.eq(YbAppealManage::getSourceType, YbDefaultValue.SOURCETYPE_1);
+            List<Integer> asList = new ArrayList<>();
+            asList.add(0);
+            asList.add(1);
+            asList.add(2);
+            wrapperManage.in(YbAppealManage::getAcceptState, asList);
             List<YbAppealManage> manageList = iYbAppealManageService.list(wrapperManage);
             List<YbAppealManage> queryManageList = new ArrayList<>();
             if(manageList.size() > 0) {
                 for (YbAppealResultResetView item : list) {
                     queryManageList = manageList.stream().filter(s -> s.getApplyDataId().equals(item.getApplyDataId())).collect(Collectors.toList());
                     if (queryManageList.size() > 0) {
-                        if (item.getArDoctorCode() == null || item.getArDoctorCode().equals("")) {
+                        if (item.getArDoctorCode() == null) {
                             item.setArDoctorCode(queryManageList.get(0).getReadyDoctorCode());
                             item.setArDoctorName(queryManageList.get(0).getReadyDoctorName());
                             item.setArDeptCode(queryManageList.get(0).getReadyDeptCode());
@@ -99,7 +104,7 @@ public class YbAppealResultResetViewServiceImpl extends ServiceImpl<YbAppealResu
                     }
                 }
             }
-            */
+
             return list;
         }
         return new ArrayList<>();

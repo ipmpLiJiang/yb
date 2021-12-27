@@ -49,6 +49,13 @@ private static final long serialVersionUID=1L;
     private String orderNumber;
 
     /**
+     * 排序
+     */
+    @TableField("orderNum")
+    @ExcelField(value = "排序")
+    private Integer orderNum;
+
+    /**
      * drg申请明细
      */
     @TableField("applyDataId")
@@ -223,6 +230,8 @@ private static final long serialVersionUID=1L;
     public static final String APPLYDATESTR ="applyDateStr" ;
 
     public static final String ORDERNUMBER ="orderNumber" ;
+
+    public static final String ORDERNUM = "orderNum";
 
     public static final String APPLYDATAID ="applyDataId" ;
 

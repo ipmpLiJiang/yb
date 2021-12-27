@@ -140,6 +140,9 @@
                   </a-col>
                 </a-row>
                 <br />
+                <a-row type="flex" justify="center">
+                  <p style="color:red">{{lableErr}}</p>
+                </a-row>
                 <!--按钮-->
                 <a-row type="flex" justify="center">
                   <a-col :span="5">
@@ -222,6 +225,7 @@ export default {
       ftype: '',
       ftypeName: '',
       typeList: [],
+      lableErr: '',
       user: this.$store.state.account.user,
       form: this.$form.createForm(this)
     }
@@ -272,6 +276,7 @@ export default {
           that.fileList.unshift(r.data.data)
           this.uploading = false
           this.$message.success('上传成功.')
+          this.lableErr = ''
         } else {
           this.$message.error(r.data.data.message)
         }
@@ -281,6 +286,11 @@ export default {
       })
     },
     handleImageRemove (file) {
+      if (this.fileList.length === 1) {
+        this.$message.warning('复议图片无法删除，请确认保，至少存在一张复议图片！')
+        this.lableErr = '复议图片无法删除，请确认保，至少存在一张复议图片！'
+        return false
+      }
       let that = this
       this.$confirm({
         title: '确定删除所选中的附件?',
@@ -335,10 +345,17 @@ export default {
       this.$emit('close')
     },
     handleSubmit (type) {
+      this.lableErr = ''
       this.form.validateFields((err, values) => {
         if (!err) {
           let fromData = this.form.getFieldsValue(['operateReason'])
           let state = type === 0 ? 1 : 6 // 1 保存 6提交
+          // 复议判断图片必须上传
+          if (state === 6 && this.fileList.length < 1) {
+            this.$message.warning('未上传复议图片，无法提交！')
+            this.lableErr = '未上传复议图片，无法提交！'
+            return false
+          }
           let data = {
             id: this.ybDrgManageUpload.id,
             state: state,
@@ -375,6 +392,7 @@ export default {
     setFormValues ({
       ...ybDrgManageUpload
     }) {
+      this.lableErr = ''
       this.ybDrgManageUpload = ybDrgManageUpload
 
       this.form.getFieldDecorator('operateReason')
@@ -391,7 +409,7 @@ export default {
       this.ftype = ''
       this.typeList = []
       this.$get('comType/getComTypeList', {
-        ctType: 2
+        ctType: 2, isDeletemark: 1
       }).then((r) => {
         if (r.data.length > 0) {
           for (var i in r.data) {

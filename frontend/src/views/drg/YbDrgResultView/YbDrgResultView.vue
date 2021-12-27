@@ -45,19 +45,16 @@
             <a-popover v-model="visibleExport" trigger="click" title="导出Excel">
               <a-button
                 slot="content"
-                type="primary"
                 style="margin-right:15px"
                 @click="exportExcel"
                 >导出详情</a-button>
               <a-button
                 slot="content"
-                type="primary"
                 style="margin-right:15px"
                 @click="exportExcelYj"
                 >导出意见</a-button>
               <a-button
                 slot="content"
-                type="primary"
                 @click="exportExcelWj"
                 >导出文件</a-button>
             </a-popover>

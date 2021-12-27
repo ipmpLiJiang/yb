@@ -607,6 +607,7 @@ public class ComFileController extends BaseController {
             if (list.size() > 0) {
                 ComType query = new ComType();
                 query.setCtType(2);
+//                query.setIsDeletemark(1);
                 List<ComType> typeList = iComTypeService.findComTypeList(query);
                 List<ComType> queryList = new ArrayList<>();
                 for (ComFile item : list) {
@@ -629,7 +630,7 @@ public class ComFileController extends BaseController {
 
                 for (ComFile item : list) {
                     String fileUrl = "uploadFile/" + inUploadFile.getApplyDateStr() + "/DRG" + inUploadFile.getAreaType() +
-                            "/" + inUploadFile.getOrderNumber() + "/" + item.getRefType() + "/" + item.getServerName();
+                            "/" + inUploadFile.getOrderNumber() + "/" +  item.getServerName();
                     OutComFile outComFile = new OutComFile();
                     outComFile.setUid(item.getId());
                     outComFile.setName(item.getClientName());
@@ -669,7 +670,7 @@ public class ComFileController extends BaseController {
             String filePath = febsProperties.getUploadPath(); // 上传后的路径
             String fileName = UUID.randomUUID().toString() + suffixName; // 新文件名
             String furl = filePath + inUploadFile.getApplyDateStr() + "/DRG" + inUploadFile.getAreaType() +
-                    "/" + inUploadFile.getOrderNumber() + "/" + inUploadFile.getRefType() + "/" + fileName;
+                    "/" + inUploadFile.getOrderNumber() + "/" + fileName;
             File dest = new File(furl);
             String Id = UUID.randomUUID().toString();
             if (!dest.getParentFile().exists()) {
@@ -691,7 +692,7 @@ public class ComFileController extends BaseController {
                 throw new FebsException(e.getMessage());
             }
             String fileUrl = febsProperties.getBaseUrl() + "/uploadFile/" + inUploadFile.getApplyDateStr() + "/DRG" + inUploadFile.getAreaType() +
-                    "/" + inUploadFile.getOrderNumber() + "/" + inUploadFile.getRefType() + "/" + fileName;
+                    "/" + inUploadFile.getOrderNumber() + "/" + fileName;
 
             outComFile.setSuccess(1);
             outComFile.setUid(Id);
@@ -726,7 +727,7 @@ public class ComFileController extends BaseController {
                 if (comFile != null) {
                     String filePath = febsProperties.getUploadPath(); // 上传后的路径
                     String fileUrl = filePath + inUploadFile.getApplyDateStr() + "/DRG" + inUploadFile.getAreaType() + "/" +
-                            "/" + inUploadFile.getOrderNumber() + "/" + comFile.getRefType() + "/" + comFile.getServerName();
+                            "/" + inUploadFile.getOrderNumber() + "/" + comFile.getServerName();
                     boolean blFile = deleteFile(fileUrl);
                     if (blFile) {
                         int count = this.iComFileService.deleteComFile(inUploadFile.getId());
@@ -769,7 +770,7 @@ public class ComFileController extends BaseController {
                 File[] fileUtils = new File[list.size()];
                 for (int i = 0; i < list.size(); i++) {
                     ComFile comFile = list.get(i);
-                    File file = new File(address + inUploadFile.getOrderNumber() + "/" + comFile.getRefType() + "/" + comFile.getServerName());
+                    File file = new File(address + inUploadFile.getOrderNumber() + "/" + comFile.getServerName());
                     fileUtils[i] = file;
                 }
                 ZipUtil.zip(FileUtil.file(filePath), false, fileUtils);
@@ -817,7 +818,7 @@ public class ComFileController extends BaseController {
                     File[] fileUtils = new File[list.size()];
                     for (int i = 0; i < list.size(); i++) {
                         ComFile comFile = list.get(i);
-                        File file = new File(address + comFile.getOrderNumber() + "/" + comFile.getRefType() + "/" + comFile.getServerName());
+                        File file = new File(address + comFile.getOrderNumber() + "/" + comFile.getServerName());
                         fileUtils[i] = file;
                     }
                     ZipUtil.zip(FileUtil.file(filePath), false, fileUtils);

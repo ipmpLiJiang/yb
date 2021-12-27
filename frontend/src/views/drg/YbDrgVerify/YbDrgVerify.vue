@@ -49,7 +49,7 @@
               okText="确定"
               cancelText="取消"
             >
-              <a-button type="primary">执行匹配</a-button>
+              <a-button >执行匹配</a-button>
             </a-popconfirm>
             <a-popconfirm
               title="确定删除匹配？"
@@ -59,7 +59,7 @@
               okText="确定"
               cancelText="取消"
             >
-              <a-button type="primary">删除匹配</a-button>
+              <a-button type="danger">删除匹配</a-button>
             </a-popconfirm>
             </p>
           </a-popover>

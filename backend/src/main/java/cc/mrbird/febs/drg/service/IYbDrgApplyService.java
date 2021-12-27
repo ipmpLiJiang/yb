@@ -3,6 +3,7 @@ package cc.mrbird.febs.drg.service;
 import cc.mrbird.febs.drg.entity.YbDrgApply;
 import com.baomidou.mybatisplus.extension.service.IService;
 
+import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
 
@@ -26,9 +27,13 @@ public interface IYbDrgApplyService extends IService<YbDrgApply> {
 
     void createYbDrgApply(YbDrgApply ybDrgApply);
 
+    String createDrgApplyCheck(YbDrgApply ybDrgApply);
+
     void updateYbDrgApply(YbDrgApply ybDrgApply,Integer isChangDate);
 
     void updateYbDrgApply(YbDrgApply ybDrgApply);
+
+    String updateYbDrgApply(YbDrgApply ybDrgApply, boolean isUpOverdue) throws ParseException;
 
     void deleteYbDrgApplys(String[] Ids,int state);
 

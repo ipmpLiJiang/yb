@@ -1,6 +1,7 @@
 package cc.mrbird.febs.drg.service.impl;
 
 import cc.mrbird.febs.com.controller.DataTypeHelpers;
+import cc.mrbird.febs.com.entity.ComConfiguremanage;
 import cc.mrbird.febs.com.entity.ComSms;
 import cc.mrbird.febs.com.service.IComConfiguremanageService;
 import cc.mrbird.febs.com.service.IComSmsService;
@@ -28,9 +29,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.time.LocalDate;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -61,6 +64,7 @@ public class YbDrgApplyServiceImpl extends ServiceImpl<YbDrgApplyMapper, YbDrgAp
     public IPage<YbDrgApply> findYbDrgApplys(QueryRequest request, YbDrgApply ybDrgApply) {
         try {
             LambdaQueryWrapper<YbDrgApply> queryWrapper = new LambdaQueryWrapper<>();
+            queryWrapper.eq(YbDrgApply::getAreaType, ybDrgApply.getAreaType());
             queryWrapper.eq(YbDrgApply::getIsDeletemark, 1);//1是未删 0是已删
 
 
@@ -83,6 +87,36 @@ public class YbDrgApplyServiceImpl extends ServiceImpl<YbDrgApplyMapper, YbDrgAp
             log.error("获取失败", e);
             return null;
         }
+    }
+
+    @Override
+    @Transactional
+    public String createDrgApplyCheck(YbDrgApply ybDrgApply) {
+        String message = "";
+        YbDrgApply reconsiderApply = this.findDrgApplyByApplyDateStrs(ybDrgApply.getApplyDateStr(), ybDrgApply.getAreaType());
+        if (reconsiderApply == null) {
+            ybDrgApply.setCreateTime(new Date());
+            if (ybDrgApply.getId() == null || "".equals(ybDrgApply.getId())) {
+                ybDrgApply.setId(UUID.randomUUID().toString());
+            }
+            ybDrgApply.setIsDeletemark(1);
+            boolean bl = this.save(ybDrgApply);
+            if (bl) {
+                message = "ok";
+            }
+        } else {
+            List<Integer> atList = new ArrayList<>();
+            atList.add(5);
+            List<ComConfiguremanage> ccsList = iComConfiguremanageService.getConfigLists(atList);
+            if (ccsList.size() > 0) {
+                ccsList = ccsList.stream().filter(s -> s.getIntField().equals(ybDrgApply.getAreaType())).collect(Collectors.toList());
+                message = ccsList.get(0).getStringField() + " 该DRG年月 " + ybDrgApply.getApplyDateStr() + " 已创建过复议申请记录";
+            } else {
+                message = "该DRG年月 " + ybDrgApply.getApplyDateStr() + " 已创建过复议申请记录";
+            }
+
+        }
+        return message;
     }
 
     @Override
@@ -159,11 +193,63 @@ public class YbDrgApplyServiceImpl extends ServiceImpl<YbDrgApplyMapper, YbDrgAp
         }
 
     }
+
     @Override
     @Transactional
-    public void updateYbDrgApply(YbDrgApply ybDrgApply){
+    public void updateYbDrgApply(YbDrgApply ybDrgApply) {
         ybDrgApply.setModifyTime(new Date());
         this.baseMapper.updateYbDrgApply(ybDrgApply);
+    }
+
+    @Override
+    @Transactional
+    public String updateYbDrgApply(YbDrgApply ybDrgApply, boolean isUpOverdue) throws ParseException {
+        String msg = "ok";
+        ybDrgApply.setModifyTime(new Date());
+        ybDrgApply.setApplyDateStr(null);
+
+        if (isUpOverdue) {
+            YbDrgApply yra = this.getById(ybDrgApply.getId());
+            int state = yra.getState();
+            if (state == YbDefaultValue.DRGAPPLYSTATE_3) {
+                SimpleDateFormat f = new SimpleDateFormat("yyyy-MM-dd hh:mm");
+                Date aEndDate = f.parse(f.format(yra.getEndDate()));
+                Date bEndDate = f.parse(f.format(ybDrgApply.getEndDate()));
+                if (aEndDate.before(bEndDate)) {
+                    YbDrgManage query = new YbDrgManage();
+                    query.setApplyDateStr(yra.getApplyDateStr());
+                    query.setAreaType(yra.getAreaType());
+                    query.setState(YbDefaultValue.AMSTATE_7);
+                    List<YbDrgManage> manageList = iYbDrgManageService.findDrgManageList(query);
+                    if(manageList.size() > 0) {
+                        List<YbDrgManage> updateList = new ArrayList<>();
+                        for (YbDrgManage item : manageList) {
+                            YbDrgManage update = new YbDrgManage();
+                            update.setId(item.getId());
+                            update.setState(YbDefaultValue.AMSTATE_1);
+                            updateList.add(update);
+                        }
+                        boolean isTrue = iYbDrgManageService.updateBatchById(updateList);
+                        if (isTrue) {
+                            msg = "ok";
+                        }
+                    } else {
+                        msg = "nodata";
+                    }
+                } else {
+                    msg = "date";
+                }
+            } else {
+                msg = "nostate";
+            }
+            if (msg.equals("ok")) {
+                this.baseMapper.updateYbDrgApply(ybDrgApply);
+            }
+        } else {
+            this.baseMapper.updateYbDrgApply(ybDrgApply);
+        }
+
+        return msg;
     }
 
 
@@ -252,7 +338,7 @@ public class YbDrgApplyServiceImpl extends ServiceImpl<YbDrgApplyMapper, YbDrgAp
     }
 
     @Override
-    public String getSendMessage(String applyDateStr, Date endDate,Integer areaType) {
+    public String getSendMessage(String applyDateStr, Date endDate, Integer areaType) {
         applyDateStr = applyDateStr.replace("-", "年");
         String wangz = febsProperties.getSmsWebsite();
         String ssm = "";
@@ -278,7 +364,6 @@ public class YbDrgApplyServiceImpl extends ServiceImpl<YbDrgApplyMapper, YbDrgAp
         }
         return isUpdate;
     }
-
 
 
 }

@@ -12,6 +12,7 @@ import cc.mrbird.febs.common.exception.FebsException;
 import cc.mrbird.febs.common.utils.FebsUtil;
 import cc.mrbird.febs.drg.entity.*;
 import cc.mrbird.febs.drg.service.IYbDrgApplyService;
+import cc.mrbird.febs.drg.service.IYbDrgManageService;
 import cc.mrbird.febs.drg.service.IYbDrgResultViewService;
 import cc.mrbird.febs.export.excel.ExportExcelUtils;
 import cc.mrbird.febs.system.domain.User;
@@ -52,6 +53,9 @@ public class YbDrgResultViewController extends BaseController {
     @Autowired
     public IYbDrgResultViewService iYbDrgResultViewService;
 
+    @Autowired
+    public IYbDrgManageService iYbDrgManageService;
+
     @GetMapping()
     @RequiresPermissions("ybDrgResultView:view")
     public Map<String, Object> List(QueryRequest request, YbDrgResultView ybDrgResultView, String keyField) {
@@ -70,6 +74,17 @@ public class YbDrgResultViewController extends BaseController {
                 List<YbDrgResultView> list = this.iYbDrgResultViewService.findDrgResultViewLists(ybDrgResultView);
                 list = list.stream().sorted(Comparator.comparing(YbDrgResultView::getOrderNum)).collect(Collectors.toList());
 
+                List<YbDrgManage> manageList = new ArrayList<>();
+                List<YbDrgManage> queryManageList = new ArrayList<>();
+                if (list.size() > 0) {
+                    YbDrgManage query = new YbDrgManage();
+                    query.setApplyDateStr(drgApply.getApplyDateStr());
+                    query.setAreaType(drgApply.getAreaType());
+                    manageList = iYbDrgManageService.findDrgManageList(query);
+                    if (manageList.size() > 0) {
+                        manageList = manageList.stream().filter(s -> s.getState() != 3 && s.getState() != 4).collect(Collectors.toList());
+                    }
+                }
                 List<YbDrgApplyDataResult> exportList = new ArrayList<>();
                 for (YbDrgResultView item : list) {
                     YbDrgApplyDataResult dataExport = new YbDrgApplyDataResult();
@@ -93,6 +108,15 @@ public class YbDrgResultViewController extends BaseController {
                     dataExport.setDeptCode(item.getDeptCode());//复议科室编码
                     dataExport.setDeptName(strDeptName);//复议科室名称
 
+                    if (item.getDoctorCode() == null) {
+                        queryManageList = manageList.stream().filter(s -> s.getApplyDataId().equals(item.getApplyDataId())).collect(Collectors.toList());
+                        if (queryManageList.size() > 0) {
+                            dataExport.setDoctorCode(queryManageList.get(0).getReadyDoctorCode());//复议医生编码
+                            dataExport.setDoctorName(queryManageList.get(0).getReadyDoctorName());//复议医生姓名
+                            dataExport.setDeptCode(queryManageList.get(0).getReadyDeptCode());//复议科室编码
+                            dataExport.setDeptName(queryManageList.get(0).getReadyDeptName());//复议科室名称
+                        }
+                    }
                     exportList.add(dataExport);
                 }
 
@@ -227,7 +251,7 @@ public class YbDrgResultViewController extends BaseController {
         try {
             if (startOrderNumber > 0 && endOrderNumber >= startOrderNumber) {
                 List<String> orderNumberList = new ArrayList<>();
-                if(startOrderNumber == endOrderNumber) {
+                if (startOrderNumber == endOrderNumber) {
                     orderNumberList.add(startOrderNumber.toString());
                 } else {
                     while (startOrderNumber <= endOrderNumber) {
@@ -237,7 +261,7 @@ public class YbDrgResultViewController extends BaseController {
                 }
                 List<YbDrgResultView> list = this.iYbDrgResultViewService.findDrgResultFileSizeByOrderNumberList(applyDateStr, areaType, orderNumberList);
 
-                if(list.size() > 0) {
+                if (list.size() > 0) {
                     list = list.stream().sorted(Comparator.comparing(YbDrgResultView::getOrderNum)).collect(Collectors.toList());
                 }
 

@@ -428,7 +428,7 @@ public class YbReconsiderApplyServiceImpl extends ServiceImpl<YbReconsiderApplyM
         queryAppealManage.setPid(yra.getId());
         queryAppealManage.setAreaType(ybReconsiderApply.getAreaType());
 
-        SimpleDateFormat f = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat f = new SimpleDateFormat("yyyy-MM-dd hh:mm");
         Date aEndDateOne = null;
         Date bEndDateOne = null;
         boolean isTrue = false;
@@ -450,12 +450,16 @@ public class YbReconsiderApplyServiceImpl extends ServiceImpl<YbReconsiderApplyM
             List<YbAppealManage> updateAppealManageList = new ArrayList<>();
             if (aEndDateOne.before(bEndDateOne)) {
                 appealManageList = iYbAppealManageViewService.findAppealManageViewList(queryAppealManage);
-                updateAppealManageList = iYbAppealManageService.getUpdateAppealManageList(appealManageList, bEndDateOne);
-                if (updateAppealManageList.size() > 0) {
-                    isTrue = iYbAppealManageService.updateBatchById(updateAppealManageList);
-                    if (isTrue) {
-                        msg = "ok";
+                if(appealManageList.size()>0) {
+                    updateAppealManageList = iYbAppealManageService.getUpdateAppealManageList(appealManageList, bEndDateOne);
+                    if (updateAppealManageList.size() > 0) {
+                        isTrue = iYbAppealManageService.updateBatchById(updateAppealManageList);
+                        if (isTrue) {
+                            msg = "ok";
+                        }
                     }
+                } else {
+                    msg = "nodata";
                 }
             } else {
                 msg = "date";

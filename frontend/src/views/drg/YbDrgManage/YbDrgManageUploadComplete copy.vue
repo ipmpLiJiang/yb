@@ -326,7 +326,7 @@ export default {
     getType (id) {
       this.ftype = ''
       this.typeList = []
-      this.$get('comType/getComTypeList', {ctType: 2}).then((r) => {
+      this.$get('comType/getComTypeList', {ctType: 2, isDeletemark: 1}).then((r) => {
         if (r.data.length > 0) {
           for (var i in r.data) {
             var type = {text: r.data[i].ctName, value: r.data[i].id.toString()}

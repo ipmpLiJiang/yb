@@ -69,10 +69,10 @@
 import moment from 'moment'
 const formItemLayout = {
   labelCol: {
-    span: 3
+    span: 4
   },
   wrapperCol: {
-    span: 18
+    span: 17
   }
 }
 export default {
@@ -116,11 +116,15 @@ export default {
         if (!err) {
           this.setFields()
           this.ybDrgApply.areaType = this.user.areaType.value
-          this.$post('ybDrgApply', {
+          this.$post('ybDrgApply/addYbDrgApplyCheck', {
             ...this.ybDrgApply
-          }).then(() => {
-            this.reset()
-            this.$emit('success')
+          }).then((r) => {
+            if (r.data.data.success === 1) {
+              this.reset()
+              this.$emit('success')
+            } else {
+              this.$message.error(r.data.data.message)
+            }
           }).catch(() => {
             this.loading = false
           })

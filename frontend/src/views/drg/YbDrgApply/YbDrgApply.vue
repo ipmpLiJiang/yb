@@ -229,6 +229,8 @@ export default {
               return '待上传'
             case 2:
               return '已上传'
+            case 3:
+              return '申诉'
             default:
               return text
           }
@@ -460,6 +462,10 @@ export default {
         params.pageSize = this.pagination.defaultPageSize
         params.pageNum = this.pagination.defaultCurrent
       }
+      params.sortField = 'create_Time'
+      params.sortOrder = 'descend'
+      // params.sortOrder = 'ascend'
+      params.areaType = this.user.areaType.value
       this.$get('ybDrgApply', {
         ...params
       }).then((r) => {
