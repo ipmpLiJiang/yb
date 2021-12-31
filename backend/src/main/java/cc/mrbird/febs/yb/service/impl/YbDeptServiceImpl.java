@@ -2,10 +2,12 @@ package cc.mrbird.febs.yb.service.impl;
 
 import cc.mrbird.febs.common.domain.QueryRequest;
 import cc.mrbird.febs.common.utils.SortUtil;
+import cc.mrbird.febs.yb.entity.YbAppealConfireData;
 import cc.mrbird.febs.yb.entity.YbDept;
 import cc.mrbird.febs.yb.dao.YbDeptMapper;
 import cc.mrbird.febs.yb.entity.YbDeptHis;
 import cc.mrbird.febs.yb.entity.YbPerson;
+import cc.mrbird.febs.yb.service.IYbAppealConfireDataService;
 import cc.mrbird.febs.yb.service.IYbDeptService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
@@ -14,6 +16,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,6 +36,8 @@ import java.util.*;
 @Transactional(propagation = Propagation.SUPPORTS, readOnly = true, rollbackFor = Exception.class)
 public class YbDeptServiceImpl extends ServiceImpl<YbDeptMapper, YbDept> implements IYbDeptService {
 
+    @Autowired
+    IYbAppealConfireDataService iYbAppealConfireDataService;
 
     @Override
     public IPage<YbDept> findYbDepts(QueryRequest request, YbDept ybDept) {
@@ -100,10 +105,14 @@ public class YbDeptServiceImpl extends ServiceImpl<YbDeptMapper, YbDept> impleme
 
     @Override
     public List<YbDept> findDeptAppealConfireList(String doctorCode,String comments, Integer areaType) {
-        List<YbDept> list = this.baseMapper.findDeptAppealConfireList(doctorCode,comments, areaType);
-        int count = 15;
-        if (list.size() >= count) {
-            list = list.subList(0, count);
+        List<YbDept> list = new ArrayList<>();
+        List<YbAppealConfireData> acdList = this.iYbAppealConfireDataService.findAppealConfireDataByInDoctorCodeList(doctorCode,areaType);
+        if(acdList.size() > 0) {
+            list = this.baseMapper.findDeptAppealConfireList(acdList.get(0).getPid(), comments, areaType);
+            int count = 15;
+            if (list.size() >= count) {
+                list = list.subList(0, count);
+            }
         }
         return list;
     }

@@ -81,14 +81,18 @@ export default {
         width: 90,
         fixed: 'left'
       },
+      // {
+      //   title: '科室',
+      //   dataIndex: 'deptName',
+      //   customRender: (text, row, index) => {
+      //     if (text !== '' && text !== null) {
+      //       return row.deptId + '-' + row.deptName
+      //     }
+      //   }
+      // },
       {
         title: '科室',
-        dataIndex: 'deptName',
-        customRender: (text, row, index) => {
-          if (text !== '' && text !== null) {
-            return row.deptId + '-' + row.deptName
-          }
-        }
+        dataIndex: 'ksType'
       },
       {
         title: '操作',

@@ -2,6 +2,7 @@ package cc.mrbird.febs.yb.controller;
 
 import cc.mrbird.febs.common.annotation.Log;
 import cc.mrbird.febs.common.controller.BaseController;
+import cc.mrbird.febs.common.domain.FebsResponse;
 import cc.mrbird.febs.common.domain.router.VueRouter;
 import cc.mrbird.febs.common.exception.FebsException;
 import cc.mrbird.febs.common.domain.QueryRequest;
@@ -13,6 +14,7 @@ import cc.mrbird.febs.common.utils.FebsUtil;
 import cc.mrbird.febs.system.domain.User;
 import com.baomidou.mybatisplus.core.toolkit.StringPool;
 import com.wuwenze.poi.ExcelKit;
+import io.swagger.models.auth.In;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -129,5 +131,19 @@ public class YbAppealConfireDataController extends BaseController {
     public YbAppealConfireData detail(@NotBlank(message = "{required}") @PathVariable String id) {
         YbAppealConfireData ybAppealConfireData = this.iYbAppealConfireDataService.getById(id);
         return ybAppealConfireData;
+    }
+
+    @GetMapping("findAppealConfireDataList")
+    public FebsResponse findAppealConfireDataLists(Integer areaType) {
+        List<YbAppealConfireData> list = new ArrayList<>();
+        try {
+            User currentUser = FebsUtil.getCurrentUser();
+            list = this.iYbAppealConfireDataService.findAppealConfireDataByInDoctorCodeList(currentUser.getUsername(),areaType);
+
+        } catch (Exception e) {
+            log.error("获取医生失败", e);
+        }
+
+        return new FebsResponse().data(list);
     }
 }

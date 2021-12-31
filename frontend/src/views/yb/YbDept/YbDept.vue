@@ -18,6 +18,25 @@
                 <a-input v-model="queryParams.deptName" />
               </a-form-item>
             </a-col>
+            <a-col
+              :md="8"
+              :sm="24"
+            >
+              <a-form-item
+                label="科室"
+                v-bind="formItemLayout"
+              >
+                <a-select
+                  allowClear
+                  show-search
+                  v-model="queryParams.ksType"
+                >
+                  <a-select-option :value="d.text" v-for="d in ksList" :key="d.text">
+                    {{d.text}}
+                  </a-select-option>
+                </a-select>
+              </a-form-item>
+            </a-col>
           </div>
           <span style="float: right; margin-top: 3px;">
             <a-button
@@ -63,6 +82,11 @@
             <a-icon type="down" />
           </a-button>
         </a-dropdown>
+        <a-button
+          type="primary"
+          style="margin-left: 30px"
+          @click="showModal"
+        >科室维护</a-button>
       </div>
       <!-- 表格区域 -->
       <a-table
@@ -110,6 +134,7 @@
     </div>
     <!-- 新增字典 -->
     <ybDept-add
+      ref="ybDeptAdd"
       @close="handleAddClose"
       @success="handleAddSuccess"
       :addVisiable="addVisiable"
@@ -123,12 +148,24 @@
       :editVisiable="editVisiable"
     >
     </ybDept-edit>
+    <template>
+      <div>
+        <a-modal width="60%" :maskClosable="false" :footer="null" v-model="typeVisible" title="科室维护" @cancel="handleOk">
+          <comType-data
+          ref="comTypeData"
+          @close="handleOk"
+          >
+          </comType-data>
+        </a-modal>
+      </div>
+    </template>
   </a-card>
 </template>
 
 <script>
 import YbDeptAdd from './YbDeptAdd'
 import YbDeptEdit from './YbDeptEdit'
+import ComTypeData from '../../com/ComType/ComTypeDrgData'
 
 const formItemLayout = {
   labelCol: { span: 8 },
@@ -136,7 +173,7 @@ const formItemLayout = {
 }
 export default {
   name: 'YbDept',
-  components: { YbDeptAdd, YbDeptEdit },
+  components: { YbDeptAdd, YbDeptEdit, ComTypeData },
   data () {
     return {
       advanced: false,
@@ -161,6 +198,9 @@ export default {
       },
       addVisiable: false,
       editVisiable: false,
+      typeVisible: false,
+      ctType: 3,
+      ksList: [],
       loading: false,
       bordered: true
     }
@@ -190,6 +230,10 @@ export default {
         dataIndex: 'spellCode'
       },
       {
+        title: '科室',
+        dataIndex: 'ksType'
+      },
+      {
         title: '操作',
         dataIndex: 'operation',
         scopedSlots: { customRender: 'operation' },
@@ -200,8 +244,34 @@ export default {
   },
   mounted () {
     this.fetch()
+    this.findComType()
   },
   methods: {
+    showModal () {
+      this.typeVisible = true
+      setTimeout(() => {
+        this.$refs.comTypeData.searchPage(this.ctType)
+      }, 200)
+    },
+    handleOk (e) {
+      this.typeVisible = false
+      this.findComType()
+    },
+    findComType () {
+      let ctParams = {ctType: this.ctType, isDeletemark: 1}
+      this.ksList = []
+      this.$get('comType/findList', {
+        ...ctParams
+      }).then((r) => {
+        if (r.data.data.length > 0) {
+          for (var i in r.data.data) {
+            var at = {text: r.data.data[i].ctName}
+            this.ksList.push(at)
+          }
+        }
+      }
+      )
+    },
     onSelectChange (selectedRowKeys) {
       this.selectedRowKeys = selectedRowKeys
     },
@@ -220,6 +290,7 @@ export default {
       this.addVisiable = false
     },
     add () {
+      this.$refs.ybDeptAdd.setFormValues(this.ksList)
       this.addVisiable = true
     },
     handleEditSuccess () {
@@ -231,6 +302,7 @@ export default {
       this.editVisiable = false
     },
     edit (record) {
+      record.ksList = this.ksList
       this.$refs.ybDeptEdit.setFormValues(record)
       this.editVisiable = true
     },
@@ -332,6 +404,9 @@ export default {
         // 如果分页信息为空，则设置为默认值
         params.pageSize = this.pagination.defaultPageSize
         params.pageNum = this.pagination.defaultCurrent
+      }
+      if (params.ksType === undefined) {
+        params.ksType = ''
       }
       this.$get('ybDept', {
         ...params

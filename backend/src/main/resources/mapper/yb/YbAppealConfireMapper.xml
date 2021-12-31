@@ -2,58 +2,65 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cc.mrbird.febs.yb.dao.YbAppealConfireMapper">
 
-        <!-- 通用查询映射结果 -->
-        <resultMap id="BaseResultMap" type="cc.mrbird.febs.yb.entity.YbAppealConfire">
-                    <id column="id" property="id"/>
-                    <result column="doctorCode" property="doctorCode"/>
-                    <result column="doctorName" property="doctorName"/>
-                    <result column="adminType" property="adminType"/>
-                    <result column="COMMENTS" property="comments"/>
-                    <result column="STATE" property="state"/>
-                    <result column="IS_DELETEMARK" property="isDeletemark"/>
-                    <result column="MODIFY_TIME" property="modifyTime"/>
-                    <result column="CREATE_TIME" property="createTime"/>
-                    <result column="CREATE_USER_ID" property="createUserId"/>
-                    <result column="MODIFY_USER_ID" property="modifyUserId"/>
-                    <result column="currencyField" property="currencyField"/>
-            <result column="areaType" property="areaType"/>
-            <result column="operatorId" property="operatorId"/>
-            <result column="operatorName" property="operatorName"/>
-        </resultMap>
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="cc.mrbird.febs.yb.entity.YbAppealConfire">
+        <id column="id" property="id"/>
+        <result column="doctorCode" property="doctorCode"/>
+        <result column="doctorName" property="doctorName"/>
+        <result column="adminType" property="adminType"/>
+        <result column="COMMENTS" property="comments"/>
+        <result column="STATE" property="state"/>
+        <result column="IS_DELETEMARK" property="isDeletemark"/>
+        <result column="MODIFY_TIME" property="modifyTime"/>
+        <result column="CREATE_TIME" property="createTime"/>
+        <result column="CREATE_USER_ID" property="createUserId"/>
+        <result column="MODIFY_USER_ID" property="modifyUserId"/>
+        <result column="currencyField" property="currencyField"/>
+        <result column="areaType" property="areaType"/>
+        <result column="operatorId" property="operatorId"/>
+        <result column="operatorName" property="operatorName"/>
+    </resultMap>
 
-        <!-- 通用查询结果列 -->
-        <sql id="Base_Column_List">
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
         id, doctorCode, doctorName, adminType, COMMENTS, STATE, IS_DELETEMARK, MODIFY_TIME, CREATE_TIME, CREATE_USER_ID, MODIFY_USER_ID, currencyField,areaType,operatorId,operatorName
     </sql>
     <update id="updateYbAppealConfire" parameterType="cc.mrbird.febs.yb.entity.YbAppealConfire">
         update yb_appeal_confire
         <trim prefix="set" suffixOverrides=",">
-<if test="doctorCode != null">doctorCode=#{doctorCode},</if>
-<if test="doctorName != null">doctorName=#{doctorName},</if>
-<if test="adminType != null">adminType=#{adminType},</if>
-<if test="comments != null">COMMENTS=#{comments},</if>
-<if test="state != null">STATE=#{state},</if>
-<if test="isDeletemark != null">IS_DELETEMARK=#{isDeletemark},</if>
-<if test="modifyTime != null">MODIFY_TIME=#{modifyTime},</if>
-<if test="createTime != null">CREATE_TIME=#{createTime},</if>
-<if test="createUserId != null">CREATE_USER_ID=#{createUserId},</if>
-<if test="modifyUserId != null">MODIFY_USER_ID=#{modifyUserId},</if>
-<if test="currencyField != null">currencyField=#{currencyField},</if>
+            <if test="doctorCode != null">doctorCode=#{doctorCode},</if>
+            <if test="doctorName != null">doctorName=#{doctorName},</if>
+            <if test="adminType != null">adminType=#{adminType},</if>
+            <if test="comments != null">COMMENTS=#{comments},</if>
+            <if test="state != null">STATE=#{state},</if>
+            <if test="isDeletemark != null">IS_DELETEMARK=#{isDeletemark},</if>
+            <if test="modifyTime != null">MODIFY_TIME=#{modifyTime},</if>
+            <if test="createTime != null">CREATE_TIME=#{createTime},</if>
+            <if test="createUserId != null">CREATE_USER_ID=#{createUserId},</if>
+            <if test="modifyUserId != null">MODIFY_USER_ID=#{modifyUserId},</if>
+            <if test="currencyField != null">currencyField=#{currencyField},</if>
             <if test="areaType != null">areaType=#{areaType},</if>
         </trim>
-                where id=#{id}
+        where id=#{id}
 
     </update>
-    <select id="findYbAppealConfire" resultType="cc.mrbird.febs.yb.entity.YbAppealConfire" parameterType="cc.mrbird.febs.yb.entity.YbAppealConfire">
-        select  *  from yb_appeal_confire
-        where  1=1
-            <if test="ybAppealConfire.id != null and ybAppealConfire.id != ''"> and id =#{ ybAppealConfire.id} </if>
-            <if test="ybAppealConfire.doctorCode != null and ybAppealConfire.doctorCode != ''"> and doctorCode like concat('%', #{ ybAppealConfire.doctorCode} ,'%')</if>
-            <if test="ybAppealConfire.doctorName != null and ybAppealConfire.doctorName != ''"> and doctorName like concat('%', #{ ybAppealConfire.doctorName} ,'%')</if>
-        <if test="ybAppealConfire.adminType != null"> and adminType =#{ ybAppealConfire.adminType} </if>
-            <if test="ybAppealConfire.comments != null and ybAppealConfire.comments != ''"> and COMMENTS like concat('%', #{ ybAppealConfire.comments} ,'%')</if>
-        <if test="ybAppealConfire.state != null"> and STATE =#{ ybAppealConfire.state} </if>
-        <if test="ybAppealConfire.isDeletemark != null"> and IS_DELETEMARK =#{ ybAppealConfire.isDeletemark} </if>
+    <select id="findYbAppealConfire" resultType="cc.mrbird.febs.yb.entity.YbAppealConfire"
+            parameterType="cc.mrbird.febs.yb.entity.YbAppealConfire">
+        select * from yb_appeal_confire
+        where 1=1
+        <if test="ybAppealConfire.id != null and ybAppealConfire.id != ''">and id =#{ ybAppealConfire.id}</if>
+        <if test="ybAppealConfire.doctorCode != null and ybAppealConfire.doctorCode != ''">and doctorCode like
+            concat('%', #{ ybAppealConfire.doctorCode} ,'%')
+        </if>
+        <if test="ybAppealConfire.doctorName != null and ybAppealConfire.doctorName != ''">and doctorName like
+            concat('%', #{ ybAppealConfire.doctorName} ,'%')
+        </if>
+        <if test="ybAppealConfire.adminType != null">and adminType =#{ ybAppealConfire.adminType}</if>
+        <if test="ybAppealConfire.comments != null and ybAppealConfire.comments != ''">and COMMENTS like concat('%',
+            #{ ybAppealConfire.comments} ,'%')
+        </if>
+        <if test="ybAppealConfire.state != null">and STATE =#{ ybAppealConfire.state}</if>
+        <if test="ybAppealConfire.isDeletemark != null">and IS_DELETEMARK =#{ ybAppealConfire.isDeletemark}</if>
         <if test="ybAppealConfire.modifyTimeFrom!= null">
             AND ybAppealConfire.MODIFY_TIME <![CDATA[ >= ]]>  modifyTimeFrom}
         </if>
@@ -66,12 +73,14 @@
         <if test="ybAppealConfire.createTimeTo!= null">
             AND ybAppealConfire.CREATE_TIME <![CDATA[ <= ]]>  createTimeTo}
         </if>
-            <if test="ybAppealConfire.currencyField != null and ybAppealConfire.currencyField != ''"> and currencyField like concat('%', #{ ybAppealConfire.currencyField} ,'%')</if>
+        <if test="ybAppealConfire.currencyField != null and ybAppealConfire.currencyField != ''">and currencyField like
+            concat('%', #{ ybAppealConfire.currencyField} ,'%')
+        </if>
         <if test="ybAppealConfire.areaType != null">and ybAppealConfire.areaType =#{ ybAppealConfire.areaType}</if>
-</select>
+    </select>
 
-    <select id="findAppealConfireView" resultType="cc.mrbird.febs.yb.entity.YbAppealConfire" >
-    SELECT
+    <select id="findAppealConfireView" resultType="cc.mrbird.febs.yb.entity.YbAppealConfire">
+        SELECT
         p.id,
         p.doctorCode,
         p.doctorName,
@@ -83,94 +92,7 @@
         p.CREATE_TIME,
         p.CREATE_USER_ID,
         p.MODIFY_USER_ID,
-        GROUP_CONCAT(CONCAT(d.deptId,'-',d.deptName)) currencyField,
-        p.areaType,
-        p.operatorId,
-        p.operatorName
-       FROM yb_appeal_confire p
-         left join yb_appeal_confire_data d on
-            p.id = d.pid
-        where
-            p.IS_DELETEMARK = 1
-            <if test="areaType!= null">
-                AND p.areaType = #{ areaType }
-            </if>
-            <if test="doctorContent != null and doctorContent != ''">
-                and (p.doctorCode like concat('%', #{ doctorContent } ,'%') or p.doctorName like concat('%', #{ doctorContent } ,'%'))
-            </if>
-            <if test="adminType != null">
-                and p.adminType = #{ adminType }
-            </if>
-            <if test="deptContent != null and deptContent != ''">
-                and p.id in(select DISTINCT pid from yb_appeal_confire_data where deptName like concat('%', #{ deptContent } ,'%'))
-             </if>
-            <if test="operatorName != null and operatorName != ''">
-                and p.operatorName like concat('%', #{ operatorName } ,'%')
-            </if>
-       GROUP BY p.id
-        <if test="type == null">
-            order by p.create_time desc
-        </if>
-        <if test="type != null and type == 'excel'">
-            order by p.operatorId desc
-        </if>
-    </select>
-
-    <select id="findAppealConfireCount" resultType="Integer" >
-        SELECT
-        count(1)
-        FROM yb_appeal_confire
-        where
-        IS_DELETEMARK = 1
-        <if test="areaType!= null">
-            AND areaType = #{ areaType }
-        </if>
-        <if test="adminType != null">
-            and adminType = #{ adminType }
-        </if>
-        <if test="doctorContent != null and doctorContent != ''">
-            and (doctorCode like concat('%', #{ doctorContent } ,'%') or doctorName like concat('%', #{ doctorContent } ,'%'))
-        </if>
-        <if test="deptContent != null and deptContent != ''">
-            and id in(select DISTINCT pid from yb_appeal_confire_data where deptName like concat('%', #{ deptContent } ,'%'))
-        </if>
-        <if test="operatorName != null and operatorName != ''">
-            and operatorName like concat('%', #{ operatorName } ,'%')
-        </if>
-    </select>
-
-    <select id="findAppealConfireLlyList" resultType="cc.mrbird.febs.yb.entity.YbAppealConfire" >
-        SELECT * FROM yb_appeal_confire where doctorCode= #{ ybAppealConfire.doctorCode }
-        <if test="ybAppealConfire.id != null">
-            and id !=  #{ ybAppealConfire.id }
-        </if>
-        <if test="ybAppealConfire.areaType != null">
-            and areaType =  #{ ybAppealConfire.areaType }
-        </if>
-        and adminType in (
-            select id from com_type where ctName like concat('%', #{ ybAppealConfire.comments } ,'%')
-        )
-    </select>
-
-    <select id="findAppealConfireUserView" resultType="cc.mrbird.febs.yb.entity.YbAppealConfire" >
-        SELECT
-        p.id,
-        p.doctorCode,
-        p.doctorName,
-        p.adminType,
-        p.COMMENTS,
-        <if test="doctorCode == null">
-        1 STATE,
-        </if>
-        <if test="doctorCode != null">
-            case when p.doctorCode = #{ doctorCode } then 2 else 1 end  STATE,
-        </if>
-        p.IS_DELETEMARK,
-        p.MODIFY_TIME,
-        p.CREATE_TIME,
-        p.CREATE_USER_ID,
-        p.MODIFY_USER_ID,
-        GROUP_CONCAT(CONCAT(d.deptId,'-',d.deptName)) currencyField,
+        GROUP_CONCAT(d.ksType) currencyField,
         p.areaType,
         p.operatorId,
         p.operatorName
@@ -183,19 +105,15 @@
             AND p.areaType = #{ areaType }
         </if>
         <if test="doctorContent != null and doctorContent != ''">
-            and (p.doctorCode like concat('%', #{ doctorContent } ,'%') or p.doctorName like concat('%', #{ doctorContent } ,'%'))
+            and (p.doctorCode like concat('%', #{ doctorContent } ,'%') or p.doctorName like concat('%',
+            #{ doctorContent } ,'%'))
         </if>
         <if test="adminType != null">
             and p.adminType = #{ adminType }
         </if>
-        <if test="uid != null and doctorCode == null">
-            and p.CREATE_USER_ID = #{ uid }
-        </if>
-        <if test="uid != null and doctorCode != null">
-            and (p.CREATE_USER_ID = #{ uid } or p.doctorCode=#{ doctorCode })
-        </if>
         <if test="deptContent != null and deptContent != ''">
-            and p.id in(select DISTINCT pid from yb_appeal_confire_data where deptName like concat('%', #{ deptContent } ,'%'))
+            and p.id in(select DISTINCT pid from yb_appeal_confire_data where ksType like concat('%', #{ deptContent }
+            ,'%'))
         </if>
         <if test="operatorName != null and operatorName != ''">
             and p.operatorName like concat('%', #{ operatorName } ,'%')
@@ -208,7 +126,104 @@
             order by p.operatorId desc
         </if>
     </select>
-    <select id="findAppealConfireUserCount" resultType="Integer" >
+
+    <select id="findAppealConfireCount" resultType="Integer">
+        SELECT
+        count(1)
+        FROM yb_appeal_confire
+        where
+        IS_DELETEMARK = 1
+        <if test="areaType!= null">
+            AND areaType = #{ areaType }
+        </if>
+        <if test="adminType != null">
+            and adminType = #{ adminType }
+        </if>
+        <if test="doctorContent != null and doctorContent != ''">
+            and (doctorCode like concat('%', #{ doctorContent } ,'%') or doctorName like concat('%', #{ doctorContent }
+            ,'%'))
+        </if>
+        <if test="deptContent != null and deptContent != ''">
+            and id in(select DISTINCT pid from yb_appeal_confire_data where ksType like concat('%', #{ deptContent }
+            ,'%'))
+        </if>
+        <if test="operatorName != null and operatorName != ''">
+            and operatorName like concat('%', #{ operatorName } ,'%')
+        </if>
+    </select>
+
+    <select id="findAppealConfireLlyList" resultType="cc.mrbird.febs.yb.entity.YbAppealConfire">
+        SELECT * FROM yb_appeal_confire where doctorCode= #{ ybAppealConfire.doctorCode }
+        <if test="ybAppealConfire.id != null">
+            and id != #{ ybAppealConfire.id }
+        </if>
+        <if test="ybAppealConfire.areaType != null">
+            and areaType = #{ ybAppealConfire.areaType }
+        </if>
+        and adminType in (
+        select id from com_type where ctName like concat('%', #{ ybAppealConfire.comments } ,'%')
+        )
+    </select>
+
+    <select id="findAppealConfireUserView" resultType="cc.mrbird.febs.yb.entity.YbAppealConfire">
+        SELECT
+        p.id,
+        p.doctorCode,
+        p.doctorName,
+        p.adminType,
+        p.COMMENTS,
+        <if test="doctorCode == null">
+            1 STATE,
+        </if>
+        <if test="doctorCode != null">
+            case when p.doctorCode = #{ doctorCode } then 2 else 1 end STATE,
+        </if>
+        p.IS_DELETEMARK,
+        p.MODIFY_TIME,
+        p.CREATE_TIME,
+        p.CREATE_USER_ID,
+        p.MODIFY_USER_ID,
+        GROUP_CONCAT(d.ksType) currencyField,
+        p.areaType,
+        p.operatorId,
+        p.operatorName
+        FROM yb_appeal_confire p
+        left join yb_appeal_confire_data d on
+        p.id = d.pid
+        where
+        p.IS_DELETEMARK = 1
+        <if test="areaType!= null">
+            AND p.areaType = #{ areaType }
+        </if>
+        <if test="doctorContent != null and doctorContent != ''">
+            and (p.doctorCode like concat('%', #{ doctorContent } ,'%') or p.doctorName like concat('%',
+            #{ doctorContent } ,'%'))
+        </if>
+        <if test="adminType != null">
+            and p.adminType = #{ adminType }
+        </if>
+        <if test="uid != null and doctorCode == null">
+            and p.CREATE_USER_ID = #{ uid }
+        </if>
+        <if test="uid != null and doctorCode != null">
+            and (p.CREATE_USER_ID = #{ uid } or p.doctorCode=#{ doctorCode })
+        </if>
+        <if test="deptContent != null and deptContent != ''">
+            and p.id in(select DISTINCT pid from yb_appeal_confire_data where ksType like concat('%', #{ deptContent }
+            ,'%'))
+        </if>
+        <if test="operatorName != null and operatorName != ''">
+            and p.operatorName like concat('%', #{ operatorName } ,'%')
+        </if>
+        GROUP BY p.id
+        <if test="type == null">
+            order by p.create_time desc
+        </if>
+        <if test="type != null and type == 'excel'">
+            order by p.operatorId desc
+        </if>
+    </select>
+    <select id="findAppealConfireUserCount" resultType="Integer">
         SELECT
         count(1)
         FROM yb_appeal_confire
@@ -227,13 +242,122 @@
             and (CREATE_USER_ID = #{ uid } or doctorCode=#{ doctorCode })
         </if>
         <if test="doctorContent != null and doctorContent != ''">
-            and (doctorCode like concat('%', #{ doctorContent } ,'%') or doctorName like concat('%', #{ doctorContent } ,'%'))
+            and (doctorCode like concat('%', #{ doctorContent } ,'%') or doctorName like concat('%', #{ doctorContent }
+            ,'%'))
         </if>
         <if test="deptContent != null and deptContent != ''">
-            and id in(select DISTINCT pid from yb_appeal_confire_data where deptName like concat('%', #{ deptContent } ,'%'))
+            and id in(select DISTINCT pid from yb_appeal_confire_data where ksType like concat('%', #{ deptContent }
+            ,'%'))
         </if>
         <if test="operatorName != null and operatorName != ''">
             and operatorName like concat('%', #{ operatorName } ,'%')
         </if>
     </select>
+
+<!--    <select id="findAppealConfireView" resultType="cc.mrbird.febs.yb.entity.YbAppealConfire">-->
+<!--        SELECT-->
+<!--        p.id,-->
+<!--        p.doctorCode,-->
+<!--        p.doctorName,-->
+<!--        p.adminType,-->
+<!--        p.COMMENTS,-->
+<!--        p.STATE,-->
+<!--        p.IS_DELETEMARK,-->
+<!--        p.MODIFY_TIME,-->
+<!--        p.CREATE_TIME,-->
+<!--        p.CREATE_USER_ID,-->
+<!--        p.MODIFY_USER_ID,-->
+<!--        GROUP_CONCAT(CONCAT(d.deptId,'-',d.deptName)) currencyField,-->
+<!--        p.areaType,-->
+<!--        p.operatorId,-->
+<!--        p.operatorName-->
+<!--        FROM yb_appeal_confire p-->
+<!--        left join yb_appeal_confire_data d on-->
+<!--        p.id = d.pid-->
+<!--        where-->
+<!--        p.IS_DELETEMARK = 1-->
+<!--        <if test="areaType!= null">-->
+<!--            AND p.areaType = #{ areaType }-->
+<!--        </if>-->
+<!--        <if test="doctorContent != null and doctorContent != ''">-->
+<!--            and (p.doctorCode like concat('%', #{ doctorContent } ,'%') or p.doctorName like concat('%',-->
+<!--            #{ doctorContent } ,'%'))-->
+<!--        </if>-->
+<!--        <if test="adminType != null">-->
+<!--            and p.adminType = #{ adminType }-->
+<!--        </if>-->
+<!--        <if test="deptContent != null and deptContent != ''">-->
+<!--            and p.id in(select DISTINCT pid from yb_appeal_confire_data where deptName like concat('%', #{ deptContent }-->
+<!--            ,'%'))-->
+<!--        </if>-->
+<!--        <if test="operatorName != null and operatorName != ''">-->
+<!--            and p.operatorName like concat('%', #{ operatorName } ,'%')-->
+<!--        </if>-->
+<!--        GROUP BY p.id-->
+<!--        <if test="type == null">-->
+<!--            order by p.create_time desc-->
+<!--        </if>-->
+<!--        <if test="type != null and type == 'excel'">-->
+<!--            order by p.operatorId desc-->
+<!--        </if>-->
+<!--    </select>-->
+
+<!--    <select id="findAppealConfireUserView" resultType="cc.mrbird.febs.yb.entity.YbAppealConfire">-->
+<!--        SELECT-->
+<!--        p.id,-->
+<!--        p.doctorCode,-->
+<!--        p.doctorName,-->
+<!--        p.adminType,-->
+<!--        p.COMMENTS,-->
+<!--        <if test="doctorCode == null">-->
+<!--            1 STATE,-->
+<!--        </if>-->
+<!--        <if test="doctorCode != null">-->
+<!--            case when p.doctorCode = #{ doctorCode } then 2 else 1 end STATE,-->
+<!--        </if>-->
+<!--        p.IS_DELETEMARK,-->
+<!--        p.MODIFY_TIME,-->
+<!--        p.CREATE_TIME,-->
+<!--        p.CREATE_USER_ID,-->
+<!--        p.MODIFY_USER_ID,-->
+<!--        GROUP_CONCAT(CONCAT(d.deptId,'-',d.deptName)) currencyField,-->
+<!--        p.areaType,-->
+<!--        p.operatorId,-->
+<!--        p.operatorName-->
+<!--        FROM yb_appeal_confire p-->
+<!--        left join yb_appeal_confire_data d on-->
+<!--        p.id = d.pid-->
+<!--        where-->
+<!--        p.IS_DELETEMARK = 1-->
+<!--        <if test="areaType!= null">-->
+<!--            AND p.areaType = #{ areaType }-->
+<!--        </if>-->
+<!--        <if test="doctorContent != null and doctorContent != ''">-->
+<!--            and (p.doctorCode like concat('%', #{ doctorContent } ,'%') or p.doctorName like concat('%',-->
+<!--            #{ doctorContent } ,'%'))-->
+<!--        </if>-->
+<!--        <if test="adminType != null">-->
+<!--            and p.adminType = #{ adminType }-->
+<!--        </if>-->
+<!--        <if test="uid != null and doctorCode == null">-->
+<!--            and p.CREATE_USER_ID = #{ uid }-->
+<!--        </if>-->
+<!--        <if test="uid != null and doctorCode != null">-->
+<!--            and (p.CREATE_USER_ID = #{ uid } or p.doctorCode=#{ doctorCode })-->
+<!--        </if>-->
+<!--        <if test="deptContent != null and deptContent != ''">-->
+<!--            and p.id in(select DISTINCT pid from yb_appeal_confire_data where deptName like concat('%', #{ deptContent }-->
+<!--            ,'%'))-->
+<!--        </if>-->
+<!--        <if test="operatorName != null and operatorName != ''">-->
+<!--            and p.operatorName like concat('%', #{ operatorName } ,'%')-->
+<!--        </if>-->
+<!--        GROUP BY p.id-->
+<!--        <if test="type == null">-->
+<!--            order by p.create_time desc-->
+<!--        </if>-->
+<!--        <if test="type != null and type == 'excel'">-->
+<!--            order by p.operatorId desc-->
+<!--        </if>-->
+<!--    </select>-->
 </mapper>

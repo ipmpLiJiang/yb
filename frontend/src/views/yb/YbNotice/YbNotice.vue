@@ -354,7 +354,7 @@ export default {
       this.smsVisiable = false
     },
     findComType () {
-      let ctParams = {ctType: this.ctType}
+      let ctParams = {ctType: this.ctType, isDeletemark: 1}
       this.selectAdminTypeDataSource = []
       this.$get('comType/findList', {
         ...ctParams

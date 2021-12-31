@@ -37,6 +37,17 @@
           v-decorator="['spellCode', {rules: [{ required: true, message: '拼音编码不能为空' }] }]"
         />
       </a-form-item>
+      <a-form-item v-bind="formItemLayout" label="科室">
+        <a-select
+          allowClear
+          :showSearch="true"
+          v-decorator="['ksType']"
+        >
+          <a-select-option :value="d.text" v-for="d in ksList" :key="d.text">
+            {{d.text}}
+          </a-select-option>
+        </a-select>
+      </a-form-item>
     </a-form>
     <div class="drawer-bootom-button">
       <a-popconfirm
@@ -72,10 +83,14 @@ export default {
       loading: false,
       formItemLayout,
       form: this.$form.createForm(this),
+      ksList: [],
       ybDept: {}
     }
   },
   methods: {
+    setFormValues (ksList) {
+      this.ksList = ksList
+    },
     reset () {
       this.loading = false
       this.ybDept = {}
@@ -101,7 +116,7 @@ export default {
       })
     },
     setFields () {
-      let values = this.form.getFieldsValue(['deptId', 'deptName', 'spellCode'])
+      let values = this.form.getFieldsValue(['deptId', 'deptName', 'ksType', 'spellCode'])
       if (typeof values !== 'undefined') {
         Object.keys(values).forEach(_key => { this.ybDept[_key] = values[_key] })
       }

@@ -317,7 +317,7 @@ export default {
         params.pageSize = this.pagination.defaultPageSize
         params.pageNum = this.pagination.defaultCurrent
       }
-
+      params.isDeletemark = 1
       this.$get('comType', {
         ...params
       }).then((r) => {

@@ -125,6 +125,10 @@ public class YbAppealConfireDataServiceImpl extends ServiceImpl<YbAppealConfireD
             wrapper.eq(YbAppealConfireData::getDeptName,appealConfireData.getDeptName());
         }
 
+        if(appealConfireData.getKsType() !=null){
+            wrapper.eq(YbAppealConfireData::getKsType,appealConfireData.getKsType());
+        }
+
         return this.list(wrapper);
     }
 

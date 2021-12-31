@@ -2,41 +2,52 @@
   <a-drawer
     title="修改"
     :maskClosable="false"
-    width=45%
+    width="45%"
     placement="right"
     :closable="false"
     @close="onClose"
     :visible="editVisiable"
-    style="height: calc(100% - 15px);overflow: auto;padding-bottom: 53px;"
+    style="height: calc(100% - 15px); overflow: auto; padding-bottom: 53px"
   >
     <a-form :form="form">
-      <a-form-item
-        v-bind="formItemLayout"
-        label="部门编码"
-      >
+      <a-form-item v-bind="formItemLayout" label="部门编码">
         <a-input
           placeholder="请输入部门编码"
           readonly
-          v-decorator="['deptId', {rules: [{ required: true, message: '部门编码不能为空' }] }]"
+          v-decorator="[
+            'deptId',
+            { rules: [{ required: true, message: '部门编码不能为空' }] },
+          ]"
         />
       </a-form-item>
-      <a-form-item
-        v-bind="formItemLayout"
-        label="部门名称"
-      >
+      <a-form-item v-bind="formItemLayout" label="部门名称">
         <a-input
           placeholder="请输入部门名称"
-          v-decorator="['deptName', {rules: [{ required: true, message: '部门名称不能为空' }] }]"
+          v-decorator="[
+            'deptName',
+            { rules: [{ required: true, message: '部门名称不能为空' }] },
+          ]"
         />
       </a-form-item>
-      <a-form-item
-        v-bind="formItemLayout"
-        label="拼音编码"
-      >
+      <a-form-item v-bind="formItemLayout" label="拼音编码">
         <a-input
           placeholder="请输入拼音编码"
-          v-decorator="['spellCode', {rules: [{ required: true, message: '拼音编码不能为空' }] }]"
+          v-decorator="[
+            'spellCode',
+            { rules: [{ required: true, message: '拼音编码不能为空' }] },
+          ]"
         />
+      </a-form-item>
+      <a-form-item v-bind="formItemLayout" label="科室">
+        <a-select
+          allowClear
+          :showSearch="true"
+          v-decorator="['ksType']"
+        >
+          <a-select-option :value="d.text" v-for="d in ksList" :key="d.text">
+            {{d.text}}
+          </a-select-option>
+        </a-select>
       </a-form-item>
     </a-form>
     <div class="drawer-bootom-button">
@@ -46,22 +57,25 @@
         okText="确定"
         cancelText="取消"
       >
-        <a-button style="margin-right: .8rem">取消</a-button>
+        <a-button style="margin-right: 0.8rem">取消</a-button>
       </a-popconfirm>
-      <a-button
-        @click="handleSubmit"
-        type="primary"
-        :loading="loading"
-      >提交</a-button>
+      <a-button @click="handleSubmit" type="primary" :loading="loading"
+        >提交</a-button
+      >
     </div>
   </a-drawer>
 </template>
+
 <script>
 import moment from 'moment'
 
 const formItemLayout = {
-  labelCol: { span: 3 },
-  wrapperCol: { span: 18 }
+  labelCol: {
+    span: 3
+  },
+  wrapperCol: {
+    span: 18
+  }
 }
 export default {
   name: 'YbDeptEdit',
@@ -75,6 +89,7 @@ export default {
       loading: false,
       formItemLayout,
       form: this.$form.createForm(this),
+      ksList: [],
       ybDept: {}
     }
   },
@@ -87,8 +102,10 @@ export default {
       this.reset()
       this.$emit('close')
     },
-    setFormValues ({ ...ybDept }) {
-      let fields = ['deptId', 'deptName', 'spellCode']
+    setFormValues ({
+      ...ybDept
+    }) {
+      let fields = ['deptId', 'deptName', 'ksType', 'spellCode']
       let fieldDates = []
       Object.keys(ybDept).forEach((key) => {
         if (fields.indexOf(key) !== -1) {
@@ -107,11 +124,13 @@ export default {
         }
       })
       this.ybDept.id = ybDept.id
+      this.ksList = ybDept.ksList
     },
     handleSubmit () {
       this.form.validateFields((err, values) => {
         if (!err) {
           let ybDept = this.form.getFieldsValue()
+          debugger
           ybDept.id = this.ybDept.id
           this.$put('ybDept', {
             ...ybDept

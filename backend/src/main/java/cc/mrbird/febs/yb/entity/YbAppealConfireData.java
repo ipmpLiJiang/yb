@@ -57,6 +57,12 @@ public class YbAppealConfireData implements Serializable, Comparable<YbAppealCon
     @ExcelField(value = "科室名称")
     private String deptName;
 
+    /**
+     * 科室类别
+     */
+    @TableField("ksType")
+    @ExcelField(value ="科室类别")
+    private String ksType;
 
     public static final String ID = "id";
 
@@ -65,6 +71,8 @@ public class YbAppealConfireData implements Serializable, Comparable<YbAppealCon
     public static final String DEPTID = "deptId";
 
     public static final String DEPTNAME = "deptName";
+
+    public static final String KSTYPE ="ksType" ;
 
 
     @Override

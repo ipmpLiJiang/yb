@@ -141,10 +141,8 @@
         <if test="ybAppealResultDeductimplementView.arDoctorName != null and ybAppealResultDeductimplementView.arDoctorName != ''">
             and art.doctorCode in (select personCode from yb_person where personName = #{ ybAppealResultDeductimplementView.arDoctorName})
         </if>
-        <if test="confDocCode != null and confDocCode != ''">
-            and art.deptCode in (select deptId from yb_appeal_confire_data where pid in(
-            select id from yb_appeal_confire where doctorCode = #{confDocCode}
-            ))
+        <if test="appealConfireId != null and appealConfireId != ''">
+            and art.deptCode in (select deptId from yb_dept where IS_DELETEMARK = 1 and ksType in (select ksType from yb_appeal_confire_data where pid = #{ appealConfireId}))
         </if>
         where
         <if test="ybAppealResultDeductimplementView.implementDateStr != null and ybAppealResultDeductimplementView.implementDateStr != ''">
@@ -200,10 +198,8 @@
         <if test="ybAppealResultDeductimplementView.arDoctorName != null and ybAppealResultDeductimplementView.arDoctorName != ''">
             and art.doctorCode in (select personCode from yb_person where personName = #{ ybAppealResultDeductimplementView.arDoctorName})
         </if>
-        <if test="confDocCode != null and confDocCode != ''">
-            and art.deptCode in (select deptId from yb_appeal_confire_data where pid in(
-            select id from yb_appeal_confire where doctorCode = #{confDocCode}
-            ))
+        <if test="appealConfireId != null and appealConfireId != ''">
+            and art.deptCode in (select deptId from yb_dept where IS_DELETEMARK = 1 and ksType in (select ksType from yb_appeal_confire_data where pid = #{ appealConfireId}))
         </if>
         where
         <if test="ybAppealResultDeductimplementView.implementDateStr != null and ybAppealResultDeductimplementView.implementDateStr != ''">
@@ -280,10 +276,8 @@
         <if test="ybAppealResultDeductimplementView.arDoctorName != null and ybAppealResultDeductimplementView.arDoctorName != ''">
             and art.doctorCode in (select personCode from yb_person where personName = #{ ybAppealResultDeductimplementView.arDoctorName})
         </if>
-        <if test="confDocCode != null and confDocCode != ''">
-            and art.deptCode in (select deptId from yb_appeal_confire_data where pid in(
-            select id from yb_appeal_confire where doctorCode = #{confDocCode}
-            ))
+        <if test="appealConfireId != null and appealConfireId != ''">
+            and art.deptCode in (select deptId from yb_dept where IS_DELETEMARK = 1 and ksType in (select ksType from yb_appeal_confire_data where pid = #{ appealConfireId}))
         </if>
         where
         <if test="ybAppealResultDeductimplementView.pid != null and ybAppealResultDeductimplementView.pid != ''">
@@ -339,10 +333,8 @@
         <if test="ybAppealResultDeductimplementView.arDoctorName != null and ybAppealResultDeductimplementView.arDoctorName != ''">
             and art.doctorCode in (select personCode from yb_person where personName = #{ ybAppealResultDeductimplementView.arDoctorName})
         </if>
-        <if test="confDocCode != null and confDocCode != ''">
-            and art.deptCode in (select deptId from yb_appeal_confire_data where pid in(
-            select id from yb_appeal_confire where doctorCode = #{confDocCode}
-            ))
+        <if test="appealConfireId != null and appealConfireId != ''">
+            and art.deptCode in (select deptId from yb_dept where IS_DELETEMARK = 1 and ksType in (select ksType from yb_appeal_confire_data where pid = #{ appealConfireId}))
         </if>
         where
         <if test="ybAppealResultDeductimplementView.pid != null and ybAppealResultDeductimplementView.pid != ''">

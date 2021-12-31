@@ -35,11 +35,13 @@ public class YbAppealConfireDataJson{
     /**
      * 科室编码
      */
-    private String deptId;
+//    private String deptId;
 
     /**
      * 科室名称
      */
-    private String deptName;
+//    private String deptName;
+
+    private String ksType;
 
 }

@@ -137,9 +137,11 @@ public class YbAppealConfireController extends BaseController {
                     YbAppealConfireData createData = new YbAppealConfireData();
                     createData.setId(UUID.randomUUID().toString());
                     createData.setPid(id);
-                    createData.setDeptId(item.getDeptId());
-                    String strDeptName = DataTypeHelpers.stringReplaceSetString(item.getDeptName(), item.getDeptId() + "-");
-                    createData.setDeptName(strDeptName);
+//                    createData.setDeptId(item.getDeptId());
+//                    String strDeptName = DataTypeHelpers.stringReplaceSetString(item.getDeptName(), item.getDeptId() + "-");
+//                    createData.setDeptName(strDeptName);
+                    String strKsType = item.getKsType();
+                    createData.setKsType(strKsType);
                     createDataList.add(createData);
                 }
                 this.iYbAppealConfireService.createAppealConfire(create, createDataList);
@@ -189,9 +191,11 @@ public class YbAppealConfireController extends BaseController {
                     YbAppealConfireData updateData = new YbAppealConfireData();
                     updateData.setId(item.getId());
                     updateData.setPid(appealConfireJson.getId());
-                    updateData.setDeptId(item.getDeptId());
-                    String strDeptName = DataTypeHelpers.stringReplaceSetString(item.getDeptName(), item.getDeptId() + "-");
-                    updateData.setDeptName(strDeptName);
+//                    updateData.setDeptId(item.getDeptId());
+//                    String strDeptName = DataTypeHelpers.stringReplaceSetString(item.getDeptName(), item.getDeptId() + "-");
+//                    updateData.setDeptName(strDeptName);
+                    String strKsType = item.getKsType();
+                    updateData.setKsType(strKsType);
                     if (updateData.getId() == null) {
                         updateData.setId(UUID.randomUUID().toString());
                         createDataList.add(updateData);
@@ -205,14 +209,16 @@ public class YbAppealConfireController extends BaseController {
                 } else {
                     YbAppealConfireData quertAcd = new YbAppealConfireData();
                     quertAcd.setPid(appealConfireJson.getId());
-                    quertAcd.setDeptId(createDataList.get(0).getDeptId());
+//                    quertAcd.setDeptId(createDataList.get(0).getDeptId());
+                    quertAcd.setKsType(createDataList.get(0).getKsType());
                     List<YbAppealConfireData> queryAcdList = iYbAppealConfireDataService.findAppealConfireDataList(quertAcd);
                     if (queryAcdList.size() == 0) {
                         this.iYbAppealConfireService.updateAppealConfire(update, createDataList, updateDataList);
                         success = 1;
                     } else {
                         message = iComConfiguremanageService.getConfigAreaName(appealConfireJson.getAreaType());
-                        message = message + " " + createDataList.get(0).getDeptId() + "-" + createDataList.get(0).getDeptName() + " 科室已存在!";
+//                        message = message + " " + createDataList.get(0).getDeptId() + "-" + createDataList.get(0).getDeptName() + " 科室已存在!";
+                        message = message + " " + createDataList.get(0).getKsType() + " 科室已存在!";
                     }
                 }
             } else {
@@ -288,7 +294,7 @@ public class YbAppealConfireController extends BaseController {
 
     @PostMapping("exportAppealConfire")
     @RequiresPermissions("ybAppealConfire:add")
-    public void exportAppealConfire(QueryRequest request, String doctorContent, Integer adminType, Integer areaType, String deptContent, String operatorName,HttpServletResponse response) throws FebsException {
+    public void exportAppealConfire(QueryRequest request, String doctorContent, Integer adminType, Integer areaType, String deptContent, String operatorName, HttpServletResponse response) throws FebsException {
         try {
             request.setPageSize(-1);
             List<YbAppealConfire> list = list = this.iYbAppealConfireService.findAppealConfireView(request, doctorContent, adminType, areaType, deptContent, operatorName, "excel").getRecords();
@@ -326,7 +332,7 @@ public class YbAppealConfireController extends BaseController {
 
     @PostMapping("exportUserAppealConfire")
     @RequiresPermissions("ybAppealConfire:add")
-    public void exportUserAppealConfire(QueryRequest request, String doctorContent, Integer adminType, Integer areaType, String deptContent, String operatorName,HttpServletResponse response) throws FebsException {
+    public void exportUserAppealConfire(QueryRequest request, String doctorContent, Integer adminType, Integer areaType, String deptContent, String operatorName, HttpServletResponse response) throws FebsException {
         try {
             request.setPageSize(-1);
             User currentUser = FebsUtil.getCurrentUser();

@@ -209,7 +209,8 @@
         <if test="ybAppealManageView.typeno != null and ybAppealManageView.typeno != 0 and ybAppealManageView.typeno!=3">
             and am.sourceType = 0 and am.typeno =#{ ybAppealManageView.typeno}</if>
         <if test="appealConfireId != null">
-            and am.readyDeptCode in(SELECT deptId FROM yb_appeal_confire_data where pid = #{ appealConfireId})</if>
+            and am.readyDeptCode in(select deptId from yb_dept where IS_DELETEMARK = 1 and ksType in (SELECT ksType FROM yb_appeal_confire_data where pid = #{ appealConfireId}))
+        </if>
         order by am.typeno,am.dataType,am.orderNum asc
     </select>
     <select id="findAppealManageCount" resultType="Integer"
@@ -243,7 +244,8 @@
         <if test="ybAppealManageView.typeno != null and ybAppealManageView.typeno != 0 and ybAppealManageView.typeno!=3">
             and am.sourceType = 0 and am.typeno =#{ ybAppealManageView.typeno}</if>
         <if test="appealConfireId != null">
-            and am.readyDeptCode in(SELECT deptId FROM yb_appeal_confire_data where pid = #{ appealConfireId})</if>
+            and am.readyDeptCode in(select deptId from yb_dept where IS_DELETEMARK = 1 and ksType in (SELECT ksType FROM yb_appeal_confire_data where pid = #{ appealConfireId}))
+        </if>
     </select>
 
     <select id="findAppealManageLikeView" resultType="cc.mrbird.febs.yb.entity.YbAppealManageView"
@@ -367,7 +369,7 @@
             and am.sourceType = 0 and am.typeno =#{ ybAppealManageView.typeno}
         </if>
         <if test="appealConfireId != null">
-            and am.readyDeptCode in(SELECT deptId FROM yb_appeal_confire_data where pid = #{ appealConfireId})
+            and am.readyDeptCode in(select deptId from yb_dept where IS_DELETEMARK = 1 and ksType in (SELECT ksType FROM yb_appeal_confire_data where pid = #{ appealConfireId}))
         </if>
         inner join yb_reconsider_apply ra ON ra.id = ad.pid
         where
@@ -432,7 +434,7 @@
             and am.sourceType = 0 and am.typeno =#{ ybAppealManageView.typeno}
         </if>
         <if test="appealConfireId != null">
-            and am.readyDeptCode in(SELECT deptId FROM yb_appeal_confire_data where pid = #{ appealConfireId})
+            and am.readyDeptCode in(select deptId from yb_dept where IS_DELETEMARK = 1 and ksType in (SELECT ksType FROM yb_appeal_confire_data where pid = #{ appealConfireId}))
         </if>
         where
         ad.pid = #{ ybAppealManageView.pid}

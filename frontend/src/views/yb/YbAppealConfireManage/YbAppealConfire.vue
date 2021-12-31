@@ -19,11 +19,11 @@
               </a-form-item>
             </a-col>
             <a-col
-              :md="5"
+              :md="6"
               :sm="24"
             >
               <a-form-item
-                label="科室"
+                label="管理科室"
                 v-bind="formItemLayout"
               >
                 <a-input v-model="queryParams.deptContent" />
@@ -41,7 +41,7 @@
               </a-form-item>
             </a-col>
             <a-col
-              :md="6"
+              :md="7"
               :sm="24"
             >
               <a-form-item
@@ -58,15 +58,6 @@
                   </a-select-option>
                 </a-select>
               </a-form-item>
-            </a-col>
-            <a-col
-              :md="2"
-              :sm="24"
-            >
-              <a-button
-                type="primary"
-                @click="showModal"
-              >医管类型维护</a-button>
             </a-col>
           </div>
           <span style="float: right; margin-top: 3px;">
@@ -101,11 +92,6 @@
           v-hasPermission="['ybAppealConfire:delete']"
           @click="batchDelete"
         >删除</a-button>
-        <a-button
-          v-hasPermission="['ybAppealConfire:add']"
-          type="primary"
-          @click="exportExcel1"
-        >导出</a-button>
         <a-dropdown v-hasPermission="['ybAppealConfire:export']">
           <a-menu slot="overlay">
             <a-menu-item
@@ -118,6 +104,17 @@
             <a-icon type="down" />
           </a-button>
         </a-dropdown>
+        <a-button
+          v-hasPermission="['ybAppealConfire:add']"
+          style="margin-left: 30px"
+          type="primary"
+          @click="exportExcel1"
+        >导出</a-button>
+        <a-button
+          type="primary"
+          style="margin-left: 30px"
+          @click="showModal"
+        >医管类型维护</a-button>
       </div>
       <!-- 表格区域 -->
       <a-table
@@ -384,7 +381,7 @@ export default {
       this.findComType()
     },
     findComType () {
-      let ctParams = {ctType: this.ctType}
+      let ctParams = {ctType: this.ctType, isDeletemark: 1}
       this.queryAdminTypeDataSource = [{text: '全部', value: 0}]
       this.selectAdminTypeDataSource = []
       this.$get('comType/findList', {

@@ -51,6 +51,13 @@ private static final long serialVersionUID=1L;
     private String deptName;
 
     /**
+     * 科室类别
+     */
+    @TableField("ksType")
+    @ExcelField(value ="科室类别")
+    private String ksType;
+
+    /**
      * 拼写代码
      */
     @TableField("spellCode")
@@ -117,6 +124,8 @@ private static final long serialVersionUID=1L;
     public static final String DEPTID ="deptId" ;
 
     public static final String DEPTNAME ="deptName" ;
+
+    public static final String KSTYPE ="ksType" ;
 
     public static final String COMMENTS ="COMMENTS" ;
 

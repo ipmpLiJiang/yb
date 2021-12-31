@@ -40,12 +40,8 @@ public class ComTypeServiceImpl extends ServiceImpl<ComTypeMapper, ComType> impl
     public IPage<ComType> findComTypes(QueryRequest request, ComType comType) {
         try {
             LambdaQueryWrapper<ComType> queryWrapper = new LambdaQueryWrapper<>();
-            if (comType.getCtType() != 2) {
-                queryWrapper.eq(ComType::getIsDeletemark, 1);//1是未删 0是已删
-            } else {
-                if(comType.getIsDeletemark() != null) {
-                    queryWrapper.eq(ComType::getIsDeletemark, comType.getIsDeletemark());
-                }
+            if(comType.getIsDeletemark() != null) {
+                queryWrapper.eq(ComType::getIsDeletemark, comType.getIsDeletemark());
             }
             if (comType.getCtType() != null) {
                 queryWrapper.eq(ComType::getCtType, comType.getCtType());

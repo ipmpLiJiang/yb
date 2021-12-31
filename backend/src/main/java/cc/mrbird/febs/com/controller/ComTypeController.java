@@ -26,6 +26,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -64,6 +65,13 @@ public class ComTypeController extends BaseController {
         List<ComType> list = new ArrayList<>();
         try {
             list = this.iComTypeService.findComTypeList(comType);
+            if (list.size() > 0) {
+                for (ComType ct : list) {
+                    if (ct.getOrderNum() == null)
+                        ct.setOrderNum(0);
+                }
+                list = list.stream().sorted(Comparator.comparing(ComType::getOrderNum)).collect(Collectors.toList());
+            }
         } catch (Exception e) {
             message = "数据获取失败";
             log.error(message, e);
@@ -105,11 +113,11 @@ public class ComTypeController extends BaseController {
         int success = 0;
         try {
             List<ComType> list = this.iComTypeService.findComTypeList(comType);
-            if(list.size()==0) {
+            if (list.size() == 0) {
                 User currentUser = FebsUtil.getCurrentUser();
                 this.iComTypeService.editComType(comType, currentUser);
                 success = 1;
-            }else{
+            } else {
                 success = 0;
                 message = comType.getCtName() + ", 已存在，操作失败.";
             }
@@ -132,12 +140,12 @@ public class ComTypeController extends BaseController {
             ComType query = new ComType();
             query.setCtType(comType.getCtType());
             List<ComType> listAll = this.iComTypeService.findComTypeList(query);
-            List<ComType> list = listAll.stream().filter(s->s.getCtName().equals(comType.getCtName())).collect(Collectors.toList());
-            if(list.size()==0 || comType.getId() != null) {
+            List<ComType> list = listAll.stream().filter(s -> s.getCtName().equals(comType.getCtName())).collect(Collectors.toList());
+            if (list.size() == 0 || comType.getId() != null) {
                 User currentUser = FebsUtil.getCurrentUser();
-                this.iComTypeService.editDrgComType(comType, listAll ,currentUser);
+                this.iComTypeService.editDrgComType(comType, listAll, currentUser);
                 success = 1;
-            }else{
+            } else {
                 success = 0;
                 message = comType.getCtName() + ", 已存在，操作失败.";
             }

@@ -58,13 +58,16 @@
             v-bind="formItemLayout"
             label="管理科室列表"
           >
-            <input-select
-              ref="inputSelectDept"
-              :type=3
-              :areaType="this.ybAppealConfire.areaType"
-              @selectChange=selectDeptChange
+            <a-select
+              allowClear
+              :showSearch="true"
+              @change="selectKsTypeChange"
+              v-model="ybAcData.ksType"
             >
-            </input-select>
+              <a-select-option :value="d.text" v-for="d in ksList" :key="d.text">
+                {{d.text}}
+              </a-select-option>
+            </a-select>
           </a-form-item>
         </a-col>
         <a-col :span=3>
@@ -99,8 +102,8 @@
 import InputSelect from '../../common/InputSelect'
 import YbAppealConfireData from './YbAppealConfireData'
 const formItemLayout = {
-  labelCol: { span: 5 },
-  wrapperCol: { span: 16 }
+  labelCol: { span: 6 },
+  wrapperCol: { span: 15 }
 }
 export default {
   name: 'YbAppealConfireEdit',
@@ -119,6 +122,7 @@ export default {
       isUpdate: false,
       isEdit: false,
       txtValue: '',
+      ksList: [],
       selectAdminTypeDataSource: [],
       ybAppealConfire: {}
     }
@@ -127,10 +131,11 @@ export default {
     reset () {
       this.loading = false
       this.ybAppealConfire = {}
+      this.ksList = []
       this.$refs.inputSelectDoctor.dataSource = []
       this.$refs.inputSelectDoctor.value = ''
-      this.$refs.inputSelectDept.dataSource = []
-      this.$refs.inputSelectDept.value = ''
+      // this.$refs.inputSelectDept.dataSource = []
+      // this.$refs.inputSelectDept.value = ''
       this.form.resetFields()
     },
     onClose () {
@@ -140,6 +145,20 @@ export default {
       } else {
         this.$emit('close')
       }
+    },
+    findComType3 () {
+      this.ksList = []
+      this.$get('ybAppealConfireData/findAppealConfireDataList', {
+        areaType: this.ybAppealConfire.areaType
+      }).then((r) => {
+        if (r.data.data.length > 0) {
+          for (var i in r.data.data) {
+            var at = {text: r.data.data[i].ksType}
+            this.ksList.push(at)
+          }
+        }
+      }
+      )
     },
     handleAdminTypeChange (value) {
       this.ybAppealConfire.adminType = value
@@ -152,11 +171,15 @@ export default {
       this.ybAcData.deptId = item.value
       this.ybAcData.deptName = item.text
     },
+    selectKsTypeChange (value) {
+      this.ybAcData.ksType = value
+    },
     setFormValues (obj, areaType, atDataSource) {
+      this.ybAppealConfire.areaType = areaType
+      this.findComType3()
       this.isUpdate = false
       this.selectAdminTypeDataSource = atDataSource
       this.form.getFieldDecorator('adminType')
-      this.ybAppealConfire.areaType = areaType
       if (obj === undefined || obj === null || obj === '') {
         this.isEdit = false
         if (this.selectAdminTypeDataSource.length > 0) {
@@ -201,9 +224,11 @@ export default {
           doctorName: this.ybAppealConfire.doctorName
         })
       }
-      if (this.ybAcData.deptId !== '' && this.ybAcData.deptId !== undefined) {
+      // if (this.ybAcData.deptId !== '' && this.ybAcData.deptId !== undefined) {
+      if (this.ybAcData.ksType !== '' && this.ybAcData.ksType !== undefined) {
         this.ybAppealConfire.child = [
-          { deptId: this.ybAcData.deptId, deptName: this.ybAcData.deptName }
+          // { deptId: this.ybAcData.deptId, deptName: this.ybAcData.deptName }
+          { ksType: this.ybAcData.ksType }
         ]
         isData = true
       } else {
@@ -248,10 +273,11 @@ export default {
             })
           }
         }
-        this.$refs.inputSelectDept.dataSource = []
-        this.$refs.inputSelectDept.value = ''
-        this.ybAcData.deptId = ''
-        this.ybAcData.deptName = ''
+        // this.$refs.inputSelectDept.dataSource = []
+        // this.$refs.inputSelectDept.value = ''
+        // this.ybAcData.deptId = ''
+        // this.ybAcData.deptName = ''
+        this.ybAcData.ksType = ''
       })
     },
     setFields () {

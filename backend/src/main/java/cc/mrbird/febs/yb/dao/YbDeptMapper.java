@@ -20,5 +20,5 @@ public interface YbDeptMapper extends BaseMapper<YbDept> {
         void updateYbDept(YbDept ybDept);
         IPage<YbDept> findYbDept(Page page, @Param("ybDept") YbDept ybDept);
 
-        List<YbDept> findDeptAppealConfireList(@Param("doctorCode") String doctorCode,@Param("comments") String comments, @Param("areaType") Integer areaType);
+        List<YbDept> findDeptAppealConfireList(@Param("appealConfireId") String appealConfireId,@Param("comments") String comments, @Param("areaType") Integer areaType);
         }

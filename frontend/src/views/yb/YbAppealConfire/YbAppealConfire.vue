@@ -19,11 +19,11 @@
               </a-form-item>
             </a-col>
             <a-col
-              :md="5"
+              :md="6"
               :sm="24"
             >
               <a-form-item
-                label="科室"
+                label="管理科室"
                 v-bind="formItemLayout"
               >
                 <a-input v-model="queryParams.deptContent" />
@@ -280,7 +280,7 @@ export default {
             this.pagination.defaultPageSize + index + 1
     },
     findComType () {
-      let ctParams = {ctType: this.ctType}
+      let ctParams = {ctType: this.ctType, isDeletemark: 1}
       this.queryAdminTypeDataSource = [{text: '全部', value: 0}]
       this.selectAdminTypeDataSource = []
       this.$get('comType/findList', {
