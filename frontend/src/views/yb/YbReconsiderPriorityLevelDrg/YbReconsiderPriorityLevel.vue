@@ -1,14 +1,38 @@
 <template>
-  <a-card :bordered="false" class="card-area">
+  <a-card
+    :bordered="false"
+    class="card-area"
+  >
     <div :class="advanced ? 'search' : null">
       <a-form layout="horizontal">
         <a-row>
-          <div :class="advanced ? null : 'fold'"></div>
-          <span style="float: right; margin-top: 3px">
-            <a-button type="primary" @click="search">查询</a-button>
-            <a-button style="margin-left: 8px" @click="reset">重置</a-button>
-            <a @click="toggleAdvanced" style="margin-left: 8px">
-              {{ advanced ? "收起" : "展开" }}
+          <div :class="advanced ? null: 'fold'">
+            <a-col
+              :md="8"
+              :sm="24"
+            >
+              <a-form-item
+                label="关键字"
+                v-bind="formItemLayout"
+              >
+                <a-input v-model="queryParams.currencyField" />
+              </a-form-item>
+            </a-col>
+          </div>
+          <span style="float: right; margin-top: 3px;">
+            <a-button
+              type="primary"
+              @click="searchPage"
+            >查询</a-button>
+            <a-button
+              style="margin-left: 8px"
+              @click="reset"
+            >重置</a-button>
+            <a
+              @click="toggleAdvanced"
+              style="margin-left: 8px"
+            >
+              {{advanced ? '收起' : '展开'}}
               <a-icon :type="advanced ? 'up' : 'down'" />
             </a>
           </span>
@@ -18,25 +42,21 @@
     <div>
       <div class="operator">
         <a-button
-          v-hasPermission="['ybDrgApply:add']"
+          v-hasPermission="['ybReconsiderPriorityLevel:add']"
           type="primary"
           ghost
           @click="add"
-          >新增</a-button
-        >
-        <a-button v-hasPermission="['ybDrgApply:delete']" @click="batchDelete"
-          >删除</a-button
-        >
+        >新增</a-button>
         <a-button
-          type="primary"
-          style="margin-left: 30px"
-          @click="showModal"
-        >上传类型维护</a-button>
-        <a-dropdown v-hasPermission="['ybDrgApply:export']">
+          v-hasPermission="['ybReconsiderPriorityLevel:delete']"
+          @click="batchDelete"
+        >删除</a-button>
+        <a-dropdown v-hasPermission="['ybReconsiderPriorityLevel:export']">
           <a-menu slot="overlay">
-            <a-menu-item key="export-data" @click="exportExcel"
-              >导出Excel</a-menu-item
-            >
+            <a-menu-item
+              key="export-data"
+              @click="exportExcel"
+            >导出Excel</a-menu-item>
           </a-menu>
           <a-button>
             更多操作
@@ -48,52 +68,40 @@
       <a-table
         ref="TableInfo"
         :columns="columns"
-        :rowKey="(record) => record.id"
+        :rowKey="record => record. id                                "
         :dataSource="dataSource"
         :pagination="pagination"
         :loading="loading"
-        :rowSelection="{
-          selectedRowKeys: selectedRowKeys,
-          onChange: onSelectChange,
-        }"
+        :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
         @change="handleTableChange"
         :bordered="bordered"
         :scroll="{ x: 900 }"
       >
-        <template slot="remark" slot-scope="text, record">
+        <template
+          slot="remark"
+          slot-scope="text, record"
+        >
           <a-popover placement="topLeft">
             <template slot="content">
-              <div style="max-width: 200px">{{ text }}</div>
+              <div style="max-width: 200px">{{text}}</div>
             </template>
-            <p style="width: 200px; margin-bottom: 0">{{ text }}</p>
+            <p style="width: 200px;margin-bottom: 0">{{text}}</p>
           </a-popover>
         </template>
-        <template slot="operation" slot-scope="text, record">
+        <template
+          slot="operation"
+          slot-scope="text, record"
+        >
           <a-icon
-            v-hasPermission="['ybDrgApply:update']"
+            v-hasPermission="['ybReconsiderPriorityLevel:update']"
             type="setting"
             theme="twoTone"
             twoToneColor="#4a9ff5"
             @click="edit(record)"
             title="修改"
           ></a-icon>
-          <a-divider type="vertical" />
-          <a
-            v-hasPermission="['ybReconsiderApply:delete']"
-            @click="del(record)"
-            :disabled="record.state==1?false:true"
-            title="删除"
-          >
-          <a-icon
-            type="delete"
-            theme="outlined"
-            twoToneColor="record.state==1?#4a9ff5:#D3D3D3"
-          ></a-icon>
-          </a>
-          <a-divider type="vertical" />
-          <a @click="goto(record)">{{record.state === 3 ? '查看数据' : '上传数据'}}</a>
           <a-badge
-            v-hasNoPermission="['ybDrgApply:update']"
+            v-hasNoPermission="['ybReconsiderPriorityLevel:update']"
             status="warning"
             text="无权限"
           ></a-badge>
@@ -101,57 +109,27 @@
       </a-table>
     </div>
     <!-- 新增字典 -->
-    <ybDrgApply-add
-      ref="ybDrgApplyAdd"
+    <ybReconsiderPriorityLevel-add
+      ref="ybReconsiderPriorityLevelAdd"
       @close="handleAddClose"
       @success="handleAddSuccess"
       :addVisiable="addVisiable"
     >
-    </ybDrgApply-add>
+    </ybReconsiderPriorityLevel-add>
     <!-- 修改字典 -->
-    <ybDrgApply-edit
-      ref="ybDrgApplyEdit"
+    <ybReconsiderPriorityLevel-edit
+      ref="ybReconsiderPriorityLevelEdit"
       @close="handleEditClose"
       @success="handleEditSuccess"
       :editVisiable="editVisiable"
     >
-    </ybDrgApply-edit>
-    <!-- 审核字典 -->
-    <a-modal
-      title="上传数据"
-      :visible="gotoVisiable"
-      :footer="null"
-      width="99%"
-      style="padding-top:0px;"
-      :maskClosable="false"
-      @cancel="handleCancel"
-    >
-      <ybDrgApply-upload
-      ref="ybDrgApplyUpload"
-      @cancel="handleCancel"
-      >
-      </ybDrgApply-upload>
-    </a-modal>
-    <template>
-      <div>
-        <a-modal width="60%" :maskClosable="false" :footer="null" v-model="typeVisible" title="上传类型维护" @cancel="handleOk">
-          <comType-data
-          ref="comTypeData"
-          @close="handleOk"
-          >
-          </comType-data>
-        </a-modal>
-      </div>
-    </template>
+    </ybReconsiderPriorityLevel-edit>
   </a-card>
 </template>
 
 <script>
-import moment from 'moment'
-import YbDrgApplyAdd from './YbDrgApplyAdd'
-import YbDrgApplyEdit from './YbDrgApplyEdit'
-import YbDrgApplyUpload from './YbDrgApplyUpload'
-import ComTypeData from '../../com/ComType/ComTypeDrgData'
+import YbReconsiderPriorityLevelAdd from './YbReconsiderPriorityLevelAdd'
+import YbReconsiderPriorityLevelEdit from './YbReconsiderPriorityLevelEdit'
 
 const formItemLayout = {
   labelCol: {
@@ -163,12 +141,10 @@ const formItemLayout = {
   }
 }
 export default {
-  name: 'YbDrgApply',
+  name: 'YbReconsiderPriorityLevel',
   components: {
-    YbDrgApplyAdd,
-    YbDrgApplyEdit,
-    YbDrgApplyUpload,
-    ComTypeData
+    YbReconsiderPriorityLevelAdd,
+    YbReconsiderPriorityLevelEdit
   },
   data () {
     return {
@@ -178,23 +154,22 @@ export default {
       sortedInfo: null,
       paginationInfo: null,
       formItemLayout,
-      tableFormat: 'YYYY-MM-DD',
-      tableFormat1: 'YYYY-MM-DD HH:mm:ss',
-      user: this.$store.state.account.user,
       pagination: {
         pageSizeOptions: ['10', '20', '30', '40', '100'],
         defaultCurrent: 1,
         defaultPageSize: 10,
         showQuickJumper: true,
         showSizeChanger: true,
+        onChange: (current, size) => {
+          this.pagination.defaultCurrent = current
+          this.pagination.defaultPageSize = size
+        },
         showTotal: (total, range) => `显示 ${range[0]} ~ ${range[1]} 条记录，共 ${total} 条记录`
       },
       queryParams: {},
       addVisiable: false,
       editVisiable: false,
-      gotoVisiable: false,
-      typeVisible: false,
-      ctType: 2,
+      user: this.$store.state.account.user,
       loading: false,
       bordered: true
     }
@@ -211,94 +186,51 @@ export default {
         width: 70
       },
       {
-        title: '复议年月',
-        dataIndex: 'applyDateStr',
-        width: 90
+        title: '医生名称',
+        dataIndex: 'doctorName',
+        customRender: (text, row, index) => {
+          if (text !== '' && text !== null) {
+            return row.doctorCode + '-' + row.doctorName
+          }
+        },
+        width: 150
+      },
+      {
+        title: '更改科室名称',
+        dataIndex: 'dksNameTo',
+        width: 200
+      },
+      {
+        title: '更改医生名称',
+        dataIndex: 'doctorNameTo',
+        customRender: (text, row, index) => {
+          if (text !== '' && text !== null) {
+            return row.doctorCodeTo + '-' + row.doctorNameTo
+          }
+        },
+        width: 150
       },
       {
         title: '操作员',
         dataIndex: 'operatorName',
-        width: 130
-      },
-      {
-        title: '状态',
-        dataIndex: 'state',
-        customRender: (text, row, index) => {
-          switch (text) {
-            case 1:
-              return '待上传'
-            case 2:
-              return '已上传'
-            case 3:
-              return '申诉'
-            default:
-              return text
-          }
-        },
-        width: 80
-      },
-      {
-        title: '截止日期',
-        dataIndex: 'endDate',
-        customRender: (text, row, index) => {
-          if (text !== '' && text !== null) {
-            if (isNaN(text) && !isNaN(Date.parse(text))) {
-              return moment(text).format(this.tableFormat1)
-            } else {
-              return text
-            }
-          } else {
-            return text
-          }
-        },
         width: 160
-      },
-      {
-        title: '确认日期',
-        dataIndex: 'enableDate',
-        customRender: (text, row, index) => {
-          if (text !== '' && text !== null) {
-            if (isNaN(text) && !isNaN(Date.parse(text))) {
-              return moment(text).format(this.tableFormat)
-            } else {
-              return text
-            }
-          } else {
-            return text
-          }
-        },
-        width: 135
-      },
-      {
-        title: '创建日期',
-        dataIndex: 'createTime',
-        customRender: (text, row, index) => {
-          if (text !== '' && text !== null) {
-            if (isNaN(text) && !isNaN(Date.parse(text))) {
-              return moment(text).format(this.tableFormat)
-            } else {
-              return text
-            }
-          } else {
-            return text
-          }
-        },
-        width: 115
       },
       {
         title: '操作',
         dataIndex: 'operation',
-        scopedSlots: { customRender: 'operation' },
+        scopedSlots: {
+          customRender: 'operation'
+        },
         fixed: 'right',
-        width: 200
-      }]
+        width: 100
+      }
+      ]
     }
   },
   mounted () {
     this.fetch()
   },
   methods: {
-    moment,
     onSelectChange (selectedRowKeys) {
       this.selectedRowKeys = selectedRowKeys
     },
@@ -307,26 +239,6 @@ export default {
       if (!this.advanced) {
         this.queryParams.comments = ''
       }
-    },
-    showModal () {
-      this.typeVisible = true
-      setTimeout(() => {
-        this.$refs.comTypeData.searchPage(this.ctType)
-      }, 200)
-    },
-    handleOk (e) {
-      this.typeVisible = false
-    },
-    handleCancel () {
-      this.gotoVisiable = false
-      // this.$message.success('审核上传成功')
-      this.search()
-    },
-    goto (record) {
-      setTimeout(() => {
-        this.$refs.ybDrgApplyUpload.setFormValues(record)
-      }, 200)
-      this.gotoVisiable = true
     },
     handleAddSuccess () {
       this.addVisiable = false
@@ -337,25 +249,8 @@ export default {
       this.addVisiable = false
     },
     add () {
-      this.$refs.ybDrgApplyAdd.setFormValues()
+      this.$refs.ybReconsiderPriorityLevelAdd.setFormValues(this.user.areaType.value)
       this.addVisiable = true
-    },
-    del (record) {
-      let that = this
-      this.$confirm({
-        title: '确定删除该记录?',
-        content: '当您点击确定按钮后，这条记录将会被彻底删除',
-        centered: true,
-        onOk () {
-          let ybReconsiderApplyIds = record.id
-          that.$delete('ybDrgApply/' + ybReconsiderApplyIds).then(() => {
-            that.$message.success('删除成功')
-            that.selectedRowKeys = []
-            that.search()
-          }
-          )
-        }
-      })
     },
     handleEditSuccess () {
       this.editVisiable = false
@@ -366,7 +261,7 @@ export default {
       this.editVisiable = false
     },
     edit (record) {
-      this.$refs.ybDrgApplyEdit.setFormValues(record)
+      this.$refs.ybReconsiderPriorityLevelEdit.setFormValues(record)
       this.editVisiable = true
     },
     batchDelete () {
@@ -380,8 +275,8 @@ export default {
         content: '当您点击确定按钮后，这些记录将会被彻底删除',
         centered: true,
         onOk () {
-          let ybDrgApplyIds = that.selectedRowKeys.join(',')
-          that.$delete('ybDrgApply/' + ybDrgApplyIds).then(() => {
+          let ybReconsiderPriorityLevelIds = that.selectedRowKeys.join(',')
+          that.$delete('ybReconsiderPriorityLevel/' + ybReconsiderPriorityLevelIds).then(() => {
             that.$message.success('删除成功')
             that.selectedRowKeys = []
             that.search()
@@ -402,11 +297,18 @@ export default {
         sortField = sortedInfo.field
         sortOrder = sortedInfo.order
       }
-      this.$export('ybDrgApply/excel', {
+      this.$export('ybReconsiderPriorityLevel/excel', {
         sortField: sortField,
         sortOrder: sortOrder,
         ...this.queryParams
       })
+    },
+    searchPage () {
+      this.pagination.defaultCurrent = 1
+      if (this.paginationInfo) {
+        this.paginationInfo.current = this.pagination.defaultCurrent
+      }
+      this.search()
     },
     search () {
       let {
@@ -428,6 +330,7 @@ export default {
       // 取消选中
       this.selectedRowKeys = []
       // 重置分页
+      this.pagination.defaultCurrent = 1
       this.$refs.TableInfo.pagination.current = this.pagination.defaultCurrent
       if (this.paginationInfo) {
         this.paginationInfo.current = this.pagination.defaultCurrent
@@ -464,9 +367,9 @@ export default {
       }
       params.sortField = 'create_Time'
       params.sortOrder = 'descend'
-      // params.sortOrder = 'ascend'
       params.areaType = this.user.areaType.value
-      this.$get('ybDrgApply', {
+      params.state = 4
+      this.$get('ybReconsiderPriorityLevel', {
         ...params
       }).then((r) => {
         let data = r.data

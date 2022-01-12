@@ -21,5 +21,8 @@ public interface YbDrgVerifyMapper extends BaseMapper<YbDrgVerify> {
 
     IPage<YbDrgVerify> findYbDrgVerify(Page page, @Param("ybDrgVerify") YbDrgVerify ybDrgVerify);
 
-    List<YbDrgVerify> findDrgVerifyList(@Param("applyDateStr") String applyDateStr, @Param("areaType") Integer areaType, @Param("state") Integer state);
+    List<YbDrgVerify> findDrgVerifyList(@Param("applyDateStr") String applyDateStr,
+                                        @Param("areaType") Integer areaType,
+                                        @Param("state") Integer state,
+                                        @Param("isDksName") boolean isDksName);
 }

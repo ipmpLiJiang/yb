@@ -87,6 +87,11 @@ public class YbReconsiderPriorityLevelController extends BaseController {
                     ybReconsiderPriorityLevel.setDoctorName("");
                 }
             }
+            if (ybReconsiderPriorityLevel.getState() == YbReconsiderPriorityLevel.PL_STATE_4) {
+                if(ybReconsiderPriorityLevel.getPersonType() != YbReconsiderPriorityLevel.PERSON_TYPE_2){
+                    ybReconsiderPriorityLevel.setDksName("");
+                }
+            }
             this.iYbReconsiderPriorityLevelService.createYbReconsiderPriorityLevel(ybReconsiderPriorityLevel);
         } catch (Exception e) {
             message = "新增/按钮失败";
@@ -123,6 +128,11 @@ public class YbReconsiderPriorityLevelController extends BaseController {
                 if(ybReconsiderPriorityLevel.getPersonType() != YbReconsiderPriorityLevel.PERSON_TYPE_4){
                     ybReconsiderPriorityLevel.setDoctorCode("");
                     ybReconsiderPriorityLevel.setDoctorName("");
+                }
+            }
+            if (ybReconsiderPriorityLevel.getState() == YbReconsiderPriorityLevel.PL_STATE_4) {
+                if(ybReconsiderPriorityLevel.getPersonType() != YbReconsiderPriorityLevel.PERSON_TYPE_2){
+                    ybReconsiderPriorityLevel.setDksName("");
                 }
             }
             this.iYbReconsiderPriorityLevelService.updateYbReconsiderPriorityLevel(ybReconsiderPriorityLevel);

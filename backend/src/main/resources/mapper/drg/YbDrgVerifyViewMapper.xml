@@ -22,8 +22,7 @@
         <result column="sendDate" property="sendDate"/>
         <result column="verifyDoctorCode" property="verifyDoctorCode"/>
         <result column="verifyDoctorName" property="verifyDoctorName"/>
-        <result column="verifyDeptCode" property="verifyDeptCode"/>
-        <result column="verifyDeptName" property="verifyDeptName"/>
+        <result column="verifyDksName" property="verifyDksName"/>
         <result column="orderNumber" property="orderNumber"/>
         <result column="orderNum" property="orderNum"/>
         <result column="isVerify" property="isVerify"/>
@@ -36,43 +35,42 @@
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
         id, pid, applyDataId, applyDateStr, ks, jzjlh, bah, wglx, wtms, ylzfy, wgje, sfbmzczjcw, ly,
-        orderNumber, orderNum, verifyDoctorCode, verifyDoctorName, verifyDeptCode, verifyDeptName, isVerify,isPerson, sendPersonId, sendPersonName, sendDate,STATE, areaType
+        orderNumber, orderNum, verifyDoctorCode, verifyDoctorName, verifyDksName, isVerify,isPerson, sendPersonId, sendPersonName, sendDate,STATE, areaType
     </sql>
 
     <select id="findDrgVerifyView" resultType="cc.mrbird.febs.drg.entity.YbDrgVerifyView"
             parameterType="cc.mrbird.febs.drg.entity.YbDrgVerifyView">
         select
-            case when rv.id is null then UUID() else rv.id end id,
-            ad.pid,
-            ad.id applyDataId,
-            #{ ybDrgVerifyView.applyDateStr} applyDateStr,
-            ad.ks,
-            ad.jzjlh,
-            ad.bah,
-            ad.wglx,
-            ad.wtms,
-            ad.ylzfy,
-            ad.wgje,
-            ad.sfbmzczjcw,
-            ad.ly,
-            ad.orderNumber,
-            ad.orderNum,
-            rv.verifyDoctorCode,
-            concat(rv.verifyDoctorCode,'-',rv.verifyDoctorName) verifyDoctorName,
-            rv.verifyDeptCode,
-            concat(rv.verifyDeptCode,'-',rv.verifyDeptName) verifyDeptName,
-            case when rv.id is null then 0 else 1 end isVerify,
-            case when yp.id is null then 0 else 1 end isPerson,
-            rv.sendPersonId,
-            rv.sendPersonName,
-            rv.sendDate,
-            rv.STATE,
-            rv.areaType
+        case when rv.id is null then UUID() else rv.id end id,
+        ad.pid,
+        ad.id applyDataId,
+        #{ ybDrgVerifyView.applyDateStr} applyDateStr,
+        ad.ks,
+        ad.jzjlh,
+        ad.bah,
+        ad.wglx,
+        ad.wtms,
+        ad.ylzfy,
+        ad.wgje,
+        ad.sfbmzczjcw,
+        ad.ly,
+        ad.orderNumber,
+        ad.orderNum,
+        rv.verifyDoctorCode,
+        concat(rv.verifyDoctorCode,'-',rv.verifyDoctorName) verifyDoctorName,
+        rv.verifyDksName,
+        case when rv.id is null then 0 else 1 end isVerify,
+        case when yp.id is null then 0 else 1 end isPerson,
+        rv.sendPersonId,
+        rv.sendPersonName,
+        rv.sendDate,
+        rv.STATE,
+        rv.areaType
         from
         yb_drg_verify rv
         INNER JOIN yb_drg_apply_data ad ON
-            ad.id = rv.applyDataId and
-            ad.pid =  #{ ybDrgVerifyView.pid}
+        ad.id = rv.applyDataId and
+        ad.pid = #{ ybDrgVerifyView.pid}
         <if test="ybDrgVerifyView.orderNumber != null and ybDrgVerifyView.orderNumber != ''">
             and ad.orderNumber = #{ ybDrgVerifyView.orderNumber}
         </if>
@@ -86,9 +84,9 @@
             and ad.bah = #{ ybDrgVerifyView.bah}
         </if>
         LEFT join yb_person yp on
-            rv.verifyDoctorCode = yp.personCode
+        rv.verifyDoctorCode = yp.personCode
         where
-            rv.applyDateStr = #{ ybDrgVerifyView.applyDateStr}
+        rv.applyDateStr = #{ ybDrgVerifyView.applyDateStr}
         <if test="ybDrgVerifyView.areaType != null">and rv.areaType = #{ ybDrgVerifyView.areaType}</if>
         <if test="ybDrgVerifyView.state != null">and rv.state =#{ ybDrgVerifyView.state}</if>
         <if test="ybDrgVerifyView.orderNumber != null and ybDrgVerifyView.orderNumber != ''">
@@ -100,8 +98,8 @@
         <if test="ybDrgVerifyView.verifyDoctorName != null and ybDrgVerifyView.verifyDoctorName != ''">
             and rv.verifyDoctorName = #{ ybDrgVerifyView.verifyDoctorName}
         </if>
-        <if test="ybDrgVerifyView.verifyDeptName != null and ybDrgVerifyView.verifyDeptName != ''">
-            and rv.verifyDeptName = #{ ybDrgVerifyView.verifyDeptName}
+        <if test="ybDrgVerifyView.verifyDksName != null and ybDrgVerifyView.verifyDksName != ''">
+            and rv.verifyDksName = #{ ybDrgVerifyView.verifyDksName}
         </if>
         order by rv.orderNum
     </select>
@@ -114,7 +112,7 @@
         yb_drg_verify rv
         inner JOIN yb_drg_apply_data ad ON
         ad.id = rv.applyDataId and
-        ad.pid =  #{ ybDrgVerifyView.pid}
+        ad.pid = #{ ybDrgVerifyView.pid}
         <if test="ybDrgVerifyView.orderNumber != null and ybDrgVerifyView.orderNumber != ''">
             and ad.orderNumber = #{ ybDrgVerifyView.orderNumber}
         </if>
@@ -140,8 +138,8 @@
         <if test="ybDrgVerifyView.verifyDoctorName != null and ybDrgVerifyView.verifyDoctorName != ''">
             and rv.verifyDoctorName = #{ ybDrgVerifyView.verifyDoctorName}
         </if>
-        <if test="ybDrgVerifyView.verifyDeptName != null and ybDrgVerifyView.verifyDeptName != ''">
-            and rv.verifyDeptName = #{ ybDrgVerifyView.verifyDeptName}
+        <if test="ybDrgVerifyView.verifyDksName != null and ybDrgVerifyView.verifyDksName != ''">
+            and rv.verifyDksName = #{ ybDrgVerifyView.verifyDksName}
         </if>
     </select>
 
@@ -165,8 +163,7 @@
             ad.orderNum,
             rv.verifyDoctorCode,
             concat(rv.verifyDoctorCode,'-',rv.verifyDoctorName) verifyDoctorName,
-            rv.verifyDeptCode,
-            concat(rv.verifyDeptCode,'-',rv.verifyDeptName) verifyDeptName,
+            rv.verifyDksName,
             case when rv.id is null then 0 else 1 end isVerify,
             rv.sendPersonId,
             rv.sendPersonName,

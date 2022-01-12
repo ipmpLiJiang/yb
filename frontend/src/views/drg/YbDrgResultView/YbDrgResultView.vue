@@ -253,12 +253,7 @@ export default {
       },
       {
         title: '复议科室',
-        dataIndex: 'deptName',
-        customRender: (text, row, index) => {
-          if (text !== '' && text !== null) {
-            return row.deptCode + '-' + row.deptName
-          }
-        },
+        dataIndex: 'dksName',
         fixed: 'right',
         width: 160
       },

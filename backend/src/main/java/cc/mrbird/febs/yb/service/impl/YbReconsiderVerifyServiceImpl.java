@@ -164,7 +164,11 @@ public class YbReconsiderVerifyServiceImpl extends ServiceImpl<YbReconsiderVerif
 //                iYbReconsiderApplyDataService.findReconsiderApplyDataByNotVerifyStates(ybReconsiderApply.getId(),ybReconsiderApply.getApplyDateStr(),areaType,YbDefaultValue.DATATYPE_0,typeno);
                 if (radList.size() > 0) {
                     isCreate = false;
-                    List<YbReconsiderPriorityLevel> rplList = iYbReconsiderPriorityLevelService.findReconsiderPriorityLevelList(areaType);
+                    List<Integer> stateList = new ArrayList<>();
+                    stateList.add(YbReconsiderPriorityLevel.PL_STATE_1);
+                    stateList.add(YbReconsiderPriorityLevel.PL_STATE_2);
+                    stateList.add(YbReconsiderPriorityLevel.PL_STATE_3);
+                    List<YbReconsiderPriorityLevel> rplList = iYbReconsiderPriorityLevelService.findReconsiderPriorityLevelList(areaType,stateList);
                     YbReconsiderInpatientfees waquery = new YbReconsiderInpatientfees();
                     waquery.setApplyDateStr(applyDateStr);
                     waquery.setAreaType(areaType);

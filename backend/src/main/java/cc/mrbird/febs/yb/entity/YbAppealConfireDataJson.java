@@ -42,6 +42,6 @@ public class YbAppealConfireDataJson{
      */
 //    private String deptName;
 
-    private String ksType;
+    private String dksName;
 
 }

@@ -170,12 +170,10 @@ public class YbDrgManageViewServiceImpl extends ServiceImpl<YbDrgManageViewMappe
         amv.setVerifyId(am.getVerifyId());
         amv.setReadyDoctorCode(am.getReadyDoctorCode());
         amv.setReadyDoctorName(am.getReadyDoctorName());
-        amv.setReadyDeptCode(am.getReadyDeptCode());
-        amv.setReadyDeptName(am.getReadyDeptName());
+        amv.setReadyDksName(am.getReadyDksName());
         amv.setChangeDoctorCode(am.getChangeDoctorCode());
         amv.setChangeDoctorName(am.getChangeDoctorName());
-        amv.setChangeDeptCode(am.getChangeDeptCode());
-        amv.setChangeDeptName(am.getChangeDeptName());
+        amv.setChangeDksName(am.getChangeDksName());
         amv.setOperateReason(am.getOperateReason());
         amv.setOperateDate(am.getOperateDate());
         amv.setRefuseId(am.getRefuseId());

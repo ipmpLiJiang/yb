@@ -71,16 +71,16 @@ private static final long serialVersionUID=1L;
     /**
      * 科室编码
      */
-    @TableField("deptCode")
-            @ExcelField(value ="科室编码")
-    private String deptCode;
+//    @TableField("deptCode")
+//            @ExcelField(value ="科室编码")
+//    private String deptCode;
 
     /**
      * 科室
      */
-    @TableField("deptName")
-            @ExcelField(value ="科室")
-    private String deptName;
+//    @TableField("deptName")
+//            @ExcelField(value ="科室")
+//    private String deptName;
 
     /**
      * 理由
@@ -133,7 +133,12 @@ private static final long serialVersionUID=1L;
             @ExcelField(value ="院区")
     private Integer areaType;
 
-
+    /**
+     * 科室
+     */
+    @TableField("dksName")
+    @ExcelField(value ="科室")
+    private String dksName;
 
     public static final String ID ="id" ;
 
@@ -147,9 +152,9 @@ private static final long serialVersionUID=1L;
 
     public static final String DOCTORNAME ="doctorName" ;
 
-    public static final String DEPTCODE ="deptCode" ;
+//    public static final String DEPTCODE ="deptCode" ;
 
-    public static final String DEPTNAME ="deptName" ;
+//    public static final String DEPTNAME ="deptName" ;
 
     public static final String OPERATEREASON ="operateReason" ;
 
@@ -164,6 +169,8 @@ private static final long serialVersionUID=1L;
     public static final String ORDERNUM ="orderNum" ;
 
     public static final String AREATYPE ="areaType" ;
+
+    public static final String DKSNAME ="dksName" ;
 
 @Override
 public int compareTo(YbDrgResult o) {

@@ -86,10 +86,14 @@ public class YbReconsiderPriorityLevelServiceImpl extends ServiceImpl<YbReconsid
         ybReconsiderPriorityLevel.setId(UUID.randomUUID().toString());
         ybReconsiderPriorityLevel.setCreateTime(new Date());
         ybReconsiderPriorityLevel.setIsDeletemark(1);
-        String strDeptName = DataTypeHelpers.stringReplaceSetString(ybReconsiderPriorityLevel.getDeptName(),ybReconsiderPriorityLevel.getDeptCode() + "-");
+        String strDeptName = DataTypeHelpers.stringReplaceSetString(ybReconsiderPriorityLevel.getDeptName(), ybReconsiderPriorityLevel.getDeptCode() + "-");
         ybReconsiderPriorityLevel.setDeptName(strDeptName);
-        String strDoctorName = DataTypeHelpers.stringReplaceSetString(ybReconsiderPriorityLevel.getDoctorName(),ybReconsiderPriorityLevel.getDoctorCode() + "-");
+        String strDoctorName = DataTypeHelpers.stringReplaceSetString(ybReconsiderPriorityLevel.getDoctorName(), ybReconsiderPriorityLevel.getDoctorCode() + "-");
         ybReconsiderPriorityLevel.setDoctorName(strDoctorName);
+        if (ybReconsiderPriorityLevel.getState() == YbReconsiderPriorityLevel.PERSON_TYPE_4) {
+            String strDoctorToName = DataTypeHelpers.stringReplaceSetString(ybReconsiderPriorityLevel.getDoctorNameTo(), ybReconsiderPriorityLevel.getDoctorCodeTo() + "-");
+            ybReconsiderPriorityLevel.setDoctorNameTo(strDoctorToName);
+        }
         this.save(ybReconsiderPriorityLevel);
     }
 
@@ -97,10 +101,14 @@ public class YbReconsiderPriorityLevelServiceImpl extends ServiceImpl<YbReconsid
     @Transactional
     public void updateYbReconsiderPriorityLevel(YbReconsiderPriorityLevel ybReconsiderPriorityLevel) {
         ybReconsiderPriorityLevel.setModifyTime(new Date());
-        String strDeptName = DataTypeHelpers.stringReplaceSetString(ybReconsiderPriorityLevel.getDeptName(),ybReconsiderPriorityLevel.getDeptCode() + "-");
+        String strDeptName = DataTypeHelpers.stringReplaceSetString(ybReconsiderPriorityLevel.getDeptName(), ybReconsiderPriorityLevel.getDeptCode() + "-");
         ybReconsiderPriorityLevel.setDeptName(strDeptName);
-        String strDoctorName = DataTypeHelpers.stringReplaceSetString(ybReconsiderPriorityLevel.getDoctorName(),ybReconsiderPriorityLevel.getDoctorCode() + "-");
+        String strDoctorName = DataTypeHelpers.stringReplaceSetString(ybReconsiderPriorityLevel.getDoctorName(), ybReconsiderPriorityLevel.getDoctorCode() + "-");
         ybReconsiderPriorityLevel.setDoctorName(strDoctorName);
+        if (ybReconsiderPriorityLevel.getState() == YbReconsiderPriorityLevel.PERSON_TYPE_4) {
+            String strDoctorToName = DataTypeHelpers.stringReplaceSetString(ybReconsiderPriorityLevel.getDoctorNameTo(), ybReconsiderPriorityLevel.getDoctorCodeTo() + "-");
+            ybReconsiderPriorityLevel.setDoctorNameTo(strDoctorToName);
+        }
         this.baseMapper.updateYbReconsiderPriorityLevel(ybReconsiderPriorityLevel);
     }
 
@@ -112,10 +120,11 @@ public class YbReconsiderPriorityLevelServiceImpl extends ServiceImpl<YbReconsid
     }
 
     @Override
-    public List<YbReconsiderPriorityLevel> findReconsiderPriorityLevelList(int areaType){
+    public List<YbReconsiderPriorityLevel> findReconsiderPriorityLevelList(int areaType,List<Integer> stateList) {
         LambdaQueryWrapper<YbReconsiderPriorityLevel> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(YbReconsiderPriorityLevel::getIsDeletemark,1);
-        queryWrapper.eq(YbReconsiderPriorityLevel::getAreaType,areaType);
-        return  this.list(queryWrapper);
+        queryWrapper.eq(YbReconsiderPriorityLevel::getIsDeletemark, 1);
+        queryWrapper.eq(YbReconsiderPriorityLevel::getAreaType, areaType);
+        queryWrapper.in(YbReconsiderPriorityLevel::getState,stateList);
+        return this.list(queryWrapper);
     }
 }

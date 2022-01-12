@@ -10,8 +10,7 @@
                     <result column="manageId" property="manageId"/>
                     <result column="doctorCode" property="doctorCode"/>
                     <result column="doctorName" property="doctorName"/>
-                    <result column="deptCode" property="deptCode"/>
-                    <result column="deptName" property="deptName"/>
+                    <result column="dksName" property="dksName"/>
                     <result column="operateReason" property="operateReason"/>
                     <result column="operateDate" property="operateDate"/>
                     <result column="STATE" property="state"/>
@@ -23,7 +22,7 @@
 
         <!-- 通用查询结果列 -->
         <sql id="Base_Column_List">
-        id, applyDataId, verifyId, manageId, doctorCode, doctorName, deptCode, deptName, operateReason, operateDate, STATE, applyDateStr, orderNumber, orderNum, areaType
+        id, applyDataId, verifyId, manageId, doctorCode, doctorName, dksName, operateReason, operateDate, STATE, applyDateStr, orderNumber, orderNum, areaType
     </sql>
     <update id="updateYbDrgResult" parameterType="cc.mrbird.febs.drg.entity.YbDrgResult">
         update yb_drg_result
@@ -33,8 +32,7 @@
 <if test="manageId != null">manageId=#{manageId},</if>
 <if test="doctorCode != null">doctorCode=#{doctorCode},</if>
 <if test="doctorName != null">doctorName=#{doctorName},</if>
-<if test="deptCode != null">deptCode=#{deptCode},</if>
-<if test="deptName != null">deptName=#{deptName},</if>
+<if test="dksName != null">dksName=#{dksName},</if>
 <if test="operateReason != null">operateReason=#{operateReason},</if>
 <if test="operateDate != null">operateDate=#{operateDate},</if>
 <if test="state != null">STATE=#{state},</if>
@@ -55,8 +53,7 @@
             <if test="ybDrgResult.manageId != null and ybDrgResult.manageId != ''"> and manageId like concat('%', #{ ybDrgResult.manageId} ,'%')</if>
             <if test="ybDrgResult.doctorCode != null and ybDrgResult.doctorCode != ''"> and doctorCode like concat('%', #{ ybDrgResult.doctorCode} ,'%')</if>
             <if test="ybDrgResult.doctorName != null and ybDrgResult.doctorName != ''"> and doctorName like concat('%', #{ ybDrgResult.doctorName} ,'%')</if>
-            <if test="ybDrgResult.deptCode != null and ybDrgResult.deptCode != ''"> and deptCode like concat('%', #{ ybDrgResult.deptCode} ,'%')</if>
-            <if test="ybDrgResult.deptName != null and ybDrgResult.deptName != ''"> and deptName like concat('%', #{ ybDrgResult.deptName} ,'%')</if>
+            <if test="ybDrgResult.dksName != null and ybDrgResult.dksName != ''"> and dksName like concat('%', #{ ybDrgResult.dksName} ,'%')</if>
             <if test="ybDrgResult.operateReason != null and ybDrgResult.operateReason != ''"> and operateReason like concat('%', #{ ybDrgResult.operateReason} ,'%')</if>
         <if test="ybDrgResult.operateDateFrom!= null">
             AND ybDrgResult.operateDate <![CDATA[ >= ]]>  operateDateFrom}

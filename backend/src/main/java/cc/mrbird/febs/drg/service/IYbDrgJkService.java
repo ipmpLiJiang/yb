@@ -29,4 +29,6 @@ public interface IYbDrgJkService extends IService<YbDrgJk> {
         void deleteYbDrgJks(String[]Ids);
 
         YbDrgJk findYbDrgJkByApplyDataId(String applyDataId);
+
+        List<YbDrgJk> findDrgJkApplyDataByPid(String pid);
         }

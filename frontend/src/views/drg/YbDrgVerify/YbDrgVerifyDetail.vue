@@ -36,12 +36,12 @@
                     wrapperCol: { span: 16 }
                   }"
                   label="复议科室">
-                    <input-select
-                      ref="inputSelectVerifyDept"
-                      :type=1
-                      @selectChange=selectDeptChang
+                    <input-selectdks
+                      ref="inputSelectVerifyDks"
+                      :ctType=3
+                      @selectChange=selectDksChang
                     >
-                    </input-select>
+                    </input-selectdks>
                   </a-form-item>
               </a-col>
               <a-col :span=8>
@@ -92,13 +92,14 @@
 <script>
 import moment from 'moment'
 import InputSelect from '../../common/InputSelect'
+import InputSelectdks from '../../common/InputSelectDks'
 import YbDrgDataModule from '../YbDrgFunModule/YbDrgDataModule'
 import YbDrgJkModule from '../YbDrgFunModule/YbDrgJkModule'
 
 export default {
   name: 'YbDrgVerifyDetail',
   components: {
-    YbDrgDataModule, YbDrgJkModule, InputSelect },
+    YbDrgDataModule, YbDrgJkModule, InputSelect, InputSelectdks },
   props: {
     detailVisiable: {
       default: false
@@ -134,7 +135,7 @@ export default {
     },
     handleSubmit () {
       let dtc = this.ybDrgVerify.verifyDoctorCode
-      let dec = this.ybDrgVerify.verifyDeptCode
+      let dec = this.ybDrgVerify.verifyDksName
       if (dtc !== undefined && dec !== undefined && dtc !== null && dec !== null && dtc !== '' && dec !== '') {
         this.loading = true
         this.spinning = true
@@ -143,8 +144,7 @@ export default {
           applyDataId: this.ybDrgVerifyView.applyDataId,
           verifyDoctorCode: this.ybDrgVerify.verifyDoctorCode,
           verifyDoctorName: this.ybDrgVerify.verifyDoctorName,
-          verifyDeptCode: this.ybDrgVerify.verifyDeptCode,
-          verifyDeptName: this.ybDrgVerify.verifyDeptName,
+          verifyDksName: this.ybDrgVerify.verifyDksName,
           applyDateStr: this.ybDrgVerifyView.applyDateStr,
           orderNumber: this.ybDrgVerifyView.orderNumber,
           orderNum: this.ybDrgVerifyView.orderNum,
@@ -170,9 +170,8 @@ export default {
       this.ybDrgVerify.verifyDoctorCode = item.value
       this.ybDrgVerify.verifyDoctorName = item.text
     },
-    selectDeptChang (item) {
-      this.ybDrgVerify.verifyDeptCode = item.value
-      this.ybDrgVerify.verifyDeptName = item.text
+    selectDksChang (item) {
+      this.ybDrgVerify.verifyDksName = item.text
     },
     setFormValues ({ ...ybDrgVerifyView }) {
       this.ybDrgVerifyView = ybDrgVerifyView
@@ -182,11 +181,11 @@ export default {
       }, 200)
     },
     setForms (target) {
-      this.$refs.inputSelectVerifyDept.dataSource = [{
-        text: target.verifyDeptName,
-        value: target.verifyDeptCode
+      this.$refs.inputSelectVerifyDks.dataSource = [{
+        text: target.verifyDksName,
+        value: target.verifyDksName
       }]
-      this.$refs.inputSelectVerifyDept.value = target.verifyDeptCode
+      this.$refs.inputSelectVerifyDks.value = target.verifyDksName
 
       this.$refs.inputSelectVerifyDoctor.dataSource = [{
         text: target.verifyDoctorName,
@@ -198,8 +197,7 @@ export default {
         id: target.id,
         verifyDoctorCode: target.verifyDoctorCode,
         verifyDoctorName: target.verifyDoctorName,
-        verifyDeptCode: target.verifyDeptCode,
-        verifyDeptName: target.verifyDeptName,
+        verifyDksName: target.verifyDksName,
         state: 2
       }
 

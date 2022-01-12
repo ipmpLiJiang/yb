@@ -196,4 +196,17 @@ public class ComTypeController extends BaseController {
     public List<ComType> findComTypes(@Valid ComType comType) {
         return this.iComTypeService.findComTypeList(comType);
     }
+
+    @GetMapping("getComTypeByNameList")
+    public FebsResponse findComTypeByLists(@Valid ComType comType) {
+        List<ComType> list = new ArrayList<>();
+        try{
+            list = this.iComTypeService.findComTypeLikeList(comType);
+
+        } catch (Exception e) {
+            log.error("获取科室失败", e);
+        }
+
+        return new FebsResponse().data(list);
+    }
 }

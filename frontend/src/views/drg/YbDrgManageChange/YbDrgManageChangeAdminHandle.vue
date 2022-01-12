@@ -58,12 +58,12 @@
                   v-bind="formItemLayout1"
                   label="复议科室"
                 >
-                  <input-select
-                  ref="inputSelectVerifyDept"
-                  :type=1
-                  @selectChange=selectDeptChang
+                  <input-selectdks
+                  ref="inputSelectVerifyDks"
+                  :ctType=3
+                  @selectChange=selectDksChang
                   >
-                  </input-select>
+                  </input-selectdks>
                 </a-form-item>
               </a-col>
               <a-col :span=10>
@@ -120,6 +120,7 @@
 <script>
 import moment from 'moment'
 import InputSelect from '../../common/InputSelect'
+import InputSelectdks from '../../common/InputSelectDks'
 import YbDrgDataModule from '../YbDrgFunModule/YbDrgDataModule'
 import YbDrgJkModule from '../YbDrgFunModule/YbDrgJkModule'
 const formItemLayout = {
@@ -133,7 +134,7 @@ const formItemLayout1 = {
 export default {
   name: 'YbDrgManageChangeAdminHandle',
   components: {
-    YbDrgDataModule, YbDrgJkModule, InputSelect},
+    YbDrgDataModule, YbDrgJkModule, InputSelect, InputSelectdks},
   props: {
     adminVisiable: {
       default: false
@@ -183,9 +184,8 @@ export default {
       this.ybDrgManage.readyDoctorCode = item.value
       this.ybDrgManage.readyDoctorName = item.text
     },
-    selectDeptChang (item) {
-      this.ybDrgManage.readyDeptCode = item.value
-      this.ybDrgManage.readyDeptName = item.text
+    selectDksChang (item) {
+      this.ybDrgManage.readyDksName = item.text
     },
     setFormValues (ybDrgManageChangeAdminHandle, type) {
       this.type = type
@@ -207,17 +207,17 @@ export default {
       this.ybDrgManage.verifyId = ybDrgManageChangeAdminHandle.verifyId
       this.ybDrgManage.applyDataId = ybDrgManageChangeAdminHandle.applyDataId
       this.ybDrgManage.state = ybDrgManageChangeAdminHandle.state
-      this.changePersons = this.ybDrgManageChangeAdminHandle.readyDeptCode + '-' + this.ybDrgManageChangeAdminHandle.readyDeptName + ' - ' + this.ybDrgManageChangeAdminHandle.readyDoctorCode + '-' + this.ybDrgManageChangeAdminHandle.readyDoctorName
+      this.changePersons = this.ybDrgManageChangeAdminHandle.readyDksName + ' - ' + this.ybDrgManageChangeAdminHandle.readyDoctorName
       setTimeout(() => {
         this.setForms(ybDrgManageChangeAdminHandle)
       }, 200)
     },
     setForms (target) {
-      this.$refs.inputSelectVerifyDept.dataSource = [{
-        text: target.readyDeptCode + '-' + target.readyDeptName,
-        value: target.readyDeptCode
+      this.$refs.inputSelectVerifyDks.dataSource = [{
+        text: target.readyDksName,
+        value: target.readyDksName
       }]
-      this.$refs.inputSelectVerifyDept.value = target.readyDeptCode
+      this.$refs.inputSelectVerifyDks.value = target.readyDksName
 
       this.$refs.inputSelectVerifyDoctor.dataSource = [{
         text: target.readyDoctorCode + '-' + target.readyDoctorName,
@@ -228,8 +228,7 @@ export default {
       this.ybDrgManage.readyDoctorCode = target.readyDoctorCode
       this.ybDrgManage.readyDoctorName = target.readyDoctorName
 
-      this.ybDrgManage.readyDeptCode = target.readyDeptCode
-      this.ybDrgManage.readyDeptName = target.readyDeptName
+      this.ybDrgManage.readyDksName = target.readyDksName
 
       setTimeout(() => {
         this.$refs.ybDrgJkModule.search()
@@ -246,12 +245,11 @@ export default {
       // ybDrgManage.applyDataId = this.ybDrgManageChangeAdminHandle.applyDataId
       // ybDrgManage.readyDoctorCode = this.ybDrgManageChangeAdminHandle.readyDoctorCode
       // ybDrgManage.readyDoctorName = this.ybDrgManageChangeAdminHandle.readyDoctorName
-      // ybDrgManage.readyDeptCode = this.ybDrgManageChangeAdminHandle.readyDeptCode
-      // ybDrgManage.readyDeptName = this.ybDrgManageChangeAdminHandle.readyDeptName
+      // ybDrgManage.readyDksName = this.ybDrgManageChangeAdminHandle.readyDksName
 
       if (this.type === 0 || this.type === 3) {
         if (ybDrgManage.readyDoctorCode === this.ybDrgManageChangeAdminHandle.readyDoctorCode &&
-            ybDrgManage.readyDeptCode === this.ybDrgManageChangeAdminHandle.readyDeptCode) {
+            ybDrgManage.readyDksName === this.ybDrgManageChangeAdminHandle.readyDksName) {
           this.$message.error('未更改 复议科室 和 复议医生 , 不可提交数据.')
           this.loading = false
           this.spinning = false

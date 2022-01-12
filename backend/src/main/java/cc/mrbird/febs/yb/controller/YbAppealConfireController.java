@@ -140,8 +140,8 @@ public class YbAppealConfireController extends BaseController {
 //                    createData.setDeptId(item.getDeptId());
 //                    String strDeptName = DataTypeHelpers.stringReplaceSetString(item.getDeptName(), item.getDeptId() + "-");
 //                    createData.setDeptName(strDeptName);
-                    String strKsType = item.getKsType();
-                    createData.setKsType(strKsType);
+                    String strDksName = item.getDksName();
+                    createData.setDksName(strDksName);
                     createDataList.add(createData);
                 }
                 this.iYbAppealConfireService.createAppealConfire(create, createDataList);
@@ -194,8 +194,8 @@ public class YbAppealConfireController extends BaseController {
 //                    updateData.setDeptId(item.getDeptId());
 //                    String strDeptName = DataTypeHelpers.stringReplaceSetString(item.getDeptName(), item.getDeptId() + "-");
 //                    updateData.setDeptName(strDeptName);
-                    String strKsType = item.getKsType();
-                    updateData.setKsType(strKsType);
+                    String strDksName = item.getDksName();
+                    updateData.setDksName(strDksName);
                     if (updateData.getId() == null) {
                         updateData.setId(UUID.randomUUID().toString());
                         createDataList.add(updateData);
@@ -210,7 +210,7 @@ public class YbAppealConfireController extends BaseController {
                     YbAppealConfireData quertAcd = new YbAppealConfireData();
                     quertAcd.setPid(appealConfireJson.getId());
 //                    quertAcd.setDeptId(createDataList.get(0).getDeptId());
-                    quertAcd.setKsType(createDataList.get(0).getKsType());
+                    quertAcd.setDksName(createDataList.get(0).getDksName());
                     List<YbAppealConfireData> queryAcdList = iYbAppealConfireDataService.findAppealConfireDataList(quertAcd);
                     if (queryAcdList.size() == 0) {
                         this.iYbAppealConfireService.updateAppealConfire(update, createDataList, updateDataList);
@@ -218,7 +218,7 @@ public class YbAppealConfireController extends BaseController {
                     } else {
                         message = iComConfiguremanageService.getConfigAreaName(appealConfireJson.getAreaType());
 //                        message = message + " " + createDataList.get(0).getDeptId() + "-" + createDataList.get(0).getDeptName() + " 科室已存在!";
-                        message = message + " " + createDataList.get(0).getKsType() + " 科室已存在!";
+                        message = message + " " + createDataList.get(0).getDksName() + " 科室已存在!";
                     }
                 }
             } else {

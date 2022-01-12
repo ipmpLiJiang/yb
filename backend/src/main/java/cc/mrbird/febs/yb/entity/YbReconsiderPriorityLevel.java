@@ -47,6 +47,11 @@ public class YbReconsiderPriorityLevel implements Serializable, Comparable<YbRec
     public static final Integer PL_STATE_3 = 3;
 
     /**
+     * 4 Drg
+     */
+    public static final Integer PL_STATE_4 = 4;
+
+    /**
      * 1执行科室
      */
     public static final Integer DEPT_STATE_1 = 1;
@@ -248,6 +253,34 @@ public class YbReconsiderPriorityLevel implements Serializable, Comparable<YbRec
     @ExcelField(value = "院区")
     private Integer areaType;
 
+    /**
+     * 科室To
+     */
+    @TableField("dksName")
+    @ExcelField(value ="科室")
+    private String dksName;
+
+    /**
+     * 科室To
+     */
+    @TableField("dksNameTo")
+    @ExcelField(value ="科室To")
+    private String dksNameTo;
+
+    /**
+     * 医生To
+     */
+    @TableField("doctorCodeTo")
+    @ExcelField(value ="科室")
+    private String doctorCodeTo;
+
+    /**
+     * 医生To
+     */
+    @TableField("doctorNameTo")
+    @ExcelField(value ="科室To")
+    private String doctorNameTo;
+
     public static final String ID = "id";
 
     public static final String RPLNAME = "rplName";
@@ -287,6 +320,15 @@ public class YbReconsiderPriorityLevel implements Serializable, Comparable<YbRec
     public static final String MODIFY_USER_ID = "MODIFY_USER_ID";
 
     public static final String AREATYPE ="areaType" ;
+
+    public static final String DKSNAME ="dksName" ;
+
+    public static final String DKSNAMETO ="dksNameTo" ;
+
+    public static final String DOCTORCODETO ="doctorCodeTo" ;
+
+    public static final String DOCTORNAMETO ="doctorNameTo" ;
+
 
     @Override
     public int compareTo(YbReconsiderPriorityLevel o) {

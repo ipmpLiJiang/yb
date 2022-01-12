@@ -92,7 +92,7 @@
         p.CREATE_TIME,
         p.CREATE_USER_ID,
         p.MODIFY_USER_ID,
-        GROUP_CONCAT(d.ksType) currencyField,
+        GROUP_CONCAT(d.dksName) currencyField,
         p.areaType,
         p.operatorId,
         p.operatorName
@@ -112,7 +112,7 @@
             and p.adminType = #{ adminType }
         </if>
         <if test="deptContent != null and deptContent != ''">
-            and p.id in(select DISTINCT pid from yb_appeal_confire_data where ksType like concat('%', #{ deptContent }
+            and p.id in(select DISTINCT pid from yb_appeal_confire_data where dksName like concat('%', #{ deptContent }
             ,'%'))
         </if>
         <if test="operatorName != null and operatorName != ''">
@@ -144,7 +144,7 @@
             ,'%'))
         </if>
         <if test="deptContent != null and deptContent != ''">
-            and id in(select DISTINCT pid from yb_appeal_confire_data where ksType like concat('%', #{ deptContent }
+            and id in(select DISTINCT pid from yb_appeal_confire_data where dksName like concat('%', #{ deptContent }
             ,'%'))
         </if>
         <if test="operatorName != null and operatorName != ''">
@@ -183,7 +183,7 @@
         p.CREATE_TIME,
         p.CREATE_USER_ID,
         p.MODIFY_USER_ID,
-        GROUP_CONCAT(d.ksType) currencyField,
+        GROUP_CONCAT(d.dksName) currencyField,
         p.areaType,
         p.operatorId,
         p.operatorName
@@ -209,7 +209,7 @@
             and (p.CREATE_USER_ID = #{ uid } or p.doctorCode=#{ doctorCode })
         </if>
         <if test="deptContent != null and deptContent != ''">
-            and p.id in(select DISTINCT pid from yb_appeal_confire_data where ksType like concat('%', #{ deptContent }
+            and p.id in(select DISTINCT pid from yb_appeal_confire_data where dksName like concat('%', #{ deptContent }
             ,'%'))
         </if>
         <if test="operatorName != null and operatorName != ''">
@@ -246,7 +246,7 @@
             ,'%'))
         </if>
         <if test="deptContent != null and deptContent != ''">
-            and id in(select DISTINCT pid from yb_appeal_confire_data where ksType like concat('%', #{ deptContent }
+            and id in(select DISTINCT pid from yb_appeal_confire_data where dksName like concat('%', #{ deptContent }
             ,'%'))
         </if>
         <if test="operatorName != null and operatorName != ''">

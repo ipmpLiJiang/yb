@@ -29,8 +29,8 @@
                 <a-row type="flex" justify="center">
                   <a-col :span="9">
                     <a-form-item v-bind="formItemLayout" label="复议科室">
-                      {{ ybDrgManageUpload.readyDeptCode }}-{{
-                        ybDrgManageUpload.readyDeptName
+                      {{
+                        ybDrgManageUpload.readyDksName
                       }}
                     </a-form-item>
                   </a-col>

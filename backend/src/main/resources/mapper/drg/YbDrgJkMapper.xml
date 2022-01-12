@@ -10,36 +10,39 @@
         <result column="orderNum" property="orderNum"/>
         <result column="applyDataId" property="applyDataId"/>
         <result column="areaType" property="areaType"/>
-        <result column="ryrq" property="ryrq"/>
-        <result column="cyrq" property="cyrq"/>
-        <result column="fzbm" property="fzbm"/>
-        <result column="fzmc" property="fzmc"/>
-        <result column="zyzdbm" property="zyzdbm"/>
-        <result column="zyzdmc" property="zyzdmc"/>
-        <result column="zssbm" property="zssbm"/>
-        <result column="zssmc" property="zssmc"/>
-        <result column="qtzdbm" property="qtzdbm"/>
-        <result column="qtzdmc" property="qtzdmc"/>
-        <result column="qtssbm" property="qtssbm"/>
-        <result column="qtssmc" property="qtssmc"/>
-        <result column="ksbm" property="ksbm"/>
-        <result column="bqbm" property="bqbm"/>
+        <result column="tczf" property="tczf"/>
+        <result column="ryDate" property="ryDate"/>
+        <result column="cyDate" property="cyDate"/>
+        <result column="fzCode" property="fzCode"/>
+        <result column="fzName" property="fzName"/>
+        <result column="zyzdCode" property="zyzdCode"/>
+        <result column="zyzdName" property="zyzdName"/>
+        <result column="zssCode" property="zssCode"/>
+        <result column="zssName" property="zssName"/>
+        <result column="qtzdCode" property="qtzdCode"/>
+        <result column="qtzdName" property="qtzdName"/>
+        <result column="qtssCode" property="qtssCode"/>
+        <result column="qtssName" property="qtssName"/>
+        <result column="deptName" property="deptName"/>
+        <result column="areaId" property="areaId"/>
+        <result column="areaName" property="areaName"/>
         <result column="qz" property="qz"/>
-        <result column="kzrbm" property="kzrbm"/>
-        <result column="zrysbm" property="zrysbm"/>
-        <result column="zzysbm" property="zzysbm"/>
-        <result column="zyysbm" property="zyysbm"/>
-        <result column="ksmc" property="ksmc"/>
-        <result column="kzrmc" property="kzrmc"/>
-        <result column="zrysmc" property="zrysmc"/>
-        <result column="zzysmc" property="zzysmc"/>
-        <result column="zyysmc" property="zyysmc"/>
-        <result column="bqmc" property="bqmc"/>
+        <result column="kzrDocId" property="kzrDocId"/>
+        <result column="kzrDocName" property="kzrDocName"/>
+        <result column="zrysDocId" property="zrysDocId"/>
+        <result column="zrysDocName" property="zrysDocName"/>
+        <result column="zzysDocId" property="zzysDocId"/>
+        <result column="zzysDocName" property="zzysDocName"/>
+        <result column="zyysDocId" property="zyysDocId"/>
+        <result column="zyysDocName" property="zyysDocName"/>
+        <result column="ylzDeptName" property="ylzDeptName"/>
+        <result column="ylzDocId" property="ylzDocId"/>
+        <result column="ylzDocName" property="ylzDocName"/>
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, applyDateStr, orderNumber, orderNum, applyDataId, areaType, ryrq, cyrq, fzbm, fzmc, zyzdbm, zyzdmc, zssbm, zssmc, qtzdbm, qtzdmc, qtssbm, qtssmc, ksbm, bqbm, qz, kzrbm, zrysbm, zzysbm, zyysbm, ksmc, kzrmc, zrysmc, zzysmc, zyysmc, bqmc
+        id, applyDateStr, orderNumber, orderNum, applyDataId, areaType, tczf, ryDate, cyDate, fzCode, fzName, zyzdCode, zyzdName, zssCode, zssName, qtzdCode, qtzdName, qtssCode, qtssName, deptName, areaId, areaName, qz, kzrDocId, kzrDocName, zrysDocId, zrysDocName, zzysDocId, zzysDocName, zyysDocId, zyysDocName, ylzDeptName, ylzDocId, ylzDocName
     </sql>
     <update id="updateYbDrgJk" parameterType="cc.mrbird.febs.drg.entity.YbDrgJk">
         update yb_drg_jk
@@ -49,31 +52,30 @@
             <if test="orderNum != null">orderNum=#{orderNum},</if>
             <if test="applyDataId != null">applyDataId=#{applyDataId},</if>
             <if test="areaType != null">areaType=#{areaType},</if>
-            <if test="ryrq != null">ryrq=#{ryrq},</if>
-            <if test="cyrq != null">cyrq=#{cyrq},</if>
-            <if test="fzbm != null">fzbm=#{fzbm},</if>
-            <if test="fzmc != null">fzmc=#{fzmc},</if>
-            <if test="zyzdbm != null">zyzdbm=#{zyzdbm},</if>
-            <if test="zyzdmc != null">zyzdmc=#{zyzdmc},</if>
-            <if test="zssbm != null">zssbm=#{zssbm},</if>
-            <if test="zssmc != null">zssmc=#{zssmc},</if>
-            <if test="qtzdbm != null">qtzdbm=#{qtzdbm},</if>
-            <if test="qtzdmc != null">qtzdmc=#{qtzdmc},</if>
-            <if test="qtssbm != null">qtssbm=#{qtssbm},</if>
-            <if test="qtssmc != null">qtssmc=#{qtssmc},</if>
-            <if test="ksbm != null">ksbm=#{ksbm},</if>
-            <if test="bqbm != null">bqbm=#{bqbm},</if>
+            <if test="ryDate != null">ryDate=#{ryDate},</if>
+            <if test="cyDate != null">cyDate=#{cyDate},</if>
+            <if test="fzCode != null">fzCode=#{fzCode},</if>
+            <if test="fzName != null">fzName=#{fzName},</if>
+            <if test="zyzdCode != null">zyzdCode=#{zyzdCode},</if>
+            <if test="zyzdName != null">zyzdName=#{zyzdName},</if>
+            <if test="zssCode != null">zssCode=#{zssCode},</if>
+            <if test="zssName != null">zssName=#{zssName},</if>
+            <if test="qtzdCode != null">qtzdCode=#{qtzdCode},</if>
+            <if test="qtzdName != null">qtzdName=#{qtzdName},</if>
+            <if test="qtssCode != null">qtssCode=#{qtssCode},</if>
+            <if test="qtssName != null">qtssName=#{qtssName},</if>
+            <if test="deptName != null">deptName=#{deptName},</if>
+            <if test="areaId != null">areaId=#{areaId},</if>
+            <if test="areaName != null">areaName=#{areaName},</if>
             <if test="qz != null">qz=#{qz},</if>
-            <if test="kzrbm != null">kzrbm=#{kzrbm},</if>
-            <if test="zrysbm != null">zrysbm=#{zrysbm},</if>
-            <if test="zzysbm != null">zzysbm=#{zzysbm},</if>
-            <if test="zyysbm != null">zyysbm=#{zyysbm},</if>
-            <if test="ksmc != null">ksmc=#{ksmc},</if>
-            <if test="kzrmc != null">kzrmc=#{kzrmc},</if>
-            <if test="zrysmc != null">zrysmc=#{zrysmc},</if>
-            <if test="zzysmc != null">zzysmc=#{zzysmc},</if>
-            <if test="zyysmc != null">zyysmc=#{zyysmc},</if>
-            <if test="bqmc != null">bqmc=#{bqmc},</if>
+            <if test="kzrDocId != null">kzrDocId=#{kzrDocId},</if>
+            <if test="kzrDocName != null">kzrDocName=#{kzrDocName},</if>
+            <if test="zrysDocId != null">zrysDocId=#{zrysDocId},</if>
+            <if test="zrysDocName != null">zrysDocName=#{zrysDocName},</if>
+            <if test="zzysDocId != null">zzysDocId=#{zzysDocId},</if>
+            <if test="zzysDocName != null">zzysDocName=#{zzysDocName},</if>
+            <if test="zyysDocId != null">zyysDocId=#{zyysDocId},</if>
+            <if test="zyysDocName != null">zyysDocName=#{zyysDocName},</if>
         </trim>
         where id=#{id}
 
@@ -83,64 +85,73 @@
         select * from yb_drg_jk
         where applyDateStr = #{ ybDrgJk.applyDateStr} and areaType =#{ ybDrgJk.areaType}
         <if test="ybDrgJk.applyDataId != null and ybDrgJk.applyDataId != ''">and applyDataId =#{ ybDrgJk.applyDataId} </if>
-        <if test="ybDrgJk.ryrqFrom!= null">
-            AND ybDrgJk.ryrq <![CDATA[ >= ]]>  ryrqFrom}
+        <if test="ybDrgJk.ryDateFrom!= null">
+            AND ybDrgJk.ryDate <![CDATA[ >= ]]>  ryDateFrom}
         </if>
-        <if test="ybDrgJk.ryrqTo!= null">
-            AND ybDrgJk.ryrq <![CDATA[ <= ]]>  ryrqTo}
+        <if test="ybDrgJk.ryDateTo!= null">
+            AND ybDrgJk.ryDate <![CDATA[ <= ]]>  ryDateTo}
         </if>
-        <if test="ybDrgJk.cyrqFrom!= null">
-            AND ybDrgJk.cyrq <![CDATA[ >= ]]>  cyrqFrom}
+        <if test="ybDrgJk.cyDateFrom!= null">
+            AND ybDrgJk.cyDate <![CDATA[ >= ]]>  cyDateFrom}
         </if>
-        <if test="ybDrgJk.cyrqTo!= null">
-            AND ybDrgJk.cyrq <![CDATA[ <= ]]>  cyrqTo}
+        <if test="ybDrgJk.cyDateTo!= null">
+            AND ybDrgJk.cyDate <![CDATA[ <= ]]>  cyDateTo}
         </if>
-        <if test="ybDrgJk.fzbm != null and ybDrgJk.fzbm != ''">and fzbm like concat('%', #{ ybDrgJk.fzbm} ,'%')</if>
-        <if test="ybDrgJk.fzmc != null and ybDrgJk.fzmc != ''">and fzmc like concat('%', #{ ybDrgJk.fzmc} ,'%')</if>
-        <if test="ybDrgJk.zyzdbm != null and ybDrgJk.zyzdbm != ''">and zyzdbm like concat('%', #{ ybDrgJk.zyzdbm}
+        <if test="ybDrgJk.fzCode != null and ybDrgJk.fzCode != ''">and fzCode like concat('%', #{ ybDrgJk.fzCode} ,'%')</if>
+        <if test="ybDrgJk.fzName != null and ybDrgJk.fzName != ''">and fzName like concat('%', #{ ybDrgJk.fzName} ,'%')</if>
+        <if test="ybDrgJk.zyzdCode != null and ybDrgJk.zyzdCode != ''">and zyzdCode like concat('%', #{ ybDrgJk.zyzdCode}
             ,'%')
         </if>
-        <if test="ybDrgJk.zyzdmc != null and ybDrgJk.zyzdmc != ''">and zyzdmc like concat('%', #{ ybDrgJk.zyzdmc}
+        <if test="ybDrgJk.zyzdName != null and ybDrgJk.zyzdName != ''">and zyzdName like concat('%', #{ ybDrgJk.zyzdName}
             ,'%')
         </if>
-        <if test="ybDrgJk.zssbm != null and ybDrgJk.zssbm != ''">and zssbm like concat('%', #{ ybDrgJk.zssbm} ,'%')</if>
-        <if test="ybDrgJk.zssmc != null and ybDrgJk.zssmc != ''">and zssmc like concat('%', #{ ybDrgJk.zssmc} ,'%')</if>
-        <if test="ybDrgJk.qtzdbm != null and ybDrgJk.qtzdbm != ''">and qtzdbm like concat('%', #{ ybDrgJk.qtzdbm}
+        <if test="ybDrgJk.zssCode != null and ybDrgJk.zssCode != ''">and zssCode like concat('%', #{ ybDrgJk.zssCode} ,'%')</if>
+        <if test="ybDrgJk.zssName != null and ybDrgJk.zssName != ''">and zssName like concat('%', #{ ybDrgJk.zssName} ,'%')</if>
+        <if test="ybDrgJk.qtzdCode != null and ybDrgJk.qtzdCode != ''">and qtzdCode like concat('%', #{ ybDrgJk.qtzdCode}
             ,'%')
         </if>
-        <if test="ybDrgJk.qtzdmc != null and ybDrgJk.qtzdmc != ''">and qtzdmc like concat('%', #{ ybDrgJk.qtzdmc}
+        <if test="ybDrgJk.qtzdName != null and ybDrgJk.qtzdName != ''">and qtzdName like concat('%', #{ ybDrgJk.qtzdName}
             ,'%')
         </if>
-        <if test="ybDrgJk.qtssbm != null and ybDrgJk.qtssbm != ''">and qtssbm like concat('%', #{ ybDrgJk.qtssbm}
+        <if test="ybDrgJk.qtssCode != null and ybDrgJk.qtssCode != ''">and qtssCode like concat('%', #{ ybDrgJk.qtssCode}
             ,'%')
         </if>
-        <if test="ybDrgJk.qtssmc != null and ybDrgJk.qtssmc != ''">and qtssmc like concat('%', #{ ybDrgJk.qtssmc}
+        <if test="ybDrgJk.qtssName != null and ybDrgJk.qtssName != ''">and qtssName like concat('%', #{ ybDrgJk.qtssName}
             ,'%')
         </if>
-        <if test="ybDrgJk.ksbm != null and ybDrgJk.ksbm != ''">and ksbm like concat('%', #{ ybDrgJk.ksbm} ,'%')</if>
-        <if test="ybDrgJk.bqbm != null and ybDrgJk.bqbm != ''">and bqbm like concat('%', #{ ybDrgJk.bqbm} ,'%')</if>
-        <if test="ybDrgJk.kzrbm != null and ybDrgJk.kzrbm != ''">and kzrbm like concat('%', #{ ybDrgJk.kzrbm} ,'%')</if>
-        <if test="ybDrgJk.zrysbm != null and ybDrgJk.zrysbm != ''">and zrysbm like concat('%', #{ ybDrgJk.zrysbm}
+        <if test="ybDrgJk.deptName != null and ybDrgJk.deptName != ''">and deptName like concat('%', #{ ybDrgJk.deptName} ,'%')</if>
+        <if test="ybDrgJk.areaId != null and ybDrgJk.areaId != ''">and areaId like concat('%', #{ ybDrgJk.areaId} ,'%')</if>
+        <if test="ybDrgJk.areaName != null and ybDrgJk.areaName != ''">and areaName like concat('%', #{ ybDrgJk.areaName} ,'%')</if>
+        <if test="ybDrgJk.kzrDocId != null and ybDrgJk.kzrDocId != ''">and kzrDocId like concat('%', #{ ybDrgJk.kzrDocId} ,'%')</if>
+        <if test="ybDrgJk.kzrDocName != null and ybDrgJk.kzrDocName != ''">and kzrDocName like concat('%', #{ ybDrgJk.kzrDocName} ,'%')</if>
+        <if test="ybDrgJk.zrysDocId != null and ybDrgJk.zrysDocId != ''">and zrysDocId like concat('%', #{ ybDrgJk.zrysDocId}
             ,'%')
         </if>
-        <if test="ybDrgJk.zzysbm != null and ybDrgJk.zzysbm != ''">and zzysbm like concat('%', #{ ybDrgJk.zzysbm}
+        <if test="ybDrgJk.zrysDocName != null and ybDrgJk.zrysDocName != ''">and zrysDocName like concat('%', #{ ybDrgJk.zrysDocName}
             ,'%')
         </if>
-        <if test="ybDrgJk.zyysbm != null and ybDrgJk.zyysbm != ''">and zyysbm like concat('%', #{ ybDrgJk.zyysbm}
+        <if test="ybDrgJk.zzysDocId != null and ybDrgJk.zzysDocId != ''">and zzysDocId like concat('%', #{ ybDrgJk.zzysDocId}
             ,'%')
         </if>
-        <if test="ybDrgJk.ksmc != null and ybDrgJk.ksmc != ''">and ksmc like concat('%', #{ ybDrgJk.ksmc} ,'%')</if>
-        <if test="ybDrgJk.kzrmc != null and ybDrgJk.kzrmc != ''">and kzrmc like concat('%', #{ ybDrgJk.kzrmc} ,'%')</if>
-        <if test="ybDrgJk.zrysmc != null and ybDrgJk.zrysmc != ''">and zrysmc like concat('%', #{ ybDrgJk.zrysmc}
+        <if test="ybDrgJk.zzysDocName != null and ybDrgJk.zzysDocName != ''">and zzysDocName like concat('%', #{ ybDrgJk.zzysDocName}
             ,'%')
         </if>
-        <if test="ybDrgJk.zzysmc != null and ybDrgJk.zzysmc != ''">and zzysmc like concat('%', #{ ybDrgJk.zzysmc}
+        <if test="ybDrgJk.zyysDocId != null and ybDrgJk.zyysDocId != ''">and zyysDocId like concat('%', #{ ybDrgJk.zyysDocId}
             ,'%')
         </if>
-        <if test="ybDrgJk.zyysmc != null and ybDrgJk.zyysmc != ''">and zyysmc like concat('%', #{ ybDrgJk.zyysmc}
+        <if test="ybDrgJk.zyysDocName != null and ybDrgJk.zyysDocName != ''">and zyysDocName like concat('%', #{ ybDrgJk.zyysDocName}
             ,'%')
         </if>
-        <if test="ybDrgJk.bqmc != null and ybDrgJk.bqmc != ''">and bqmc like concat('%', #{ ybDrgJk.bqmc} ,'%')</if>
     </select>
-
+    <select id="findDrgJkApplyDataByPid" resultType="cc.mrbird.febs.drg.entity.YbDrgJk"
+            parameterType="cc.mrbird.febs.drg.entity.YbDrgJk">
+    SELECT
+        jk.*
+    FROM
+        yb_drg_jk jk
+        inner join yb_drg_apply_data dad on
+            jk.applyDataId = dad.id
+    where
+        dad.pid = #{pid}
+    </select>
 </mapper>

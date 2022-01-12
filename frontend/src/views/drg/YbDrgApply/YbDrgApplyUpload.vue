@@ -206,15 +206,16 @@ export default {
       this.$emit('cancel')
     },
     addHis () {
-      let key = '3'
+      let key = '2'
       if (this.tableSelectKey === key) {
         this.spinning = true
-        this.$put('ybDrgApplyData/getHis', {
+        this.$post('ybDrgApplyData/getJk', {
           applyDateStr: this.ybDrgApply.applyDateStr,
           areaType: this.ybDrgApply.areaType
         }).then((r) => {
           if (r.data.data.success === 1) {
-            this.$message.success('His数据获取成功.')
+            this.showDelBtn = false
+            this.$message.success('DRG数据获取成功.')
             if (this.tableSelectKey === key) {
               this.callback(key)
             }
@@ -224,7 +225,7 @@ export default {
             this.spinning = false
           }
         }).catch(() => {
-          this.$message.error('His数据获取失败.')
+          this.$message.error('DRG数据获取失败.')
           this.spinning = false
         })
       }

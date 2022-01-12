@@ -52,6 +52,9 @@ public class YbAppealManageViewServiceImpl extends ServiceImpl<YbAppealManageVie
     @Autowired
     IYbPersonService iYbPersonService;
 
+    @Autowired
+    IYbDeptService iYbDeptService;
+
     @Override
     public int findYbAppealManageCounts(YbAppealManageView ybAppealManageView, String keyField){
         int count = 0;
@@ -220,13 +223,13 @@ public class YbAppealManageViewServiceImpl extends ServiceImpl<YbAppealManageVie
                     queryWrapper.eq(YbAppealManage::getApplyDateStr,applyDateStr);
                     queryWrapper.eq(YbAppealManage::getAreaType,areaType);
                     queryWrapper.eq(YbAppealManage::getAcceptState,acceptState);
-                    List<YbAppealConfireData> acdlist = iYbAppealConfireDataService.findAppealConfireDataByInDoctorCodeList(ybAppealManageView.getReadyDoctorCode(),areaType);
-                    if (acdlist.size() > 0) {
+                    List<YbDept> deptlist = iYbDeptService.findDeptAppealConfireByUserList(ybAppealManageView.getReadyDoctorCode(),areaType);
+                    if (deptlist.size() > 0) {
                         if (ybAppealManageView.getSourceType() != null) {
                             queryWrapper.eq(YbAppealManage::getSourceType,sourceType);
                         }
                         strList = new ArrayList<>();
-                        for (YbAppealConfireData item : acdlist){
+                        for (YbDept item : deptlist){
                             strList.add(item.getDeptId());
                         }
                         queryWrapper.in(YbAppealManage::getReadyDeptCode,strList);

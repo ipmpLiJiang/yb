@@ -442,6 +442,10 @@ public class YbAppealManageServiceImpl extends ServiceImpl<YbAppealManageMapper,
                 newAppealManage.setReadyDoctorCode(ybAppealManage.getChangeDoctorCode());
                 newAppealManage.setReadyDoctorName(ybAppealManage.getChangeDoctorName());
 
+                updateManage.setChangeDoctorCode(ybAppealManage.getChangeDoctorCode());
+                updateManage.setChangeDoctorName(ybAppealManage.getChangeDoctorName());
+                updateManage.setChangeDeptCode(ybAppealManage.getChangeDeptCode());
+                updateManage.setChangeDeptName(ybAppealManage.getChangeDeptName());
 //                updateManage.setRefuseReason("");
                 updateManage.setOperateProcess("变更申请-同意");
                 updateManage.setApprovalState(YbDefaultValue.APPROVALSTATE_1);

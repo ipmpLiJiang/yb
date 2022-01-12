@@ -99,12 +99,7 @@ export default {
       },
       {
         title: '复议科室',
-        dataIndex: 'readyDeptName',
-        customRender: (text, row, index) => {
-          if (text !== '' && text !== null) {
-            return row.readyDeptCode + '-' + row.readyDeptName
-          }
-        },
+        dataIndex: 'readyDksName',
         width: 250
       },
       {

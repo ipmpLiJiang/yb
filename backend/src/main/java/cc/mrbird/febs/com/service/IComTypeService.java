@@ -34,4 +34,6 @@ public interface IComTypeService extends IService<ComType> {
         void deleteComTypes(String[]Ids);
 
         List<ComType> findComTypeList(ComType comType);
+
+        List<ComType> findComTypeLikeList(ComType comType);
         }

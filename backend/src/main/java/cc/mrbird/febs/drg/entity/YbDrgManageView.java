@@ -75,19 +75,6 @@ public class YbDrgManageView implements Serializable {
     @ExcelField(value = "复议医生")
     private String readyDoctorName;
 
-    /**
-     * 复议科室编码
-     */
-    @TableField("readyDeptCode")
-    @ExcelField(value = "复议科室编码")
-    private String readyDeptCode;
-
-    /**
-     * 复议科室
-     */
-    @TableField("readyDeptName")
-    @ExcelField(value = "复议科室")
-    private String readyDeptName;
 
     /**
      * 变更医生编码
@@ -103,19 +90,6 @@ public class YbDrgManageView implements Serializable {
     @ExcelField(value = "变更医生")
     private String changeDoctorName;
 
-    /**
-     * 变更复议科室编码
-     */
-    @TableField("changeDeptCode")
-    @ExcelField(value = "变更复议科室编码")
-    private String changeDeptCode;
-
-    /**
-     * 变更复议科室
-     */
-    @TableField("changeDeptName")
-    @ExcelField(value = "变更复议科室")
-    private String changeDeptName;
 
     /**
      * 复议截止日期
@@ -335,6 +309,18 @@ public class YbDrgManageView implements Serializable {
     @ExcelField(value = "理由")
     private String ly;
 
+    /**
+     * 科室
+     */
+    @ExcelField(value ="科室")
+    private String readyDksName;
+
+    /**
+     * 变更科室
+     */
+    @ExcelField(value ="变更科室")
+    private String changeDksName;
+
     private transient List<String> listPid;
 
     public static final String ID = "id";
@@ -347,13 +333,9 @@ public class YbDrgManageView implements Serializable {
     public static final String APPROVALSTATE ="approvalState" ;
     public static final String READYDOCTORCODE = "readyDoctorCode";
     public static final String READYDOCTORNAME = "readyDoctorName";
-    public static final String READYDEPTCODE = "readyDeptCode";
-    public static final String READYDEPTNAME = "readyDeptName";
     public static final String CHANGEDOCTORCODE = "changeDoctorCode";
     public static final String CHANGEDOCTORNAME = "changeDoctorName";
-    public static final String CHANGEDEPTCODE = "changeDeptCode";
     public static final String APPLYENDDATE = "applyEndDate";
-    public static final String CHANGEDEPTNAME = "changeDeptName";
     public static final String OPERATEREASON = "operateReason";
     public static final String OPERATEDATE = "operateDate";
     public static final String REFUSEID = "refuseId";
@@ -372,6 +354,10 @@ public class YbDrgManageView implements Serializable {
     public static final String CURRENCYFIELD = "currencyField";
     public static final String AREATYPE = "areaType";
 
+    public static final String READYDKSNAME ="readyDksName" ;
+
+    public static final String CHANGEDKSNAME ="changeDksName" ;
+
     public static final String KS = "ks";
 
     public static final String JZJLH = "jzjlh";
@@ -389,4 +375,5 @@ public class YbDrgManageView implements Serializable {
     public static final String SFBMZCZJCW = "sfbmzczjcw";
 
     public static final String LY = "ly";
+
 }

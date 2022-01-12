@@ -173,8 +173,7 @@ public class YbDrgResultViewServiceImpl extends ServiceImpl<YbDrgResultViewMappe
         drv.setManageId(dr.getManageId());
         drv.setDoctorCode(dr.getDoctorCode());
         drv.setDoctorName(dr.getDoctorName());
-        drv.setDeptCode(dr.getDeptCode());
-        drv.setDeptName(dr.getDeptName());
+        drv.setDksName(dr.getDksName());
         drv.setState(dr.getState());
         drv.setAreaType(dr.getAreaType());
         return drv;
@@ -252,7 +251,7 @@ public class YbDrgResultViewServiceImpl extends ServiceImpl<YbDrgResultViewMappe
                     drv.setOrderNumber(orderNumberList.get(0) + "-" + orderNumberList.get(orderNumberList.size() - 1));
                     drv.setJzjlh("-");
                     drv.setBah("-");
-                    drv.setDeptName("-");
+                    drv.setDksName("-");
                     drv.setDoctorName("-");
                     drv.setFileNumber(String.valueOf(sumFileNumber));
                     drv.setOrderNum(0);

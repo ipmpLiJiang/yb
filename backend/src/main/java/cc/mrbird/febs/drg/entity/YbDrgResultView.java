@@ -86,16 +86,16 @@ public class YbDrgResultView implements Serializable {
     /**
      * 复议科室编码
      */
-    @TableField("deptCode")
-    @ExcelField(value = "复议科室编码")
-    private String deptCode;
+//    @TableField("deptCode")
+//    @ExcelField(value = "复议科室编码")
+//    private String deptCode;
 
     /**
      * 复议科室
      */
-    @TableField("deptName")
-    @ExcelField(value = "复议科室")
-    private String deptName;
+//    @TableField("deptName")
+//    @ExcelField(value = "复议科室")
+//    private String deptName;
 
     /**
      * 操作理由
@@ -203,6 +203,12 @@ public class YbDrgResultView implements Serializable {
     @ExcelField(value = "理由")
     private String ly;
 
+    /**
+     * 科室
+     */
+    @ExcelField(value ="科室")
+    private String dksName;
+
     private transient List<String> listPid;
 
     private transient Integer fileSize;
@@ -219,8 +225,8 @@ public class YbDrgResultView implements Serializable {
     public static final String APPLYDATESTR = "applyDateStr";
     public static final String DOCTORCODE = "doctorCode";
     public static final String DOCTORNAME = "doctorName";
-    public static final String DEPTCODE = "deptCode";
-    public static final String DEPTNAME = "deptName";
+//    public static final String DEPTCODE = "deptCode";
+//    public static final String DEPTNAME = "deptName";
     public static final String OPERATEREASON = "operateReason";
     public static final String OPERATEDATE = "operateDate";
     public static final String ORDERNUMBER ="orderNumber";
@@ -228,6 +234,8 @@ public class YbDrgResultView implements Serializable {
     public static final String STATE = "STATE";
     public static final String CURRENCYFIELD = "currencyField";
     public static final String AREATYPE = "areaType";
+
+    public static final String DKSNAME ="dksName" ;
 
     public static final String KS = "ks";
 

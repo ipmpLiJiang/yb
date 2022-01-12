@@ -61,16 +61,16 @@ public class YbDrgVerify implements Serializable, Comparable<YbDrgVerify> {
     /**
      * drg科室编码
      */
-    @TableField("verifyDeptCode")
-    @ExcelField(value = "drg科室编码")
-    private String verifyDeptCode;
+//    @TableField("verifyDeptCode")
+//    @ExcelField(value = "drg科室编码")
+//    private String verifyDeptCode;
 
     /**
      * drg科室
      */
-    @TableField("verifyDeptName")
-    @ExcelField(value = "drg科室")
-    private String verifyDeptName;
+//    @TableField("verifyDeptName")
+//    @ExcelField(value = "drg科室")
+//    private String verifyDeptName;
 
     /**
      * 状态
@@ -130,6 +130,13 @@ public class YbDrgVerify implements Serializable, Comparable<YbDrgVerify> {
     private transient String sendDateFrom;
     private transient String sendDateTo;
 
+    /**
+     * 科室
+     */
+    @TableField("verifyDksName")
+    @ExcelField(value = "科室")
+    private String verifyDksName;
+
 
     public static final String ID = "id";
 
@@ -141,9 +148,9 @@ public class YbDrgVerify implements Serializable, Comparable<YbDrgVerify> {
 
     public static final String VERIFYDOCTORNAME = "verifyDoctorName";
 
-    public static final String VERIFYDEPTCODE = "verifyDeptCode";
+//    public static final String VERIFYDEPTCODE = "verifyDeptCode";
 
-    public static final String VERIFYDEPTNAME = "verifyDeptName";
+//    public static final String VERIFYDEPTNAME = "verifyDeptName";
 
     public static final String STATE = "STATE";
 
@@ -160,6 +167,8 @@ public class YbDrgVerify implements Serializable, Comparable<YbDrgVerify> {
     public static final String SENDPERSONNAME = "sendPersonName";
 
     public static final String SENDDATE = "sendDate";
+
+    public static final String VERIFYDKSNAME = "verifyDksName";
 
     @Override
     public int compareTo(YbDrgVerify o) {

@@ -315,6 +315,32 @@ public class ComTypeServiceImpl extends ServiceImpl<ComTypeMapper, ComType> impl
     }
 
     @Override
+    public List<ComType> findComTypeLikeList(ComType comType) {
+        List<ComType> list = new ArrayList<>();
+        LambdaQueryWrapper<ComType> queryWrapper = new LambdaQueryWrapper<>();
+        if (comType.getIsDeletemark() != null) {
+            queryWrapper.eq(ComType::getIsDeletemark, comType.getIsDeletemark());//1是未删 0是已删
+        }
+        if (comType.getCtType() != null) {
+            queryWrapper.eq(ComType::getCtType, comType.getCtType());
+        }
+        if (comType.getCtName() != null) {
+            queryWrapper.eq(ComType::getCtName, comType.getCtName());
+        }
+        if (comType.getComments() != null) {
+            queryWrapper.like(ComType::getCtName, comType.getComments());
+        }
+
+
+        list = this.list(queryWrapper);
+        int count = 15;
+        if (list.size() >= count) {
+            list = list.subList(0, count);
+        }
+        return list;
+    }
+
+    @Override
     @Transactional
     public void deleteComTypes(String[] Ids) {
         List<String> list = Arrays.asList(Ids);

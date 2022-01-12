@@ -160,6 +160,28 @@ public class YbDrgApplyDataController extends BaseController {
         return new FebsResponse().data(rr);
     }
 
+    @PostMapping("getJk")
+    @RequiresPermissions("ybDrgApplyData:add")
+    public FebsResponse getJk(String applyDateStr,Integer areaType) {
+        int success = 0;
+        try {
+            message= this.iYbDrgApplyDataService.getDrgJk(applyDateStr,areaType);
+            if(message.equals("ok")){
+                success = 1;
+            } else {
+                message = message.equals("") ? "未获取到DRG数据." : message;
+            }
+        } catch (Exception e) {
+            message = "获取DRG数据失败.";
+            log.error(message, e);
+        }
+
+        ResponseResult rr = new ResponseResult();
+        rr.setSuccess(success);
+        rr.setMessage(message);
+        return new FebsResponse().data(rr);
+    }
+
     @PostMapping("downFile")
     public void export1(HttpServletResponse response) throws FebsException {
         try {

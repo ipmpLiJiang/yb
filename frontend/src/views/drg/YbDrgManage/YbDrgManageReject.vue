@@ -39,12 +39,12 @@
             }"
             label="复议科室"
           >
-            <input-select
-            ref="inputSelectChangeDept"
-            :type=1
-            @selectChange=selectDeptChange
+            <input-selectdks
+            ref="inputSelectChangeDks"
+            :ctType=3
+            @selectChange=selectDksChange
             >
-            </input-select>
+            </input-selectdks>
           </a-form-item>
         </a-col>
         <a-col :span=10>
@@ -128,6 +128,7 @@
 <script>
 import moment from 'moment'
 import InputSelect from '../../common/InputSelect'
+import InputSelectdks from '../../common/InputSelectDks'
 import YbDrgDataModule from '../YbDrgFunModule/YbDrgDataModule'
 import YbDrgJkModule from '../YbDrgFunModule/YbDrgJkModule'
 const formItemLayout = {
@@ -137,7 +138,7 @@ const formItemLayout = {
 export default {
   name: 'YbDrgManageReject',
   components: {
-    YbDrgDataModule, YbDrgJkModule, InputSelect},
+    YbDrgDataModule, YbDrgJkModule, InputSelect, InputSelectdks},
   props: {
     rejectVisiable: {
       default: false
@@ -169,9 +170,8 @@ export default {
       this.ybDrgManageReject.changeDoctorCode = item.value
       this.ybDrgManageReject.changeDoctorName = item.text
     },
-    selectDeptChange (item) {
-      this.ybDrgManageReject.changeDeptCode = item.value
-      this.ybDrgManageReject.changeDeptName = item.text
+    selectDksChange (item) {
+      this.ybDrgManageReject.changeDksName = item.text
     },
     onClose () {
       this.reset()
@@ -189,19 +189,17 @@ export default {
           let fromData = this.form.getFieldsValue(['refuseReason'])
           let ybDrgManage = this.ybDrgManage
 
-          let deptName = this.ybDrgManageReject.changeDeptCode !== this.ybDrgManageReject.readyDeptCode ? this.ybDrgManageReject.changeDeptName : ''
-          let deptCode = this.ybDrgManageReject.changeDeptCode !== this.ybDrgManageReject.readyDeptCode ? this.ybDrgManageReject.changeDeptCode : ''
+          let dksName = this.ybDrgManageReject.changeDksName !== this.ybDrgManageReject.readyDksName ? this.ybDrgManageReject.changeDksName : ''
           let doctorName = this.ybDrgManageReject.changeDoctorCode !== this.ybDrgManageReject.readyDoctorCode ? this.ybDrgManageReject.changeDoctorName : ''
           let doctorCode = this.ybDrgManageReject.changeDoctorCode !== this.ybDrgManageReject.readyDoctorCode ? this.ybDrgManageReject.changeDoctorCode : ''
 
           ybDrgManage.state = 2
           ybDrgManage.refuseReason = fromData.refuseReason
-          ybDrgManage.changeDoctorCode = deptCode !== '' && (doctorCode === '' || doctorCode === undefined) ? this.ybDrgManageReject.readyDoctorCode : doctorCode
-          ybDrgManage.changeDoctorName = deptCode !== '' && (doctorCode === '' || doctorCode === undefined) ? this.ybDrgManageReject.readyDoctorName : doctorName
-          ybDrgManage.changeDeptCode = (deptCode === '' || deptCode === undefined) && doctorCode !== '' ? this.ybDrgManageReject.readyDeptCode : deptCode
-          ybDrgManage.changeDeptName = (deptCode === '' || deptCode === undefined) && doctorCode !== '' ? this.ybDrgManageReject.readyDeptName : deptName
+          ybDrgManage.changeDoctorCode = dksName !== '' && (doctorCode === '' || doctorCode === undefined) ? this.ybDrgManageReject.readyDoctorCode : doctorCode
+          ybDrgManage.changeDoctorName = dksName !== '' && (doctorCode === '' || doctorCode === undefined) ? this.ybDrgManageReject.readyDoctorName : doctorName
+          ybDrgManage.changeDksName = (dksName === '' || dksName === undefined) && doctorCode !== '' ? this.ybDrgManageReject.readyDksName : dksName
 
-          if (ybDrgManage.changeDeptCode !== '' && ybDrgManage.changeDeptCode !== undefined) {
+          if (ybDrgManage.changeDksName !== '' && ybDrgManage.changeDksName !== undefined) {
             this.loading = true
             let data = [{
               id: ybDrgManage.id,
@@ -209,8 +207,7 @@ export default {
               operateReason: ybDrgManage.refuseReason,
               changeDoctorCode: ybDrgManage.changeDoctorCode,
               changeDoctorName: ybDrgManage.changeDoctorName,
-              changeDeptCode: ybDrgManage.changeDeptCode,
-              changeDeptName: ybDrgManage.changeDeptName
+              changeDksName: ybDrgManage.changeDksName
             }]
             let jsonString = JSON.stringify(data)
             this.$put('ybDrgManage/updateAcceptRejectState', {
@@ -233,18 +230,17 @@ export default {
       this.ybDrgManage.state = ybDrgManageReject.state
       this.ybDrgManageReject.changeDoctorCode = ybDrgManageReject.readyDoctorCode
       this.ybDrgManageReject.changeDoctorName = ybDrgManageReject.readyDoctorName
-      this.ybDrgManageReject.changeDeptCode = ybDrgManageReject.readyDeptCode
-      this.ybDrgManageReject.changeDeptName = ybDrgManageReject.readyDeptName
+      this.ybDrgManageReject.changeDksName = ybDrgManageReject.readyDksName
       setTimeout(() => {
         this.fromSetTimeoutValue(ybDrgManageReject)
       }, 200)
     },
     fromSetTimeoutValue (item) {
-      this.$refs.inputSelectChangeDept.dataSource = [{
-        text: item.readyDeptCode + '-' + item.readyDeptName,
-        value: item.readyDeptCode
+      this.$refs.inputSelectChangeDks.dataSource = [{
+        text: item.readyDksName,
+        value: item.readyDksName
       }]
-      this.$refs.inputSelectChangeDept.value = item.readyDeptCode
+      this.$refs.inputSelectChangeDks.value = item.readyDksName
 
       this.$refs.inputSelectChangeDoctor.dataSource = [{
         text: item.readyDoctorCode + '-' + item.readyDoctorName,

@@ -3,14 +3,14 @@ package cc.mrbird.febs.drg.service.impl;
 import cc.mrbird.febs.com.entity.ComConfiguremanage;
 import cc.mrbird.febs.common.domain.QueryRequest;
 import cc.mrbird.febs.common.utils.SortUtil;
-import cc.mrbird.febs.drg.entity.YbDrgApply;
-import cc.mrbird.febs.drg.entity.YbDrgApplyData;
+import cc.mrbird.febs.drg.entity.*;
 import cc.mrbird.febs.drg.dao.YbDrgApplyDataMapper;
-import cc.mrbird.febs.drg.entity.YbDrgVerifyView;
 import cc.mrbird.febs.drg.service.IYbDrgApplyDataService;
 import cc.mrbird.febs.drg.service.IYbDrgApplyService;
+import cc.mrbird.febs.drg.service.IYbDrgJkService;
 import cc.mrbird.febs.yb.entity.YbDefaultValue;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import cc.mrbird.febs.common.utils.MySqlDB;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -25,6 +25,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 import java.time.LocalDate;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.Collectors;
 
 /**
@@ -42,6 +44,9 @@ public class YbDrgApplyDataServiceImpl extends ServiceImpl<YbDrgApplyDataMapper,
 
     @Autowired
     private IYbDrgApplyService iYbDrgApplyService;
+
+    @Autowired
+    private IYbDrgJkService iYbDrgJkService;
 
     @Override
     public IPage<YbDrgApplyData> findYbDrgApplyDatas(QueryRequest request, YbDrgApplyData ybDrgApplyData) {
@@ -145,18 +150,18 @@ public class YbDrgApplyDataServiceImpl extends ServiceImpl<YbDrgApplyDataMapper,
         String o = ybDrgVerifyView.getOrderNumber();
 
         LambdaQueryWrapper<YbDrgApplyData> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(YbDrgApplyData::getPid,ybDrgApply.getId());
-        if(k != null && !k.equals("")) {
-            wrapper.eq(YbDrgApplyData::getKs,k);
+        wrapper.eq(YbDrgApplyData::getPid, ybDrgApply.getId());
+        if (k != null && !k.equals("")) {
+            wrapper.eq(YbDrgApplyData::getKs, k);
         }
-        if(j != null && !j.equals("")) {
-            wrapper.eq(YbDrgApplyData::getJzjlh,j);
+        if (j != null && !j.equals("")) {
+            wrapper.eq(YbDrgApplyData::getJzjlh, j);
         }
-        if(p != null && !p.equals("")) {
-            wrapper.eq(YbDrgApplyData::getBah,p);
+        if (p != null && !p.equals("")) {
+            wrapper.eq(YbDrgApplyData::getBah, p);
         }
-        if(o != null && !o.equals("")) {
-            wrapper.eq(YbDrgApplyData::getOrderNumber,o);
+        if (o != null && !o.equals("")) {
+            wrapper.eq(YbDrgApplyData::getOrderNumber, o);
         }
 
         return this.list(wrapper);
@@ -171,23 +176,146 @@ public class YbDrgApplyDataServiceImpl extends ServiceImpl<YbDrgApplyDataMapper,
     @Override
     public List<YbDrgApplyData> getApplyDataByKeyFieldList(String pid, String keyField, String value) {
         LambdaQueryWrapper<YbDrgApplyData> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(YbDrgApplyData::getPid,pid);
+        wrapper.eq(YbDrgApplyData::getPid, pid);
         if (value != null && !value.equals("") && !keyField.equals("readyDoctorCode") && !keyField.equals("readyDoctorName")) {
             if (keyField.equals("orderNumber")) {
-                wrapper.eq(YbDrgApplyData::getOrderNumber,value);
+                wrapper.eq(YbDrgApplyData::getOrderNumber, value);
             }
             if (keyField.equals("ks")) {
-                wrapper.eq(YbDrgApplyData::getKs,value);
+                wrapper.eq(YbDrgApplyData::getKs, value);
             }
             if (keyField.equals("jzjlh")) {
-                wrapper.eq(YbDrgApplyData::getJzjlh,value);
+                wrapper.eq(YbDrgApplyData::getJzjlh, value);
             }
             if (keyField.equals("bah")) {
-                wrapper.eq(YbDrgApplyData::getBah,value);
+                wrapper.eq(YbDrgApplyData::getBah, value);
             }
         }
         return this.list(wrapper);
     }
+    private Lock lockDrgJk = new ReentrantLock();
 
+    @Override
+    @Transactional
+    public String getDrgJk(String applyDateStr, Integer areaType) {
+        String msg = "";
+        if (lockDrgJk.tryLock()) {
+            try {
+                YbDrgApply drgApply = this.iYbDrgApplyService.findDrgApplyByApplyDateStrs(applyDateStr, areaType);
+                if (drgApply != null) {
+                    List<YbDrgJk> list = iYbDrgJkService.findDrgJkApplyDataByPid(drgApply.getId());
+                    if (list.size() == 0) {
+                        LambdaQueryWrapper<YbDrgApplyData> wrapper = new LambdaQueryWrapper<>();
+                        wrapper.eq(YbDrgApplyData::getPid, drgApply.getId());
+                        List<YbDrgApplyData> dataList = this.list(wrapper);
+                        if (dataList.size() > 0) {
+                            MySqlDB<YbDrgJkData> mysqlDB = new MySqlDB<>();
+                            String mysql = this.getSql(dataList);
+                            List<YbDrgJkData> jkList = mysqlDB.excuteSqlRS(new YbDrgJkData(), mysql);
+                            List<YbDrgJk> createList = new ArrayList<>();
+                            List<YbDrgJkData> query = new ArrayList<>();
+                            if (jkList.size() > 0) {
+                                for (YbDrgApplyData item : dataList) {
+                                    query = jkList.stream().filter(s -> s.getJzjlh().equals(item.getJzjlh()) &&
+                                            s.getBah().equals(item.getBah())).collect(Collectors.toList());
+                                    if (query.size() > 0) {
+                                        YbDrgJkData jkData = query.get(0);
+                                        YbDrgJk jk = new YbDrgJk();
+                                        jk.setId(UUID.randomUUID().toString());
+                                        jk.setApplyDataId(item.getId());
+                                        jk.setApplyDateStr(applyDateStr);
+                                        jk.setAreaType(areaType);
+                                        jk.setOrderNum(item.getOrderNum());
+                                        jk.setOrderNumber(item.getOrderNumber());
+                                        jk.setRyDate(jkData.getRyDate());
+                                        jk.setCyDate(jkData.getCyDate());
+                                        jk.setTczf(jkData.getTczf());
+                                        jk.setFzCode(jkData.getFzCode());
+                                        jk.setFzName(jkData.getFzName());
+                                        jk.setZyzdCode(jkData.getZyzdCode());
+                                        jk.setZyzdName(jkData.getZyzdName());
+                                        jk.setZssCode(jkData.getZssCode());
+                                        jk.setZssName(jkData.getZssName());
+                                        jk.setQtzdCode(jkData.getQtzdCode());
+                                        jk.setQtzdName(jkData.getQtzdName());
+                                        jk.setQtssCode(jkData.getQtssCode());
+                                        jk.setQtssName(jkData.getQtssName());
+                                        jk.setDeptName(jkData.getDeptName());
+                                        jk.setAreaId(jkData.getAreaId());
+                                        jk.setAreaName(jkData.getAreaName());
+                                        jk.setQz(jkData.getQz());
+                                        jk.setKzrDocId(jkData.getKzrDocId());
+                                        jk.setKzrDocName(jkData.getKzrDocName());
+                                        jk.setZrysDocId(jkData.getZrysDocId());
+                                        jk.setZrysDocName(jkData.getZrysDocName());
+                                        jk.setZzysDocId(jkData.getZzysDocId());
+                                        jk.setZzysDocName(jkData.getZzysDocName());
+                                        jk.setZyysDocId(jkData.getZyysDocId());
+                                        jk.setZyysDocName(jkData.getZyysDocName());
+                                        jk.setYlzDeptName(jkData.getYlzDeptName());
+                                        jk.setYlzDocId(jkData.getYlzDocId());
+                                        jk.setYlzDocName(jkData.getYlzDocName());
+
+                                        createList.add(jk);
+                                    }
+                                }
+                                if(createList.size() > 0) {
+                                    iYbDrgJkService.saveBatch(createList);
+                                    YbDrgApply updateApply = new YbDrgApply();
+                                    updateApply.setId(drgApply.getId());
+                                    updateApply.setState(YbDefaultValue.DRGAPPLYSTATE_3);
+                                    iYbDrgApplyService.updateYbDrgApply(updateApply);
+                                    msg = "ok";
+                                }
+                            }
+                        } else {
+                            msg = applyDateStr+" DRG复议申请未上传数据.";
+                        }
+                    } else {
+                        msg = applyDateStr+" DRG接口数据已获取完.";
+                    }
+                } else {
+                    msg = "无法查找"+applyDateStr+" DRG复议申请.";
+                }
+            } catch (Exception e) {
+                msg = e.getMessage();
+                log.error(msg);
+            } finally {
+                lockDrgJk.unlock();
+            }
+        } else {
+            msg = "已有其他用户正在获取His数据,请稍等...";
+        }
+        System.out.println("DrgJk end:" + msg);
+        return msg;
+    }
+
+    private String getSql(List<YbDrgApplyData> dataList) {
+        String sql = "select * from V_DrgInfo where drgNo in (";
+        String inSql = "";
+        for (YbDrgApplyData data : dataList) {
+            if (inSql.equals("")) {
+                inSql = "'" + data.getJzjlh() + "-" + data.getBah() + "'";
+            } else {
+                inSql = inSql + ",'" + data.getJzjlh() + "-" + data.getBah() + "'";
+            }
+        }
+        return sql + inSql + ")";
+    }
+
+    @Override
+    public void findDrgJk(String applyDateStr, Integer areaType) {
+        String msg = "";
+        try {
+            MySqlDB<YbDrgJkData> mysqlDB = new MySqlDB<>();
+            List<YbDrgJkData> list = mysqlDB.excuteSqlRS(new YbDrgJkData(),
+
+                    "select * from V_DrgInfo where drgNo in ('642433590-3134934','641977454-3133962')");
+            System.out.println(list);
+        } catch (Exception e) {
+            msg = e.getMessage();
+            log.error(msg);
+        }
+    }
 
 }

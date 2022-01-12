@@ -12,10 +12,12 @@ import cc.mrbird.febs.common.exception.FebsException;
 import cc.mrbird.febs.common.utils.FebsUtil;
 import cc.mrbird.febs.drg.entity.*;
 import cc.mrbird.febs.drg.service.IYbDrgApplyService;
+import cc.mrbird.febs.drg.service.IYbDrgJkService;
 import cc.mrbird.febs.drg.service.IYbDrgManageService;
 import cc.mrbird.febs.drg.service.IYbDrgResultViewService;
 import cc.mrbird.febs.export.excel.ExportExcelUtils;
 import cc.mrbird.febs.system.domain.User;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,6 +58,9 @@ public class YbDrgResultViewController extends BaseController {
     @Autowired
     public IYbDrgManageService iYbDrgManageService;
 
+    @Autowired
+    public IYbDrgJkService iYbDrgJkService;
+
     @GetMapping()
     @RequiresPermissions("ybDrgResultView:view")
     public Map<String, Object> List(QueryRequest request, YbDrgResultView ybDrgResultView, String keyField) {
@@ -75,7 +80,9 @@ public class YbDrgResultViewController extends BaseController {
                 list = list.stream().sorted(Comparator.comparing(YbDrgResultView::getOrderNum)).collect(Collectors.toList());
 
                 List<YbDrgManage> manageList = new ArrayList<>();
+                List<YbDrgJk> jkList = new ArrayList<>();
                 List<YbDrgManage> queryManageList = new ArrayList<>();
+                List<YbDrgJk> queryJkList = new ArrayList<>();
                 if (list.size() > 0) {
                     YbDrgManage query = new YbDrgManage();
                     query.setApplyDateStr(drgApply.getApplyDateStr());
@@ -84,7 +91,13 @@ public class YbDrgResultViewController extends BaseController {
                     if (manageList.size() > 0) {
                         manageList = manageList.stream().filter(s -> s.getState() != 3 && s.getState() != 4).collect(Collectors.toList());
                     }
+
+                    LambdaQueryWrapper<YbDrgJk> wrapper = new LambdaQueryWrapper<>();
+                    wrapper.eq(YbDrgJk::getApplyDateStr, drgApply.getApplyDateStr());
+                    wrapper.eq(YbDrgJk::getAreaType, drgApply.getAreaType());
+                    jkList = iYbDrgJkService.list(wrapper);
                 }
+
                 List<YbDrgApplyDataResult> exportList = new ArrayList<>();
                 for (YbDrgResultView item : list) {
                     YbDrgApplyDataResult dataExport = new YbDrgApplyDataResult();
@@ -99,22 +112,58 @@ public class YbDrgResultViewController extends BaseController {
                     dataExport.setSfbmzczjcw(item.getSfbmzczjcw());//是否编码造成直接错误
                     dataExport.setLy(item.getLy());//理由
 
-                    String strDeptName = DataTypeHelpers.stringReplaceSetString(item.getDeptName(), item.getDeptCode() + "-");
                     String strDoctorName = DataTypeHelpers.stringReplaceSetString(item.getDoctorName(), item.getDoctorCode() + "-");
 
                     dataExport.setOperateReason(item.getOperateReason());
                     dataExport.setDoctorCode(item.getDoctorCode());//复议医生编码
                     dataExport.setDoctorName(strDoctorName);//复议医生姓名
-                    dataExport.setDeptCode(item.getDeptCode());//复议科室编码
-                    dataExport.setDeptName(strDeptName);//复议科室名称
+                    dataExport.setDksName(item.getDksName());//复议科室名称
 
                     if (item.getDoctorCode() == null) {
                         queryManageList = manageList.stream().filter(s -> s.getApplyDataId().equals(item.getApplyDataId())).collect(Collectors.toList());
                         if (queryManageList.size() > 0) {
                             dataExport.setDoctorCode(queryManageList.get(0).getReadyDoctorCode());//复议医生编码
                             dataExport.setDoctorName(queryManageList.get(0).getReadyDoctorName());//复议医生姓名
-                            dataExport.setDeptCode(queryManageList.get(0).getReadyDeptCode());//复议科室编码
-                            dataExport.setDeptName(queryManageList.get(0).getReadyDeptName());//复议科室名称
+                            dataExport.setDksName(queryManageList.get(0).getReadyDksName());//复议科室名称
+                        }
+                    }
+
+                    queryJkList = jkList.stream().filter(s -> s.getApplyDataId().equals(item.getApplyDataId())).collect(Collectors.toList());
+                    if (queryJkList.size() > 0) {
+                        YbDrgJk jk = queryJkList.get(0);
+                        dataExport.setRyDate(jk.getRyDate());
+                        dataExport.setCyDate(jk.getCyDate());
+                        dataExport.setTczf(jk.getTczf());
+                        dataExport.setFzCode(jk.getFzCode());
+                        dataExport.setFzName(jk.getFzName());
+                        dataExport.setZyzdCode(jk.getZyzdCode());
+                        dataExport.setZyzdName(jk.getZyzdName());
+                        dataExport.setZssCode(jk.getZssCode());
+                        dataExport.setZssName(jk.getZssName());
+                        dataExport.setQtzdCode(jk.getQtzdCode());
+                        dataExport.setQtzdName(jk.getQtzdName());
+                        dataExport.setQtssCode(jk.getQtssCode());
+                        dataExport.setQtssName(jk.getQtssName());
+                        dataExport.setDeptName(jk.getDeptName());
+                        dataExport.setAreaName(jk.getAreaName());
+                        dataExport.setQz(jk.getQz());
+                        if (jk.getKzrDocId() != null && !jk.getKzrDocId().equals("")) {
+                            dataExport.setKzrDocName(jk.getKzrDocId() + "-" + jk.getKzrDocName());
+                        }
+                        if (jk.getZrysDocId() != null && !jk.getZrysDocId().equals("")) {
+                            dataExport.setZrysDocName(jk.getZrysDocId() + "-" + jk.getZrysDocName());
+                        }
+                        if (jk.getZzysDocId() != null && !jk.getZzysDocId().equals("")) {
+                            dataExport.setZzysDocName(jk.getZzysDocId() + "-" + jk.getZzysDocName());
+                        }
+                        if (jk.getZyysDocId() != null && !jk.getZyysDocId().equals("")) {
+                            dataExport.setZyysDocName(jk.getZyysDocId() + "-" + jk.getZyysDocName());
+                        }
+                        if (jk.getYlzDeptName() != null && !jk.getYlzDeptName().equals("")) {
+                            dataExport.setYlzDeptName(jk.getYlzDeptName());
+                        }
+                        if (jk.getYlzDocId() != null && !jk.getYlzDocId().equals("")) {
+                            dataExport.setYlzDocName(jk.getYlzDocId() + "-" + jk.getYlzDocName());
                         }
                     }
                     exportList.add(dataExport);

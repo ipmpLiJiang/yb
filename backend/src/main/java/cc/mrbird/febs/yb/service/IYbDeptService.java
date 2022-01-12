@@ -37,4 +37,6 @@ public interface IYbDeptService extends IService<YbDept> {
         List<String> findDeptCodeList(String value);
 
         List<YbDept> findDeptAppealConfireList(String doctorCode,String comments, Integer areaType);
+
+        List<YbDept> findDeptAppealConfireByUserList(String doctorCode, Integer areaType);
         }

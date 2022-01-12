@@ -92,7 +92,7 @@ export default {
       // },
       {
         title: '科室',
-        dataIndex: 'ksType'
+        dataIndex: 'dksName'
       },
       {
         title: '操作',

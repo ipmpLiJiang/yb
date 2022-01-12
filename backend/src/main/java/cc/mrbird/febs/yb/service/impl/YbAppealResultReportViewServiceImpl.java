@@ -55,6 +55,9 @@ public class YbAppealResultReportViewServiceImpl extends ServiceImpl<YbAppealRes
     @Autowired
     IYbAppealConfireDataService iYbAppealConfireDataService;
 
+    @Autowired
+    IYbDeptService iYbDeptService;
+
     @Override
     public IPage<YbAppealResultReportView> findYbAppealResultReportViews(QueryRequest request, YbAppealResultReportView ybAppealResultReportView) {
         try {
@@ -284,13 +287,13 @@ public class YbAppealResultReportViewServiceImpl extends ServiceImpl<YbAppealRes
 
                 String strIn = "";
                 if(confDocCode!=null && !confDocCode.equals("")) {
-                    List<YbAppealConfireData> acdlist = iYbAppealConfireDataService.findAppealConfireDataByInDoctorCodeList(confDocCode, areaType);
-                    if (acdlist.size() > 0) {
-                        if (acdlist.size() == 1) {
-                            sql += " and deptCode = '" + acdlist.get(0).getDeptId() + "'";
+                    List<YbDept> deptlist = iYbDeptService.findDeptAppealConfireByUserList(confDocCode, areaType);
+                    if (deptlist.size() > 0) {
+                        if (deptlist.size() == 1) {
+                            sql += " and deptCode = '" + deptlist.get(0).getDeptId() + "'";
                         } else {
                             strIn = "";
-                            for (YbAppealConfireData item : acdlist) {
+                            for (YbDept item : deptlist) {
                                 if (strIn.equals("")) {
                                     strIn = "'" + item.getDeptId() + "'";
                                 } else {

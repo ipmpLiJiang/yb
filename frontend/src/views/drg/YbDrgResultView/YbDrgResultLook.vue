@@ -31,7 +31,7 @@
                   v-bind="formItemLayout"
                   label="科室名称"
                 >
-                  {{ybDrgResultLook.deptCode}}-{{ybDrgResultLook.deptName}}
+                  {{ybDrgResultLook.dksName}}
                 </a-form-item>
               </a-col>
               <a-col :span=14>
@@ -186,7 +186,7 @@ export default {
       formData.applyDateStr = this.ybDrgResultLook.applyDateStr
       formData.orderNumber = this.ybDrgResultLook.orderNumber
       formData.areaType = this.user.areaType.value
-      formData.fileName = formData.applyDateStr + '-' + this.ybDrgResultLook.deptName + '-' + this.ybDrgResultLook.doctorCode + this.ybDrgResultLook.doctorName
+      formData.fileName = formData.applyDateStr + '-' + this.ybDrgResultLook.dksName + '-' + this.ybDrgResultLook.doctorCode + this.ybDrgResultLook.doctorName
       this.$download('comFile/fileDrgImgZip', {
         ...formData
       }, formData.fileName + '.zip')

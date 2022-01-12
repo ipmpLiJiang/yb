@@ -9,12 +9,10 @@
         <result column="verifyId" property="verifyId"/>
         <result column="readyDoctorCode" property="readyDoctorCode"/>
         <result column="readyDoctorName" property="readyDoctorName"/>
-        <result column="readyDeptCode" property="readyDeptCode"/>
-        <result column="readyDeptName" property="readyDeptName"/>
+        <result column="readyDksName" property="readyDksName"/>
         <result column="changeDoctorCode" property="changeDoctorCode"/>
         <result column="changeDoctorName" property="changeDoctorName"/>
-        <result column="changeDeptCode" property="changeDeptCode"/>
-        <result column="changeDeptName" property="changeDeptName"/>
+        <result column="changeDksName" property="changeDksName"/>
         <result column="operateReason" property="operateReason"/>
         <result column="operateDate" property="operateDate"/>
         <result column="refuseId" property="refuseId"/>
@@ -37,7 +35,7 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, applyDataId, verifyId, readyDoctorCode, readyDoctorName, readyDeptCode, readyDeptName, changeDoctorCode, changeDoctorName, changeDeptCode, changeDeptName, operateReason, operateDate, refuseId, refuseName, refuseReason, refuseDate, adminPersonId, adminPersonName, adminChangeDate, adminReason, STATE, enableDate, operateProcess, approvalState, applyDateStr, orderNumber, orderNum, areaType
+        id, applyDataId, verifyId, readyDoctorCode, readyDoctorName, readyDksName, changeDoctorCode, changeDoctorName, changeDksName, operateReason, operateDate, refuseId, refuseName, refuseReason, refuseDate, adminPersonId, adminPersonName, adminChangeDate, adminReason, STATE, enableDate, operateProcess, approvalState, applyDateStr, orderNumber, orderNum, areaType
     </sql>
     <update id="updateYbDrgManage" parameterType="cc.mrbird.febs.drg.entity.YbDrgManage">
         update yb_drg_manage
@@ -46,12 +44,10 @@
             <if test="verifyId != null">verifyId=#{verifyId},</if>
             <if test="readyDoctorCode != null">readyDoctorCode=#{readyDoctorCode},</if>
             <if test="readyDoctorName != null">readyDoctorName=#{readyDoctorName},</if>
-            <if test="readyDeptCode != null">readyDeptCode=#{readyDeptCode},</if>
-            <if test="readyDeptName != null">readyDeptName=#{readyDeptName},</if>
+            <if test="readyDksName != null">readyDksName=#{readyDksName},</if>
             <if test="changeDoctorCode != null">changeDoctorCode=#{changeDoctorCode},</if>
             <if test="changeDoctorName != null">changeDoctorName=#{changeDoctorName},</if>
-            <if test="changeDeptCode != null">changeDeptCode=#{changeDeptCode},</if>
-            <if test="changeDeptName != null">changeDeptName=#{changeDeptName},</if>
+            <if test="changeDksName != null">changeDksName=#{changeDksName},</if>
             <if test="operateReason != null">operateReason=#{operateReason},</if>
             <if test="operateDate != null">operateDate=#{operateDate},</if>
             <if test="refuseId != null">refuseId=#{refuseId},</if>
@@ -91,11 +87,8 @@
         <if test="ybDrgManage.readyDoctorName != null and ybDrgManage.readyDoctorName != ''">and readyDoctorName like
             concat('%', #{ ybDrgManage.readyDoctorName} ,'%')
         </if>
-        <if test="ybDrgManage.readyDeptCode != null and ybDrgManage.readyDeptCode != ''">and readyDeptCode like
-            concat('%', #{ ybDrgManage.readyDeptCode} ,'%')
-        </if>
-        <if test="ybDrgManage.readyDeptName != null and ybDrgManage.readyDeptName != ''">and readyDeptName like
-            concat('%', #{ ybDrgManage.readyDeptName} ,'%')
+        <if test="ybDrgManage.readyDksName != null and ybDrgManage.readyDksName != ''">and readyDksName like
+            concat('%', #{ ybDrgManage.readyDksName} ,'%')
         </if>
         <if test="ybDrgManage.changeDoctorCode != null and ybDrgManage.changeDoctorCode != ''">and changeDoctorCode like
             concat('%', #{ ybDrgManage.changeDoctorCode} ,'%')
@@ -103,11 +96,8 @@
         <if test="ybDrgManage.changeDoctorName != null and ybDrgManage.changeDoctorName != ''">and changeDoctorName like
             concat('%', #{ ybDrgManage.changeDoctorName} ,'%')
         </if>
-        <if test="ybDrgManage.changeDeptCode != null and ybDrgManage.changeDeptCode != ''">and changeDeptCode like
-            concat('%', #{ ybDrgManage.changeDeptCode} ,'%')
-        </if>
-        <if test="ybDrgManage.changeDeptName != null and ybDrgManage.changeDeptName != ''">and changeDeptName like
-            concat('%', #{ ybDrgManage.changeDeptName} ,'%')
+        <if test="ybDrgManage.changeDksName != null and ybDrgManage.changeDksName != ''">and changeDksName like
+            concat('%', #{ ybDrgManage.changeDksName} ,'%')
         </if>
         <if test="ybDrgManage.operateReason != null and ybDrgManage.operateReason != ''">and operateReason like
             concat('%', #{ ybDrgManage.operateReason} ,'%')

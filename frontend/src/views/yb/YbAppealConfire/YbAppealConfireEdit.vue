@@ -62,7 +62,7 @@
               allowClear
               :showSearch="true"
               @change="selectKsTypeChange"
-              v-model="ybAcData.ksType"
+              v-model="vdksName"
             >
               <a-select-option :value="d.text" v-for="d in ksList" :key="d.text">
                 {{d.text}}
@@ -123,6 +123,7 @@ export default {
       isEdit: false,
       txtValue: '',
       ksList: [],
+      vdksName: '',
       selectAdminTypeDataSource: [],
       ybAppealConfire: {}
     }
@@ -153,7 +154,7 @@ export default {
       }).then((r) => {
         if (r.data.data.length > 0) {
           for (var i in r.data.data) {
-            var at = {text: r.data.data[i].ksType}
+            var at = {text: r.data.data[i].dksName}
             this.ksList.push(at)
           }
         }
@@ -172,9 +173,10 @@ export default {
       this.ybAcData.deptName = item.text
     },
     selectKsTypeChange (value) {
-      this.ybAcData.ksType = value
+      this.ybAcData.dksName = value
     },
     setFormValues (obj, areaType, atDataSource) {
+      this.ybAcData.dksName = ''
       this.ybAppealConfire.areaType = areaType
       this.findComType3()
       this.isUpdate = false
@@ -225,10 +227,10 @@ export default {
         })
       }
       // if (this.ybAcData.deptId !== '' && this.ybAcData.deptId !== undefined) {
-      if (this.ybAcData.ksType !== '' && this.ybAcData.ksType !== undefined) {
+      if (this.ybAcData.dksName !== '' && this.ybAcData.dksName !== undefined) {
         this.ybAppealConfire.child = [
           // { deptId: this.ybAcData.deptId, deptName: this.ybAcData.deptName }
-          { ksType: this.ybAcData.ksType }
+          { dksName: this.ybAcData.dksName }
         ]
         isData = true
       } else {
@@ -277,7 +279,8 @@ export default {
         // this.$refs.inputSelectDept.value = ''
         // this.ybAcData.deptId = ''
         // this.ybAcData.deptName = ''
-        this.ybAcData.ksType = ''
+        this.ybAcData.dksName = ''
+        this.vdksName = ''
       })
     },
     setFields () {

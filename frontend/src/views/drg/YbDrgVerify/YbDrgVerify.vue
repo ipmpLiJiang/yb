@@ -343,9 +343,9 @@
             </a-form-item>
             <a-form-item
               v-bind="formItemLayout"
-              label="科室名称："
+              label="复议科室："
             >
-              <a-input style="width: 255px" v-model="searchItem.dept.deptName" />
+              <a-input style="width: 255px" v-model="searchItem.dept.dksName" />
             </a-form-item>
             <a-form-item
               v-bind="formItemLayout"
@@ -395,18 +395,18 @@
           </template>
           <a-form-item
             v-bind="formItemLayout"
-            label="参考复议科室"
+            label="复议科室"
           >
-            <input-select
-              ref="inputSelectVerifyDept"
-              :type=1
-              @selectChange=selectDeptChange
+            <input-selectdks
+              ref="inputSelectVerifyDks"
+              :ctType=3
+              @selectChange=selectDksChange
             >
-            </input-select>
+            </input-selectdks>
           </a-form-item>
           <a-form-item
             v-bind="formItemLayout"
-            label="参考复议医生"
+            label="复议医生"
           >
             <input-select
               ref="inputSelectVerifyDoctor"
@@ -504,13 +504,14 @@ import YbDrgSendEnd from './YbDrgSendEnd'
 import YbDrgVerifyDetail from './YbDrgVerifyDetail'
 import YbDrgVerifySms from './YbDrgVerifySms'
 import InputSelect from '../../common/InputSelect'
+import InputSelectdks from '../../common/InputSelectDks'
 const formItemLayout = {
   labelCol: { span: 6 },
   wrapperCol: { span: 15, offset: 1 }
 }
 export default {
   name: 'ybDrgVerify',
-  components: { InputSelect, YbDrgVerifyDetail, YbDrgVerifyStayed, YbDrgSendStayed, YbDrgSendEnd, YbDrgVerifySms },
+  components: { InputSelect, InputSelectdks, YbDrgVerifyDetail, YbDrgVerifyStayed, YbDrgSendStayed, YbDrgSendEnd, YbDrgVerifySms },
   data () {
     return {
       formItemLayout,
@@ -539,7 +540,7 @@ export default {
       visibleDate: false,
       searchItem: {
         item: {ks: '', jzjlh: '', bah: ''},
-        dept: {deptName: ''},
+        dept: {dksName: ''},
         doctor: {docName: '', docCode: ''},
         order: {orderNumber: ''}
       },
@@ -586,11 +587,11 @@ export default {
       }, 200)
     },
     setSelect (item) {
-      this.$refs.inputSelectVerifyDept.dataSource = [{
-        text: item.verifyDeptName,
-        value: item.verifyDeptCode
+      this.$refs.inputSelectVerifyDks.dataSource = [{
+        text: item.verifyDksName,
+        value: item.verifyDksName
       }]
-      this.$refs.inputSelectVerifyDept.value = item.verifyDeptCode
+      this.$refs.inputSelectVerifyDks.value = item.verifyDksName
 
       this.$refs.inputSelectVerifyDoctor.dataSource = [{
         text: item.verifyDoctorName,
@@ -600,16 +601,14 @@ export default {
 
       this.selectDate.doctorCode = item.verifyDoctorCode
       this.selectDate.doctorName = item.verifyDoctorName
-      this.selectDate.deptCode = item.verifyDeptCode
-      this.selectDate.deptName = item.verifyDeptName
+      this.selectDate.dksName = item.verifyDksName
     },
     selectDoctorChange (item) {
       this.selectDate.doctorCode = item.value
       this.selectDate.doctorName = item.text
     },
-    selectDeptChange (item) {
-      this.selectDate.deptCode = item.value
-      this.selectDate.deptName = item.text
+    selectDksChange (item) {
+      this.selectDate.dksName = item.text
     },
     onIsDateChange () {
       this.dateChecked = !this.dateChecked
@@ -865,7 +864,7 @@ export default {
       this.searchItem.item.ks = ''
       this.searchItem.item.jzjlh = ''
       this.searchItem.item.bah = ''
-      this.searchItem.dept.deptName = ''
+      this.searchItem.dept.dksName = ''
       this.searchItem.doctor.docCode = ''
       this.searchItem.doctor.docName = ''
       this.searchItem.order.orderNumber = ''

@@ -12,9 +12,11 @@ import cc.mrbird.febs.drg.entity.YbDrgApplyDataVerify;
 import cc.mrbird.febs.drg.entity.YbDrgJk;
 import cc.mrbird.febs.drg.entity.YbDrgVerifyView;
 import cc.mrbird.febs.drg.service.IYbDrgApplyService;
+import cc.mrbird.febs.drg.service.IYbDrgJkService;
 import cc.mrbird.febs.drg.service.IYbDrgVerifyViewService;
 import cc.mrbird.febs.export.excel.ExportExcelUtils;
 import cc.mrbird.febs.system.domain.User;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.StringPool;
 import com.wuwenze.poi.ExcelKit;
 import lombok.extern.slf4j.Slf4j;
@@ -52,6 +54,9 @@ public class YbDrgVerifyViewController extends BaseController {
 
     @Autowired
     public IYbDrgApplyService iYbDrgApplyService;
+
+    @Autowired
+    public IYbDrgJkService iYbDrgJkService;
 
     /**
      * 分页查询数据
@@ -92,7 +97,16 @@ public class YbDrgVerifyViewController extends BaseController {
                 List<YbDrgVerifyView> list = this.iYbDrgVerifyViewService.findDrgVerifyViewLists(ybDrgVerifyView);
                 list = list.stream().sorted(Comparator.comparing(YbDrgVerifyView::getOrderNum)).collect(Collectors.toList());
 
+                List<YbDrgJk> jkList = new ArrayList<>();
+
+                if (list.size() > 0) {
+                    LambdaQueryWrapper<YbDrgJk> wrapper = new LambdaQueryWrapper<>();
+                    wrapper.eq(YbDrgJk::getApplyDateStr, drgApply.getApplyDateStr());
+                    wrapper.eq(YbDrgJk::getAreaType, drgApply.getAreaType());
+                    jkList = iYbDrgJkService.list(wrapper);
+                }
                 List<YbDrgApplyDataVerify> exportList = new ArrayList<>();
+                List<YbDrgJk> queryJkList = new ArrayList<>();
                 for (YbDrgVerifyView item : list) {
                     YbDrgApplyDataVerify dataExport = new YbDrgApplyDataVerify();
                     dataExport.setOrderNumber(item.getOrderNumber());//序号
@@ -106,13 +120,53 @@ public class YbDrgVerifyViewController extends BaseController {
                     dataExport.setSfbmzczjcw(item.getSfbmzczjcw());//是否编码造成直接错误
                     dataExport.setLy(item.getLy());//理由
 
-                    String strVerifyDeptName = DataTypeHelpers.stringReplaceSetString(item.getVerifyDeptName(), item.getVerifyDeptCode() + "-");
+//                    String strVerifyDeptName = DataTypeHelpers.stringReplaceSetString(item.getVerifyDeptName(), item.getVerifyDeptCode() + "-");
                     String strVerifyDoctorName = DataTypeHelpers.stringReplaceSetString(item.getVerifyDoctorName(), item.getVerifyDoctorCode() + "-");
 
                     dataExport.setVerifyDoctorCode(item.getVerifyDoctorCode());//复议医生编码
                     dataExport.setVerifyDoctorName(strVerifyDoctorName);//复议医生姓名
-                    dataExport.setVerifyDeptCode(item.getVerifyDeptCode());//复议科室编码
-                    dataExport.setVerifyDeptName(strVerifyDeptName);//复议科室名称
+//                    dataExport.setVerifyDeptCode(item.getVerifyDeptCode());//病区编码
+//                    dataExport.setVerifyDeptName(strVerifyDeptName);//病区名称
+                    dataExport.setVerifyDksName(item.getVerifyDksName());//科室名称
+
+                    queryJkList = jkList.stream().filter(s -> s.getApplyDataId().equals(item.getApplyDataId())).collect(Collectors.toList());
+                    if (queryJkList.size() > 0) {
+                        YbDrgJk jk = queryJkList.get(0);
+                        dataExport.setRyDate(jk.getRyDate());
+                        dataExport.setCyDate(jk.getCyDate());
+                        dataExport.setTczf(jk.getTczf());
+                        dataExport.setFzCode(jk.getFzCode());
+                        dataExport.setFzName(jk.getFzName());
+                        dataExport.setZyzdCode(jk.getZyzdCode());
+                        dataExport.setZyzdName(jk.getZyzdName());
+                        dataExport.setZssCode(jk.getZssCode());
+                        dataExport.setZssName(jk.getZssName());
+                        dataExport.setQtzdCode(jk.getQtzdCode());
+                        dataExport.setQtzdName(jk.getQtzdName());
+                        dataExport.setQtssCode(jk.getQtssCode());
+                        dataExport.setQtssName(jk.getQtssName());
+                        dataExport.setDeptName(jk.getDeptName());
+                        dataExport.setAreaName(jk.getAreaName());
+                        dataExport.setQz(jk.getQz());
+                        if (jk.getKzrDocId() != null && !jk.getKzrDocId().equals("")) {
+                            dataExport.setKzrDocName(jk.getKzrDocId() + "-" + jk.getKzrDocName());
+                        }
+                        if (jk.getZrysDocId() != null && !jk.getZrysDocId().equals("")) {
+                            dataExport.setZrysDocName(jk.getZrysDocId() + "-" + jk.getZrysDocName());
+                        }
+                        if (jk.getZzysDocId() != null && !jk.getZzysDocId().equals("")) {
+                            dataExport.setZzysDocName(jk.getZzysDocId() + "-" + jk.getZzysDocName());
+                        }
+                        if (jk.getZyysDocId() != null && !jk.getZyysDocId().equals("")) {
+                            dataExport.setZyysDocName(jk.getZyysDocId() + "-" + jk.getZyysDocName());
+                        }
+                        if (jk.getYlzDeptName() != null && !jk.getYlzDeptName().equals("")) {
+                            dataExport.setYlzDeptName(jk.getYlzDeptName());
+                        }
+                        if (jk.getYlzDocId() != null && !jk.getYlzDocId().equals("")) {
+                            dataExport.setYlzDocName(jk.getYlzDocId() + "-" + jk.getYlzDocName());
+                        }
+                    }
 
                     exportList.add(dataExport);
                 }

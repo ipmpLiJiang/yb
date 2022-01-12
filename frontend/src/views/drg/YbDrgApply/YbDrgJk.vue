@@ -62,72 +62,77 @@ export default {
       },
       {
         title: '入院日期',
-        dataIndex: 'ryrq',
+        dataIndex: 'ryDate',
         width: 120
       },
       {
         title: '出院日期',
-        dataIndex: 'cyrq',
+        dataIndex: 'cyDate',
+        width: 120
+      },
+      {
+        title: '统筹支付',
+        dataIndex: 'tczf',
         width: 120
       },
       {
         title: 'DRG分组编码',
-        dataIndex: 'fzbm',
+        dataIndex: 'fzCode',
         width: 150
       },
       {
         title: 'DRG分组名称',
-        dataIndex: 'fzmc',
+        dataIndex: 'fzName',
         width: 250
       },
       {
         title: '医保主要诊断编码',
-        dataIndex: 'zyzdbm',
+        dataIndex: 'zyzdCode',
         width: 150
       },
       {
         title: '医保主要诊断名称',
-        dataIndex: 'zyzdmc',
+        dataIndex: 'zyzdName',
         width: 250
       },
       {
         title: '医保主手术编码',
-        dataIndex: 'zssbm',
+        dataIndex: 'zssCode',
         width: 150
       },
       {
         title: '医保主手术名称',
-        dataIndex: 'zssmc',
+        dataIndex: 'zssName',
         width: 250
       },
       {
         title: '其他诊断编码',
-        dataIndex: 'qtzdbm',
+        dataIndex: 'qtzdCode',
         width: 200
       },
       {
         title: '其他诊断名称',
-        dataIndex: 'qtzdmc',
+        dataIndex: 'qtzdName',
         width: 300
       },
       {
         title: '其他手术编码',
-        dataIndex: 'qtssbm',
+        dataIndex: 'qtssCode',
         width: 150
       },
       {
         title: '其他手术名称',
-        dataIndex: 'qtssmc',
+        dataIndex: 'qtssName',
         width: 250
       },
       {
         title: '科室',
-        dataIndex: 'ksmc',
+        dataIndex: 'deptName',
         width: 180
       },
       {
         title: '病区',
-        dataIndex: 'bqmc',
+        dataIndex: 'areaName',
         width: 180
       },
       {
@@ -137,22 +142,32 @@ export default {
       },
       {
         title: '科主任',
-        dataIndex: 'kzrmc',
+        dataIndex: 'kzrDocName',
         width: 120
       },
       {
         title: '主任医师',
-        dataIndex: 'zrysmc',
+        dataIndex: 'zrysDocName',
         width: 120
       },
       {
         title: '主治医师',
-        dataIndex: 'zzysmc',
+        dataIndex: 'zzysDocName',
         width: 120
       },
       {
         title: '住院医师',
-        dataIndex: 'zyysmc',
+        dataIndex: 'zyysDocName',
+        width: 120
+      },
+      {
+        title: '医疗组科室',
+        dataIndex: 'ylzDeptName',
+        width: 120
+      },
+      {
+        title: '医疗组医师',
+        dataIndex: 'ylzDocName',
         width: 120
       }]
     }
@@ -236,6 +251,7 @@ export default {
         params.pageNum = this.pagination.defaultCurrent
       }
       params.sortField = 'orderNum'
+      params.sortOrder = 'ascend'
       this.$get('ybDrgJk/findDrgJkList', {
         ...params
       }).then((r) => {

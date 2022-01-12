@@ -29,7 +29,7 @@
                 <a-select
                   allowClear
                   show-search
-                  v-model="queryParams.ksType"
+                  v-model="queryParams.dksName"
                 >
                   <a-select-option :value="d.text" v-for="d in ksList" :key="d.text">
                     {{d.text}}
@@ -231,7 +231,7 @@ export default {
       },
       {
         title: '科室',
-        dataIndex: 'ksType'
+        dataIndex: 'dksName'
       },
       {
         title: '操作',
@@ -405,8 +405,8 @@ export default {
         params.pageSize = this.pagination.defaultPageSize
         params.pageNum = this.pagination.defaultCurrent
       }
-      if (params.ksType === undefined) {
-        params.ksType = ''
+      if (params.dksName === undefined) {
+        params.dksName = ''
       }
       this.$get('ybDept', {
         ...params

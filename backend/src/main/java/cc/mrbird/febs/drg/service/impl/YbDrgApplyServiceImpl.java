@@ -93,8 +93,8 @@ public class YbDrgApplyServiceImpl extends ServiceImpl<YbDrgApplyMapper, YbDrgAp
     @Transactional
     public String createDrgApplyCheck(YbDrgApply ybDrgApply) {
         String message = "";
-        YbDrgApply reconsiderApply = this.findDrgApplyByApplyDateStrs(ybDrgApply.getApplyDateStr(), ybDrgApply.getAreaType());
-        if (reconsiderApply == null) {
+        YbDrgApply drgApply = this.findDrgApplyByApplyDateStrs(ybDrgApply.getApplyDateStr(), ybDrgApply.getAreaType());
+        if (drgApply == null) {
             ybDrgApply.setCreateTime(new Date());
             if (ybDrgApply.getId() == null || "".equals(ybDrgApply.getId())) {
                 ybDrgApply.setId(UUID.randomUUID().toString());

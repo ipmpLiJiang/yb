@@ -29,8 +29,8 @@
                 <a-row type="flex" justify="center">
                   <a-col :span="9">
                     <a-form-item v-bind="formItemLayout" label="复议科室">
-                      {{ ybDrgManageUpload.readyDeptCode }}-{{
-                        ybDrgManageUpload.readyDeptName
+                      {{
+                        ybDrgManageUpload.readyDksName
                       }}
                     </a-form-item>
                   </a-col>
@@ -361,8 +361,7 @@ export default {
             state: state,
             applyDataId: this.ybDrgManageUpload.applyDataId,
             verifyId: this.ybDrgManageUpload.verifyId,
-            readyDeptCode: this.ybDrgManageUpload.readyDeptCode,
-            readyDeptName: this.ybDrgManageUpload.readyDeptName,
+            readyDksName: this.ybDrgManageUpload.readyDksName,
             readyDoctorCode: this.ybDrgManageUpload.readyDoctorCode,
             readyDoctorName: this.ybDrgManageUpload.readyDoctorName,
             operateReason: fromData.operateReason
@@ -448,8 +447,7 @@ export default {
         } else {
           ybDrgResult = r.data.data.data
           this.ybDrgManageUpload.operateReason = ybDrgResult.operateReason
-          this.ybDrgManageUpload.readyDeptCode = ybDrgResult.deptCode
-          this.ybDrgManageUpload.readyDeptName = ybDrgResult.deptName
+          this.ybDrgManageUpload.readyDksName = ybDrgResult.dksName
           this.ybDrgManageUpload.readyDoctorCode = ybDrgResult.doctorCode
           this.ybDrgManageUpload.readyDoctorName = ybDrgResult.doctorName
 

@@ -33,7 +33,7 @@
                   v-bind="formItemLayout"
                   label="科室名称"
                 >
-                  {{ybDrgManageLook.readyDeptCode}}-{{ybDrgManageLook.readyDeptName}}
+                  {{ybDrgManageLook.readyDksName}}
                 </a-form-item>
               </a-col>
               <a-col :span=14>
@@ -102,7 +102,7 @@
                 v-bind="formItemLayout"
                 label="申请科室"
               >
-                {{ybDrgManageLook.readyDeptCode}}-{{ybDrgManageLook.readyDeptName}}
+                {{ybDrgManageLook.readyDksName}}
               </a-form-item>
             </a-col>
             <a-col :span=6>
@@ -118,7 +118,7 @@
                 v-bind="formItemLayout"
                 label="更改科室"
               >
-                {{ybDrgManageLook.changeDeptCode}}-{{ybDrgManageLook.changeDeptName}}
+                {{ybDrgManageLook.changeDksName}}
               </a-form-item>
             </a-col>
             <a-col :span=6>

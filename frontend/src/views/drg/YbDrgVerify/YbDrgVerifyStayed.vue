@@ -55,28 +55,28 @@
         </div>
     </template>
     <template
-        slot='verifyDeptName'
+        slot='verifyDksName'
         slot-scope="text, record, index"
     >
-        <div key='verifyDeptName'>
+        <div key='verifyDksName'>
         <a-select
             v-if="record.editable"
             show-search
-            :value="selectDeptValue"
+            :value="selectDksValue"
             placeholder="请输入关键词"
             style="width: 100%"
             :default-active-first-option="false"
             :filter-option="false"
             :not-found-content="null"
-            @search="handleDeptSearch"
-            @change="e => handleDeptChange(e, record.id, 'verifyDeptName')"
+            @search="handleDksSearch"
+            @change="e => handleDksChange(e, record.id, 'verifyDksName')"
         >
         <a-icon
         slot="suffixIcon"
         type="search"
         ></a-icon>
         <a-select-option
-        v-for="d in selectDeptDataSource"
+        v-for="d in selectDksDataSource"
         :key="d.value"
         >
         {{ d.text }}
@@ -157,8 +157,8 @@ export default {
       editingKey: '',
       cacheData: [],
       monthFormat: 'YYYY-MM',
-      selectDeptDataSource: [], // 搜索事件
-      selectDeptValue: undefined,
+      selectDksDataSource: [], // 搜索事件
+      selectDksValue: undefined,
       selectDoctorDataSource: [], // 搜索事件
       selectDoctorValue: undefined,
       ybDrgVerify: {},
@@ -226,10 +226,10 @@ export default {
       },
       {
         title: '复议科室',
-        dataIndex: 'verifyDeptName',
-        scopedSlots: { customRender: 'verifyDeptName' },
+        dataIndex: 'verifyDksName',
+        scopedSlots: { customRender: 'verifyDksName' },
         fixed: 'right',
-        width: 230
+        width: 160
       },
       {
         title: '复议医生',
@@ -284,8 +284,7 @@ export default {
           let arrData = {
             verifyDoctorCode: target.verifyDoctorCode,
             verifyDoctorName: target.verifyDoctorName,
-            verifyDeptCode: target.verifyDeptCode,
-            verifyDeptName: target.verifyDeptName
+            verifyDksName: target.verifyDksName
           }
           data.push(arrData)
         }
@@ -309,8 +308,7 @@ export default {
             applyDataId: target.applyDataId,
             verifyDoctorCode: selectDate.doctorCode,
             verifyDoctorName: selectDate.doctorName,
-            verifyDeptCode: selectDate.deptCode,
-            verifyDeptName: selectDate.deptName,
+            verifyDksName: selectDate.dksName,
             applyDateStr: target.applyDateStr,
             orderNumber: target.orderNumber,
             orderNum: target.orderNum,
@@ -349,8 +347,7 @@ export default {
             applyDataId: target.applyDataId,
             verifyDoctorCode: target.verifyDoctorCode,
             verifyDoctorName: target.verifyDoctorName,
-            verifyDeptCode: target.verifyDeptCode,
-            verifyDeptName: target.verifyDeptName,
+            verifyDksName: target.verifyDksName,
             applyDateStr: target.applyDateStr,
             orderNumber: target.orderNumber,
             orderNum: target.orderNum,
@@ -400,16 +397,16 @@ export default {
       })
     },
     // 模拟往服务器发送请求
-    ajaxDept (keyword) {
+    ajaxDks (keyword) {
       let dataSource = []
-      let params = {comments: keyword}
-      this.$get('ybDept/findDeptList', {
+      let params = {isDeletemark: 1, ctType: 3, comments: keyword}
+      this.$get('comType/getComTypeByNameList', {
         ...params
       }).then((r) => {
         r.data.data.forEach((item, i) => {
           dataSource.push({
-            value: item.deptId,
-            text: item.deptId + '-' + item.deptName
+            value: item.ctName,
+            text: item.ctName
           })
         })
       })
@@ -417,7 +414,7 @@ export default {
     },
     ajaxDoctor (keyword) {
       let dataSource = []
-      let params = {comments: keyword, deptName: '医生'}
+      let params = {comments: keyword, dksName: '医生'}
       this.$get('ybPerson/findPersonList', {
         ...params
       }).then((r) => {
@@ -450,32 +447,30 @@ export default {
       this.selectDoctorValue = value
     },
     // 输入框事件
-    handleDeptSearch (keyword) {
+    handleDksSearch (keyword) {
       // 模拟往服务器发送请求
-      this.selectDeptDataSource = this.ajaxDept(keyword)
+      this.selectDksDataSource = this.ajaxDks(keyword)
     },
-    handleDeptChange (value, key, column) {
+    handleDksChange (value, key, column) {
       const newData = [...this.dataSource]
       const target = newData.filter(item => key === item.id)[0]
       if (target) {
         target[column] = value
-        const textData = this.selectDeptDataSource.filter(item => value === item.value)[0]
-        target.verifyDeptCode = value
-        target.verifyDeptName = textData.text
-        this.ybDrgVerify.verifyDeptCode = target.verifyDeptCode
-        this.ybDrgVerify.verifyDeptName = target.verifyDeptName
+        const textData = this.selectDksDataSource.filter(item => value === item.value)[0]
+        target.verifyDksName = textData.text
+        this.ybDrgVerify.verifyDksName = target.verifyDksName
         this.dataSource = newData
       }
-      this.selectDeptValue = value
+      this.selectDksValue = value
     },
     edit (key) {
       this.ybDrgVerify = {}
       const newData = [...this.dataSource]
       const target = newData.filter(item => key === item.id)[0]
       if (target !== undefined) {
-        this.selectDeptDataSource = [{
-          text: target.verifyDeptName,
-          value: target.verifyDeptCode
+        this.selectDksDataSource = [{
+          text: target.verifyDksName,
+          value: target.verifyDksName
         }]
         this.selectDoctorDataSource = [{
           text: target.verifyDoctorName,
@@ -483,14 +478,13 @@ export default {
         }]
 
         this.selectDoctorValue = target.verifyDoctorCode
-        this.selectDeptValue = target.verifyDeptCode
+        this.selectDksValue = target.verifyDksName
 
         this.ybDrgVerify.id = key
         this.ybDrgVerify.applyDataId = target.applyDataId
         this.ybDrgVerify.verifyDoctorCode = target.verifyDoctorCode
         this.ybDrgVerify.verifyDoctorName = target.verifyDoctorName
-        this.ybDrgVerify.verifyDeptCode = target.verifyDeptCode
-        this.ybDrgVerify.verifyDeptName = target.verifyDeptName
+        this.ybDrgVerify.verifyDksName = target.verifyDksName
 
         this.editingKey = key
         if (target) {
@@ -516,18 +510,17 @@ export default {
         this.editingKey = ''
         this.selectDoctorDataSource = []
         this.selectDoctorValue = undefined
-        this.selectDeptDataSource = []
-        this.selectDeptValue = undefined
+        this.selectDksDataSource = []
+        this.selectDksValue = undefined
         let dtc = this.ybDrgVerify.verifyDoctorCode
-        let dec = this.ybDrgVerify.verifyDeptCode
+        let dec = this.ybDrgVerify.verifyDksName
         if (dtc !== undefined && dec !== undefined && dtc !== null && dec !== null && dtc !== '' && dec !== '') {
           let arrData = [{
             id: target.isVerify === 0 ? '' : this.ybDrgVerify.id,
             applyDataId: this.ybDrgVerify.applyDataId,
             verifyDoctorCode: this.ybDrgVerify.verifyDoctorCode,
             verifyDoctorName: this.ybDrgVerify.verifyDoctorName,
-            verifyDeptCode: this.ybDrgVerify.verifyDeptCode,
-            verifyDeptName: this.ybDrgVerify.verifyDeptName,
+            verifyDksName: this.ybDrgVerify.verifyDksName,
             applyDateStr: target.applyDateStr,
             orderNumber: target.orderNumber,
             orderNum: target.orderNum,
@@ -626,8 +619,8 @@ export default {
         if (this.searchItem.doctor.docName !== '') {
           params.verifyDoctorName = this.searchItem.doctor.docName
         }
-        if (this.searchItem.dept.deptName !== '') {
-          params.verifyDeptName = this.searchItem.dept.deptName
+        if (this.searchItem.dept.dksName !== '') {
+          params.verifyDksName = this.searchItem.dept.dksName
         }
         if (this.searchItem.order.orderNumber !== '') {
           params.orderNumber = this.searchItem.order.orderNumber

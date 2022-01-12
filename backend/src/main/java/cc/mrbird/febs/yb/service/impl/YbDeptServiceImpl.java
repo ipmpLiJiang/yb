@@ -116,6 +116,10 @@ public class YbDeptServiceImpl extends ServiceImpl<YbDeptMapper, YbDept> impleme
         }
         return list;
     }
+    @Override
+    public List<YbDept> findDeptAppealConfireByUserList(String doctorCode, Integer areaType) {
+        return this.baseMapper.findDeptAppealConfireByUserList(doctorCode,areaType);
+    }
 
     @Override
     public List<String> findDeptCodeList(String value){

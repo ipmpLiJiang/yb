@@ -8,12 +8,12 @@
         <result column="pid" property="pid"/>
         <result column="deptId" property="deptId"/>
         <result column="deptName" property="deptName"/>
-        <result column="ksType" property="ksType"/>
+        <result column="dksName" property="dksName"/>
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, pid, deptId, deptName, ksType
+        id, pid, deptId, deptName, dksName
     </sql>
     <update id="updateYbAppealConfireData" parameterType="cc.mrbird.febs.yb.entity.YbAppealConfireData">
         update yb_appeal_confire_data
@@ -21,7 +21,7 @@
             <if test="pid != null">pid=#{pid},</if>
             <if test="deptId != null">deptId=#{deptId},</if>
             <if test="deptName != null">deptName=#{deptName},</if>
-            <if test="ksType != null">ksType=#{ksType},</if>
+            <if test="dksName != null">dksName=#{dksName},</if>
         </trim>
         where id=#{id}
 
@@ -41,7 +41,7 @@
         <if test="ybAppealConfireData.deptName != null and ybAppealConfireData.deptName != ''">and deptName like
             concat('%', #{ ybAppealConfireData.deptName} ,'%')
         </if>
-        <if test="ybDept.ksType != null and ybDept.ksType != ''">and ksType = #{ ybDept.ksType}</if>
+        <if test="ybDept.dksName != null and ybDept.dksName != ''">and dksName = #{ ybDept.dksName}</if>
 
     </select>
 

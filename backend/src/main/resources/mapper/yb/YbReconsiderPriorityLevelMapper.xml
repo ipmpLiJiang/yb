@@ -2,80 +2,113 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cc.mrbird.febs.yb.dao.YbReconsiderPriorityLevelMapper">
 
-        <!-- 通用查询映射结果 -->
-        <resultMap id="BaseResultMap" type="cc.mrbird.febs.yb.entity.YbReconsiderPriorityLevel">
-                    <id column="id" property="id"/>
-                    <result column="rplName" property="rplName"/>
-                    <result column="doctorCode" property="doctorCode"/>
-                    <result column="doctorName" property="doctorName"/>
-                    <result column="deptCode" property="deptCode"/>
-                    <result column="deptName" property="deptName"/>
-            <result column="deptState" property="deptState"/>
-            <result column="deptType" property="deptType"/>
-            <result column="personType" property="personType"/>
-            <result column="isFixDept" property="isFixDept"/>
-                    <result column="operatorId" property="operatorId"/>
-                    <result column="operatorName" property="operatorName"/>
-                    <result column="currencyField" property="currencyField"/>
-                    <result column="COMMENTS" property="comments"/>
-                    <result column="STATE" property="state"/>
-                    <result column="IS_DELETEMARK" property="isDeletemark"/>
-                    <result column="MODIFY_TIME" property="modifyTime"/>
-                    <result column="CREATE_TIME" property="createTime"/>
-                    <result column="CREATE_USER_ID" property="createUserId"/>
-                    <result column="MODIFY_USER_ID" property="modifyUserId"/>
-            <result column="areaType" property="areaType"/>
-        </resultMap>
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="cc.mrbird.febs.yb.entity.YbReconsiderPriorityLevel">
+        <id column="id" property="id"/>
+        <result column="rplName" property="rplName"/>
+        <result column="doctorCode" property="doctorCode"/>
+        <result column="doctorName" property="doctorName"/>
+        <result column="deptCode" property="deptCode"/>
+        <result column="deptName" property="deptName"/>
+        <result column="deptState" property="deptState"/>
+        <result column="deptType" property="deptType"/>
+        <result column="personType" property="personType"/>
+        <result column="isFixDept" property="isFixDept"/>
+        <result column="operatorId" property="operatorId"/>
+        <result column="operatorName" property="operatorName"/>
+        <result column="currencyField" property="currencyField"/>
+        <result column="COMMENTS" property="comments"/>
+        <result column="STATE" property="state"/>
+        <result column="IS_DELETEMARK" property="isDeletemark"/>
+        <result column="MODIFY_TIME" property="modifyTime"/>
+        <result column="CREATE_TIME" property="createTime"/>
+        <result column="CREATE_USER_ID" property="createUserId"/>
+        <result column="MODIFY_USER_ID" property="modifyUserId"/>
+        <result column="areaType" property="areaType"/>
+        <result column="dksName" property="dksName"/>
+        <result column="dksNameTo" property="dksNameTo"/>
+        <result column="doctorCodeTo" property="doctorCodeTo"/>
+        <result column="doctorNameTo" property="doctorNameTo"/>
+    </resultMap>
 
-        <!-- 通用查询结果列 -->
-        <sql id="Base_Column_List">
-        id, rplName, doctorCode, doctorName, deptCode, deptName,deptState,deptType,personType,isFixDept, operatorId, operatorName, currencyField, COMMENTS, STATE, IS_DELETEMARK, MODIFY_TIME, CREATE_TIME, CREATE_USER_ID, MODIFY_USER_ID,areaType
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, rplName, doctorCode, doctorName, deptCode, deptName,deptState,deptType,personType,isFixDept, operatorId, operatorName, currencyField, COMMENTS, STATE, IS_DELETEMARK, MODIFY_TIME, CREATE_TIME, CREATE_USER_ID, MODIFY_USER_ID,areaType, dksName, dksNameTo, doctorCodeTo, doctorNameTo
     </sql>
     <update id="updateYbReconsiderPriorityLevel" parameterType="cc.mrbird.febs.yb.entity.YbReconsiderPriorityLevel">
         update yb_reconsider_priority_level
         <trim prefix="set" suffixOverrides=",">
-<if test="rplName != null">rplName=#{rplName},</if>
-<if test="doctorCode != null">doctorCode=#{doctorCode},</if>
-<if test="doctorName != null">doctorName=#{doctorName},</if>
-<if test="deptCode != null">deptCode=#{deptCode},</if>
-<if test="deptName != null">deptName=#{deptName},</if>
-<if test="deptState != null">deptState=#{deptState},</if>
-<if test="deptType != null">deptType=#{deptType},</if>
-<if test="personType != null">personType=#{personType},</if>
-<if test="isFixDept != null">isFixDept=#{isFixDept},</if>
-<if test="operatorId != null">operatorId=#{operatorId},</if>
-<if test="operatorName != null">operatorName=#{operatorName},</if>
-<if test="currencyField != null">currencyField=#{currencyField},</if>
-<if test="comments != null">COMMENTS=#{comments},</if>
-<if test="state != null">STATE=#{state},</if>
-<if test="isDeletemark != null">IS_DELETEMARK=#{isDeletemark},</if>
-<if test="modifyTime != null">MODIFY_TIME=#{modifyTime},</if>
-<if test="createTime != null">CREATE_TIME=#{createTime},</if>
-<if test="createUserId != null">CREATE_USER_ID=#{createUserId},</if>
-<if test="modifyUserId != null">MODIFY_USER_ID=#{modifyUserId},</if>
-<if test="areaType != null">areaType=#{areaType},</if>
+            <if test="rplName != null">rplName=#{rplName},</if>
+            <if test="doctorCode != null">doctorCode=#{doctorCode},</if>
+            <if test="doctorName != null">doctorName=#{doctorName},</if>
+            <if test="deptCode != null">deptCode=#{deptCode},</if>
+            <if test="deptName != null">deptName=#{deptName},</if>
+            <if test="deptState != null">deptState=#{deptState},</if>
+            <if test="deptType != null">deptType=#{deptType},</if>
+            <if test="personType != null">personType=#{personType},</if>
+            <if test="isFixDept != null">isFixDept=#{isFixDept},</if>
+            <if test="operatorId != null">operatorId=#{operatorId},</if>
+            <if test="operatorName != null">operatorName=#{operatorName},</if>
+            <if test="currencyField != null">currencyField=#{currencyField},</if>
+            <if test="comments != null">COMMENTS=#{comments},</if>
+            <if test="state != null">STATE=#{state},</if>
+            <if test="isDeletemark != null">IS_DELETEMARK=#{isDeletemark},</if>
+            <if test="modifyTime != null">MODIFY_TIME=#{modifyTime},</if>
+            <if test="createTime != null">CREATE_TIME=#{createTime},</if>
+            <if test="createUserId != null">CREATE_USER_ID=#{createUserId},</if>
+            <if test="modifyUserId != null">MODIFY_USER_ID=#{modifyUserId},</if>
+            <if test="areaType != null">areaType=#{areaType},</if>
+            <if test="dksName != null">dksName=#{dksName},</if>
+            <if test="dksNameTo != null">dksNameTo=#{dksNameTo},</if>
+            <if test="doctorCodeTo != null">doctorCodeTo=#{doctorCodeTo},</if>
+            <if test="doctorNameTo != null">doctorNameTo=#{doctorNameTo},</if>
         </trim>
-                where id=#{id}
+        where id=#{id}
 
     </update>
-    <select id="findYbReconsiderPriorityLevel" resultType="cc.mrbird.febs.yb.entity.YbReconsiderPriorityLevel" parameterType="cc.mrbird.febs.yb.entity.YbReconsiderPriorityLevel">
-        select  *  from yb_reconsider_priority_level
-        where  1=1
-            <if test="ybReconsiderPriorityLevel.id != null and ybReconsiderPriorityLevel.id != ''"> and id =#{ ybReconsiderPriorityLevel.id} </if>
-            <if test="ybReconsiderPriorityLevel.rplName != null and ybReconsiderPriorityLevel.rplName != ''"> and rplName like concat('%', #{ ybReconsiderPriorityLevel.rplName} ,'%')</if>
-            <if test="ybReconsiderPriorityLevel.doctorCode != null and ybReconsiderPriorityLevel.doctorCode != ''"> and doctorCode like concat('%', #{ ybReconsiderPriorityLevel.doctorCode} ,'%')</if>
-            <if test="ybReconsiderPriorityLevel.doctorName != null and ybReconsiderPriorityLevel.doctorName != ''"> and doctorName like concat('%', #{ ybReconsiderPriorityLevel.doctorName} ,'%')</if>
-            <if test="ybReconsiderPriorityLevel.deptCode != null and ybReconsiderPriorityLevel.deptCode != ''"> and deptCode like concat('%', #{ ybReconsiderPriorityLevel.deptCode} ,'%')</if>
-            <if test="ybReconsiderPriorityLevel.deptName != null and ybReconsiderPriorityLevel.deptName != ''"> and deptName like concat('%', #{ ybReconsiderPriorityLevel.deptName} ,'%')</if>
-        <if test="ybReconsiderPriorityLevel.deptState != null"> and deptState =#{ ybReconsiderPriorityLevel.deptState} </if>
-        <if test="ybReconsiderPriorityLevel.deptType != null"> and deptType =#{ ybReconsiderPriorityLevel.deptType} </if>
-        <if test="ybReconsiderPriorityLevel.personType != null"> and personType =#{ ybReconsiderPriorityLevel.personType} </if>
-        <if test="ybReconsiderPriorityLevel.isFixDept != null"> and isFixDept =#{ ybReconsiderPriorityLevel.isFixDept} </if>
-            <if test="ybReconsiderPriorityLevel.operatorName != null and ybReconsiderPriorityLevel.operatorName != ''"> and operatorName like concat('%', #{ ybReconsiderPriorityLevel.operatorName} ,'%')</if>
-            <if test="ybReconsiderPriorityLevel.currencyField != null and ybReconsiderPriorityLevel.currencyField != ''"> and currencyField like concat('%', #{ ybReconsiderPriorityLevel.currencyField} ,'%')</if>
-            <if test="ybReconsiderPriorityLevel.comments != null and ybReconsiderPriorityLevel.comments != ''"> and COMMENTS like concat('%', #{ ybReconsiderPriorityLevel.comments} ,'%')</if>
-        <if test="ybReconsiderPriorityLevel.state != null"> and STATE =#{ ybReconsiderPriorityLevel.state} </if>
-        <if test="ybReconsiderPriorityLevel.isDeletemark != null"> and IS_DELETEMARK =#{ ybReconsiderPriorityLevel.isDeletemark} </if>
+    <select id="findYbReconsiderPriorityLevel" resultType="cc.mrbird.febs.yb.entity.YbReconsiderPriorityLevel"
+            parameterType="cc.mrbird.febs.yb.entity.YbReconsiderPriorityLevel">
+        select * from yb_reconsider_priority_level
+        where 1=1
+        <if test="ybReconsiderPriorityLevel.id != null and ybReconsiderPriorityLevel.id != ''">and id
+            =#{ ybReconsiderPriorityLevel.id}
+        </if>
+        <if test="ybReconsiderPriorityLevel.rplName != null and ybReconsiderPriorityLevel.rplName != ''">and rplName
+            like concat('%', #{ ybReconsiderPriorityLevel.rplName} ,'%')
+        </if>
+        <if test="ybReconsiderPriorityLevel.doctorCode != null and ybReconsiderPriorityLevel.doctorCode != ''">and
+            doctorCode like concat('%', #{ ybReconsiderPriorityLevel.doctorCode} ,'%')
+        </if>
+        <if test="ybReconsiderPriorityLevel.doctorName != null and ybReconsiderPriorityLevel.doctorName != ''">and
+            doctorName like concat('%', #{ ybReconsiderPriorityLevel.doctorName} ,'%')
+        </if>
+        <if test="ybReconsiderPriorityLevel.deptCode != null and ybReconsiderPriorityLevel.deptCode != ''">and deptCode
+            like concat('%', #{ ybReconsiderPriorityLevel.deptCode} ,'%')
+        </if>
+        <if test="ybReconsiderPriorityLevel.deptName != null and ybReconsiderPriorityLevel.deptName != ''">and deptName
+            like concat('%', #{ ybReconsiderPriorityLevel.deptName} ,'%')
+        </if>
+        <if test="ybReconsiderPriorityLevel.deptState != null">and deptState =#{ ybReconsiderPriorityLevel.deptState}
+        </if>
+        <if test="ybReconsiderPriorityLevel.deptType != null">and deptType =#{ ybReconsiderPriorityLevel.deptType}</if>
+        <if test="ybReconsiderPriorityLevel.personType != null">and personType
+            =#{ ybReconsiderPriorityLevel.personType}
+        </if>
+        <if test="ybReconsiderPriorityLevel.isFixDept != null">and isFixDept =#{ ybReconsiderPriorityLevel.isFixDept}
+        </if>
+        <if test="ybReconsiderPriorityLevel.operatorName != null and ybReconsiderPriorityLevel.operatorName != ''">and
+            operatorName like concat('%', #{ ybReconsiderPriorityLevel.operatorName} ,'%')
+        </if>
+        <if test="ybReconsiderPriorityLevel.currencyField != null and ybReconsiderPriorityLevel.currencyField != ''">and
+            currencyField like concat('%', #{ ybReconsiderPriorityLevel.currencyField} ,'%')
+        </if>
+        <if test="ybReconsiderPriorityLevel.comments != null and ybReconsiderPriorityLevel.comments != ''">and COMMENTS
+            like concat('%', #{ ybReconsiderPriorityLevel.comments} ,'%')
+        </if>
+        <if test="ybReconsiderPriorityLevel.state != null">and STATE =#{ ybReconsiderPriorityLevel.state}</if>
+        <if test="ybReconsiderPriorityLevel.isDeletemark != null">and IS_DELETEMARK
+            =#{ ybReconsiderPriorityLevel.isDeletemark}
+        </if>
         <if test="ybReconsiderPriorityLevel.modifyTimeFrom!= null">
             AND ybReconsiderPriorityLevel.MODIFY_TIME <![CDATA[ >= ]]>  modifyTimeFrom}
         </if>
@@ -88,7 +121,7 @@
         <if test="ybReconsiderPriorityLevel.createTimeTo!= null">
             AND ybReconsiderPriorityLevel.CREATE_TIME <![CDATA[ <= ]]>  createTimeTo}
         </if>
-        <if test="ybReconsiderPriorityLevel.areaType != null"> and areaType =#{ ybReconsiderPriorityLevel.areaType} </if>
-</select>
+        <if test="ybReconsiderPriorityLevel.areaType != null">and areaType =#{ ybReconsiderPriorityLevel.areaType}</if>
+    </select>
 
 </mapper>

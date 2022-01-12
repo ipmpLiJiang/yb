@@ -41,7 +41,7 @@
         <a-select
           allowClear
           :showSearch="true"
-          v-decorator="['ksType']"
+          v-decorator="['dksName']"
         >
           <a-select-option :value="d.text" v-for="d in ksList" :key="d.text">
             {{d.text}}
@@ -116,7 +116,7 @@ export default {
       })
     },
     setFields () {
-      let values = this.form.getFieldsValue(['deptId', 'deptName', 'ksType', 'spellCode'])
+      let values = this.form.getFieldsValue(['deptId', 'deptName', 'dksName', 'spellCode'])
       if (typeof values !== 'undefined') {
         Object.keys(values).forEach(_key => { this.ybDept[_key] = values[_key] })
       }

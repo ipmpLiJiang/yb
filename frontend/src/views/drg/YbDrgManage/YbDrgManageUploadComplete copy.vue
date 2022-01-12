@@ -32,7 +32,7 @@
                   v-bind="formItemLayout"
                   label="复议科室"
                 >
-                  {{ybDrgManageUpload.readyDeptCode}}-{{ybDrgManageUpload.readyDeptName}}
+                  {{ybDrgManageUpload.readyDksName}}
                 </a-form-item>
               </a-col>
               <a-col :span=11>

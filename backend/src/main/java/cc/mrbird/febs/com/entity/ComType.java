@@ -35,6 +35,21 @@ public class ComType implements Serializable, Comparable<ComType> {
     private static final long serialVersionUID = 1L;
 
     /**
+     * 1 医管类型维护
+     */
+    public static final int CTTYPE_1 = 1;
+
+    /**
+     * 2 DRG上传类型维护
+     */
+    public static final int CTTYPE_2 = 2;
+
+    /**
+     * 3 病区科室维护
+     */
+    public static final int CTTYPE_3 = 3;
+
+    /**
      * 管理字典
      */
     @TableId(value = "id", type = IdType.AUTO)

@@ -142,9 +142,9 @@ export default {
       },
       {
         title: '复议科室',
-        dataIndex: 'verifyDeptName',
+        dataIndex: 'verifyDksName',
         fixed: 'right',
-        width: 200
+        width: 150
       },
       {
         title: '复议医生',
@@ -193,12 +193,7 @@ export default {
           applyDataId: target.applyDataId,
           verifyDoctorCode: target.verifyDoctorCode,
           verifyDoctorName: target.verifyDoctorName,
-          verifyDeptCode: target.verifyDeptCode,
-          verifyDeptName: target.verifyDeptName,
-          orderDoctorCode: target.orderDoctorCode,
-          orderDoctorName: target.orderDoctorName,
-          orderDeptCode: target.orderDeptCode,
-          orderDeptName: target.orderDeptName,
+          verifyDksName: target.verifyDksName,
           applyDateStr: target.applyDateStr,
           orderNumber: target.orderNumber,
           orderNum: target.orderNum,
@@ -222,12 +217,7 @@ export default {
               applyDataId: target.applyDataId,
               verifyDoctorCode: target.verifyDoctorCode,
               verifyDoctorName: target.verifyDoctorName,
-              verifyDeptCode: target.verifyDeptCode,
-              verifyDeptName: target.verifyDeptName,
-              orderDoctorCode: target.orderDoctorCode,
-              orderDoctorName: target.orderDoctorName,
-              orderDeptCode: target.orderDeptCode,
-              orderDeptName: target.orderDeptName,
+              verifyDksName: target.verifyDksName,
               applyDateStr: target.applyDateStr,
               orderNumber: target.orderNumber,
               orderNum: target.orderNum,
@@ -367,8 +357,8 @@ export default {
         if (this.searchItem.doctor.docName !== '') {
           params.verifyDoctorName = this.searchItem.doctor.docName
         }
-        if (this.searchItem.dept.deptName !== '') {
-          params.verifyDeptName = this.searchItem.dept.deptName
+        if (this.searchItem.dept.dksName !== '') {
+          params.verifyDksName = this.searchItem.dept.dksName
         }
         if (this.searchItem.order.orderNumber !== '') {
           params.orderNumber = this.searchItem.order.orderNumber

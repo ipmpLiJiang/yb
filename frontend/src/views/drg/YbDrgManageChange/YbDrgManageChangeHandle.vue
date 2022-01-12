@@ -33,7 +33,7 @@
                         v-bind="formItemLayout0"
                         label="申请科室"
                       >
-                        {{ybDrgManageChangeHandle.readyDeptCode}}-{{ybDrgManageChangeHandle.readyDeptName}}
+                        {{ybDrgManageChangeHandle.readyDksName}}
                       </a-form-item>
                     </a-col>
                     <a-col :span=14>
@@ -41,12 +41,12 @@
                         v-bind="formItemLayout"
                         label="变更为"
                       >
-                        <input-select
-                        ref="inputSelectChangeDept"
-                        :type=1
-                        @selectChange=selectDeptChange
+                        <input-selectdks
+                        ref="inputSelectChangeDks"
+                        :ctType=3
+                        @selectChange=selectDksChange
                         >
-                        </input-select>
+                        </input-selectdks>
                       </a-form-item>
                     </a-col>
                   </a-row>
@@ -152,6 +152,7 @@
 <script>
 import moment from 'moment'
 import InputSelect from '../../common/InputSelect'
+import InputSelectdks from '../../common/InputSelectDks'
 import YbDrgDataModule from '../YbDrgFunModule/YbDrgDataModule'
 import YbDrgJkModule from '../YbDrgFunModule/YbDrgJkModule'
 const formItemLayout0 = {
@@ -173,7 +174,7 @@ const formItemLayout2 = {
 export default {
   name: 'YbDrgManageChangeHandle',
   components: {
-    YbDrgDataModule, YbDrgJkModule, InputSelect},
+    YbDrgDataModule, YbDrgJkModule, InputSelect, InputSelectdks},
   props: {
     handleVisiable: {
       default: false
@@ -216,16 +217,15 @@ export default {
       }, 200)
     },
     setForms (amch) {
-      let deptName = amch.changeDeptCode !== '' && amch.changeDeptCode !== undefined ? amch.changeDeptName : amch.readyDeptName
-      let deptCode = amch.changeDeptCode !== '' && amch.changeDeptCode !== undefined ? amch.changeDeptCode : amch.readyDeptCode
+      let deptName = amch.changeDksName !== '' && amch.changeDksName !== undefined ? amch.changeDksName : amch.readyDksName
       let doctorName = amch.changeDoctorCode !== '' && amch.changeDoctorCode !== undefined ? amch.changeDoctorName : amch.readyDoctorName
       let doctorCode = amch.changeDoctorCode !== '' && amch.changeDoctorCode !== undefined ? amch.changeDoctorCode : amch.readyDoctorCode
 
-      this.$refs.inputSelectChangeDept.dataSource = [{
-        text: deptCode + '-' + deptName,
-        value: deptCode
+      this.$refs.inputSelectChangeDks.dataSource = [{
+        text: deptName,
+        value: deptName
       }]
-      this.$refs.inputSelectChangeDept.value = deptCode
+      this.$refs.inputSelectChangeDks.value = deptName
 
       this.$refs.inputSelectChangeDoctor.dataSource = [{
         text: doctorCode + '-' + doctorName,
@@ -235,8 +235,7 @@ export default {
 
       this.ybDrgManageChangeHandle.changeDoctorCode = doctorCode
       this.ybDrgManageChangeHandle.changeDoctorName = doctorName
-      this.ybDrgManageChangeHandle.changeDeptCode = deptCode
-      this.ybDrgManageChangeHandle.changeDeptName = deptName
+      this.ybDrgManageChangeHandle.changeDksName = deptName
 
       setTimeout(() => {
         this.$refs.ybDrgJkModule.search()
@@ -246,9 +245,8 @@ export default {
       this.ybDrgManageChangeHandle.changeDoctorCode = item.value
       this.ybDrgManageChangeHandle.changeDoctorName = item.text
     },
-    selectDeptChange (item) {
-      this.ybDrgManageChangeHandle.changeDeptCode = item.value
-      this.ybDrgManageChangeHandle.changeDeptName = item.text
+    selectDksChange (item) {
+      this.ybDrgManageChangeHandle.changeDksName = item.text
     },
     handleRejectSubmit () {
       this.form.validateFields(['refuseReason'], (err, values) => {
@@ -262,8 +260,7 @@ export default {
           ybDrgManage.id = this.ybDrgManageChangeHandle.id
           ybDrgManage.applyDataId = this.ybDrgManageChangeHandle.applyDataId
           ybDrgManage.verifyId = this.ybDrgManageChangeHandle.verifyId
-          ybDrgManage.readyDeptCode = this.ybDrgManageChangeHandle.readyDeptCode
-          ybDrgManage.readyDeptName = this.ybDrgManageChangeHandle.readyDeptName
+          ybDrgManage.readyDksName = this.ybDrgManageChangeHandle.readyDksName
           ybDrgManage.readyDoctorCode = this.ybDrgManageChangeHandle.readyDoctorCode
           ybDrgManage.readyDoctorName = this.ybDrgManageChangeHandle.readyDoctorName
           ybDrgManage.areaType = this.user.areaType.value
@@ -280,7 +277,7 @@ export default {
       })
     },
     handleSubmit () {
-      this.form.validateFields(['changeDeptName', 'changeDoctorName'], (err, values) => {
+      this.form.validateFields(['changeDksName', 'changeDoctorName'], (err, values) => {
         if (!err) {
           this.loading = true
           this.spinning = true
@@ -289,12 +286,10 @@ export default {
           ybDrgManage.id = this.ybDrgManageChangeHandle.id
           ybDrgManage.applyDataId = this.ybDrgManageChangeHandle.applyDataId
           ybDrgManage.verifyId = this.ybDrgManageChangeHandle.verifyId
-          ybDrgManage.changeDeptCode = this.ybDrgManageChangeHandle.changeDeptCode
-          ybDrgManage.changeDeptName = this.ybDrgManageChangeHandle.changeDeptName
+          ybDrgManage.changeDksName = this.ybDrgManageChangeHandle.changeDksName
           ybDrgManage.changeDoctorCode = this.ybDrgManageChangeHandle.changeDoctorCode
           ybDrgManage.changeDoctorName = this.ybDrgManageChangeHandle.changeDoctorName
-          ybDrgManage.readyDeptCode = this.ybDrgManageChangeHandle.readyDeptCode
-          ybDrgManage.readyDeptName = this.ybDrgManageChangeHandle.readyDeptName
+          ybDrgManage.readyDksName = this.ybDrgManageChangeHandle.readyDksName
           ybDrgManage.readyDoctorCode = this.ybDrgManageChangeHandle.readyDoctorCode
           ybDrgManage.readyDoctorName = this.ybDrgManageChangeHandle.readyDoctorName
           ybDrgManage.areaType = this.user.areaType.value

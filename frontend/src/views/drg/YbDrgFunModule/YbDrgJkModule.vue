@@ -7,7 +7,7 @@
             入&nbsp;&nbsp;院&nbsp;&nbsp;&nbsp;日&nbsp;&nbsp;期：
           </a-col>
           <a-col :span=8>
-            {{ybDrgJkModule.ryrq}}
+            {{ybDrgJkModule.ryDate}}
           </a-col>
           <a-col :span=1>
             &nbsp;
@@ -16,7 +16,7 @@
             出&nbsp;&nbsp;院&nbsp;&nbsp;&nbsp;日&nbsp;&nbsp;期：
           </a-col>
           <a-col :span=9>
-            {{ybDrgJkModule.cyrq}}
+            {{ybDrgJkModule.cyDate}}
           </a-col>
         </a-row>
         <a-row class="tbMarginBottom">
@@ -24,7 +24,7 @@
               DRG分组编码：
           </a-col>
           <a-col :span=8>
-            {{ybDrgJkModule.fzbm}}
+            {{ybDrgJkModule.fzCode}}
           </a-col>
           <a-col :span=1>
             &nbsp;
@@ -33,7 +33,7 @@
             DRG分组名称：
           </a-col>
           <a-col :span=9>
-            {{ybDrgJkModule.fzmc}}
+            {{ybDrgJkModule.fzName}}
           </a-col>
         </a-row>
         <a-row class="tbMarginBottom">
@@ -41,7 +41,7 @@
             医保主要诊断编码：
           </a-col>
           <a-col :span=8>
-            {{ybDrgJkModule.zyzdbm}}
+            {{ybDrgJkModule.zyzdCode}}
           </a-col>
           <a-col :span=1>
             &nbsp;
@@ -50,7 +50,7 @@
             医保主要诊断名称：
           </a-col>
           <a-col :span=9>
-            {{ybDrgJkModule.zyzdmc}}
+            {{ybDrgJkModule.zyzdName}}
           </a-col>
         </a-row>
         <a-row class="tbMarginBottom">
@@ -58,7 +58,7 @@
             医保主手术编码：
           </a-col>
           <a-col :span=8>
-            {{ybDrgJkModule.zssbm}}
+            {{ybDrgJkModule.zssCode}}
           </a-col>
           <a-col :span=1>
             &nbsp;
@@ -67,7 +67,7 @@
             医保主手术名称：
           </a-col>
           <a-col :span=9>
-            {{ybDrgJkModule.zssmc}}
+            {{ybDrgJkModule.zssName}}
           </a-col>
         </a-row>
         <a-row class="tbMarginBottom">
@@ -75,7 +75,7 @@
             其他诊断编码：
           </a-col>
           <a-col :span=8>
-            {{ybDrgJkModule.qtzdbm}}
+            {{ybDrgJkModule.qtzdCode}}
           </a-col>
           <a-col :span=1>
             &nbsp;
@@ -84,7 +84,7 @@
             其他诊断名称：
           </a-col>
           <a-col :span=9>
-            {{ybDrgJkModule.qtzdmc}}
+            {{ybDrgJkModule.qtzdName}}
           </a-col>
         </a-row>
         <a-row class="tbMarginBottom">
@@ -92,7 +92,7 @@
             其他手术编码：
           </a-col>
           <a-col :span=8>
-            {{ybDrgJkModule.qtssbm}}
+            {{ybDrgJkModule.qtssCode}}
           </a-col>
           <a-col :span=1>
             &nbsp;
@@ -101,7 +101,7 @@
               其他手术名称：
           </a-col>
           <a-col :span=9>
-              {{ybDrgJkModule.qtssmc}}
+              {{ybDrgJkModule.qtssName}}
           </a-col>
         </a-row>
         <a-row class="tbMarginBottom">
@@ -109,13 +109,13 @@
             科&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;室：
           </a-col>
           <a-col :span=4>
-            {{ybDrgJkModule.ksmc}}
+            {{ybDrgJkModule.deptName}}
           </a-col>
           <a-col :span=2>
             病&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;区：
           </a-col>
           <a-col :span=4>
-            {{ybDrgJkModule.bqmc}}
+            {{ybDrgJkModule.areaName}}
           </a-col>
           <a-col :span=2>
             权&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;重：
@@ -123,31 +123,51 @@
           <a-col :span=4>
             {{ybDrgJkModule.qz}}
           </a-col>
+          <a-col :span=2>
+            统筹支付：
+          </a-col>
+          <a-col :span=4>
+            {{ybDrgJkModule.tczf}}
+          </a-col>
         </a-row>
         <a-row class="tbMarginBottom">
           <a-col :span=2>
             科&nbsp;&nbsp;主&nbsp;&nbsp;任：
           </a-col>
           <a-col :span=4>
-            {{ybDrgJkModule.kzrmc}}
+            {{ybDrgJkModule.kzrDocName}}
           </a-col>
           <a-col :span=2>
             主任医师：
           </a-col>
           <a-col :span=4>
-            {{ybDrgJkModule.zrysmc}}
+            {{ybDrgJkModule.zrysDocName}}
           </a-col>
           <a-col :span=2>
             主治医师：
           </a-col>
           <a-col :span=4>
-            {{ybDrgJkModule.zzysmc}}
+            {{ybDrgJkModule.zzysDocName}}
           </a-col>
           <a-col :span=2>
             住院医师：
           </a-col>
           <a-col :span=4>
-            {{ybDrgJkModule.zyysmc}}
+            {{ybDrgJkModule.zyysDocName}}
+          </a-col>
+        </a-row>
+        <a-row class="tbMarginBottom">
+          <a-col :span=2>
+            医疗组科室：
+          </a-col>
+          <a-col :span=4>
+            {{ybDrgJkModule.ylzDeptName}}
+          </a-col>
+          <a-col :span=2>
+            医疗组医师：
+          </a-col>
+          <a-col :span=4>
+            {{ybDrgJkModule.ylzDocName}}
           </a-col>
         </a-row>
       </a-row>
