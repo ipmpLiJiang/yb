@@ -7,6 +7,8 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.List;
+
 /**
  * <p>
  * Mapper 接口
@@ -19,5 +21,8 @@ public interface YbAppealManageMapper extends BaseMapper<YbAppealManage> {
     void updateYbAppealManage(YbAppealManage ybAppealManage);
 
     IPage<YbAppealManage> findYbAppealManage(Page page, @Param("ybAppealManage") YbAppealManage ybAppealManage);
-    int findAppealManageResetCheckCount(@Param("applyDateStr") String applyDateStr,@Param("areaType")  Integer areaType);
+    int findAppealManageResetCheckCount(@Param("applyDateStr") String applyDateStr,@Param("areaType") Integer areaType);
+
+
+    List<YbAppealManage> findAppealManageBySoutInActList(@Param("ybAppealManage") YbAppealManage ybAppealManage,@Param("typeList") List<Integer> typeList);
 }

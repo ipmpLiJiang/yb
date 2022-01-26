@@ -1,6 +1,6 @@
 <template>
   <div id="tab" style="margin: 0px!important">
-        <!-- 已完成 表格区域 -->
+        <!-- 已拒绝 表格区域 -->
         <a-table
           ref="TableInfo"
           :columns="columns"
@@ -17,7 +17,7 @@
           <template slot="operationLy" slot-scope="text, record, index">
             <span :title="record.ly">{{record.ly}}</span>
           </template>
-          <template
+        <template
             slot="operation"
             slot-scope="text, record, index"
           >
@@ -36,7 +36,7 @@
 <script>
 import moment from 'moment'
 export default {
-  name: 'YbDrgManageOverdue',
+  name: 'YbDrgManageRefused',
   props: {
     applyDate: {
       default: ''
@@ -132,6 +132,23 @@ export default {
         scopedSlots: { customRender: 'operationLy' },
         ellipsis: true,
         width: 250
+      },
+      {
+        title: '确认截止时间',
+        dataIndex: 'enableDate',
+        customRender: (text, row, index) => {
+          if (text !== '' && text !== null) {
+            if (row.isEnableDate === 1) {
+              return moment(text).format(this.tableFormat) + ' 24:00'
+            } else {
+              return moment(row.applyEndDate).format(this.tableFormat1)
+            }
+          } else {
+            return text
+          }
+        },
+        fixed: 'right',
+        width: 120
       },
       {
         title: '复议截止日期',
@@ -270,7 +287,7 @@ export default {
     fetch (params = {}) {
       this.loading = true
       params.applyDateStr = this.applyDate
-      params.state = 7
+      params.state = 2
       params.currencyField = this.searchItem.value
       params.areaType = this.user.areaType.value
       params.keyField = this.searchItem.keyField
@@ -287,7 +304,7 @@ export default {
       }
       // params.sortField = 'ad.orderNum'
       // params.sortOrder = 'ascend'
-      this.$get('ybDrgManageView', {
+      this.$get('ybDrgManageView/drgManageDeptView', {
         ...params
       }).then((r) => {
         let data = r.data

@@ -7,6 +7,8 @@ import cc.mrbird.febs.system.domain.User;
 import cc.mrbird.febs.drg.dao.YbDrgManageViewMapper;
 import cc.mrbird.febs.drg.entity.*;
 import cc.mrbird.febs.drg.service.*;
+import cc.mrbird.febs.yb.entity.YbDept;
+import cc.mrbird.febs.yb.service.IYbDeptService;
 import cc.mrbird.febs.yb.service.IYbPersonService;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -46,8 +48,11 @@ public class YbDrgManageViewServiceImpl extends ServiceImpl<YbDrgManageViewMappe
     @Autowired
     IYbDrgApplyDataService iYbDrgApplyDataService;
 
+    @Autowired
+    IYbDeptService iYbDeptService;
+
     @Override
-    public IPage<YbDrgManageView> findDrgManageView(QueryRequest request, YbDrgManageView ybDrgManageView, String keyField) {
+    public IPage<YbDrgManageView> findDrgManageView(QueryRequest request, YbDrgManageView ybDrgManageView, String keyField, boolean isConf) {
         try {
             String applyDateStr = ybDrgManageView.getApplyDateStr();
             Integer areaType = ybDrgManageView.getAreaType();
@@ -59,12 +64,12 @@ public class YbDrgManageViewServiceImpl extends ServiceImpl<YbDrgManageViewMappe
                 List<String> strList = new ArrayList<>();
                 List<YbDrgManageView> list = new ArrayList<>();
                 List<YbDrgManage> manageList = new ArrayList<>();
-                if (value != null && !value.equals("") && keyField.equals("readyDoctorName")) {
-                    LambdaQueryWrapper<YbDrgManage> queryWrapper = new LambdaQueryWrapper<>();
-                    queryWrapper.eq(YbDrgManage::getApplyDateStr, applyDateStr);
-                    queryWrapper.eq(YbDrgManage::getAreaType, areaType);
-                    queryWrapper.eq(YbDrgManage::getState, state);
 
+                LambdaQueryWrapper<YbDrgManage> queryWrapper = new LambdaQueryWrapper<>();
+                queryWrapper.eq(YbDrgManage::getApplyDateStr, applyDateStr);
+                queryWrapper.eq(YbDrgManage::getAreaType, areaType);
+                queryWrapper.eq(YbDrgManage::getState, state);
+                if (value != null && !value.equals("") && keyField.equals("readyDoctorName")) {
                     strList = this.iYbPersonService.findPersonCodeList(value);
                     if (strList.size() > 0) {
                         if (strList.size() == 1) {
@@ -73,25 +78,40 @@ public class YbDrgManageViewServiceImpl extends ServiceImpl<YbDrgManageViewMappe
                             queryWrapper.in(YbDrgManage::getReadyDoctorCode, strList);
                         }
                     }
-
-                    manageList = iYbDrgManageService.list(queryWrapper);
                 } else {
-                    YbDrgManage queryManage = new YbDrgManage();
-                    queryManage.setApplyDateStr(applyDateStr);
-                    queryManage.setAreaType(areaType);
-                    queryManage.setState(state);
-
                     if (value != null && !value.equals("") && keyField.equals("readyDoctorCode")) {
-                        queryManage.setReadyDoctorCode(value);
+                        queryWrapper.eq(YbDrgManage::getReadyDoctorCode, value);
                     }
-                    if (ybDrgManageView.getReadyDoctorCode() != null) {
-                        queryManage.setReadyDoctorCode(ybDrgManageView.getReadyDoctorCode());
+                    if (ybDrgManageView.getReadyDoctorCode() != null && !isConf) {
+                        queryWrapper.eq(YbDrgManage::getReadyDoctorCode, ybDrgManageView.getReadyDoctorCode());
                     }
                     if (value != null && !value.equals("") && keyField.equals("orderNumber")) {
-                        queryManage.setOrderNumber(value);
+                        queryWrapper.eq(YbDrgManage::getOrderNumber, value);
                     }
-                    manageList = iYbDrgManageService.findDrgManageList(queryManage);
                 }
+
+                if (ybDrgManageView.getReadyDoctorCode() != null && isConf) {
+                    List<YbDept> deptlist = iYbDeptService.findDeptAppealConfireByUserList(ybDrgManageView.getReadyDoctorCode(), areaType);
+                    if (deptlist.size() > 0) {
+                        strList = new ArrayList<>();
+                        for (YbDept item : deptlist) {
+                            if (!strList.contains(item.getDksName())) {
+                                strList.add(item.getDksName());
+                            }
+                        }
+                        if (strList.size() > 0) {
+                            if (strList.size() == 1) {
+                                queryWrapper.eq(YbDrgManage::getReadyDksName, strList.get(0));
+                            } else {
+                                queryWrapper.in(YbDrgManage::getReadyDksName, strList);
+                            }
+                        }
+                    } else {
+                        queryWrapper.eq(YbDrgManage::getReadyDksName, "dks");
+                    }
+                }
+
+                manageList = iYbDrgManageService.list(queryWrapper);
                 List<YbDrgApplyData> applyDataList = this.iYbDrgApplyDataService.getApplyDataByKeyFieldList(drgApply.getId(), keyField, value);
 
                 if (manageList.size() > 0 && applyDataList.size() > 0) {
@@ -150,7 +170,7 @@ public class YbDrgManageViewServiceImpl extends ServiceImpl<YbDrgManageViewMappe
         }
     }
 
-    private  YbDrgManageView getYbDrgManageView(YbDrgManage am,YbDrgApplyData drgApplyData){
+    private YbDrgManageView getYbDrgManageView(YbDrgManage am, YbDrgApplyData drgApplyData) {
         YbDrgManageView amv = new YbDrgManageView();
         amv.setPid(drgApplyData.getPid());
         amv.setKs(drgApplyData.getKs());

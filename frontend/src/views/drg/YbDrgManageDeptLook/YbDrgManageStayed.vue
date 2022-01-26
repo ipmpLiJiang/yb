@@ -1,6 +1,6 @@
 <template>
   <div id="tab" style="margin: 0px!important">
-        <!-- 已完成 表格区域 -->
+        <!-- 待申诉 表格区域 -->
         <a-table
           ref="TableInfo"
           :columns="columns"
@@ -36,7 +36,7 @@
 <script>
 import moment from 'moment'
 export default {
-  name: 'YbDrgManageOverdue',
+  name: 'YbDrgManageStayed',
   props: {
     applyDate: {
       default: ''
@@ -185,10 +185,6 @@ export default {
       return (this.pagination.defaultCurrent - 1) *
             this.pagination.defaultPageSize + index + 1
     },
-    look (record, index) {
-      record.rowNo = this.rowNo(index)
-      this.$emit('look', record)
-    },
     handleClickRow (record, index) {
       return {
         on: {
@@ -206,6 +202,10 @@ export default {
     },
     onSelectChange (selectedRowKeys) {
       this.selectedRowKeys = selectedRowKeys
+    },
+    look (record, index) {
+      record.rowNo = this.rowNo(index)
+      this.$emit('look', record)
     },
     onHistory () {
       let selectedRowKeys = this.selectedRowKeys
@@ -270,7 +270,7 @@ export default {
     fetch (params = {}) {
       this.loading = true
       params.applyDateStr = this.applyDate
-      params.state = 7
+      params.state = 1
       params.currencyField = this.searchItem.value
       params.areaType = this.user.areaType.value
       params.keyField = this.searchItem.keyField
@@ -287,7 +287,7 @@ export default {
       }
       // params.sortField = 'ad.orderNum'
       // params.sortOrder = 'ascend'
-      this.$get('ybDrgManageView', {
+      this.$get('ybDrgManageView/drgManageDeptView', {
         ...params
       }).then((r) => {
         let data = r.data

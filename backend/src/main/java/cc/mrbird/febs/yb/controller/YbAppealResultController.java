@@ -1,5 +1,6 @@
 package cc.mrbird.febs.yb.controller;
 
+import cc.mrbird.febs.com.controller.DataTypeHelpers;
 import cc.mrbird.febs.com.entity.ComFile;
 import cc.mrbird.febs.com.service.IComFileService;
 import cc.mrbird.febs.common.annotation.Log;
@@ -19,6 +20,7 @@ import cc.mrbird.febs.system.domain.User;
 import com.baomidou.mybatisplus.core.toolkit.StringPool;
 import com.google.common.io.Files;
 import com.wuwenze.poi.ExcelKit;
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -174,6 +176,7 @@ public class YbAppealResultController extends BaseController {
             String loadId = ybAppealResult.getId();//获得传过来的 sourceType==1 的 manageId
             //获取当前是否上传过附件 sourceType==1
             List<ComFile> comFileList = this.iComFileService.findListComFile(loadId,null);
+            Date thisDate = new Date();
             if (comFileList.size() == 0) {
                 String applyDateStr = ybAppealResult.getApplyDateStr(); //获得传过来的 applyDateStr
                 //获得之前申诉记录
@@ -196,7 +199,6 @@ public class YbAppealResultController extends BaseController {
                         if (!f.exists()) {
                             f.mkdirs(); //创建目录
                         }
-
                         for (ComFile comfile : comFileList) {
                             ComFile file = new ComFile();
                             file.setId(UUID.randomUUID().toString());
@@ -205,8 +207,9 @@ public class YbAppealResultController extends BaseController {
                             file.setClientName(comfile.getClientName());
                             file.setRefTabTable(comfile.getRefTabTable());
                             file.setIsDeletemark(1);
-                            file.setCreateTime(new Date());
+                            file.setCreateTime(thisDate);
 
+                            thisDate = this.addSecond(thisDate,1);
                             String oldFileUrl = oldDept + "/" + comfile.getServerName();
                             String newFileUrl = newDept + "/" + comfile.getServerName();
                             File oldFile = new File(oldFileUrl);
@@ -247,6 +250,13 @@ public class YbAppealResultController extends BaseController {
             rrd.setData("");
         }
         return new FebsResponse().data(rrd);
+    }
+
+    private Date addSecond(Date date,int t){
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        cal.add(Calendar.SECOND, t);// 24小时制
+        return cal.getTime();
     }
 
 }

@@ -1172,7 +1172,7 @@ public class YbReconsiderApplyDataServiceImpl extends ServiceImpl<YbReconsiderAp
             } else if (state == 1){
                 hisWhere += " and HisName in(" + sql1 + ") and ";
             } else {
-                hisWhere += " and itemcode in(" + sql1 + ") and ";
+                hisWhere += " and UPPER(itemcode) in(" + sql1 + ") and ";
             }
             //hisWhere = " itemybcode in(" + sql1 + ") and ";
 //            System.out.println(sql2);

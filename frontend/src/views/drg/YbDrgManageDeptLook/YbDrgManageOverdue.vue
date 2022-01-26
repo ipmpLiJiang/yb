@@ -287,7 +287,7 @@ export default {
       }
       // params.sortField = 'ad.orderNum'
       // params.sortOrder = 'ascend'
-      this.$get('ybDrgManageView', {
+      this.$get('ybDrgManageView/drgManageDeptView', {
         ...params
       }).then((r) => {
         let data = r.data

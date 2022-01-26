@@ -17,5 +17,5 @@ import java.util.List;
  * @since 2020-07-30
  */
 public interface IYbDrgManageViewService extends IService<YbDrgManageView> {
-    IPage<YbDrgManageView> findDrgManageView(QueryRequest request, YbDrgManageView ybDrgManageView, String keyField);
+    IPage<YbDrgManageView> findDrgManageView(QueryRequest request, YbDrgManageView ybDrgManageView, String keyField, boolean isConf);
 }

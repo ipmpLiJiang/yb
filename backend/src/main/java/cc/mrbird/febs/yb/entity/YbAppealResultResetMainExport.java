@@ -117,5 +117,9 @@ public class YbAppealResultResetMainExport {
     @ExcelField(value ="复议医生姓名")
     private String resultDoctorName;
 
-
+    /**
+     * 意见书编码
+     */
+    @ExcelField(value = "意见书编码")
+    private String proposalCode;
 }

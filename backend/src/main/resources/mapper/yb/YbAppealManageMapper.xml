@@ -261,4 +261,28 @@
             areaType = #{areaType} and
             acceptState in(0,1,2)
 </select>
+
+    <select id="findAppealManageBySoutInActList" resultType="cc.mrbird.febs.yb.entity.YbAppealManage" parameterType="cc.mrbird.febs.yb.entity.YbAppealManage">
+    SELECT
+        am.id,
+        am.applyDataId,
+        am.readyDoctorCode,
+        am.readyDoctorName,
+        am.readyDeptCode,
+        am.readyDeptName,
+        rad.proposalCode COMMENTS
+    FROM
+        yb_appeal_manage am
+        left join yb_reconsider_apply_data rad on
+            am.applyDataId = rad.id
+    where
+        am.applyDateStr=#{ybAppealManage.applyDateStr}
+        and am.areaType = #{ybAppealManage.areaType}
+        and am.sourceType = #{ybAppealManage.sourceType}
+        and am.acceptState in (
+        <foreach item="type" index="index" collection="typeList" separator=",">
+            #{type}
+        </foreach>
+        )
+    </select>
 </mapper>

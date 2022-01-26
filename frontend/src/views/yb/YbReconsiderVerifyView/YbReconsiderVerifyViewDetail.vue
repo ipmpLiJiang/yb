@@ -2,7 +2,7 @@
   <a-drawer
     title="核对"
     :maskClosable="false"
-    width=70%
+    width=75%
     placement="right"
     :closable="true"
     @close="onClose"

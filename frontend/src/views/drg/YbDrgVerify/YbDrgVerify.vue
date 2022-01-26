@@ -485,7 +485,7 @@
         <a-row  v-show="tableSelectKey==4?true:false">
         <a-form-item
           v-bind="formItemLayout"
-          label="是否更改短信日期"
+          label="更改已发送数据日期"
         >
         <a-checkbox :checked="dateChecked" @change="onIsDateChange" />
         </a-form-item>
@@ -506,8 +506,8 @@ import YbDrgVerifySms from './YbDrgVerifySms'
 import InputSelect from '../../common/InputSelect'
 import InputSelectdks from '../../common/InputSelectDks'
 const formItemLayout = {
-  labelCol: { span: 6 },
-  wrapperCol: { span: 15, offset: 1 }
+  labelCol: { span: 7 },
+  wrapperCol: { span: 14, offset: 1 }
 }
 export default {
   name: 'ybDrgVerify',

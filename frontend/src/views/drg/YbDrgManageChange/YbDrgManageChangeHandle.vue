@@ -2,7 +2,7 @@
   <a-drawer
     title="DRG申诉填报"
     :maskClosable="false"
-    width=70%
+    width=80%
     placement="right"
     :closable="true"
     @close="onClose"

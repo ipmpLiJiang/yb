@@ -77,19 +77,26 @@ public class YbAppealResultResetViewServiceImpl extends ServiceImpl<YbAppealResu
         YbReconsiderReset reconsiderReset = iYbReconsiderResetService.findReconsiderResetByApplyDateStr(appealResultResetView.getApplyDateStr(), appealResultResetView.getAreaType());
         if (reconsiderReset != null && reconsiderReset.getState() == 1) {
             appealResultResetView.setPid(reconsiderReset.getId());
-            // 与 Result 做管理 ApplyDataId 无值
+            // 与 Result 做关联 ApplyDataId 无值 OrderNumber 是 resetData 的值
             List<YbAppealResultResetView> list = this.baseMapper.findAppealResultResetList(appealResultResetView);
 
-            LambdaQueryWrapper<YbAppealManage> wrapperManage = new LambdaQueryWrapper<>();
-            wrapperManage.eq(YbAppealManage::getApplyDateStr, reconsiderReset.getApplyDateStr());
-            wrapperManage.eq(YbAppealManage::getAreaType, reconsiderReset.getAreaType());
-            wrapperManage.eq(YbAppealManage::getSourceType, YbDefaultValue.SOURCETYPE_1);
+//            LambdaQueryWrapper<YbAppealManage> wrapperManage = new LambdaQueryWrapper<>();
+//            wrapperManage.eq(YbAppealManage::getApplyDateStr, reconsiderReset.getApplyDateStr());
+//            wrapperManage.eq(YbAppealManage::getAreaType, reconsiderReset.getAreaType());
+//            wrapperManage.eq(YbAppealManage::getSourceType, YbDefaultValue.SOURCETYPE_1);
+//            List<Integer> asList = new ArrayList<>();
+//            asList.add(0);
+//            asList.add(1);
+//            asList.add(2);
+//            wrapperManage.in(YbAppealManage::getAcceptState, asList);
+//            List<YbAppealManage> manageList = iYbAppealManageService.list(wrapperManage);
+            YbAppealManage query = new YbAppealManage();
+            query.setApplyDateStr(reconsiderReset.getApplyDateStr());
+            query.setAreaType(reconsiderReset.getAreaType());
+            query.setSourceType(YbDefaultValue.SOURCETYPE_1);
             List<Integer> asList = new ArrayList<>();
-            asList.add(0);
-            asList.add(1);
-            asList.add(2);
-            wrapperManage.in(YbAppealManage::getAcceptState, asList);
-            List<YbAppealManage> manageList = iYbAppealManageService.list(wrapperManage);
+            asList.add(6);
+            List<YbAppealManage> manageList = iYbAppealManageService.findAppealManageBySoutInActList(query,asList);
             List<YbAppealManage> queryManageList = new ArrayList<>();
             if(manageList.size() > 0) {
                 for (YbAppealResultResetView item : list) {
@@ -101,6 +108,7 @@ public class YbAppealResultResetViewServiceImpl extends ServiceImpl<YbAppealResu
                             item.setArDeptCode(queryManageList.get(0).getReadyDeptCode());
                             item.setArDeptName(queryManageList.get(0).getReadyDeptName());
                         }
+                        item.setProposalCode(queryManageList.get(0).getComments());
                     }
                 }
             }

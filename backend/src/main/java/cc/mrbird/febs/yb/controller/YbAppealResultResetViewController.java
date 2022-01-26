@@ -153,6 +153,8 @@ public class YbAppealResultResetViewController extends BaseController {
                         are.setResultDeptName(item.getArDeptCode() + "-" + item.getArDeptName());
                     }
 
+                    are.setProposalCode(item.getProposalCode());
+
                     dataList.add(are);
                 }
 
@@ -200,6 +202,8 @@ public class YbAppealResultResetViewController extends BaseController {
                     if (item.getArDeptCode() != null && item.getArDeptName() != null) {
                         are.setResultDeptName(item.getArDeptCode() + "-" + item.getArDeptName());
                     }
+
+                    are.setProposalCode(item.getProposalCode());
                     mainList.add(are);
                 }
 

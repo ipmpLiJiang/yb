@@ -40,7 +40,7 @@ public class YbDrgManageViewController extends BaseController {
     @GetMapping()
     @RequiresPermissions("ybDrgManageView:view")
     public Map<String, Object> List(QueryRequest request, YbDrgManageView ybDrgManageView, String keyField) {
-        return getDataTable(this.iYbDrgManageViewService.findDrgManageView(request, ybDrgManageView, keyField));
+        return getDataTable(this.iYbDrgManageViewService.findDrgManageView(request, ybDrgManageView, keyField,false));
     }
 
     @GetMapping("drgManageUserView")
@@ -48,6 +48,14 @@ public class YbDrgManageViewController extends BaseController {
     public Map<String, Object> userList(QueryRequest request, YbDrgManageView ybDrgManageView, String keyField) {
         User currentUser = FebsUtil.getCurrentUser();
         ybDrgManageView.setReadyDoctorCode(currentUser.getUsername());
-        return getDataTable(this.iYbDrgManageViewService.findDrgManageView(request, ybDrgManageView, keyField));
+        return getDataTable(this.iYbDrgManageViewService.findDrgManageView(request, ybDrgManageView, keyField,false));
+    }
+
+    @GetMapping("drgManageDeptView")
+    @RequiresPermissions("ybDrgManageView:deptView")
+    public Map<String, Object> deptList(QueryRequest request, YbDrgManageView ybDrgManageView, String keyField) {
+        User currentUser = FebsUtil.getCurrentUser();
+        ybDrgManageView.setReadyDoctorCode(currentUser.getUsername());
+        return getDataTable(this.iYbDrgManageViewService.findDrgManageView(request, ybDrgManageView, keyField,true));
     }
 }

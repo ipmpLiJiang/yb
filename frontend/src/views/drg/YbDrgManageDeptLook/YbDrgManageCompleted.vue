@@ -32,11 +32,10 @@
         </a-table>
   </div>
 </template>
-
 <script>
 import moment from 'moment'
 export default {
-  name: 'YbDrgManageOverdue',
+  name: 'YbDrgManageCompleted',
   props: {
     applyDate: {
       default: ''
@@ -70,6 +69,7 @@ export default {
       loading: false,
       bordered: true,
       ybDrgManage: {},
+      className: '',
       user: this.$store.state.account.user,
       tableFormat1: 'YYYY-MM-DD HH:mm:ss',
       tableFormat: 'YYYY-MM-DD'
@@ -172,7 +172,7 @@ export default {
         dataIndex: 'operation',
         scopedSlots: { customRender: 'operation' },
         fixed: 'right',
-        width: 90
+        width: 100
       }]
     }
   },
@@ -270,7 +270,7 @@ export default {
     fetch (params = {}) {
       this.loading = true
       params.applyDateStr = this.applyDate
-      params.state = 7
+      params.state = 6
       params.currencyField = this.searchItem.value
       params.areaType = this.user.areaType.value
       params.keyField = this.searchItem.keyField
@@ -287,7 +287,7 @@ export default {
       }
       // params.sortField = 'ad.orderNum'
       // params.sortOrder = 'ascend'
-      this.$get('ybDrgManageView', {
+      this.$get('ybDrgManageView/drgManageDeptView', {
         ...params
       }).then((r) => {
         let data = r.data
@@ -307,3 +307,4 @@ export default {
 .editable-row-operations a {
   margin-right: 8px;
 }
+</style>

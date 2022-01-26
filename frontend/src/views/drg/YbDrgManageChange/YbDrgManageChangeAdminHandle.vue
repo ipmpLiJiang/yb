@@ -2,7 +2,7 @@
   <a-drawer
     title="DRG管理员变更详情"
     :maskClosable="false"
-    width=70%
+    width=80%
     placement="right"
     :closable="true"
     @close="onClose"

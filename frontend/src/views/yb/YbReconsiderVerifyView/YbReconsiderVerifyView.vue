@@ -561,7 +561,7 @@
       <a-row  v-show="tableSelectKey==5?true:false">
         <a-form-item
           v-bind="formItemLayout"
-          label="是否更改短信日期"
+          label="更改已发送数据日期"
         >
         <a-checkbox :checked="dateChecked" @change="onIsDateChange" />
         </a-form-item>
@@ -582,8 +582,8 @@ import YbReconsiderVerifyViewDetail from './YbReconsiderVerifyViewDetail'
 import YbReconsiderVerifySms from './YbReconsiderVerifySms'
 import InputSelect from '../../common/InputSelect'
 const formItemLayout = {
-  labelCol: { span: 6 },
-  wrapperCol: { span: 15, offset: 1 }
+  labelCol: { span: 7 },
+  wrapperCol: { span: 14, offset: 1 }
 }
 export default {
   name: 'YbReconsiderVerifyView',

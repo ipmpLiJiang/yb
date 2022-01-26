@@ -720,4 +720,9 @@ public class YbAppealManageServiceImpl extends ServiceImpl<YbAppealManageMapper,
 
         return updateAppealManageList;
     }
+
+    @Override
+    public List<YbAppealManage> findAppealManageBySoutInActList(YbAppealManage ybAppealManage,List<Integer> typeList){
+        return this.baseMapper.findAppealManageBySoutInActList(ybAppealManage,typeList);
+    }
 }

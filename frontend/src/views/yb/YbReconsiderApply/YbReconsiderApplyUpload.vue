@@ -284,6 +284,9 @@ export default {
             this.spinning = false
           } else {
             this.$message.warning(r.data.data.message)
+            if (this.tableSelectKey === key) {
+              this.callback(key)
+            }
             this.spinning = false
           }
         }).catch(() => {

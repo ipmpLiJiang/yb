@@ -165,7 +165,7 @@
 <script>
 import YbDeptAdd from './YbDeptAdd'
 import YbDeptEdit from './YbDeptEdit'
-import ComTypeData from '../../com/ComType/ComTypeDrgData'
+import ComTypeData from '../../com/ComType/ComTypeDept'
 
 const formItemLayout = {
   labelCol: { span: 8 },

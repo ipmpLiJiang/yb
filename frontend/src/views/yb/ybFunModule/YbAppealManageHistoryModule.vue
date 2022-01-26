@@ -2,7 +2,7 @@
   <a-drawer
     title="历史记录"
     :maskClosable="false"
-    width=85%
+    width=75%
     placement="right"
     :closable="true"
     @close="onClose"

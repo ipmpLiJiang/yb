@@ -352,15 +352,13 @@ public class ComFileController extends BaseController {
             if (comFile != null) {
                 String filePath = febsProperties.getUploadPath(); // 上传后的路径
                 String fileUrl = filePath + inUploadFile.getFileName() + "/" + comFile.getServerName();
-                boolean blFile = deleteFile(fileUrl);
-                if (blFile) {
-                    int count = this.iComFileService.deleteComFile(inUploadFile.getId());
-                    if (count > 0) {
-                        success = 1;
-                        message = "删除文件成功.";
-                    } else {
-                        message = "删除文件失败.";
-                    }
+                int count = this.iComFileService.deleteComFile(inUploadFile.getId());
+                if (count > 0) {
+                    success = 1;
+                    deleteFile(fileUrl);
+                    message = "删除文件成功.";
+                } else {
+                    message = "删除文件失败.";
                 }
             } else {
                 message = "不存在文件数据.";
@@ -457,6 +455,24 @@ public class ComFileController extends BaseController {
         return new FebsResponse().data(outComFile);
     }
 
+    private Integer getMaxNum(List<ComFile> list) {
+        int num = 0;
+        int maxNum = 0;
+
+        Map<Integer, String> map = new HashMap<Integer, String>();
+        for (ComFile comFile : list){
+            String code = comFile.getServerName();
+            int dian = code.lastIndexOf(".");
+            int lastDian = code.length() - dian;
+            int strNum = code.lastIndexOf("-");
+            String comFileName = code.substring(strNum + 1, code.length() - lastDian);
+            num = Integer.parseInt(comFileName);
+            map.put(num,comFile.getId());
+            maxNum = maxNum < num ? num : maxNum;
+        }
+        return maxNum + 1;
+    }
+
     @PostMapping("uploadImg")
     public FebsResponse UploadImg(@RequestParam("file") MultipartFile file, InUploadFile inUploadFile) throws FebsException {
         if (file.isEmpty()) {
@@ -480,13 +496,7 @@ public class ComFileController extends BaseController {
             int num = 1;
             List<ComFile> list = this.iComFileService.findListComFile(inUploadFile.getId(), null);
             if (list.size() > 0) {
-                ComFile comFile = list.get(list.size() - 1);
-                String code = comFile.getServerName();
-                int dian = code.lastIndexOf(".");
-                int lastDian = code.length() - dian;
-                int strNum = code.lastIndexOf("-");
-                String comFileName = code.substring(strNum + 1, code.length() - lastDian);
-                num = Integer.parseInt(comFileName) + 1;
+                num = this.getMaxNum(list);
             }
             String newFileName = inUploadFile.getProposalCode();
             if (num < 10) {
@@ -577,12 +587,10 @@ public class ComFileController extends BaseController {
                     String deptName = currentUser.getUsername() + "/" + strSourceType;
                     String filePath = febsProperties.getUploadPath(); // 上传后的路径
                     String fileUrl = filePath + inUploadFile.getApplyDateStr() + "/" + deptName + "/" + inUploadFile.getSerName();
-                    boolean blFile = deleteFile(fileUrl);
-                    if (blFile) {
-                        int count = this.iComFileService.deleteComFile(inUploadFile.getId());
-                        if (count > 0) {
-                            success = 1;
-                        }
+                    int count = this.iComFileService.deleteComFile(inUploadFile.getId());
+                    if (count > 0) {
+                        success = 1;
+                        deleteFile(fileUrl);
                     }
                 }
             } else {
@@ -630,7 +638,7 @@ public class ComFileController extends BaseController {
 
                 for (ComFile item : list) {
                     String fileUrl = "uploadFile/" + inUploadFile.getApplyDateStr() + "/DRG" + inUploadFile.getAreaType() +
-                            "/" + inUploadFile.getOrderNumber() + "/" +  item.getServerName();
+                            "/" + inUploadFile.getOrderNumber() + "/" + item.getServerName();
                     OutComFile outComFile = new OutComFile();
                     outComFile.setUid(item.getId());
                     outComFile.setName(item.getClientName());
@@ -728,12 +736,10 @@ public class ComFileController extends BaseController {
                     String filePath = febsProperties.getUploadPath(); // 上传后的路径
                     String fileUrl = filePath + inUploadFile.getApplyDateStr() + "/DRG" + inUploadFile.getAreaType() + "/" +
                             "/" + inUploadFile.getOrderNumber() + "/" + comFile.getServerName();
-                    boolean blFile = deleteFile(fileUrl);
-                    if (blFile) {
-                        int count = this.iComFileService.deleteComFile(inUploadFile.getId());
-                        if (count > 0) {
-                            success = 1;
-                        }
+                    int count = this.iComFileService.deleteComFile(inUploadFile.getId());
+                    if (count > 0) {
+                        success = 1;
+                        deleteFile(fileUrl);
                     }
                 }
             } else {
@@ -789,7 +795,7 @@ public class ComFileController extends BaseController {
         List<String> orderNumberList = new ArrayList<>();
         Integer startOrderNumber = inUploadFile.getStartOrderNumber();
         Integer endOrderNumber = inUploadFile.getEndOrderNumber();
-        if(startOrderNumber == endOrderNumber) {
+        if (startOrderNumber == endOrderNumber) {
             orderNumberList.add(startOrderNumber.toString());
         } else {
             while (startOrderNumber <= endOrderNumber) {
@@ -810,11 +816,11 @@ public class ComFileController extends BaseController {
             wrapperResult.eq(YbDrgResult::getApplyDateStr, inUploadFile.getApplyDateStr());
             wrapperResult.eq(YbDrgResult::getAreaType, inUploadFile.getAreaType());
             List<YbDrgResult> resultAllList = iYbDrgResultService.list(wrapperResult);
-            List<YbDrgResult> resultList = this.getInResult(resultAllList,orderNumberList);
+            List<YbDrgResult> resultList = this.getInResult(resultAllList, orderNumberList);
             if (resultList.size() > 0) {
                 List<ComFile> fileList = iComFileService.findDrgResultComFiles(inUploadFile.getApplyDateStr(), inUploadFile.getAreaType());
-                if(fileList.size() > 0) {
-                    List<ComFile> list = this.getInFile(resultList,fileList);
+                if (fileList.size() > 0) {
+                    List<ComFile> list = this.getInFile(resultList, fileList);
                     File[] fileUtils = new File[list.size()];
                     for (int i = 0; i < list.size(); i++) {
                         ComFile comFile = list.get(i);
@@ -833,23 +839,23 @@ public class ComFileController extends BaseController {
         }
     }
 
-    private List<YbDrgResult> getInResult(List<YbDrgResult> resultList,List<String> orderNumberList){
+    private List<YbDrgResult> getInResult(List<YbDrgResult> resultList, List<String> orderNumberList) {
         List<YbDrgResult> list = new ArrayList<>();
         List<YbDrgResult> query = new ArrayList<>();
         for (String orderNumber : orderNumberList) {
-            query = resultList.stream().filter(s->s.getOrderNumber().equals(orderNumber)).collect(Collectors.toList());
-            if(query.size() > 0) {
+            query = resultList.stream().filter(s -> s.getOrderNumber().equals(orderNumber)).collect(Collectors.toList());
+            if (query.size() > 0) {
                 list.add(query.get(0));
             }
         }
         return list;
     }
 
-    private List<ComFile> getInFile(List<YbDrgResult> resultList,List<ComFile> fileList){
+    private List<ComFile> getInFile(List<YbDrgResult> resultList, List<ComFile> fileList) {
         List<ComFile> list = new ArrayList<>();
         List<ComFile> query = new ArrayList<>();
         for (YbDrgResult result : resultList) {
-            query = fileList.stream().filter(s->s.getRefTabId().equals(result.getId())).collect(Collectors.toList());
+            query = fileList.stream().filter(s -> s.getRefTabId().equals(result.getId())).collect(Collectors.toList());
             for (ComFile comFile : query) {
                 comFile.setOrderNumber(result.getOrderNumber());
                 list.add(comFile);

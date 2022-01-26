@@ -2,7 +2,7 @@
   <a-drawer
     title="DRG历史记录"
     :maskClosable="false"
-    width=85%
+    width=80%
     placement="right"
     :closable="true"
     @close="onClose"
