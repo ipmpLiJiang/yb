@@ -132,6 +132,12 @@ public class YbAppealResultServiceImpl extends ServiceImpl<YbAppealResultMapper,
         return this.baseMapper.findAppealResultGroupSumDept(ybAppealResultView);
     }
 
+    //打包下载 查找部门
+    @Override
+    public List<YbResultDownLoad> findAppealResultGroupDksDepts(YbAppealResultView ybAppealResultView) {
+        return this.baseMapper.findAppealResultGroupDks(ybAppealResultView);
+    }
+
     //打包下载 汇总科室 未设置
     @Override
     public

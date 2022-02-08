@@ -291,6 +291,51 @@ public class ComFileController extends BaseController {
         }
     }
 
+    @PostMapping("fileDksImgZip")
+//    @RequiresPermissions("comFile:imgExport")
+    public void fileDksImgZip(QueryRequest request, InUploadFile inUploadFile, HttpServletResponse response) throws FebsException {
+        int sourceType = inUploadFile.getSourceType();
+        String strSourceType = sourceType == 0 ? "In" : "Out";
+        if (inUploadFile.getAreaType() != 0) {
+            strSourceType += inUploadFile.getAreaType();
+        }
+        if (sourceType == 1) {
+            inUploadFile.setTypeno(3);
+        }
+        String deptName = inUploadFile.getDeptName();
+        String path = febsProperties.getUploadPath();
+        //String address = path + inUploadFile.getApplyDateStr() + "/" + deptName;
+        String address = path + inUploadFile.getApplyDateStr() + "/";
+        String fileName = "";
+        if (inUploadFile.getFileName() != null && !inUploadFile.getFileName().equals("")) {
+            fileName = inUploadFile.getFileName() + ".zip";
+        } else {
+            fileName = UUID.randomUUID().toString() + ".zip";
+        }
+        Random r = new Random();
+        int nxt = r.nextInt(10000);
+        String filePath = address + deptName + "-" + inUploadFile.getTypeno() + "-" + inUploadFile.getAreaType() + "-" + nxt + ".zip";
+        try {
+            List<ComFile> list = this.iComFileService.findAppealResultDksComFiles(inUploadFile);
+            if (list.size() > 0) {
+                File[] fileUtils = new File[list.size()];
+                for (int i = 0; i < list.size(); i++) {
+                    ComFile comFile = list.get(i);
+                    String t = comFile.getRefTabTable();
+                    File file = new File(address + t + "/" + strSourceType + "/" + comFile.getServerName());
+                    fileUtils[i] = file;
+                }
+                ZipUtil.zip(FileUtil.file(filePath), false, fileUtils);
+                //ZipUtil.zip(address, filePath);
+                this.downFile(response, filePath, fileName, true);
+            }
+        } catch (Exception e) {
+            message = "导出失败";
+            log.error(message, e);
+            throw new FebsException(message);
+        }
+    }
+
     private void downFile(HttpServletResponse response, String filePath, String fileName, boolean isDel) {
         try {
             File file = new File(filePath);

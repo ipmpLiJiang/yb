@@ -54,11 +54,12 @@
         <result column="orderDeptName" property="orderDeptName"/>
         <result column="STATE" property="state"/>
         <result column="areaType" property="areaType"/>
+        <result column="dksName" property="dksName"/>
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        pid, serialNo, billNo, proposalCode, projectCode, projectName, num, medicalPrice, ruleName, deductPrice, deductReason, repaymentReason, doctorName, deptCode, deptName,enterHospitalDateStr,outHospitalDateStr,costDateStr, hospitalizedNo, treatmentMode, settlementDateStr, personalNo, insuredName, cardNumber, areaName, versionNumber, backAppeal, typeno, sendPersonId, sendPersonName, sendDate, applyDateStr, id, applyDataId, verifyDoctorCode, verifyDoctorName, verifyDeptCode, verifyDeptName, insuredType,dataType,orderNumber,orderNum,isVerify,isPerson,orderDoctorCode,orderDoctorName,orderDeptCode,orderDeptName, STATE, areaType
+        pid, serialNo, billNo, proposalCode, projectCode, projectName, num, medicalPrice, ruleName, deductPrice, deductReason, repaymentReason, doctorName, deptCode, deptName,enterHospitalDateStr,outHospitalDateStr,costDateStr, hospitalizedNo, treatmentMode, settlementDateStr, personalNo, insuredName, cardNumber, areaName, versionNumber, backAppeal, typeno, sendPersonId, sendPersonName, sendDate, applyDateStr, id, applyDataId, verifyDoctorCode, verifyDoctorName, verifyDeptCode, verifyDeptName, insuredType,dataType,orderNumber,orderNum,isVerify,isPerson,orderDoctorCode,orderDoctorName,orderDeptCode,orderDeptName, STATE, areaType, dksName
     </sql>
     <update id="updateYbReconsiderVerifyView" parameterType="cc.mrbird.febs.yb.entity.YbReconsiderVerifyView">
         update yb_reconsider_verify_view
@@ -206,7 +207,8 @@
         rv.sendPersonId,
         rv.sendPersonName,
         rv.sendDate,
-        rv.areaType
+        rv.areaType,
+        rv.dksName
         from
         yb_reconsider_apply_data ad
         LEFT JOIN yb_reconsider_verify rv ON
@@ -472,7 +474,8 @@
         rv.sendPersonId,
         rv.sendPersonName,
         rv.sendDate,
-        rv.areaType
+        rv.areaType,
+        rv.dksName
         from
         yb_reconsider_verify rv
         INNER JOIN yb_reconsider_apply_data ad ON
@@ -777,7 +780,8 @@
             rv.sendPersonId,
             rv.sendPersonName,
             rv.sendDate,
-            rv.areaType
+            rv.areaType,
+            rv.dksName
         from
             yb_reconsider_apply_data ad
             LEFT JOIN yb_reconsider_verify rv ON

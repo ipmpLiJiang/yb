@@ -381,6 +381,13 @@ public class YbReconsiderVerifyView implements Serializable {
     @ExcelField(value = "院区")
     private Integer areaType;
 
+    /**
+     * 大专业
+     */
+    @TableField("dksName")
+    @ExcelField(value = "大专业")
+    private String dksName;
+
     public static final String PID = "pid";
 
     public static final String SERIALNO = "serialNo";
@@ -481,5 +488,6 @@ public class YbReconsiderVerifyView implements Serializable {
 
     public static final String AREATYPE = "areaType";
 
+    public static final String DKSNAME = "dksName";
 
 }

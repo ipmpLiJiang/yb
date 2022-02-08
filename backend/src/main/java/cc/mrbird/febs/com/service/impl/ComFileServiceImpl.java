@@ -107,6 +107,12 @@ public class ComFileServiceImpl extends ServiceImpl<ComFileMapper, ComFile> impl
     }
 
     @Override
+    public List<ComFile> findAppealResultDksComFiles(InUploadFile iup) {
+        List<ComFile> list = this.baseMapper.findAppealResultDksComFile(iup);
+        return list;
+    }
+
+    @Override
     public IPage<ComFile> findComFileList(QueryRequest request, ComFile comFile) {
         try {
             Page<ComFile> page = new Page<>();

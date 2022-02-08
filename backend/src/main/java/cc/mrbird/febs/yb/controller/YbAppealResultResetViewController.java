@@ -10,6 +10,7 @@ import cc.mrbird.febs.common.utils.FebsUtil;
 import cc.mrbird.febs.system.domain.User;
 import cc.mrbird.febs.yb.entity.*;
 import cc.mrbird.febs.yb.service.IYbAppealResultResetViewService;
+import cc.mrbird.febs.yb.service.IYbDeptService;
 import cn.hutool.core.io.IoUtil;
 import cn.hutool.poi.excel.ExcelUtil;
 import cn.hutool.poi.excel.ExcelWriter;
@@ -51,7 +52,6 @@ public class YbAppealResultResetViewController extends BaseController {
     public IYbAppealResultResetViewService iYbAppealResultResetViewService;
     @Autowired
     private FebsProperties febsProperties;
-
 
     /**
      * 分页查询数据
@@ -154,6 +154,7 @@ public class YbAppealResultResetViewController extends BaseController {
                     }
 
                     are.setProposalCode(item.getProposalCode());
+                    are.setDksName(item.getDksName());
 
                     dataList.add(are);
                 }
@@ -204,6 +205,7 @@ public class YbAppealResultResetViewController extends BaseController {
                     }
 
                     are.setProposalCode(item.getProposalCode());
+                    are.setDksName(item.getDksName());
                     mainList.add(are);
                 }
 

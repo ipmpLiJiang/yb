@@ -106,6 +106,12 @@ public class YbAppealResultResetMainExport {
     private String backAppeal;
 
     /**
+     * 大专业
+     */
+    @ExcelField(value ="大专业")
+    private String dksName;
+
+    /**
      * 科室
      */
     @ExcelField(value ="复议科室名称")

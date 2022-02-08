@@ -182,6 +182,7 @@ public class YbReconsiderVerifyServiceImpl extends ServiceImpl<YbReconsiderVerif
 //                    List<YbReconsiderPriorityLevel> rlFeeDeptList = rplList.stream().filter(s -> s.getState() == YbReconsiderPriorityLevel.PL_STATE_3 && s.getDeptState() == YbReconsiderPriorityLevel.DEPT_STATE_2).collect(Collectors.toList());
                     List<YbDept> deptList = iYbDeptService.findDeptList(new YbDept(), 0);
 
+                    List<YbDept> deptQuery = new ArrayList<>();
                     List<YbDept> createDeptList = new ArrayList<>();
                     List<YbReconsiderInpatientfees> queryRifList = new ArrayList<>();
                     List<YbReconsiderPriorityLevel> queryRlList = new ArrayList<>();
@@ -301,8 +302,8 @@ public class YbReconsiderVerifyServiceImpl extends ServiceImpl<YbReconsiderVerif
 
                         if (ybReconsiderVerify.getVerifyDeptCode() != null && !ybReconsiderVerify.getVerifyDeptCode().equals("")) {
                             String deptCode = ybReconsiderVerify.getVerifyDeptCode();
-                            count = deptList.stream().filter(s -> s.getDeptId().equals(deptCode)).count();
-                            if (count == 0) {
+                            deptQuery = deptList.stream().filter(s -> s.getDeptId().equals(deptCode)).collect(Collectors.toList());
+                            if (deptQuery.size() == 0) {
                                 count = createDeptList.stream().filter(s -> s.getDeptId().equals(deptCode)).count();
                                 if (count == 0) {
                                     YbDept create = new YbDept();
@@ -314,8 +315,11 @@ public class YbReconsiderVerifyServiceImpl extends ServiceImpl<YbReconsiderVerif
                                     create.setIsDeletemark(1);
                                     createDeptList.add(create);
                                 }
+                            } else {
+                                ybReconsiderVerify.setDksName(deptQuery.get(0).getDksName());
                             }
                         }
+
                         createList.add(ybReconsiderVerify);
                     }
 
@@ -605,6 +609,7 @@ public class YbReconsiderVerifyServiceImpl extends ServiceImpl<YbReconsiderVerif
                     List<YbReconsiderInpatientfees> rifList = iYbReconsiderInpatientfeesService.findReconsiderInpatientfeesList(waquery);
                     List<YbDept> deptList = iYbDeptService.findDeptList(new YbDept(), 0);
 
+                    List<YbDept> deptQuery = new ArrayList<>();
                     List<YbDept> createDeptList = new ArrayList<>();
                     List<YbReconsiderInpatientfees> queryRifList = new ArrayList<>();
                     List<YbPerson> personList = new ArrayList<>();
@@ -653,8 +658,8 @@ public class YbReconsiderVerifyServiceImpl extends ServiceImpl<YbReconsiderVerif
 //                            ybReconsiderVerify.setCreateUserId(matchPersonId);
 //                            ybReconsiderVerify.setCreateTime(thisDate);
                             String deptCode = ybReconsiderVerify.getVerifyDeptCode();
-                            count = deptList.stream().filter(s -> s.getDeptId().equals(deptCode)).count();
-                            if (count == 0) {
+                            deptQuery = deptList.stream().filter(s -> s.getDeptId().equals(deptCode)).collect(Collectors.toList());
+                            if (deptQuery.size() == 0) {
                                 count = createDeptList.stream().filter(s -> s.getDeptId().equals(deptCode)).count();
                                 if (count == 0) {
                                     YbDept create = new YbDept();
@@ -666,6 +671,8 @@ public class YbReconsiderVerifyServiceImpl extends ServiceImpl<YbReconsiderVerif
                                     create.setIsDeletemark(1);
                                     createDeptList.add(create);
                                 }
+                            } else {
+                                ybReconsiderVerify.setDksName(deptQuery.get(0).getDksName());
                             }
                             createList.add(ybReconsiderVerify);
                         } else {
@@ -899,6 +906,7 @@ public class YbReconsiderVerifyServiceImpl extends ServiceImpl<YbReconsiderVerif
                         ybAppealManage.setVerifyId(ybReconsiderVerify.getId());
                         ybAppealManage.setVerifySendId(ybReconsiderVerify.getId());
                         ybAppealManage.setApplyDataId(ybReconsiderVerify.getApplyDataId());
+                        ybAppealManage.setDksName(ybReconsiderVerify.getDksName());
                         ybAppealManage.setReadyDeptCode(ybReconsiderVerify.getVerifyDeptCode());
                         ybAppealManage.setReadyDeptName(ybReconsiderVerify.getVerifyDeptName());
                         ybAppealManage.setReadyDoctorCode(ybReconsiderVerify.getVerifyDoctorCode());
@@ -1045,6 +1053,7 @@ public class YbReconsiderVerifyServiceImpl extends ServiceImpl<YbReconsiderVerif
                             ybAppealManage.setVerifyId(ybReconsiderVerify.getId());
                             ybAppealManage.setVerifySendId(ybReconsiderVerify.getId());
                             ybAppealManage.setApplyDataId(ybReconsiderVerify.getApplyDataId());
+                            ybAppealManage.setDksName(ybReconsiderVerify.getDksName());
                             ybAppealManage.setReadyDeptCode(ybReconsiderVerify.getVerifyDeptCode());
                             ybAppealManage.setReadyDeptName(ybReconsiderVerify.getVerifyDeptName());
                             ybAppealManage.setReadyDoctorCode(ybReconsiderVerify.getVerifyDoctorCode());
@@ -1130,6 +1139,8 @@ public class YbReconsiderVerifyServiceImpl extends ServiceImpl<YbReconsiderVerif
     @Transactional
     public void updateReviewerStates(List<YbReconsiderVerify> list, Long uId, String Uname) {
         List<YbPerson> personList = this.findPerson(list);
+        List<YbDept> deptList = iYbDeptService.findDeptList(new YbDept(), 0);
+        List<YbDept> deptQuery = new ArrayList<>();
         for (YbReconsiderVerify item : list) {
             if ( item.getVerifyDeptCode() != null && !item.getVerifyDeptCode().equals("") &&
                     item.getVerifyDeptName() != null && !item.getVerifyDeptName().equals("") &&
@@ -1150,6 +1161,11 @@ public class YbReconsiderVerifyServiceImpl extends ServiceImpl<YbReconsiderVerif
 //                    item.setOperateDate(thisDate);
                     item.setAreaType(item.getAreaType());
 
+                    deptQuery = deptList.stream().filter(s->s.getDeptId().equals(item.getVerifyDeptCode())).collect(Collectors.toList());
+
+                    if(deptQuery.size() > 0 && deptQuery.get(0).getDksName() != null) {
+                        item.setDksName(deptQuery.get(0).getDksName());
+                    }
                     if (item.getId() == null || item.getId().equals("")) {
                         item.setId(UUID.randomUUID().toString());
                         item.setIsDeletemark(1);
@@ -1161,6 +1177,7 @@ public class YbReconsiderVerifyServiceImpl extends ServiceImpl<YbReconsiderVerif
                         this.baseMapper.insert(item);
                     } else {
                         YbReconsiderVerify updateVerify = new YbReconsiderVerify();
+                        updateVerify.setDksName(item.getDksName());
                         updateVerify.setVerifyDoctorCode(item.getVerifyDoctorCode());
                         updateVerify.setVerifyDoctorName(strVerifyDoctorName);
                         updateVerify.setVerifyDeptCode(item.getVerifyDeptCode());

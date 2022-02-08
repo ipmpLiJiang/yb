@@ -12,6 +12,7 @@ import cc.mrbird.febs.yb.service.IYbAppealResultViewService;
 
 import cc.mrbird.febs.common.utils.FebsUtil;
 import cc.mrbird.febs.system.domain.User;
+import cc.mrbird.febs.yb.service.IYbDeptService;
 import cn.hutool.core.io.IoUtil;
 import cn.hutool.poi.excel.ExcelUtil;
 import cn.hutool.poi.excel.ExcelWriter;
@@ -321,6 +322,7 @@ public class YbAppealResultViewController extends BaseController {
                     if (item.getArOrderDoctorName() != null && !item.getArOrderDoctorName().equals(""))
                         are.setOrderDocName(item.getArOrderDoctorName());
 
+                    are.setDksName(item.getDksName());
                     dataList.add(are);
 
                 }
@@ -404,6 +406,8 @@ public class YbAppealResultViewController extends BaseController {
 //                    if(item.getExcuteDocId() != null) {
 //                        are.setExcuteDocName(item.getExcuteDocId() + "-" + item.getExcuteDocName());
 //                    }
+
+                    are.setDksName(item.getDksName());
                     mainList.add(are);
 
                 }
@@ -830,6 +834,22 @@ public class YbAppealResultViewController extends BaseController {
     //@RequiresPermissions("ybAppealResultView:view")
     public FebsResponse fileDownLoadSumList(YbAppealResultView ybAppealResultView) {
         List<YbAppealResultDownLoad> list = this.iYbAppealResultViewService.findAppealResultDownLoadSumList(ybAppealResultView);
+        Map<String, Object> result = new HashMap<>();
+        if (list.size() > 0) {
+            result.put("data", list);
+            result.put("success", 1);
+        } else {
+            result.put("data", null);
+            result.put("error", "无数据");
+            result.put("success", 1);
+        }
+        return new FebsResponse().data(result);
+    }
+
+    @GetMapping("fileDownLoadDksList")
+    //@RequiresPermissions("ybAppealResultView:view")
+    public FebsResponse fileDownLoadDksList(YbAppealResultView ybAppealResultView) {
+        List<YbAppealResultDownLoad> list = this.iYbAppealResultViewService.findAppealResultDownLoadDksList(ybAppealResultView);
         Map<String, Object> result = new HashMap<>();
         if (list.size() > 0) {
             result.put("data", list);

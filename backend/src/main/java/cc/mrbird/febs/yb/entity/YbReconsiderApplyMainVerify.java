@@ -106,6 +106,12 @@ public class YbReconsiderApplyMainVerify {
     private String backAppeal;
 
     /**
+     * 大专业
+     */
+    @ExcelField(value ="大专业")
+    private String dksName;
+
+    /**
      * 复议科室编码
      */
     @ExcelField(value = "复议科室编码")

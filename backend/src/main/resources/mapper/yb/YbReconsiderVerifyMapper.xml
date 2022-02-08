@@ -2,78 +2,93 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cc.mrbird.febs.yb.dao.YbReconsiderVerifyMapper">
 
-        <!-- 通用查询映射结果 -->
-        <resultMap id="BaseResultMap" type="cc.mrbird.febs.yb.entity.YbReconsiderVerify">
-                    <id column="id" property="id"/>
-                    <result column="applyDataId" property="applyDataId"/>
-                    <result column="verifyDoctorCode" property="verifyDoctorCode"/>
-                    <result column="verifyDoctorName" property="verifyDoctorName"/>
-                    <result column="verifyDeptCode" property="verifyDeptCode"/>
-                    <result column="verifyDeptName" property="verifyDeptName"/>
-            <result column="dataType" property="dataType"/>
-            <result column="sendPersonId" property="sendPersonId"/>
-            <result column="sendPersonName" property="sendPersonName"/>
-            <result column="sendDate" property="sendDate"/>
-            <result column="applyDateStr" property="applyDateStr"/>
-            <result column="typeno" property="typeno"/>
-            <result column="orderNumber" property="orderNumber"/>
-            <result column="orderNum" property="orderNum"/>
-            <result column="orderDoctorCode" property="orderDoctorCode"/>
-            <result column="orderDoctorName" property="orderDoctorName"/>
-            <result column="orderDeptCode" property="orderDeptCode"/>
-            <result column="orderDeptName" property="orderDeptName"/>
-                    <result column="COMMENTS" property="comments"/>
-                    <result column="STATE" property="state"/>
-                    <result column="IS_DELETEMARK" property="isDeletemark"/>
-            <result column="areaType" property="areaType"/>
-        </resultMap>
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="cc.mrbird.febs.yb.entity.YbReconsiderVerify">
+        <id column="id" property="id"/>
+        <result column="applyDataId" property="applyDataId"/>
+        <result column="verifyDoctorCode" property="verifyDoctorCode"/>
+        <result column="verifyDoctorName" property="verifyDoctorName"/>
+        <result column="verifyDeptCode" property="verifyDeptCode"/>
+        <result column="verifyDeptName" property="verifyDeptName"/>
+        <result column="dataType" property="dataType"/>
+        <result column="sendPersonId" property="sendPersonId"/>
+        <result column="sendPersonName" property="sendPersonName"/>
+        <result column="sendDate" property="sendDate"/>
+        <result column="applyDateStr" property="applyDateStr"/>
+        <result column="typeno" property="typeno"/>
+        <result column="orderNumber" property="orderNumber"/>
+        <result column="orderNum" property="orderNum"/>
+        <result column="orderDoctorCode" property="orderDoctorCode"/>
+        <result column="orderDoctorName" property="orderDoctorName"/>
+        <result column="orderDeptCode" property="orderDeptCode"/>
+        <result column="orderDeptName" property="orderDeptName"/>
+        <result column="COMMENTS" property="comments"/>
+        <result column="STATE" property="state"/>
+        <result column="IS_DELETEMARK" property="isDeletemark"/>
+        <result column="areaType" property="areaType"/>
+        <result column="dksName" property="dksName"/>
+    </resultMap>
 
-        <!-- 通用查询结果列 -->
-        <sql id="Base_Column_List">
-        id, applyDataId, verifyDoctorCode, verifyDoctorName, verifyDeptCode, verifyDeptName, dataType, sendPersonId, sendPersonName, sendDate,applyDateStr,typeno,orderNumber,orderNum,orderDoctorCode,orderDoctorName,orderDeptCode,orderDeptName, COMMENTS, STATE, IS_DELETEMARK, areaType
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, applyDataId, verifyDoctorCode, verifyDoctorName, verifyDeptCode, verifyDeptName, dataType, sendPersonId, sendPersonName, sendDate,applyDateStr,typeno,orderNumber,orderNum,orderDoctorCode,orderDoctorName,orderDeptCode,orderDeptName, COMMENTS, STATE, IS_DELETEMARK, areaType,dksName
     </sql>
     <update id="updateYbReconsiderVerify" parameterType="cc.mrbird.febs.yb.entity.YbReconsiderVerify">
         update yb_reconsider_verify
         <trim prefix="set" suffixOverrides=",">
-<if test="applyDataId != null">applyDataId=#{applyDataId},</if>
-<if test="verifyDoctorCode != null">verifyDoctorCode=#{verifyDoctorCode},</if>
-<if test="verifyDoctorName != null">verifyDoctorName=#{verifyDoctorName},</if>
-<if test="verifyDeptCode != null">verifyDeptCode=#{verifyDeptCode},</if>
-<if test="verifyDeptName != null">verifyDeptName=#{verifyDeptName},</if>
-<if test="dataType != null">dataType=#{dataType},</if>
-<if test="sendPersonId != null">sendPersonId=#{sendPersonId},</if>
-<if test="sendPersonName != null">sendPersonName=#{sendPersonName},</if>
-<if test="sendDate != null">sendDate=#{sendDate},</if>
-<if test="applyDateStr != null">applyDateStr=#{applyDateStr},</if>
-<if test="typeno != null">typeno=#{typeno},</if>
-<if test="orderNumber != null">orderNumber=#{orderNumber},</if>
-<if test="orderNum != null">orderNum=#{orderNum},</if>
-<if test="orderDoctorCode != null">orderDoctorCode=#{orderDoctorCode},</if>
-<if test="orderDoctorName != null">orderDoctorName=#{orderDoctorName},</if>
-<if test="orderDeptCode != null">orderDeptCode=#{orderDeptCode},</if>
-<if test="orderDeptName != null">orderDeptName=#{orderDeptName},</if>
-<if test="comments != null">COMMENTS=#{comments},</if>
-<if test="state != null">STATE=#{state},</if>
-<if test="isDeletemark != null">IS_DELETEMARK=#{isDeletemark},</if>
+            <if test="applyDataId != null">applyDataId=#{applyDataId},</if>
+            <if test="verifyDoctorCode != null">verifyDoctorCode=#{verifyDoctorCode},</if>
+            <if test="verifyDoctorName != null">verifyDoctorName=#{verifyDoctorName},</if>
+            <if test="verifyDeptCode != null">verifyDeptCode=#{verifyDeptCode},</if>
+            <if test="verifyDeptName != null">verifyDeptName=#{verifyDeptName},</if>
+            <if test="dataType != null">dataType=#{dataType},</if>
+            <if test="sendPersonId != null">sendPersonId=#{sendPersonId},</if>
+            <if test="sendPersonName != null">sendPersonName=#{sendPersonName},</if>
+            <if test="sendDate != null">sendDate=#{sendDate},</if>
+            <if test="applyDateStr != null">applyDateStr=#{applyDateStr},</if>
+            <if test="typeno != null">typeno=#{typeno},</if>
+            <if test="orderNumber != null">orderNumber=#{orderNumber},</if>
+            <if test="orderNum != null">orderNum=#{orderNum},</if>
+            <if test="orderDoctorCode != null">orderDoctorCode=#{orderDoctorCode},</if>
+            <if test="orderDoctorName != null">orderDoctorName=#{orderDoctorName},</if>
+            <if test="orderDeptCode != null">orderDeptCode=#{orderDeptCode},</if>
+            <if test="orderDeptName != null">orderDeptName=#{orderDeptName},</if>
+            <if test="comments != null">COMMENTS=#{comments},</if>
+            <if test="state != null">STATE=#{state},</if>
+            <if test="isDeletemark != null">IS_DELETEMARK=#{isDeletemark},</if>
             <if test="areaType != null">areaType=#{areaType},</if>
+            <if test="dksName != null">dksName=#{dksName},</if>
         </trim>
-                where id=#{id}
+        where id=#{id}
 
     </update>
-    <select id="findYbReconsiderVerify" resultType="cc.mrbird.febs.yb.entity.YbReconsiderVerify" parameterType="cc.mrbird.febs.yb.entity.YbReconsiderVerify">
-        select  *  from yb_reconsider_verify
-        where  1=1
-        <if test="ybReconsiderVerify.id != null"> and id =#{ ybReconsiderVerify.id} </if>
-        <if test="ybReconsiderVerify.applyDataId != null"> and applyDataId =#{ ybReconsiderVerify.applyDataId} </if>
-            <if test="ybReconsiderVerify.verifyDoctorCode != null and ybReconsiderVerify.verifyDoctorCode != ''"> and verifyDoctorCode like concat('%', #{ ybReconsiderVerify.verifyDoctorCode} ,'%')</if>
-            <if test="ybReconsiderVerify.verifyDoctorName != null and ybReconsiderVerify.verifyDoctorName != ''"> and verifyDoctorName like concat('%', #{ ybReconsiderVerify.verifyDoctorName} ,'%')</if>
-            <if test="ybReconsiderVerify.verifyDeptCode != null and ybReconsiderVerify.verifyDeptCode != ''"> and verifyDeptCode like concat('%', #{ ybReconsiderVerify.verifyDeptCode} ,'%')</if>
-            <if test="ybReconsiderVerify.verifyDeptName != null and ybReconsiderVerify.verifyDeptName != ''"> and verifyDeptName like concat('%', #{ ybReconsiderVerify.verifyDeptName} ,'%')</if>
-            <if test="ybReconsiderVerify.comments != null and ybReconsiderVerify.comments != ''"> and COMMENTS like concat('%', #{ ybReconsiderVerify.comments} ,'%')</if>
-        <if test="ybReconsiderVerify.state != null"> and STATE =#{ ybReconsiderVerify.state} </if>
-        <if test="ybReconsiderVerify.isDeletemark != null"> and IS_DELETEMARK =#{ ybReconsiderVerify.isDeletemark} </if>
-        <if test="ybReconsiderVerify.areaType != null">and ybReconsiderVerify.areaType =#{ ybReconsiderVerify.areaType}</if>
-</select>
+    <select id="findYbReconsiderVerify" resultType="cc.mrbird.febs.yb.entity.YbReconsiderVerify"
+            parameterType="cc.mrbird.febs.yb.entity.YbReconsiderVerify">
+        select * from yb_reconsider_verify
+        where 1=1
+        <if test="ybReconsiderVerify.id != null">and id =#{ ybReconsiderVerify.id}</if>
+        <if test="ybReconsiderVerify.applyDataId != null">and applyDataId =#{ ybReconsiderVerify.applyDataId}</if>
+        <if test="ybReconsiderVerify.verifyDoctorCode != null and ybReconsiderVerify.verifyDoctorCode != ''">and
+            verifyDoctorCode like concat('%', #{ ybReconsiderVerify.verifyDoctorCode} ,'%')
+        </if>
+        <if test="ybReconsiderVerify.verifyDoctorName != null and ybReconsiderVerify.verifyDoctorName != ''">and
+            verifyDoctorName like concat('%', #{ ybReconsiderVerify.verifyDoctorName} ,'%')
+        </if>
+        <if test="ybReconsiderVerify.verifyDeptCode != null and ybReconsiderVerify.verifyDeptCode != ''">and
+            verifyDeptCode like concat('%', #{ ybReconsiderVerify.verifyDeptCode} ,'%')
+        </if>
+        <if test="ybReconsiderVerify.verifyDeptName != null and ybReconsiderVerify.verifyDeptName != ''">and
+            verifyDeptName like concat('%', #{ ybReconsiderVerify.verifyDeptName} ,'%')
+        </if>
+        <if test="ybReconsiderVerify.comments != null and ybReconsiderVerify.comments != ''">and COMMENTS like
+            concat('%', #{ ybReconsiderVerify.comments} ,'%')
+        </if>
+        <if test="ybReconsiderVerify.state != null">and STATE =#{ ybReconsiderVerify.state}</if>
+        <if test="ybReconsiderVerify.isDeletemark != null">and IS_DELETEMARK =#{ ybReconsiderVerify.isDeletemark}</if>
+        <if test="ybReconsiderVerify.areaType != null">and ybReconsiderVerify.areaType
+            =#{ ybReconsiderVerify.areaType}
+        </if>
+    </select>
 
     <update id="updateReviewerState" parameterType="cc.mrbird.febs.yb.entity.YbReconsiderVerify">
         update yb_reconsider_verify
@@ -113,17 +128,17 @@
 
     </update>
 
-    <select id="findReconsiderVerifyList" resultType="cc.mrbird.febs.yb.entity.YbReconsiderVerify" >
+    <select id="findReconsiderVerifyList" resultType="cc.mrbird.febs.yb.entity.YbReconsiderVerify">
         SELECT
-            *
+        *
         FROM
-            yb_reconsider_verify
+        yb_reconsider_verify
         WHERE
-            applyDateStr = #{ applyDateStr }
-        <if test="areaType != null"> and areaType =#{ areaType } </if>
-        <if test="state != null"> and state =#{ state } </if>
-        <if test="typeno != null"> and typeno =#{ typeno } </if>
-        <if test="dataType != null"> and dataType =#{ dataType } </if>
+        applyDateStr = #{ applyDateStr }
+        <if test="areaType != null">and areaType =#{ areaType }</if>
+        <if test="state != null">and state =#{ state }</if>
+        <if test="typeno != null">and typeno =#{ typeno }</if>
+        <if test="dataType != null">and dataType =#{ dataType }</if>
     </select>
 
     <insert id="insertReconsiderVerifyImport">
@@ -208,10 +223,12 @@ from
         limit 0,1
     </select>
     <select id="findReconsiderVerifyApplyDataCheckCount" resultType="Integer">
-    select count(1) from yb_reconsider_apply_data where pid = #{pid} <if test="typeno != null"> and typeno =#{ typeno } </if> and
-    id not in(
+        select count(1) from yb_reconsider_apply_data where pid = #{pid} <if test="typeno != null">and typeno
+        =#{ typeno }
+    </if> and
+        id not in(
         select applyDataId from yb_reconsider_verify where applyDateStr= #{applyDateStr} and areaType = #{areaType}
-        <if test="typeno != null"> and typeno =#{ typeno } </if>
-    )
+        <if test="typeno != null">and typeno =#{ typeno }</if>
+        )
     </select>
 </mapper>

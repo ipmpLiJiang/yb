@@ -534,6 +534,7 @@ public class YbAppealResultViewServiceImpl extends ServiceImpl<YbAppealResultVie
                             list.get(i).setArDoctorName(queryManageList.get(0).getReadyDoctorName());
                             list.get(i).setArDeptCode(queryManageList.get(0).getReadyDeptCode());
                             list.get(i).setArDeptName(queryManageList.get(0).getReadyDeptName());
+                            list.get(i).setDksName(queryManageList.get(0).getDksName());
                         }
                     }
                     if (queryRifList.size() > 0) {
@@ -571,30 +572,11 @@ public class YbAppealResultViewServiceImpl extends ServiceImpl<YbAppealResultVie
             YbReconsiderApply reconsiderApply = iYbReconsiderApplyService.findReconsiderApplyByApplyDateStrs(ybAppealResultView.getApplyDateStr(), ybAppealResultView.getAreaType());
             if (reconsiderApply != null) {
                 ybAppealResultView.setPid(reconsiderApply.getId());
-                int typeNo = 0;
 
-                if (ybAppealResultView.getTypeno() != null) {
-                    typeNo = ybAppealResultView.getTypeno();
-                }
-                int dataType = ybAppealResultView.getDataType();
                 // typeNo 可能为空
                 List<YbResultDownLoad> deptList = this.iYbAppealResultService.findAppealResultGroupDepts(ybAppealResultView);
 
-                String f = "";
-                if (dataType == YbDefaultValue.DATATYPE_0) {
-                    f = "明细扣款_";
-                } else {
-                    f = "主单扣款_";
-                }
-
-                String typeName = "";
-                if (typeNo == YbDefaultValue.TYPENO_1) {
-                    typeName = "_第一版_" + f;
-                } else if (typeNo == YbDefaultValue.TYPENO_2) {
-                    typeName = "_第二版_" + f;
-                } else {
-                    typeName = "_手动复议_";
-                }
+                String typeName = this.downLoadTypeName(ybAppealResultView);
                 for (YbResultDownLoad item : deptList) {
                     YbAppealResultDownLoad downLoad = new YbAppealResultDownLoad();
                     downLoad.setKey(item.getId());
@@ -610,6 +592,66 @@ public class YbAppealResultViewServiceImpl extends ServiceImpl<YbAppealResultVie
             return downLoadList;
         }
     }
+
+
+    //打包下载 查找部门
+    @Override
+    public List<YbAppealResultDownLoad> findAppealResultDownLoadSumList(YbAppealResultView ybAppealResultView) {
+        List<YbAppealResultDownLoad> downLoadList = new ArrayList<>();
+        try {
+            YbReconsiderApply reconsiderApply = iYbReconsiderApplyService.findReconsiderApplyByApplyDateStrs(ybAppealResultView.getApplyDateStr(), ybAppealResultView.getAreaType());
+            if (reconsiderApply != null) {
+                ybAppealResultView.setApplyDateStr(reconsiderApply.getApplyDateStr());
+
+                // typeNo 可能为空
+                List<YbResultDownLoad> deptList = this.iYbAppealResultService.findAppealResultGroupSumDepts(ybAppealResultView);
+
+                String typeName = this.downLoadTypeName(ybAppealResultView);
+
+                for (YbResultDownLoad item : deptList) {
+                    YbAppealResultDownLoad downLoad = new YbAppealResultDownLoad();
+                    downLoad.setKey(item.getId());
+                    downLoad.setDeptName(item.getDeptName());
+                    downLoad.setFileName(ybAppealResultView.getApplyDateStr() + typeName + item.getDeptName() + ".zip");
+                    downLoadList.add(downLoad);
+                }
+            }
+            return downLoadList;
+        } catch (Exception e) {
+            log.error("获取字典信息失败", e);
+            return downLoadList;
+        }
+    }
+
+    //打包下载 查找部门
+    @Override
+    public List<YbAppealResultDownLoad> findAppealResultDownLoadDksList(YbAppealResultView ybAppealResultView) {
+        List<YbAppealResultDownLoad> downLoadList = new ArrayList<>();
+        try {
+            YbReconsiderApply reconsiderApply = iYbReconsiderApplyService.findReconsiderApplyByApplyDateStrs(ybAppealResultView.getApplyDateStr(), ybAppealResultView.getAreaType());
+            if (reconsiderApply != null) {
+                ybAppealResultView.setApplyDateStr(reconsiderApply.getApplyDateStr());
+
+                // typeNo 可能为空
+                List<YbResultDownLoad> deptList = this.iYbAppealResultService.findAppealResultGroupDksDepts(ybAppealResultView);
+
+                String typeName = this.downLoadTypeName(ybAppealResultView);
+
+                for (YbResultDownLoad item : deptList) {
+                    YbAppealResultDownLoad downLoad = new YbAppealResultDownLoad();
+                    downLoad.setKey(UUID.randomUUID().toString());
+                    downLoad.setDeptName(item.getDeptName());
+                    downLoad.setFileName(ybAppealResultView.getApplyDateStr() + typeName + item.getDeptName() + ".zip");
+                    downLoadList.add(downLoad);
+                }
+            }
+            return downLoadList;
+        } catch (Exception e) {
+            log.error("获取字典信息失败", e);
+            return downLoadList;
+        }
+    }
+
 
     //打包下载 汇总科室 未设置
     @Override
@@ -636,53 +678,32 @@ public class YbAppealResultViewServiceImpl extends ServiceImpl<YbAppealResultVie
         }
     }
 
-    //打包下载 查找部门
-    @Override
-    public List<YbAppealResultDownLoad> findAppealResultDownLoadSumList(YbAppealResultView ybAppealResultView) {
-        List<YbAppealResultDownLoad> downLoadList = new ArrayList<>();
-        try {
-            YbReconsiderApply reconsiderApply = iYbReconsiderApplyService.findReconsiderApplyByApplyDateStrs(ybAppealResultView.getApplyDateStr(), ybAppealResultView.getAreaType());
-            if (reconsiderApply != null) {
-                ybAppealResultView.setApplyDateStr(reconsiderApply.getApplyDateStr());
-                int typeNo = 0;
 
-                if (ybAppealResultView.getTypeno() != null) {
-                    typeNo = ybAppealResultView.getTypeno();
-                }
-                int dataType = ybAppealResultView.getDataType();
-                // typeNo 可能为空
-                List<YbResultDownLoad> deptList = this.iYbAppealResultService.findAppealResultGroupSumDepts(ybAppealResultView);
+    private String downLoadTypeName (YbAppealResultView ybAppealResultView) {
+        int typeNo = 0;
 
-                String f = "";
-                if (dataType == YbDefaultValue.DATATYPE_0) {
-                    f = "明细扣款_";
-                } else {
-                    f = "主单扣款_";
-                }
-
-                String typeName = "";
-                if (typeNo == YbDefaultValue.TYPENO_1) {
-                    typeName = "_第一版_" + f;
-                } else if (typeNo == YbDefaultValue.TYPENO_2) {
-                    typeName = "_第二版_" + f;
-                } else {
-                    typeName = "_手动复议_";
-                }
-
-                for (YbResultDownLoad item : deptList) {
-                    YbAppealResultDownLoad downLoad = new YbAppealResultDownLoad();
-                    downLoad.setKey(item.getId());
-                    downLoad.setDeptName(item.getDeptName());
-                    downLoad.setFileName(ybAppealResultView.getApplyDateStr() + typeName + item.getDeptName() + ".zip");
-                    downLoadList.add(downLoad);
-                }
-            }
-            return downLoadList;
-        } catch (Exception e) {
-            log.error("获取字典信息失败", e);
-            return downLoadList;
+        if (ybAppealResultView.getTypeno() != null) {
+            typeNo = ybAppealResultView.getTypeno();
         }
-    }
+        int dataType = ybAppealResultView.getDataType();
 
+        String f = "";
+        if (dataType == YbDefaultValue.DATATYPE_0) {
+            f = "明细扣款_";
+        } else {
+            f = "主单扣款_";
+        }
+
+        String typeName = "";
+        if (typeNo == YbDefaultValue.TYPENO_1) {
+            typeName = "_第一版_" + f;
+        } else if (typeNo == YbDefaultValue.TYPENO_2) {
+            typeName = "_第二版_" + f;
+        } else {
+            typeName = "_非常规复议_";
+        }
+
+        return  typeName;
+    }
 
 }

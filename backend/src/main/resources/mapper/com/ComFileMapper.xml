@@ -136,6 +136,33 @@
         </if>
     </select>
 
+    <select id="findAppealResultDksComFile" resultType="cc.mrbird.febs.com.entity.ComFile"
+            parameterType="cc.mrbird.febs.com.entity.InUploadFile">
+        SELECT
+        com_file.*
+        FROM
+        com_file
+        INNER JOIN yb_appeal_result ON
+        com_file.REF_TAB_ID = yb_appeal_result.id
+        WHERE
+        com_file.IS_DELETEMARK = 1
+        <if test="inUploadFile.id != null">and com_file.REF_TAB_ID = #{inUploadFile.id}</if>
+        <if test="inUploadFile.applyDateStr != null">and yb_appeal_result.applyDateStr = #{inUploadFile.applyDateStr}
+        </if>
+        <if test="inUploadFile.areaType != null">and yb_appeal_result.areaType = #{inUploadFile.areaType}</if>
+        <if test="inUploadFile.sourceType != null">and yb_appeal_result.sourceType = #{inUploadFile.sourceType}</if>
+        <if test="inUploadFile.typeno != null and inUploadFile.typeno != 3">and yb_appeal_result.typeno =
+            #{inUploadFile.typeno}
+        </if>
+        <if test="inUploadFile.dataType != null">and yb_appeal_result.dataType = #{inUploadFile.dataType}</if>
+        <if test="inUploadFile.state != null and inUploadFile.state==12">and yb_appeal_result.STATE IN (1,2)</if>
+        <if test="inUploadFile.state != null and inUploadFile.state==1">and yb_appeal_result.STATE = 1</if>
+        <if test="inUploadFile.state != null and inUploadFile.state==2">and yb_appeal_result.STATE = 2</if>
+        <if test="inUploadFile.sumId != null">and yb_appeal_result.deptCode in (SELECT deptId FROM yb_dept WHERE dksName = #{inUploadFile.deptName})
+        </if>
+    </select>
+
+
     <delete id="batchRefIdDelete">
         delete from com_file where REF_TAB_ID = #{refTabId}
     </delete>

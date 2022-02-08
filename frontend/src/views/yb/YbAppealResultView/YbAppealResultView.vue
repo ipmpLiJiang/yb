@@ -47,7 +47,12 @@
             style="margin-right:15px"
             @click="exportExcel"
             >导出表格</a-button>
-            <a-popconfirm
+            <a-popover v-model="visibleTup" placement="top" trigger="click" title="请选择导出类型">
+              <a-button slot="content" size="small" style="margin-right: 10px" @click="showModal(1)">汇总病区</a-button>
+              <a-button slot="content" size="small" style="margin-right: 10px" type="primary"  @click="showModal(0)">单个病区</a-button>
+              <a-button slot="content" size="small" @click="showModal(2)">大科室</a-button>
+            </a-popover>
+            <!-- <a-popconfirm
               title="请选择导出类型"
               okText="单个科室"
               cancelText="汇总科室"
@@ -56,7 +61,8 @@
               @confirm="() => showModal(0)">
               <a-icon slot="icon" type="question-circle-o" style="color: orangered" />
               <a-button type="primary">导出图片</a-button>
-            </a-popconfirm>
+            </a-popconfirm> -->
+            <a-button type="primary" @click="tupOpen">导出图片</a-button>
             <a-button
             type="primary"
             style="margin-right:10px"
@@ -201,6 +207,7 @@ export default {
       downLoadVisible: false,
       searchApplyDate: this.formatDate(),
       defaultApplyDate: this.formatDate(),
+      visibleTup: false,
       selectDataTypeDataSource: [
         {text: '明细扣款', value: 0},
         {text: '主单扣款', value: 1}
@@ -223,6 +230,7 @@ export default {
     },
     showModal (type) {
       this.downLoadVisible = true
+      this.visibleTup = false
       let appealResultDownLoad = {}
       appealResultDownLoad.applyDateStr = this.searchApplyDate
       if (this.tableSelectKey === '1') {
@@ -273,6 +281,9 @@ export default {
     onHistoryLook (record) {
       this.historyVisiable = true
       this.$refs.ybAppealManageHistory.setFormValues(record)
+    },
+    tupOpen () {
+      this.visibleTup = !this.visibleTup
     },
     onHistory () {
       let key = this.tableSelectKey

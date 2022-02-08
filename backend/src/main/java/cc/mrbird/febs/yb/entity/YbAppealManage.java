@@ -317,6 +317,20 @@ private static final long serialVersionUID=1L;
     @ExcelField(value = "院区")
     private Integer areaType;
 
+    /**
+     * 大专业
+     */
+    @TableField("dksName")
+    @ExcelField(value = "大专业")
+    private String dksName;
+
+    /**
+     * 变更大专业
+     */
+    @TableField("changeDksName")
+    @ExcelField(value = "变更大专业")
+    private String changeDksName;
+
     public static final String ID ="id" ;
 
     public static final String APPLYDATAID ="applyDataId" ;
@@ -393,5 +407,9 @@ private static final long serialVersionUID=1L;
     public static final String TYPENO = "typeno";
 
     public static final String AREATYPE = "areaType";
+
+    public static final String DKSNAME = "dksName";
+
+    public static final String CHANGEDKSNAME = "changeDksName";
 
         }

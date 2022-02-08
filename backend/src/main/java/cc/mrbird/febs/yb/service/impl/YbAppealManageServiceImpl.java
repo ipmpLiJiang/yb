@@ -12,10 +12,7 @@ import cc.mrbird.febs.common.properties.FebsProperties;
 import cc.mrbird.febs.common.utils.SortUtil;
 import cc.mrbird.febs.yb.dao.YbAppealManageMapper;
 import cc.mrbird.febs.yb.entity.*;
-import cc.mrbird.febs.yb.service.IYbAppealManageService;
-import cc.mrbird.febs.yb.service.IYbAppealResultService;
-import cc.mrbird.febs.yb.service.IYbPersonService;
-import cc.mrbird.febs.yb.service.IYbReconsiderApplyService;
+import cc.mrbird.febs.yb.service.*;
 import cn.hutool.core.lang.Validator;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -65,6 +62,9 @@ public class YbAppealManageServiceImpl extends ServiceImpl<YbAppealManageMapper,
 
     @Autowired
     FebsProperties febsProperties;
+
+    @Autowired
+    IYbDeptService iYbDeptService;
 
     @Override
     public IPage<YbAppealManage> findYbAppealManages(QueryRequest request, YbAppealManage ybAppealManage) {
@@ -183,6 +183,15 @@ public class YbAppealManageServiceImpl extends ServiceImpl<YbAppealManageMapper,
                         String strChangeDoctorName = DataTypeHelpers.stringReplaceSetString(item.getChangeDoctorName(), item.getChangeDoctorCode() + "-");
                         item.setChangeDoctorName(strChangeDoctorName);
 
+                        if(item.getChangeDeptCode() != null && !item.getChangeDeptCode().equals("")){
+                            LambdaQueryWrapper<YbDept> wrapperDept = new LambdaQueryWrapper<>();
+                            wrapperDept.eq(YbDept::getDeptId,item.getChangeDeptCode());
+                            List<YbDept> deptList = iYbDeptService.list(wrapperDept);
+                            if(deptList.size() > 0) {
+                                item.setChangeDksName(deptList.get(0).getDksName());
+                            }
+                        }
+
                         this.baseMapper.update(item, queryWrapper);
                     }
                 }
@@ -217,6 +226,7 @@ public class YbAppealManageServiceImpl extends ServiceImpl<YbAppealManageMapper,
 
         newAppealResult.setOrderDoctorCode(ybAppealManage.getOrderDoctorCode());
         newAppealResult.setOrderDoctorName(ybAppealManage.getOrderDoctorName());
+        newAppealResult.setDksName(ybAppealManage.getDksName());
         newAppealResult.setOrderDeptCode(ybAppealManage.getOrderDeptCode());
         newAppealResult.setOrderDeptName(ybAppealManage.getOrderDeptName());
         if(appealResult != null) {
@@ -239,6 +249,7 @@ public class YbAppealManageServiceImpl extends ServiceImpl<YbAppealManageMapper,
         String message = "";
         YbAppealManage entity = this.getById(ybAppealManage.getId());
         if (entity != null) {
+            ybAppealManage.setDksName(entity.getDksName());
             Date thisDate = new Date();
             boolean isUpdate = false;
             String mms = "";
@@ -368,6 +379,7 @@ public class YbAppealManageServiceImpl extends ServiceImpl<YbAppealManageMapper,
     public void updateCreateAppealManage(YbAppealManage ybAppealManage, Long uId, String Uname, Integer type) {
         YbAppealManage entity = this.getById(ybAppealManage.getId());
         if (entity != null && entity.getAcceptState() == YbDefaultValue.APPROVALSTATE_2) {
+            ybAppealManage.setDksName(entity.getDksName());
             YbAppealManage newAppealManage = new YbAppealManage();
             String personCode = "";
             Date thisDate = new Date();
@@ -426,6 +438,7 @@ public class YbAppealManageServiceImpl extends ServiceImpl<YbAppealManageMapper,
                 newAppealManage.setReadyDeptName(ybAppealManage.getReadyDeptName());
                 newAppealManage.setReadyDoctorCode(ybAppealManage.getReadyDoctorCode());
                 newAppealManage.setReadyDoctorName(ybAppealManage.getReadyDoctorName());
+                newAppealManage.setDksName(ybAppealManage.getDksName());
 
                 updateManage.setRefuseId(uId);
                 updateManage.setRefuseName(Uname);
@@ -436,6 +449,13 @@ public class YbAppealManageServiceImpl extends ServiceImpl<YbAppealManageMapper,
 
                 personCode = ybAppealManage.getReadyDoctorCode();
             } else {
+                LambdaQueryWrapper<YbDept> wrapperDept = new LambdaQueryWrapper<>();
+                wrapperDept.eq(YbDept::getDeptId,ybAppealManage.getChangeDeptCode());
+                List<YbDept> deptList = iYbDeptService.list(wrapperDept);
+                if(deptList.size() > 0) {
+                    newAppealManage.setDksName(deptList.get(0).getDksName());
+                    updateManage.setChangeDksName(deptList.get(0).getDksName());
+                }
                 //同意
                 newAppealManage.setReadyDeptCode(ybAppealManage.getChangeDeptCode());
                 newAppealManage.setReadyDeptName(ybAppealManage.getChangeDeptName());
@@ -456,6 +476,7 @@ public class YbAppealManageServiceImpl extends ServiceImpl<YbAppealManageMapper,
             LambdaQueryWrapper<YbAppealManage> queryWrapper = new LambdaQueryWrapper<>();
             queryWrapper.eq(YbAppealManage::getAcceptState, YbDefaultValue.ACCEPTSTATE_2);
             queryWrapper.eq(YbAppealManage::getId, ybAppealManage.getId());
+
             this.baseMapper.update(updateManage, queryWrapper);
 
             this.save(newAppealManage);
@@ -568,7 +589,9 @@ public class YbAppealManageServiceImpl extends ServiceImpl<YbAppealManageMapper,
                 updateAppealManage.setChangeDoctorName(strReadyDoctorName);
                 updateAppealManage.setChangeDeptCode(ybAppealManage.getReadyDeptCode());
                 updateAppealManage.setChangeDeptName(strReadyDeptName);
+
             }
+
             if(entity.getAcceptState() == YbDefaultValue.ACCEPTSTATE_7 && ybAppealManage.getAcceptState() == YbDefaultValue.ACCEPTSTATE_6){
                 updateAppealManage.setOperateProcess("未申诉-已申诉");
             }
@@ -601,6 +624,14 @@ public class YbAppealManageServiceImpl extends ServiceImpl<YbAppealManageMapper,
             updateAppealManage.setAdminReason(adminReason);
             updateAppealManage.setAdminChangeDate(thisDate);
             //方法 更改状态为0的数据 业务更改 管理员更改状态为1的数据 所有不调用该方法
+            if(updateAppealManage.getChangeDeptCode() !=null) {
+                LambdaQueryWrapper<YbDept> wrapperDept = new LambdaQueryWrapper<>();
+                wrapperDept.eq(YbDept::getDeptId, updateAppealManage.getChangeDeptCode());
+                List<YbDept> deptList = iYbDeptService.list(wrapperDept);
+                if (deptList.size() > 0) {
+                    updateAppealManage.setChangeDksName(deptList.get(0).getDksName());
+                }
+            }
             //方法 更改状态为1的数据
             LambdaQueryWrapper<YbAppealManage> queryWrapper = new LambdaQueryWrapper<>();
             queryWrapper.eq(YbAppealManage::getAcceptState, entity.getAcceptState());
@@ -680,6 +711,13 @@ public class YbAppealManageServiceImpl extends ServiceImpl<YbAppealManageMapper,
                 newAppealManage.setOperateProcess("管理员更改-创建");
 
                 String personCode = newAppealManage.getReadyDoctorCode();
+
+                LambdaQueryWrapper<YbDept> wrapperDept = new LambdaQueryWrapper<>();
+                wrapperDept.eq(YbDept::getDeptId,newAppealManage.getReadyDeptCode());
+                List<YbDept> deptList = iYbDeptService.list(wrapperDept);
+                if(deptList.size() > 0) {
+                    newAppealManage.setDksName(deptList.get(0).getDksName());
+                }
 
                 this.save(newAppealManage);
 

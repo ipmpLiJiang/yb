@@ -343,6 +343,13 @@ public class YbAppealResultResetView implements Comparable<YbAppealResultResetVi
     @ExcelField(value = "院区")
     private Integer areaType;
 
+    /**
+     * 大专业
+     */
+    @TableField("dksName")
+    @ExcelField(value = "大专业")
+    private String dksName;
+
     public static final String PID = "pid";
     public static final String SERIALNO = "serialNo";
     public static final String BILLNO = "billNo";
@@ -388,6 +395,8 @@ public class YbAppealResultResetView implements Comparable<YbAppealResultResetVi
     public static final String RELATELDATAID = "relatelDataId";
     public static final String RESETDATAID = "resetDataId";
     public static final String AREATYPE = "areaType";
+
+    public static final String DKSNAME = "dksName";
 
     @Override
     public int compareTo(YbAppealResultResetView o) {

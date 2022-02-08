@@ -44,7 +44,7 @@ export default {
         dataIndex: 'fileName'
       },
       {
-        title: this.appealResultDownLoad.type === 0 ? '科室' : '汇总科室',
+        title: this.appealResultDownLoad.type === 0 ? '科室' : this.appealResultDownLoad.type === 1 ? '汇总科室' : '大科室',
         dataIndex: 'deptName',
         customRender: (text, row, index) => {
           if (text !== '' && text !== null) {
@@ -148,6 +148,9 @@ export default {
       if (this.appealResultDownLoad.type === 0) {
         methods = 'fileImgZip'
       }
+      if (this.appealResultDownLoad.type === 2) {
+        methods = 'fileDksImgZip'
+      }
       this.$download('comFile/' + methods, {
         ...formData
       }, formData.fileName + '.zip')
@@ -182,6 +185,9 @@ export default {
       let methods = 'fileDownLoadSumList'
       if (this.appealResultDownLoad.type === 0) {
         methods = 'fileDownLoadList'
+      }
+      if (this.appealResultDownLoad.type === 2) {
+        methods = 'fileDownLoadDksList'
       }
       this.$get('ybAppealResultView/' + methods, {
         ...this.queryParams

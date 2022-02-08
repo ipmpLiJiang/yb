@@ -2,146 +2,179 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cc.mrbird.febs.yb.dao.YbAppealManageMapper">
 
-        <!-- 通用查询映射结果 -->
-        <resultMap id="BaseResultMap" type="cc.mrbird.febs.yb.entity.YbAppealManage">
-                    <id column="id" property="id"/>
-                    <result column="applyDataId" property="applyDataId"/>
-                    <result column="verifyId" property="verifyId"/>
-                    <result column="readyDoctorCode" property="readyDoctorCode"/>
-                    <result column="readyDoctorName" property="readyDoctorName"/>
-                    <result column="readyDeptCode" property="readyDeptCode"/>
-                    <result column="readyDeptName" property="readyDeptName"/>
-                    <result column="changeDoctorCode" property="changeDoctorCode"/>
-                    <result column="changeDoctorName" property="changeDoctorName"/>
-                    <result column="changeDeptCode" property="changeDeptCode"/>
-                    <result column="changeDeptName" property="changeDeptName"/>
-                    <result column="acceptState" property="acceptState"/>
-                    <result column="operateReason" property="operateReason"/>
-                    <result column="operateDate" property="operateDate"/>
-                    <result column="refuseId" property="refuseId"/>
-                    <result column="refuseName" property="refuseName"/>
-                    <result column="refuseReason" property="refuseReason"/>
-                    <result column="refuseDate" property="refuseDate"/>
-                    <result column="adminPersonId" property="adminPersonId"/>
-                    <result column="adminPersonName" property="adminPersonName"/>
-                    <result column="adminChangeDate" property="adminChangeDate"/>
-                    <result column="adminReason" property="adminReason"/>
-                    <result column="enableDate" property="enableDate"/>
-                    <result column="sourceType" property="sourceType"/>
-            <result column="dataType" property="dataType"/>
-            <result column="orderDoctorCode" property="orderDoctorCode"/>
-            <result column="orderDoctorName" property="orderDoctorName"/>
-            <result column="orderDeptCode" property="orderDeptCode"/>
-            <result column="orderDeptName" property="orderDeptName"/>
-            <result column="approvalState" property="approvalState"/>
-            <result column="applyDateStr" property="applyDateStr"/>
-            <result column="typeno" property="typeno"/>
-            <result column="orderNumber" property="orderNumber"/>
-            <result column="orderNum" property="orderNum"/>
-            <result column="COMMENTS" property="comments"/>
-                    <result column="STATE" property="state"/>
-                    <result column="IS_DELETEMARK" property="isDeletemark"/>
-            <result column="areaType" property="areaType"/>
-        </resultMap>
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="cc.mrbird.febs.yb.entity.YbAppealManage">
+        <id column="id" property="id"/>
+        <result column="applyDataId" property="applyDataId"/>
+        <result column="verifyId" property="verifyId"/>
+        <result column="readyDoctorCode" property="readyDoctorCode"/>
+        <result column="readyDoctorName" property="readyDoctorName"/>
+        <result column="readyDeptCode" property="readyDeptCode"/>
+        <result column="readyDeptName" property="readyDeptName"/>
+        <result column="changeDoctorCode" property="changeDoctorCode"/>
+        <result column="changeDoctorName" property="changeDoctorName"/>
+        <result column="changeDeptCode" property="changeDeptCode"/>
+        <result column="changeDeptName" property="changeDeptName"/>
+        <result column="acceptState" property="acceptState"/>
+        <result column="operateReason" property="operateReason"/>
+        <result column="operateDate" property="operateDate"/>
+        <result column="refuseId" property="refuseId"/>
+        <result column="refuseName" property="refuseName"/>
+        <result column="refuseReason" property="refuseReason"/>
+        <result column="refuseDate" property="refuseDate"/>
+        <result column="adminPersonId" property="adminPersonId"/>
+        <result column="adminPersonName" property="adminPersonName"/>
+        <result column="adminChangeDate" property="adminChangeDate"/>
+        <result column="adminReason" property="adminReason"/>
+        <result column="enableDate" property="enableDate"/>
+        <result column="sourceType" property="sourceType"/>
+        <result column="dataType" property="dataType"/>
+        <result column="orderDoctorCode" property="orderDoctorCode"/>
+        <result column="orderDoctorName" property="orderDoctorName"/>
+        <result column="orderDeptCode" property="orderDeptCode"/>
+        <result column="orderDeptName" property="orderDeptName"/>
+        <result column="approvalState" property="approvalState"/>
+        <result column="applyDateStr" property="applyDateStr"/>
+        <result column="typeno" property="typeno"/>
+        <result column="orderNumber" property="orderNumber"/>
+        <result column="orderNum" property="orderNum"/>
+        <result column="COMMENTS" property="comments"/>
+        <result column="STATE" property="state"/>
+        <result column="IS_DELETEMARK" property="isDeletemark"/>
+        <result column="areaType" property="areaType"/>
+        <result column="dksName" property="dksName"/>
+        <result column="changeDksName" property="changeDksName"/>
+    </resultMap>
 
-        <!-- 通用查询结果列 -->
-        <sql id="Base_Column_List">
-        id, applyDataId, verifyId, readyDoctorCode, readyDoctorName, readyDeptCode, readyDeptName, changeDoctorCode, changeDoctorName, changeDeptCode, changeDeptName, acceptState, operateReason, operateDate, refuseId, refuseName, refuseReason, refuseDate, adminPersonId, adminPersonName, adminChangeDate, adminReason,enableDate, sourceType,dataType,orderDoctorCode,orderDoctorName,orderDeptCode,orderDeptName,approvalState,applyDateStr,typeno,orderNumber,orderNum, COMMENTS, STATE, IS_DELETEMARK, areaType
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, applyDataId, verifyId, readyDoctorCode, readyDoctorName, readyDeptCode, readyDeptName, changeDoctorCode, changeDoctorName, changeDeptCode, changeDeptName, acceptState, operateReason, operateDate, refuseId, refuseName, refuseReason, refuseDate, adminPersonId, adminPersonName, adminChangeDate, adminReason,enableDate, sourceType,dataType,orderDoctorCode,orderDoctorName,orderDeptCode,orderDeptName,approvalState,applyDateStr,typeno,orderNumber,orderNum, COMMENTS, STATE, IS_DELETEMARK, areaType,dksName,changeDksName
     </sql>
     <update id="updateYbAppealManage" parameterType="cc.mrbird.febs.yb.entity.YbAppealManage">
         update yb_appeal_manage
         <trim prefix="set" suffixOverrides=",">
-<if test="applyDataId != null">applyDataId=#{applyDataId},</if>
-<if test="verifyId != null">verifyId=#{verifyId},</if>
-<if test="readyDoctorCode != null">readyDoctorCode=#{readyDoctorCode},</if>
-<if test="readyDoctorName != null">readyDoctorName=#{readyDoctorName},</if>
-<if test="readyDeptCode != null">readyDeptCode=#{readyDeptCode},</if>
-<if test="readyDeptName != null">readyDeptName=#{readyDeptName},</if>
-<if test="changeDoctorCode != null">changeDoctorCode=#{changeDoctorCode},</if>
-<if test="changeDoctorName != null">changeDoctorName=#{changeDoctorName},</if>
-<if test="changeDeptCode != null">changeDeptCode=#{changeDeptCode},</if>
-<if test="changeDeptName != null">changeDeptName=#{changeDeptName},</if>
-<if test="acceptState != null">acceptState=#{acceptState},</if>
-<if test="operateReason != null">operateReason=#{operateReason},</if>
-<if test="operateDate != null">operateDate=#{operateDate},</if>
-<if test="refuseId != null">refuseId=#{refuseId},</if>
-<if test="refuseName != null">refuseName=#{refuseName},</if>
-<if test="refuseReason != null">refuseReason=#{refuseReason},</if>
-<if test="refuseDate != null">refuseDate=#{refuseDate},</if>
-<if test="adminPersonId != null">adminPersonId=#{adminPersonId},</if>
-<if test="adminPersonName != null">adminPersonName=#{adminPersonName},</if>
-<if test="adminChangeDate != null">adminChangeDate=#{adminChangeDate},</if>
-<if test="adminReason != null">adminReason=#{adminReason},</if>
-<if test="enableDate != null">enableDate=#{enableDate},</if>
-<if test="sourceType != null">sourceType=#{sourceType},</if>
-<if test="dataType != null">dataType=#{dataType},</if>
-<if test="orderDoctorCode != null">orderDoctorCode=#{orderDoctorCode},</if>
-<if test="orderDoctorName != null">orderDoctorName=#{orderDoctorName},</if>
-<if test="orderDeptCode != null">orderDeptCode=#{orderDeptCode},</if>
-<if test="orderDeptName != null">orderDeptName=#{orderDeptName},</if>
-<if test="approvalState != null">approvalState=#{approvalState},</if>
-<if test="applyDateStr != null">applyDateStr=#{applyDateStr},</if>
-<if test="typeno != null">typeno=#{typeno},</if>
-<if test="orderNumber != null">orderNumber=#{orderNumber},</if>
-<if test="orderNum != null">orderNum=#{orderNum},</if>
-<if test="comments != null">COMMENTS=#{comments},</if>
-<if test="state != null">STATE=#{state},</if>
-<if test="isDeletemark != null">IS_DELETEMARK=#{isDeletemark},</if>
+            <if test="applyDataId != null">applyDataId=#{applyDataId},</if>
+            <if test="verifyId != null">verifyId=#{verifyId},</if>
+            <if test="readyDoctorCode != null">readyDoctorCode=#{readyDoctorCode},</if>
+            <if test="readyDoctorName != null">readyDoctorName=#{readyDoctorName},</if>
+            <if test="readyDeptCode != null">readyDeptCode=#{readyDeptCode},</if>
+            <if test="readyDeptName != null">readyDeptName=#{readyDeptName},</if>
+            <if test="changeDoctorCode != null">changeDoctorCode=#{changeDoctorCode},</if>
+            <if test="changeDoctorName != null">changeDoctorName=#{changeDoctorName},</if>
+            <if test="changeDeptCode != null">changeDeptCode=#{changeDeptCode},</if>
+            <if test="changeDeptName != null">changeDeptName=#{changeDeptName},</if>
+            <if test="acceptState != null">acceptState=#{acceptState},</if>
+            <if test="operateReason != null">operateReason=#{operateReason},</if>
+            <if test="operateDate != null">operateDate=#{operateDate},</if>
+            <if test="refuseId != null">refuseId=#{refuseId},</if>
+            <if test="refuseName != null">refuseName=#{refuseName},</if>
+            <if test="refuseReason != null">refuseReason=#{refuseReason},</if>
+            <if test="refuseDate != null">refuseDate=#{refuseDate},</if>
+            <if test="adminPersonId != null">adminPersonId=#{adminPersonId},</if>
+            <if test="adminPersonName != null">adminPersonName=#{adminPersonName},</if>
+            <if test="adminChangeDate != null">adminChangeDate=#{adminChangeDate},</if>
+            <if test="adminReason != null">adminReason=#{adminReason},</if>
+            <if test="enableDate != null">enableDate=#{enableDate},</if>
+            <if test="sourceType != null">sourceType=#{sourceType},</if>
+            <if test="dataType != null">dataType=#{dataType},</if>
+            <if test="orderDoctorCode != null">orderDoctorCode=#{orderDoctorCode},</if>
+            <if test="orderDoctorName != null">orderDoctorName=#{orderDoctorName},</if>
+            <if test="orderDeptCode != null">orderDeptCode=#{orderDeptCode},</if>
+            <if test="orderDeptName != null">orderDeptName=#{orderDeptName},</if>
+            <if test="approvalState != null">approvalState=#{approvalState},</if>
+            <if test="applyDateStr != null">applyDateStr=#{applyDateStr},</if>
+            <if test="typeno != null">typeno=#{typeno},</if>
+            <if test="orderNumber != null">orderNumber=#{orderNumber},</if>
+            <if test="orderNum != null">orderNum=#{orderNum},</if>
+            <if test="comments != null">COMMENTS=#{comments},</if>
+            <if test="state != null">STATE=#{state},</if>
+            <if test="isDeletemark != null">IS_DELETEMARK=#{isDeletemark},</if>
             <if test="areaType != null">areaType=#{areaType},</if>
+            <if test="dksName != null">dksName=#{dksName},</if>
+            <if test="changeDksName != null">changeDksName=#{changeDksName},</if>
         </trim>
-                where id=#{id}
+        where id=#{id}
 
     </update>
-    <select id="findYbAppealManage" resultType="cc.mrbird.febs.yb.entity.YbAppealManage" parameterType="cc.mrbird.febs.yb.entity.YbAppealManage">
-        select  *  from yb_appeal_manage
-        where  1=1
-        <if test="ybAppealManage.id != null"> and id =#{ ybAppealManage.id} </if>
-        <if test="ybAppealManage.applyDataId != null"> and applyDataId =#{ ybAppealManage.applyDataId} </if>
-        <if test="ybAppealManage.verifyId != null"> and verifyId =#{ ybAppealManage.verifyId} </if>
-            <if test="ybAppealManage.readyDoctorCode != null and ybAppealManage.readyDoctorCode != ''"> and readyDoctorCode like concat('%', #{ ybAppealManage.readyDoctorCode} ,'%')</if>
-            <if test="ybAppealManage.readyDoctorName != null and ybAppealManage.readyDoctorName != ''"> and readyDoctorName like concat('%', #{ ybAppealManage.readyDoctorName} ,'%')</if>
-            <if test="ybAppealManage.readyDeptCode != null and ybAppealManage.readyDeptCode != ''"> and readyDeptCode like concat('%', #{ ybAppealManage.readyDeptCode} ,'%')</if>
-            <if test="ybAppealManage.readyDeptName != null and ybAppealManage.readyDeptName != ''"> and readyDeptName like concat('%', #{ ybAppealManage.readyDeptName} ,'%')</if>
-            <if test="ybAppealManage.changeDoctorCode != null and ybAppealManage.changeDoctorCode != ''"> and changeDoctorCode like concat('%', #{ ybAppealManage.changeDoctorCode} ,'%')</if>
-            <if test="ybAppealManage.changeDoctorName != null and ybAppealManage.changeDoctorName != ''"> and changeDoctorName like concat('%', #{ ybAppealManage.changeDoctorName} ,'%')</if>
-            <if test="ybAppealManage.changeDeptCode != null and ybAppealManage.changeDeptCode != ''"> and changeDeptCode like concat('%', #{ ybAppealManage.changeDeptCode} ,'%')</if>
-            <if test="ybAppealManage.changeDeptName != null and ybAppealManage.changeDeptName != ''"> and changeDeptName like concat('%', #{ ybAppealManage.changeDeptName} ,'%')</if>
-        <if test="ybAppealManage.acceptState != null"> and acceptState =#{ ybAppealManage.acceptState} </if>
-            <if test="ybAppealManage.operateReason != null and ybAppealManage.operateReason != ''"> and operateReason like concat('%', #{ ybAppealManage.operateReason} ,'%')</if>
+    <select id="findYbAppealManage" resultType="cc.mrbird.febs.yb.entity.YbAppealManage"
+            parameterType="cc.mrbird.febs.yb.entity.YbAppealManage">
+        select * from yb_appeal_manage
+        where 1=1
+        <if test="ybAppealManage.id != null">and id =#{ ybAppealManage.id}</if>
+        <if test="ybAppealManage.applyDataId != null">and applyDataId =#{ ybAppealManage.applyDataId}</if>
+        <if test="ybAppealManage.verifyId != null">and verifyId =#{ ybAppealManage.verifyId}</if>
+        <if test="ybAppealManage.readyDoctorCode != null and ybAppealManage.readyDoctorCode != ''">and readyDoctorCode
+            like concat('%', #{ ybAppealManage.readyDoctorCode} ,'%')
+        </if>
+        <if test="ybAppealManage.readyDoctorName != null and ybAppealManage.readyDoctorName != ''">and readyDoctorName
+            like concat('%', #{ ybAppealManage.readyDoctorName} ,'%')
+        </if>
+        <if test="ybAppealManage.readyDeptCode != null and ybAppealManage.readyDeptCode != ''">and readyDeptCode like
+            concat('%', #{ ybAppealManage.readyDeptCode} ,'%')
+        </if>
+        <if test="ybAppealManage.readyDeptName != null and ybAppealManage.readyDeptName != ''">and readyDeptName like
+            concat('%', #{ ybAppealManage.readyDeptName} ,'%')
+        </if>
+        <if test="ybAppealManage.changeDoctorCode != null and ybAppealManage.changeDoctorCode != ''">and
+            changeDoctorCode like concat('%', #{ ybAppealManage.changeDoctorCode} ,'%')
+        </if>
+        <if test="ybAppealManage.changeDoctorName != null and ybAppealManage.changeDoctorName != ''">and
+            changeDoctorName like concat('%', #{ ybAppealManage.changeDoctorName} ,'%')
+        </if>
+        <if test="ybAppealManage.changeDeptCode != null and ybAppealManage.changeDeptCode != ''">and changeDeptCode like
+            concat('%', #{ ybAppealManage.changeDeptCode} ,'%')
+        </if>
+        <if test="ybAppealManage.changeDeptName != null and ybAppealManage.changeDeptName != ''">and changeDeptName like
+            concat('%', #{ ybAppealManage.changeDeptName} ,'%')
+        </if>
+        <if test="ybAppealManage.acceptState != null">and acceptState =#{ ybAppealManage.acceptState}</if>
+        <if test="ybAppealManage.operateReason != null and ybAppealManage.operateReason != ''">and operateReason like
+            concat('%', #{ ybAppealManage.operateReason} ,'%')
+        </if>
         <if test="ybAppealManage.operateDateFrom!= null">
             AND ybAppealManage.operateDate <![CDATA[ >= ]]>  operateDateFrom}
         </if>
         <if test="ybAppealManage.operateDateTo!= null">
             AND ybAppealManage.operateDate <![CDATA[ <= ]]>  operateDateTo}
         </if>
-            <if test="ybAppealManage.refuseName != null and ybAppealManage.refuseName != ''"> and refuseName like concat('%', #{ ybAppealManage.refuseName} ,'%')</if>
-            <if test="ybAppealManage.refuseReason != null and ybAppealManage.refuseReason != ''"> and refuseReason like concat('%', #{ ybAppealManage.refuseReason} ,'%')</if>
+        <if test="ybAppealManage.refuseName != null and ybAppealManage.refuseName != ''">and refuseName like concat('%',
+            #{ ybAppealManage.refuseName} ,'%')
+        </if>
+        <if test="ybAppealManage.refuseReason != null and ybAppealManage.refuseReason != ''">and refuseReason like
+            concat('%', #{ ybAppealManage.refuseReason} ,'%')
+        </if>
         <if test="ybAppealManage.refuseDateFrom!= null">
             AND ybAppealManage.refuseDate <![CDATA[ >= ]]>  refuseDateFrom}
         </if>
         <if test="ybAppealManage.refuseDateTo!= null">
             AND ybAppealManage.refuseDate <![CDATA[ <= ]]>  refuseDateTo}
         </if>
-            <if test="ybAppealManage.adminPersonName != null and ybAppealManage.adminPersonName != ''"> and adminPersonName like concat('%', #{ ybAppealManage.adminPersonName} ,'%')</if>
+        <if test="ybAppealManage.adminPersonName != null and ybAppealManage.adminPersonName != ''">and adminPersonName
+            like concat('%', #{ ybAppealManage.adminPersonName} ,'%')
+        </if>
         <if test="ybAppealManage.adminChangeDateFrom!= null">
             AND ybAppealManage.adminChangeDate <![CDATA[ >= ]]>  adminChangeDateFrom}
         </if>
         <if test="ybAppealManage.adminChangeDateTo!= null">
             AND ybAppealManage.adminChangeDate <![CDATA[ <= ]]>  adminChangeDateTo}
         </if>
-            <if test="ybAppealManage.adminReason != null and ybAppealManage.adminReason != ''"> and adminReason like concat('%', #{ ybAppealManage.adminReason} ,'%')</if>
+        <if test="ybAppealManage.adminReason != null and ybAppealManage.adminReason != ''">and adminReason like
+            concat('%', #{ ybAppealManage.adminReason} ,'%')
+        </if>
         <if test="ybAppealManage.enableDateFrom!= null">
             AND ybAppealManage.enableDate <![CDATA[ >= ]]>  enableDateFrom}
         </if>
         <if test="ybAppealManage.enableDateTo!= null">
             AND ybAppealManage.enableDate <![CDATA[ <= ]]>  enableDateTo}
         </if>
-        <if test="ybAppealManage.sourceType != null"> and sourceType =#{ ybAppealManage.sourceType} </if>
-            <if test="ybAppealManage.comments != null and ybAppealManage.comments != ''"> and COMMENTS like concat('%', #{ ybAppealManage.comments} ,'%')</if>
-        <if test="ybAppealManage.state != null"> and STATE =#{ ybAppealManage.state} </if>
-        <if test="ybAppealManage.approvalState != null"> and approvalState =#{ ybAppealManage.approvalState} </if>
-        <if test="ybAppealManage.isDeletemark != null"> and IS_DELETEMARK =#{ ybAppealManage.isDeletemark} </if>
-</select>
+        <if test="ybAppealManage.sourceType != null">and sourceType =#{ ybAppealManage.sourceType}</if>
+        <if test="ybAppealManage.comments != null and ybAppealManage.comments != ''">and COMMENTS like concat('%',
+            #{ ybAppealManage.comments} ,'%')
+        </if>
+        <if test="ybAppealManage.state != null">and STATE =#{ ybAppealManage.state}</if>
+        <if test="ybAppealManage.approvalState != null">and approvalState =#{ ybAppealManage.approvalState}</if>
+        <if test="ybAppealManage.isDeletemark != null">and IS_DELETEMARK =#{ ybAppealManage.isDeletemark}</if>
+    </select>
 
     <update id="updateAcceptRejectState" parameterType="cc.mrbird.febs.yb.entity.YbAppealManage">
         update yb_appeal_manage
@@ -262,20 +295,22 @@
             acceptState in(0,1,2)
 </select>
 
-    <select id="findAppealManageBySoutInActList" resultType="cc.mrbird.febs.yb.entity.YbAppealManage" parameterType="cc.mrbird.febs.yb.entity.YbAppealManage">
-    SELECT
+    <select id="findAppealManageBySoutInActList" resultType="cc.mrbird.febs.yb.entity.YbAppealManage"
+            parameterType="cc.mrbird.febs.yb.entity.YbAppealManage">
+        SELECT
         am.id,
         am.applyDataId,
         am.readyDoctorCode,
         am.readyDoctorName,
         am.readyDeptCode,
         am.readyDeptName,
+        am.dksName,
         rad.proposalCode COMMENTS
-    FROM
+        FROM
         yb_appeal_manage am
         left join yb_reconsider_apply_data rad on
-            am.applyDataId = rad.id
-    where
+        am.applyDataId = rad.id
+        where
         am.applyDateStr=#{ybAppealManage.applyDateStr}
         and am.areaType = #{ybAppealManage.areaType}
         and am.sourceType = #{ybAppealManage.sourceType}

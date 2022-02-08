@@ -29,6 +29,8 @@ public interface ComFileMapper extends BaseMapper<ComFile> {
 
     List<ComFile> findAppealResultSumComFile(@Param("inUploadFile") InUploadFile inUploadFile);
 
+    List<ComFile> findAppealResultDksComFile(@Param("inUploadFile") InUploadFile inUploadFile);
+
     int batchRefIdDelete(@Param("refTabId") String refTabId);
 
 }

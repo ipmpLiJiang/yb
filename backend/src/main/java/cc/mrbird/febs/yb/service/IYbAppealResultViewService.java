@@ -48,5 +48,7 @@ public interface IYbAppealResultViewService extends IService<YbAppealResultView>
 
     List<YbAppealResultDownLoad> findAppealResultDownLoadSumList(YbAppealResultView ybAppealResultView);
 
+    List<YbAppealResultDownLoad> findAppealResultDownLoadDksList(YbAppealResultView ybAppealResultView);
+
     List<YbAppealResultDownLoad> findYbAppealResultNotDeptList(YbAppealResultView ybAppealResultView);
 }

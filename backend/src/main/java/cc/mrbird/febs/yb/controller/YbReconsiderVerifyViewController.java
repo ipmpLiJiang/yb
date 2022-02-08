@@ -14,6 +14,7 @@ import cc.mrbird.febs.export.excel.ExportExcelUtils;
 import cc.mrbird.febs.system.domain.User;
 import cc.mrbird.febs.yb.domain.ResponseImportResultData;
 import cc.mrbird.febs.yb.entity.*;
+import cc.mrbird.febs.yb.service.IYbDeptService;
 import cc.mrbird.febs.yb.service.IYbReconsiderApplyService;
 import cc.mrbird.febs.yb.service.IYbReconsiderInpatientfeesService;
 import cc.mrbird.febs.yb.service.IYbReconsiderVerifyViewService;
@@ -176,6 +177,7 @@ public class YbReconsiderVerifyViewController extends BaseController {
                     ybReconsiderVerifyView.setAreaType(ybReconsiderVerifyView.getAreaType());
                     List<YbReconsiderVerifyView> list = this.iYbReconsiderVerifyViewService.findReconsiderVerifyViewLists(ybReconsiderVerifyView);
                     list = list.stream().sorted(Comparator.comparing(YbReconsiderVerifyView::getOrderNum)).collect(Collectors.toList());
+
                     if (ybReconsiderVerifyView.getDataType().equals(YbDefaultValue.DATATYPE_0)) {
                         YbReconsiderInpatientfees queryRif = new YbReconsiderInpatientfees();queryRif.setApplyDateStr(ybReconsiderVerifyView.getApplyDateStr());
                         queryRif.setAreaType(ybReconsiderVerifyView.getAreaType());
@@ -266,6 +268,8 @@ public class YbReconsiderVerifyViewController extends BaseController {
                             if (item.getOrderDoctorName() != null && !item.getOrderDoctorName().equals(""))
                                 dataExport.setOrderDocName(item.getOrderDoctorName());
 
+                            dataExport.setDksName(item.getDksName());
+
                             exportList.add(dataExport);
                         }
                         if (exportList.size() == 0) {
@@ -318,6 +322,8 @@ public class YbReconsiderVerifyViewController extends BaseController {
                                 dataExport.setExcuteDocId(queryRifList.get(0).getExcuteDocId());
                                 dataExport.setExcuteDocName(queryRifList.get(0).getExcuteDocName());
                             }
+
+                            dataExport.setDksName(item.getDksName());
                             exportList.add(dataExport);
                         }
                         if (exportList.size() == 0) {

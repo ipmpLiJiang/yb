@@ -379,7 +379,7 @@ public class YbReconsiderVerifyController extends BaseController {
                                     if (objMx.size() > 1 || objZd.size() > 1) {
                                         List<YbReconsiderVerify> verifyList = new ArrayList<>();
                                         if (objMx.size() > 1) {
-                                            if (objMx.get(0).length >= 47) {
+                                            if (objMx.get(0).length >= 48) {
                                                 YbReconsiderInpatientfees queryRif = new YbReconsiderInpatientfees();
                                                 queryRif.setApplyDateStr(applyDateStr);
                                                 queryRif.setAreaType(areaType);
@@ -398,7 +398,7 @@ public class YbReconsiderVerifyController extends BaseController {
                                             }
                                         }
                                         if (objZd.size() > 1) {
-                                            if (objZd.get(0).length >= 22) {
+                                            if (objZd.get(0).length >= 23) {
                                                 for (int i = 1; i < objZd.size(); i++) {
                                                     YbReconsiderVerify rv = this.getReconsiderVerify(objZd, i, applyDateStr, areaType, currentUser, dataType, applyDataList, null);
                                                     if (rv != null) {
@@ -475,20 +475,20 @@ public class YbReconsiderVerifyController extends BaseController {
         String strOrderDoctorCode = "";
         String strOrderDoctorName = "";
         if (dataType == 0) {
-            strDeptCode = DataTypeHelpers.importTernaryOperate(obj.get(i), 27);//科室编码
-            strDeptName = DataTypeHelpers.importTernaryOperate(obj.get(i), 28);//科室名称
-            strDocCode = DataTypeHelpers.importTernaryOperate(obj.get(i), 29);//医生编码
-            strDocName = DataTypeHelpers.importTernaryOperate(obj.get(i), 30);//医生名称
+            strDeptCode = DataTypeHelpers.importTernaryOperate(obj.get(i), 28);//科室编码
+            strDeptName = DataTypeHelpers.importTernaryOperate(obj.get(i), 29);//科室名称
+            strDocCode = DataTypeHelpers.importTernaryOperate(obj.get(i), 30);//医生编码
+            strDocName = DataTypeHelpers.importTernaryOperate(obj.get(i), 31);//医生名称
 
-            strOrderDeptCode = DataTypeHelpers.importTernaryOperate(obj.get(i), 33);//住院科室编码
-            strOrderDeptName = DataTypeHelpers.importTernaryOperate(obj.get(i), 34);//住院科室名称
-            strOrderDoctorCode = DataTypeHelpers.importTernaryOperate(obj.get(i), 35);//开方医生编码
-            strOrderDoctorName = DataTypeHelpers.importTernaryOperate(obj.get(i), 36);//开方医生名称
+            strOrderDeptCode = DataTypeHelpers.importTernaryOperate(obj.get(i), 34);//住院科室编码
+            strOrderDeptName = DataTypeHelpers.importTernaryOperate(obj.get(i), 35);//住院科室名称
+            strOrderDoctorCode = DataTypeHelpers.importTernaryOperate(obj.get(i), 36);//开方医生编码
+            strOrderDoctorName = DataTypeHelpers.importTernaryOperate(obj.get(i), 37);//开方医生名称
         } else {
-            strDeptCode = DataTypeHelpers.importTernaryOperate(obj.get(i), 18);//科室编码
-            strDeptName = DataTypeHelpers.importTernaryOperate(obj.get(i), 19);//科室名称
-            strDocCode = DataTypeHelpers.importTernaryOperate(obj.get(i), 20);//医生编码
-            strDocName = DataTypeHelpers.importTernaryOperate(obj.get(i), 21);//医生名称
+            strDeptCode = DataTypeHelpers.importTernaryOperate(obj.get(i), 19);//科室编码
+            strDeptName = DataTypeHelpers.importTernaryOperate(obj.get(i), 20);//科室名称
+            strDocCode = DataTypeHelpers.importTernaryOperate(obj.get(i), 21);//医生编码
+            strDocName = DataTypeHelpers.importTernaryOperate(obj.get(i), 22);//医生名称
         }
 //        Date thisDate = new Date();
         if (!strOrderNumber.equals("")) {

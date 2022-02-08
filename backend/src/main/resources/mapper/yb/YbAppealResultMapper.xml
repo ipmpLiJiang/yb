@@ -34,11 +34,12 @@
         <result column="STATE" property="state"/>
         <result column="IS_DELETEMARK" property="isDeletemark"/>
         <result column="areaType" property="areaType"/>
+        <result column="dksName" property="dksName"/>
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, applyDataId, verifyId, manageId, doctorCode, doctorName, deptCode, deptName, operateReason, operateDate, sourceType,relatelDataId,resetDate,dataType,orderDoctorCode,orderDoctorName,orderDeptCode,orderDeptName,repayState,applyDateStr,typeno,orderNumber,orderNum, COMMENTS, STATE, IS_DELETEMARK, areaType
+        id, applyDataId, verifyId, manageId, doctorCode, doctorName, deptCode, deptName, operateReason, operateDate, sourceType,relatelDataId,resetDate,dataType,orderDoctorCode,orderDoctorName,orderDeptCode,orderDeptName,repayState,applyDateStr,typeno,orderNumber,orderNum, COMMENTS, STATE, IS_DELETEMARK, areaType,dksName
     </sql>
     <!--    resetDataId,resetPersonId,resetPersonName,-->
     <update id="updateYbAppealResult" parameterType="cc.mrbird.febs.yb.entity.YbAppealResult">
@@ -73,6 +74,7 @@
             <if test="state != null">STATE=#{state},</if>
             <if test="isDeletemark != null">IS_DELETEMARK=#{isDeletemark},</if>
             <if test="areaType != null">areaType=#{areaType},</if>
+            <if test="dksName != null">dksName=#{dksName},</if>
         </trim>
         where id=#{id}
 
@@ -129,46 +131,80 @@
     <select id="findAppealResultGroupSumDept" resultType="cc.mrbird.febs.yb.entity.YbResultDownLoad"
             parameterType="cc.mrbird.febs.yb.entity.YbAppealResultView">
         SELECT
-            id,asCode deptId,asName deptName
+        id,asCode deptId,asName deptName
         FROM
         yb_appeal_sumdept
         WHERE
         IS_DELETEMARK = 1 and
         <if test="ybAppealResultView.areaType != null">
-        areaType =  #{ybAppealResultView.areaType} and
+            areaType = #{ybAppealResultView.areaType} and
         </if>
         ID IN(
         select DISTINCT pid from yb_appeal_sumdept_data where deptId in (
-            SELECT
-                yb_appeal_result.deptCode
-            FROM
-                yb_appeal_result
-                INNER JOIN com_file ON
-                com_file.REF_TAB_ID = yb_appeal_result.id and
-                com_file.IS_DELETEMARK = 1
+        SELECT
+        yb_appeal_result.deptCode
+        FROM
+        yb_appeal_result
+        INNER JOIN com_file ON
+        com_file.REF_TAB_ID = yb_appeal_result.id and
+        com_file.IS_DELETEMARK = 1
         WHERE
-                yb_appeal_result.applyDateStr = #{ybAppealResultView.applyDateStr}
-                <if test="ybAppealResultView.areaType != null">
-                    and yb_appeal_result.areaType =  #{ybAppealResultView.areaType}
-                </if>
-                <if test="ybAppealResultView.sourceType != null">
-                    and yb_appeal_result.sourceType = #{ybAppealResultView.sourceType}
-                </if>
-                <if test="ybAppealResultView.dataType != null">
-                    and yb_appeal_result.dataType = #{ybAppealResultView.dataType}
-                </if>
-                <if test="ybAppealResultView.typeno != null">
-                    and yb_appeal_result.typeno = #{ybAppealResultView.typeno}
-                </if>
-                <if test="ybAppealResultView.state != null and ybAppealResultView.state==1">
-                    and yb_appeal_result.STATE = 1
-                </if>
-                <if test="ybAppealResultView.state != null and ybAppealResultView.state==2">
-                    and yb_appeal_result.STATE = 2
-                </if>
-                group by yb_appeal_result.deptCode
-            )
+        yb_appeal_result.applyDateStr = #{ybAppealResultView.applyDateStr}
+        <if test="ybAppealResultView.areaType != null">
+            and yb_appeal_result.areaType = #{ybAppealResultView.areaType}
+        </if>
+        <if test="ybAppealResultView.sourceType != null">
+            and yb_appeal_result.sourceType = #{ybAppealResultView.sourceType}
+        </if>
+        <if test="ybAppealResultView.dataType != null">
+            and yb_appeal_result.dataType = #{ybAppealResultView.dataType}
+        </if>
+        <if test="ybAppealResultView.typeno != null">
+            and yb_appeal_result.typeno = #{ybAppealResultView.typeno}
+        </if>
+        <if test="ybAppealResultView.state != null and ybAppealResultView.state==1">
+            and yb_appeal_result.STATE = 1
+        </if>
+        <if test="ybAppealResultView.state != null and ybAppealResultView.state==2">
+            and yb_appeal_result.STATE = 2
+        </if>
+        group by yb_appeal_result.deptCode
         )
+        )
+    </select>
+
+    <select id="findAppealResultGroupDks" resultType="cc.mrbird.febs.yb.entity.YbResultDownLoad"
+            parameterType="cc.mrbird.febs.yb.entity.YbAppealResultView">
+        select dksName deptName from yb_dept where deptId in(
+        SELECT
+        yb_appeal_result.deptCode
+        FROM
+        yb_appeal_result
+        INNER JOIN com_file ON
+        com_file.REF_TAB_ID = yb_appeal_result.id and
+        com_file.IS_DELETEMARK = 1
+        WHERE
+        yb_appeal_result.applyDateStr = #{ybAppealResultView.applyDateStr}
+        <if test="ybAppealResultView.areaType != null">
+            and yb_appeal_result.areaType = #{ybAppealResultView.areaType}
+        </if>
+        <if test="ybAppealResultView.sourceType != null">
+            and yb_appeal_result.sourceType = #{ybAppealResultView.sourceType}
+        </if>
+        <if test="ybAppealResultView.dataType != null">
+            and yb_appeal_result.dataType = #{ybAppealResultView.dataType}
+        </if>
+        <if test="ybAppealResultView.typeno != null">
+            and yb_appeal_result.typeno = #{ybAppealResultView.typeno}
+        </if>
+        <if test="ybAppealResultView.state != null and ybAppealResultView.state==1">
+            and yb_appeal_result.STATE = 1
+        </if>
+        <if test="ybAppealResultView.state != null and ybAppealResultView.state==2">
+            and yb_appeal_result.STATE = 2
+        </if>
+        group by yb_appeal_result.deptCode
+        ) group by dksName
     </select>
 
     <select id="findAppealResultGroupDept" resultType="cc.mrbird.febs.yb.entity.YbResultDownLoad"
@@ -183,7 +219,7 @@
         WHERE
         yb_appeal_result.applyDateStr = #{ybAppealResultView.applyDateStr}
         <if test="ybAppealResultView.areaType != null">
-            and yb_appeal_result.areaType =  #{ybAppealResultView.areaType}
+            and yb_appeal_result.areaType = #{ybAppealResultView.areaType}
         </if>
         <if test="ybAppealResultView.sourceType != null">
             and yb_appeal_result.sourceType = #{ybAppealResultView.sourceType}
@@ -206,18 +242,18 @@
 
     <select id="findAppealResultNotDept" resultType="cc.mrbird.febs.yb.entity.YbResultDownLoad"
             parameterType="cc.mrbird.febs.yb.entity.YbAppealResultView">
-	SELECT
-	    uuid() id,
+        SELECT
+        uuid() id,
         yb_appeal_result.deptCode deptId,
         yb_appeal_result.deptName
-    FROM
+        FROM
         yb_appeal_result
         INNER JOIN com_file ON com_file.REF_TAB_ID = yb_appeal_result.id
         AND com_file.IS_DELETEMARK = 1
-    WHERE
+        WHERE
         yb_appeal_result.applyDateStr = #{ybAppealResultView.applyDateStr}
         <if test="ybAppealResultView.areaType != null">
-            and yb_appeal_result.areaType =  #{ybAppealResultView.areaType}
+            and yb_appeal_result.areaType = #{ybAppealResultView.areaType}
         </if>
         <if test="ybAppealResultView.sourceType != null">
             and yb_appeal_result.sourceType = #{ybAppealResultView.sourceType}
@@ -235,19 +271,19 @@
             and yb_appeal_result.STATE = 2
         </if>
         AND yb_appeal_result.deptCode NOT IN(
-            SELECT
-                yb_appeal_sumdept_data.deptId
-            FROM
-                yb_appeal_sumdept_data
-                inner join yb_appeal_sumdept on
-                    yb_appeal_sumdept.id = yb_appeal_sumdept_data.pid
-            WHERE
-                IS_DELETEMARK = 1
-                <if test="ybAppealResultView.areaType != null">
-                    and areaType =  #{ybAppealResultView.areaType}
-                </if>
+        SELECT
+        yb_appeal_sumdept_data.deptId
+        FROM
+        yb_appeal_sumdept_data
+        inner join yb_appeal_sumdept on
+        yb_appeal_sumdept.id = yb_appeal_sumdept_data.pid
+        WHERE
+        IS_DELETEMARK = 1
+        <if test="ybAppealResultView.areaType != null">
+            and areaType = #{ybAppealResultView.areaType}
+        </if>
         )
-    GROUP BY
+        GROUP BY
         yb_appeal_result.deptCode ,yb_appeal_result.deptName
     </select>
     <select id="findAppealResulDataByReset" resultType="cc.mrbird.febs.yb.entity.YbAppealResult">
@@ -277,25 +313,25 @@
     </select>
     <select id="findAppealResulDataHandle" resultType="cc.mrbird.febs.yb.entity.YbAppealResult">
         SELECT
-            *
+        *
         FROM
-            yb_appeal_result
+        yb_appeal_result
         WHERE
-            applyDateStr = #{applyDateStr}
-            and areaType = #{areaType}
-            and sourceType = 0
-            and STATE = 2
+        applyDateStr = #{applyDateStr}
+        and areaType = #{areaType}
+        and sourceType = 0
+        and STATE = 2
         <if test="hvId != null">
             AND id NOT IN (
-                SELECT
-                    resultId
-                FROM
-                    yb_handle_verify_data
-                WHERE
-                    pid = #{hvId}
+            SELECT
+            resultId
+            FROM
+            yb_handle_verify_data
+            WHERE
+            pid = #{hvId}
             )
         </if>
-</select>
+    </select>
     <select id="findAppealResulRelateGroup" resultType="cc.mrbird.febs.yb.entity.YbAppealResult">
         select * from yb_appeal_result where relatelDataId in(
             SELECT

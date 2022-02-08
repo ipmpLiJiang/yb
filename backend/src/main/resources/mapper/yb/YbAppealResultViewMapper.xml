@@ -69,11 +69,12 @@
         <result column="arOrderDeptName" property="arOrderDeptName"/>
         <result column="relatelDataId" property="relatelDataId"/>
         <result column="areaType" property="areaType"/>
+        <result column="dksName" property="dksName"/>
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        pid, serialNo, billNo, proposalCode, projectCode, projectName, num, medicalPrice, ruleName, deductPrice, deductReason, repaymentReason, doctorName, deptCode, deptName,enterHospitalDateStr,outHospitalDateStr,costDateStr, hospitalizedNo, treatmentMode, settlementDateStr, personalNo, insuredName, cardNumber, areaName, versionNumber, backAppeal, typeno, applyDateStr, id, applyDataId, verifyId, arDoctorCode, arDoctorName, arDeptCode, arDeptName, operateReason, operateDate, STATE,  currencyField,sourceType,dataType,orderNumber,orderNum,repayState,attendDocId,attendDocName,orderDeptId,orderDeptName,orderDocId,orderDocName,excuteDeptId,excuteDeptName,excuteDocId,excuteDocName,itemTypeName,feeOperatorId,feeOperatorName,feeDeptId,feeDeptName,arOrderDoctorCode,arOrderDoctorName,arOrderDeptCode,arOrderDeptName,relatelDataId,areaType
+        pid, serialNo, billNo, proposalCode, projectCode, projectName, num, medicalPrice, ruleName, deductPrice, deductReason, repaymentReason, doctorName, deptCode, deptName,enterHospitalDateStr,outHospitalDateStr,costDateStr, hospitalizedNo, treatmentMode, settlementDateStr, personalNo, insuredName, cardNumber, areaName, versionNumber, backAppeal, typeno, applyDateStr, id, applyDataId, verifyId, arDoctorCode, arDoctorName, arDeptCode, arDeptName, operateReason, operateDate, STATE,  currencyField,sourceType,dataType,orderNumber,orderNum,repayState,attendDocId,attendDocName,orderDeptId,orderDeptName,orderDocId,orderDocName,excuteDeptId,excuteDeptName,excuteDocId,excuteDocName,itemTypeName,feeOperatorId,feeOperatorName,feeDeptId,feeDeptName,arOrderDoctorCode,arOrderDoctorName,arOrderDeptCode,arOrderDeptName,relatelDataId,areaType,dksName
     </sql>
     <update id="updateYbAppealResultView" parameterType="cc.mrbird.febs.yb.entity.YbAppealResultView">
         update yb_appeal_result_view
@@ -142,7 +143,8 @@
             art.repayState,
             '' currencyField,
             art.relatelDataId,
-            art.areaType
+            art.areaType,
+            art.dksName
         from
         yb_appeal_result art
         STRAIGHT_JOIN yb_reconsider_apply_data ad ON
@@ -275,7 +277,8 @@
         art.repayState,
         '' currencyField,
         art.relatelDataId,
-        art.areaType
+        art.areaType,
+        art.dksName
         from
         yb_appeal_result art
         INNER JOIN yb_reconsider_apply_data ad ON
@@ -422,7 +425,8 @@
         art.repayState,
         '' currencyField,
         art.relatelDataId,
-        art.areaType
+        art.areaType,
+        art.dksName
         from
         yb_reconsider_apply_data ad
         inner join yb_appeal_result art ON
@@ -597,7 +601,8 @@
             null feeOperatorName,
             null feeDeptId,
             null feeDeptName,
-            art.areaType
+            art.areaType,
+            art.dksName
         from
         yb_reconsider_apply_data ad
         LEFT JOIN yb_appeal_result art ON
@@ -688,7 +693,8 @@
             null feeOperatorName,
             null feeDeptId,
             null feeDeptName,
-            art.areaType
+            art.areaType,
+            art.dksName
         from
             yb_appeal_result art
         STRAIGHT_JOIN yb_reconsider_apply_data ad ON

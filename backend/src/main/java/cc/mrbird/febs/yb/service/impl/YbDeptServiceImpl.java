@@ -77,7 +77,7 @@ public class YbDeptServiceImpl extends ServiceImpl<YbDeptMapper, YbDept> impleme
         if (type == 1) {
             String sql = " IS_DELETEMARK = 1 ";
             if (ybDept.getComments() != null) {
-                sql += " and (deptName like '%" + ybDept.getComments() + "%' or spellCode like '%" + ybDept.getComments() + "%')";
+                sql += " and (deptId like '%" + ybDept.getComments() + "%' or deptName like '%" + ybDept.getComments() + "%' or spellCode like '%" + ybDept.getComments() + "%')";
             } else {
                 sql += " and 1=2";
             }
