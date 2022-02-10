@@ -287,20 +287,21 @@ public class YbAppealResultReportViewServiceImpl extends ServiceImpl<YbAppealRes
 
                 String strIn = "";
                 if(confDocCode!=null && !confDocCode.equals("")) {
-                    List<YbDept> deptlist = iYbDeptService.findDeptAppealConfireByUserList(confDocCode, areaType);
-                    if (deptlist.size() > 0) {
-                        if (deptlist.size() == 1) {
-                            sql += " and deptCode = '" + deptlist.get(0).getDeptId() + "'";
+                    List<YbAppealConfireData> acdlist = iYbAppealConfireDataService.findAppealConfireDataByInDoctorCodeList(confDocCode, areaType);
+//                    List<YbDept> deptlist = iYbDeptService.findDeptAppealConfireByUserList(confDocCode, areaType);
+                    if (acdlist.size() > 0) {
+                        if (acdlist.size() == 1) {
+                            sql += " and dksName = '" + acdlist.get(0).getDksName()+ "'";
                         } else {
                             strIn = "";
-                            for (YbDept item : deptlist) {
+                            for (YbAppealConfireData item : acdlist) {
                                 if (strIn.equals("")) {
-                                    strIn = "'" + item.getDeptId() + "'";
+                                    strIn = "'" + item.getDksName() + "'";
                                 } else {
-                                    strIn += ",'" + item.getDeptId() + "'";
+                                    strIn += ",'" + item.getDksName() + "'";
                                 }
                             }
-                            sql += " and deptCode in (" + strIn + ")";
+                            sql += " and dksName in (" + strIn + ")";
                         }
                     } else {
                         sql += " and 1 = 2";
@@ -577,6 +578,8 @@ public class YbAppealResultReportViewServiceImpl extends ServiceImpl<YbAppealRes
         }
 //        appealResultView.setAdjustPrice(0);
         appealResultView.setAreaType(ar.getAreaType());
+
+        appealResultView.setDksName(ar.getDksName());
         return appealResultView;
     }
 
@@ -613,7 +616,6 @@ public class YbAppealResultReportViewServiceImpl extends ServiceImpl<YbAppealRes
         }
         return listStr;
     }
-
 
 
     @Override
@@ -664,4 +666,137 @@ public class YbAppealResultReportViewServiceImpl extends ServiceImpl<YbAppealRes
             return null;
         }
     }
+
+    @Override
+    public List<YbAppealResultReportView> findAppealResultReportConfLists(YbAppealResultReportView ybAppealResultReportView, String keyField,String confDocCode) {
+        List<YbAppealResultReportView> list = new ArrayList<>();
+        try {
+            String applyDateStr = ybAppealResultReportView.getApplyDateStr();
+            Integer areaType = ybAppealResultReportView.getAreaType();
+            YbReconsiderApply reconsiderApply = iYbReconsiderApplyService.findReconsiderApplyByApplyDateStrs(applyDateStr, areaType);
+            if(reconsiderApply!= null && !reconsiderApply.getResetState().equals(1)){
+                reconsiderApply = null;
+            }
+            if (reconsiderApply != null) {
+                String value = ybAppealResultReportView.getCurrencyField();
+                Integer typeno = ybAppealResultReportView.getTypeno();
+                Integer state = ybAppealResultReportView.getState();
+                Integer dataType = ybAppealResultReportView.getDataType();
+                if(dataType!= null && dataType == 2){
+                    dataType = 0;
+                }
+                Integer sourceType = ybAppealResultReportView.getSourceType();
+                List<YbReconsiderApplyData> applyDataList = ybApplyDataManager.getApplyDatas(reconsiderApply.getId(), applyDateStr + "-" + areaType);
+
+                List<YbAppealResult> resultList = new ArrayList<>();
+                String sql = "";
+                LambdaQueryWrapper<YbAppealResult> queryWrapper = new LambdaQueryWrapper<>();
+                sql = " applyDateStr = '" + applyDateStr + "' and areaType = " + areaType;
+//                queryWrapper.eq(YbAppealResult::getApplyDateStr, applyDateStr);
+//                queryWrapper.eq(YbAppealResult::getAreaType, areaType);
+                if (value != null && !value.equals("") && keyField.equals("arDoctorCode")) {
+                    queryWrapper.eq(YbAppealResult::getDoctorCode, value);
+                }
+                if (ybAppealResultReportView.getArDoctorCode() != null) {
+                    sql += " and doctorCode = '" + ybAppealResultReportView.getArDoctorCode() + "'";
+//                    queryWrapper.eq(YbAppealResult::getDoctorCode, ybAppealResultReportView.getArDoctorCode());
+                }
+                if (value != null && !value.equals("") && keyField.equals("orderNumber")) {
+                    sql += " and orderNumber = '" + value + "'";
+//                    queryWrapper.eq(YbAppealResult::getOrderNumber, value);
+                }
+                if (typeno != null) {
+                    sql += " and typeno = " + typeno;
+//                    queryWrapper.eq(YbAppealResult::getTypeno, typeno);
+                }
+                if (dataType != null) {
+                    sql += " and dataType = " + dataType;
+//                    queryWrapper.eq(YbAppealResult::getDataType, dataType);
+                }
+                if (sourceType != null) {
+                    sql += " and sourceType = " + sourceType;
+//                    queryWrapper.eq(YbAppealResult::getSourceType, sourceType);
+                }
+                if (state != null && state == 2) {
+                    sql += " and state = 2 and repayState = 2";
+                }
+
+                String strIn = "";
+                if(confDocCode!=null && !confDocCode.equals("")) {
+                    List<YbAppealConfireData> acdlist = iYbAppealConfireDataService.findAppealConfireDataByInDoctorCodeList(confDocCode, areaType);
+//                    List<YbDept> deptlist = iYbDeptService.findDeptAppealConfireByUserList(confDocCode, areaType);
+                    if (acdlist.size() > 0) {
+                        if (acdlist.size() == 1) {
+                            sql += " and dksName = '" + acdlist.get(0).getDksName()+ "'";
+                        } else {
+                            strIn = "";
+                            for (YbAppealConfireData item : acdlist) {
+                                if (strIn.equals("")) {
+                                    strIn = "'" + item.getDksName() + "'";
+                                } else {
+                                    strIn += ",'" + item.getDksName() + "'";
+                                }
+                            }
+                            sql += " and dksName in (" + strIn + ")";
+                        }
+                    } else {
+                        sql += " and 1 = 2";
+                    }
+                }
+                if (value != null && !value.equals("") && keyField.equals("arDoctorName")) {
+                    List<String> strList = this.iYbPersonService.findPersonCodeList(value);
+                    if (strList.size() > 0) {
+                        if(strList.size() == 1){
+                            sql += " and doctorCode = '" + strList.get(0) + "'";
+                        }else {
+                            strIn = "";
+                            for (String code : strList) {
+                                if (strIn.equals("")) {
+                                    strIn = "'" + code + "'";
+                                } else {
+                                    strIn += ",'" + code + "'";
+                                }
+                            }
+                            sql += " and doctorCode in (" + strIn + ")";
+                        }
+//                        queryWrapper.in(YbAppealResult::getDoctorCode, strList);
+                    }
+                }
+                if (state != null && state == 1) {
+                    sql += " and (state = 1 or (state = 2 and repayState = 1 ))";
+                }
+                queryWrapper.apply(sql);
+                resultList = iYbAppealResultService.list(queryWrapper);
+
+                applyDataList = this.iYbReconsiderApplyDataService.getApplyDataListView(applyDataList, keyField, value, typeno, dataType);
+
+                if (resultList.size() > 0 && applyDataList.size() > 0) {
+                    if (resultList.size() > applyDataList.size()) {
+                        List<YbAppealResult> queryList = new ArrayList<>();
+                        for (YbReconsiderApplyData item : applyDataList) {
+                            queryList = resultList.stream().filter(s -> s.getApplyDataId().equals(item.getId())).collect(Collectors.toList());
+                            if (queryList.size() > 0) {
+                                YbAppealResultReportView arv = this.getYbAppealResultView(queryList.get(0), item);
+                                list.add(arv);
+                            }
+                        }
+                    } else {
+                        for (YbAppealResult item : resultList) {
+                            List<YbReconsiderApplyData> queryList = new ArrayList<>();
+                            queryList = applyDataList.stream().filter(s -> s.getId().equals(item.getApplyDataId())).collect(Collectors.toList());
+                            if (queryList.size() > 0) {
+                                YbAppealResultReportView arv = this.getYbAppealResultView(item, queryList.get(0));
+                                list.add(arv);
+                            }
+                        }
+                    }
+                }
+            }
+            return list;
+
+        } catch (Exception e) {
+            return list;
+        }
+    }
+
 }

@@ -203,6 +203,13 @@ private static final long serialVersionUID=1L;
     @ExcelField(value = "关联Id")
     private String relatelDataId;
 
+    /**
+     * 大专业
+     */
+    @TableField("dksName")
+    @ExcelField(value = "大专业")
+    private String dksName;
+
     public static final String ID ="id" ;
 
     public static final String PID ="pid" ;
@@ -252,5 +259,7 @@ private static final long serialVersionUID=1L;
     public static final String RESULTID ="resultId" ;
 
     public static final String RELATELDATAID = "relatelDataId";
+
+    public static final String DKSNAME = "dksName";
 
         }

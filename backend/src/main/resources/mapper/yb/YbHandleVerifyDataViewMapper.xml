@@ -2,121 +2,129 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cc.mrbird.febs.yb.dao.YbHandleVerifyDataViewMapper">
 
-        <!-- 通用查询映射结果 -->
-        <resultMap id="BaseResultMap" type="cc.mrbird.febs.yb.entity.YbHandleVerifyDataView">
-                    <result column="serialNo" property="serialNo"/>
-                    <result column="billNo" property="billNo"/>
-                    <result column="proposalCode" property="proposalCode"/>
-                    <result column="projectCode" property="projectCode"/>
-                    <result column="projectName" property="projectName"/>
-                    <result column="num" property="num"/>
-                    <result column="medicalPrice" property="medicalPrice"/>
-                    <result column="ruleName" property="ruleName"/>
-                    <result column="deductPrice" property="deductPrice"/>
-                    <result column="deductReason" property="deductReason"/>
-                    <result column="repaymentReason" property="repaymentReason"/>
-                    <result column="doctorName" property="doctorName"/>
-                    <result column="deptCode" property="deptCode"/>
-                    <result column="deptName" property="deptName"/>
-                    <result column="enterHospitalDateStr" property="enterHospitalDateStr"/>
-                    <result column="outHospitalDateStr" property="outHospitalDateStr"/>
-                    <result column="costDateStr" property="costDateStr"/>
-                    <result column="hospitalizedNo" property="hospitalizedNo"/>
-                    <result column="treatmentMode" property="treatmentMode"/>
-                    <result column="settlementDateStr" property="settlementDateStr"/>
-                    <result column="personalNo" property="personalNo"/>
-                    <result column="insuredName" property="insuredName"/>
-                    <result column="cardNumber" property="cardNumber"/>
-                    <result column="areaName" property="areaName"/>
-                    <result column="versionNumber" property="versionNumber"/>
-                    <result column="backAppeal" property="backAppeal"/>
-                    <result column="typeno" property="typeno"/>
-                    <result column="insuredType" property="insuredType"/>
-                    <result column="dataType" property="dataType"/>
-                    <result column="orderNumber" property="orderNumber"/>
-            <result column="orderNum" property="orderNum"/>
-            <result column="applyDateStr" property="applyDateStr"/>
-                    <result column="id" property="id"/>
-                    <result column="pid" property="pid"/>
-                    <result column="applyDataId" property="applyDataId"/>
-                    <result column="verifyId" property="verifyId"/>
-                    <result column="manageId" property="manageId"/>
-<!--                    <result column="resetId" property="resetId"/>-->
-                    <result column="resultId" property="resultId"/>
-            <result column="relatelDataId" property="relatelDataId"/>
-                    <result column="hvDoctorCode" property="hvDoctorCode"/>
-                    <result column="hvDoctorName" property="hvDoctorName"/>
-                    <result column="hvDeptCode" property="hvDeptCode"/>
-                    <result column="hvDeptName" property="hvDeptName"/>
-                    <result column="STATE" property="state"/>
-                    <result column="currencyField" property="currencyField"/>
-            <result column="areaType" property="areaType"/>
-        </resultMap>
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="cc.mrbird.febs.yb.entity.YbHandleVerifyDataView">
+        <result column="serialNo" property="serialNo"/>
+        <result column="billNo" property="billNo"/>
+        <result column="proposalCode" property="proposalCode"/>
+        <result column="projectCode" property="projectCode"/>
+        <result column="projectName" property="projectName"/>
+        <result column="num" property="num"/>
+        <result column="medicalPrice" property="medicalPrice"/>
+        <result column="ruleName" property="ruleName"/>
+        <result column="deductPrice" property="deductPrice"/>
+        <result column="deductReason" property="deductReason"/>
+        <result column="repaymentReason" property="repaymentReason"/>
+        <result column="doctorName" property="doctorName"/>
+        <result column="deptCode" property="deptCode"/>
+        <result column="deptName" property="deptName"/>
+        <result column="enterHospitalDateStr" property="enterHospitalDateStr"/>
+        <result column="outHospitalDateStr" property="outHospitalDateStr"/>
+        <result column="costDateStr" property="costDateStr"/>
+        <result column="hospitalizedNo" property="hospitalizedNo"/>
+        <result column="treatmentMode" property="treatmentMode"/>
+        <result column="settlementDateStr" property="settlementDateStr"/>
+        <result column="personalNo" property="personalNo"/>
+        <result column="insuredName" property="insuredName"/>
+        <result column="cardNumber" property="cardNumber"/>
+        <result column="areaName" property="areaName"/>
+        <result column="versionNumber" property="versionNumber"/>
+        <result column="backAppeal" property="backAppeal"/>
+        <result column="typeno" property="typeno"/>
+        <result column="insuredType" property="insuredType"/>
+        <result column="dataType" property="dataType"/>
+        <result column="orderNumber" property="orderNumber"/>
+        <result column="orderNum" property="orderNum"/>
+        <result column="applyDateStr" property="applyDateStr"/>
+        <result column="id" property="id"/>
+        <result column="pid" property="pid"/>
+        <result column="applyDataId" property="applyDataId"/>
+        <result column="verifyId" property="verifyId"/>
+        <result column="manageId" property="manageId"/>
+        <!--                    <result column="resetId" property="resetId"/>-->
+        <result column="resultId" property="resultId"/>
+        <result column="relatelDataId" property="relatelDataId"/>
+        <result column="hvDoctorCode" property="hvDoctorCode"/>
+        <result column="hvDoctorName" property="hvDoctorName"/>
+        <result column="hvDeptCode" property="hvDeptCode"/>
+        <result column="hvDeptName" property="hvDeptName"/>
+        <result column="STATE" property="state"/>
+        <result column="currencyField" property="currencyField"/>
+        <result column="areaType" property="areaType"/>
+        <result column="dksName" property="dksName"/>
+    </resultMap>
 
-        <!-- 通用查询结果列 -->
-        <sql id="Base_Column_List">
-        serialNo, billNo, proposalCode, projectCode, projectName, num, medicalPrice, ruleName, deductPrice, deductReason, repaymentReason, doctorName, deptCode, deptName, enterHospitalDateStr, outHospitalDateStr, costDateStr, hospitalizedNo, treatmentMode, settlementDateStr, personalNo, insuredName, cardNumber, areaName, versionNumber, backAppeal, typeno, insuredType, dataType, orderNumber,orderNum,applyDateStr, id, pid, applyDataId, verifyId, manageId, resultId,relatelDataId, hvDoctorCode, hvDoctorName, hvDeptCode, hvDeptName,  STATE, currencyField,areaType
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        serialNo, billNo, proposalCode, projectCode, projectName, num, medicalPrice, ruleName, deductPrice, deductReason, repaymentReason, doctorName, deptCode, deptName, enterHospitalDateStr, outHospitalDateStr, costDateStr, hospitalizedNo, treatmentMode, settlementDateStr, personalNo, insuredName, cardNumber, areaName, versionNumber, backAppeal, typeno, insuredType, dataType, orderNumber,orderNum,applyDateStr, id, pid, applyDataId, verifyId, manageId, resultId,relatelDataId, hvDoctorCode, hvDoctorName, hvDeptCode, hvDeptName,  STATE, currencyField,areaType,dksName
     </sql>
     <update id="updateYbHandleVerifyDataView" parameterType="cc.mrbird.febs.yb.entity.YbHandleVerifyDataView">
         update yb_handle_verify_data_view
         <trim prefix="set" suffixOverrides=",">
-<if test="serialNo != null">serialNo=#{serialNo},</if>
+            <if test="serialNo != null">serialNo=#{serialNo},</if>
         </trim>
 
     </update>
-    <select id="findYbHandleVerifyDataView" resultType="cc.mrbird.febs.yb.entity.YbHandleVerifyDataView" parameterType="cc.mrbird.febs.yb.entity.YbHandleVerifyDataView">
-        select  *  from yb_handle_verify_data_view
-        where  1=1
-            <if test="ybHandleVerifyDataView.serialNo != null and ybHandleVerifyDataView.serialNo != ''"> and serialNo like concat('%', #{ ybHandleVerifyDataView.serialNo} ,'%')</if>
-            <if test="ybHandleVerifyDataView.billNo != null and ybHandleVerifyDataView.billNo != ''"> and billNo like concat('%', #{ ybHandleVerifyDataView.billNo} ,'%')</if>
+    <select id="findYbHandleVerifyDataView" resultType="cc.mrbird.febs.yb.entity.YbHandleVerifyDataView"
+            parameterType="cc.mrbird.febs.yb.entity.YbHandleVerifyDataView">
+        select * from yb_handle_verify_data_view
+        where 1=1
+        <if test="ybHandleVerifyDataView.serialNo != null and ybHandleVerifyDataView.serialNo != ''">and serialNo like
+            concat('%', #{ ybHandleVerifyDataView.serialNo} ,'%')
+        </if>
+        <if test="ybHandleVerifyDataView.billNo != null and ybHandleVerifyDataView.billNo != ''">and billNo like
+            concat('%', #{ ybHandleVerifyDataView.billNo} ,'%')
+        </if>
     </select>
 
-    <select id="findHandleVerifyDataView" resultType="cc.mrbird.febs.yb.entity.YbHandleVerifyDataView" parameterType="cc.mrbird.febs.yb.entity.YbHandleVerifyDataView">
+    <select id="findHandleVerifyDataView" resultType="cc.mrbird.febs.yb.entity.YbHandleVerifyDataView"
+            parameterType="cc.mrbird.febs.yb.entity.YbHandleVerifyDataView">
         select
-            rrd.serialNo,
-            rrd.billNo,
-            rrd.projectCode,
-            rrd.projectName,
-            rrd.medicalPrice,
-            rrd.ruleName,
-            rrd.deductPrice,
-            rrd.deductReason,
-            rrd.repaymentReason,
-            rrd.doctorName,
-            rrd.deptCode,
-            rrd.deptName,
-            rrd.costDate,
-            rrd.costDateStr,
-            rrd.hospitalizedNo,
-            rrd.treatmentMode,
-            rrd.settlementDate,
-            rrd.settlementDateStr,
-            rrd.personalNo,
-            rrd.insuredName,
-            rrd.cardNumber,
-            rrd.areaName,
-            rrd.insuredType,
-            rrd.dataType,
-            rrd.orderNumber,
-            rrd.orderNum,
+        rrd.serialNo,
+        rrd.billNo,
+        rrd.projectCode,
+        rrd.projectName,
+        rrd.medicalPrice,
+        rrd.ruleName,
+        rrd.deductPrice,
+        rrd.deductReason,
+        rrd.repaymentReason,
+        rrd.doctorName,
+        rrd.deptCode,
+        rrd.deptName,
+        rrd.costDate,
+        rrd.costDateStr,
+        rrd.hospitalizedNo,
+        rrd.treatmentMode,
+        rrd.settlementDate,
+        rrd.settlementDateStr,
+        rrd.personalNo,
+        rrd.insuredName,
+        rrd.cardNumber,
+        rrd.areaName,
+        rrd.insuredType,
+        rrd.dataType,
+        rrd.orderNumber,
+        rrd.orderNum,
         #{ybHandleVerifyDataView.applyDateStr} applyDateStr,
-          hvd.id,
-            hvd.pid,
-            hvd.applyDataId,
-          hvd.verifyId,
-            hvd.manageId,
-            hvd.resultId,
-            hvd.doctorCode hvDoctorCode,
-            hvd.doctorName hvDoctorName,
-            hvd.deptCode hvDeptCode,
-            hvd.deptName hvDeptName,
-            hvd.STATE,
-            hvd.relatelDataId,
-            '' currencyField
+        hvd.id,
+        hvd.pid,
+        hvd.applyDataId,
+        hvd.verifyId,
+        hvd.manageId,
+        hvd.resultId,
+        hvd.doctorCode hvDoctorCode,
+        hvd.doctorName hvDoctorName,
+        hvd.deptCode hvDeptCode,
+        hvd.deptName hvDeptName,
+        hvd.STATE,
+        hvd.relatelDataId,
+        '' currencyField,
+        hvd.dksName
         from
-            yb_handle_verify_data hvd
+        yb_handle_verify_data hvd
         INNER JOIN yb_reconsider_reset_data rrd ON
-            rrd.relatelDataId = hvd.relatelDataId
+        rrd.relatelDataId = hvd.relatelDataId
         WHERE
         <if test="ybHandleVerifyDataView.pid != null and ybHandleVerifyDataView.pid != ''">
             hvd.pid= #{ybHandleVerifyDataView.pid}
@@ -153,13 +161,14 @@
             or rrd.ruleName like concat('%', #{ ybHandleVerifyDataView.currencyField} ,'%'))
         </if>
     </select>
-    <select id="findHandleVerifyDataCount" resultType="Integer" parameterType="cc.mrbird.febs.yb.entity.YbHandleVerifyDataView">
+    <select id="findHandleVerifyDataCount" resultType="Integer"
+            parameterType="cc.mrbird.febs.yb.entity.YbHandleVerifyDataView">
         select
         count(1)
         from
         yb_handle_verify_data hvd
         INNER JOIN yb_reconsider_reset_data rrd ON
-            rrd.relatelDataId = hvd.relatelDataId
+        rrd.relatelDataId = hvd.relatelDataId
         WHERE
         <if test="ybHandleVerifyDataView.pid != null and ybHandleVerifyDataView.pid != ''">
             hvd.pid= #{ybHandleVerifyDataView.pid}

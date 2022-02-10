@@ -1165,6 +1165,8 @@ public class YbReconsiderVerifyServiceImpl extends ServiceImpl<YbReconsiderVerif
 
                     if(deptQuery.size() > 0 && deptQuery.get(0).getDksName() != null) {
                         item.setDksName(deptQuery.get(0).getDksName());
+                    } else {
+                        item.setDksName("");
                     }
                     if (item.getId() == null || item.getId().equals("")) {
                         item.setId(UUID.randomUUID().toString());

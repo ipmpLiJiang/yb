@@ -349,7 +349,7 @@ export default {
           queryParams.currencyField = this.searchItem.value
         }
         queryParams.keyField = this.searchItem.keyField
-        this.$export('ybAppealResultReportView/reportExcel', {
+        this.$export('ybAppealResultReportView/reportConfExcel', {
           ...queryParams
         })
       } else {

@@ -153,6 +153,12 @@ public class YbAppealResultDataReportExport {
     private String backAppeal;
 
     /**
+     * 大专业
+     */
+    @ExcelField(value ="大专业")
+    private String dksName;
+
+    /**
      * 复议医生编码
      */
     @ExcelField(value = "复议医生编码")

@@ -86,7 +86,7 @@
           type="primary"
           style="margin-left: 30px"
           @click="showModal"
-        >科室维护</a-button>
+        >大专业维护</a-button>
       </div>
       <!-- 表格区域 -->
       <a-table
@@ -150,7 +150,7 @@
     </ybDept-edit>
     <template>
       <div>
-        <a-modal width="60%" :maskClosable="false" :footer="null" v-model="typeVisible" title="科室维护" @cancel="handleOk">
+        <a-modal width="60%" :maskClosable="false" :footer="null" v-model="typeVisible" title="大专业维护" @cancel="handleOk">
           <comType-data
           ref="comTypeData"
           @close="handleOk"
@@ -230,7 +230,7 @@ export default {
         dataIndex: 'spellCode'
       },
       {
-        title: '科室',
+        title: '大专业',
         dataIndex: 'dksName'
       },
       {
@@ -338,7 +338,7 @@ export default {
         sortField = sortedInfo.field
         sortOrder = sortedInfo.order
       }
-      this.queryParams.dataJson = '[{title: "科室编码", dataIndex: "deptId"},{title: "科室名称",dataIndex: "deptName"}]'
+      this.queryParams.dataJson = '[{title: "科室编码", dataIndex: "deptId"},{title: "科室名称",dataIndex: "deptName"},{title: "拼音编码", dataIndex: "spellCode"},{title: "大专业",dataIndex: "dksName"}]'
       this.$export('ybDept/excel', {
         sortField: sortField,
         sortOrder: sortOrder,

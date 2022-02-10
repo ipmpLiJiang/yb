@@ -60,11 +60,12 @@
         <result column="isSuccess" property="isSuccess"/>
         <result column="relatelDataId" property="relatelDataId"/>
         <result column="areaType" property="areaType"/>
+        <result column="dksName" property="dksName"/>
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        pid, serialNo, billNo, proposalCode, projectCode, projectName, num, medicalPrice, ruleName, deductPrice, deductReason, repaymentReason, doctorName, deptCode, deptName, enterHospitalDate, outHospitalDate, costDate, enterHospitalDateStr, outHospitalDateStr, costDateStr, hospitalizedNo, treatmentMode, settlementDate, settlementDateStr, personalNo, insuredName, cardNumber, areaName, versionNumber, backAppeal, typeno, insuredType, dataType, orderNumber,orderNum, applyDateStr, id, manageId, applyDataId, verifyId, arDoctorCode, arDoctorName, arDeptCode, arDeptName, operateReason, operateDate, STATE, sourceType,  repayState, currencyField, repaymentPrice, adjustPrice,isSuccess,relatelDataId,areaType
+        pid, serialNo, billNo, proposalCode, projectCode, projectName, num, medicalPrice, ruleName, deductPrice, deductReason, repaymentReason, doctorName, deptCode, deptName, enterHospitalDate, outHospitalDate, costDate, enterHospitalDateStr, outHospitalDateStr, costDateStr, hospitalizedNo, treatmentMode, settlementDate, settlementDateStr, personalNo, insuredName, cardNumber, areaName, versionNumber, backAppeal, typeno, insuredType, dataType, orderNumber,orderNum, applyDateStr, id, manageId, applyDataId, verifyId, arDoctorCode, arDoctorName, arDeptCode, arDeptName, operateReason, operateDate, STATE, sourceType,  repayState, currencyField, repaymentPrice, adjustPrice,isSuccess,relatelDataId,areaType,dksName
     </sql>
     <update id="updateYbAppealResultReportView" parameterType="cc.mrbird.febs.yb.entity.YbAppealResultReportView">
         update yb_appeal_result_report_view
@@ -137,7 +138,8 @@
         CASE WHEN art.state = 1 or (art.state = 2 and art.repayState = 1 ) THEN 1
         WHEN art.state = 2 and art.repayState = 2 THEN 0 ELSE 2 END isSuccess,
         0 adjustPrice,
-        art.areaType
+        art.areaType,
+        art.dksName
         FROM
         yb_appeal_result art
         STRAIGHT_JOIN yb_reconsider_apply_data ad on
@@ -299,7 +301,8 @@
         CASE WHEN art.state = 1 or (art.state = 2 and art.repayState = 1 ) THEN 1
         WHEN art.state = 2 and art.repayState = 2 THEN 0 ELSE 2 END isSuccess,
         0 adjustPrice,
-        art.areaType
+        art.areaType,
+        art.dksName
         FROM
         yb_appeal_result art
         INNER JOIN yb_reconsider_apply_data ad on
@@ -487,7 +490,8 @@
         CASE WHEN art.state = 1 or (art.state = 2 and art.repayState = 1 ) THEN 1
         WHEN art.state = 2 and art.repayState = 2 THEN 0 ELSE 2 END isSuccess,
         0 adjustPrice,
-        art.areaType
+        art.areaType,
+        art.dksName
         FROM
         yb_appeal_result art
         STRAIGHT_JOIN yb_reconsider_apply_data ad on
@@ -595,7 +599,8 @@
         CASE WHEN art.state = 1 or (art.state = 2 and art.repayState = 1 ) THEN 1
         WHEN art.state = 2 and art.repayState = 2 THEN 0 ELSE 2 END isSuccess,
         0 adjustPrice,
-        art.areaType
+        art.areaType,
+        art.dksName
         FROM
         yb_appeal_result art
         INNER JOIN yb_reconsider_apply_data ad on

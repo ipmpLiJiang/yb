@@ -5,11 +5,11 @@
       <a-col :span=8>
       <a-form-item
         v-bind="formItemLayout"
-        label="名称"
+        label="大专业"
       >
         <a-input
-          placeholder="请输入名称"
-          v-decorator="['ctName', {rules: [{ required: true, message: '名称不能为空' }] }]"
+          placeholder="请输入大专业"
+          v-decorator="['ctName', {rules: [{ required: true, message: '大专业不能为空' }] }]"
         />
       </a-form-item>
       </a-col>
@@ -122,7 +122,7 @@ export default {
         fixed: 'left'
       },
       {
-        title: '名称',
+        title: '大专业',
         dataIndex: 'ctName',
         scopedSlots: { customRender: 'ctName' }
       }]

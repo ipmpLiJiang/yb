@@ -172,6 +172,8 @@ public class YbHandleVerifyDataServiceImpl extends ServiceImpl<YbHandleVerifyDat
                         insertData.setOrderDeptCode(item.getOrderDeptCode());
                         insertData.setOrderDeptName(item.getOrderDeptName());
 
+                        insertData.setDksName(item.getDksName());
+
                         insertHandleDataList.add(insertData);
                     }
                     this.saveBatch(insertHandleDataList);
@@ -286,6 +288,8 @@ public class YbHandleVerifyDataServiceImpl extends ServiceImpl<YbHandleVerifyDat
                     ybAppealManage.setOrderNum(ybHandleVerifyData.getOrderNum());
                     ybAppealManage.setOrderNumber(ybHandleVerifyData.getOrderNumber());
                     ybAppealManage.setTypeno(ybHandleVerifyData.getTypeno());
+
+                    ybAppealManage.setDksName(ybHandleVerifyData.getDksName());
 
                     updateHandleVerifyList.add(updateHandleVerify);
                     appealManageList.add(ybAppealManage);
@@ -414,6 +418,8 @@ public class YbHandleVerifyDataServiceImpl extends ServiceImpl<YbHandleVerifyDat
                         ybAppealManage.setOrderDeptCode(ybHandleVerifyData.getOrderDeptCode());
                         ybAppealManage.setOrderDeptName(ybHandleVerifyData.getOrderDeptName());
                         ybAppealManage.setApplyDateStr(applyDateStr);
+
+                        ybAppealManage.setDksName(ybHandleVerifyData.getDksName());
 
                         updateHandleVerifyList.add(updateHandleVerify);
                         appealManageList.add(ybAppealManage);

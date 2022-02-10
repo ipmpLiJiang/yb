@@ -37,7 +37,7 @@
           v-decorator="['spellCode', {rules: [{ required: true, message: '拼音编码不能为空' }] }]"
         />
       </a-form-item>
-      <a-form-item v-bind="formItemLayout" label="科室">
+      <a-form-item v-bind="formItemLayout" label="大专业">
         <a-select
           allowClear
           :showSearch="true"

@@ -36,4 +36,7 @@ public interface IYbAppealResultReportViewService extends IService<YbAppealResul
         void deleteYbAppealResultReportViews(String[]Ids);
 
         List<YbAppealResultReportView> findYbAppealResultReportLists(YbAppealResultReportView ybAppealResultReportView, String keyField,boolean isUser);
-        }
+
+
+        List<YbAppealResultReportView> findAppealResultReportConfLists(YbAppealResultReportView ybAppealResultReportView, String keyField,String confDocCode);
+}

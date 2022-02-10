@@ -222,7 +222,7 @@ public class YbAppealResultDeductimplementController extends BaseController {
                                     boolean zdIsNull = false;
 
                                     if (objMx.size() > 1) {
-                                        if (objMx.get(0).length == 25) {
+                                        if (objMx.get(0).length == 26) {
                                             for (int i = 1; i < objMx.size(); i++) {
                                                 message = "明细扣款数据读取失败，请确保Excel列表数据正确无误.";
                                                 YbReconsiderResetDeductimplement rrd = new YbReconsiderResetDeductimplement();
@@ -238,7 +238,7 @@ public class YbAppealResultDeductimplementController extends BaseController {
                                                 }
                                                 rrd.setOrderNumber(strOrderNumber);
 
-                                                String implementDateStr = DataTypeHelpers.importTernaryOperate(objMx.get(i), 22);
+                                                String implementDateStr = DataTypeHelpers.importTernaryOperate(objMx.get(i), 23);
                                                 if (implementDateStr.equals("")) {
                                                     blError = true;
                                                     message = "明细扣款数据存在绩效年月为空，请填写完整后再上传...";
@@ -262,7 +262,7 @@ public class YbAppealResultDeductimplementController extends BaseController {
                                                 rrd.setImplementDate(implementDate);
                                                 implementDateStr = DataTypeHelpers.stringDate6Chang7(implementDateStr, "-");
                                                 rrd.setImplementDateStr(implementDateStr);
-                                                String shareStateStr = DataTypeHelpers.importTernaryOperate(objMx.get(i), 23);
+                                                String shareStateStr = DataTypeHelpers.importTernaryOperate(objMx.get(i), 24);
                                                 if (shareStateStr.equals("")) {
                                                     blError = true;
                                                     message = "明细扣款数据存在分摊方式为空，请填写完整后再上传...";
@@ -283,7 +283,7 @@ public class YbAppealResultDeductimplementController extends BaseController {
                                                     }
                                                 }
                                                 rrd.setShareStateStr(shareStateStr);
-                                                String shareProgramme = DataTypeHelpers.importTernaryOperate(objMx.get(i), 24);
+                                                String shareProgramme = DataTypeHelpers.importTernaryOperate(objMx.get(i), 25);
                                                 rrd.setShareProgramme(shareProgramme);
 
                                                 rrd.setDataType(YbDefaultValue.DATATYPE_0);
@@ -298,7 +298,7 @@ public class YbAppealResultDeductimplementController extends BaseController {
                                     }
                                     if (!blError) {
                                         if (objZd.size() > 1) {
-                                            if (objZd.get(0).length == 18) {
+                                            if (objZd.get(0).length == 19) {
                                                 for (int i = 1; i < objZd.size(); i++) {
                                                     message = "主单扣款落实数据读取失败，请确保Excel列表数据正确无误.";
                                                     YbReconsiderResetDeductimplement rrd = new YbReconsiderResetDeductimplement();
@@ -313,7 +313,7 @@ public class YbAppealResultDeductimplementController extends BaseController {
                                                         zdIsNull = true;
                                                     }
                                                     rrd.setOrderNumber(strOrderNumber);
-                                                    String implementDateStr = DataTypeHelpers.importTernaryOperate(objZd.get(i), 15);
+                                                    String implementDateStr = DataTypeHelpers.importTernaryOperate(objZd.get(i), 16);
                                                     if (implementDateStr.equals("")) {
                                                         blError = true;
                                                         message = "主单扣款数据存在绩效年月为空，请填写完整后再上传...";
@@ -337,7 +337,7 @@ public class YbAppealResultDeductimplementController extends BaseController {
                                                     rrd.setImplementDate(implementDate);
                                                     implementDateStr = DataTypeHelpers.stringDate6Chang7(implementDateStr, "-");
                                                     rrd.setImplementDateStr(implementDateStr);
-                                                    String shareStateStr = DataTypeHelpers.importTernaryOperate(objZd.get(i), 16);
+                                                    String shareStateStr = DataTypeHelpers.importTernaryOperate(objZd.get(i), 17);
                                                     if (shareStateStr.equals("")) {
                                                         blError = true;
                                                         message = "主单扣款数据存在分摊方式为空，请填写完整后再上传...";
@@ -358,7 +358,7 @@ public class YbAppealResultDeductimplementController extends BaseController {
                                                         }
                                                     }
                                                     rrd.setShareStateStr(shareStateStr);
-                                                    String shareProgramme = DataTypeHelpers.importTernaryOperate(objZd.get(i), 17);
+                                                    String shareProgramme = DataTypeHelpers.importTernaryOperate(objZd.get(i), 18);
                                                     rrd.setShareProgramme(shareProgramme);
 
                                                     rrd.setDataType(YbDefaultValue.DATATYPE_1);

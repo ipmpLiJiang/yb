@@ -141,6 +141,12 @@ public class YbReconsiderResetDeductimplementDataExport {
     private String areaName;
 
     /**
+     * 大专业
+     */
+    @ExcelField(value = "大专业")
+    private String dksName;
+
+    /**
      * 科室
      */
     @ExcelField(value ="复议科室名称")

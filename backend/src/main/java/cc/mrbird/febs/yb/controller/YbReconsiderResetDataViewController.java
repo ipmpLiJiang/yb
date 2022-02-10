@@ -463,6 +463,7 @@ public class YbReconsiderResetDataViewController extends BaseController {
                     if(queryAppealResultList.size()>0){
                         are.setResultDoctorName(queryAppealResultList.get(0).getDoctorCode()+"-"+queryAppealResultList.get(0).getDoctorName());
                         are.setResultDeptName(queryAppealResultList.get(0).getDeptCode()+"-"+queryAppealResultList.get(0).getDeptName());
+                        are.setDksName(queryAppealResultList.get(0).getDksName());
                     }
                     dataList.add(are);
                 }
@@ -514,6 +515,7 @@ public class YbReconsiderResetDataViewController extends BaseController {
                     if(queryAppealResultList.size()>0){
                         are.setResultDoctorName(queryAppealResultList.get(0).getDoctorCode()+"-"+queryAppealResultList.get(0).getDoctorName());
                         are.setResultDeptName(queryAppealResultList.get(0).getDeptCode()+"-"+queryAppealResultList.get(0).getDeptName());
+                        are.setDksName(queryAppealResultList.get(0).getDksName());
                     }
                     mainList.add(are);
                 }

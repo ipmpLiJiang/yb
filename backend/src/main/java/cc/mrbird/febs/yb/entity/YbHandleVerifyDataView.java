@@ -359,6 +359,13 @@ public class YbHandleVerifyDataView implements Serializable {
     @ExcelField(value = "院区")
     private Integer areaType;
 
+    /**
+     * 大专业
+     */
+    @TableField("dksName")
+    @ExcelField(value = "大专业")
+    private String dksName;
+
     public static final String SERIALNO = "serialNo";
 
     public static final String BILLNO = "billNo";
@@ -452,5 +459,7 @@ public class YbHandleVerifyDataView implements Serializable {
     public static final String CURRENCYFIELD = "currencyField";
 
     public static final String AREATYPE = "areaType";
+
+    public static final String DKSNAME = "dksName";
 
 }
