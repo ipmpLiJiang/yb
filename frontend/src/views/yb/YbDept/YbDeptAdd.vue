@@ -37,7 +37,7 @@
           v-decorator="['spellCode', {rules: [{ required: true, message: '拼音编码不能为空' }] }]"
         />
       </a-form-item>
-      <a-form-item v-bind="formItemLayout" label="大专业">
+      <a-form-item v-bind="formItemLayout" label="汇总科室">
         <a-select
           allowClear
           :showSearch="true"
@@ -104,6 +104,9 @@ export default {
       this.form.validateFields((err, values) => {
         if (!err) {
           this.setFields()
+          if (this.ybDept.dksName === undefined) {
+            this.ybDept.dksName = ''
+          }
           this.$post('ybDept', {
             ...this.ybDept
           }).then(() => {

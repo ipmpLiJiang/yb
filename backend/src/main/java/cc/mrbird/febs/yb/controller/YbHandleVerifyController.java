@@ -97,7 +97,6 @@ public class YbHandleVerifyController extends BaseController {
         }
     }
 
-
     @Log("删除")
     @DeleteMapping("/{ids}")
     @RequiresPermissions("ybHandleVerify:delete")

@@ -7,7 +7,6 @@ public class YbResultDownLoad {
 
     private  String Id;
 
-
     /**
             * 部门
      */

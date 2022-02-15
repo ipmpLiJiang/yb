@@ -131,7 +131,7 @@ export default {
         title: '交易流水号',
         dataIndex: 'serialNo',
         fixed: 'left',
-        width: 150
+        width: 140
       },
       {
         title: '单据号',
@@ -143,7 +143,7 @@ export default {
         title: '项目名称',
         dataIndex: 'projectName',
         fixed: 'left',
-        width: 170
+        width: 160
       },
       {
         title: '数量',

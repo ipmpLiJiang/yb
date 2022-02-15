@@ -329,11 +329,11 @@ public class YbNoticeServiceImpl extends ServiceImpl<YbNoticeMapper, YbNotice> i
     @Override
     @Transactional
     public void updateReleaseNotice(YbNotice ybNotice, User currentUser) {
-        List<YbPerson> personList = iYbPersonService.findPersonList(new YbPerson(), 0);
-        List<ComSms> createSms = new ArrayList<>();
         int nOpenSms = febsProperties.getOpenSms();
         boolean isOpenSms = nOpenSms == 1 ? true : false;
         if (isOpenSms) {
+            List<YbPerson> personList = iYbPersonService.findPersonList(new YbPerson(), 0);
+            List<ComSms> createSms = new ArrayList<>();
             String sendContent = iYbReconsiderApplyService.getSendNoticeMessage(ybNotice.getNtTitle(), ybNotice.getAreaType());
             if (ybNotice.getSendType() == YbNotice.SENDTYPE_1) {
                 List<YbPerson> personAllList = new ArrayList<>();

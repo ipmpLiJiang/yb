@@ -193,10 +193,10 @@ public class YbReconsiderVerify implements Serializable {
     private Integer areaType;
 
     /**
-     * 大专业
+     * 汇总科室
      */
     @TableField("dksName")
-    @ExcelField(value = "大专业")
+    @ExcelField(value = "汇总科室")
     private String dksName;
 
 

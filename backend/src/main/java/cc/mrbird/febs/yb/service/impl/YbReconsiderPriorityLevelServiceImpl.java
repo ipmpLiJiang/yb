@@ -54,6 +54,8 @@ public class YbReconsiderPriorityLevelServiceImpl extends ServiceImpl<YbReconsid
                     sql += " and (rplName like '%" + ybReconsiderPriorityLevel.getCurrencyField() + "%' or deptCode like '%" + ybReconsiderPriorityLevel.getCurrencyField() + "%' or deptName like '%" + ybReconsiderPriorityLevel.getCurrencyField() + "%')";
                 } else if (ybReconsiderPriorityLevel.getState() == 3) {
                     sql += " and (deptCode like '%" + ybReconsiderPriorityLevel.getCurrencyField() + "%' or deptName like '%" + ybReconsiderPriorityLevel.getCurrencyField() + "%')";
+                } else if (ybReconsiderPriorityLevel.getState() == 4) {
+                    sql += " and (doctorName like '%" + ybReconsiderPriorityLevel.getCurrencyField() + "%' or dksNameTo like '%" + ybReconsiderPriorityLevel.getCurrencyField() + "%')";
                 }
             }
 

@@ -2,44 +2,51 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cc.mrbird.febs.yb.dao.YbNoticeDataMapper">
 
-        <!-- 通用查询映射结果 -->
-        <resultMap id="BaseResultMap" type="cc.mrbird.febs.yb.entity.YbNoticeData">
-                    <id column="id" property="id"/>
-                    <result column="pid" property="pid"/>
-                    <result column="personCode" property="personCode"/>
-                    <result column="personName" property="personName"/>
-                    <result column="cmId" property="cmId"/>
-                    <result column="cmName" property="cmName"/>
-                    <result column="ndType" property="ndType"/>
-        </resultMap>
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="cc.mrbird.febs.yb.entity.YbNoticeData">
+        <id column="id" property="id"/>
+        <result column="pid" property="pid"/>
+        <result column="personCode" property="personCode"/>
+        <result column="personName" property="personName"/>
+        <result column="cmId" property="cmId"/>
+        <result column="cmName" property="cmName"/>
+        <result column="ndType" property="ndType"/>
+    </resultMap>
 
-        <!-- 通用查询结果列 -->
-        <sql id="Base_Column_List">
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
         id, pid, personCode, personName, cmId, cmName, ndType
     </sql>
     <update id="updateYbNoticeData" parameterType="cc.mrbird.febs.yb.entity.YbNoticeData">
         update yb_notice_data
         <trim prefix="set" suffixOverrides=",">
-<if test="pid != null">pid=#{pid},</if>
-<if test="personCode != null">personCode=#{personCode},</if>
-<if test="personName != null">personName=#{personName},</if>
-<if test="cmId != null">cmId=#{cmId},</if>
-<if test="cmName != null">cmName=#{cmName},</if>
-<if test="ndType != null">ndType=#{ndType},</if>
+            <if test="pid != null">pid=#{pid},</if>
+            <if test="personCode != null">personCode=#{personCode},</if>
+            <if test="personName != null">personName=#{personName},</if>
+            <if test="cmId != null">cmId=#{cmId},</if>
+            <if test="cmName != null">cmName=#{cmName},</if>
+            <if test="ndType != null">ndType=#{ndType},</if>
         </trim>
-                where id=#{id}
+        where id=#{id}
 
     </update>
-    <select id="findYbNoticeData" resultType="cc.mrbird.febs.yb.entity.YbNoticeData" parameterType="cc.mrbird.febs.yb.entity.YbNoticeData">
-        select  *  from yb_notice_data
-        where  1=1
-        <if test="ybNoticeData.id != null"> and id =#{ ybNoticeData.id} </if>
-        <if test="ybNoticeData.pid != null"> and pid =#{ ybNoticeData.pid} </if>
-            <if test="ybNoticeData.personCode != null and ybNoticeData.personCode != ''"> and personCode like concat('%', #{ ybNoticeData.personCode} ,'%')</if>
-            <if test="ybNoticeData.personName != null and ybNoticeData.personName != ''"> and personName like concat('%', #{ ybNoticeData.personName} ,'%')</if>
-        <if test="ybNoticeData.cmId != null"> and cmId =#{ ybNoticeData.cmId} </if>
-            <if test="ybNoticeData.cmName != null and ybNoticeData.cmName != ''"> and cmName like concat('%', #{ ybNoticeData.cmName} ,'%')</if>
-        <if test="ybNoticeData.ndType != null"> and ndType =#{ ybNoticeData.ndType} </if>
-</select>
+    <select id="findYbNoticeData" resultType="cc.mrbird.febs.yb.entity.YbNoticeData"
+            parameterType="cc.mrbird.febs.yb.entity.YbNoticeData">
+        select * from yb_notice_data
+        where 1=1
+        <if test="ybNoticeData.id != null">and id =#{ ybNoticeData.id}</if>
+        <if test="ybNoticeData.pid != null">and pid =#{ ybNoticeData.pid}</if>
+        <if test="ybNoticeData.personCode != null and ybNoticeData.personCode != ''">and personCode like concat('%',
+            #{ ybNoticeData.personCode} ,'%')
+        </if>
+        <if test="ybNoticeData.personName != null and ybNoticeData.personName != ''">and personName like concat('%',
+            #{ ybNoticeData.personName} ,'%')
+        </if>
+        <if test="ybNoticeData.cmId != null">and cmId =#{ ybNoticeData.cmId}</if>
+        <if test="ybNoticeData.cmName != null and ybNoticeData.cmName != ''">and cmName like concat('%',
+            #{ ybNoticeData.cmName} ,'%')
+        </if>
+        <if test="ybNoticeData.ndType != null">and ndType =#{ ybNoticeData.ndType}</if>
+    </select>
 
 </mapper>

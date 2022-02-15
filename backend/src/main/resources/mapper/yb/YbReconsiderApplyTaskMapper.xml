@@ -2,76 +2,85 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cc.mrbird.febs.yb.dao.YbReconsiderApplyTaskMapper">
 
-        <!-- 通用查询映射结果 -->
-        <resultMap id="BaseResultMap" type="cc.mrbird.febs.yb.entity.YbReconsiderApplyTask">
-                    <id column="id" property="id"/>
-                    <result column="applyDateStr" property="applyDateStr"/>
-                    <result column="dataType" property="dataType"/>
-            <result column="typeno" property="typeno"/>
-                    <result column="startNum" property="startNum"/>
-                    <result column="endNum" property="endNum"/>
-                    <result column="totalRow" property="totalRow"/>
-                    <result column="currentPage" property="currentPage"/>
-                    <result column="pageSize" property="pageSize"/>
-                    <result column="totalPage" property="totalPage"/>
-                    <result column="COMMENTS" property="comments"/>
-                    <result column="STATE" property="state"/>
-                    <result column="IS_DELETEMARK" property="isDeletemark"/>
-                    <result column="MODIFY_TIME" property="modifyTime"/>
-                    <result column="CREATE_TIME" property="createTime"/>
-                    <result column="CREATE_USER_ID" property="createUserId"/>
-                    <result column="MODIFY_USER_ID" property="modifyUserId"/>
-            <result column="areaType" property="areaType"/>
-            <result column="hisCount" property="hisCount"/>
-            <result column="isOutpfees" property="isOutpfees"/>
-        </resultMap>
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="cc.mrbird.febs.yb.entity.YbReconsiderApplyTask">
+        <id column="id" property="id"/>
+        <result column="applyDateStr" property="applyDateStr"/>
+        <result column="dataType" property="dataType"/>
+        <result column="typeno" property="typeno"/>
+        <result column="startNum" property="startNum"/>
+        <result column="endNum" property="endNum"/>
+        <result column="totalRow" property="totalRow"/>
+        <result column="currentPage" property="currentPage"/>
+        <result column="pageSize" property="pageSize"/>
+        <result column="totalPage" property="totalPage"/>
+        <result column="COMMENTS" property="comments"/>
+        <result column="STATE" property="state"/>
+        <result column="IS_DELETEMARK" property="isDeletemark"/>
+        <result column="MODIFY_TIME" property="modifyTime"/>
+        <result column="CREATE_TIME" property="createTime"/>
+        <result column="CREATE_USER_ID" property="createUserId"/>
+        <result column="MODIFY_USER_ID" property="modifyUserId"/>
+        <result column="areaType" property="areaType"/>
+        <result column="hisCount" property="hisCount"/>
+        <result column="isOutpfees" property="isOutpfees"/>
+    </resultMap>
 
-        <!-- 通用查询结果列 -->
-        <sql id="Base_Column_List">
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
         id, applyDateStr, dataType,typeno, startNum, endNum, totalRow, currentPage, pageSize, totalPage, COMMENTS, STATE, IS_DELETEMARK, MODIFY_TIME, CREATE_TIME, CREATE_USER_ID, MODIFY_USER_ID,areaType,hisCount,isOutpfees
     </sql>
     <update id="updateYbReconsiderApplyTask" parameterType="cc.mrbird.febs.yb.entity.YbReconsiderApplyTask">
         update yb_reconsider_apply_task
         <trim prefix="set" suffixOverrides=",">
-<if test="applyDateStr != null">applyDateStr=#{applyDateStr},</if>
-<if test="dataType != null">dataType=#{dataType},</if>
+            <if test="applyDateStr != null">applyDateStr=#{applyDateStr},</if>
+            <if test="dataType != null">dataType=#{dataType},</if>
             <if test="typeno != null">typeno=#{typeno},</if>
-<if test="startNum != null">startNum=#{startNum},</if>
-<if test="endNum != null">endNum=#{endNum},</if>
-<if test="totalRow != null">totalRow=#{totalRow},</if>
-<if test="currentPage != null">currentPage=#{currentPage},</if>
-<if test="pageSize != null">pageSize=#{pageSize},</if>
-<if test="totalPage != null">totalPage=#{totalPage},</if>
-<if test="comments != null">COMMENTS=#{comments},</if>
-<if test="state != null">STATE=#{state},</if>
-<if test="isDeletemark != null">IS_DELETEMARK=#{isDeletemark},</if>
-<if test="modifyTime != null">MODIFY_TIME=#{modifyTime},</if>
-<if test="createTime != null">CREATE_TIME=#{createTime},</if>
-<if test="createUserId != null">CREATE_USER_ID=#{createUserId},</if>
-<if test="modifyUserId != null">MODIFY_USER_ID=#{modifyUserId},</if>
+            <if test="startNum != null">startNum=#{startNum},</if>
+            <if test="endNum != null">endNum=#{endNum},</if>
+            <if test="totalRow != null">totalRow=#{totalRow},</if>
+            <if test="currentPage != null">currentPage=#{currentPage},</if>
+            <if test="pageSize != null">pageSize=#{pageSize},</if>
+            <if test="totalPage != null">totalPage=#{totalPage},</if>
+            <if test="comments != null">COMMENTS=#{comments},</if>
+            <if test="state != null">STATE=#{state},</if>
+            <if test="isDeletemark != null">IS_DELETEMARK=#{isDeletemark},</if>
+            <if test="modifyTime != null">MODIFY_TIME=#{modifyTime},</if>
+            <if test="createTime != null">CREATE_TIME=#{createTime},</if>
+            <if test="createUserId != null">CREATE_USER_ID=#{createUserId},</if>
+            <if test="modifyUserId != null">MODIFY_USER_ID=#{modifyUserId},</if>
             <if test="areaType != null">areaType=#{areaType},</if>
             <if test="hisCount != null">hisCount=#{hisCount},</if>
             <if test="isOutpfees != null">isOutpfees=#{isOutpfees},</if>
         </trim>
-                where id=#{id}
+        where id=#{id}
 
     </update>
-    <select id="findYbReconsiderApplyTask" resultType="cc.mrbird.febs.yb.entity.YbReconsiderApplyTask" parameterType="cc.mrbird.febs.yb.entity.YbReconsiderApplyTask">
-        select  *  from yb_reconsider_apply_task
-        where  1=1
-            <if test="ybReconsiderApplyTask.id != null and ybReconsiderApplyTask.id != ''"> and id =#{ ybReconsiderApplyTask.id} </if>
-            <if test="ybReconsiderApplyTask.applyDateStr != null and ybReconsiderApplyTask.applyDateStr != ''"> and applyDateStr like concat('%', #{ ybReconsiderApplyTask.applyDateStr} ,'%')</if>
-        <if test="ybReconsiderApplyTask.dataType != null"> and dataType =#{ ybReconsiderApplyTask.dataType} </if>
-        <if test="ybReconsiderApplyTask.typeno != null"> and typeno =#{ ybReconsiderApplyTask.typeno} </if>
-        <if test="ybReconsiderApplyTask.startNum != null"> and startNum =#{ ybReconsiderApplyTask.startNum} </if>
-        <if test="ybReconsiderApplyTask.endNum != null"> and endNum =#{ ybReconsiderApplyTask.endNum} </if>
-        <if test="ybReconsiderApplyTask.totalRow != null"> and totalRow =#{ ybReconsiderApplyTask.totalRow} </if>
-        <if test="ybReconsiderApplyTask.currentPage != null"> and currentPage =#{ ybReconsiderApplyTask.currentPage} </if>
-        <if test="ybReconsiderApplyTask.pageSize != null"> and pageSize =#{ ybReconsiderApplyTask.pageSize} </if>
-        <if test="ybReconsiderApplyTask.totalPage != null"> and totalPage =#{ ybReconsiderApplyTask.totalPage} </if>
-            <if test="ybReconsiderApplyTask.comments != null and ybReconsiderApplyTask.comments != ''"> and COMMENTS like concat('%', #{ ybReconsiderApplyTask.comments} ,'%')</if>
-        <if test="ybReconsiderApplyTask.state != null"> and STATE =#{ ybReconsiderApplyTask.state} </if>
-        <if test="ybReconsiderApplyTask.isDeletemark != null"> and IS_DELETEMARK =#{ ybReconsiderApplyTask.isDeletemark} </if>
+    <select id="findYbReconsiderApplyTask" resultType="cc.mrbird.febs.yb.entity.YbReconsiderApplyTask"
+            parameterType="cc.mrbird.febs.yb.entity.YbReconsiderApplyTask">
+        select * from yb_reconsider_apply_task
+        where 1=1
+        <if test="ybReconsiderApplyTask.id != null and ybReconsiderApplyTask.id != ''">and id
+            =#{ ybReconsiderApplyTask.id}
+        </if>
+        <if test="ybReconsiderApplyTask.applyDateStr != null and ybReconsiderApplyTask.applyDateStr != ''">and
+            applyDateStr like concat('%', #{ ybReconsiderApplyTask.applyDateStr} ,'%')
+        </if>
+        <if test="ybReconsiderApplyTask.dataType != null">and dataType =#{ ybReconsiderApplyTask.dataType}</if>
+        <if test="ybReconsiderApplyTask.typeno != null">and typeno =#{ ybReconsiderApplyTask.typeno}</if>
+        <if test="ybReconsiderApplyTask.startNum != null">and startNum =#{ ybReconsiderApplyTask.startNum}</if>
+        <if test="ybReconsiderApplyTask.endNum != null">and endNum =#{ ybReconsiderApplyTask.endNum}</if>
+        <if test="ybReconsiderApplyTask.totalRow != null">and totalRow =#{ ybReconsiderApplyTask.totalRow}</if>
+        <if test="ybReconsiderApplyTask.currentPage != null">and currentPage =#{ ybReconsiderApplyTask.currentPage}</if>
+        <if test="ybReconsiderApplyTask.pageSize != null">and pageSize =#{ ybReconsiderApplyTask.pageSize}</if>
+        <if test="ybReconsiderApplyTask.totalPage != null">and totalPage =#{ ybReconsiderApplyTask.totalPage}</if>
+        <if test="ybReconsiderApplyTask.comments != null and ybReconsiderApplyTask.comments != ''">and COMMENTS like
+            concat('%', #{ ybReconsiderApplyTask.comments} ,'%')
+        </if>
+        <if test="ybReconsiderApplyTask.state != null">and STATE =#{ ybReconsiderApplyTask.state}</if>
+        <if test="ybReconsiderApplyTask.isDeletemark != null">and IS_DELETEMARK
+            =#{ ybReconsiderApplyTask.isDeletemark}
+        </if>
         <if test="ybReconsiderApplyTask.modifyTimeFrom!= null">
             AND ybReconsiderApplyTask.MODIFY_TIME <![CDATA[ >= ]]>  modifyTimeFrom}
         </if>
@@ -84,9 +93,12 @@
         <if test="ybReconsiderApplyTask.createTimeTo!= null">
             AND ybReconsiderApplyTask.CREATE_TIME <![CDATA[ <= ]]>  createTimeTo}
         </if>
-        <if test="ybReconsiderApplyTask.areaType != null">and ybReconsiderApplyTask.areaType =#{ ybReconsiderApplyTask.areaType}</if>
-</select>
-    <select id="findReconsiderApplyTask" resultType="cc.mrbird.febs.yb.entity.YbReconsiderApplyTask" parameterType="cc.mrbird.febs.yb.entity.YbReconsiderApplyTask">
+        <if test="ybReconsiderApplyTask.areaType != null">and ybReconsiderApplyTask.areaType
+            =#{ ybReconsiderApplyTask.areaType}
+        </if>
+    </select>
+    <select id="findReconsiderApplyTask" resultType="cc.mrbird.febs.yb.entity.YbReconsiderApplyTask"
+            parameterType="cc.mrbird.febs.yb.entity.YbReconsiderApplyTask">
     SELECT
     *
     FROM

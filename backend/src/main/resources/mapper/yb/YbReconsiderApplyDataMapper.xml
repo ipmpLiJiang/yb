@@ -2,116 +2,139 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cc.mrbird.febs.yb.dao.YbReconsiderApplyDataMapper">
 
-        <!-- 通用查询映射结果 -->
-        <resultMap id="BaseResultMap" type="cc.mrbird.febs.yb.entity.YbReconsiderApplyData">
-                    <id column="id" property="id"/>
-                    <result column="pid" property="pid"/>
-                    <result column="serialNo" property="serialNo"/>
-                    <result column="billNo" property="billNo"/>
-                    <result column="proposalCode" property="proposalCode"/>
-                    <result column="projectCode" property="projectCode"/>
-                    <result column="projectName" property="projectName"/>
-                    <result column="num" property="num"/>
-                    <result column="medicalPrice" property="medicalPrice"/>
-                    <result column="ruleName" property="ruleName"/>
-                    <result column="deductPrice" property="deductPrice"/>
-                    <result column="deductReason" property="deductReason"/>
-                    <result column="repaymentReason" property="repaymentReason"/>
-                    <result column="doctorName" property="doctorName"/>
-                    <result column="deptCode" property="deptCode"/>
-                    <result column="deptName" property="deptName"/>
-                    <result column="enterHospitalDate" property="enterHospitalDate"/>
-                    <result column="enterHospitalDateStr" property="enterHospitalDateStr"/>
-                    <result column="outHospitalDate" property="outHospitalDate"/>
-                    <result column="outHospitalDateStr" property="outHospitalDateStr"/>
-                    <result column="costDate" property="costDate"/>
-                    <result column="costDateStr" property="costDateStr"/>
-                    <result column="hospitalizedNo" property="hospitalizedNo"/>
-                    <result column="treatmentMode" property="treatmentMode"/>
-                    <result column="settlementDate" property="settlementDate"/>
-                    <result column="settlementDateStr" property="settlementDateStr"/>
-                    <result column="personalNo" property="personalNo"/>
-                    <result column="insuredName" property="insuredName"/>
-                    <result column="cardNumber" property="cardNumber"/>
-                    <result column="areaName" property="areaName"/>
-                    <result column="versionNumber" property="versionNumber"/>
-                    <result column="backAppeal" property="backAppeal"/>
-                    <result column="typeno" property="typeno"/>
-                    <result column="insuredType" property="insuredType"/>
-                    <result column="dataType" property="dataType"/>
-            <result column="orderNumber" property="orderNumber"/>
-            <result column="orderNum" property="orderNum"/>
-            <result column="orderSettlementNum" property="orderSettlementNum"/>
-                    <result column="COMMENTS" property="comments"/>
-                    <result column="STATE" property="state"/>
-                    <result column="IS_DELETEMARK" property="isDeletemark"/>
-            <result column="isOutpfees" property="isOutpfees"/>
-        </resultMap>
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="cc.mrbird.febs.yb.entity.YbReconsiderApplyData">
+        <id column="id" property="id"/>
+        <result column="pid" property="pid"/>
+        <result column="serialNo" property="serialNo"/>
+        <result column="billNo" property="billNo"/>
+        <result column="proposalCode" property="proposalCode"/>
+        <result column="projectCode" property="projectCode"/>
+        <result column="projectName" property="projectName"/>
+        <result column="num" property="num"/>
+        <result column="medicalPrice" property="medicalPrice"/>
+        <result column="ruleName" property="ruleName"/>
+        <result column="deductPrice" property="deductPrice"/>
+        <result column="deductReason" property="deductReason"/>
+        <result column="repaymentReason" property="repaymentReason"/>
+        <result column="doctorName" property="doctorName"/>
+        <result column="deptCode" property="deptCode"/>
+        <result column="deptName" property="deptName"/>
+        <result column="enterHospitalDate" property="enterHospitalDate"/>
+        <result column="enterHospitalDateStr" property="enterHospitalDateStr"/>
+        <result column="outHospitalDate" property="outHospitalDate"/>
+        <result column="outHospitalDateStr" property="outHospitalDateStr"/>
+        <result column="costDate" property="costDate"/>
+        <result column="costDateStr" property="costDateStr"/>
+        <result column="hospitalizedNo" property="hospitalizedNo"/>
+        <result column="treatmentMode" property="treatmentMode"/>
+        <result column="settlementDate" property="settlementDate"/>
+        <result column="settlementDateStr" property="settlementDateStr"/>
+        <result column="personalNo" property="personalNo"/>
+        <result column="insuredName" property="insuredName"/>
+        <result column="cardNumber" property="cardNumber"/>
+        <result column="areaName" property="areaName"/>
+        <result column="versionNumber" property="versionNumber"/>
+        <result column="backAppeal" property="backAppeal"/>
+        <result column="typeno" property="typeno"/>
+        <result column="insuredType" property="insuredType"/>
+        <result column="dataType" property="dataType"/>
+        <result column="orderNumber" property="orderNumber"/>
+        <result column="orderNum" property="orderNum"/>
+        <result column="orderSettlementNum" property="orderSettlementNum"/>
+        <result column="COMMENTS" property="comments"/>
+        <result column="STATE" property="state"/>
+        <result column="IS_DELETEMARK" property="isDeletemark"/>
+        <result column="isOutpfees" property="isOutpfees"/>
+    </resultMap>
 
-        <!-- 通用查询结果列 -->
-        <sql id="Base_Column_List">
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
         id, pid, serialNo, billNo, proposalCode, projectCode, projectName, num, medicalPrice, ruleName, deductPrice, deductReason, repaymentReason, doctorName, deptCode, deptName, enterHospitalDate,enterHospitalDateStr, outHospitalDate,outHospitalDateStr, costDate,costDateStr, hospitalizedNo, treatmentMode, settlementDate,settlementDateStr, personalNo, insuredName, cardNumber, areaName, versionNumber, backAppeal, typeno,insuredType,dataType,orderNumber,orderNum,orderSettlementNum, COMMENTS, STATE, IS_DELETEMARK,isOutpfees
     </sql>
     <update id="updateYbReconsiderApplyData" parameterType="cc.mrbird.febs.yb.entity.YbReconsiderApplyData">
         update yb_reconsider_apply_data
         <trim prefix="set" suffixOverrides=",">
-<if test="pid != null">pid=#{pid},</if>
-<if test="serialNo != null">serialNo=#{serialNo},</if>
-<if test="billNo != null">billNo=#{billNo},</if>
-<if test="proposalCode != null">proposalCode=#{proposalCode},</if>
-<if test="projectCode != null">projectCode=#{projectCode},</if>
-<if test="projectName != null">projectName=#{projectName},</if>
-<if test="num != null">num=#{num},</if>
-<if test="medicalPrice != null">medicalPrice=#{medicalPrice},</if>
-<if test="ruleName != null">ruleName=#{ruleName},</if>
-<if test="deductPrice != null">deductPrice=#{deductPrice},</if>
-<if test="deductReason != null">deductReason=#{deductReason},</if>
-<if test="repaymentReason != null">repaymentReason=#{repaymentReason},</if>
-<if test="doctorName != null">doctorName=#{doctorName},</if>
-<if test="deptCode != null">deptCode=#{deptCode},</if>
-<if test="deptName != null">deptName=#{deptName},</if>
-<if test="enterHospitalDate != null">enterHospitalDate=#{enterHospitalDate},</if>
-<if test="outHospitalDate != null">outHospitalDate=#{outHospitalDate},</if>
-<if test="costDate != null">costDate=#{costDate},</if>
-<if test="hospitalizedNo != null">hospitalizedNo=#{hospitalizedNo},</if>
-<if test="treatmentMode != null">treatmentMode=#{treatmentMode},</if>
-<if test="settlementDate != null">settlementDate=#{settlementDate},</if>
-<if test="personalNo != null">personalNo=#{personalNo},</if>
-<if test="insuredName != null">insuredName=#{insuredName},</if>
-<if test="cardNumber != null">cardNumber=#{cardNumber},</if>
-<if test="areaName != null">areaName=#{areaName},</if>
-<if test="versionNumber != null">versionNumber=#{versionNumber},</if>
-<if test="backAppeal != null">backAppeal=#{backAppeal},</if>
-<if test="typeno != null">typeno=#{typeno},</if>
-<if test="dataType != null">dataType=#{dataType},</if>
-<if test="orderNumber != null">orderNumber=#{orderNumber},</if>
-<if test="orderNum != null">orderNum=#{orderNum},</if>
-<if test="orderSettlementNum != null">orderSettlementNum=#{orderSettlementNum},</if>
-<if test="comments != null">COMMENTS=#{comments},</if>
-<if test="state != null">STATE=#{state},</if>
-<if test="isDeletemark != null">IS_DELETEMARK=#{isDeletemark},</if>
+            <if test="pid != null">pid=#{pid},</if>
+            <if test="serialNo != null">serialNo=#{serialNo},</if>
+            <if test="billNo != null">billNo=#{billNo},</if>
+            <if test="proposalCode != null">proposalCode=#{proposalCode},</if>
+            <if test="projectCode != null">projectCode=#{projectCode},</if>
+            <if test="projectName != null">projectName=#{projectName},</if>
+            <if test="num != null">num=#{num},</if>
+            <if test="medicalPrice != null">medicalPrice=#{medicalPrice},</if>
+            <if test="ruleName != null">ruleName=#{ruleName},</if>
+            <if test="deductPrice != null">deductPrice=#{deductPrice},</if>
+            <if test="deductReason != null">deductReason=#{deductReason},</if>
+            <if test="repaymentReason != null">repaymentReason=#{repaymentReason},</if>
+            <if test="doctorName != null">doctorName=#{doctorName},</if>
+            <if test="deptCode != null">deptCode=#{deptCode},</if>
+            <if test="deptName != null">deptName=#{deptName},</if>
+            <if test="enterHospitalDate != null">enterHospitalDate=#{enterHospitalDate},</if>
+            <if test="outHospitalDate != null">outHospitalDate=#{outHospitalDate},</if>
+            <if test="costDate != null">costDate=#{costDate},</if>
+            <if test="hospitalizedNo != null">hospitalizedNo=#{hospitalizedNo},</if>
+            <if test="treatmentMode != null">treatmentMode=#{treatmentMode},</if>
+            <if test="settlementDate != null">settlementDate=#{settlementDate},</if>
+            <if test="personalNo != null">personalNo=#{personalNo},</if>
+            <if test="insuredName != null">insuredName=#{insuredName},</if>
+            <if test="cardNumber != null">cardNumber=#{cardNumber},</if>
+            <if test="areaName != null">areaName=#{areaName},</if>
+            <if test="versionNumber != null">versionNumber=#{versionNumber},</if>
+            <if test="backAppeal != null">backAppeal=#{backAppeal},</if>
+            <if test="typeno != null">typeno=#{typeno},</if>
+            <if test="dataType != null">dataType=#{dataType},</if>
+            <if test="orderNumber != null">orderNumber=#{orderNumber},</if>
+            <if test="orderNum != null">orderNum=#{orderNum},</if>
+            <if test="orderSettlementNum != null">orderSettlementNum=#{orderSettlementNum},</if>
+            <if test="comments != null">COMMENTS=#{comments},</if>
+            <if test="state != null">STATE=#{state},</if>
+            <if test="isDeletemark != null">IS_DELETEMARK=#{isDeletemark},</if>
             <if test="isOutpfees != null">isOutpfees=#{isOutpfees},</if>
         </trim>
-                where id=#{id}
+        where id=#{id}
 
     </update>
-    <select id="findYbReconsiderApplyData" resultType="cc.mrbird.febs.yb.entity.YbReconsiderApplyData" parameterType="cc.mrbird.febs.yb.entity.YbReconsiderApplyData">
-        select  *  from yb_reconsider_apply_data
+    <select id="findYbReconsiderApplyData" resultType="cc.mrbird.febs.yb.entity.YbReconsiderApplyData"
+            parameterType="cc.mrbird.febs.yb.entity.YbReconsiderApplyData">
+        select * from yb_reconsider_apply_data
         where
-        <if test="ybReconsiderApplyData.pid != null"> pid =#{ ybReconsiderApplyData.pid} </if>
-        <if test="ybReconsiderApplyData.typeno != null"> and typeno =#{ ybReconsiderApplyData.typeno} </if>
-        <if test="ybReconsiderApplyData.dataType != null"> and dataType =#{ ybReconsiderApplyData.dataType} </if>
-            <if test="ybReconsiderApplyData.serialNo != null and ybReconsiderApplyData.serialNo != ''"> and serialNo like concat('%', #{ ybReconsiderApplyData.serialNo} ,'%')</if>
-            <if test="ybReconsiderApplyData.billNo != null and ybReconsiderApplyData.billNo != ''"> and billNo like concat('%', #{ ybReconsiderApplyData.billNo} ,'%')</if>
-            <if test="ybReconsiderApplyData.proposalCode != null and ybReconsiderApplyData.proposalCode != ''"> and proposalCode like concat('%', #{ ybReconsiderApplyData.proposalCode} ,'%')</if>
-            <if test="ybReconsiderApplyData.projectCode != null and ybReconsiderApplyData.projectCode != ''"> and projectCode like concat('%', #{ ybReconsiderApplyData.projectCode} ,'%')</if>
-            <if test="ybReconsiderApplyData.projectName != null and ybReconsiderApplyData.projectName != ''"> and projectName like concat('%', #{ ybReconsiderApplyData.projectName} ,'%')</if>
-            <if test="ybReconsiderApplyData.ruleName != null and ybReconsiderApplyData.ruleName != ''"> and ruleName like concat('%', #{ ybReconsiderApplyData.ruleName} ,'%')</if>
-            <if test="ybReconsiderApplyData.deductReason != null and ybReconsiderApplyData.deductReason != ''"> and deductReason like concat('%', #{ ybReconsiderApplyData.deductReason} ,'%')</if>
-            <if test="ybReconsiderApplyData.repaymentReason != null and ybReconsiderApplyData.repaymentReason != ''"> and repaymentReason like concat('%', #{ ybReconsiderApplyData.repaymentReason} ,'%')</if>
-            <if test="ybReconsiderApplyData.doctorName != null and ybReconsiderApplyData.doctorName != ''"> and doctorName like concat('%', #{ ybReconsiderApplyData.doctorName} ,'%')</if>
-            <if test="ybReconsiderApplyData.deptCode != null and ybReconsiderApplyData.deptCode != ''"> and deptCode like concat('%', #{ ybReconsiderApplyData.deptCode} ,'%')</if>
-            <if test="ybReconsiderApplyData.deptName != null and ybReconsiderApplyData.deptName != ''"> and deptName like concat('%', #{ ybReconsiderApplyData.deptName} ,'%')</if>
+        <if test="ybReconsiderApplyData.pid != null">pid =#{ ybReconsiderApplyData.pid}</if>
+        <if test="ybReconsiderApplyData.typeno != null">and typeno =#{ ybReconsiderApplyData.typeno}</if>
+        <if test="ybReconsiderApplyData.dataType != null">and dataType =#{ ybReconsiderApplyData.dataType}</if>
+        <if test="ybReconsiderApplyData.serialNo != null and ybReconsiderApplyData.serialNo != ''">and serialNo like
+            concat('%', #{ ybReconsiderApplyData.serialNo} ,'%')
+        </if>
+        <if test="ybReconsiderApplyData.billNo != null and ybReconsiderApplyData.billNo != ''">and billNo like
+            concat('%', #{ ybReconsiderApplyData.billNo} ,'%')
+        </if>
+        <if test="ybReconsiderApplyData.proposalCode != null and ybReconsiderApplyData.proposalCode != ''">and
+            proposalCode like concat('%', #{ ybReconsiderApplyData.proposalCode} ,'%')
+        </if>
+        <if test="ybReconsiderApplyData.projectCode != null and ybReconsiderApplyData.projectCode != ''">and projectCode
+            like concat('%', #{ ybReconsiderApplyData.projectCode} ,'%')
+        </if>
+        <if test="ybReconsiderApplyData.projectName != null and ybReconsiderApplyData.projectName != ''">and projectName
+            like concat('%', #{ ybReconsiderApplyData.projectName} ,'%')
+        </if>
+        <if test="ybReconsiderApplyData.ruleName != null and ybReconsiderApplyData.ruleName != ''">and ruleName like
+            concat('%', #{ ybReconsiderApplyData.ruleName} ,'%')
+        </if>
+        <if test="ybReconsiderApplyData.deductReason != null and ybReconsiderApplyData.deductReason != ''">and
+            deductReason like concat('%', #{ ybReconsiderApplyData.deductReason} ,'%')
+        </if>
+        <if test="ybReconsiderApplyData.repaymentReason != null and ybReconsiderApplyData.repaymentReason != ''">and
+            repaymentReason like concat('%', #{ ybReconsiderApplyData.repaymentReason} ,'%')
+        </if>
+        <if test="ybReconsiderApplyData.doctorName != null and ybReconsiderApplyData.doctorName != ''">and doctorName
+            like concat('%', #{ ybReconsiderApplyData.doctorName} ,'%')
+        </if>
+        <if test="ybReconsiderApplyData.deptCode != null and ybReconsiderApplyData.deptCode != ''">and deptCode like
+            concat('%', #{ ybReconsiderApplyData.deptCode} ,'%')
+        </if>
+        <if test="ybReconsiderApplyData.deptName != null and ybReconsiderApplyData.deptName != ''">and deptName like
+            concat('%', #{ ybReconsiderApplyData.deptName} ,'%')
+        </if>
         <if test="ybReconsiderApplyData.enterHospitalDateFrom!= null">
             and enterHospitalDate <![CDATA[ >= ]]>  #{ybReconsiderApplyData.enterHospitalDateFrom}
         </if>
@@ -130,25 +153,45 @@
         <if test="ybReconsiderApplyData.costDateTo!= null">
             and costDate <![CDATA[ <= ]]>  #{ybReconsiderApplyData.costDateTo}
         </if>
-            <if test="ybReconsiderApplyData.hospitalizedNo != null and ybReconsiderApplyData.hospitalizedNo != ''"> and hospitalizedNo like concat('%', #{ ybReconsiderApplyData.hospitalizedNo} ,'%')</if>
-            <if test="ybReconsiderApplyData.treatmentMode != null and ybReconsiderApplyData.treatmentMode != ''"> and treatmentMode like concat('%', #{ ybReconsiderApplyData.treatmentMode} ,'%')</if>
+        <if test="ybReconsiderApplyData.hospitalizedNo != null and ybReconsiderApplyData.hospitalizedNo != ''">and
+            hospitalizedNo like concat('%', #{ ybReconsiderApplyData.hospitalizedNo} ,'%')
+        </if>
+        <if test="ybReconsiderApplyData.treatmentMode != null and ybReconsiderApplyData.treatmentMode != ''">and
+            treatmentMode like concat('%', #{ ybReconsiderApplyData.treatmentMode} ,'%')
+        </if>
         <if test="ybReconsiderApplyData.settlementDateFrom!= null">
             and settlementDate <![CDATA[ >= ]]>  #{ybReconsiderApplyData.settlementDateFrom}
         </if>
         <if test="ybReconsiderApplyData.settlementDateTo!= null">
             and settlementDate <![CDATA[ <= ]]>  #{ybReconsiderApplyData.settlementDateTo}
         </if>
-            <if test="ybReconsiderApplyData.personalNo != null and ybReconsiderApplyData.personalNo != ''"> and personalNo like concat('%', #{ ybReconsiderApplyData.personalNo} ,'%')</if>
-            <if test="ybReconsiderApplyData.insuredName != null and ybReconsiderApplyData.insuredName != ''"> and insuredName like concat('%', #{ ybReconsiderApplyData.insuredName} ,'%')</if>
-            <if test="ybReconsiderApplyData.cardNumber != null and ybReconsiderApplyData.cardNumber != ''"> and cardNumber like concat('%', #{ ybReconsiderApplyData.cardNumber} ,'%')</if>
-            <if test="ybReconsiderApplyData.areaName != null and ybReconsiderApplyData.areaName != ''"> and areaName like concat('%', #{ ybReconsiderApplyData.areaName} ,'%')</if>
-            <if test="ybReconsiderApplyData.versionNumber != null and ybReconsiderApplyData.versionNumber != ''"> and versionNumber like concat('%', #{ ybReconsiderApplyData.versionNumber} ,'%')</if>
-            <if test="ybReconsiderApplyData.backAppeal != null and ybReconsiderApplyData.backAppeal != ''"> and backAppeal like concat('%', #{ ybReconsiderApplyData.backAppeal} ,'%')</if>
-            <if test="ybReconsiderApplyData.comments != null and ybReconsiderApplyData.comments != ''"> and COMMENTS like concat('%', #{ ybReconsiderApplyData.comments} ,'%')</if>
-        <if test="ybReconsiderApplyData.state != null"> and STATE =#{ ybReconsiderApplyData.state} </if>
-        <if test="ybReconsiderApplyData.isDeletemark != null"> and IS_DELETEMARK =#{ ybReconsiderApplyData.isDeletemark} </if>
+        <if test="ybReconsiderApplyData.personalNo != null and ybReconsiderApplyData.personalNo != ''">and personalNo
+            like concat('%', #{ ybReconsiderApplyData.personalNo} ,'%')
+        </if>
+        <if test="ybReconsiderApplyData.insuredName != null and ybReconsiderApplyData.insuredName != ''">and insuredName
+            like concat('%', #{ ybReconsiderApplyData.insuredName} ,'%')
+        </if>
+        <if test="ybReconsiderApplyData.cardNumber != null and ybReconsiderApplyData.cardNumber != ''">and cardNumber
+            like concat('%', #{ ybReconsiderApplyData.cardNumber} ,'%')
+        </if>
+        <if test="ybReconsiderApplyData.areaName != null and ybReconsiderApplyData.areaName != ''">and areaName like
+            concat('%', #{ ybReconsiderApplyData.areaName} ,'%')
+        </if>
+        <if test="ybReconsiderApplyData.versionNumber != null and ybReconsiderApplyData.versionNumber != ''">and
+            versionNumber like concat('%', #{ ybReconsiderApplyData.versionNumber} ,'%')
+        </if>
+        <if test="ybReconsiderApplyData.backAppeal != null and ybReconsiderApplyData.backAppeal != ''">and backAppeal
+            like concat('%', #{ ybReconsiderApplyData.backAppeal} ,'%')
+        </if>
+        <if test="ybReconsiderApplyData.comments != null and ybReconsiderApplyData.comments != ''">and COMMENTS like
+            concat('%', #{ ybReconsiderApplyData.comments} ,'%')
+        </if>
+        <if test="ybReconsiderApplyData.state != null">and STATE =#{ ybReconsiderApplyData.state}</if>
+        <if test="ybReconsiderApplyData.isDeletemark != null">and IS_DELETEMARK
+            =#{ ybReconsiderApplyData.isDeletemark}
+        </if>
 
-</select>
+    </select>
     <insert id="createBatchData">
         insert into yb_reconsider_apply_data
         (orderNumber,pid,serialNo,billNo,proposalCode,projectCode,projectName,num,medicalPrice,ruleName,deductPrice,deductReason,repaymentReason,doctorName,deptCode,deptName,enterHospitalDate,enterHospitalDateStr,outHospitalDate,outHospitalDateStr,costDate,costDateStr,hospitalizedNo,treatmentMode,settlementDate,settlementDateStr,personalNo,insuredName,cardNumber,areaName,versionNumber,backAppeal,typeno,insuredType,dataType,IS_DELETEMARK)
@@ -185,72 +228,72 @@
 
     <select id="findReconsiderApplyDataBetween" resultType="cc.mrbird.febs.yb.entity.YbReconsiderApplyData">
         SELECT
-            *
+        *
         FROM
-            yb_reconsider_apply_data
+        yb_reconsider_apply_data
         where
-            pid = #{pid} and
-            typeno = #{typeno} and
-            dataType = #{dataType} and
-            <if test="isOutpfees != null"> isOutpfees =#{ isOutpfees} and </if>
-            orderSettlementNum between #{startNum} and #{endNum}
+        pid = #{pid} and
+        typeno = #{typeno} and
+        dataType = #{dataType} and
+        <if test="isOutpfees != null">isOutpfees =#{ isOutpfees} and</if>
+        orderSettlementNum between #{startNum} and #{endNum}
     </select>
     <select id="findReconsiderApplyDataNotBetween" resultType="cc.mrbird.febs.yb.entity.YbReconsiderApplyData">
         SELECT
-            *
+        *
         FROM
-            yb_reconsider_apply_data
+        yb_reconsider_apply_data
         where
-            pid = #{pid} and
-            typeno = #{typeno} and
-            dataType = #{dataType} and
-            state = #{state} and
-            <if test="isOutpfees != null"> isOutpfees =#{ isOutpfees} and </if>
-            orderSettlementNum between #{startNum} and #{endNum}
+        pid = #{pid} and
+        typeno = #{typeno} and
+        dataType = #{dataType} and
+        state = #{state} and
+        <if test="isOutpfees != null">isOutpfees =#{ isOutpfees} and</if>
+        orderSettlementNum between #{startNum} and #{endNum}
     </select>
     <select id="findReconsiderApplyDataNotInpatientfees" resultType="cc.mrbird.febs.yb.entity.YbReconsiderApplyData">
         SELECT
-            *
+        *
         FROM
-            yb_reconsider_apply_data
+        yb_reconsider_apply_data
         where
-            pid = #{pid} and
-            typeno = #{typeno} and
-            dataType = #{dataType} and
-            <if test="isOutpfees != null">isOutpfees =#{ isOutpfees}  and </if>
-            id not in(
-                select applyDataId from yb_reconsider_inpatientfees where
-                applyDateStr = #{applyDateStr} and areaType = #{areaType} and typeno = #{typeno} and dataType = #{dataType}
-                <if test="isOutpfees != null"> and isOutpfees =#{ isOutpfees}  </if>
-            )
+        pid = #{pid} and
+        typeno = #{typeno} and
+        dataType = #{dataType} and
+        <if test="isOutpfees != null">isOutpfees =#{ isOutpfees} and</if>
+        id not in(
+        select applyDataId from yb_reconsider_inpatientfees where
+        applyDateStr = #{applyDateStr} and areaType = #{areaType} and typeno = #{typeno} and dataType = #{dataType}
+        <if test="isOutpfees != null">and isOutpfees =#{ isOutpfees}</if>
+        )
     </select>
-    <select id="findReconsiderApplyDataCount"  resultType="Integer">
+    <select id="findReconsiderApplyDataCount" resultType="Integer">
         SELECT
-            count(1)
+        count(1)
         FROM
-            yb_reconsider_apply_data
+        yb_reconsider_apply_data
         where
-            pid = #{pid}
-            <if test="typeno != null"> and typeno =#{ typeno} </if>
-            <if test="dataType != null"> and dataType =#{ dataType} </if>
-            <if test="isOutpfees != null"> and isOutpfees =#{ isOutpfees} </if>
+        pid = #{pid}
+        <if test="typeno != null">and typeno =#{ typeno}</if>
+        <if test="dataType != null">and dataType =#{ dataType}</if>
+        <if test="isOutpfees != null">and isOutpfees =#{ isOutpfees}</if>
     </select>
 
     <select id="findReconsiderApplyDataNotCount" resultType="Integer">
         SELECT
-            count(1)
+        count(1)
         FROM
-            yb_reconsider_apply_data
+        yb_reconsider_apply_data
         where
-            pid = #{pid} and
-            typeno = #{typeno} and
-            dataType = #{dataType} and
-            <if test="isOutpfees != null">isOutpfees =#{ isOutpfees}  and </if>
-            id not in(
-                select applyDataId from yb_reconsider_inpatientfees  where
-                applyDateStr = #{applyDateStr} and areaType = #{areaType} and typeno = #{typeno} and dataType = #{dataType}
-                <if test="isOutpfees != null"> and isOutpfees =#{ isOutpfees}  </if>
-            )
+        pid = #{pid} and
+        typeno = #{typeno} and
+        dataType = #{dataType} and
+        <if test="isOutpfees != null">isOutpfees =#{ isOutpfees} and</if>
+        id not in(
+        select applyDataId from yb_reconsider_inpatientfees where
+        applyDateStr = #{applyDateStr} and areaType = #{areaType} and typeno = #{typeno} and dataType = #{dataType}
+        <if test="isOutpfees != null">and isOutpfees =#{ isOutpfees}</if>
+        )
     </select>
 
 </mapper>

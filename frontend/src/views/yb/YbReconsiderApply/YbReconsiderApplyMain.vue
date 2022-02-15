@@ -72,7 +72,7 @@ export default {
       {
         title: '交易流水号',
         dataIndex: 'serialNo',
-        width: 150
+        width: 140
       },
       {
         title: '意见书编码',

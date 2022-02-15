@@ -2,52 +2,52 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cc.mrbird.febs.yb.dao.YbPersonMapper">
 
-        <!-- 通用查询映射结果 -->
-        <resultMap id="BaseResultMap" type="cc.mrbird.febs.yb.entity.YbPerson">
-                    <id column="id" property="id"/>
-                    <result column="personCode" property="personCode"/>
-                    <result column="personName" property="personName"/>
-                    <result column="deptCode" property="deptCode"/>
-                    <result column="deptName" property="deptName"/>
-                    <result column="sex" property="sex"/>
-                    <result column="email" property="email"/>
-                    <result column="tel" property="tel"/>
-                    <result column="spellCode" property="spellCode"/>
-                    <result column="strokeCode" property="strokeCode"/>
-                    <result column="COMMENTS" property="comments"/>
-                    <result column="STATE" property="state"/>
-                    <result column="IS_DELETEMARK" property="isDeletemark"/>
-                    <result column="MODIFY_TIME" property="modifyTime"/>
-                    <result column="CREATE_TIME" property="createTime"/>
-                    <result column="CREATE_USER_ID" property="createUserId"/>
-                    <result column="MODIFY_USER_ID" property="modifyUserId"/>
-        </resultMap>
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="cc.mrbird.febs.yb.entity.YbPerson">
+        <id column="id" property="id"/>
+        <result column="personCode" property="personCode"/>
+        <result column="personName" property="personName"/>
+        <result column="deptCode" property="deptCode"/>
+        <result column="deptName" property="deptName"/>
+        <result column="sex" property="sex"/>
+        <result column="email" property="email"/>
+        <result column="tel" property="tel"/>
+        <result column="spellCode" property="spellCode"/>
+        <result column="strokeCode" property="strokeCode"/>
+        <result column="COMMENTS" property="comments"/>
+        <result column="STATE" property="state"/>
+        <result column="IS_DELETEMARK" property="isDeletemark"/>
+        <result column="MODIFY_TIME" property="modifyTime"/>
+        <result column="CREATE_TIME" property="createTime"/>
+        <result column="CREATE_USER_ID" property="createUserId"/>
+        <result column="MODIFY_USER_ID" property="modifyUserId"/>
+    </resultMap>
 
-        <!-- 通用查询结果列 -->
-        <sql id="Base_Column_List">
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
         id, personCode, personName,deptCode,deptName,sex,email,tel,spellCode,strokeCode, COMMENTS, STATE, IS_DELETEMARK, MODIFY_TIME, CREATE_TIME, CREATE_USER_ID, MODIFY_USER_ID
     </sql>
     <update id="updateYbPerson" parameterType="cc.mrbird.febs.yb.entity.YbPerson">
         update yb_person
         <trim prefix="set" suffixOverrides=",">
-<if test="personCode != null">personCode=#{personCode},</if>
-<if test="personName != null">personName=#{personName},</if>
-<if test="deptCode != null">deptCode=#{deptCode},</if>
-<if test="deptName != null">deptName=#{deptName},</if>
-<if test="sex != null">sex=#{sex},</if>
-<if test="email != null">email=#{email},</if>
-<if test="tel != null">tel=#{tel},</if>
-<if test="spellCode != null">spellCode=#{spellCode},</if>
-<if test="strokeCode != null">strokeCode=#{strokeCode},</if>
-<if test="comments != null">COMMENTS=#{comments},</if>
-<if test="state != null">STATE=#{state},</if>
-<if test="isDeletemark != null">IS_DELETEMARK=#{isDeletemark},</if>
-<if test="modifyTime != null">MODIFY_TIME=#{modifyTime},</if>
-<if test="createTime != null">CREATE_TIME=#{createTime},</if>
-<if test="createUserId != null">CREATE_USER_ID=#{createUserId},</if>
-<if test="modifyUserId != null">MODIFY_USER_ID=#{modifyUserId},</if>
+            <if test="personCode != null">personCode=#{personCode},</if>
+            <if test="personName != null">personName=#{personName},</if>
+            <if test="deptCode != null">deptCode=#{deptCode},</if>
+            <if test="deptName != null">deptName=#{deptName},</if>
+            <if test="sex != null">sex=#{sex},</if>
+            <if test="email != null">email=#{email},</if>
+            <if test="tel != null">tel=#{tel},</if>
+            <if test="spellCode != null">spellCode=#{spellCode},</if>
+            <if test="strokeCode != null">strokeCode=#{strokeCode},</if>
+            <if test="comments != null">COMMENTS=#{comments},</if>
+            <if test="state != null">STATE=#{state},</if>
+            <if test="isDeletemark != null">IS_DELETEMARK=#{isDeletemark},</if>
+            <if test="modifyTime != null">MODIFY_TIME=#{modifyTime},</if>
+            <if test="createTime != null">CREATE_TIME=#{createTime},</if>
+            <if test="createUserId != null">CREATE_USER_ID=#{createUserId},</if>
+            <if test="modifyUserId != null">MODIFY_USER_ID=#{modifyUserId},</if>
         </trim>
-                where id=#{id}
+        where id=#{id}
 
     </update>
     <!--
@@ -81,7 +81,8 @@
         </if>
 </select>-->
 
-    <select id="findYbPerson" resultType="cc.mrbird.febs.yb.entity.YbPerson" parameterType="cc.mrbird.febs.yb.entity.YbPerson">
+    <select id="findYbPerson" resultType="cc.mrbird.febs.yb.entity.YbPerson"
+            parameterType="cc.mrbird.febs.yb.entity.YbPerson">
         select
         yb_person.id,
         yb_person.personCode,
@@ -102,21 +103,41 @@
         yb_person.CREATE_TIME
         from yb_person
         LEFT JOIN t_user ON
-            t_user.USERNAME = yb_person.personCode
-        where  1=1
-        <if test="ybPerson.id != null"> and yb_person.id =#{ ybPerson.id} </if>
-        <if test="ybPerson.personCode != null and ybPerson.personCode != ''"> and (yb_person.personCode like concat('%', #{ ybPerson.personCode} ,'%') or yb_person.personName like concat('%', #{ ybPerson.personCode} ,'%'))</if>
-        <if test="ybPerson.personName != null and ybPerson.personName != ''"> and yb_person.personName like concat('%', #{ ybPerson.personName} ,'%')</if>
-        <if test="ybPerson.comments != null and ybPerson.comments != ''"> and yb_person.COMMENTS like concat('%', #{ ybPerson.comments} ,'%')</if>
-        <if test="ybPerson.deptCode != null and ybPerson.deptCode != ''"> and yb_person.deptCode like concat('%', #{ ybPerson.deptCode} ,'%')</if>
-        <if test="ybPerson.deptName != null and ybPerson.deptName != ''"> and yb_person.deptName like concat('%', #{ ybPerson.deptName} ,'%')</if>
-        <if test="ybPerson.sex != null and ybPerson.sex != ''"> and yb_person.sex like concat('%', #{ ybPerson.sex} ,'%')</if>
-        <if test="ybPerson.email != null and ybPerson.email != ''"> and yb_person.email like concat('%', #{ ybPerson.email} ,'%')</if>
-        <if test="ybPerson.tel != null and ybPerson.tel != ''"> and yb_person.tel like concat('%', #{ ybPerson.tel} ,'%')</if>
-        <if test="ybPerson.spellCode != null and ybPerson.spellCode != ''"> and yb_person.spellCode like concat('%', #{ ybPerson.spellCode} ,'%')</if>
-        <if test="ybPerson.strokeCode != null and ybPerson.strokeCode != ''"> and yb_person.strokeCode like concat('%', #{ ybPerson.strokeCode} ,'%')</if>
-        <if test="ybPerson.state != null"> and yb_person.STATE =#{ ybPerson.state} </if>
-        <if test="ybPerson.isDeletemark != null"> and yb_person.IS_DELETEMARK = 1 </if>
+        t_user.USERNAME = yb_person.personCode
+        where 1=1
+        <if test="ybPerson.id != null">and yb_person.id =#{ ybPerson.id}</if>
+        <if test="ybPerson.personCode != null and ybPerson.personCode != ''">and (yb_person.personCode like concat('%',
+            #{ ybPerson.personCode} ,'%') or yb_person.personName like concat('%', #{ ybPerson.personCode} ,'%'))
+        </if>
+        <if test="ybPerson.personName != null and ybPerson.personName != ''">and yb_person.personName like concat('%',
+            #{ ybPerson.personName} ,'%')
+        </if>
+        <if test="ybPerson.comments != null and ybPerson.comments != ''">and yb_person.COMMENTS like concat('%',
+            #{ ybPerson.comments} ,'%')
+        </if>
+        <if test="ybPerson.deptCode != null and ybPerson.deptCode != ''">and yb_person.deptCode like concat('%',
+            #{ ybPerson.deptCode} ,'%')
+        </if>
+        <if test="ybPerson.deptName != null and ybPerson.deptName != ''">and yb_person.deptName like concat('%',
+            #{ ybPerson.deptName} ,'%')
+        </if>
+        <if test="ybPerson.sex != null and ybPerson.sex != ''">and yb_person.sex like concat('%', #{ ybPerson.sex}
+            ,'%')
+        </if>
+        <if test="ybPerson.email != null and ybPerson.email != ''">and yb_person.email like concat('%',
+            #{ ybPerson.email} ,'%')
+        </if>
+        <if test="ybPerson.tel != null and ybPerson.tel != ''">and yb_person.tel like concat('%', #{ ybPerson.tel}
+            ,'%')
+        </if>
+        <if test="ybPerson.spellCode != null and ybPerson.spellCode != ''">and yb_person.spellCode like concat('%',
+            #{ ybPerson.spellCode} ,'%')
+        </if>
+        <if test="ybPerson.strokeCode != null and ybPerson.strokeCode != ''">and yb_person.strokeCode like concat('%',
+            #{ ybPerson.strokeCode} ,'%')
+        </if>
+        <if test="ybPerson.state != null">and yb_person.STATE =#{ ybPerson.state}</if>
+        <if test="ybPerson.isDeletemark != null">and yb_person.IS_DELETEMARK = 1</if>
     </select>
 
     <select id="findPersonList" resultType="cc.mrbird.febs.yb.entity.YbPerson">
@@ -141,9 +162,9 @@
         from yb_person
         LEFT JOIN t_user ON
         t_user.USERNAME = yb_person.personCode
-        where  1=1
-        <if test="type != null and type==0"> and t_user.user_id is null </if>
-        <if test="type != null and type==1"> and t_user.user_id is not null </if>
+        where 1=1
+        <if test="type != null and type==0">and t_user.user_id is null</if>
+        <if test="type != null and type==1">and t_user.user_id is not null</if>
     </select>
 
     <select id="findPersonResultList" resultType="cc.mrbird.febs.yb.entity.YbPerson">

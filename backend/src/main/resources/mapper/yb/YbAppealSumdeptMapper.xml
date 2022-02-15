@@ -2,57 +2,66 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cc.mrbird.febs.yb.dao.YbAppealSumdeptMapper">
 
-        <!-- 通用查询映射结果 -->
-        <resultMap id="BaseResultMap" type="cc.mrbird.febs.yb.entity.YbAppealSumdept">
-                    <id column="id" property="id"/>
-                    <result column="asCode" property="asCode"/>
-                    <result column="asName" property="asName"/>
-                    <result column="currencyField" property="currencyField"/>
-                    <result column="asType" property="asType"/>
-                    <result column="COMMENTS" property="comments"/>
-                    <result column="STATE" property="state"/>
-                    <result column="IS_DELETEMARK" property="isDeletemark"/>
-                    <result column="MODIFY_TIME" property="modifyTime"/>
-                    <result column="CREATE_TIME" property="createTime"/>
-                    <result column="CREATE_USER_ID" property="createUserId"/>
-                    <result column="MODIFY_USER_ID" property="modifyUserId"/>
-            <result column="areaType" property="areaType"/>
-        </resultMap>
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="cc.mrbird.febs.yb.entity.YbAppealSumdept">
+        <id column="id" property="id"/>
+        <result column="asCode" property="asCode"/>
+        <result column="asName" property="asName"/>
+        <result column="currencyField" property="currencyField"/>
+        <result column="asType" property="asType"/>
+        <result column="COMMENTS" property="comments"/>
+        <result column="STATE" property="state"/>
+        <result column="IS_DELETEMARK" property="isDeletemark"/>
+        <result column="MODIFY_TIME" property="modifyTime"/>
+        <result column="CREATE_TIME" property="createTime"/>
+        <result column="CREATE_USER_ID" property="createUserId"/>
+        <result column="MODIFY_USER_ID" property="modifyUserId"/>
+        <result column="areaType" property="areaType"/>
+    </resultMap>
 
-        <!-- 通用查询结果列 -->
-        <sql id="Base_Column_List">
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
         id, asCode, asName, currencyField, asType, COMMENTS, STATE, IS_DELETEMARK, MODIFY_TIME, CREATE_TIME, CREATE_USER_ID, MODIFY_USER_ID,areaType
     </sql>
     <update id="updateYbAppealSumdept" parameterType="cc.mrbird.febs.yb.entity.YbAppealSumdept">
         update yb_appeal_sumdept
         <trim prefix="set" suffixOverrides=",">
-<if test="asCode != null">asCode=#{asCode},</if>
-<if test="asName != null">asName=#{asName},</if>
-<if test="currencyField != null">currencyField=#{currencyField},</if>
-<if test="asType != null">asType=#{asType},</if>
-<if test="comments != null">COMMENTS=#{comments},</if>
-<if test="state != null">STATE=#{state},</if>
-<if test="isDeletemark != null">IS_DELETEMARK=#{isDeletemark},</if>
-<if test="modifyTime != null">MODIFY_TIME=#{modifyTime},</if>
-<if test="createTime != null">CREATE_TIME=#{createTime},</if>
-<if test="createUserId != null">CREATE_USER_ID=#{createUserId},</if>
-<if test="modifyUserId != null">MODIFY_USER_ID=#{modifyUserId},</if>
+            <if test="asCode != null">asCode=#{asCode},</if>
+            <if test="asName != null">asName=#{asName},</if>
+            <if test="currencyField != null">currencyField=#{currencyField},</if>
+            <if test="asType != null">asType=#{asType},</if>
+            <if test="comments != null">COMMENTS=#{comments},</if>
+            <if test="state != null">STATE=#{state},</if>
+            <if test="isDeletemark != null">IS_DELETEMARK=#{isDeletemark},</if>
+            <if test="modifyTime != null">MODIFY_TIME=#{modifyTime},</if>
+            <if test="createTime != null">CREATE_TIME=#{createTime},</if>
+            <if test="createUserId != null">CREATE_USER_ID=#{createUserId},</if>
+            <if test="modifyUserId != null">MODIFY_USER_ID=#{modifyUserId},</if>
             <if test="areaType != null">areaType=#{areaType},</if>
         </trim>
-                where id=#{id}
+        where id=#{id}
 
     </update>
-    <select id="findYbAppealSumdept" resultType="cc.mrbird.febs.yb.entity.YbAppealSumdept" parameterType="cc.mrbird.febs.yb.entity.YbAppealSumdept">
-        select  *  from yb_appeal_sumdept
-        where  1=1
-        <if test="ybAppealSumdept.id != null"> and id =#{ ybAppealSumdept.id} </if>
-            <if test="ybAppealSumdept.asCode != null and ybAppealSumdept.asCode != ''"> and asCode like concat('%', #{ ybAppealSumdept.asCode} ,'%')</if>
-            <if test="ybAppealSumdept.asName != null and ybAppealSumdept.asName != ''"> and asName like concat('%', #{ ybAppealSumdept.asName} ,'%')</if>
-            <if test="ybAppealSumdept.currencyField != null and ybAppealSumdept.currencyField != ''"> and currencyField like concat('%', #{ ybAppealSumdept.currencyField} ,'%')</if>
-        <if test="ybAppealSumdept.asType != null"> and asType =#{ ybAppealSumdept.asType} </if>
-            <if test="ybAppealSumdept.comments != null and ybAppealSumdept.comments != ''"> and COMMENTS like concat('%', #{ ybAppealSumdept.comments} ,'%')</if>
-        <if test="ybAppealSumdept.state != null"> and STATE =#{ ybAppealSumdept.state} </if>
-        <if test="ybAppealSumdept.isDeletemark != null"> and IS_DELETEMARK =#{ ybAppealSumdept.isDeletemark} </if>
+    <select id="findYbAppealSumdept" resultType="cc.mrbird.febs.yb.entity.YbAppealSumdept"
+            parameterType="cc.mrbird.febs.yb.entity.YbAppealSumdept">
+        select * from yb_appeal_sumdept
+        where 1=1
+        <if test="ybAppealSumdept.id != null">and id =#{ ybAppealSumdept.id}</if>
+        <if test="ybAppealSumdept.asCode != null and ybAppealSumdept.asCode != ''">and asCode like concat('%',
+            #{ ybAppealSumdept.asCode} ,'%')
+        </if>
+        <if test="ybAppealSumdept.asName != null and ybAppealSumdept.asName != ''">and asName like concat('%',
+            #{ ybAppealSumdept.asName} ,'%')
+        </if>
+        <if test="ybAppealSumdept.currencyField != null and ybAppealSumdept.currencyField != ''">and currencyField like
+            concat('%', #{ ybAppealSumdept.currencyField} ,'%')
+        </if>
+        <if test="ybAppealSumdept.asType != null">and asType =#{ ybAppealSumdept.asType}</if>
+        <if test="ybAppealSumdept.comments != null and ybAppealSumdept.comments != ''">and COMMENTS like concat('%',
+            #{ ybAppealSumdept.comments} ,'%')
+        </if>
+        <if test="ybAppealSumdept.state != null">and STATE =#{ ybAppealSumdept.state}</if>
+        <if test="ybAppealSumdept.isDeletemark != null">and IS_DELETEMARK =#{ ybAppealSumdept.isDeletemark}</if>
         <if test="ybAppealSumdept.modifyTimeFrom!= null">
             AND ybAppealSumdept.MODIFY_TIME <![CDATA[ >= ]]>  modifyTimeFrom}
         </if>
@@ -66,12 +75,12 @@
             AND ybAppealSumdept.CREATE_TIME <![CDATA[ <= ]]>  createTimeTo}
         </if>
         <if test="ybAppealSumdept.areaType != null">and ybAppealSumdept.areaType =#{ ybAppealSumdept.areaType}</if>
-</select>
+    </select>
 
-    <select id="findAppealSumdeptView" resultType="cc.mrbird.febs.yb.entity.YbAppealSumdept" >
+    <select id="findAppealSumdeptView" resultType="cc.mrbird.febs.yb.entity.YbAppealSumdept">
         SELECT
         p.id,
-		p.asCode,
+        p.asCode,
         p.asName,
         p.COMMENTS,
         p.STATE,
@@ -93,7 +102,8 @@
         <if test="ybAppealSumdept.currencyField != null and ybAppealSumdept.currencyField != ''">
             and (
             p.asName like concat('%', #{ ybAppealSumdept.currencyField } ,'%') or
-            p.id in(select DISTINCT pid from yb_appeal_sumdept_data where deptName like concat('%', #{ ybAppealSumdept.currencyField }
+            p.id in(select DISTINCT pid from yb_appeal_sumdept_data where deptName like concat('%',
+            #{ ybAppealSumdept.currencyField }
             ,'%'))
             )
         </if>
@@ -101,7 +111,7 @@
         order by p.create_time desc
     </select>
 
-    <select id="findAppealSumdeptCount" resultType="Integer" >
+    <select id="findAppealSumdeptCount" resultType="Integer">
         SELECT
         count(1)
         FROM yb_appeal_sumdept
@@ -113,7 +123,8 @@
         <if test="ybAppealSumdept.currencyField != null and ybAppealSumdept.currencyField != ''">
             and (
             asName like concat('%', #{ ybAppealSumdept.currencyField } ,'%') or
-            id in(select DISTINCT pid from yb_appeal_sumdept_data where deptName like concat('%', #{ ybAppealSumdept.currencyField }
+            id in(select DISTINCT pid from yb_appeal_sumdept_data where deptName like concat('%',
+            #{ ybAppealSumdept.currencyField }
             ,'%'))
             )
         </if>

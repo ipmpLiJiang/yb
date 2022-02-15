@@ -54,7 +54,6 @@ public class YbDrgApplyDataServiceImpl extends ServiceImpl<YbDrgApplyDataMapper,
             LambdaQueryWrapper<YbDrgApplyData> queryWrapper = new LambdaQueryWrapper<>();
 //            queryWrapper.eq(YbDrgApplyData::getIsDeletemark, 1);//1是未删 0是已删
 
-
             Page<YbDrgApplyData> page = new Page<>();
             SortUtil.handlePageSort(request, page, false);//true 是属性  false是数据库字段可两个
             return this.page(page, queryWrapper);

@@ -154,7 +154,7 @@ export default {
         title: '复议科室',
         dataIndex: 'readyDksName',
         fixed: 'right',
-        width: 160
+        width: 150
       },
       {
         title: '申请人',

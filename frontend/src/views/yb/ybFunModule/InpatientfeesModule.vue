@@ -96,7 +96,7 @@ export default {
       {
         title: '交易流水号',
         dataIndex: 'transNo',
-        width: 150
+        width: 140
       },
       {
         title: '项目代码',
@@ -111,7 +111,7 @@ export default {
       {
         title: '项目名称',
         dataIndex: 'itemName',
-        width: 170
+        width: 160
       },
       {
         title: '项目数量',

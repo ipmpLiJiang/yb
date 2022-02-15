@@ -530,6 +530,13 @@ public class YbAppealManageView implements Serializable {
     @ExcelField(value = "院区")
     private Integer areaType;
 
+    /**
+     * 汇总科室
+     */
+    @TableField("dksName")
+    @ExcelField(value = "汇总科室")
+    private String dksName;
+
     private transient List<String> listPid;
 
     public static final String PID = "pid";
@@ -601,4 +608,5 @@ public class YbAppealManageView implements Serializable {
     public static final String VERIFYSENDID = "verifySendId";
     public static final String APPROVALSTATE = "approvalState";
     public static final String AREATYPE = "areaType";
+    public static final String DKSNAME = "dksName";
 }

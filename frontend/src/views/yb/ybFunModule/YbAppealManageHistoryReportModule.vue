@@ -116,7 +116,7 @@ export default {
             return row.readyDeptCode + '-' + row.readyDeptName
           }
         },
-        width: 250
+        width: 180
       },
       {
         title: '复议医生',
@@ -126,7 +126,7 @@ export default {
             return row.readyDoctorCode + '-' + row.readyDoctorName
           }
         },
-        width: 180
+        width: 160
       },
       {
         title: '复议类型',

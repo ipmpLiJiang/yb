@@ -86,7 +86,7 @@
           type="primary"
           style="margin-left: 30px"
           @click="showModal"
-        >大专业维护</a-button>
+        >汇总科室维护</a-button>
       </div>
       <!-- 表格区域 -->
       <a-table
@@ -150,7 +150,7 @@
     </ybDept-edit>
     <template>
       <div>
-        <a-modal width="60%" :maskClosable="false" :footer="null" v-model="typeVisible" title="大专业维护" @cancel="handleOk">
+        <a-modal width="60%" :maskClosable="false" :footer="null" v-model="typeVisible" title="汇总科室大专业维护" @cancel="handleOk">
           <comType-data
           ref="comTypeData"
           @close="handleOk"
@@ -230,7 +230,7 @@ export default {
         dataIndex: 'spellCode'
       },
       {
-        title: '大专业',
+        title: '汇总科室',
         dataIndex: 'dksName'
       },
       {

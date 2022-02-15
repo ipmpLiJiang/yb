@@ -255,7 +255,7 @@ export default {
         title: '复议科室',
         dataIndex: 'dksName',
         fixed: 'right',
-        width: 160
+        width: 150
       },
       {
         title: '复议医生',

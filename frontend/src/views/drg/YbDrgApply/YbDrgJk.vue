@@ -143,22 +143,42 @@ export default {
       {
         title: '科主任',
         dataIndex: 'kzrDocName',
-        width: 120
+        customRender: (text, row, index) => {
+          if (text !== '' && text !== null) {
+            return row.kzrDocId + '-' + row.kzrDocName
+          }
+        },
+        width: 140
       },
       {
         title: '主任医师',
         dataIndex: 'zrysDocName',
-        width: 120
+        customRender: (text, row, index) => {
+          if (text !== '' && text !== null) {
+            return row.zrysDocId + '-' + row.zrysDocName
+          }
+        },
+        width: 140
       },
       {
         title: '主治医师',
         dataIndex: 'zzysDocName',
-        width: 120
+        customRender: (text, row, index) => {
+          if (text !== '' && text !== null) {
+            return row.zzysDocId + '-' + row.zzysDocName
+          }
+        },
+        width: 140
       },
       {
         title: '住院医师',
         dataIndex: 'zyysDocName',
-        width: 120
+        customRender: (text, row, index) => {
+          if (text !== '' && text !== null) {
+            return row.zyysDocId + '-' + row.zyysDocName
+          }
+        },
+        width: 140
       },
       {
         title: '医疗组科室',
@@ -168,7 +188,12 @@ export default {
       {
         title: '医疗组医师',
         dataIndex: 'ylzDocName',
-        width: 120
+        customRender: (text, row, index) => {
+          if (text !== '' && text !== null) {
+            return row.ylzDocId + '-' + row.ylzDocName
+          }
+        },
+        width: 140
       }]
     }
   },

@@ -2,91 +2,109 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cc.mrbird.febs.yb.dao.YbAppealResultDeductimplementMapper">
 
-        <!-- 通用查询映射结果 -->
-        <resultMap id="BaseResultMap" type="cc.mrbird.febs.yb.entity.YbAppealResultDeductimplement">
-                    <id column="id" property="id"/>
-<!--                    <result column="resultId" property="resultId"/>-->
-                    <result column="resetDataId" property="resetDataId"/>
-            <result column="relatelDataId" property="relatelDataId"/>
-                    <result column="implementDate" property="implementDate"/>
-                    <result column="implementDateStr" property="implementDateStr"/>
-                    <result column="shareState" property="shareState"/>
-                    <result column="shareProgramme" property="shareProgramme"/>
-                    <result column="applyDate" property="applyDate"/>
-                    <result column="applyDateStr" property="applyDateStr"/>
-                    <result column="dataType" property="dataType"/>
-            <result column="STATE" property="state"/>
-<!--                    <result column="COMMENTS" property="comments"/>-->
-<!--                    <result column="IS_DELETEMARK" property="isDeletemark"/>-->
-<!--                    <result column="MODIFY_TIME" property="modifyTime"/>-->
-<!--                    <result column="CREATE_TIME" property="createTime"/>-->
-<!--                    <result column="CREATE_USER_ID" property="createUserId"/>-->
-<!--                    <result column="MODIFY_USER_ID" property="modifyUserId"/>-->
-            <result column="areaType" property="areaType"/>
-            <result column="orderNumber" property="orderNumber"/>
-            <result column="orderNum" property="orderNum"/>
-        </resultMap>
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="cc.mrbird.febs.yb.entity.YbAppealResultDeductimplement">
+        <id column="id" property="id"/>
+        <!--                    <result column="resultId" property="resultId"/>-->
+        <result column="resetDataId" property="resetDataId"/>
+        <result column="relatelDataId" property="relatelDataId"/>
+        <result column="implementDate" property="implementDate"/>
+        <result column="implementDateStr" property="implementDateStr"/>
+        <result column="shareState" property="shareState"/>
+        <result column="shareProgramme" property="shareProgramme"/>
+        <result column="applyDate" property="applyDate"/>
+        <result column="applyDateStr" property="applyDateStr"/>
+        <result column="dataType" property="dataType"/>
+        <result column="STATE" property="state"/>
+        <!--                    <result column="COMMENTS" property="comments"/>-->
+        <!--                    <result column="IS_DELETEMARK" property="isDeletemark"/>-->
+        <!--                    <result column="MODIFY_TIME" property="modifyTime"/>-->
+        <!--                    <result column="CREATE_TIME" property="createTime"/>-->
+        <!--                    <result column="CREATE_USER_ID" property="createUserId"/>-->
+        <!--                    <result column="MODIFY_USER_ID" property="modifyUserId"/>-->
+        <result column="areaType" property="areaType"/>
+        <result column="orderNumber" property="orderNumber"/>
+        <result column="orderNum" property="orderNum"/>
+    </resultMap>
 
-        <!-- 通用查询结果列 -->
-        <sql id="Base_Column_List">
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
         id, resetDataId,relatelDataId, implementDate, implementDateStr, shareState, shareProgramme,applyDate,applyDateStr,dataType,STATE, areaType,orderNumber,orderNum
     </sql>
-<!--    COMMENTS, STATE, IS_DELETEMARK, MODIFY_TIME, CREATE_TIME, CREATE_USER_ID, MODIFY_USER_ID,-->
-    <update id="updateYbAppealResultDeductimplement" parameterType="cc.mrbird.febs.yb.entity.YbAppealResultDeductimplement">
+    <!--    COMMENTS, STATE, IS_DELETEMARK, MODIFY_TIME, CREATE_TIME, CREATE_USER_ID, MODIFY_USER_ID,-->
+    <update id="updateYbAppealResultDeductimplement"
+            parameterType="cc.mrbird.febs.yb.entity.YbAppealResultDeductimplement">
         update yb_appeal_result_deductimplement
         <trim prefix="set" suffixOverrides=",">
-<!--<if test="resultId != null">resultId=#{resultId},</if>-->
-<if test="resetDataId != null">resetDataId=#{resetDataId},</if>
+            <!--<if test="resultId != null">resultId=#{resultId},</if>-->
+            <if test="resetDataId != null">resetDataId=#{resetDataId},</if>
             <if test="relatelDataId != null">relatelDataId=#{relatelDataId},</if>
-<if test="implementDate != null">implementDate=#{implementDate},</if>
-<if test="implementDateStr != null">implementDateStr=#{implementDateStr},</if>
-<if test="shareState != null">shareState=#{shareState},</if>
-<if test="shareProgramme != null">shareProgramme=#{shareProgramme},</if>
-<if test="applyDate != null">applyDate=#{applyDate},</if>
-<if test="applyDateStr != null">applyDateStr=#{applyDateStr},</if>
-<if test="dataType != null">dataType=#{dataType},</if>
+            <if test="implementDate != null">implementDate=#{implementDate},</if>
+            <if test="implementDateStr != null">implementDateStr=#{implementDateStr},</if>
+            <if test="shareState != null">shareState=#{shareState},</if>
+            <if test="shareProgramme != null">shareProgramme=#{shareProgramme},</if>
+            <if test="applyDate != null">applyDate=#{applyDate},</if>
+            <if test="applyDateStr != null">applyDateStr=#{applyDateStr},</if>
+            <if test="dataType != null">dataType=#{dataType},</if>
             <if test="state != null">STATE=#{state},</if>
-<!--<if test="comments != null">COMMENTS=#{comments},</if>-->
-<!--<if test="isDeletemark != null">IS_DELETEMARK=#{isDeletemark},</if>-->
-<!--<if test="modifyTime != null">MODIFY_TIME=#{modifyTime},</if>-->
-<!--<if test="createTime != null">CREATE_TIME=#{createTime},</if>-->
-<!--<if test="createUserId != null">CREATE_USER_ID=#{createUserId},</if>-->
-<!--<if test="modifyUserId != null">MODIFY_USER_ID=#{modifyUserId},</if>-->
+            <!--<if test="comments != null">COMMENTS=#{comments},</if>-->
+            <!--<if test="isDeletemark != null">IS_DELETEMARK=#{isDeletemark},</if>-->
+            <!--<if test="modifyTime != null">MODIFY_TIME=#{modifyTime},</if>-->
+            <!--<if test="createTime != null">CREATE_TIME=#{createTime},</if>-->
+            <!--<if test="createUserId != null">CREATE_USER_ID=#{createUserId},</if>-->
+            <!--<if test="modifyUserId != null">MODIFY_USER_ID=#{modifyUserId},</if>-->
             <if test="areaType != null">areaType=#{areaType},</if>
             <if test="orderNumber != null">orderNumber=#{orderNumber},</if>
             <if test="orderNum != null">orderNum=#{orderNum},</if>
         </trim>
-                where id=#{id}
+        where id=#{id}
 
     </update>
-    <select id="findYbAppealResultDeductimplement" resultType="cc.mrbird.febs.yb.entity.YbAppealResultDeductimplement" parameterType="cc.mrbird.febs.yb.entity.YbAppealResultDeductimplement">
-        select  *  from yb_appeal_result_deductimplement
-        where  1=1
-            <if test="ybAppealResultDeductimplement.id != null and ybAppealResultDeductimplement.id != ''"> and id =#{ ybAppealResultDeductimplement.id} </if>
-        <if test="ybAppealResultDeductimplement.resetDataId != null and ybAppealResultDeductimplement.resetDataId != ''"> and resetDataId like concat('%', #{ ybAppealResultDeductimplement.resetDataId} ,'%')</if>
-            <if test="ybAppealResultDeductimplement.relatelDataId != null and ybAppealResultDeductimplement.relatelDataId != ''"> and relatelDataId like concat('%', #{ ybAppealResultDeductimplement.relatelDataId} ,'%')</if>
+    <select id="findYbAppealResultDeductimplement" resultType="cc.mrbird.febs.yb.entity.YbAppealResultDeductimplement"
+            parameterType="cc.mrbird.febs.yb.entity.YbAppealResultDeductimplement">
+        select * from yb_appeal_result_deductimplement
+        where 1=1
+        <if test="ybAppealResultDeductimplement.id != null and ybAppealResultDeductimplement.id != ''">and id
+            =#{ ybAppealResultDeductimplement.id}
+        </if>
+        <if test="ybAppealResultDeductimplement.resetDataId != null and ybAppealResultDeductimplement.resetDataId != ''">
+            and resetDataId like concat('%', #{ ybAppealResultDeductimplement.resetDataId} ,'%')
+        </if>
+        <if test="ybAppealResultDeductimplement.relatelDataId != null and ybAppealResultDeductimplement.relatelDataId != ''">
+            and relatelDataId like concat('%', #{ ybAppealResultDeductimplement.relatelDataId} ,'%')
+        </if>
         <if test="ybAppealResultDeductimplement.implementDateFrom!= null">
             AND ybAppealResultDeductimplement.implementDate <![CDATA[ >= ]]>  implementDateFrom}
         </if>
         <if test="ybAppealResultDeductimplement.implementDateTo!= null">
             AND ybAppealResultDeductimplement.implementDate <![CDATA[ <= ]]>  implementDateTo}
         </if>
-            <if test="ybAppealResultDeductimplement.implementDateStr != null and ybAppealResultDeductimplement.implementDateStr != ''"> and implementDateStr like concat('%', #{ ybAppealResultDeductimplement.implementDateStr} ,'%')</if>
-        <if test="ybAppealResultDeductimplement.shareState != null"> and shareState =#{ ybAppealResultDeductimplement.shareState} </if>
-            <if test="ybAppealResultDeductimplement.shareProgramme != null and ybAppealResultDeductimplement.shareProgramme != ''"> and shareProgramme like concat('%', #{ ybAppealResultDeductimplement.shareProgramme} ,'%')</if>
+        <if test="ybAppealResultDeductimplement.implementDateStr != null and ybAppealResultDeductimplement.implementDateStr != ''">
+            and implementDateStr like concat('%', #{ ybAppealResultDeductimplement.implementDateStr} ,'%')
+        </if>
+        <if test="ybAppealResultDeductimplement.shareState != null">and shareState
+            =#{ ybAppealResultDeductimplement.shareState}
+        </if>
+        <if test="ybAppealResultDeductimplement.shareProgramme != null and ybAppealResultDeductimplement.shareProgramme != ''">
+            and shareProgramme like concat('%', #{ ybAppealResultDeductimplement.shareProgramme} ,'%')
+        </if>
         <if test="ybAppealResultRepayment.applyDateFrom!= null">
             AND ybAppealResultRepayment.applyDate <![CDATA[ >= ]]>  applyDateFrom}
         </if>
         <if test="ybAppealResultRepayment.applyDateTo!= null">
             AND ybAppealResultRepayment.applyDate <![CDATA[ <= ]]>  applyDateTo}
         </if>
-        <if test="ybAppealResultRepayment.applyDateStr != null and ybAppealResultRepayment.applyDateStr != ''">and applyDateStr like
+        <if test="ybAppealResultRepayment.applyDateStr != null and ybAppealResultRepayment.applyDateStr != ''">and
+            applyDateStr like
             concat('%', #{ ybAppealResultRepayment.applyDateStr} ,'%')
         </if>
-        <if test="ybAppealResultDeductimplement.dataType != null"> and dataType =#{ ybAppealResultDeductimplement.dataType} </if>
-        <if test="ybAppealResultDeductimplement.state != null"> and STATE =#{ ybAppealResultDeductimplement.state} </if>
+        <if test="ybAppealResultDeductimplement.dataType != null">and dataType
+            =#{ ybAppealResultDeductimplement.dataType}
+        </if>
+        <if test="ybAppealResultDeductimplement.state != null">and STATE =#{ ybAppealResultDeductimplement.state}</if>
         <if test="ybAppealResultDeductimplement.areaType != null">
-        and ybAppealResultDeductimplement.areaType =#{ ybAppealResultDeductimplement.areaType}</if>
-</select>
+            and ybAppealResultDeductimplement.areaType =#{ ybAppealResultDeductimplement.areaType}
+        </if>
+    </select>
 
 </mapper>

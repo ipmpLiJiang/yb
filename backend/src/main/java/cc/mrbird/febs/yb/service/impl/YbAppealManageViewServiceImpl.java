@@ -409,6 +409,7 @@ public class YbAppealManageViewServiceImpl extends ServiceImpl<YbAppealManageVie
 //        amv.setIsEnd(); //分页时赋值
 //        amv.setEnableType();//分页时赋值
         amv.setAreaType(am.getAreaType());
+        amv.setDksName(am.getDksName());
         return amv;
     }
 

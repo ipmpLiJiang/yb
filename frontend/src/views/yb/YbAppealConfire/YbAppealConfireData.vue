@@ -91,7 +91,7 @@ export default {
       //   }
       // },
       {
-        title: '大专业',
+        title: '汇总科室',
         dataIndex: 'dksName'
       },
       {

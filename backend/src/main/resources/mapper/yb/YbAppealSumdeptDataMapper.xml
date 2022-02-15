@@ -2,35 +2,40 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cc.mrbird.febs.yb.dao.YbAppealSumdeptDataMapper">
 
-        <!-- 通用查询映射结果 -->
-        <resultMap id="BaseResultMap" type="cc.mrbird.febs.yb.entity.YbAppealSumdeptData">
-                    <id column="id" property="id"/>
-                    <result column="pid" property="pid"/>
-                    <result column="deptId" property="deptId"/>
-                    <result column="deptName" property="deptName"/>
-        </resultMap>
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="cc.mrbird.febs.yb.entity.YbAppealSumdeptData">
+        <id column="id" property="id"/>
+        <result column="pid" property="pid"/>
+        <result column="deptId" property="deptId"/>
+        <result column="deptName" property="deptName"/>
+    </resultMap>
 
-        <!-- 通用查询结果列 -->
-        <sql id="Base_Column_List">
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
         id, pid, deptId, deptName
     </sql>
     <update id="updateYbAppealSumdeptData" parameterType="cc.mrbird.febs.yb.entity.YbAppealSumdeptData">
         update yb_appeal_sumdept_data
         <trim prefix="set" suffixOverrides=",">
-<if test="pid != null">pid=#{pid},</if>
-<if test="deptId != null">deptId=#{deptId},</if>
-<if test="deptName != null">deptName=#{deptName},</if>
+            <if test="pid != null">pid=#{pid},</if>
+            <if test="deptId != null">deptId=#{deptId},</if>
+            <if test="deptName != null">deptName=#{deptName},</if>
         </trim>
-                where id=#{id}
+        where id=#{id}
 
     </update>
-    <select id="findYbAppealSumdeptData" resultType="cc.mrbird.febs.yb.entity.YbAppealSumdeptData" parameterType="cc.mrbird.febs.yb.entity.YbAppealSumdeptData">
-        select  *  from yb_appeal_sumdept_data
-        where  1=1
-        <if test="ybAppealSumdeptData.id != null"> and id =#{ ybAppealSumdeptData.id} </if>
-        <if test="ybAppealSumdeptData.pid != null"> and pid =#{ ybAppealSumdeptData.pid} </if>
-            <if test="ybAppealSumdeptData.deptId != null and ybAppealSumdeptData.deptId != ''"> and deptId like concat('%', #{ ybAppealSumdeptData.deptId} ,'%')</if>
-            <if test="ybAppealSumdeptData.deptName != null and ybAppealSumdeptData.deptName != ''"> and deptName like concat('%', #{ ybAppealSumdeptData.deptName} ,'%')</if>
-</select>
+    <select id="findYbAppealSumdeptData" resultType="cc.mrbird.febs.yb.entity.YbAppealSumdeptData"
+            parameterType="cc.mrbird.febs.yb.entity.YbAppealSumdeptData">
+        select * from yb_appeal_sumdept_data
+        where 1=1
+        <if test="ybAppealSumdeptData.id != null">and id =#{ ybAppealSumdeptData.id}</if>
+        <if test="ybAppealSumdeptData.pid != null">and pid =#{ ybAppealSumdeptData.pid}</if>
+        <if test="ybAppealSumdeptData.deptId != null and ybAppealSumdeptData.deptId != ''">and deptId like concat('%',
+            #{ ybAppealSumdeptData.deptId} ,'%')
+        </if>
+        <if test="ybAppealSumdeptData.deptName != null and ybAppealSumdeptData.deptName != ''">and deptName like
+            concat('%', #{ ybAppealSumdeptData.deptName} ,'%')
+        </if>
+    </select>
 
 </mapper>

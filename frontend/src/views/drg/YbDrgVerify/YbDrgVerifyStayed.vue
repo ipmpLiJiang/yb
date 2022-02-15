@@ -229,14 +229,14 @@ export default {
         dataIndex: 'verifyDksName',
         scopedSlots: { customRender: 'verifyDksName' },
         fixed: 'right',
-        width: 160
+        width: 180
       },
       {
         title: '复议医生',
         dataIndex: 'verifyDoctorName',
         scopedSlots: { customRender: 'verifyDoctorName' },
         fixed: 'right',
-        width: 160
+        width: 170
       },
       {
         title: '操作',

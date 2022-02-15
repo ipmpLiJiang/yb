@@ -135,7 +135,7 @@ export default {
         title: '交易流水号',
         dataIndex: 'serialNo',
         fixed: 'left',
-        width: 150
+        width: 140
       },
       {
         title: '项目名称',

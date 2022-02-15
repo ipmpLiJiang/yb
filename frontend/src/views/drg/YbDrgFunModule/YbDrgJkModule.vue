@@ -135,25 +135,25 @@
             科&nbsp;&nbsp;主&nbsp;&nbsp;任：
           </a-col>
           <a-col :span=4>
-            {{ybDrgJkModule.kzrDocName}}
+            {{ybDrgJkModule.kzrDocId}}-{{ybDrgJkModule.kzrDocName}}
           </a-col>
           <a-col :span=2>
             主任医师：
           </a-col>
           <a-col :span=4>
-            {{ybDrgJkModule.zrysDocName}}
+            {{ybDrgJkModule.zrysDocId}}-{{ybDrgJkModule.zrysDocName}}
           </a-col>
           <a-col :span=2>
             主治医师：
           </a-col>
           <a-col :span=4>
-            {{ybDrgJkModule.zzysDocName}}
+            {{ybDrgJkModule.zzysDocId}}-{{ybDrgJkModule.zzysDocName}}
           </a-col>
           <a-col :span=2>
             住院医师：
           </a-col>
           <a-col :span=4>
-            {{ybDrgJkModule.zyysDocName}}
+            {{ybDrgJkModule.zyysDocId}}-{{ybDrgJkModule.zyysDocName}}
           </a-col>
         </a-row>
         <a-row class="tbMarginBottom">
@@ -167,7 +167,7 @@
             医疗组医师：
           </a-col>
           <a-col :span=4>
-            {{ybDrgJkModule.ylzDocName}}
+            {{ybDrgJkModule.ylzDocId}}-{{ybDrgJkModule.ylzDocName}}
           </a-col>
         </a-row>
       </a-row>

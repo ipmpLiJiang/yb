@@ -7,12 +7,13 @@
     <template>
       <div>
         <a-row justify="center" type="flex">
-          <a-col :span=4>
+          <a-col :span=5>
             <a-form-item
               :label="applyDateText"
               v-bind="formItemLayout1"
             >
               <a-month-picker
+                style="width: 130px"
                 @change="monthChange"
                 :default-value="defaultApplyDate"
                 :format="monthFormat"
@@ -26,6 +27,7 @@
             >
               <a-month-picker
                 placeholder="请选择复议年月"
+                style="width: 130px"
                 @change="monthToChange"
                 :default-value="defaultApplyDate"
                 :format="monthFormat"

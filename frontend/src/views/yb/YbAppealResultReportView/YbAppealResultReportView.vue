@@ -13,6 +13,7 @@
             >
               <a-month-picker
                 placeholder="请选择复议年月"
+                style="width: 140px"
                 @change="monthChange"
                 :default-value="defaultApplyDate"
                 :format="monthFormat"
@@ -220,7 +221,7 @@ export default {
         title: '交易流水号',
         dataIndex: 'serialNo',
         fixed: 'left',
-        width: 150
+        width: 140
       },
       {
         title: '项目编码',

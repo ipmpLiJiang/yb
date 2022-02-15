@@ -44,7 +44,7 @@ export default {
         dataIndex: 'fileName'
       },
       {
-        title: this.appealResultDownLoad.type === 0 ? '科室' : this.appealResultDownLoad.type === 1 ? '汇总科室' : '大专业',
+        title: this.appealResultDownLoad.type === 0 ? '科室' : this.appealResultDownLoad.type === 1 ? '汇总科室' : '汇总科室',
         dataIndex: 'deptName',
         customRender: (text, row, index) => {
           if (text !== '' && text !== null) {

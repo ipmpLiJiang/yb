@@ -90,7 +90,7 @@ export default {
         title: '交易流水号',
         dataIndex: 'serialNo',
         fixed: 'left',
-        width: 150
+        width: 140
       },
       {
         title: '项目编码',
@@ -102,7 +102,7 @@ export default {
         title: '项目名称',
         dataIndex: 'projectName',
         fixed: 'left',
-        width: 170
+        width: 160
       },
       {
         title: '数量',
@@ -191,6 +191,12 @@ export default {
         width: 120
       },
       {
+        title: '汇总科室',
+        dataIndex: 'dksName',
+        fixed: 'right',
+        width: 140
+      },
+      {
         title: '复议科室',
         dataIndex: 'readyDeptName',
         customRender: (text, row, index) => {
@@ -199,7 +205,7 @@ export default {
           }
         },
         fixed: 'right',
-        width: 160
+        width: 150
       },
       {
         title: '复议医生',

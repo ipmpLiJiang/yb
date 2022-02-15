@@ -2,57 +2,64 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cc.mrbird.febs.com.dao.ComConfiguremanageMapper">
 
-        <!-- 通用查询映射结果 -->
-        <resultMap id="BaseResultMap" type="cc.mrbird.febs.com.entity.ComConfiguremanage">
-                    <id column="id" property="id"/>
-                    <result column="intField" property="intField"/>
-                    <result column="numericField" property="numericField"/>
-                    <result column="stringField" property="stringField"/>
-                    <result column="currencyField" property="currencyField"/>
-                    <result column="configureType" property="configureType"/>
-                    <result column="COMMENTS" property="comments"/>
-                    <result column="STATE" property="state"/>
-                    <result column="IS_DELETEMARK" property="isDeletemark"/>
-                    <result column="MODIFY_TIME" property="modifyTime"/>
-                    <result column="CREATE_TIME" property="createTime"/>
-                    <result column="CREATE_USER_ID" property="createUserId"/>
-                    <result column="MODIFY_USER_ID" property="modifyUserId"/>
-        </resultMap>
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="cc.mrbird.febs.com.entity.ComConfiguremanage">
+        <id column="id" property="id"/>
+        <result column="intField" property="intField"/>
+        <result column="numericField" property="numericField"/>
+        <result column="stringField" property="stringField"/>
+        <result column="currencyField" property="currencyField"/>
+        <result column="configureType" property="configureType"/>
+        <result column="COMMENTS" property="comments"/>
+        <result column="STATE" property="state"/>
+        <result column="IS_DELETEMARK" property="isDeletemark"/>
+        <result column="MODIFY_TIME" property="modifyTime"/>
+        <result column="CREATE_TIME" property="createTime"/>
+        <result column="CREATE_USER_ID" property="createUserId"/>
+        <result column="MODIFY_USER_ID" property="modifyUserId"/>
+    </resultMap>
 
-        <!-- 通用查询结果列 -->
-        <sql id="Base_Column_List">
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
         id, intField, numericField, stringField, currencyField, configureType, COMMENTS, STATE, IS_DELETEMARK, MODIFY_TIME, CREATE_TIME, CREATE_USER_ID, MODIFY_USER_ID
     </sql>
     <update id="updateComConfiguremanage" parameterType="cc.mrbird.febs.com.entity.ComConfiguremanage">
         update com_configuremanage
         <trim prefix="set" suffixOverrides=",">
-<if test="intField != null">intField=#{intField},</if>
-<if test="numericField != null">numericField=#{numericField},</if>
-<if test="stringField != null">stringField=#{stringField},</if>
-<if test="currencyField != null">currencyField=#{currencyField},</if>
-<if test="configureType != null">configureType=#{configureType},</if>
-<if test="comments != null">COMMENTS=#{comments},</if>
-<if test="state != null">STATE=#{state},</if>
-<if test="isDeletemark != null">IS_DELETEMARK=#{isDeletemark},</if>
-<if test="modifyTime != null">MODIFY_TIME=#{modifyTime},</if>
-<if test="createTime != null">CREATE_TIME=#{createTime},</if>
-<if test="createUserId != null">CREATE_USER_ID=#{createUserId},</if>
-<if test="modifyUserId != null">MODIFY_USER_ID=#{modifyUserId},</if>
+            <if test="intField != null">intField=#{intField},</if>
+            <if test="numericField != null">numericField=#{numericField},</if>
+            <if test="stringField != null">stringField=#{stringField},</if>
+            <if test="currencyField != null">currencyField=#{currencyField},</if>
+            <if test="configureType != null">configureType=#{configureType},</if>
+            <if test="comments != null">COMMENTS=#{comments},</if>
+            <if test="state != null">STATE=#{state},</if>
+            <if test="isDeletemark != null">IS_DELETEMARK=#{isDeletemark},</if>
+            <if test="modifyTime != null">MODIFY_TIME=#{modifyTime},</if>
+            <if test="createTime != null">CREATE_TIME=#{createTime},</if>
+            <if test="createUserId != null">CREATE_USER_ID=#{createUserId},</if>
+            <if test="modifyUserId != null">MODIFY_USER_ID=#{modifyUserId},</if>
         </trim>
-                where id=#{id}
+        where id=#{id}
 
     </update>
-    <select id="findComConfiguremanage" resultType="cc.mrbird.febs.com.entity.ComConfiguremanage" parameterType="cc.mrbird.febs.com.entity.ComConfiguremanage">
-        select  *  from com_configuremanage
-        where  1=1
-        <if test="comConfiguremanage.id != null"> and id =#{ comConfiguremanage.id} </if>
-        <if test="comConfiguremanage.intField != null"> and intField =#{ comConfiguremanage.intField} </if>
-            <if test="comConfiguremanage.stringField != null and comConfiguremanage.stringField != ''"> and stringField like concat('%', #{ comConfiguremanage.stringField} ,'%')</if>
-            <if test="comConfiguremanage.currencyField != null and comConfiguremanage.currencyField != ''"> and currencyField like concat('%', #{ comConfiguremanage.currencyField} ,'%')</if>
-        <if test="comConfiguremanage.configureType != null"> and configureType =#{ comConfiguremanage.configureType} </if>
-            <if test="comConfiguremanage.comments != null and comConfiguremanage.comments != ''"> and COMMENTS like concat('%', #{ comConfiguremanage.comments} ,'%')</if>
-        <if test="comConfiguremanage.state != null"> and STATE =#{ comConfiguremanage.state} </if>
-        <if test="comConfiguremanage.isDeletemark != null"> and IS_DELETEMARK =#{ comConfiguremanage.isDeletemark} </if>
+    <select id="findComConfiguremanage" resultType="cc.mrbird.febs.com.entity.ComConfiguremanage"
+            parameterType="cc.mrbird.febs.com.entity.ComConfiguremanage">
+        select * from com_configuremanage
+        where 1=1
+        <if test="comConfiguremanage.id != null">and id =#{ comConfiguremanage.id}</if>
+        <if test="comConfiguremanage.intField != null">and intField =#{ comConfiguremanage.intField}</if>
+        <if test="comConfiguremanage.stringField != null and comConfiguremanage.stringField != ''">and stringField like
+            concat('%', #{ comConfiguremanage.stringField} ,'%')
+        </if>
+        <if test="comConfiguremanage.currencyField != null and comConfiguremanage.currencyField != ''">and currencyField
+            like concat('%', #{ comConfiguremanage.currencyField} ,'%')
+        </if>
+        <if test="comConfiguremanage.configureType != null">and configureType =#{ comConfiguremanage.configureType}</if>
+        <if test="comConfiguremanage.comments != null and comConfiguremanage.comments != ''">and COMMENTS like
+            concat('%', #{ comConfiguremanage.comments} ,'%')
+        </if>
+        <if test="comConfiguremanage.state != null">and STATE =#{ comConfiguremanage.state}</if>
+        <if test="comConfiguremanage.isDeletemark != null">and IS_DELETEMARK =#{ comConfiguremanage.isDeletemark}</if>
         <if test="comConfiguremanage.modifyTimeFrom!= null">
             AND comConfiguremanage.MODIFY_TIME <![CDATA[ >= ]]>  modifyTimeFrom}
         </if>
@@ -65,6 +72,6 @@
         <if test="comConfiguremanage.createTimeTo!= null">
             AND comConfiguremanage.CREATE_TIME <![CDATA[ <= ]]>  createTimeTo}
         </if>
-</select>
+    </select>
 
 </mapper>

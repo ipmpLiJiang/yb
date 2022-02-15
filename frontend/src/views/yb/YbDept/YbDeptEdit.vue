@@ -38,7 +38,7 @@
           ]"
         />
       </a-form-item>
-      <a-form-item v-bind="formItemLayout" label="大专业">
+      <a-form-item v-bind="formItemLayout" label="汇总科室">
         <a-select
           allowClear
           :showSearch="true"
@@ -130,7 +130,9 @@ export default {
       this.form.validateFields((err, values) => {
         if (!err) {
           let ybDept = this.form.getFieldsValue()
-          debugger
+          if (ybDept.dksName === undefined) {
+            ybDept.dksName = ''
+          }
           ybDept.id = this.ybDept.id
           this.$put('ybDept', {
             ...ybDept

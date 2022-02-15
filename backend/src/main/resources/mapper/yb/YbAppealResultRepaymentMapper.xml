@@ -2,75 +2,91 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cc.mrbird.febs.yb.dao.YbAppealResultRepaymentMapper">
 
-        <!-- 通用查询映射结果 -->
-        <resultMap id="BaseResultMap" type="cc.mrbird.febs.yb.entity.YbAppealResultRepayment">
-                    <id column="id" property="id"/>
-<!--                    <result column="resultId" property="resultId"/>-->
-                    <result column="resetDataId" property="resetDataId"/>
-            <result column="relatelDataId" property="relatelDataId"/>
-                    <result column="deductImplementId" property="deductImplementId"/>
-                    <result column="repaymentProgramme" property="repaymentProgramme"/>
-                    <result column="applyDate" property="applyDate"/>
-                    <result column="applyDateStr" property="applyDateStr"/>
-                    <result column="dataType" property="dataType"/>
-                    <result column="COMMENTS" property="comments"/>
-                    <result column="STATE" property="state"/>
-                    <result column="IS_DELETEMARK" property="isDeletemark"/>
-                    <result column="MODIFY_TIME" property="modifyTime"/>
-                    <result column="CREATE_TIME" property="createTime"/>
-                    <result column="CREATE_USER_ID" property="createUserId"/>
-                    <result column="MODIFY_USER_ID" property="modifyUserId"/>
-            <result column="areaType" property="areaType"/>
-        </resultMap>
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="cc.mrbird.febs.yb.entity.YbAppealResultRepayment">
+        <id column="id" property="id"/>
+        <!--                    <result column="resultId" property="resultId"/>-->
+        <result column="resetDataId" property="resetDataId"/>
+        <result column="relatelDataId" property="relatelDataId"/>
+        <result column="deductImplementId" property="deductImplementId"/>
+        <result column="repaymentProgramme" property="repaymentProgramme"/>
+        <result column="applyDate" property="applyDate"/>
+        <result column="applyDateStr" property="applyDateStr"/>
+        <result column="dataType" property="dataType"/>
+        <result column="COMMENTS" property="comments"/>
+        <result column="STATE" property="state"/>
+        <result column="IS_DELETEMARK" property="isDeletemark"/>
+        <result column="MODIFY_TIME" property="modifyTime"/>
+        <result column="CREATE_TIME" property="createTime"/>
+        <result column="CREATE_USER_ID" property="createUserId"/>
+        <result column="MODIFY_USER_ID" property="modifyUserId"/>
+        <result column="areaType" property="areaType"/>
+    </resultMap>
 
-        <!-- 通用查询结果列 -->
-        <sql id="Base_Column_List">
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
         id, resetDataId, relatelDataId, deductImplementId, repaymentProgramme,applyDate,applyDateStr,dataType, COMMENTS, STATE, IS_DELETEMARK, MODIFY_TIME, CREATE_TIME, CREATE_USER_ID, MODIFY_USER_ID,areaType
     </sql>
     <update id="updateYbAppealResultRepayment" parameterType="cc.mrbird.febs.yb.entity.YbAppealResultRepayment">
         update yb_appeal_result_repayment
         <trim prefix="set" suffixOverrides=",">
-<!--<if test="resultId != null">resultId=#{resultId},</if>-->
-<if test="resetDataId != null">resetDataId=#{resetDataId},</if>
+            <!--<if test="resultId != null">resultId=#{resultId},</if>-->
+            <if test="resetDataId != null">resetDataId=#{resetDataId},</if>
             <if test="relatelDataId != null">relatelDataId=#{relatelDataId},</if>
-<if test="deductImplementId != null">deductImplementId=#{deductImplementId},</if>
-<if test="repaymentProgramme != null">repaymentProgramme=#{repaymentProgramme},</if>
-<if test="applyDate != null">applyDate=#{applyDate},</if>
-<if test="applyDateStr != null">applyDateStr=#{applyDateStr},</if>
-<if test="dataType != null">dataType=#{dataType},</if>
-<if test="comments != null">COMMENTS=#{comments},</if>
-<if test="state != null">STATE=#{state},</if>
-<if test="isDeletemark != null">IS_DELETEMARK=#{isDeletemark},</if>
-<if test="modifyTime != null">MODIFY_TIME=#{modifyTime},</if>
-<if test="createTime != null">CREATE_TIME=#{createTime},</if>
-<if test="createUserId != null">CREATE_USER_ID=#{createUserId},</if>
-<if test="modifyUserId != null">MODIFY_USER_ID=#{modifyUserId},</if>
+            <if test="deductImplementId != null">deductImplementId=#{deductImplementId},</if>
+            <if test="repaymentProgramme != null">repaymentProgramme=#{repaymentProgramme},</if>
+            <if test="applyDate != null">applyDate=#{applyDate},</if>
+            <if test="applyDateStr != null">applyDateStr=#{applyDateStr},</if>
+            <if test="dataType != null">dataType=#{dataType},</if>
+            <if test="comments != null">COMMENTS=#{comments},</if>
+            <if test="state != null">STATE=#{state},</if>
+            <if test="isDeletemark != null">IS_DELETEMARK=#{isDeletemark},</if>
+            <if test="modifyTime != null">MODIFY_TIME=#{modifyTime},</if>
+            <if test="createTime != null">CREATE_TIME=#{createTime},</if>
+            <if test="createUserId != null">CREATE_USER_ID=#{createUserId},</if>
+            <if test="modifyUserId != null">MODIFY_USER_ID=#{modifyUserId},</if>
             <if test="areaType != null">areaType=#{areaType},</if>
         </trim>
-                where id=#{id}
+        where id=#{id}
 
     </update>
-    <select id="findYbAppealResultRepayment" resultType="cc.mrbird.febs.yb.entity.YbAppealResultRepayment" parameterType="cc.mrbird.febs.yb.entity.YbAppealResultRepayment">
-        select  *  from yb_appeal_result_repayment
-        where  1=1
-            <if test="ybAppealResultRepayment.id != null and ybAppealResultRepayment.id != ''"> and id =#{ ybAppealResultRepayment.id} </if>
-        <if test="ybAppealResultRepayment.resetDataId != null and ybAppealResultRepayment.resetDataId != ''"> and resetDataId like concat('%', #{ ybAppealResultRepayment.resetDataId} ,'%')</if>
-            <if test="ybAppealResultRepayment.relatelDataId != null and ybAppealResultRepayment.relatelDataId != ''"> and relatelDataId like concat('%', #{ ybAppealResultRepayment.relatelDataId} ,'%')</if>
-            <if test="ybAppealResultRepayment.deductImplementId != null and ybAppealResultRepayment.deductImplementId != ''"> and deductImplementId like concat('%', #{ ybAppealResultRepayment.deductImplementId} ,'%')</if>
-            <if test="ybAppealResultRepayment.repaymentProgramme != null and ybAppealResultRepayment.repaymentProgramme != ''"> and repaymentProgramme like concat('%', #{ ybAppealResultRepayment.repaymentProgramme} ,'%')</if>
+    <select id="findYbAppealResultRepayment" resultType="cc.mrbird.febs.yb.entity.YbAppealResultRepayment"
+            parameterType="cc.mrbird.febs.yb.entity.YbAppealResultRepayment">
+        select * from yb_appeal_result_repayment
+        where 1=1
+        <if test="ybAppealResultRepayment.id != null and ybAppealResultRepayment.id != ''">and id
+            =#{ ybAppealResultRepayment.id}
+        </if>
+        <if test="ybAppealResultRepayment.resetDataId != null and ybAppealResultRepayment.resetDataId != ''">and
+            resetDataId like concat('%', #{ ybAppealResultRepayment.resetDataId} ,'%')
+        </if>
+        <if test="ybAppealResultRepayment.relatelDataId != null and ybAppealResultRepayment.relatelDataId != ''">and
+            relatelDataId like concat('%', #{ ybAppealResultRepayment.relatelDataId} ,'%')
+        </if>
+        <if test="ybAppealResultRepayment.deductImplementId != null and ybAppealResultRepayment.deductImplementId != ''">
+            and deductImplementId like concat('%', #{ ybAppealResultRepayment.deductImplementId} ,'%')
+        </if>
+        <if test="ybAppealResultRepayment.repaymentProgramme != null and ybAppealResultRepayment.repaymentProgramme != ''">
+            and repaymentProgramme like concat('%', #{ ybAppealResultRepayment.repaymentProgramme} ,'%')
+        </if>
         <if test="ybAppealResultRepayment.applyDateFrom!= null">
             AND ybAppealResultRepayment.applyDate <![CDATA[ >= ]]>  applyDateFrom}
         </if>
         <if test="ybAppealResultRepayment.applyDateTo!= null">
             AND ybAppealResultRepayment.applyDate <![CDATA[ <= ]]>  applyDateTo}
         </if>
-        <if test="ybAppealResultRepayment.applyDateStr != null and ybAppealResultRepayment.applyDateStr != ''">and applyDateStr like
+        <if test="ybAppealResultRepayment.applyDateStr != null and ybAppealResultRepayment.applyDateStr != ''">and
+            applyDateStr like
             concat('%', #{ ybAppealResultRepayment.applyDateStr} ,'%')
         </if>
-            <if test="ybAppealResultRepayment.comments != null and ybAppealResultRepayment.comments != ''"> and COMMENTS like concat('%', #{ ybAppealResultRepayment.comments} ,'%')</if>
-        <if test="ybAppealResultRepayment.dataType != null"> and dataType =#{ ybAppealResultRepayment.dataType} </if>
-        <if test="ybAppealResultRepayment.state != null"> and STATE =#{ ybAppealResultRepayment.state} </if>
-        <if test="ybAppealResultRepayment.isDeletemark != null"> and IS_DELETEMARK =#{ ybAppealResultRepayment.isDeletemark} </if>
+        <if test="ybAppealResultRepayment.comments != null and ybAppealResultRepayment.comments != ''">and COMMENTS like
+            concat('%', #{ ybAppealResultRepayment.comments} ,'%')
+        </if>
+        <if test="ybAppealResultRepayment.dataType != null">and dataType =#{ ybAppealResultRepayment.dataType}</if>
+        <if test="ybAppealResultRepayment.state != null">and STATE =#{ ybAppealResultRepayment.state}</if>
+        <if test="ybAppealResultRepayment.isDeletemark != null">and IS_DELETEMARK
+            =#{ ybAppealResultRepayment.isDeletemark}
+        </if>
         <if test="ybAppealResultRepayment.modifyTimeFrom!= null">
             AND ybAppealResultRepayment.MODIFY_TIME <![CDATA[ >= ]]>  modifyTimeFrom}
         </if>
@@ -84,7 +100,8 @@
             AND ybAppealResultRepayment.CREATE_TIME <![CDATA[ <= ]]>  createTimeTo}
         </if>
         <if test="ybAppealResultRepayment.areaType != null">
-        and ybAppealResultRepayment.areaType =#{ ybAppealResultRepayment.areaType}</if>
-</select>
+            and ybAppealResultRepayment.areaType =#{ ybAppealResultRepayment.areaType}
+        </if>
+    </select>
 
 </mapper>

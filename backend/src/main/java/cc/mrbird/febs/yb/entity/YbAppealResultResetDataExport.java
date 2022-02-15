@@ -147,9 +147,9 @@ public class YbAppealResultResetDataExport {
     private String backAppeal;
 
     /**
-     * 大专业
+     * 汇总科室
      */
-    @ExcelField(value ="大专业")
+    @ExcelField(value ="汇总科室")
     private String dksName;
 
     /**

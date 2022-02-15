@@ -50,7 +50,7 @@
             <a-popover v-model="visibleTup" placement="top" trigger="click" title="请选择导出类型">
               <a-button slot="content" size="small" style="margin-right: 10px" @click="showModal(1)">汇总病区</a-button>
               <a-button slot="content" size="small" style="margin-right: 10px" type="primary"  @click="showModal(0)">单个病区</a-button>
-              <a-button slot="content" size="small" @click="showModal(2)">大科室</a-button>
+              <a-button slot="content" size="small" @click="showModal(2)">汇总科室</a-button>
             </a-popover>
             <!-- <a-popconfirm
               title="请选择导出类型"

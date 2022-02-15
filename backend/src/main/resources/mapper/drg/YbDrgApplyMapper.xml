@@ -2,77 +2,86 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cc.mrbird.febs.drg.dao.YbDrgApplyMapper">
 
-        <!-- 通用查询映射结果 -->
-        <resultMap id="BaseResultMap" type="cc.mrbird.febs.drg.entity.YbDrgApply">
-                    <id column="id" property="id"/>
-                    <result column="applyDate" property="applyDate"/>
-                    <result column="applyDateStr" property="applyDateStr"/>
-                    <result column="operatorId" property="operatorId"/>
-                    <result column="operatorName" property="operatorName"/>
-                    <result column="uploadFileName" property="uploadFileName"/>
-                    <result column="endDate" property="endDate"/>
-                    <result column="taskState" property="taskState"/>
-                    <result column="COMMENTS" property="comments"/>
-                    <result column="STATE" property="state"/>
-                    <result column="IS_DELETEMARK" property="isDeletemark"/>
-                    <result column="MODIFY_TIME" property="modifyTime"/>
-                    <result column="CREATE_TIME" property="createTime"/>
-                    <result column="CREATE_USER_ID" property="createUserId"/>
-                    <result column="MODIFY_USER_ID" property="modifyUserId"/>
-                    <result column="areaType" property="areaType"/>
-                    <result column="enableDate" property="enableDate"/>
-        </resultMap>
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="cc.mrbird.febs.drg.entity.YbDrgApply">
+        <id column="id" property="id"/>
+        <result column="applyDate" property="applyDate"/>
+        <result column="applyDateStr" property="applyDateStr"/>
+        <result column="operatorId" property="operatorId"/>
+        <result column="operatorName" property="operatorName"/>
+        <result column="uploadFileName" property="uploadFileName"/>
+        <result column="endDate" property="endDate"/>
+        <result column="taskState" property="taskState"/>
+        <result column="COMMENTS" property="comments"/>
+        <result column="STATE" property="state"/>
+        <result column="IS_DELETEMARK" property="isDeletemark"/>
+        <result column="MODIFY_TIME" property="modifyTime"/>
+        <result column="CREATE_TIME" property="createTime"/>
+        <result column="CREATE_USER_ID" property="createUserId"/>
+        <result column="MODIFY_USER_ID" property="modifyUserId"/>
+        <result column="areaType" property="areaType"/>
+        <result column="enableDate" property="enableDate"/>
+    </resultMap>
 
-        <!-- 通用查询结果列 -->
-        <sql id="Base_Column_List">
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
         id, applyDate, applyDateStr, operatorId, operatorName, uploadFileName, endDate, taskState, COMMENTS, STATE, IS_DELETEMARK, MODIFY_TIME, CREATE_TIME, CREATE_USER_ID, MODIFY_USER_ID, areaType, enableDate
     </sql>
     <update id="updateYbDrgApply" parameterType="cc.mrbird.febs.drg.entity.YbDrgApply">
         update yb_drg_apply
         <trim prefix="set" suffixOverrides=",">
-<if test="applyDate != null">applyDate=#{applyDate},</if>
-<if test="applyDateStr != null">applyDateStr=#{applyDateStr},</if>
-<if test="operatorId != null">operatorId=#{operatorId},</if>
-<if test="operatorName != null">operatorName=#{operatorName},</if>
-<if test="uploadFileName != null">uploadFileName=#{uploadFileName},</if>
-<if test="endDate != null">endDate=#{endDate},</if>
-<if test="taskState != null">taskState=#{taskState},</if>
-<if test="comments != null">COMMENTS=#{comments},</if>
-<if test="state != null">STATE=#{state},</if>
-<if test="isDeletemark != null">IS_DELETEMARK=#{isDeletemark},</if>
-<if test="modifyTime != null">MODIFY_TIME=#{modifyTime},</if>
-<if test="createTime != null">CREATE_TIME=#{createTime},</if>
-<if test="createUserId != null">CREATE_USER_ID=#{createUserId},</if>
-<if test="modifyUserId != null">MODIFY_USER_ID=#{modifyUserId},</if>
-<if test="areaType != null">areaType=#{areaType},</if>
-<if test="enableDate != null">enableDate=#{enableDate},</if>
+            <if test="applyDate != null">applyDate=#{applyDate},</if>
+            <if test="applyDateStr != null">applyDateStr=#{applyDateStr},</if>
+            <if test="operatorId != null">operatorId=#{operatorId},</if>
+            <if test="operatorName != null">operatorName=#{operatorName},</if>
+            <if test="uploadFileName != null">uploadFileName=#{uploadFileName},</if>
+            <if test="endDate != null">endDate=#{endDate},</if>
+            <if test="taskState != null">taskState=#{taskState},</if>
+            <if test="comments != null">COMMENTS=#{comments},</if>
+            <if test="state != null">STATE=#{state},</if>
+            <if test="isDeletemark != null">IS_DELETEMARK=#{isDeletemark},</if>
+            <if test="modifyTime != null">MODIFY_TIME=#{modifyTime},</if>
+            <if test="createTime != null">CREATE_TIME=#{createTime},</if>
+            <if test="createUserId != null">CREATE_USER_ID=#{createUserId},</if>
+            <if test="modifyUserId != null">MODIFY_USER_ID=#{modifyUserId},</if>
+            <if test="areaType != null">areaType=#{areaType},</if>
+            <if test="enableDate != null">enableDate=#{enableDate},</if>
         </trim>
-                where id=#{id}
+        where id=#{id}
 
     </update>
-    <select id="findYbDrgApply" resultType="cc.mrbird.febs.drg.entity.YbDrgApply" parameterType="cc.mrbird.febs.drg.entity.YbDrgApply">
-        select  *  from yb_drg_apply
-        where  1=1
-            <if test="ybDrgApply.id != null and ybDrgApply.id != ''"> and id =#{ ybDrgApply.id} </if>
+    <select id="findYbDrgApply" resultType="cc.mrbird.febs.drg.entity.YbDrgApply"
+            parameterType="cc.mrbird.febs.drg.entity.YbDrgApply">
+        select * from yb_drg_apply
+        where 1=1
+        <if test="ybDrgApply.id != null and ybDrgApply.id != ''">and id =#{ ybDrgApply.id}</if>
         <if test="ybDrgApply.applyDateFrom!= null">
             AND ybDrgApply.applyDate <![CDATA[ >= ]]>  applyDateFrom}
         </if>
         <if test="ybDrgApply.applyDateTo!= null">
             AND ybDrgApply.applyDate <![CDATA[ <= ]]>  applyDateTo}
         </if>
-            <if test="ybDrgApply.applyDateStr != null and ybDrgApply.applyDateStr != ''"> and applyDateStr like concat('%', #{ ybDrgApply.applyDateStr} ,'%')</if>
-            <if test="ybDrgApply.operatorName != null and ybDrgApply.operatorName != ''"> and operatorName like concat('%', #{ ybDrgApply.operatorName} ,'%')</if>
-            <if test="ybDrgApply.uploadFileName != null and ybDrgApply.uploadFileName != ''"> and uploadFileName like concat('%', #{ ybDrgApply.uploadFileName} ,'%')</if>
+        <if test="ybDrgApply.applyDateStr != null and ybDrgApply.applyDateStr != ''">and applyDateStr like concat('%',
+            #{ ybDrgApply.applyDateStr} ,'%')
+        </if>
+        <if test="ybDrgApply.operatorName != null and ybDrgApply.operatorName != ''">and operatorName like concat('%',
+            #{ ybDrgApply.operatorName} ,'%')
+        </if>
+        <if test="ybDrgApply.uploadFileName != null and ybDrgApply.uploadFileName != ''">and uploadFileName like
+            concat('%', #{ ybDrgApply.uploadFileName} ,'%')
+        </if>
         <if test="ybDrgApply.endDateFrom!= null">
             AND ybDrgApply.endDate <![CDATA[ >= ]]>  endDateFrom}
         </if>
         <if test="ybDrgApply.endDateTo!= null">
             AND ybDrgApply.endDate <![CDATA[ <= ]]>  endDateTo}
         </if>
-        <if test="ybDrgApply.taskState != null"> and taskState =#{ ybDrgApply.taskState} </if>
-            <if test="ybDrgApply.comments != null and ybDrgApply.comments != ''"> and COMMENTS like concat('%', #{ ybDrgApply.comments} ,'%')</if>
-        <if test="ybDrgApply.state != null"> and STATE =#{ ybDrgApply.state} </if>
-        <if test="ybDrgApply.isDeletemark != null"> and IS_DELETEMARK =#{ ybDrgApply.isDeletemark} </if>
+        <if test="ybDrgApply.taskState != null">and taskState =#{ ybDrgApply.taskState}</if>
+        <if test="ybDrgApply.comments != null and ybDrgApply.comments != ''">and COMMENTS like concat('%',
+            #{ ybDrgApply.comments} ,'%')
+        </if>
+        <if test="ybDrgApply.state != null">and STATE =#{ ybDrgApply.state}</if>
+        <if test="ybDrgApply.isDeletemark != null">and IS_DELETEMARK =#{ ybDrgApply.isDeletemark}</if>
         <if test="ybDrgApply.modifyTimeFrom!= null">
             AND ybDrgApply.MODIFY_TIME <![CDATA[ >= ]]>  modifyTimeFrom}
         </if>
@@ -85,14 +94,14 @@
         <if test="ybDrgApply.createTimeTo!= null">
             AND ybDrgApply.CREATE_TIME <![CDATA[ <= ]]>  createTimeTo}
         </if>
-        <if test="ybDrgApply.areaType != null"> and areaType =#{ ybDrgApply.areaType} </if>
+        <if test="ybDrgApply.areaType != null">and areaType =#{ ybDrgApply.areaType}</if>
         <if test="ybDrgApply.enableDateFrom!= null">
             AND ybDrgApply.enableDate <![CDATA[ >= ]]>  enableDateFrom}
         </if>
         <if test="ybDrgApply.enableDateTo!= null">
             AND ybDrgApply.enableDate <![CDATA[ <= ]]>  enableDateTo}
         </if>
-</select>
+    </select>
 
     <select id="findDrgApplyByApplyDateStr" resultType="cc.mrbird.febs.drg.entity.YbDrgApply">
         select *  from yb_drg_apply where applyDateStr = #{applyDateStr} and areaType = #{areaType}  order by CREATE_TIME asc  limit 1

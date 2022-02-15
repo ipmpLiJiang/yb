@@ -67,7 +67,6 @@ public class YbDrgApplyServiceImpl extends ServiceImpl<YbDrgApplyMapper, YbDrgAp
             queryWrapper.eq(YbDrgApply::getAreaType, ybDrgApply.getAreaType());
             queryWrapper.eq(YbDrgApply::getIsDeletemark, 1);//1是未删 0是已删
 
-
             Page<YbDrgApply> page = new Page<>();
             SortUtil.handlePageSort(request, page, false);//true 是属性  false是数据库字段可两个
             return this.page(page, queryWrapper);
