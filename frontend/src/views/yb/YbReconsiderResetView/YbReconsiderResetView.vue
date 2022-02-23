@@ -5,7 +5,7 @@
   >
     <template>
       <a-spin tip="Loading..." :spinning="spinning" :delay="delayTime">
-      <div style="text-align:center;margin-bottom:20px">
+      <div style="text-align:center;margin-bottom:16px">
         <a-row >
           <a-col :span=5>
             复议年月：

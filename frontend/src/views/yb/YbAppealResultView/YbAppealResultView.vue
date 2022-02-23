@@ -5,22 +5,20 @@
     class="card-area"
   >
     <template>
-        <a-row justify="center" type="flex">
+      <div style="text-align:center;margin-bottom:16px">
+        <a-row justify="start" type="flex">
           <a-col :span=5>
-            <a-form-item
-              v-bind="formItemLayout"
-              label="复议年月"
-            >
+            复议年月：
             <a-month-picker
               placeholder="请输入复议年月"
+              style="width: 120px"
               @change="monthChange"
               :default-value="defaultApplyDate"
               :format="monthFormat"
             />
-            </a-form-item>
           </a-col>
-          <a-col :span=3>
-            <a-select :value="searchDataType" style="width: 100px" @change="handleDataTypeChange">
+          <a-col :span=18>
+            <a-select :value="searchDataType" style="width: 110px;margin-right: 10px" @change="handleDataTypeChange">
               <a-select-option
               v-for="d in selectDataTypeDataSource"
               :key="d.value"
@@ -28,9 +26,7 @@
               {{ d.text }}
               </a-select-option>
             </a-select>
-          </a-col>
-          <a-col :span=8>
-            <a-select v-model="searchItem.keyField" style="width: 115px">
+            <a-select v-model="searchItem.keyField" style="width: 110px">
               <a-select-option
               v-for="d in searchDropDataSource"
               :key="d.value"
@@ -39,18 +35,19 @@
               </a-select-option>
             </a-select>
             =
-            <a-input-search placeholder="请输入关键字" v-model="searchItem.value" style="width: 170px" enter-button @search="searchTable" />
-          </a-col>
-          <a-col :span=8>
+            <a-input-search placeholder="请输入关键字" v-model="searchItem.value" style="width: 160px" enter-button @search="searchTable" />
+            <a-button style="margin-left: 15px;margin-right: 10px" @click="showCheckDksModal">验证汇科</a-button>
             <a-button
             type="primary"
-            style="margin-right:15px"
+            style="margin-right:10px"
             @click="exportExcel"
             >导出表格</a-button>
             <a-popover v-model="visibleTup" placement="top" trigger="click" title="请选择导出类型">
-              <a-button slot="content" size="small" style="margin-right: 10px" @click="showModal(1)">汇总病区</a-button>
-              <a-button slot="content" size="small" style="margin-right: 10px" type="primary"  @click="showModal(0)">单个病区</a-button>
+              <a-space slot="content" :size="8">
+              <a-button slot="content" size="small" @click="showModal(1)">汇总病区</a-button>
+              <a-button slot="content" size="small" type="primary"  @click="showModal(0)">单个病区</a-button>
               <a-button slot="content" size="small" @click="showModal(2)">汇总科室</a-button>
+              </a-space>
             </a-popover>
             <!-- <a-popconfirm
               title="请选择导出类型"
@@ -70,6 +67,7 @@
             >历史操作记录</a-button>
           </a-col>
         </a-row>
+      </div>
     </template>
     <!--表格-->
     <template>
@@ -110,7 +108,7 @@
           <a-tab-pane
             key="3"
             :forceRender="true"
-            tab="非常规复议"
+            tab="非常规复议-意见书"
           >
             <ybAppealResult-handle
               ref="ybAppealResultHandle"
@@ -125,7 +123,7 @@
           <a-tab-pane
             key="4"
             :forceRender="true"
-            tab="非常规复议1"
+            tab="非常规复议-剔除"
           >
             <ybAppealResult-handle1
               ref="ybAppealResultHandle1"
@@ -141,15 +139,21 @@
       </div>
     </template>
     <template>
-      <div>
-        <a-modal width="85%" :maskClosable="false" :footer="null" v-model="downLoadVisible" title="导出图片" @ok="handleOk">
-          <ybAppealResult-downLoad
-          ref="ybAppealResultDownload"
-          :tableSelectKey="tableSelectKey"
-          >
-          </ybAppealResult-downLoad>
-        </a-modal>
-      </div>
+      <a-modal width="85%" :maskClosable="false" :footer="null" v-model="downLoadVisible" title="导出图片" @ok="handleOk">
+        <ybAppealResult-downLoad
+        ref="ybAppealResultDownload"
+        :tableSelectKey="tableSelectKey"
+        >
+        </ybAppealResult-downLoad>
+      </a-modal>
+    </template>
+    <template>
+      <a-modal width="55%" :maskClosable="false" :footer="null" v-model="checkDksVisible" title="验证缺失汇总科室列表" @ok="handleCheckDksOk">
+        <ybAppealResultCheck-dks
+        ref="ybAppealResultCheckDks"
+        >
+        </ybAppealResultCheck-dks>
+      </a-modal>
     </template>
     <!-- 历史 -->
     <ybAppealManage-history
@@ -178,6 +182,7 @@ import YbAppealResultHandle from './YbAppealResultHandle'
 import YbAppealResultHandle1 from './YbAppealResultHandle1'
 import YbAppealResultLook from './YbAppealResultLook'
 import YbAppealResultDownLoad from './YbAppealResultDownLoad'
+import YbAppealResultCheckDks from './YbAppealResultCheckDks'
 const formItemLayout = {
   labelCol: { span: 8 },
   wrapperCol: { span: 12, offset: 1 }
@@ -185,7 +190,7 @@ const formItemLayout = {
 export default {
   name: 'YbAppealResultView',
   components: {
-    YbAppealManageHistory, YbAppealResultOne, YbAppealResultTwo, YbAppealResultHandle, YbAppealResultHandle1, YbAppealResultLook, YbAppealResultDownLoad},
+    YbAppealManageHistory, YbAppealResultOne, YbAppealResultTwo, YbAppealResultHandle, YbAppealResultHandle1, YbAppealResultLook, YbAppealResultDownLoad, YbAppealResultCheckDks},
   data () {
     return {
       formItemLayout,
@@ -205,6 +210,7 @@ export default {
       historyVisiable: false,
       lookVisiable: false,
       downLoadVisible: false,
+      checkDksVisible: false,
       searchApplyDate: this.formatDate(),
       defaultApplyDate: this.formatDate(),
       visibleTup: false,
@@ -249,8 +255,18 @@ export default {
         this.$refs.ybAppealResultDownload.setFormValues(appealResultDownLoad)
       }, 200)
     },
+    showCheckDksModal () {
+      this.checkDksVisible = true
+      let appealResultCheck = {applyDateStr: this.searchApplyDate}
+      setTimeout(() => {
+        this.$refs.ybAppealResultCheckDks.setFormValues(appealResultCheck)
+      }, 200)
+    },
     handleOk (e) {
       this.downLoadVisible = false
+    },
+    handleCheckDksOk (e) {
+      this.checkDksVisible = false
     },
     exportExcel () {
       if (this.tableSelectKey === '1') {

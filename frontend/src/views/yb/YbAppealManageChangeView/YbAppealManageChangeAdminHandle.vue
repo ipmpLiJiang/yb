@@ -188,6 +188,7 @@ export default {
       this.ybAppealManage.readyDeptName = item.text
     },
     setFormValues (ybAppealManageChangeDetail, type) {
+      console.log(ybAppealManageChangeDetail)
       this.type = type
       if (type === 0) {
         this.selectAcceptStateDataSource = [{value: 0, text: '接受申请'}]
@@ -198,9 +199,15 @@ export default {
         this.acceptState = 6
         this.accStateDisabled = true
       } else {
-        this.selectAcceptStateDataSource = [{value: 0, text: '接受申请'}, {value: 1, text: '待申诉'}]
-        this.acceptState = 0
-        this.accStateDisabled = false
+        if (ybAppealManageChangeDetail.sourceType === 0) {
+          this.selectAcceptStateDataSource = [{value: 0, text: '接受申请'}, {value: 1, text: '待申诉'}]
+          this.acceptState = 0
+          this.accStateDisabled = false
+        } else {
+          this.selectAcceptStateDataSource = [{value: 1, text: '待申诉'}]
+          this.acceptState = 1
+          this.accStateDisabled = true
+        }
       }
       this.ybAppealManageChangeDetail = ybAppealManageChangeDetail
       this.ybAppealManage.id = ybAppealManageChangeDetail.id

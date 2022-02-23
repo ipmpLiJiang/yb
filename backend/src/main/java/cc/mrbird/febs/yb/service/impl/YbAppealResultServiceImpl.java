@@ -266,4 +266,14 @@ public class YbAppealResultServiceImpl extends ServiceImpl<YbAppealResultMapper,
     public int updatAppealResultCancelData(List<YbAppealResult> list){
         return this.baseMapper.updateAppealResultCancelData(list);
     }
+
+    @Override
+    public int updateDksNameByDateAndAreaData(String applyDateStr,Integer areaType){
+        return this.baseMapper.updateDksNameByDateAndArea(applyDateStr,areaType);
+    }
+
+    @Override
+    public List<YbAppealResult> findDeptCheckDksNameByDateAndAreaData(String applyDateStr,Integer areaType){
+        return this.baseMapper.findDeptCheckDksNameByDateAndArea(applyDateStr,areaType);
+    }
 }

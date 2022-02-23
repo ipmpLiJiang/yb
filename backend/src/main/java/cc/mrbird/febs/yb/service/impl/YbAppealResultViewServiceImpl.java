@@ -632,12 +632,24 @@ public class YbAppealResultViewServiceImpl extends ServiceImpl<YbAppealResultVie
             if (reconsiderApply != null) {
                 ybAppealResultView.setApplyDateStr(reconsiderApply.getApplyDateStr());
 
+                List<YbResultDownLoad> list = new ArrayList<>();
                 // typeNo 可能为空
                 List<YbResultDownLoad> deptList = this.iYbAppealResultService.findAppealResultGroupDksDepts(ybAppealResultView);
 
+                for (YbResultDownLoad item : deptList) {
+                    if (item.getDeptName() != null && item.getDeptName().equals("")) {
+                        item.setDeptName("无汇总科室");
+                    }
+                    if (list.stream().filter(s -> s.getDeptName().equals(item.getDeptName())).count() == 0) {
+                        YbResultDownLoad v = new YbResultDownLoad();
+                        v.setDeptName(item.getDeptName());
+                        list.add(v);
+                    }
+                }
+
                 String typeName = this.downLoadTypeName(ybAppealResultView);
 
-                for (YbResultDownLoad item : deptList) {
+                for (YbResultDownLoad item : list) {
                     YbAppealResultDownLoad downLoad = new YbAppealResultDownLoad();
                     downLoad.setKey(UUID.randomUUID().toString());
                     downLoad.setDeptName(item.getDeptName());

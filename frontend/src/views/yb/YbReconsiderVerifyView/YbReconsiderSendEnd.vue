@@ -163,22 +163,6 @@ export default {
         width: 130
       },
       {
-        title: '意见书类型',
-        dataIndex: 'typeno',
-        customRender: (text, row, index) => {
-          switch (text) {
-            case 1:
-              return '第一版'
-            case 2:
-              return '第二版'
-            default:
-              return text
-          }
-        },
-        fixed: 'right',
-        width: 105
-      },
-      {
         title: '发送日期',
         dataIndex: 'sendDate',
         customRender: (text, row, index) => {

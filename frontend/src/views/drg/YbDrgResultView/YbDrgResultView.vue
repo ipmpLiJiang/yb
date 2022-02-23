@@ -58,7 +58,7 @@
                 @click="exportExcelWj"
                 >导出文件</a-button>
             </a-popover>
-            <a-button type="primary" style="margin-left: 15px" @click="showModal">打包下载</a-button>
+            <a-button type="primary" style="margin-left: 15px" @click="showModal">图片打包下载</a-button>
           </a-col>
         </a-row>
     </div>
@@ -103,7 +103,7 @@
     </div>
     <template>
       <div>
-        <a-modal width="65%" :maskClosable="false" :footer="null" v-model="downLoadVisible" title="DRG打包下载" @ok="handleOk">
+        <a-modal width="65%" :maskClosable="false" :footer="null" v-model="downLoadVisible" title="DRG图片打包下载" @ok="handleOk">
           <ybDrgResult-downLoad
           ref="ybDrgResultDownLoad"
           >

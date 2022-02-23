@@ -793,4 +793,9 @@ public class YbAppealManageServiceImpl extends ServiceImpl<YbAppealManageMapper,
     public List<YbAppealManage> findAppealManageBySoutInActList(YbAppealManage ybAppealManage,List<Integer> typeList){
         return this.baseMapper.findAppealManageBySoutInActList(ybAppealManage,typeList);
     }
+
+    @Override
+    public int updateDksNameByDateAndAreaData(String applyDateStr,Integer areaType){
+        return this.baseMapper.updateDksNameByDateAndArea(applyDateStr,areaType);
+    }
 }

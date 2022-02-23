@@ -58,4 +58,8 @@ public interface IYbAppealResultService extends IService<YbAppealResult> {
     YbAppealResult findLoadLastAppealResulData(YbAppealResult appealResult);
 
     int updatAppealResultCancelData(List<YbAppealResult> appealResultList);
+
+    int updateDksNameByDateAndAreaData(String applyDateStr,Integer areaType);
+
+    List<YbAppealResult> findDeptCheckDksNameByDateAndAreaData(String applyDateStr,Integer areaType);
 }

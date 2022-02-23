@@ -131,7 +131,7 @@ export default {
             case 3:
               return '管理员更改'
             case 4:
-              return '医保拒绝'
+              return '医保审核'
             case 6:
               return '已上传'
             case 7:

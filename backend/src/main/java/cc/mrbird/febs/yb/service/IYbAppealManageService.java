@@ -48,4 +48,6 @@ public interface IYbAppealManageService extends IService<YbAppealManage> {
     List<YbAppealManage> findAppealManageList(YbAppealManage ybAppealManage);
 
     List<YbAppealManage> findAppealManageBySoutInActList(YbAppealManage ybAppealManage,List<Integer> typeList);
+
+    int updateDksNameByDateAndAreaData(String applyDateStr,Integer areaType);
 }

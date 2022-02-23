@@ -37,7 +37,7 @@
         </template>
       </a-table>
     </template>
-    <div style="font-weight:bolder;color:red;margin-top:10px;margin-bottom:10px;">
+    <div style="font-weight:bolder;color:red;margin-top:10px;margin-bottom:16px;">
       <a-row
         justify="end"
         type="flex"

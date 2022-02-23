@@ -4,9 +4,8 @@
     class="card-area"
   >
     <template>
-      <div style="text-align:center;margin-bottom:20px">
-        <a-row justify="center"
-          align="middle">
+      <div style="text-align:center;margin-bottom:16px">
+        <a-row justify="center" align="middle">
           <a-col :span=5>
               复议年月：
               <a-month-picker

@@ -25,4 +25,6 @@ public interface YbAppealManageMapper extends BaseMapper<YbAppealManage> {
 
 
     List<YbAppealManage> findAppealManageBySoutInActList(@Param("ybAppealManage") YbAppealManage ybAppealManage,@Param("typeList") List<Integer> typeList);
+
+    int updateDksNameByDateAndArea(@Param("applyDateStr") String applyDateStr,@Param("areaType") Integer areaType);
 }

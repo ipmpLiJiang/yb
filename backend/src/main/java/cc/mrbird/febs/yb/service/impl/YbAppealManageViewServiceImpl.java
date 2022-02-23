@@ -56,30 +56,30 @@ public class YbAppealManageViewServiceImpl extends ServiceImpl<YbAppealManageVie
     IYbDeptService iYbDeptService;
 
     @Override
-    public int findYbAppealManageCounts(YbAppealManageView ybAppealManageView, String keyField){
+    public int findYbAppealManageCounts(YbAppealManageView ybAppealManageView, String keyField) {
         int count = 0;
         try {
-            YbReconsiderApply reconsiderApply = iYbReconsiderApplyService.findReconsiderApplyByApplyDateStrs(ybAppealManageView.getApplyDateStr(),ybAppealManageView.getAreaType());
+            YbReconsiderApply reconsiderApply = iYbReconsiderApplyService.findReconsiderApplyByApplyDateStrs(ybAppealManageView.getApplyDateStr(), ybAppealManageView.getAreaType());
             Page<YbAppealManageView> page = new Page<>();
             if (reconsiderApply != null) {
                 ybAppealManageView.setPid(reconsiderApply.getId());
                 boolean isLike = false;
                 String val = ybAppealManageView.getCurrencyField();
-                if (val!= null && !val.equals("")) {
-                    if(!keyField.equals("readyDoctorCode") && !keyField.equals("readyDoctorName") ) {
+                if (val != null && !val.equals("")) {
+                    if (!keyField.equals("readyDoctorCode") && !keyField.equals("readyDoctorName")) {
                         isLike = true;
                     }
-                    if(keyField.equals("readyDoctorCode")){
+                    if (keyField.equals("readyDoctorCode")) {
                         ybAppealManageView.setReadyDoctorCode(ybAppealManageView.getCurrencyField());
                     }
-                    if(keyField.equals("readyDoctorName")){
+                    if (keyField.equals("readyDoctorName")) {
                         ybAppealManageView.setReadyDoctorName(ybAppealManageView.getCurrencyField());
                     }
                 }
                 if (isLike) {
-                    count = this.baseMapper.findAppealManageLikeCount(ybAppealManageView,keyField, null);
+                    count = this.baseMapper.findAppealManageLikeCount(ybAppealManageView, keyField, null);
                 } else {
-                    count = this.baseMapper.findAppealManageCount(ybAppealManageView,keyField, null);
+                    count = this.baseMapper.findAppealManageCount(ybAppealManageView, keyField, null);
                 }
             }
 
@@ -89,39 +89,40 @@ public class YbAppealManageViewServiceImpl extends ServiceImpl<YbAppealManageVie
 
         return count;
     }
+
     @Override
     public IPage<YbAppealManageView> findYbAppealManageViews(QueryRequest request, YbAppealManageView ybAppealManageView, String keyField) {
         try {
-            YbReconsiderApply reconsiderApply = iYbReconsiderApplyService.findReconsiderApplyByApplyDateStrs(ybAppealManageView.getApplyDateStr(),ybAppealManageView.getAreaType());
+            YbReconsiderApply reconsiderApply = iYbReconsiderApplyService.findReconsiderApplyByApplyDateStrs(ybAppealManageView.getApplyDateStr(), ybAppealManageView.getAreaType());
             Page<YbAppealManageView> page = new Page<>();
             if (reconsiderApply != null) {
                 ybAppealManageView.setPid(reconsiderApply.getId());
                 boolean isLike = false;
                 if (ybAppealManageView.getCurrencyField() != null && !ybAppealManageView.getCurrencyField().equals("")) {
-                    if(!keyField.equals("readyDoctorCode") && !keyField.equals("readyDoctorName") ) {
+                    if (!keyField.equals("readyDoctorCode") && !keyField.equals("readyDoctorName")) {
                         isLike = true;
                     }
-                    if(keyField.equals("readyDoctorCode")){
+                    if (keyField.equals("readyDoctorCode")) {
                         ybAppealManageView.setReadyDoctorCode(ybAppealManageView.getCurrencyField());
                     }
-                    if(keyField.equals("readyDoctorName")){
+                    if (keyField.equals("readyDoctorName")) {
                         ybAppealManageView.setReadyDoctorName(ybAppealManageView.getCurrencyField());
                     }
                 }
                 int count = 0;
                 if (isLike) {
-                    count = this.baseMapper.findAppealManageLikeCount(ybAppealManageView,keyField, null);
+                    count = this.baseMapper.findAppealManageLikeCount(ybAppealManageView, keyField, null);
                 } else {
-                    count = this.baseMapper.findAppealManageCount(ybAppealManageView,keyField, null);
+                    count = this.baseMapper.findAppealManageCount(ybAppealManageView, keyField, null);
                 }
                 if (count > 0) {
                     page.setSearchCount(false);
                     SortUtil.handlePageSort(request, page, false);//true 是属性  false是数据库字段可两个
                     IPage<YbAppealManageView> pg = null;
                     if (isLike) {
-                        pg = this.baseMapper.findAppealManageLikeView(page, ybAppealManageView,keyField, null);
+                        pg = this.baseMapper.findAppealManageLikeView(page, ybAppealManageView, keyField, null);
                     } else {
-                        pg = this.baseMapper.findAppealManageView(page, ybAppealManageView,keyField, null);
+                        pg = this.baseMapper.findAppealManageView(page, ybAppealManageView, keyField, null);
                     }
                     pg.setTotal(count);
                     return pg;
@@ -136,18 +137,18 @@ public class YbAppealManageViewServiceImpl extends ServiceImpl<YbAppealManageVie
     }
 
     @Override
-    public IPage<YbAppealManageView> findAppealManageViewNew(QueryRequest request, YbAppealManageView ybAppealManageView, String keyField,boolean isConf) {
+    public IPage<YbAppealManageView> findAppealManageViewNew(QueryRequest request, YbAppealManageView ybAppealManageView, String keyField, boolean isConf) {
         try {
-            String applyDateStr =ybAppealManageView.getApplyDateStr();
+            String applyDateStr = ybAppealManageView.getApplyDateStr();
             Integer areaType = ybAppealManageView.getAreaType();
-            YbReconsiderApply reconsiderApply = iYbReconsiderApplyService.findReconsiderApplyByApplyDateStrs(applyDateStr,areaType);
+            YbReconsiderApply reconsiderApply = iYbReconsiderApplyService.findReconsiderApplyByApplyDateStrs(applyDateStr, areaType);
             Page<YbAppealManageView> page = new Page<>();
             if (reconsiderApply != null) {
                 String value = ybAppealManageView.getCurrencyField();
                 Integer typeno = ybAppealManageView.getTypeno();
                 Integer dataType = ybAppealManageView.getDataType();
-                if(typeno == 0 || typeno == 3){
-                    if( typeno == 3) {
+                if (typeno == 0 || typeno == 3) {
+                    if (typeno == 3) {
                         ybAppealManageView.setSourceType(YbDefaultValue.SOURCETYPE_1);
                     }
                     ybAppealManageView.setTypeno(null);
@@ -158,35 +159,35 @@ public class YbAppealManageViewServiceImpl extends ServiceImpl<YbAppealManageVie
                 Integer sourceType = ybAppealManageView.getSourceType();
                 Integer acceptState = ybAppealManageView.getAcceptState();
                 List<String> strList = new ArrayList<>();
-                List<YbReconsiderApplyData> applyDataList = ybApplyDataManager.getApplyDatas(reconsiderApply.getId(),applyDateStr + "-" + areaType);
+                List<YbReconsiderApplyData> applyDataList = ybApplyDataManager.getApplyDatas(reconsiderApply.getId(), applyDateStr + "-" + areaType);
                 List<YbAppealManageView> list = new ArrayList<>();
                 List<YbAppealManage> manageList = new ArrayList<>();
-                if(!isConf) {
+                if (!isConf) {
                     if (value != null && !value.equals("") && keyField.equals("readyDoctorName")) {
                         LambdaQueryWrapper<YbAppealManage> queryWrapper = new LambdaQueryWrapper<>();
-                        queryWrapper.eq(YbAppealManage::getApplyDateStr,applyDateStr);
-                        queryWrapper.eq(YbAppealManage::getAreaType,areaType);
-                        queryWrapper.eq(YbAppealManage::getAcceptState,acceptState);
+                        queryWrapper.eq(YbAppealManage::getApplyDateStr, applyDateStr);
+                        queryWrapper.eq(YbAppealManage::getAreaType, areaType);
+                        queryWrapper.eq(YbAppealManage::getAcceptState, acceptState);
                         if (sourceType != null) {
-                            queryWrapper.eq(YbAppealManage::getSourceType,sourceType);
+                            queryWrapper.eq(YbAppealManage::getSourceType, sourceType);
                         }
                         if (ybAppealManageView.getOrderDoctorCode() != null) {
-                            queryWrapper.eq(YbAppealManage::getReadyDeptName,"手术室");
-                            queryWrapper.eq(YbAppealManage::getOrderDoctorCode,ybAppealManageView.getOrderDoctorCode());
+                            queryWrapper.eq(YbAppealManage::getReadyDeptName, "手术室");
+                            queryWrapper.eq(YbAppealManage::getOrderDoctorCode, ybAppealManageView.getOrderDoctorCode());
                         }
                         strList = this.iYbPersonService.findPersonCodeList(value);
-                        if(strList.size()>0){
-                            if(strList.size() == 1){
+                        if (strList.size() > 0) {
+                            if (strList.size() == 1) {
                                 queryWrapper.eq(YbAppealManage::getReadyDoctorCode, strList.get(0));
-                            }else {
+                            } else {
                                 queryWrapper.in(YbAppealManage::getReadyDoctorCode, strList);
                             }
                         }
                         if (typeno != null) {
-                            queryWrapper.eq(YbAppealManage::getTypeno,typeno);
+                            queryWrapper.eq(YbAppealManage::getTypeno, typeno);
                         }
                         if (dataType != null) {
-                            queryWrapper.eq(YbAppealManage::getDataType,dataType);
+                            queryWrapper.eq(YbAppealManage::getDataType, dataType);
                         }
                         manageList = iYbAppealManageService.list(queryWrapper);
                     } else {
@@ -218,88 +219,92 @@ public class YbAppealManageViewServiceImpl extends ServiceImpl<YbAppealManageVie
                         }
                         manageList = iYbAppealManageService.findAppealManageList(queryManage);
                     }
-                } else{
+                } else {
                     LambdaQueryWrapper<YbAppealManage> queryWrapper = new LambdaQueryWrapper<>();
-                    queryWrapper.eq(YbAppealManage::getApplyDateStr,applyDateStr);
-                    queryWrapper.eq(YbAppealManage::getAreaType,areaType);
-                    queryWrapper.eq(YbAppealManage::getAcceptState,acceptState);
-                    List<YbDept> deptlist = iYbDeptService.findDeptAppealConfireByUserList(ybAppealManageView.getReadyDoctorCode(),areaType);
+                    queryWrapper.eq(YbAppealManage::getApplyDateStr, applyDateStr);
+                    queryWrapper.eq(YbAppealManage::getAreaType, areaType);
+                    queryWrapper.eq(YbAppealManage::getAcceptState, acceptState);
+                    List<YbDept> deptlist = iYbDeptService.findDeptAppealConfireByUserList(ybAppealManageView.getReadyDoctorCode(), areaType);
                     if (deptlist.size() > 0) {
                         if (ybAppealManageView.getSourceType() != null) {
-                            queryWrapper.eq(YbAppealManage::getSourceType,sourceType);
+                            queryWrapper.eq(YbAppealManage::getSourceType, sourceType);
                         }
                         strList = new ArrayList<>();
-                        for (YbDept item : deptlist){
-                            strList.add(item.getDeptId());
+                        for (YbDept item : deptlist) {
+//                            strList.add(item.getDeptId());
+                            if(!strList.contains(item.getDksName())){
+                                strList.add(item.getDksName());
+                            }
                         }
-                        queryWrapper.in(YbAppealManage::getReadyDeptCode,strList);
+//                        queryWrapper.in(YbAppealManage::getReadyDeptCode, strList);
+                        queryWrapper.in(YbAppealManage::getDksName, strList);
                         if (value != null && !value.equals("") && keyField.equals("readyDoctorName")) {
                             strList = this.iYbPersonService.findPersonCodeList(value);
-                            if(strList.size()>0){
-                                if(strList.size() == 1){
+                            if (strList.size() > 0) {
+                                if (strList.size() == 1) {
                                     queryWrapper.eq(YbAppealManage::getReadyDoctorCode, strList.get(0));
-                                }else {
+                                } else {
                                     queryWrapper.in(YbAppealManage::getReadyDoctorCode, strList);
                                 }
                             }
                         }
                         if (value != null && !value.equals("") && keyField.equals("orderNumber")) {
-                            queryWrapper.eq(YbAppealManage::getOrderNumber,value);
+                            queryWrapper.eq(YbAppealManage::getOrderNumber, value);
                         }
                         if (typeno != null) {
-                            queryWrapper.eq(YbAppealManage::getTypeno,typeno);
+                            queryWrapper.eq(YbAppealManage::getTypeno, typeno);
                         }
                         if (dataType != null) {
-                            queryWrapper.eq(YbAppealManage::getDataType,dataType);
+                            queryWrapper.eq(YbAppealManage::getDataType, dataType);
                         }
                         manageList = iYbAppealManageService.list(queryWrapper);
                     }
                 }
 
-                applyDataList = this.iYbReconsiderApplyDataService.getApplyDataListView(applyDataList,keyField,value,typeno,dataType);
+                applyDataList = this.iYbReconsiderApplyDataService.getApplyDataListView(applyDataList, keyField, value, typeno, dataType);
 
-                if(manageList.size() > 0 && applyDataList.size() > 0){
-                    if(manageList.size() > applyDataList.size()){
+                if (manageList.size() > 0 && applyDataList.size() > 0) {
+                    if (manageList.size() > applyDataList.size()) {
                         List<YbAppealManage> queryList = new ArrayList<>();
-                        for (YbReconsiderApplyData item : applyDataList){
-                            queryList = manageList.stream().filter(s->s.getApplyDataId().equals(item.getId())).collect(Collectors.toList());
-                            if(queryList.size()>0) {
-                                YbAppealManageView amv = this.getYbAppealManageView(queryList.get(0),item);
+                        for (YbReconsiderApplyData item : applyDataList) {
+                            queryList = manageList.stream().filter(s -> s.getApplyDataId().equals(item.getId())).collect(Collectors.toList());
+                            if (queryList.size() > 0) {
+                                YbAppealManageView amv = this.getYbAppealManageView(queryList.get(0), item);
                                 list.add(amv);
                             }
                         }
-                    }else{
-                        for (YbAppealManage item : manageList){
+                    } else {
+                        for (YbAppealManage item : manageList) {
                             List<YbReconsiderApplyData> queryList = new ArrayList<>();
-                            queryList = applyDataList.stream().filter(s->s.getId().equals(item.getApplyDataId())).collect(Collectors.toList());
-                            if(queryList.size()>0) {
-                                YbAppealManageView amv = this.getYbAppealManageView(item,queryList.get(0));
+                            queryList = applyDataList.stream().filter(s -> s.getId().equals(item.getApplyDataId())).collect(Collectors.toList());
+                            if (queryList.size() > 0) {
+                                YbAppealManageView amv = this.getYbAppealManageView(item, queryList.get(0));
                                 list.add(amv);
                             }
                         }
                     }
                 }
-                if(list.size()>0) {
+                if (list.size() > 0) {
                     page.setSearchCount(false);
                     SortUtil.handlePageSort(request, page, false);//true 是属性  false是数据库字段可两个
                     page.setTotal(list.size());
                     long current = page.getCurrent() == 1 ? 0 : (page.getCurrent() - 1) * page.getSize();
                     list = list.stream().sorted(Comparator.comparing(YbAppealManageView::getOrderNum)).skip(current).limit(page.getSize()).collect(Collectors.toList());
                     Date thisDate = new Date();
-                    for(YbAppealManageView item : list){
+                    for (YbAppealManageView item : list) {
                         int nValue = 0;
-                        if(item.getTypeno() == YbDefaultValue.TYPENO_1){
+                        if (item.getTypeno() == YbDefaultValue.TYPENO_1) {
                             nValue = item.getEnableDate().after(reconsiderApply.getEndDateOne()) ? 0 : 1;
-                        }else{
+                        } else {
                             nValue = item.getEnableDate().after(reconsiderApply.getEndDateTwo()) ? 0 : 1;
                         }
-                        item.setApplyEndDate(item.getTypeno()==YbDefaultValue.TYPENO_1?reconsiderApply.getEndDateOne():reconsiderApply.getEndDateTwo());
+                        item.setApplyEndDate(item.getTypeno() == YbDefaultValue.TYPENO_1 ? reconsiderApply.getEndDateOne() : reconsiderApply.getEndDateTwo());
                         item.setIsEnableDate(nValue);//计算
 
-                        if(item.getSourceType() == 0){
-                            if(item.getTypeno() == YbDefaultValue.TYPENO_1){
+                        if (item.getSourceType() == 0) {
+                            if (item.getTypeno() == YbDefaultValue.TYPENO_1) {
                                 nValue = reconsiderApply.getEndDateOne().after(thisDate) ? 0 : 1;
-                            }else{
+                            } else {
                                 nValue = reconsiderApply.getEndDateTwo().after(thisDate) ? 0 : 1;
                             }
                         } else {
@@ -310,16 +315,16 @@ public class YbAppealManageViewServiceImpl extends ServiceImpl<YbAppealManageVie
                         item.setEnableType(nValue);
                         Date enableDate = item.getEnableDate();
                         //前面enableDate需要跟其他字段计算，所以最后赋值
-                        if(item.getTypeno() == YbDefaultValue.TYPENO_1){
-                            if(reconsiderApply.getEndDateOne().after(enableDate)){
-                                enableDate = DataTypeHelpers.addDateMethod(item.getEnableDate(),-1);
-                            }else{
+                        if (item.getTypeno() == YbDefaultValue.TYPENO_1) {
+                            if (reconsiderApply.getEndDateOne().after(enableDate)) {
+                                enableDate = DataTypeHelpers.addDateMethod(item.getEnableDate(), -1);
+                            } else {
                                 enableDate = reconsiderApply.getEndDateOne();
                             }
-                        }else if(item.getTypeno() == YbDefaultValue.TYPENO_2){
-                            if(reconsiderApply.getEndDateTwo().after(enableDate)){
-                                enableDate = DataTypeHelpers.addDateMethod(item.getEnableDate(),-1);
-                            }else{
+                        } else if (item.getTypeno() == YbDefaultValue.TYPENO_2) {
+                            if (reconsiderApply.getEndDateTwo().after(enableDate)) {
+                                enableDate = DataTypeHelpers.addDateMethod(item.getEnableDate(), -1);
+                            } else {
                                 enableDate = reconsiderApply.getEndDateTwo();
                             }
                         }
@@ -336,7 +341,7 @@ public class YbAppealManageViewServiceImpl extends ServiceImpl<YbAppealManageVie
         }
     }
 
-    private  YbAppealManageView getYbAppealManageView(YbAppealManage am,YbReconsiderApplyData reconsiderApplyData){
+    private YbAppealManageView getYbAppealManageView(YbAppealManage am, YbReconsiderApplyData reconsiderApplyData) {
         YbAppealManageView amv = new YbAppealManageView();
         amv.setPid(reconsiderApplyData.getPid());
         amv.setSerialNo(reconsiderApplyData.getSerialNo());
@@ -416,7 +421,7 @@ public class YbAppealManageViewServiceImpl extends ServiceImpl<YbAppealManageVie
     @Override
     public IPage<YbAppealManageView> findAppealManageUserViews(QueryRequest request, YbAppealManageView ybAppealManageView, String keyField) {
         try {
-            YbReconsiderApply reconsiderApply = iYbReconsiderApplyService.findReconsiderApplyByApplyDateStrs(ybAppealManageView.getApplyDateStr(),ybAppealManageView.getAreaType());
+            YbReconsiderApply reconsiderApply = iYbReconsiderApplyService.findReconsiderApplyByApplyDateStrs(ybAppealManageView.getApplyDateStr(), ybAppealManageView.getAreaType());
             Page<YbAppealManageView> page = new Page<>();
             if (reconsiderApply != null) {
                 ybAppealManageView.setPid(reconsiderApply.getId());
@@ -427,18 +432,18 @@ public class YbAppealManageViewServiceImpl extends ServiceImpl<YbAppealManageVie
 
                 int count = 0;
                 if (isLike) {
-                    count = this.baseMapper.findAppealManageLikeCount(ybAppealManageView,keyField, null);
+                    count = this.baseMapper.findAppealManageLikeCount(ybAppealManageView, keyField, null);
                 } else {
-                    count = this.baseMapper.findAppealManageCount(ybAppealManageView,keyField, null);
+                    count = this.baseMapper.findAppealManageCount(ybAppealManageView, keyField, null);
                 }
                 if (count > 0) {
                     page.setSearchCount(false);
                     SortUtil.handlePageSort(request, page, false);//true 是属性  false是数据库字段可两个
                     IPage<YbAppealManageView> pg = null;
                     if (isLike) {
-                        pg = this.baseMapper.findAppealManageLikeView(page, ybAppealManageView,keyField, null);
+                        pg = this.baseMapper.findAppealManageLikeView(page, ybAppealManageView, keyField, null);
                     } else {
-                        pg = this.baseMapper.findAppealManageView(page, ybAppealManageView,keyField, null);
+                        pg = this.baseMapper.findAppealManageView(page, ybAppealManageView, keyField, null);
                     }
                     pg.setTotal(count);
                     return pg;
@@ -455,7 +460,7 @@ public class YbAppealManageViewServiceImpl extends ServiceImpl<YbAppealManageVie
     @Override
     public IPage<YbAppealManageView> findAppealManageOperateRoomViews(QueryRequest request, YbAppealManageView ybAppealManageView, String keyField) {
         try {
-            YbReconsiderApply reconsiderApply = iYbReconsiderApplyService.findReconsiderApplyByApplyDateStrs(ybAppealManageView.getApplyDateStr(),ybAppealManageView.getAreaType());
+            YbReconsiderApply reconsiderApply = iYbReconsiderApplyService.findReconsiderApplyByApplyDateStrs(ybAppealManageView.getApplyDateStr(), ybAppealManageView.getAreaType());
             Page<YbAppealManageView> page = new Page<>();
             if (reconsiderApply != null) {
                 ybAppealManageView.setPid(reconsiderApply.getId());
@@ -463,31 +468,31 @@ public class YbAppealManageViewServiceImpl extends ServiceImpl<YbAppealManageVie
                 ybAppealManageView.setReadyDeptName("手术室");
                 boolean isLike = false;
                 if (ybAppealManageView.getCurrencyField() != null && !ybAppealManageView.getCurrencyField().equals("")) {
-                    if(!keyField.equals("readyDoctorCode") && !keyField.equals("readyDoctorName") ) {
+                    if (!keyField.equals("readyDoctorCode") && !keyField.equals("readyDoctorName")) {
                         isLike = true;
                     }
-                    if(keyField.equals("readyDoctorCode")){
+                    if (keyField.equals("readyDoctorCode")) {
                         ybAppealManageView.setReadyDoctorCode(ybAppealManageView.getCurrencyField());
                     }
-                    if(keyField.equals("readyDoctorName")){
+                    if (keyField.equals("readyDoctorName")) {
                         ybAppealManageView.setReadyDoctorName(ybAppealManageView.getCurrencyField());
                     }
                 }
 
                 int count = 0;
                 if (isLike) {
-                    count = this.baseMapper.findAppealManageLikeCount(ybAppealManageView,keyField, null);
+                    count = this.baseMapper.findAppealManageLikeCount(ybAppealManageView, keyField, null);
                 } else {
-                    count = this.baseMapper.findAppealManageCount(ybAppealManageView,keyField, null);
+                    count = this.baseMapper.findAppealManageCount(ybAppealManageView, keyField, null);
                 }
                 if (count > 0) {
                     page.setSearchCount(false);
                     SortUtil.handlePageSort(request, page, false);//true 是属性  false是数据库字段可两个
                     IPage<YbAppealManageView> pg = null;
                     if (isLike) {
-                        pg = this.baseMapper.findAppealManageLikeView(page, ybAppealManageView,keyField, null);
+                        pg = this.baseMapper.findAppealManageLikeView(page, ybAppealManageView, keyField, null);
                     } else {
-                        pg = this.baseMapper.findAppealManageView(page, ybAppealManageView,keyField, null);
+                        pg = this.baseMapper.findAppealManageView(page, ybAppealManageView, keyField, null);
                     }
                     pg.setTotal(count);
                     return pg;
@@ -503,40 +508,40 @@ public class YbAppealManageViewServiceImpl extends ServiceImpl<YbAppealManageVie
     @Override
     public IPage<YbAppealManageView> findAppealManageConfireViews(QueryRequest request, YbAppealManageView ybAppealManageView, User currentUser, String keyField) {
         try {
-            YbReconsiderApply reconsiderApply = iYbReconsiderApplyService.findReconsiderApplyByApplyDateStrs(ybAppealManageView.getApplyDateStr(),ybAppealManageView.getAreaType());
+            YbReconsiderApply reconsiderApply = iYbReconsiderApplyService.findReconsiderApplyByApplyDateStrs(ybAppealManageView.getApplyDateStr(), ybAppealManageView.getAreaType());
             Page<YbAppealManageView> page = new Page<>();
             if (reconsiderApply != null) {
-                List<YbAppealConfireData> acdlist = iYbAppealConfireDataService.findAppealConfireDataByInDoctorCodeList(currentUser.getUsername(),ybAppealManageView.getAreaType());
+                List<YbAppealConfireData> acdlist = iYbAppealConfireDataService.findAppealConfireDataByInDoctorCodeList(currentUser.getUsername(), ybAppealManageView.getAreaType());
                 if (acdlist.size() > 0) {
                     String appealConfireId = acdlist.get(0).getPid();
                     ybAppealManageView.setPid(reconsiderApply.getId());
                     boolean isLike = false;
                     if (ybAppealManageView.getCurrencyField() != null && !ybAppealManageView.getCurrencyField().equals("")) {
-                        if(!keyField.equals("readyDoctorCode") && !keyField.equals("readyDoctorName") ) {
+                        if (!keyField.equals("readyDoctorCode") && !keyField.equals("readyDoctorName")) {
                             isLike = true;
                         }
-                        if(keyField.equals("readyDoctorCode")){
+                        if (keyField.equals("readyDoctorCode")) {
                             ybAppealManageView.setReadyDoctorCode(ybAppealManageView.getCurrencyField());
                         }
-                        if(keyField.equals("readyDoctorName")){
+                        if (keyField.equals("readyDoctorName")) {
                             ybAppealManageView.setReadyDoctorName(ybAppealManageView.getCurrencyField());
                         }
                     }
 
                     int count = 0;
                     if (isLike) {
-                        count = this.baseMapper.findAppealManageLikeCount(ybAppealManageView,keyField, appealConfireId);
+                        count = this.baseMapper.findAppealManageLikeCount(ybAppealManageView, keyField, appealConfireId);
                     } else {
-                        count = this.baseMapper.findAppealManageCount(ybAppealManageView,keyField, appealConfireId);
+                        count = this.baseMapper.findAppealManageCount(ybAppealManageView, keyField, appealConfireId);
                     }
                     if (count > 0) {
                         page.setSearchCount(false);
                         SortUtil.handlePageSort(request, page, false);//true 是属性  false是数据库字段可两个
                         IPage<YbAppealManageView> pg = null;
                         if (isLike) {
-                            pg = this.baseMapper.findAppealManageLikeView(page, ybAppealManageView,keyField, appealConfireId);
+                            pg = this.baseMapper.findAppealManageLikeView(page, ybAppealManageView, keyField, appealConfireId);
                         } else {
-                            pg = this.baseMapper.findAppealManageView(page, ybAppealManageView,keyField, appealConfireId);
+                            pg = this.baseMapper.findAppealManageView(page, ybAppealManageView, keyField, appealConfireId);
                         }
                         pg.setTotal(count);
                         return pg;

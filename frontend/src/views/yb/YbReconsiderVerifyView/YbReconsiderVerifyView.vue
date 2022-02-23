@@ -7,10 +7,7 @@
     <template>
       <a-spin tip="Loading..." :spinning="spinning" :delay="delayTime">
       <div>
-        <a-row
-          justify="center"
-          align="middle"
-        >
+        <a-row justify="center" align="middle">
           <a-col :span=5>
             <a-form-item
               v-bind="formItemLayout"

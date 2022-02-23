@@ -316,6 +316,8 @@ public class YbReconsiderVerifyServiceImpl extends ServiceImpl<YbReconsiderVerif
                                     createDeptList.add(create);
                                 }
                             } else {
+                                ybReconsiderVerify.setVerifyDeptCode(deptQuery.get(0).getDeptId());
+                                ybReconsiderVerify.setVerifyDeptName(deptQuery.get(0).getDeptName());
                                 ybReconsiderVerify.setDksName(deptQuery.get(0).getDksName());
                             }
                         }

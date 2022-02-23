@@ -158,7 +158,11 @@
         <if test="inUploadFile.state != null and inUploadFile.state==12">and yb_appeal_result.STATE IN (1,2)</if>
         <if test="inUploadFile.state != null and inUploadFile.state==1">and yb_appeal_result.STATE = 1</if>
         <if test="inUploadFile.state != null and inUploadFile.state==2">and yb_appeal_result.STATE = 2</if>
-        <if test="inUploadFile.sumId != null">and yb_appeal_result.deptCode in (SELECT deptId FROM yb_dept WHERE dksName = #{inUploadFile.deptName})
+        <if test="inUploadFile.deptName != null and inUploadFile.deptName != '无汇总科室'">
+        and yb_appeal_result.dksName = #{inUploadFile.deptName}
+        </if>
+        <if test="inUploadFile.deptName != null and inUploadFile.deptName == '无汇总科室'">
+        and (yb_appeal_result.dksName is null or yb_appeal_result.dksName = '')
         </if>
     </select>
 

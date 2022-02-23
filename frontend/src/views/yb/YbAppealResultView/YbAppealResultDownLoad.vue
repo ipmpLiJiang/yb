@@ -2,14 +2,14 @@
   <div>
   <div style="color:red">{{deptNotMsg}}</div>
   <a-popconfirm
-      title="确定验证科室？"
-      v-show="this.appealResultDownLoad.type === 1 ? true : false"
-      @confirm="checkDept"
-      okText="确定"
-      cancelText="取消"
-    >
-      <a-button type="primary">验证科室</a-button>
-    </a-popconfirm>
+    title="确定验证复议科室？"
+    v-show="this.appealResultDownLoad.type === 1 ? true : false"
+    @confirm="checkDept"
+    okText="确定"
+    cancelText="取消"
+  >
+    <a-button type="primary">验证复议科室</a-button>
+  </a-popconfirm>
 
   <!-- 表格区域 -->
   <a-table :columns="columns" :data-source="dataSource" bordered :scroll="{ x: 600 }">

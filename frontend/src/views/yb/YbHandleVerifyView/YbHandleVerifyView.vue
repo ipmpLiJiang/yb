@@ -2,98 +2,95 @@
   <a-card :bordered="false" class="card-area">
     <template>
       <a-spin tip="Loading..." :spinning="spinning" :delay="delayTime">
-        <div>
-          <div style="text-align: center">
-            <a-row justify="center" align="middle">
-              <a-col :span="6">
-                复议年月：
-                <a-month-picker
-                  placeholder="请输入复议年月"
-                  style="width: 120px"
-                  @change="monthChange"
-                  :default-value="defaultApplyDate"
-                  :format="monthFormat"
-                />
-              </a-col>
-              <a-col :span="4"  v-show="tableSelectKey !== 3 ? true : false">
-                <a-form-item label="扣款类型" v-bind="formItemLayout">
-                  <a-select
-                    :value="searchDataType"
-                    @change="handleDataTypeChange"
-                    style="width: 100px"
-                  >
-                    <a-select-option
-                      v-for="d in searchDataTypeSource"
-                      :key="d.value"
-                    >
-                      {{ d.text }}
-                    </a-select-option>
-                  </a-select>
-                </a-form-item>
-              </a-col>
-              <a-col :span="2" style="margin-top:5px" v-show="tableSelectKey == 3 ? true : false">
-                <a-checkbox
-                  :checked="checked"
-                  @change="onChange"
+        <div style="text-align: center;margin-bottom:16px">
+          <a-row justify="center" align="middle">
+            <a-col :span="6">
+              复议年月：
+              <a-month-picker
+                placeholder="请输入复议年月"
+                style="width: 120px"
+                @change="monthChange"
+                :default-value="defaultApplyDate"
+                :format="monthFormat"
+              />
+            </a-col>
+            <a-col :span="4"  v-show="tableSelectKey !== 3 ? true : false">
+              扣款类型：
+              <a-select
+                :value="searchDataType"
+                @change="handleDataTypeChange"
+                style="width: 100px"
+              >
+                <a-select-option
+                  v-for="d in searchDataTypeSource"
+                  :key="d.value"
                 >
-                  是否发送
-                </a-checkbox>
-              </a-col>
-              <a-col :span="4">
-                <a-input-search
-                  placeholder="请输入关键字"
-                  v-model="searchText"
-                  style="width: 170px"
-                  enter-button
-                  @search="searchTable"
-                />
-              </a-col>
-              <a-col :span="2" v-show="tableSelectKey == 3 ? true : false">
-                <a-popconfirm
-                  title="确定发送短信？"
-                  @confirm="sendSms"
-                  okText="确定"
-                  style="margin-left: 10px"
-                  cancelText="取消"
-                >
-                  <a-button type="primary">发送短信</a-button>
-                </a-popconfirm>
-              </a-col>
-              <a-col :span="3" v-show="tableSelectKey == 1 ? true : false">
-                <a-popconfirm
-                  title="确定获取剔除数据剔除？"
-                  @confirm="importData"
-                  okText="确定"
-                  cancelText="取消"
-                >
-                  <a-button type="primary">获取剔除数据</a-button>
-                </a-popconfirm>
-              </a-col>
-              <a-col :span="2" v-show="tableSelectKey == 1 ? true : false">
-                <a-popconfirm
-                  title="确定批量发送？"
-                  @confirm="batchSend"
-                  okText="确定"
-                  cancelText="取消"
-                >
-                  <a-button type="primary">批量发送</a-button>
-                </a-popconfirm>
-              </a-col>
-              <a-col :span="2" v-show="tableSelectKey == 1 ? true : false">
-                <a-popconfirm
-                  title="确定全部发送？"
-                  @confirm="batchSendA"
-                  okText="确定"
-                  cancelText="取消"
-                >
-                  <a-button type="primary">全部发送</a-button>
-                </a-popconfirm>
-              </a-col>
-              <a-col :span="2">
-                <a-button type="primary" @click="searchTable">刷新</a-button>
-              </a-col>
-            </a-row>
-          </div>
+                  {{ d.text }}
+                </a-select-option>
+              </a-select>
+            </a-col>
+            <a-col :span="2" style="margin-top:5px" v-show="tableSelectKey == 3 ? true : false">
+              <a-checkbox
+                :checked="checked"
+                @change="onChange"
+              >
+                是否发送
+              </a-checkbox>
+            </a-col>
+            <a-col :span="4">
+              <a-input-search
+                placeholder="请输入关键字"
+                v-model="searchText"
+                style="width: 170px"
+                enter-button
+                @search="searchTable"
+              />
+            </a-col>
+            <a-col :span="2" v-show="tableSelectKey == 3 ? true : false">
+              <a-popconfirm
+                title="确定发送短信？"
+                @confirm="sendSms"
+                okText="确定"
+                style="margin-left: 10px"
+                cancelText="取消"
+              >
+                <a-button type="primary">发送短信</a-button>
+              </a-popconfirm>
+            </a-col>
+            <a-col :span="3" v-show="tableSelectKey == 1 ? true : false">
+              <a-popconfirm
+                title="确定获取剔除数据剔除？"
+                @confirm="importData"
+                okText="确定"
+                cancelText="取消"
+              >
+                <a-button type="primary">获取剔除数据</a-button>
+              </a-popconfirm>
+            </a-col>
+            <a-col :span="2" v-show="tableSelectKey == 1 ? true : false">
+              <a-popconfirm
+                title="确定批量发送？"
+                @confirm="batchSend"
+                okText="确定"
+                cancelText="取消"
+              >
+                <a-button type="primary">批量发送</a-button>
+              </a-popconfirm>
+            </a-col>
+            <a-col :span="2" v-show="tableSelectKey == 1 ? true : false">
+              <a-popconfirm
+                title="确定全部发送？"
+                @confirm="batchSendA"
+                okText="确定"
+                cancelText="取消"
+              >
+                <a-button type="primary">全部发送</a-button>
+              </a-popconfirm>
+            </a-col>
+            <a-col :span="2">
+              <a-button type="primary" @click="searchTable">刷新</a-button>
+            </a-col>
+          </a-row>
         </div>
       </a-spin>
     </template>

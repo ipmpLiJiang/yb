@@ -320,4 +320,13 @@
         </foreach>
         )
     </select>
+
+    <update id="updateDksNameByDateAndArea">
+        update yb_appeal_manage a,yb_dept b
+        set a.dksName = b.dksName
+        where
+            a.readyDeptCode = b.deptId
+            AND a.applyDateStr = #{applyDateStr}
+            AND a.areaType = #{areaType}
+    </update>
 </mapper>

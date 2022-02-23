@@ -577,4 +577,5 @@
             and am.dataType = #{ybAppealManageView.dataType}
         </if>
     </select>
+
 </mapper>

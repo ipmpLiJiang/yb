@@ -12,6 +12,7 @@ import cc.mrbird.febs.common.domain.QueryRequest;
 
 import cc.mrbird.febs.common.properties.FebsProperties;
 import cc.mrbird.febs.yb.domain.ResponseResultData;
+import cc.mrbird.febs.yb.entity.YbAppealResultDownLoad;
 import cc.mrbird.febs.yb.service.IYbAppealResultService;
 import cc.mrbird.febs.yb.entity.YbAppealResult;
 
@@ -250,6 +251,49 @@ public class YbAppealResultController extends BaseController {
             rrd.setData("");
         }
         return new FebsResponse().data(rrd);
+    }
+
+    @GetMapping("findAppealResultCheckDksList")
+    public FebsResponse findAppealResultCheckDksList(YbAppealResult ybAppealResult) {
+        List<YbAppealResult> appealResultList = this.iYbAppealResultService.findDeptCheckDksNameByDateAndAreaData(ybAppealResult.getApplyDateStr(),ybAppealResult.getAreaType());
+        List<YbAppealResultDownLoad> list = new ArrayList<>();
+        for(YbAppealResult item : appealResultList){
+            YbAppealResultDownLoad load = new YbAppealResultDownLoad();
+            load.setKey(UUID.randomUUID().toString());
+            load.setDeptId(item.getDeptCode());
+            load.setDeptName(item.getDeptName());
+            list.add(load);
+        }
+        Map<String, Object> result = new HashMap<>();
+        if (list.size() > 0) {
+            result.put("data", list);
+            result.put("success", 1);
+        } else {
+            result.put("data", null);
+            result.put("error", "无数据");
+            result.put("success", 1);
+        }
+        return new FebsResponse().data(result);
+    }
+
+    @Log("更新汇总科室")
+    @PostMapping("updateAppealResultCheckDks")
+    public FebsResponse updateAppealResultCheckDks(YbAppealResult ybAppealResult) {
+        Map<String, Object> result = new HashMap<>();
+        try {
+            int count = this.iYbAppealResultService.updateDksNameByDateAndAreaData(ybAppealResult.getApplyDateStr(),ybAppealResult.getAreaType());
+            if (count > 0) {
+                result.put("message", "ok");
+                result.put("success", 1);
+            } else {
+                result.put("message", "无更新项.");
+                result.put("success", 1);
+            }
+        } catch (Exception e) {
+            result.put("message", "更新异常.");
+            result.put("success", 0);
+        }
+        return new FebsResponse().data(result);
     }
 
     private Date addSecond(Date date,int t){
