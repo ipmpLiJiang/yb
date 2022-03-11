@@ -93,6 +93,9 @@ public class ComTypeServiceImpl extends ServiceImpl<ComTypeMapper, ComType> impl
     @Transactional
     public void editComType(ComType comType, User currentUser) {
         Date thisDate = new Date();
+        if(comType.getCtName() != null) {
+            comType.setCtName(comType.getCtName().trim());
+        }
         if (comType.getId() == null) {
             comType.setIsDeletemark(1);
             comType.setCreateTime(thisDate);
@@ -306,7 +309,7 @@ public class ComTypeServiceImpl extends ServiceImpl<ComTypeMapper, ComType> impl
             queryWrapper.eq(ComType::getId, 0);
         }
         if (comType.getCtName() != null) {
-            queryWrapper.eq(ComType::getCtName, comType.getCtName());
+            queryWrapper.eq(ComType::getCtName, comType.getCtName().trim());
         }
         if (comType.getCurrencyField() != null) {
             queryWrapper.like(ComType::getCtName, comType.getCurrencyField());

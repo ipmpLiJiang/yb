@@ -9,6 +9,7 @@
           :pagination="pagination"
           :loading="loading"
           @change="handleTableChange"
+          size="small"
           :bordered="bordered"
           :scroll="{ x: 900 }"
         >

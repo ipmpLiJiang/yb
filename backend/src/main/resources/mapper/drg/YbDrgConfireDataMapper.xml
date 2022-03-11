@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cc.mrbird.febs.drg.dao.YbDrgConfireDataMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="cc.mrbird.febs.drg.entity.YbDrgConfireData">
+        <id column="id" property="id"/>
+        <result column="pid" property="pid"/>
+        <result column="dksName" property="dksName"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, pid, dksName
+    </sql>
+    <update id="updateYbDrgConfireData" parameterType="cc.mrbird.febs.drg.entity.YbDrgConfireData">
+        update yb_drg_confire_data
+        <trim prefix="set" suffixOverrides=",">
+            <if test="pid != null">pid=#{pid},</if>
+            <if test="dksName != null">dksName=#{dksName},</if>
+        </trim>
+        where id=#{id}
+
+    </update>
+    <select id="findYbDrgConfireData" resultType="cc.mrbird.febs.drg.entity.YbDrgConfireData"
+            parameterType="cc.mrbird.febs.drg.entity.YbDrgConfireData">
+        select * from yb_drg_confire_data
+        where 1=1
+        <if test="ybDrgConfireData.id != null and ybDrgConfireData.id != ''">and id =#{ ybDrgConfireData.id}
+        </if>
+        <if test="ybDrgConfireData.pid != null and ybDrgConfireData.pid != ''">and pid like concat('%',
+            #{ ybDrgConfireData.pid} ,'%')
+        </if>
+        <if test="ybDept.dksName != null and ybDept.dksName != ''">and dksName = #{ ybDept.dksName}</if>
+    </select>
+
+</mapper>

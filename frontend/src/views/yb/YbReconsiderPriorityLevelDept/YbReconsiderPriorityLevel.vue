@@ -74,6 +74,7 @@
         :loading="loading"
         :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
         @change="handleTableChange"
+        size="small"
         :bordered="bordered"
         :scroll="{ x: 900 }"
       >
@@ -183,6 +184,7 @@ export default {
             this.pagination.defaultPageSize +
             index +
             1}`,
+        fixed: 'left',
         width: 70
       },
       {
@@ -226,7 +228,7 @@ export default {
         width: 120
       },
       {
-        title: '默认复议医生类型',
+        title: '复议医生类型',
         dataIndex: 'personType',
         customRender: (text, row, index) => {
           switch (text) {
@@ -242,7 +244,7 @@ export default {
               return text
           }
         },
-        width: 150
+        width: 130
       },
       {
         title: '默认复议医生名称',
@@ -252,12 +254,12 @@ export default {
             return row.doctorCode + '-' + row.doctorName
           }
         },
-        width: 200
+        width: 180
       },
       {
         title: '操作员',
         dataIndex: 'operatorName',
-        width: 160
+        width: 130
       },
       {
         title: '操作',
@@ -266,7 +268,7 @@ export default {
           customRender: 'operation'
         },
         fixed: 'right',
-        width: 100
+        width: 80
       }
       ]
     }

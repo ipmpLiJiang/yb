@@ -41,7 +41,7 @@
       </a-col>
     </a-row>
     <a-row type="flex" justify="start">
-      <a-col :span=8>
+      <a-col :span=9>
         <a-form-item
           v-bind="formItemLayout"
           label="查询"
@@ -68,8 +68,9 @@
       :loading="loading"
       :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
       @change="handleTableChange"
+      size="small"
       :bordered="bordered"
-      :scroll="{ x: 900 }"
+      :scroll="{ x: 750 }"
     >
       <template
         slot="orderNum"
@@ -179,14 +180,14 @@ export default {
         customRender: (text, row, index) => {
           return this.rowNo(index)
         },
-        width: 90,
+        width: 70,
         fixed: 'left'
       },
       {
         title: '名称',
         dataIndex: 'ctName',
         scopedSlots: { customRender: 'ctName' },
-        width: 300
+        width: 250
       },
       {
         title: '排序',
@@ -203,7 +204,7 @@ export default {
         dataIndex: 'operation',
         scopedSlots: { customRender: 'operation' },
         fixed: 'right',
-        width: 130
+        width: 100
       }]
     }
   },
@@ -424,7 +425,7 @@ export default {
 @import "../../../../static/less/Common";
 </style>
 <style scoped>
-.editable-row-operations a {
+/* .editable-row-operations a {
   margin-right: 8px;
-}
+} */
 </style>

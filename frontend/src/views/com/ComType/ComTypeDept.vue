@@ -2,7 +2,7 @@
   <div>
     <a-form :form="form">
     <a-row type="flex" justify="start">
-      <a-col :span=8>
+      <a-col :span=9>
       <a-form-item
         v-bind="formItemLayout"
         label="汇总科室"
@@ -45,8 +45,9 @@
       :loading="loading"
       :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
       @change="handleTableChange"
+      size="small"
       :bordered="bordered"
-      :scroll="{ x: 900 }"
+      :scroll="{ x: 750 }"
     >
       <template slot="operation" slot-scope="text, record">
       <div class="editable-row-operations">
@@ -74,7 +75,7 @@
 
 <script>
 const formItemLayout = {
-  labelCol: { span: 5 },
+  labelCol: { span: 6 },
   wrapperCol: { span: 16 }
 }
 export default {
@@ -118,7 +119,7 @@ export default {
         customRender: (text, row, index) => {
           return this.rowNo(index)
         },
-        width: 90,
+        width: 70,
         fixed: 'left'
       },
       {
@@ -330,7 +331,7 @@ export default {
 @import "../../../../static/less/Common";
 </style>
 <style scoped>
-.editable-row-operations a {
+/* .editable-row-operations a {
   margin-right: 8px;
-}
+} */
 </style>

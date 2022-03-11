@@ -10,6 +10,7 @@
           :loading="loading"
           :rowSelection="{type: 'radio', selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
           @change="handleTableChange"
+          size="small"
           :bordered="bordered"
           :customRow="handleClickRow"
           :scroll="{ x: 900 }"
@@ -93,13 +94,13 @@ export default {
         title: '科室',
         dataIndex: 'ks',
         fixed: 'left',
-        width: 140
+        width: 130
       },
       {
         title: '就诊记录号',
         dataIndex: 'jzjlh',
         fixed: 'left',
-        width: 105
+        width: 100
       },
       {
         title: '病案号',
@@ -154,14 +155,14 @@ export default {
           }
         },
         fixed: 'right',
-        width: 120
+        width: 108
       },
       {
         title: '操作',
         dataIndex: 'operation',
         scopedSlots: { customRender: 'operation' },
         fixed: 'right',
-        width: 140
+        width: 120
       }]
     }
   },
@@ -297,7 +298,7 @@ export default {
 </script>
 
 <style scoped>
-.editable-row-operations a {
+/* .editable-row-operations a {
   margin-right: 8px;
-}
+} */
 </style>

@@ -98,6 +98,7 @@
         :loading="loading"
         :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
         @change="handleTableChange"
+        size="small"
         :bordered="bordered"
         :scroll="{ x: 900 }"
       >
@@ -238,7 +239,7 @@ export default {
         dataIndex: 'operation',
         scopedSlots: { customRender: 'operation' },
         fixed: 'right',
-        width: 100
+        width: 80
       }]
     }
   },

@@ -1,48 +1,49 @@
 <template>
   <div id="tab" style="margin: 0px!important">
-        <!-- 接受申请 表格区域 -->
-        <a-table
-          ref="TableInfo"
-          :columns="columns"
-          :rowKey="record => record.id"
-          :dataSource="dataSource"
-          :pagination="pagination"
-          :loading="loading"
-          :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange, getCheckboxProps: getCheckboxProps}"
-          @change="handleTableChange"
-          :bordered="bordered"
-          :customRow="handleClickRow"
-          :scroll="{ x: 900 }"
-        >
-          <template slot="operationDeductReason" slot-scope="text, record, index">
-            <span :title="record.deductReason">{{record.deductReason}}</span>
-          </template>
-          <template
-            slot="operation"
-            slot-scope="text, record, index"
-          >
-            <div class="editable-row-operations">
-              <span>
-                <a
-                  @click.stop="() => look(record,index)"
-                >查看</a>
-                <a-divider type="vertical" />
-                <a-popconfirm
-                title="确定接受？"
-                :disabled="record.isEnd===1?true:false"
-                @confirm="() => accept(record)"
-                >
-                <a :disabled="record.isEnd===1?true:false" href="#">接受申诉</a>
-                </a-popconfirm>
-                <a-divider type="vertical" />
-                <a
-                  @click.stop="() => reject(record,index)"
-                  :disabled="record.isEnd===1?true: record.enableType===1?false:true"
-                >拒绝申诉</a>
-              </span>
-            </div>
-          </template>
-        </a-table>
+    <!-- 接受申请 表格区域 -->
+    <a-table
+      ref="TableInfo"
+      :columns="columns"
+      :rowKey="record => record.id"
+      :dataSource="dataSource"
+      :pagination="pagination"
+      :loading="loading"
+      :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange, getCheckboxProps: getCheckboxProps}"
+      @change="handleTableChange"
+      size="small"
+      :bordered="bordered"
+      :customRow="handleClickRow"
+      :scroll="{ x: 900 }"
+    >
+      <template slot="operationDeductReason" slot-scope="text, record, index">
+        <span :title="record.deductReason">{{record.deductReason}}</span>
+      </template>
+      <template
+        slot="operation"
+        slot-scope="text, record, index"
+      >
+        <div class="editable-row-operations">
+          <span>
+            <a
+              @click.stop="() => look(record,index)"
+            >查看</a>
+            <a-divider type="vertical" />
+            <a-popconfirm
+            title="确定接受？"
+            :disabled="record.isEnd===1?true:false"
+            @confirm="() => accept(record)"
+            >
+            <a :disabled="record.isEnd===1?true:false" href="#">接受申诉</a>
+            </a-popconfirm>
+            <a-divider type="vertical" />
+            <a
+              @click.stop="() => reject(record,index)"
+              :disabled="record.isEnd===1?true: record.enableType===1?false:true"
+            >拒绝申诉</a>
+          </span>
+        </div>
+      </template>
+    </a-table>
   </div>
 </template>
 
@@ -104,19 +105,19 @@ export default {
         title: '交易流水号',
         dataIndex: 'serialNo',
         fixed: 'left',
-        width: 140
+        width: 120
       },
       {
         title: '项目编码',
         dataIndex: 'projectCode',
         fixed: 'left',
-        width: 130
+        width: 120
       },
       {
         title: '项目名称',
         dataIndex: 'projectName',
         fixed: 'left',
-        width: 160
+        width: 150
       },
       {
         title: '数量',
@@ -185,7 +186,7 @@ export default {
           }
         },
         fixed: 'right',
-        width: 120
+        width: 108
       },
       {
         title: '复议截止日期',
@@ -202,14 +203,14 @@ export default {
           }
         },
         fixed: 'right',
-        width: 120
+        width: 108
       },
       {
         title: '操作',
         dataIndex: 'operation',
         scopedSlots: { customRender: 'operation' },
         fixed: 'right',
-        width: 230
+        width: 210
       }]
     }
   },
@@ -445,6 +446,7 @@ export default {
 </script>
 
 <style scoped>
-.editable-row-operations a {
+/* .editable-row-operations a {
   margin-right: 8px;
-}
+} */
+</style>

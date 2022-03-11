@@ -21,7 +21,7 @@
     </a-row>
   <br>
   <!-- 表格区域 -->
-  <a-table :columns="columns" :data-source="dataSource" bordered :scroll="{ x: 600 }">
+  <a-table :columns="columns" :data-source="dataSource" size="small" bordered :scroll="{ x: 600 }">
   <a slot="operation" slot-scope="text, record, index" @click="() => downloadFile(record)">
     {{record.orderNum === 0 ? '全部下载' : '下载'}}
   </a>
@@ -52,7 +52,7 @@ export default {
         title: '序号',
         dataIndex: 'orderNumber',
         fixed: 'left',
-        width: 100
+        width: 70
       },
       {
         title: '科室',

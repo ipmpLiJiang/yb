@@ -10,6 +10,7 @@
     :loading="loading"
     :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
     @change="handleTableChange"
+    size="small"
     :bordered="bordered"
     :scroll="{ x: 900 }"
   >
@@ -101,13 +102,12 @@ export default {
         title: '交易流水号',
         dataIndex: 'serialNo',
         fixed: 'left',
-        width: 140
+        width: 120
       },
       {
         title: '单据号',
         dataIndex: 'billNo',
-        fixed: 'left',
-        width: 120
+        width: 100
       },
       {
         title: '个人编号',
@@ -122,7 +122,7 @@ export default {
       {
         title: '规则名称',
         dataIndex: 'ruleName',
-        width: 130
+        width: 160
       },
       {
         title: '扣除金额',
@@ -164,7 +164,7 @@ export default {
         title: '汇总科室',
         dataIndex: 'dksName',
         fixed: 'right',
-        width: 140
+        width: 110
       },
       {
         title: '复议科室',

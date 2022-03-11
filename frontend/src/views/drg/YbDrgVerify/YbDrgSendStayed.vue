@@ -10,6 +10,7 @@
     :loading="loading"
     :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
     @change="handleTableChange"
+    size="small"
     :bordered="bordered"
     :scroll="{ x: 900 }"
   >
@@ -94,24 +95,24 @@ export default {
         title: '科室',
         dataIndex: 'ks',
         fixed: 'left',
-        width: 140
+        width: 120
       },
       {
         title: '就诊记录号',
         dataIndex: 'jzjlh',
         fixed: 'left',
-        width: 105
+        width: 90
       },
       {
         title: '病案号',
         dataIndex: 'bah',
         fixed: 'left',
-        width: 90
+        width: 80
       },
       {
         title: '违规类型',
         dataIndex: 'wglx',
-        width: 90
+        width: 80
       },
       {
         title: '问题描述',
@@ -144,20 +145,20 @@ export default {
         title: '复议科室',
         dataIndex: 'verifyDksName',
         fixed: 'right',
-        width: 150
+        width: 130
       },
       {
         title: '复议医生',
         dataIndex: 'verifyDoctorName',
         fixed: 'right',
-        width: 130
+        width: 120
       },
       {
         title: '操作',
         dataIndex: 'operation',
         scopedSlots: { customRender: 'operation' },
         fixed: 'right',
-        width: 100
+        width: 70
       }]
     }
   },

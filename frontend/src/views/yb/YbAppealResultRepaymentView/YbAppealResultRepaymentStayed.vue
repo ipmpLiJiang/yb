@@ -9,6 +9,7 @@
           :pagination="pagination"
           :loading="loading"
           @change="handleTableChange"
+          size="small"
           :bordered="bordered"
           :scroll="{ x: 900 }"
         >
@@ -119,7 +120,7 @@ export default {
             return row.arDeptCode + '-' + row.arDeptName
           }
         },
-        width: 150
+        width: 140
       },
       {
         title: '医生姓名',
@@ -129,7 +130,7 @@ export default {
             return row.arDoctorCode + '-' + row.arDoctorName
           }
         },
-        width: 130
+        width: 120
       },
       {
         title: '扣款类型',
@@ -145,7 +146,7 @@ export default {
           }
         },
         fixed: 'right',
-        width: 90
+        width: 80
       },
       {
         title: '保险类型',

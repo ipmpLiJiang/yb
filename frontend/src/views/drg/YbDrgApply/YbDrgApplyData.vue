@@ -10,6 +10,7 @@
       :loading="loading"
       :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
       @change="handleTableChange"
+      size="small"
       :bordered="bordered"
       :scroll="{ x: 900 }"
     >
@@ -72,22 +73,22 @@ export default {
       {
         title: '科室',
         dataIndex: 'ks',
-        width: 150
+        width: 130
       },
       {
         title: '就诊记录号',
         dataIndex: 'jzjlh',
-        width: 140
+        width: 110
       },
       {
         title: '病案号',
         dataIndex: 'bah',
-        width: 120
+        width: 90
       },
       {
         title: '违规类型',
         dataIndex: 'wglx',
-        width: 140
+        width: 90
       },
       {
         title: '问题描述',

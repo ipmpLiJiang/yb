@@ -51,7 +51,7 @@ public interface IYbReconsiderApplyService extends IService<YbReconsiderApply> {
 
     List<YbReconsiderApply> findReconsiderApplyByApplyDateStrs(List<String> listStr, Integer areaType,Integer resetState);
 
-    boolean findReconsiderApplyCheckEndDate(String appltDateStr,Integer areaType, int typeno);
+    boolean findReconsiderApplyCheckEndDate(String appltDateStr,Integer areaType, Integer typeno,int sourceType);
 
     String getSendMessage(String applyDateStr, Date enableDate,Integer areaType, int typeno,boolean isChange);
 

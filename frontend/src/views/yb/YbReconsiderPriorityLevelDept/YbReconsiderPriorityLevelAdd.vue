@@ -75,7 +75,7 @@
       <a-row justify="start" type="flex">
         <a-col :span="24">
       <a-form-item
-          label="默认复议医生类型"
+          label="复议医生类型"
           v-bind="formItemLayout"
         >
         <a-radio-group  v-decorator="['personType']" @change="handleChange">

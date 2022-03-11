@@ -255,19 +255,23 @@ public class YbAppealManageServiceImpl extends ServiceImpl<YbAppealManageMapper,
             Date thisDate = new Date();
             boolean isUpdate = false;
             String mms = "";
-            isUpdate = iYbReconsiderApplyService.findReconsiderApplyCheckEndDate(entity.getApplyDateStr(), entity.getAreaType(), entity.getTypeno());
-            if (entity.getTypeno() == YbDefaultValue.TYPENO_1) {
-                mms = "第一版";
+            isUpdate = iYbReconsiderApplyService.findReconsiderApplyCheckEndDate(entity.getApplyDateStr(), entity.getAreaType(), entity.getTypeno(),entity.getSourceType());
+            if(entity.getSourceType() == YbDefaultValue.SOURCETYPE_0) {
+                if (entity.getTypeno() == YbDefaultValue.TYPENO_1) {
+                    mms = "第一版";
+                } else {
+                    mms = "第二版";
+                }
             } else {
-                mms = "第二版";
+                mms = "非常规复议";
             }
-            if (isUpdate || entity.getSourceType() == YbDefaultValue.SOURCETYPE_1) {
+            if (isUpdate) {
                 if (entity.getAcceptState() == YbDefaultValue.ACCEPTSTATE_1) {
                     isUpdate = true;
                     YbAppealManage updateAppealManage = new YbAppealManage();
                     if (ybAppealManage.getAcceptState() == YbDefaultValue.ACCEPTSTATE_6) {
                         YbAppealResult appealResult = null;
-                        if(entity.getSourceType() == 1) {
+                        if(entity.getSourceType() == YbDefaultValue.SOURCETYPE_1) {
                             YbAppealResult queryAr = new YbAppealResult();
                             queryAr.setApplyDateStr(entity.getApplyDateStr());
                             queryAr.setAreaType(entity.getAreaType());
@@ -334,13 +338,17 @@ public class YbAppealManageServiceImpl extends ServiceImpl<YbAppealManageMapper,
             Date thisDate = new Date();
             boolean isUpdate = false;
             String mms = "";
-            isUpdate = iYbReconsiderApplyService.findReconsiderApplyCheckEndDate(entity.getApplyDateStr(), entity.getAreaType(), entity.getTypeno());
-            if (entity.getTypeno() == YbDefaultValue.TYPENO_1) {
-                mms = "第一版";
+            isUpdate = iYbReconsiderApplyService.findReconsiderApplyCheckEndDate(entity.getApplyDateStr(), entity.getAreaType(), entity.getTypeno(),entity.getSourceType());
+            if(entity.getSourceType() == YbDefaultValue.SOURCETYPE_0) {
+                if (entity.getTypeno() == YbDefaultValue.TYPENO_1) {
+                    mms = "第一版";
+                } else {
+                    mms = "第二版";
+                }
             } else {
-                mms = "第二版";
+                mms = "非常规复议";
             }
-            if (isUpdate || entity.getSourceType() == YbDefaultValue.SOURCETYPE_1) {
+            if (isUpdate) {
                 if (entity.getAcceptState() == YbDefaultValue.ACCEPTSTATE_6) {
                     YbAppealResult updateAppealResult = new YbAppealResult();
                     updateAppealResult.setId(ybAppealManage.getId());
@@ -395,7 +403,7 @@ public class YbAppealManageServiceImpl extends ServiceImpl<YbAppealManageMapper,
             Date newDate = this.addSecond(thisDate,10);
             newAppealManage.setOperateDate(newDate);
             newAppealManage.setSourceType(ybAppealManage.getSourceType());
-            if(entity.getSourceType() == 0) {
+            if(entity.getSourceType() == YbDefaultValue.SOURCETYPE_0) {
                 newAppealManage.setVerifySendId(ybAppealManage.getVerifyId());
             }else {
                 newAppealManage.setVerifySendId(entity.getVerifySendId());
@@ -684,7 +692,7 @@ public class YbAppealManageServiceImpl extends ServiceImpl<YbAppealManageMapper,
                 if (list.size() > 0) {
                     this.iComFileService.batchRefIdDelete(entity.getId());
                 }
-                String strSourceType = entity.getSourceType() == 0 ? "In" : "Out";
+                String strSourceType = entity.getSourceType() == YbDefaultValue.SOURCETYPE_0 ? "In" : "Out";
                 if (entity.getAreaType() != 0) {
                     strSourceType += entity.getAreaType();
                 }
@@ -730,7 +738,7 @@ public class YbAppealManageServiceImpl extends ServiceImpl<YbAppealManageMapper,
                 newAppealManage.setReadyDeptName(ybAppealManage.getReadyDeptName());
                 newAppealManage.setReadyDoctorCode(ybAppealManage.getReadyDoctorCode());
                 newAppealManage.setReadyDoctorName(ybAppealManage.getReadyDoctorName());
-                if(entity.getSourceType() == 0) {
+                if(entity.getSourceType() == YbDefaultValue.SOURCETYPE_0) {
                     newAppealManage.setVerifySendId(ybAppealManage.getVerifyId());
                 }else {
                     newAppealManage.setVerifySendId(entity.getVerifySendId());

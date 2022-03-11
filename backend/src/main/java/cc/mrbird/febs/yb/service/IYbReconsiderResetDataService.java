@@ -42,7 +42,15 @@ public interface IYbReconsiderResetDataService extends IService<YbReconsiderRese
 
     List<YbReconsiderResetData> getResetDataListView(List<YbReconsiderResetData> resetDataList,String keyField,String value,Integer dataType);
 
+    List<YbReconsiderResetData> findReconsiderResetDataByApplyDateStr(String applyDateStr, Integer areaType);
+
     String updateHandleResetCancelData(String resetId,String applyDateStr,Integer areaType);
 
     String deleteAll(String applyDateStr, Integer areaType);
+
+    YbReconsiderResetData findReconsiderResetDataByRelatelDataId(String applyDateStr, Integer areaType,String relatelDataId);
+
+    List<YbReconsiderResetData> findReconsiderResetSt1DataDownLoadList(
+            String applyDateStr, Integer areaType, Integer dataType, String deptCode, String dksName, String sumId,String resultId
+    );
 }

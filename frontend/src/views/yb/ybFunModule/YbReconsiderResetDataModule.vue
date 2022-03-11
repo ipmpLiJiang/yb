@@ -25,6 +25,7 @@
         :loading="loading"
         :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
         @change="handleTableChange"
+        size="small"
         :bordered="bordered"
         :scroll="{ x: 700 }"
       >
@@ -122,6 +123,12 @@ export default {
   computed: {
     columns () {
       return [{
+        title: '序号',
+        dataIndex: 'orderNumber',
+        fixed: 'left',
+        width: 70
+      },
+      {
         title: '意见书编码',
         dataIndex: 'proposalCode',
         fixed: 'left',
@@ -131,19 +138,19 @@ export default {
         title: '交易流水号',
         dataIndex: 'serialNo',
         fixed: 'left',
-        width: 140
+        width: 120
       },
       {
         title: '单据号',
         dataIndex: 'billNo',
         fixed: 'left',
-        width: 105
+        width: 100
       },
       {
         title: '项目名称',
         dataIndex: 'projectName',
         fixed: 'left',
-        width: 160
+        width: 150
       },
       {
         title: '数量',
@@ -158,7 +165,7 @@ export default {
       {
         title: '规则名称',
         dataIndex: 'ruleName',
-        width: 140
+        width: 160
       },
       {
         title: '扣除金额',

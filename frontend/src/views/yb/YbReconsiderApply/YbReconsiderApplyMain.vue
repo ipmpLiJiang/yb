@@ -10,6 +10,7 @@
       :loading="loading"
       :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
       @change="handleTableChange"
+      size="small"
       :bordered="bordered"
       :scroll="{ x: 900 }"
     >
@@ -72,17 +73,17 @@ export default {
       {
         title: '交易流水号',
         dataIndex: 'serialNo',
-        width: 140
+        width: 120
       },
       {
         title: '意见书编码',
         dataIndex: 'proposalCode',
-        width: 140
+        width: 130
       },
       {
         title: '单据号',
         dataIndex: 'billNo',
-        width: 120
+        width: 100
       },
       {
         title: '医保内金额',

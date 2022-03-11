@@ -2,7 +2,7 @@
   <a-drawer
     title="查看"
     :maskClosable="false"
-    width=65%
+    width=70%
     placement="right"
     :closable="true"
     @close="onClose"
@@ -81,7 +81,7 @@
     type="flex"
   >
     <a-col :span=19>
-    <a-table :columns="columns" :data-source="dataSource" :rowKey="record => record.id" :pagination="pagination" bordered :scroll="{ x: 500, y:400 }">
+    <a-table :columns="columns" :data-source="dataSource" size="small" :rowKey="record => record.id" :pagination="pagination" bordered :scroll="{ x: 500, y:400 }">
       <template
         slot="operation"
         slot-scope="text, record"

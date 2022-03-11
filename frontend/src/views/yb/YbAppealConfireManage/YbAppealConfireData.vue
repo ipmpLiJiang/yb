@@ -10,6 +10,7 @@
       :loading="loading"
       :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
       @change="handleTableChange"
+      size="small"
       :bordered="bordered"
       :scroll="{ x: 900 }"
     >
@@ -78,7 +79,7 @@ export default {
         customRender: (text, row, index) => {
           return this.rowNo(index)
         },
-        width: 90,
+        width: 70,
         fixed: 'left'
       },
       // {
@@ -136,6 +137,7 @@ export default {
     del (record) {
       this.$delete('ybAppealConfireData/' + record.id).then(() => {
         this.$message.success('删除成功')
+        this.$emit('del')
         this.selectedRowKeys = []
         this.search()
       }

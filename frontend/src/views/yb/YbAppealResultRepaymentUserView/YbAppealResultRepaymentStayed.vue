@@ -1,18 +1,19 @@
 <template>
   <div id="tab" style="margin: 0px!important">
-        <!-- 表格区域 -->
-        <a-table
-          ref="TableInfo"
-          :columns="columns"
-          :rowKey="record => record.id"
-          :dataSource="dataSource"
-          :pagination="pagination"
-          :loading="loading"
-          @change="handleTableChange"
-          :bordered="bordered"
-          :scroll="{ x: 900 }"
-        >
-        </a-table>
+    <!-- 表格区域 -->
+    <a-table
+      ref="TableInfo"
+      :columns="columns"
+      :rowKey="record => record.id"
+      :dataSource="dataSource"
+      :pagination="pagination"
+      :loading="loading"
+      @change="handleTableChange"
+      size="small"
+      :bordered="bordered"
+      :scroll="{ x: 900 }"
+    >
+    </a-table>
   </div>
 </template>
 
@@ -76,7 +77,7 @@ export default {
       {
         title: '单据号',
         dataIndex: 'billNo',
-        width: 120
+        width: 100
       },
       {
         title: '项目名称',
@@ -110,7 +111,7 @@ export default {
               return text
           }
         },
-        width: 90
+        width: 80
       },
       {
         title: '保险类型',

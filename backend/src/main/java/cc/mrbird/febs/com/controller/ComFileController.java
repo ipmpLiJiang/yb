@@ -18,20 +18,18 @@ import cc.mrbird.febs.drg.service.IYbDrgApplyService;
 import cc.mrbird.febs.drg.service.IYbDrgResultService;
 import cc.mrbird.febs.system.domain.User;
 import cc.mrbird.febs.yb.domain.ResponseResult;
-import cc.mrbird.febs.yb.entity.YbAppealResultView;
-import cc.mrbird.febs.yb.entity.YbDefaultValue;
-import cc.mrbird.febs.yb.entity.YbReconsiderApply;
-import cc.mrbird.febs.yb.service.IYbAppealResultService;
-import cc.mrbird.febs.yb.service.IYbAppealResultViewService;
-import cc.mrbird.febs.yb.service.IYbReconsiderApplyService;
+import cc.mrbird.febs.yb.entity.*;
+import cc.mrbird.febs.yb.service.*;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.IoUtil;
+import cn.hutool.core.io.file.FileNameUtil;
 import cn.hutool.core.net.multipart.UploadFile;
 import cn.hutool.core.util.ZipUtil;
 import cn.hutool.poi.excel.ExcelUtil;
 import cn.hutool.poi.excel.ExcelWriter;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.StringPool;
+import com.google.common.io.Files;
 import com.wuwenze.poi.ExcelKit;
 import lombok.extern.slf4j.Slf4j;
 import net.bytebuddy.implementation.bytecode.Throw;
@@ -78,6 +76,9 @@ public class ComFileController extends BaseController {
     public IYbReconsiderApplyService iYbReconsiderApplyService;
 
     @Autowired
+    IYbHandleVerifyDataService iYbHandleVerifyDataService;
+
+    @Autowired
     IYbDrgApplyService iYbDrgApplyService;
 
     @Autowired
@@ -85,6 +86,9 @@ public class ComFileController extends BaseController {
 
     @Autowired
     IYbDrgResultService iYbDrgResultService;
+
+    @Autowired
+    public IYbReconsiderResetDataService iYbReconsiderResetDataService;
 
     /**
      * 分页查询数据
@@ -200,16 +204,103 @@ public class ComFileController extends BaseController {
         return comFile;
     }
 
+    // 单个OrderNumber 下载 主要用于 sourceType = 1 做的修改，其他兼容
+    @PostMapping("fileImgZip1")
+//    @RequiresPermissions("comFile:imgExport")
+    public void fileImgZip1(QueryRequest request, InUploadFile inUploadFile, HttpServletResponse response) throws FebsException {
+        int sourceType = inUploadFile.getSourceType();
+        String strSourceType = sourceType == YbDefaultValue.SOURCETYPE_0 ? "In" : "Out";
+        if (inUploadFile.getAreaType() != 0) {
+            strSourceType += inUploadFile.getAreaType();
+        }
+        String dateStr = null;
+        if (sourceType == YbDefaultValue.SOURCETYPE_1) {
+            inUploadFile.setTypeno(3);
+            dateStr = inUploadFile.getApplyDateStr().replace("-", "");
+            dateStr += "-" + inUploadFile.getDataType() + "-";
+            dateStr += inUploadFile.getSerName() + "-";
+        }
+        String deptName = inUploadFile.getDeptName();
+
+        String path = febsProperties.getUploadPath();
+        //String address = path + inUploadFile.getApplyDateStr() + "/" + deptName;
+        String address = path + inUploadFile.getApplyDateStr() + "/";
+        String fileName = "";
+        if (inUploadFile.getFileName() != null && !inUploadFile.getFileName().equals("")) {
+            fileName = inUploadFile.getFileName();
+        } else {
+            fileName = UUID.randomUUID().toString();
+        }
+        Random r = new Random();
+        int nxt = r.nextInt(10000);
+        String filePath = address + deptName + "-" + inUploadFile.getTypeno() + "-" + inUploadFile.getAreaType() + "-" + nxt + ".zip";
+        try {
+            List<ComFile> list = this.iComFileService.findAppealResultComFiles(inUploadFile);
+
+            if (list.size() > 0) {
+                String resetFileName = UUID.randomUUID().toString();
+                File dest = new File(address + resetFileName);
+                if (sourceType == YbDefaultValue.SOURCETYPE_1) {
+                    if (!dest.exists()) {
+                        dest.mkdirs();
+                    }
+                }
+                File[] fileUtils = new File[list.size()];
+                int num = 0;
+                String newfileStr = "";
+                for (int i = 0; i < list.size(); i++) {
+                    ComFile comFile = list.get(i);
+                    String t = comFile.getRefTabTable();
+                    File file = new File(address + t + "/" + strSourceType + "/" + comFile.getServerName());
+                    if (sourceType == YbDefaultValue.SOURCETYPE_1) {
+                        newfileStr = dateStr;
+                        num++;
+                        if (num < 10) {
+                            newfileStr += "00" + num;
+                        } else if (num < 100) {
+                            newfileStr += "0" + num;
+                        } else {
+                            newfileStr += num;
+                        }
+                        File newFile = new File(address + resetFileName + "/" + newfileStr + "." + FileNameUtil.extName(file));
+                        Files.copy(file, newFile);
+                        fileUtils[i] = newFile;
+                    } else {
+                        fileUtils[i] = file;
+                    }
+                }
+                ZipUtil.zip(FileUtil.file(filePath), false, fileUtils);
+                //ZipUtil.zip(address, filePath);
+                this.downFile(response, filePath, fileName + ".zip", true);
+                if (sourceType == YbDefaultValue.SOURCETYPE_1) {
+                    this.delWjj(dest, address + resetFileName);
+                }
+            }
+        } catch (Exception e) {
+            message = "导出失败";
+            log.error(message, e);
+            throw new FebsException(message);
+        }
+    }
+
+
     @PostMapping("fileImgZip")
 //    @RequiresPermissions("comFile:imgExport")
     public void fileImgZip(QueryRequest request, InUploadFile inUploadFile, HttpServletResponse response) throws FebsException {
         int sourceType = inUploadFile.getSourceType();
-        String strSourceType = sourceType == 0 ? "In" : "Out";
+        String strSourceType = sourceType == YbDefaultValue.SOURCETYPE_0 ? "In" : "Out";
         if (inUploadFile.getAreaType() != 0) {
             strSourceType += inUploadFile.getAreaType();
         }
-        if (sourceType == 1) {
+        List<YbReconsiderResetData> resetDataList = null;
+        if (sourceType == YbDefaultValue.SOURCETYPE_1) {
             inUploadFile.setTypeno(3);
+            if (inUploadFile.getDeptId() != null)
+                resetDataList = iYbReconsiderResetDataService.findReconsiderResetSt1DataDownLoadList(
+                        inUploadFile.getApplyDateStr(), inUploadFile.getAreaType(), inUploadFile.getDataType(),
+                        inUploadFile.getId() == null ? inUploadFile.getDeptId() : null,
+                        null, null, inUploadFile.getId()
+                );
         }
         String deptName = inUploadFile.getDeptName();
 
@@ -228,16 +319,41 @@ public class ComFileController extends BaseController {
         try {
             List<ComFile> list = this.iComFileService.findAppealResultComFiles(inUploadFile);
             if (list.size() > 0) {
-                File[] fileUtils = new File[list.size()];
-                for (int i = 0; i < list.size(); i++) {
-                    ComFile comFile = list.get(i);
-                    String t = comFile.getRefTabTable();
-                    File file = new File(address + t + "/" + strSourceType + "/" + comFile.getServerName());
-                    fileUtils[i] = file;
+                String resetFileName = UUID.randomUUID().toString();
+                List<ComFile> resultFileList = new ArrayList<>();
+                File[] fileUtils = null;
+                File dest = new File(address + resetFileName);
+
+                if (sourceType == YbDefaultValue.SOURCETYPE_1) {
+                    if (!dest.exists()) {
+                        dest.mkdirs();
+                    }
+                    resultFileList = this.resetFile(list, resetDataList, inUploadFile.getApplyDateStr());
+                    fileUtils = new File[resultFileList.size()];
+                    for (int i = 0; i < resultFileList.size(); i++) {
+                        ComFile comFile = resultFileList.get(i);
+                        String t = comFile.getRefTabTable();
+                        File file = new File(address + t + "/" + strSourceType + "/" + comFile.getServerName());
+                        File newFile = new File(address + resetFileName + "/" + comFile.getClientName() + "." + FileNameUtil.extName(file));
+                        Files.copy(file, newFile);
+                        fileUtils[i] = newFile;
+                    }
+                } else {
+                    fileUtils = new File[list.size()];
+                    for (int i = 0; i < list.size(); i++) {
+                        ComFile comFile = list.get(i);
+                        String t = comFile.getRefTabTable();
+                        File file = new File(address + t + "/" + strSourceType + "/" + comFile.getServerName());
+                        fileUtils[i] = file;
+                    }
                 }
                 ZipUtil.zip(FileUtil.file(filePath), false, fileUtils);
                 //ZipUtil.zip(address, filePath);
                 this.downFile(response, filePath, fileName, true);
+
+                if (sourceType == YbDefaultValue.SOURCETYPE_1) {
+                    this.delWjj(dest, address + resetFileName);
+                }
             }
         } catch (Exception e) {
             message = "导出失败";
@@ -246,16 +362,119 @@ public class ComFileController extends BaseController {
         }
     }
 
+    private void delWjj(File dest, String url) {
+        if (dest.exists()) {
+            String[] pathDest = dest.list();
+            if (pathDest.length == 0) {
+                dest.delete();
+            } else {
+                for (String name : pathDest) {
+                    File destFile = new File(url + "/" + name);
+                    if (destFile.exists()) {
+                        destFile.delete();
+                    }
+                }
+                dest.delete();
+            }
+        }
+    }
+
+    private List<ComFile> resetFile(List<ComFile> list, List<YbReconsiderResetData> resetDataList, String applyDateStr) {
+        List<YbReconsiderResetData> refResetList = new ArrayList<>();
+        List<ComFile> refFileList = new ArrayList<>();
+        List<ComFile> newFileList = new ArrayList<>();
+        List<String> refIdList = new ArrayList<>();
+        List<String> relatelDataIdList = new ArrayList<>();
+        for (ComFile item : list) {
+            if (!refIdList.contains(item.getRefTabId())) {
+                refIdList.add(item.getRefTabId());
+            }
+        }
+        for (YbReconsiderResetData item : resetDataList) {
+            if (!relatelDataIdList.contains(item.getRelatelDataId())) {
+                relatelDataIdList.add(item.getRelatelDataId());
+            }
+        }
+        for (String refId : refIdList) {
+            refResetList = resetDataList.stream().filter(s -> s.getPid().equals(refId)).collect(Collectors.toList());
+            if (refResetList.size() > 0 && refResetList.size() == 1) {
+                refFileList = list.stream().filter(s -> s.getRefTabId().equals(refId)).collect(Collectors.toList());
+                for (ComFile file : refFileList) {
+                    ComFile newFile = new ComFile();
+                    newFile.setOrderNumber(refResetList.get(0).getOrderNumber());
+                    newFile.setServerName(file.getServerName());
+                    newFile.setIsDeletemark(refResetList.get(0).getDataType());
+                    newFile.setRefTabId(file.getRefTabId());
+                    newFile.setId(refResetList.get(0).getRelatelDataId());
+                    newFile.setRefTabTable(file.getRefTabTable());
+                    newFile.setCreateTime(file.getCreateTime());
+                    newFile.setOrderNum(1);
+                    newFileList.add(newFile);
+                }
+            }
+            if (refResetList.size() > 0 && refResetList.size() > 1) {
+                refFileList = list.stream().filter(s -> s.getRefTabId().equals(refId)).collect(Collectors.toList());
+                for (ComFile file : refFileList) {
+                    for (YbReconsiderResetData item : refResetList) {
+                        ComFile newFile = new ComFile();
+                        newFile.setOrderNumber(item.getOrderNumber());
+                        newFile.setServerName(file.getServerName());
+                        newFile.setIsDeletemark(item.getDataType());
+                        newFile.setRefTabId(file.getRefTabId());
+                        newFile.setId(item.getRelatelDataId());
+                        newFile.setRefTabTable(file.getRefTabTable());
+                        newFile.setCreateTime(file.getCreateTime());
+                        newFile.setOrderNum(2);
+                        newFileList.add(newFile);
+                    }
+                }
+            }
+        }
+        int num = 0;
+        String fileStr = "";
+        String dateStr = applyDateStr.replace("-", "");
+        List<ComFile> resultFileList = new ArrayList<>();
+        for (String relatelDataId : relatelDataIdList) {
+            num = 0;
+            refFileList = newFileList.stream().filter(s -> s.getId().equals(relatelDataId)).collect(Collectors.toList());
+            if (refFileList.size() > 0) {
+                refFileList = refFileList.stream().sorted(Comparator.comparing(ComFile::getOrderNumber).thenComparing(ComFile::getCreateTime)).collect(Collectors.toList());
+            }
+            for (ComFile file : refFileList) {
+                fileStr = dateStr + "-" + file.getIsDeletemark() + "-" + file.getOrderNumber() + "-";
+                num++;
+                if (num < 10) {
+                    fileStr += "00" + num;
+                } else if (num < 100) {
+                    fileStr += "0" + num;
+                } else {
+                    fileStr += num;
+                }
+                file.setClientName(fileStr);
+                resultFileList.add(file);
+            }
+        }
+
+        return resultFileList;
+    }
+
     @PostMapping("fileSumImgZip")
 //    @RequiresPermissions("comFile:imgExport")
     public void fileSumImgZip(QueryRequest request, InUploadFile inUploadFile, HttpServletResponse response) throws FebsException {
         int sourceType = inUploadFile.getSourceType();
-        String strSourceType = sourceType == 0 ? "In" : "Out";
+        String strSourceType = sourceType == YbDefaultValue.SOURCETYPE_0 ? "In" : "Out";
         if (inUploadFile.getAreaType() != 0) {
             strSourceType += inUploadFile.getAreaType();
         }
-        if (sourceType == 1) {
+        List<YbReconsiderResetData> resetDataList = null;
+        if (sourceType == YbDefaultValue.SOURCETYPE_1) {
             inUploadFile.setTypeno(3);
+            if (inUploadFile.getSumId() != null) {
+                resetDataList = iYbReconsiderResetDataService.findReconsiderResetSt1DataDownLoadList(
+                        inUploadFile.getApplyDateStr(), inUploadFile.getAreaType(), inUploadFile.getDataType(),
+                        null, null, inUploadFile.getSumId(), null
+                );
+            }
         }
         String deptName = inUploadFile.getDeptName();
         String path = febsProperties.getUploadPath();
@@ -273,16 +492,41 @@ public class ComFileController extends BaseController {
         try {
             List<ComFile> list = this.iComFileService.findAppealResultSumComFiles(inUploadFile);
             if (list.size() > 0) {
-                File[] fileUtils = new File[list.size()];
-                for (int i = 0; i < list.size(); i++) {
-                    ComFile comFile = list.get(i);
-                    String t = comFile.getRefTabTable();
-                    File file = new File(address + t + "/" + strSourceType + "/" + comFile.getServerName());
-                    fileUtils[i] = file;
+                String resetFileName = UUID.randomUUID().toString();
+                List<ComFile> resultFileList = new ArrayList<>();
+                File[] fileUtils = null;
+                File dest = new File(address + resetFileName);
+
+                if (sourceType == YbDefaultValue.SOURCETYPE_1) {
+                    if (!dest.exists()) {
+                        dest.mkdirs();
+                    }
+                    resultFileList = this.resetFile(list, resetDataList, inUploadFile.getApplyDateStr());
+                    fileUtils = new File[resultFileList.size()];
+                    for (int i = 0; i < resultFileList.size(); i++) {
+                        ComFile comFile = resultFileList.get(i);
+                        String t = comFile.getRefTabTable();
+                        File file = new File(address + t + "/" + strSourceType + "/" + comFile.getServerName());
+                        File newFile = new File(address + resetFileName + "/" + comFile.getClientName() + "." + FileNameUtil.extName(file));
+                        Files.copy(file, newFile);
+                        fileUtils[i] = newFile;
+                    }
+                } else {
+                    fileUtils = new File[list.size()];
+                    for (int i = 0; i < list.size(); i++) {
+                        ComFile comFile = list.get(i);
+                        String t = comFile.getRefTabTable();
+                        File file = new File(address + t + "/" + strSourceType + "/" + comFile.getServerName());
+                        fileUtils[i] = file;
+                    }
                 }
                 ZipUtil.zip(FileUtil.file(filePath), false, fileUtils);
                 //ZipUtil.zip(address, filePath);
                 this.downFile(response, filePath, fileName, true);
+
+                if (sourceType == YbDefaultValue.SOURCETYPE_1) {
+                    this.delWjj(dest, address + resetFileName);
+                }
             }
         } catch (Exception e) {
             message = "导出失败";
@@ -295,12 +539,19 @@ public class ComFileController extends BaseController {
 //    @RequiresPermissions("comFile:imgExport")
     public void fileDksImgZip(QueryRequest request, InUploadFile inUploadFile, HttpServletResponse response) throws FebsException {
         int sourceType = inUploadFile.getSourceType();
-        String strSourceType = sourceType == 0 ? "In" : "Out";
+        String strSourceType = sourceType == YbDefaultValue.SOURCETYPE_0 ? "In" : "Out";
         if (inUploadFile.getAreaType() != 0) {
             strSourceType += inUploadFile.getAreaType();
         }
-        if (sourceType == 1) {
+        List<YbReconsiderResetData> resetDataList = null;
+        if (sourceType == YbDefaultValue.SOURCETYPE_1) {
             inUploadFile.setTypeno(3);
+            if (inUploadFile.getDeptName() != null) {
+                resetDataList = iYbReconsiderResetDataService.findReconsiderResetSt1DataDownLoadList(
+                        inUploadFile.getApplyDateStr(), inUploadFile.getAreaType(), inUploadFile.getDataType(),
+                        null, inUploadFile.getDeptName(), null, null
+                );
+            }
         }
         String deptName = inUploadFile.getDeptName();
         String path = febsProperties.getUploadPath();
@@ -318,16 +569,41 @@ public class ComFileController extends BaseController {
         try {
             List<ComFile> list = this.iComFileService.findAppealResultDksComFiles(inUploadFile);
             if (list.size() > 0) {
-                File[] fileUtils = new File[list.size()];
-                for (int i = 0; i < list.size(); i++) {
-                    ComFile comFile = list.get(i);
-                    String t = comFile.getRefTabTable();
-                    File file = new File(address + t + "/" + strSourceType + "/" + comFile.getServerName());
-                    fileUtils[i] = file;
+                String resetFileName = UUID.randomUUID().toString();
+                List<ComFile> resultFileList = new ArrayList<>();
+                File[] fileUtils = null;
+                File dest = new File(address + resetFileName);
+
+                if (sourceType == YbDefaultValue.SOURCETYPE_1) {
+                    if (!dest.exists()) {
+                        dest.mkdirs();
+                    }
+                    resultFileList = this.resetFile(list, resetDataList, inUploadFile.getApplyDateStr());
+                    fileUtils = new File[resultFileList.size()];
+                    for (int i = 0; i < resultFileList.size(); i++) {
+                        ComFile comFile = resultFileList.get(i);
+                        String t = comFile.getRefTabTable();
+                        File file = new File(address + t + "/" + strSourceType + "/" + comFile.getServerName());
+                        File newFile = new File(address + resetFileName + "/" + comFile.getClientName() + "." + FileNameUtil.extName(file));
+                        Files.copy(file, newFile);
+                        fileUtils[i] = newFile;
+                    }
+                } else {
+                    fileUtils = new File[list.size()];
+                    for (int i = 0; i < list.size(); i++) {
+                        ComFile comFile = list.get(i);
+                        String t = comFile.getRefTabTable();
+                        File file = new File(address + t + "/" + strSourceType + "/" + comFile.getServerName());
+                        fileUtils[i] = file;
+                    }
                 }
                 ZipUtil.zip(FileUtil.file(filePath), false, fileUtils);
                 //ZipUtil.zip(address, filePath);
                 this.downFile(response, filePath, fileName, true);
+
+                if (sourceType == YbDefaultValue.SOURCETYPE_1) {
+                    this.delWjj(dest, address + resetFileName);
+                }
             }
         } catch (Exception e) {
             message = "导出失败";
@@ -437,7 +713,7 @@ public class ComFileController extends BaseController {
             List<ComFile> list = this.iComFileService.findListComFile(inUploadFile.getId(), null);
             String strId = inUploadFile.getId();
             int sourceType = inUploadFile.getSourceType();
-            String strSourceType = sourceType == 0 ? "In" : "Out";
+            String strSourceType = sourceType == YbDefaultValue.SOURCETYPE_0 ? "In" : "Out";
             if (inUploadFile.getAreaType() != 0) {
                 strSourceType += inUploadFile.getAreaType();
             }
@@ -505,14 +781,14 @@ public class ComFileController extends BaseController {
         int maxNum = 0;
 
         Map<Integer, String> map = new HashMap<Integer, String>();
-        for (ComFile comFile : list){
+        for (ComFile comFile : list) {
             String code = comFile.getServerName();
             int dian = code.lastIndexOf(".");
             int lastDian = code.length() - dian;
             int strNum = code.lastIndexOf("-");
             String comFileName = code.substring(strNum + 1, code.length() - lastDian);
             num = Integer.parseInt(comFileName);
-            map.put(num,comFile.getId());
+            map.put(num, comFile.getId());
             maxNum = maxNum < num ? num : maxNum;
         }
         return maxNum + 1;
@@ -526,24 +802,35 @@ public class ComFileController extends BaseController {
         boolean isUpdate = false;
         String mms = "";
         Date thisDate = new Date();
+        int sourceType = inUploadFile.getSourceType();
         OutComFile outComFile = new OutComFile();
         if (inUploadFile.getIsCheck() == 1) {
-            isUpdate = iYbReconsiderApplyService.findReconsiderApplyCheckEndDate(inUploadFile.getApplyDateStr(), inUploadFile.getAreaType(), inUploadFile.getTypeno());
-            if (inUploadFile.getTypeno() == YbDefaultValue.TYPENO_1) {
-                mms = "第一版";
+            isUpdate = iYbReconsiderApplyService.findReconsiderApplyCheckEndDate(inUploadFile.getApplyDateStr(), inUploadFile.getAreaType(), inUploadFile.getTypeno(), sourceType);
+            if (sourceType == YbDefaultValue.SOURCETYPE_1) {
+                mms = "非常规复议";
             } else {
-                mms = "第二版";
+                if (inUploadFile.getTypeno() == YbDefaultValue.TYPENO_1) {
+                    mms = "第一版";
+                } else {
+                    mms = "第二版";
+                }
             }
         } else {
             isUpdate = true;
         }
-        if (isUpdate || inUploadFile.getSourceType() == YbDefaultValue.SOURCETYPE_1) {
+//        YbHandleVerifyData handleVerifyData = null;
+        String newFileName = inUploadFile.getProposalCode();
+//        if(sourceType == YbDefaultValue.SOURCETYPE_1) {
+//            handleVerifyData = iYbHandleVerifyDataService.getHandleVerifyDataByApplyDataId(inUploadFile.getProposalCode());
+//            newFileName = inUploadFile.getApplyDateStr().replace("-", "") + "-" + handleVerifyData.getOrderNumber();
+//        }
+//        if (isUpdate || (sourceType == YbDefaultValue.SOURCETYPE_1 && handleVerifyData != null)) {
+        if (isUpdate) {
             int num = 1;
             List<ComFile> list = this.iComFileService.findListComFile(inUploadFile.getId(), null);
             if (list.size() > 0) {
                 num = this.getMaxNum(list);
             }
-            String newFileName = inUploadFile.getProposalCode();
             if (num < 10) {
                 newFileName += "-00" + String.valueOf(num);
             } else if (num < 100) {
@@ -553,7 +840,7 @@ public class ComFileController extends BaseController {
             }
             String strId = inUploadFile.getId();
             User currentUser = FebsUtil.getCurrentUser();
-            int sourceType = inUploadFile.getSourceType();
+
             String strSourceType = sourceType == 0 ? "In" : "Out";
             if (inUploadFile.getAreaType() != 0) {
                 strSourceType += inUploadFile.getAreaType();
@@ -594,7 +881,12 @@ public class ComFileController extends BaseController {
             outComFile.setSerName(fileName);
         } else {
             outComFile.setSuccess(0);
-            outComFile.setMessage("当前已过 " + mms + " 截止日期，无法上传图片.");
+//            if(!isUpdate) {
+            outComFile.setMessage(inUploadFile.getApplyDateStr() + "当前已过 " + mms + " 截止日期，无法上传图片.");
+//            }
+//            if(sourceType == YbDefaultValue.SOURCETYPE_1 && handleVerifyData != null){
+//                outComFile.setMessage(inUploadFile.getApplyDateStr() + "未找到剔除数据，无法上传图片.");
+//            }
         }
 
         return new FebsResponse().put("data", outComFile);
@@ -607,22 +899,28 @@ public class ComFileController extends BaseController {
         try {
             boolean isUpdate = false;
             String mms = "";
+            int sourceType = inUploadFile.getSourceType();
             if (inUploadFile.getIsCheck() == 1) {
-                isUpdate = iYbReconsiderApplyService.findReconsiderApplyCheckEndDate(inUploadFile.getApplyDateStr(), inUploadFile.getAreaType(), inUploadFile.getTypeno());
-                if (inUploadFile.getTypeno() == YbDefaultValue.TYPENO_1) {
-                    mms = "第一版";
+                isUpdate = iYbReconsiderApplyService.findReconsiderApplyCheckEndDate(inUploadFile.getApplyDateStr(), inUploadFile.getAreaType(), inUploadFile.getTypeno(), sourceType);
+                if (sourceType == YbDefaultValue.SOURCETYPE_1) {
+                    mms = "非常规复议";
                 } else {
-                    mms = "第二版";
+                    if (inUploadFile.getTypeno() == YbDefaultValue.TYPENO_1) {
+                        mms = "第一版";
+                    } else {
+                        mms = "第二版";
+                    }
                 }
             } else {
                 isUpdate = true;
             }
-            if (isUpdate || inUploadFile.getSourceType() == YbDefaultValue.SOURCETYPE_1) {
+
+            if (isUpdate) {
                 String strId = inUploadFile.getId();
                 ComFile comFile = this.iComFileService.findComFileById(strId);
                 if (comFile != null) {
 //                    String strRefId = comFile.getRefTabId();
-                    int sourceType = inUploadFile.getSourceType();
+
                     String strSourceType = sourceType == 0 ? "In" : "Out";
                     if (inUploadFile.getAreaType() != 0) {
                         strSourceType += inUploadFile.getAreaType();

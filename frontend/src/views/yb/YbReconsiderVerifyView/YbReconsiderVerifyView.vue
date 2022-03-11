@@ -1,270 +1,308 @@
 
 <template>
-  <a-card
-    :bordered="false"
-    class="card-area"
-  >
+  <a-card :bordered="false" class="card-area">
     <template>
       <a-spin tip="Loading..." :spinning="spinning" :delay="delayTime">
-      <div>
-        <a-row justify="center" align="middle">
-          <a-col :span=5>
-            <a-form-item
-              v-bind="formItemLayout"
-              label="复议年月"
-            >
+          <a-row type="flex">
+            <a-col flex="190px">
+              <a-form-item
+                v-bind="formItemLayout"
+                label="复议年月"
+              >
               <a-month-picker
                 placeholder="请输入复议年月"
-                style="width: 120px"
+                style="width: 105px"
                 @change="monthChange"
                 v-model="searchApplyDate"
                 :default-value="searchApplyDate"
                 :format="monthFormat"
               />
-            </a-form-item>
-          </a-col>
-          <a-col :span=15>
-            <a-button
-              type="primary"
-              style="margin-right: 10px"
-              v-show="tableSelectKey==5?false:true"
-              @click="showSearchModal"
-            >筛选</a-button>
-          <a-button
-            type="primary"
-            style="margin-right: 10px"
-            @click.stop="hideMatch"
-            v-show="tableSelectKey==1||tableSelectKey==2?true:false">
-            自动匹配
-          </a-button>
-          <a-popover v-model="visibleMatch" trigger="click" :title="tableSelectKey==1? '明细自动匹配':'主单自动匹配'">
-            <p slot="content" v-show="tableSelectKey==1?true:false">执行顺序：</p>
-            <p slot="content" v-show="tableSelectKey==1?true:false">
-              <a-select style="width: 180px" v-model="selectSunxu">
-                <a-select-option v-for="item in handleQueryXunxu" :key="item.value" :value="item.value">
-                  {{item.text}}
+              </a-form-item>
+            </a-col>
+            <a-col flex="auto">
+              <a-button
+                type="primary"
+                style="margin-right: 6px"
+                v-show="tableSelectKey == 5 ? false : true"
+                @click="showSearchModal"
+                >筛选</a-button
+              >
+              <a-button
+                type="primary"
+                style="margin-right: 6px"
+                @click.stop="hideMatch"
+                v-show="
+                  tableSelectKey == 1 || tableSelectKey == 2 ? true : false
+                "
+              >
+                自动匹配
+              </a-button>
+              <a-popover
+                v-model="visibleMatch"
+                trigger="click"
+                :title="tableSelectKey == 1 ? '明细自动匹配' : '主单自动匹配'"
+              >
+                <p slot="content" v-show="tableSelectKey == 1 ? true : false">
+                  执行顺序：
+                </p>
+                <p slot="content" v-show="tableSelectKey == 1 ? true : false">
+                  <a-select style="width: 180px" v-model="selectSunxu">
+                    <a-select-option
+                      v-for="item in handleQueryXunxu"
+                      :key="item.value"
+                      :value="item.value"
+                    >
+                      {{ item.text }}
+                    </a-select-option>
+                  </a-select>
+                </p>
+                <p slot="content">
+                  <a-popconfirm
+                    title="确定执行匹配？"
+                    slot="content"
+                    @confirm="addImport"
+                    okText="确定"
+                    cancelText="取消"
+                  >
+                    <a-button>执行匹配</a-button>
+                  </a-popconfirm>
+                  <a-popconfirm
+                    title="确定删除匹配？"
+                    slot="content"
+                    style="margin-left: 6px"
+                    @confirm="deleteVerify"
+                    okText="确定"
+                    cancelText="取消"
+                  >
+                    <a-button type="danger">删除匹配</a-button>
+                  </a-popconfirm>
+                </p>
+              </a-popover>
+              <a-button
+                type="primary"
+                style="margin-right: 6px"
+                v-show="
+                  tableSelectKey == 1 || tableSelectKey == 2 ? true : false
+                "
+                @click="showUpdateModal"
+                >手动匹配</a-button
+              >
+              <a-popconfirm
+                title="确定批量核对?"
+                style="margin-right: 6px"
+                :visible="pcmVisible"
+                ok-text="确定"
+                cancel-text="取消"
+                v-show="tableSelectKey == 1 ? true : false"
+                @visibleChange="handleVisibleChange"
+                @confirm="batchVerify"
+                @cancel="confirmCancel"
+              >
+                <a-button type="primary">批量核对</a-button>
+              </a-popconfirm>
+              <a-popconfirm
+                title="确定全部核对？"
+                style="margin-right: 6px"
+                v-show="tableSelectKey == 1 ? true : false"
+                @confirm="batchVerifyA"
+                okText="确定"
+                cancelText="取消"
+              >
+                <a-button type="primary">全部核对</a-button>
+              </a-popconfirm>
+              <a-popconfirm
+                title="确定全部返回？"
+                style="margin-right: 6px"
+                v-show="tableSelectKey == 3 ? true : false"
+                @confirm="batchAllBack"
+                okText="确定"
+                cancelText="取消"
+              >
+                <a-button type="primary">全部返回</a-button>
+              </a-popconfirm>
+              <a-popconfirm
+                title="确定批量发送？"
+                style="margin-right: 6px"
+                v-show="
+                  tableSelectKey == 2 || tableSelectKey == 3 ? true : false
+                "
+                @confirm="batchSend"
+                okText="确定"
+                cancelText="取消"
+              >
+                <a-button type="primary">批量发送</a-button>
+              </a-popconfirm>
+              <a-popconfirm
+                title="确定全部发送？"
+                style="margin-right: 6px"
+                v-show="
+                  tableSelectKey == 2 || tableSelectKey == 3 ? true : false
+                "
+                @confirm="batchSendA"
+                okText="确定"
+                cancelText="取消"
+              >
+                <a-button type="primary">全部发送</a-button>
+              </a-popconfirm>
+              <a-button
+                type="danger"
+                @click="showDateModal"
+                v-show="
+                  tableSelectKey == 3 ||
+                  tableSelectKey == 4 ||
+                  tableSelectKey == 5 ? true: false" style="margin-right: 15px">日期</a-button
+              >
+              <a-select
+                :value="searchDataType"
+                style="width: 100px"
+                @change="handleDataTypeChange"
+                v-show="tableSelectKey == 4 ? true : false"
+              >
+                <a-select-option
+                  v-for="d in selectDataTypeDataSource"
+                  :key="d.value"
+                >
+                  {{ d.text }}
                 </a-select-option>
               </a-select>
-            </p>
-            <p slot="content">
-            <a-popconfirm
-              title="确定执行匹配？"
-              slot="content"
-              @confirm="addImport"
-              okText="确定"
-              cancelText="取消"
-            >
-              <a-button >执行匹配</a-button>
-            </a-popconfirm>
-            <a-popconfirm
-              title="确定删除匹配？"
-              slot="content"
-              style="margin-left: 10px"
-              @confirm="deleteVerify"
-              okText="确定"
-              cancelText="取消"
-            >
-              <a-button type="danger">删除匹配</a-button>
-            </a-popconfirm>
-            </p>
-          </a-popover>
-            <a-button
-              type="primary"
-              style="margin-right: 10px"
-              v-show="tableSelectKey==1||tableSelectKey==2?true:false"
-              @click="showUpdateModal"
-            >手动匹配</a-button>
-            <a-popconfirm
-              title="确定批量核对?"
-              style="margin-right: 10px"
-              :visible="pcmVisible"
-              ok-text="确定"
-              cancel-text="取消"
-              v-show="tableSelectKey==1?true:false"
-              @visibleChange="handleVisibleChange"
-              @confirm="batchVerify"
-              @cancel="confirmCancel"
-            >
-              <a-button type="primary">批量核对</a-button>
-            </a-popconfirm>
-            <a-popconfirm
-              title="确定全部核对？"
-              style="margin-right: 10px"
-              v-show="tableSelectKey==1?true:false"
-              @confirm="batchVerifyA"
-              okText="确定"
-              cancelText="取消"
-            >
-              <a-button type="primary">全部核对</a-button>
-            </a-popconfirm>
-            <a-popconfirm
-              title="确定全部返回？"
-              style="margin-right: 10px"
-              v-show="tableSelectKey==3?true:false"
-              @confirm="batchAllBack"
-              okText="确定"
-              cancelText="取消"
-            >
-              <a-button type="primary">全部返回</a-button>
-            </a-popconfirm>
-            <a-popconfirm
-              title="确定批量发送？"
-              style="margin-right: 10px"
-              v-show="tableSelectKey==2||tableSelectKey==3?true:false"
-              @confirm="batchSend"
-              okText="确定"
-              cancelText="取消"
-            >
-              <a-button type="primary">批量发送</a-button>
-            </a-popconfirm>
-            <a-popconfirm
-              title="确定全部发送？"
-              style="margin-right: 10px"
-              v-show="tableSelectKey==2||tableSelectKey==3?true:false"
-              @confirm="batchSendA"
-              okText="确定"
-              cancelText="取消"
-            >
-              <a-button type="primary">全部发送</a-button>
-            </a-popconfirm>
-            <a-button type="danger" @click="showDateModal"
-            v-show="tableSelectKey==2||tableSelectKey==3||tableSelectKey==4||tableSelectKey==5?true:false" style="margin-right: 15px">日期</a-button>
-            <a-select :value="searchDataType" style="width: 100px" @change="handleDataTypeChange"
-            v-show="tableSelectKey==4?true:false"
-            >
-              <a-select-option
-              v-for="d in selectDataTypeDataSource"
-              :key="d.value"
+              <a-select
+                :value="searchTypeno"
+                style="width: 100px"
+                @change="handleTypenoChange"
+                v-show="
+                  tableSelectKey == 4 || tableSelectKey == 5 ? true : false
+                "
               >
-              {{ d.text }}
-              </a-select-option>
-            </a-select>
-            <a-select :value="searchTypeno" style="width: 100px" @change="handleTypenoChange"
-            v-show="tableSelectKey==4 || tableSelectKey==5?true:false"
-            >
-              <a-select-option
-              v-for="d in selectTypenoDataSource"
-              :key="d.value"
+                <a-select-option
+                  v-for="d in selectTypenoDataSource"
+                  :key="d.value"
+                >
+                  {{ d.text }}
+                </a-select-option>
+              </a-select>
+              <a-button
+                v-show="tableSelectKey == 5 ? false : true"
+                type="primary"
+                style="margin-right: 6px"
+                @click="searchTable"
+                >刷新</a-button
               >
-              {{ d.text }}
-              </a-select-option>
-            </a-select>
-            <a-button  v-show="tableSelectKey==5?false:true"
-              type="primary"
-              style="margin-right: 10px"
-              @click="searchTable"
-            >刷新</a-button>
-          <a-checkbox :checked="checked"  @change="onChange" v-show="tableSelectKey==5?true:false">
-            是否发送
-          </a-checkbox>
-          <a-input-search placeholder="请输入关键字" v-model="searchText" style="width: 170px" enter-button @search="searchTable" v-show="tableSelectKey==5?true:false" />
-          <a-popconfirm
-              title="确定发送短信？"
-              @confirm="sendSms"
-              okText="确定"
-              style="margin-left: 10px"
-              cancelText="取消"
-              v-show="tableSelectKey==5?true:false"
-            >
-              <a-button type="primary">发送短信</a-button>
-            </a-popconfirm>
-            <a-button type="primary" style="margin-left: 15px" @click.stop="hideJob"  v-show="tableSelectKey==4 || tableSelectKey==5?true:false">
-              开启服务
-            </a-button>
-            <a-popover v-model="visibleJob" placement="top" trigger="click" title="开启服务">
+              <a-checkbox
+                :checked="checked"
+                @change="onChange"
+                v-show="tableSelectKey == 5 ? true : false"
+              >
+                是否发送
+              </a-checkbox>
+              <a-input-search
+                placeholder="请输入关键字"
+                v-model="searchText"
+                style="width: 160px"
+                enter-button
+                @search="searchTable"
+                v-show="tableSelectKey == 5 ? true : false"
+              />
               <a-popconfirm
-                slot="content"
-                title="确定开启复议截止服务？"
-                style="margin-right: 10px"
-                @confirm="startJob(1)"
+                title="确定发送短信？"
+                @confirm="sendSms"
                 okText="确定"
+                style="margin-left: 6px"
                 cancelText="取消"
+                v-show="tableSelectKey == 5 ? true : false"
               >
-              <a>1.复议截止服务</a>
+                <a-button type="primary">发送短信</a-button>
               </a-popconfirm>
-              <a-popconfirm
-                slot="content"
-                title="确定开启确认截止服务？"
-                style="margin-right: 10px"
-                @confirm="startJob(2)"
-                okText="确定"
-                cancelText="取消"
+              <a-button
+                type="primary"
+                style="margin-left: 10px"
+                @click.stop="hideJob"
+                v-show="
+                  tableSelectKey == 4 || tableSelectKey == 5 ? true : false
+                "
               >
-              <a>2.确认截止服务</a>
-              </a-popconfirm>
-              <a-popconfirm
-                slot="content"
-                title="确定开启截止提醒服务？"
-                style="margin-right: 10px"
-                @confirm="startJob(3)"
-                okText="确定"
-                cancelText="取消"
+                开启服务
+              </a-button>
+              <a-popover
+                v-model="visibleJob"
+                placement="top"
+                trigger="click"
+                title="开启服务"
               >
-              <a>3.截止提醒服务</a>
-              </a-popconfirm>
-              <!-- <a-popconfirm
-                slot="content"
-                title="确定开启1和2服务？"
-                style="margin-right: 10px"
-                @confirm="startJob(4)"
-                okText="确定"
-                cancelText="取消"
-              >
-              <a>1和2服务</a>
-              </a-popconfirm> -->
-              <a-popconfirm
-                slot="content"
-                title="确定开启全部服务？"
-                style="margin-right: 10px"
-                @confirm="startJob(5)"
-                okText="确定"
-                cancelText="取消"
-              >
-              <a>全部服务</a>
-              </a-popconfirm>
-            </a-popover>
-          </a-col>
-          <a-col :span=2 v-show="tableSelectKey==1||tableSelectKey==2?true:false">
-            <a-upload
+                <a-popconfirm
+                  slot="content"
+                  title="确定开启复议截止服务？"
+                  style="margin-right: 6px"
+                  @confirm="startJob(1)"
+                  okText="确定"
+                  cancelText="取消"
+                >
+                  <a>1.复议截止服务</a>
+                </a-popconfirm>
+                <a-popconfirm
+                  slot="content"
+                  title="确定开启确认截止服务？"
+                  style="margin-right: 6px"
+                  @confirm="startJob(2)"
+                  okText="确定"
+                  cancelText="取消"
+                >
+                  <a>2.确认截止服务</a>
+                </a-popconfirm>
+                <a-popconfirm
+                  slot="content"
+                  title="确定开启截止提醒服务？"
+                  style="margin-right: 6px"
+                  @confirm="startJob(3)"
+                  okText="确定"
+                  cancelText="取消"
+                >
+                  <a>3.截止提醒服务</a>
+                </a-popconfirm>
+                <a-popconfirm
+                  slot="content"
+                  title="确定开启全部服务？"
+                  style="margin-right: 6px"
+                  @confirm="startJob(5)"
+                  okText="确定"
+                  cancelText="取消"
+                >
+                  <a>全部服务</a>
+                </a-popconfirm>
+              </a-popover>
+            </a-col>
+            <a-col flex="70px" v-show="tableSelectKey == 1 || tableSelectKey == 2 ? true : false">
+              <a-upload
                 name="file"
                 accept=".xlsx,.xls"
-                style="margin-right: 10px"
+                style="margin-right: 6px"
                 :fileList="fileList"
                 :beforeUpload="beforeUpload"
               >
-                <a-button type="primary">
-                  <a-icon type="upload" /> 上传 </a-button>
+                <a-button>上传</a-button>
               </a-upload>
-          </a-col>
-          <a-col :span=2 v-show="tableSelectKey==1||tableSelectKey==2?true:false">
-            <a-popconfirm
-              title="确定导出数据？"
-              @confirm="exportExcel"
-              okText="确定"
-              cancelText="取消"
-            >
-              <a-button type="primary" >导出数据</a-button>
-            </a-popconfirm>
-          </a-col>
-        </a-row>
-      </div>
+            </a-col>
+            <a-col flex="90px" v-show="tableSelectKey == 1 || tableSelectKey == 2 ? true : false">
+              <a-popconfirm
+                title="确定导出数据？"
+                @confirm="exportExcel"
+                okText="确定"
+                cancelText="取消"
+              >
+                <a-button type="primary">导出数据</a-button>
+              </a-popconfirm>
+            </a-col>
+          </a-row>
       </a-spin>
     </template>
     <!--表格-->
     <template>
       <div id="tab">
-        <a-tabs
-          type="card"
-          @change="callback"
-        >
-          <a-tab-pane
-            key="1"
-            tab="明细待核对"
-          >
+        <a-tabs type="card" @change="callback">
+          <a-tab-pane key="1" tab="明细待核对">
             <ybReconsiderVerify-stayed
               ref="ybReconsiderVerifyStayed"
-              :applyDate='searchApplyDate'
-              :searchItem='searchItem'
+              :applyDate="searchApplyDate"
+              :searchItem="searchItem"
               @selectChangeKeyVerify="selectChangeKeyVerify"
               @detail="detail"
               @showImport="showImport"
@@ -275,53 +313,37 @@
             >
             </ybReconsiderVerify-stayed>
           </a-tab-pane>
-          <a-tab-pane
-            key="2"
-            :forceRender="true"
-            tab="主单待核对"
-          >
+          <a-tab-pane key="2" :forceRender="true" tab="主单待核对">
             <ybReconsiderSendStayed-main
               ref="ybReconsiderSendStayedMain"
-              :applyDate='searchApplyDate'
-              :searchItem='searchItem'
+              :applyDate="searchApplyDate"
+              :searchItem="searchItem"
               @showImport="showImport"
               @handImport="handImport"
               @verifySpin="verifySpin"
             >
             </ybReconsiderSendStayed-main>
           </a-tab-pane>
-          <a-tab-pane
-            key="3"
-            :forceRender="true"
-            tab="已核对"
-          >
+          <a-tab-pane key="3" :forceRender="true" tab="已核对">
             <ybReconsiderSend-stayed
               ref="ybReconsiderSendStayed"
-              :searchItem='searchItem'
-              :applyDate='searchApplyDate'
+              :searchItem="searchItem"
+              :applyDate="searchApplyDate"
               @verifySpin="verifySpin"
             >
             </ybReconsiderSend-stayed>
           </a-tab-pane>
-          <a-tab-pane
-            key="4"
-            :forceRender="true"
-            tab="已完成"
-          >
+          <a-tab-pane key="4" :forceRender="true" tab="已完成">
             <ybReconsiderSend-end
               ref="ybReconsiderSendEnd"
-              :searchItem='searchItem'
-              :applyDate='searchApplyDate'
-              :searchTypeno='searchTypeno'
-              :searchDataType='searchDataType'
+              :searchItem="searchItem"
+              :applyDate="searchApplyDate"
+              :searchTypeno="searchTypeno"
+              :searchDataType="searchDataType"
             >
             </ybReconsiderSend-end>
           </a-tab-pane>
-          <a-tab-pane
-            key="5"
-            :forceRender="true"
-            tab="核对短信"
-          >
+          <a-tab-pane key="5" :forceRender="true" tab="核对短信">
             <ybReconsiderVerify-sms
               ref="ybReconsiderVerifySms"
               :applyDateStr="searchApplyDate"
@@ -352,62 +374,53 @@
           on-ok="handleSearchOk"
         >
           <template slot="footer">
-            <a-button
-              key="back"
-              @click="handleSearchCancel"
-            >
-              取消
-            </a-button>
-            <a-button
-              key="submit"
-              type="primary"
-              @click="handleSearchOk"
-            >
+            <a-button key="back" @click="handleSearchCancel"> 取消 </a-button>
+            <a-button key="submit" type="primary" @click="handleSearchOk">
               确定
             </a-button>
           </template>
           <p>
-            <a-form-item
-              v-bind="formItemLayout"
-              label="交易流水号"
-            >
-              <a-input style="width: 255px"  v-model="searchItem.serial.serialNo" />
+            <a-form-item v-bind="formItemLayout" label="交易流水号">
+              <a-input
+                style="width: 255px"
+                v-model="searchItem.serial.serialNo"
+              />
             </a-form-item>
-            <a-form-item
-              v-bind="formItemLayout"
-              label="项目名称："
-            >
-              <a-input style="width: 255px"  v-model="searchItem.project.projectName" />
+            <a-form-item v-bind="formItemLayout" label="项目名称：">
+              <a-input
+                style="width: 255px"
+                v-model="searchItem.project.projectName"
+              />
             </a-form-item>
-            <a-form-item
-              v-bind="formItemLayout"
-              label="规则名称："
-            >
-              <a-input style="width: 255px" v-model="searchItem.rule.ruleName" />
+            <a-form-item v-bind="formItemLayout" label="规则名称：">
+              <a-input
+                style="width: 255px"
+                v-model="searchItem.rule.ruleName"
+              />
             </a-form-item>
-            <a-form-item
-              v-bind="formItemLayout"
-              label="科室名称："
-            >
-              <a-input style="width: 255px" v-model="searchItem.dept.deptName" />
+            <a-form-item v-bind="formItemLayout" label="科室名称：">
+              <a-input
+                style="width: 255px"
+                v-model="searchItem.dept.deptName"
+              />
             </a-form-item>
-            <a-form-item
-              v-bind="formItemLayout"
-              label="医生工号"
-            >
-              <a-input style="width: 255px" v-model="searchItem.doctor.docCode" />
+            <a-form-item v-bind="formItemLayout" label="医生工号">
+              <a-input
+                style="width: 255px"
+                v-model="searchItem.doctor.docCode"
+              />
             </a-form-item>
-            <a-form-item
-              v-bind="formItemLayout"
-              label="医生姓名"
-            >
-              <a-input style="width: 255px" v-model="searchItem.doctor.docName" />
+            <a-form-item v-bind="formItemLayout" label="医生姓名">
+              <a-input
+                style="width: 255px"
+                v-model="searchItem.doctor.docName"
+              />
             </a-form-item>
-            <a-form-item
-              v-bind="formItemLayout"
-              label="序号编码："
-            >
-              <a-input style="width: 255px" v-model="searchItem.order.orderNumber" />
+            <a-form-item v-bind="formItemLayout" label="序号编码：">
+              <a-input
+                style="width: 255px"
+                v-model="searchItem.order.orderNumber"
+              />
             </a-form-item>
           </p>
         </a-modal>
@@ -422,41 +435,32 @@
           on-ok="handleUpdateOk"
         >
           <template slot="footer">
-            <a-button
-              key="back"
-              @click="handleUpdateCancel"
-            >
-              取消
-            </a-button>
+            <a-button key="back" @click="handleUpdateCancel"> 取消 </a-button>
             <a-popconfirm
               title="确定匹配？"
               @confirm="handleUpdateOk"
               okText="确定"
               cancelText="取消"
             >
-              <a-button type="primary" style="margin-right: .8rem">确定</a-button>
+              <a-button type="primary" style="margin-right: 0.8rem"
+                >确定</a-button
+              >
             </a-popconfirm>
           </template>
-          <a-form-item
-            v-bind="formItemLayout"
-            label="参考复议科室"
-          >
+          <a-form-item v-bind="formItemLayout" label="参考复议科室">
             <input-select
               ref="inputSelectVerifyDept"
-              :type=1
-              @selectChange=selectDeptChange
+              :type="1"
+              @selectChange="selectDeptChange"
             >
             </input-select>
           </a-form-item>
-          <a-form-item
-            v-bind="formItemLayout"
-            label="参考复议医生"
-          >
+          <a-form-item v-bind="formItemLayout" label="参考复议医生">
             <input-select
               ref="inputSelectVerifyDoctor"
-              :type=2
-              dept='医生'
-              @selectChange=selectDoctorChange
+              :type="2"
+              dept="医生"
+              @selectChange="selectDoctorChange"
             >
             </input-select>
           </a-form-item>
@@ -466,103 +470,97 @@
     <!--变更日期Modal-->
     <template>
       <div>
-        <a-modal
-          v-model="visibleDate"
-          title="变更日期"
-          on-ok="handleDateOk"
-        >
+        <a-modal v-model="visibleDate" title="变更日期" on-ok="handleDateOk">
           <template slot="footer">
-            <a-button
-              key="back"
-              @click="handleDateCancel"
-            >
-              取消
-            </a-button>
+            <a-button key="back" @click="handleDateCancel"> 取消 </a-button>
             <a-popconfirm
               title="确定匹配？"
               @confirm="handleDateOk"
-              :disabled="reconsiderApply.id == null?true:false"
+              :disabled="reconsiderApply.id == null ? true : false"
               okText="确定"
               cancelText="取消"
             >
-              <a-button type="primary" :disabled="reconsiderApply.id == null?true:false" style="margin-right: .8rem">确定</a-button>
+              <a-button
+                type="primary"
+                :disabled="reconsiderApply.id == null ? true : false"
+                style="margin-right: 0.8rem"
+                >确定</a-button
+              >
             </a-popconfirm>
           </template>
           <a-row>
-            <a-form-item
-              v-bind="formItemLayout"
-              label="复议年月"
-            >
+            <a-form-item v-bind="formItemLayout" label="复议年月">
               <a-month-picker
                 placeholder="请输入复议年月"
-                style="width: 120px"
+                style="width: 105px"
                 @change="monthChange"
                 v-model="searchApplyDate"
                 :default-value="searchApplyDate"
                 :format="monthFormat"
               />
             </a-form-item>
-          <a-form-item
-            v-bind="formItemLayout"
-            v-show="searchTypeno==1?true:false"
-            label="第一版截止日期"
-          >
-          <a-date-picker
-            placeholder="请输入第一版截止日期"
-            style="width:220px"
-            v-model="reconsiderApply.endDateOne"
-            show-time
-            :format="dayFormat"/>
-          </a-form-item>
-        </a-row>
-        <a-row>
-          <a-form-item
-            v-bind="formItemLayout"
-            v-show="searchTypeno==1?true:false"
-            label="第一版确认日期"
-          >
-          <a-date-picker
-            placeholder="请输入第一版确认日期"
-            style="width:220px"
-            v-model="reconsiderApply.enableDateOne"
-            :format="enableFormat"/>
-          </a-form-item>
-        </a-row>
-        <a-row>
-          <a-form-item
-            v-bind="formItemLayout"
-            v-show="searchTypeno==2?true:false"
-            label="第二版截止日期"
-          >
-          <a-date-picker
-            placeholder="请输入第二版截止日期"
-            style="width:220px"
-            v-model="reconsiderApply.endDateTwo"
-            show-time
-            :format="dayFormat"/>
-          </a-form-item>
-        </a-row>
-        <a-row>
-        <a-form-item
-          v-bind="formItemLayout"
-          v-show="searchTypeno==2?true:false"
-          label="第二版确认日期"
-        >
-        <a-date-picker
-          placeholder="请输入第二版确认日期"
-          style="width:220px"
-          v-model="reconsiderApply.enableDateTwo"
-          :format="enableFormat"/>
-        </a-form-item>
-      </a-row>
-      <a-row  v-show="tableSelectKey==5?true:false">
-        <a-form-item
-          v-bind="formItemLayout"
-          label="更改已发送数据日期"
-        >
-        <a-checkbox :checked="dateChecked" @change="onIsDateChange" />
-        </a-form-item>
-      </a-row>
+            <a-form-item
+              v-bind="formItemLayout"
+              v-show="searchTypeno == 1 ? true : false"
+              label="第一版截止日期"
+            >
+              <a-date-picker
+                placeholder="请输入第一版截止日期"
+                style="width: 220px"
+                v-model="reconsiderApply.endDateOne"
+                show-time
+                :format="dayFormat"
+              />
+            </a-form-item>
+          </a-row>
+          <a-row>
+            <a-form-item
+              v-bind="formItemLayout"
+              v-show="searchTypeno == 1 ? true : false"
+              label="第一版确认日期"
+            >
+              <a-date-picker
+                placeholder="请输入第一版确认日期"
+                style="width: 220px"
+                v-model="reconsiderApply.enableDateOne"
+                :format="enableFormat"
+              />
+            </a-form-item>
+          </a-row>
+          <a-row>
+            <a-form-item
+              v-bind="formItemLayout"
+              v-show="searchTypeno == 2 ? true : false"
+              label="第二版截止日期"
+            >
+              <a-date-picker
+                placeholder="请输入第二版截止日期"
+                style="width: 220px"
+                v-model="reconsiderApply.endDateTwo"
+                show-time
+                :format="dayFormat"
+              />
+            </a-form-item>
+          </a-row>
+          <a-row>
+            <a-form-item
+              v-bind="formItemLayout"
+              v-show="searchTypeno == 2 ? true : false"
+              label="第二版确认日期"
+            >
+              <a-date-picker
+                placeholder="请输入第二版确认日期"
+                style="width: 220px"
+                v-model="reconsiderApply.enableDateTwo"
+                :format="enableFormat"
+              />
+            </a-form-item>
+          </a-row>
+          <a-row v-show="tableSelectKey == 5 ? true : false">
+            <a-form-item v-bind="formItemLayout" label="更改已发送数据日期">
+              <a-checkbox :checked="dateChecked" @change="onIsDateChange" />
+            </a-form-item>
+          </a-row>
         </a-modal>
       </div>
     </template>
@@ -608,29 +606,29 @@ export default {
       fileList: [],
       searchTypeno: 1,
       searchDataType: 0,
-      reconsiderApply: {id: null},
+      reconsiderApply: { id: null },
       checked: false,
       searchText: '',
       selectSunxu: 1,
       dateChecked: false,
       visibleDate: false,
       handleQueryXunxu: [
-        {text: '1、规则项目科室', value: 1},
-        {text: '2、科室项目规则', value: 2},
-        {text: '3、科室规则项目', value: 3},
-        {text: '4、项目科室规则', value: 4},
-        {text: '5、项目规则科室', value: 5},
-        {text: '6、规则科室项目', value: 6}
+        { text: '1、规则项目科室', value: 1 },
+        { text: '2、科室项目规则', value: 2 },
+        { text: '3、科室规则项目', value: 3 },
+        { text: '4、项目科室规则', value: 4 },
+        { text: '5、项目规则科室', value: 5 },
+        { text: '6、规则科室项目', value: 6 }
       ],
-      selectTypenoDataSource: [{text: '版本一', value: 1}, {text: '版本二', value: 2}],
-      selectDataTypeDataSource: [{text: '明细扣款', value: 0}, {text: '主单扣款', value: 1}],
+      selectTypenoDataSource: [{ text: '版本一', value: 1 }, { text: '版本二', value: 2 }],
+      selectDataTypeDataSource: [{ text: '明细扣款', value: 0 }, { text: '主单扣款', value: 1 }],
       searchItem: {
-        serial: {serialNo: ''},
-        project: {projectName: ''},
-        rule: {ruleName: ''},
-        dept: {deptName: ''},
-        doctor: {docName: '', docCode: ''},
-        order: {orderNumber: ''}
+        serial: { serialNo: '' },
+        project: { projectName: '' },
+        rule: { ruleName: '' },
+        dept: { deptName: '' },
+        doctor: { docName: '', docCode: '' },
+        order: { orderNumber: '' }
       },
       user: this.$store.state.account.user
     }
@@ -673,7 +671,7 @@ export default {
               }
             }
           } else {
-            this.reconsiderApply = {id: null}
+            this.reconsiderApply = { id: null }
           }
         } else {
           this.searchTypeno = 1
@@ -1112,7 +1110,7 @@ export default {
   margin-right: 8px;
 }
 .card-container {
-  border: 1px solid #E0E0E0;
+  border: 1px solid #e0e0e0;
   overflow: hidden;
   padding-top: 3px;
 }

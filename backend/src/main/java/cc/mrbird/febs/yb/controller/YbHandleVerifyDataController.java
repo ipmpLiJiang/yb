@@ -179,9 +179,13 @@ public class YbHandleVerifyDataController extends BaseController {
             User currentUser = FebsUtil.getCurrentUser();
             Long uid = currentUser.getUserId();
             String uname = currentUser.getUsername();
-            this.iYbHandleVerifyDataService.importCreateHandleVerifyData(applyDateStr,areaType,uid,uname);
-            message = "获得剔除操作成功,如未获取到数据，请检查是否剔除完成操作.";
-            success = 1;
+            message = this.iYbHandleVerifyDataService.importCreateHandleVerifyData(applyDateStr,areaType,uid,uname);
+            if(message.equals("")) {
+                message = "获得剔除操作成功,如未获取到数据，请检查是否剔除完成操作.";
+                success = 1;
+            } else {
+                success = 0;
+            }
         } catch (Exception e) {
             message = "获取失败";
             log.error(message, e);

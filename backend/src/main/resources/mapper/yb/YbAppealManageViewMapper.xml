@@ -129,7 +129,9 @@
         ad.orderNumber,
         ad.orderNum,
         ra.applyDateStr,
-        CASE WHEN am.typeno=1 THEN ra.endDateOne ELSE ra.endDateTwo END applyEndDate,
+        case when am.sourceType = 1 then ra.endDateReset else
+        CASE WHEN am.typeno=1 THEN ra.endDateOne ELSE ra.endDateTwo END
+        end applyEndDate,
         am.id,
         ad.id applyDataId,
         am.verifyId,
@@ -178,7 +180,9 @@
         ELSE
         case when (UNIX_TIMESTAMP(ra.endDateTwo)-UNIX_TIMESTAMP(sysdate()))/(60*60*24) > 0 then 0 else 1 end
         END
-        ELSE 0 END isEnd,
+        ELSE
+        case when (UNIX_TIMESTAMP(ra.endDateReset)-UNIX_TIMESTAMP(sysdate()))/(60*60*24) > 0 then 0 else 1 end
+        END isEnd,
         case when (UNIX_TIMESTAMP(am.enableDate)-UNIX_TIMESTAMP(sysdate()))/(60*60*24) > 0 then 1 else 0 end enableType,
         am.areaType,
         am.dksName
@@ -215,6 +219,7 @@
         </if>
         order by am.typeno,am.dataType,am.orderNum asc
     </select>
+
     <select id="findAppealManageCount" resultType="Integer"
             parameterType="cc.mrbird.febs.yb.entity.YbAppealManageView">
         select
@@ -286,7 +291,9 @@
         ad.orderNumber,
         ad.orderNum,
         ra.applyDateStr,
-        CASE WHEN am.typeno=1 THEN ra.endDateOne ELSE ra.endDateTwo END applyEndDate,
+        case when am.sourceType = 1 then ra.endDateReset else
+        CASE WHEN am.typeno=1 THEN ra.endDateOne ELSE ra.endDateTwo END
+        end applyEndDate,
         am.id,
         ad.id applyDataId,
         am.verifyId,
@@ -335,7 +342,9 @@
         ELSE
         case when (UNIX_TIMESTAMP(ra.endDateTwo)-UNIX_TIMESTAMP(sysdate()))/(60*60*24) > 0 then 0 else 1 end
         END
-        ELSE 0 END isEnd,
+        ELSE
+        case when (UNIX_TIMESTAMP(ra.endDateReset)-UNIX_TIMESTAMP(sysdate()))/(60*60*24) > 0 then 0 else 1 end
+        END isEnd,
         case when (UNIX_TIMESTAMP(am.enableDate)-UNIX_TIMESTAMP(sysdate()))/(60*60*24) > 0 then 1 else 0 end enableType,
         am.areaType,
         am.dksName
@@ -500,7 +509,9 @@
         ad.orderNumber,
         ad.orderNum,
         ra.applyDateStr,
-        CASE WHEN am.typeno=1 THEN ra.endDateOne ELSE ra.endDateTwo END applyEndDate,
+        case when am.sourceType = 1 then ra.endDateReset else
+        CASE WHEN am.typeno=1 THEN ra.endDateOne ELSE ra.endDateTwo END
+        end applyEndDate,
         am.id,
         ad.id applyDataId,
         am.verifyId,
@@ -549,7 +560,9 @@
         ELSE
         case when (UNIX_TIMESTAMP(ra.endDateTwo)-UNIX_TIMESTAMP(sysdate()))/(60*60*24) > 0 then 0 else 1 end
         END
-        ELSE 0 END isEnd,
+        ELSE
+        case when (UNIX_TIMESTAMP(ra.endDateReset)-UNIX_TIMESTAMP(sysdate()))/(60*60*24) > 0 then 0 else 1 end
+        END isEnd,
         case when (UNIX_TIMESTAMP(am.enableDate)-UNIX_TIMESTAMP(sysdate()))/(60*60*24) > 0 then 1 else 0 end enableType,
         am.areaType,
         am.dksName

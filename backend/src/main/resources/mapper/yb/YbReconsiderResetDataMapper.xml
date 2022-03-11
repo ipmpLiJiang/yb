@@ -225,4 +225,45 @@
         <if test="dataType != null">AND yb_reconsider_reset_data.dataType =#{ dataType}</if>
     </select>
 
+    <select id="findReconsiderResetDataByApplyDateStr" resultType="cc.mrbird.febs.yb.entity.YbReconsiderResetData">
+        SELECT
+            rrd.*
+        FROM
+            yb_reconsider_reset_data rrd
+        INNER JOIN yb_reconsider_reset rr ON
+            rr.id = rrd.pid
+        WHERE
+            rr.applyDateStr = #{ applyDateStr} AND
+            rr.areaType = #{ areaType} AND
+    </select>
+
+    <select id="findReconsiderResetSt1DataDownLoadList" resultType="cc.mrbird.febs.yb.entity.YbReconsiderResetData">
+        SELECT
+        rrd.id,
+        rrd.orderNumber,
+        ar.id pid,
+        rrd.dataType,
+        rrd.relatelDataId
+    FROM
+        yb_reconsider_reset_data rrd
+        inner join yb_appeal_result ar ON
+            rrd.relatelDataId = ar.relatelDataId
+    where
+        rrd.pid = #{pid}
+        <if test="resultId != null">and ar.Id =#{ resultId}</if>
+        and	ar.applyDateStr = #{ applyDateStr}
+        and ar.areaType = #{ areaType}
+        and ar.sourceType = 1
+        and ar.dataType = #{ dataType}
+        <if test="deptCode != null">and ar.deptCode =#{ deptCode}</if>
+        <if test="dksName != null and dksName != '无汇总科室'">
+            and ar.dksName = #{dksName}
+        </if>
+        <if test="dksName != null and dksName == '无汇总科室'">
+            and (ar.dksName is null or ar.dksName = '')
+        </if>
+        <if test="sumId != null">and ar.deptCode in(
+            select deptId from yb_appeal_sumdept_data where pid = #{sumId}
+        )</if>
+    </select>
 </mapper>

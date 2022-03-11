@@ -10,6 +10,7 @@
           :loading="loading"
           :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
           @change="handleTableChange"
+          size="small"
           :customRow="handleClickRow"
           :bordered="bordered"
           :scroll="{ x: 900 }"
@@ -136,7 +137,7 @@ export default {
           }
         },
         fixed: 'right',
-        width: 90
+        width: 80
       },
       {
         title: '保险类型',

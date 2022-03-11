@@ -10,6 +10,7 @@
       :loading="loading"
       :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
       @change="handleTableChange"
+      size="small"
       :bordered="bordered"
       :scroll="{ x: 900 }"
     >
@@ -75,27 +76,27 @@ export default {
       {
         title: '交易流水号',
         dataIndex: 'serialNo',
-        width: 140
+        width: 120
       },
       {
         title: '单据号',
         dataIndex: 'billNo',
-        width: 120
+        width: 100
       },
       {
         title: '意见书编码',
         dataIndex: 'proposalCode',
-        width: 140
+        width: 130
       },
       {
         title: '项目编码',
         dataIndex: 'projectCode',
-        width: 130
+        width: 120
       },
       {
         title: '项目名称',
         dataIndex: 'projectName',
-        width: 160
+        width: 150
       },
       {
         title: '数量',
@@ -110,7 +111,7 @@ export default {
       {
         title: '规则名称',
         dataIndex: 'ruleName',
-        width: 140
+        width: 160
       },
       {
         title: '扣除金额',

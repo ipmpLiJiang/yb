@@ -41,7 +41,7 @@
           >
             <input-selectdks
             ref="inputSelectChangeDks"
-            :ctType=3
+            :ctType=4
             @selectChange=selectDksChange
             >
             </input-selectdks>

@@ -298,7 +298,11 @@ public class YbAppealManageViewServiceImpl extends ServiceImpl<YbAppealManageVie
                         } else {
                             nValue = item.getEnableDate().after(reconsiderApply.getEndDateTwo()) ? 0 : 1;
                         }
-                        item.setApplyEndDate(item.getTypeno() == YbDefaultValue.TYPENO_1 ? reconsiderApply.getEndDateOne() : reconsiderApply.getEndDateTwo());
+                        if(item.getSourceType() == 0) {
+                            item.setApplyEndDate(item.getTypeno() == YbDefaultValue.TYPENO_1 ? reconsiderApply.getEndDateOne() : reconsiderApply.getEndDateTwo());
+                        } else {
+                            item.setApplyEndDate(reconsiderApply.getEndDateReset());
+                        }
                         item.setIsEnableDate(nValue);//计算
 
                         if (item.getSourceType() == 0) {
@@ -308,7 +312,7 @@ public class YbAppealManageViewServiceImpl extends ServiceImpl<YbAppealManageVie
                                 nValue = reconsiderApply.getEndDateTwo().after(thisDate) ? 0 : 1;
                             }
                         } else {
-                            nValue = 0;
+                            nValue = reconsiderApply.getEndDateReset().after(thisDate) ? 0 : 1;
                         }
                         item.setIsEnd(nValue);//计算
                         nValue = item.getEnableDate().after(thisDate) ? 1 : 0;

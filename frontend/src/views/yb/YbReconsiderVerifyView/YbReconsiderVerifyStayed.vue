@@ -10,6 +10,7 @@
     :loading="loading"
     :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
     @change="handleTableChange"
+    size="small"
     :bordered="bordered"
     :scroll="{ x: 900 }"
     >
@@ -178,19 +179,19 @@ export default {
         title: '交易流水号',
         dataIndex: 'serialNo',
         fixed: 'left',
-        width: 140
+        width: 120
       },
       {
         title: '项目编码',
         dataIndex: 'projectCode',
         fixed: 'left',
-        width: 125
+        width: 120
       },
       {
         title: '项目名称',
         dataIndex: 'projectName',
         fixed: 'left',
-        width: 160
+        width: 150
       },
       {
         title: '数量',
@@ -205,7 +206,7 @@ export default {
       {
         title: '规则名称',
         dataIndex: 'ruleName',
-        width: 140
+        width: 160
       },
       {
         title: '扣除金额',
@@ -249,28 +250,28 @@ export default {
         title: '汇总科室',
         dataIndex: 'dksName',
         fixed: 'right',
-        width: 140
+        width: 100
       },
       {
         title: '参考复议科室',
         dataIndex: 'verifyDeptName',
         scopedSlots: { customRender: 'verifyDeptName' },
         fixed: 'right',
-        width: 250
+        width: 220
       },
       {
         title: '参考复议医生',
         dataIndex: 'verifyDoctorName',
         scopedSlots: { customRender: 'verifyDoctorName' },
         fixed: 'right',
-        width: 180
+        width: 150
       },
       {
         title: '操作',
         dataIndex: 'operation',
         scopedSlots: { customRender: 'operation' },
         fixed: 'right',
-        width: 160
+        width: 130
       }]
     }
   },
@@ -705,9 +706,4 @@ export default {
 
 <style lang="less" scoped>
 @import "../../../../static/less/Common";
-</style>
-<style scoped>
-.editable-row-operations a {
-  margin-right: 8px;
-}
 </style>

@@ -39,8 +39,9 @@
       :loading="loading"
       :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
       @change="handleTableChange"
+      size="small"
       :bordered="bordered"
-      :scroll="{ x: 900 }"
+      :scroll="{ x: 750 }"
     >
       <template
       v-for="col in ['ctName']"
@@ -129,7 +130,7 @@ export default {
         customRender: (text, row, index) => {
           return this.rowNo(index)
         },
-        width: 90,
+        width: 70,
         fixed: 'left'
       },
       {
@@ -142,7 +143,7 @@ export default {
         dataIndex: 'operation',
         scopedSlots: { customRender: 'operation' },
         fixed: 'right',
-        width: 130
+        width: 120
       }]
     }
   },
@@ -338,7 +339,7 @@ export default {
 @import "../../../../static/less/Common";
 </style>
 <style scoped>
-.editable-row-operations a {
+/* .editable-row-operations a {
   margin-right: 8px;
-}
+} */
 </style>

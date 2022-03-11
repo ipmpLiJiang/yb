@@ -13,14 +13,14 @@
             >
               <a-month-picker
                 placeholder="请选择复议年月"
-                style="width: 120px"
+                style="width: 105px"
                 @change="monthChange"
                 :default-value="defaultApplyDate"
                 :format="monthFormat"
               />
             </a-form-item>
           </a-col>
-          <a-col :span=5>
+          <a-col :span=6>
               <a-form-item
                 label="院区"
                 v-bind="formItemLayout"
@@ -28,7 +28,7 @@
                 <a-select
                   :value="selectYuanQu"
                    @change="handleYuanQuChange"
-                  style="width: 150px"
+                  style="width: 130px"
                 >
                   <a-select-option
                     v-for="d in selectYuanQuSource"
@@ -64,6 +64,7 @@
         :pagination="pagination"
         :loading="loading"
         :bordered="bordered"
+        size="small"
         :scroll="{ x: 900 }"
       >
       </a-table>

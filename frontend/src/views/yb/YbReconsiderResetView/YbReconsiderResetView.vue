@@ -5,7 +5,7 @@
   >
     <template>
       <a-spin tip="Loading..." :spinning="spinning" :delay="delayTime">
-      <div style="text-align:center;margin-bottom:16px">
+      <div style="margin-bottom:16px">
         <a-row >
           <a-col :span=5>
             复议年月：
@@ -13,96 +13,85 @@
               placeholder="请输入复议年月"
               @change="monthChange"
               :default-value="formatDate()"
-              style="width: 120px"
+              style="width: 105px"
               :format="monthFormat"
             />
           </a-col>
-          <a-col :span=3 v-show="tableSelectKey==6?true:false">
-            <a-checkbox :checked="checked"  @change="onChange" >
+          <a-col :span=7>
+            <a-checkbox :checked="checked" v-show="tableSelectKey==6?true:false" style="margin-top:3px" @change="onChange" >
             是否发送
-          </a-checkbox>
+            </a-checkbox>
+            <a-input-search placeholder="请输入关键字" v-model="searchText" style="width: 150px" enter-button @search="searchTable" />
+            <a-upload
+              name="file"
+              accept=".xlsx,.xls"
+              v-show="tableSelectKey==1||tableSelectKey==2?true:false"
+              :fileList="fileList"
+              :beforeUpload="beforeUpload"
+              :disabled="fileDisabled"
+            >
+              <a-button type="primary" :disabled="fileDisabled">
+                上传数据 </a-button>
+            </a-upload>
           </a-col>
-          <a-col :span=4>
-            <a-input-search placeholder="请输入关键字" v-model="searchText" style="width: 180px" enter-button @search="searchTable" />
-          </a-col>
-          <a-col :span=2 v-show="tableSelectKey==1||tableSelectKey==2?true:false">
-            <template>
-              <a-upload
-                name="file"
-                accept=".xlsx,.xls"
-                :fileList="fileList"
-                :beforeUpload="beforeUpload"
-                :disabled="fileDisabled"
-              >
-                <a-button type="primary" :disabled="fileDisabled">
-                  上传数据 </a-button>
-              </a-upload>
-            </template>
-          </a-col>
-          <a-col :span=2 v-show="tableSelectKey==1||tableSelectKey==2?true:false">
+          <a-col :span=12>
+            <a-popconfirm
+              title="确定发送短信？"
+              v-show="tableSelectKey==6?true:false"
+              @confirm="sendSms"
+              okText="确定"
+              cancelText="取消"
+            >
+              <a-button type="primary">发送短信</a-button>
+            </a-popconfirm>
             <a-popconfirm
               title="确定下载剔除模板？"
+              v-show="tableSelectKey==1||tableSelectKey==2?true:false"
               @confirm="downloadFile"
               okText="确定"
               cancelText="取消"
             >
               <a-button type="primary">下载模板</a-button>
             </a-popconfirm>
-          </a-col>
-          <a-col :span=2>
             <a-popconfirm
               title="确定删除数据？"
+              v-show="tableSelectKey==1||tableSelectKey==2?true:false"
               @confirm="deleteAll"
               okText="确定"
               cancelText="取消"
             >
               <a-button type="primary">删除数据</a-button>
             </a-popconfirm>
-          </a-col>
-          <a-col :span=2 v-show="tableSelectKey==1||tableSelectKey==2?true:false">
             <a-popconfirm
               title="确定数据剔除？"
+              v-show="tableSelectKey==1||tableSelectKey==2?true:false"
               @confirm="update"
               okText="确定"
               cancelText="取消"
             >
               <a-button type="primary">数据剔除</a-button>
             </a-popconfirm>
-          </a-col>
-          <a-col :span=2 v-show="tableSelectKey==1?true:false">
-            <a-popconfirm
-              title="确定导出扣款数据？"
-              @confirm="exportDeductimplementExcel"
-              okText="确定"
-              cancelText="取消"
-            >
-              <a-button type="primary" >导出数据</a-button>
-            </a-popconfirm>
-          </a-col>
-          <a-col :span=3 v-show="tableSelectKey==4?true:false">
             <a-popconfirm
               title="确定导出未知数据？"
+              v-show="tableSelectKey==4?true:false"
               @confirm="exportExcel"
               okText="确定"
               cancelText="取消"
             >
               <a-button type="primary" >导出未知数据</a-button>
             </a-popconfirm>
-          </a-col>
-          <a-col :span=3 v-show="tableSelectKey==6?true:false">
-          <a-popconfirm
-              title="确定发送短信？"
-              @confirm="sendSms"
+            <a-popconfirm
+              title="确定导出扣款数据？"
+              v-show="tableSelectKey==1?true:false"
+              @confirm="exportDeductimplementExcel"
               okText="确定"
-              style="margin-left: 15px"
               cancelText="取消"
             >
-              <a-button type="primary">发送短信</a-button>
+              <a-button type="primary" >导出数据</a-button>
             </a-popconfirm>
-          </a-col>
-          <a-col :span=2 v-show="tableSelectKey==6?false:true">
             <a-popconfirm
               title="确定完成剔除？"
+              v-show="tableSelectKey==6?false:true"
               @confirm="updateApplyState"
               okText="确定"
               cancelText="取消"

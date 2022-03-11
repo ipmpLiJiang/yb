@@ -6,66 +6,44 @@
   >
     <template>
       <div style="text-align:center;margin-bottom:16px">
-        <a-row justify="start" type="flex">
-          <a-col :span=5>
-            复议年月：
-            <a-month-picker
-              placeholder="请输入复议年月"
-              style="width: 120px"
-              @change="monthChange"
-              :default-value="defaultApplyDate"
-              :format="monthFormat"
-            />
-          </a-col>
-          <a-col :span=18>
-            <a-select :value="searchDataType" style="width: 110px;margin-right: 10px" @change="handleDataTypeChange">
-              <a-select-option
-              v-for="d in selectDataTypeDataSource"
-              :key="d.value"
-              >
-              {{ d.text }}
-              </a-select-option>
-            </a-select>
-            <a-select v-model="searchItem.keyField" style="width: 110px">
-              <a-select-option
-              v-for="d in searchDropDataSource"
-              :key="d.value"
-              >
-              {{ d.text }}
-              </a-select-option>
-            </a-select>
-            =
-            <a-input-search placeholder="请输入关键字" v-model="searchItem.value" style="width: 160px" enter-button @search="searchTable" />
-            <a-button style="margin-left: 15px;margin-right: 10px" @click="showCheckDksModal">验证汇科</a-button>
-            <a-button
-            type="primary"
-            style="margin-right:10px"
-            @click="exportExcel"
-            >导出表格</a-button>
-            <a-popover v-model="visibleTup" placement="top" trigger="click" title="请选择导出类型">
-              <a-space slot="content" :size="8">
-              <a-button slot="content" size="small" @click="showModal(1)">汇总病区</a-button>
-              <a-button slot="content" size="small" type="primary"  @click="showModal(0)">单个病区</a-button>
-              <a-button slot="content" size="small" @click="showModal(2)">汇总科室</a-button>
-              </a-space>
-            </a-popover>
-            <!-- <a-popconfirm
-              title="请选择导出类型"
-              okText="单个科室"
-              cancelText="汇总科室"
-              style="margin-right:15px"
-              @cancel="() => showModal(1)"
-              @confirm="() => showModal(0)">
-              <a-icon slot="icon" type="question-circle-o" style="color: orangered" />
-              <a-button type="primary">导出图片</a-button>
-            </a-popconfirm> -->
-            <a-button type="primary" @click="tupOpen">导出图片</a-button>
-            <a-button
-            type="primary"
-            style="margin-right:10px"
-            @click="onHistory"
-            >历史操作记录</a-button>
-          </a-col>
+        <a-row>
+          复议年月：
+          <a-month-picker
+            placeholder="请输入复议年月"
+            style="width: 105px;margin-right: 6px"
+            @change="monthChange"
+            :default-value="defaultApplyDate"
+            :format="monthFormat"
+          />
+          <a-select :value="searchDataType" style="width: 100px;margin-right: 6px" @change="handleDataTypeChange">
+            <a-select-option
+            v-for="d in selectDataTypeDataSource"
+            :key="d.value"
+            >
+            {{ d.text }}
+            </a-select-option>
+          </a-select>
+          <a-select v-model="searchItem.keyField" style="width: 110px">
+            <a-select-option
+            v-for="d in searchDropDataSource"
+            :key="d.value"
+            >
+            {{ d.text }}
+            </a-select-option>
+          </a-select>
+          =
+          <a-input-search placeholder="请输入关键字" v-model="searchItem.value" style="width: 160px;margin-right:6px" enter-button @search="searchTable" />
+          <a-button style="margin-right:6px" @click="showCheckDksModal">验证汇科</a-button>
+          <a-button type="primary" style="margin-right:6px" @click="exportExcel">导出表格</a-button>
+          <a-popover v-model="visibleTup" placement="top" trigger="click" title="请选择导出类型">
+            <a-space slot="content" :size="8">
+            <a-button slot="content" size="small" @click="showModal(1)">汇总病区</a-button>
+            <a-button slot="content" size="small" type="primary"  @click="showModal(0)">单个病区</a-button>
+            <a-button slot="content" size="small" @click="showModal(2)">汇总科室</a-button>
+            </a-space>
+          </a-popover>
+          <a-button type="primary" style="margin-right:6px" @click="tupOpen">导出图片</a-button>
+          <a-button type="primary" @click="onHistory">历史记录</a-button>
         </a-row>
       </div>
     </template>

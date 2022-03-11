@@ -2,7 +2,7 @@
   <a-drawer
     title="历史申诉记录"
     :maskClosable="false"
-    width=75%
+    width=80%
     placement="right"
     :closable="true"
     @close="onClose"
@@ -24,6 +24,7 @@
         :pagination="pagination"
         :loading="loading"
         @change="handleTableChange"
+        size="small"
         :bordered="bordered"
         :scroll="{ x: 700 }"
       >
@@ -87,13 +88,6 @@ export default {
   computed: {
     columns () {
       return [{
-        title: '序号',
-        customRender: (text, row, index) => {
-          return this.rowNo(index)
-        },
-        width: 70
-      },
-      {
         title: '数据类型',
         dataIndex: 'dataType',
         customRender: (text, row, index) => {
@@ -126,7 +120,7 @@ export default {
             return row.readyDoctorCode + '-' + row.readyDoctorName
           }
         },
-        width: 160
+        width: 130
       },
       {
         title: '复议类型',
@@ -141,7 +135,7 @@ export default {
               return text
           }
         },
-        width: 100
+        width: 90
       },
       {
         title: '状态',
@@ -182,14 +176,15 @@ export default {
           } else {
             return text
           }
-        }
+        },
+        width: 110
       },
       {
         title: '操作',
         dataIndex: 'operation',
         scopedSlots: { customRender: 'operation' },
         fixed: 'right',
-        width: 120
+        width: 110
       }]
     }
   },

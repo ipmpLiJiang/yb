@@ -5,91 +5,64 @@
   >
     <div :class="advanced ? 'search' : null">
       <a-form layout="horizontal">
-        <a-row>
-          <a-col :span=4>
-            <a-form-item
-              label="复议年月："
-              v-bind="formItemLayout"
-            >
-              <a-month-picker
-                placeholder="请选择复议年月"
-                style="width: 140px"
-                @change="monthChange"
-                :default-value="defaultApplyDate"
-                :format="monthFormat"
-              />
-            </a-form-item>
-          </a-col>
-          <a-col :span=4>
-            <a-form-item
-              label="至"
-              v-bind="formItemLayout"
-            >
-              <a-month-picker
-                placeholder="请选择复议年月"
-                @change="monthToChange"
-                :default-value="defaultApplyDate"
-                :format="monthFormat"
-              />
-            </a-form-item>
-          </a-col>
-          <a-col :span=4>
-              <a-form-item
-                label="扣款类型"
-                v-bind="formItemLayout"
-              >
-                <a-select
-                  :value="selectDataType"
-                   @change="handleDataTypeChange"
-                  style="width: 100px"
-                >
-                  <a-select-option
-                    v-for="d in selectDataTypeSource"
-                    :key="d.value"
-                  >
-                    {{ d.text }}
-                  </a-select-option>
-                </a-select>
-              </a-form-item>
-          </a-col>
-          <a-col :span=4>
-            <a-form-item
-              label="复议结果"
-              v-bind="formItemLayout"
-            >
-              <a-select
-                :value="selectResultState"
-                 @change="handleResultStateChange"
-                style="width: 100px"
-              >
-                <a-select-option
-                  v-for="d in selectResultStateSource"
-                  :key="d.value"
-                >
-                  {{ d.text }}
-                </a-select-option>
-              </a-select>
-            </a-form-item>
-          </a-col>
-          <a-col :span=7>
-            <a-select v-model="searchItem.keyField" style="width: 115px">
-              <a-select-option
-              v-for="d in searchDropDataSource"
+        <div style="margin-bottom:16px">
+          复议年月：
+          <a-month-picker
+            placeholder="请选择复议年月"
+            style="width: 100px"
+            @change="monthChange"
+            :default-value="defaultApplyDate"
+            :format="monthFormat"
+          />
+          至：
+          <a-month-picker
+            placeholder="请选择复议年月"
+            style="width: 100px"
+            @change="monthToChange"
+            :default-value="defaultApplyDate"
+            :format="monthFormat"
+          />
+          扣款类型：
+          <a-select
+            :value="selectDataType"
+              @change="handleDataTypeChange"
+            style="width: 100px;"
+          >
+            <a-select-option
+              v-for="d in selectDataTypeSource"
               :key="d.value"
-              >
+            >
               {{ d.text }}
-              </a-select-option>
-            </a-select>
-            =
-            <a-input-search placeholder="请输入关键字" v-model="searchItem.value" style="width: 170px" enter-button @search="searchPage" />
-          </a-col>
-          <a-col :span=1>
-            <a-button
-              type="primary"
-              @click="importExcel"
-            >导出</a-button>
-          </a-col>
-        </a-row>
+            </a-select-option>
+          </a-select>
+          复议结果：
+          <a-select
+            :value="selectResultState"
+              @change="handleResultStateChange"
+            style="width: 80px;"
+          >
+            <a-select-option
+              v-for="d in selectResultStateSource"
+              :key="d.value"
+            >
+              {{ d.text }}
+            </a-select-option>
+          </a-select>
+          <a-select v-model="searchItem.keyField" style="width: 110px">
+            <a-select-option
+            v-for="d in searchDropDataSource"
+            :key="d.value"
+            >
+            {{ d.text }}
+            </a-select-option>
+          </a-select>
+          =
+          <a-input-search placeholder="请输入关键字" v-model="searchItem.value" style="width: 160px" enter-button @search="searchPage" />
+          <a-button
+            type="primary"
+            @click="importExcel"
+          >导出</a-button>
+        </div>
       </a-form>
     </div>
     <div>
@@ -102,6 +75,7 @@
         :pagination="pagination"
         :loading="loading"
         @change="handleTableChange"
+        size="small"
         :bordered="bordered"
         :scroll="{ x: 900 }"
       >
@@ -231,19 +205,19 @@ export default {
         title: '交易流水号',
         dataIndex: 'serialNo',
         fixed: 'left',
-        width: 140
+        width: 120
       },
       {
         title: '项目编码',
         dataIndex: 'projectCode',
         fixed: 'left',
-        width: 140
+        width: 120
       },
       {
         title: '项目名称',
         dataIndex: 'projectName',
         fixed: 'left',
-        width: 170
+        width: 150
       },
       {
         title: '数量',
@@ -292,7 +266,7 @@ export default {
         dataIndex: 'operation',
         scopedSlots: { customRender: 'operation' },
         fixed: 'right',
-        width: 120
+        width: 110
       }]
     }
   },

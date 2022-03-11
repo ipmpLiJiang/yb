@@ -59,6 +59,9 @@ public class YbHandleVerifyDataServiceImpl extends ServiceImpl<YbHandleVerifyDat
     IYbReconsiderApplyService iYbReconsiderApplyService;
 
     @Autowired
+    IYbReconsiderResetDataService iYbReconsiderResetDataService;
+
+    @Autowired
     IComSmsService iComSmsService;
 
     @Autowired
@@ -121,66 +124,74 @@ public class YbHandleVerifyDataServiceImpl extends ServiceImpl<YbHandleVerifyDat
     //获取state=2 已剔除数据
     @Override
     @Transactional
-    public void importCreateHandleVerifyData(String applyDateStr, Integer areaType, Long uid, String uname) {
+    public String importCreateHandleVerifyData(String applyDateStr, Integer areaType, Long uid, String uname) {
         YbReconsiderApply ybReconsiderApply = this.iYbReconsiderApplyService.findReconsiderApplyByApplyDateStrs(applyDateStr, areaType);
+        String msg = "";
         if (ybReconsiderApply != null) {
-            if (ybReconsiderApply.getResetState() == 1) {
-                Date thisDate = new java.sql.Timestamp(new Date().getTime());
-                YbHandleVerify handleVerify = iYbHandleVerifyService.findYbHandleVerifyApplyDateStr(applyDateStr, areaType);
-                String hvId = handleVerify == null ? null : handleVerify.getId();
-                List<YbAppealResult> appealResultList = this.iYbAppealResultService.findAppealResulDataHandles(applyDateStr, hvId, areaType);
-                if (appealResultList.size() > 0) {
-                    List<YbHandleVerifyData> insertHandleDataList = new ArrayList<>();
-                    String guid = UUID.randomUUID().toString();
+            if(ybReconsiderApply.getEndDateReset() != null) {
+                if (ybReconsiderApply.getResetState() == 1) {
+                    Date thisDate = new java.sql.Timestamp(new Date().getTime());
+                    YbHandleVerify handleVerify = iYbHandleVerifyService.findYbHandleVerifyApplyDateStr(applyDateStr, areaType);
+                    String hvId = handleVerify == null ? null : handleVerify.getId();
+                    List<YbAppealResult> appealResultList = this.iYbAppealResultService.findAppealResulDataHandles(applyDateStr, hvId, areaType);
+                    if (appealResultList.size() > 0) {
+//                    List<YbReconsiderResetData> resetDataList = iYbReconsiderResetDataService.findReconsiderResetDataByApplyDateStr(applyDateStr,areaType);
+                        List<YbHandleVerifyData> insertHandleDataList = new ArrayList<>();
+                        String guid = UUID.randomUUID().toString();
 
-                    if (hvId == null) {
-                        YbHandleVerify insert = new YbHandleVerify();
-                        insert.setId(guid);
-                        insert.setApplyDateStr(applyDateStr);
-                        insert.setIsDeletemark(1);
-                        insert.setCreateTime(thisDate);
-                        insert.setCreateUserId(uid);
-                        insert.setAreaType(areaType);
-                        this.iYbHandleVerifyService.save(insert);
-                    } else {
-                        guid = handleVerify.getId();
-                    }
+                        if (hvId == null) {
+                            YbHandleVerify insert = new YbHandleVerify();
+                            insert.setId(guid);
+                            insert.setApplyDateStr(applyDateStr);
+                            insert.setIsDeletemark(1);
+                            insert.setCreateTime(thisDate);
+                            insert.setCreateUserId(uid);
+                            insert.setAreaType(areaType);
+                            this.iYbHandleVerifyService.save(insert);
+                        } else {
+                            guid = handleVerify.getId();
+                        }
 
-                    for (YbAppealResult item : appealResultList) {
-                        YbHandleVerifyData insertData = new YbHandleVerifyData();
-                        insertData.setId(UUID.randomUUID().toString());
-                        insertData.setPid(guid);
-                        insertData.setState(YbDefaultValue.VERIFYDATASTATE_1);
-                        insertData.setIsDeletemark(1);
-                        insertData.setApplyDataId(item.getApplyDataId());
-                        insertData.setVerifyId(item.getVerifyId());
-                        insertData.setManageId(item.getManageId());
-                        insertData.setResultId(item.getId());
+                        for (YbAppealResult item : appealResultList) {
+                            YbHandleVerifyData insertData = new YbHandleVerifyData();
+                            insertData.setId(UUID.randomUUID().toString());
+                            insertData.setPid(guid);
+                            insertData.setState(YbDefaultValue.VERIFYDATASTATE_1);
+                            insertData.setIsDeletemark(1);
+                            insertData.setApplyDataId(item.getApplyDataId());
+                            insertData.setVerifyId(item.getVerifyId());
+                            insertData.setManageId(item.getManageId());
+                            insertData.setResultId(item.getId());
 //                        insertData.setResetId(item.getResetDataId());
-                        insertData.setDataType(item.getDataType());
-                        insertData.setOrderNum(item.getOrderNum());
-                        insertData.setOrderNumber(item.getOrderNumber());
-                        insertData.setTypeno(item.getTypeno());
-                        insertData.setDeptCode(item.getDeptCode());
-                        insertData.setDeptName(item.getDeptName());
-                        insertData.setDoctorCode(item.getDoctorCode());
-                        insertData.setDoctorName(item.getDoctorName());
-                        insertData.setRelatelDataId(item.getRelatelDataId());
+                            insertData.setDataType(item.getDataType());
+                            insertData.setOrderNum(item.getOrderNum());
+                            insertData.setOrderNumber(item.getOrderNumber());
+                            insertData.setTypeno(item.getTypeno());
+                            insertData.setDeptCode(item.getDeptCode());
+                            insertData.setDeptName(item.getDeptName());
+                            insertData.setDoctorCode(item.getDoctorCode());
+                            insertData.setDoctorName(item.getDoctorName());
+                            insertData.setRelatelDataId(item.getRelatelDataId());
 
-                        insertData.setOrderDoctorCode(item.getOrderDoctorCode());
-                        insertData.setOrderDoctorName(item.getOrderDoctorName());
-                        insertData.setOrderDeptCode(item.getOrderDeptCode());
-                        insertData.setOrderDeptName(item.getOrderDeptName());
+                            insertData.setOrderDoctorCode(item.getOrderDoctorCode());
+                            insertData.setOrderDoctorName(item.getOrderDoctorName());
+                            insertData.setOrderDeptCode(item.getOrderDeptCode());
+                            insertData.setOrderDeptName(item.getOrderDeptName());
 
-                        insertData.setDksName(item.getDksName());
+                            insertData.setDksName(item.getDksName());
 
-                        insertHandleDataList.add(insertData);
+                            insertHandleDataList.add(insertData);
+                        }
+                        this.saveBatch(insertHandleDataList);
                     }
-                    this.saveBatch(insertHandleDataList);
                 }
+            } else {
+                msg = applyDateStr + "未设置非常规截止日期.";
             }
+        } else {
+            msg = applyDateStr + "没有找到数据.";
         }
-
+        return msg;
     }
 
     private List<YbPerson> findPerson(List<YbHandleVerifyData> list) {
@@ -335,6 +346,17 @@ public class YbHandleVerifyDataServiceImpl extends ServiceImpl<YbHandleVerifyDat
                 this.iComSmsService.saveBatch(saveSmsList);
             }
         }
+    }
+    @Override
+    public YbHandleVerifyData getHandleVerifyDataByApplyDataId(String applyDataId){
+        YbHandleVerifyData verifyData = null;
+        LambdaQueryWrapper<YbHandleVerifyData> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(YbHandleVerifyData::getApplyDataId, applyDataId);
+        List<YbHandleVerifyData> list = this.list(queryWrapper);
+        if(list.size() > 0) {
+            verifyData =  list.get(0);
+        }
+        return verifyData;
     }
 
     @Override

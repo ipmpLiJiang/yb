@@ -60,6 +60,7 @@
         :loading="loading"
         :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
         @change="handleTableChange"
+        size="small"
         :bordered="bordered"
         :scroll="{ x: 900 }"
       >
@@ -120,7 +121,7 @@
               >
                 <a-month-picker
                   placeholder="请选择复议年月"
-                  style="width: 200px"
+                  style="width: 180px"
                   @change="monthChange"
                   :default-value="defaultApplyDate"
                   :format="monthFormat"
@@ -308,7 +309,8 @@ export default {
           this.pagination.defaultPageSize +
           index +
           1}`,
-        width: 80
+        fixed: 'left',
+        width: 70
       },
       {
         title: '复议年月',

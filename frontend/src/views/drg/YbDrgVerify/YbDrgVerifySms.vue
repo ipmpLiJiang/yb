@@ -9,6 +9,7 @@
           :pagination="pagination"
           :loading="loading"
           @change="handleTableChange"
+          size="small"
           :bordered="bordered"
           :scroll="{ x: 900 }"
         >
@@ -75,7 +76,7 @@ export default {
           }
         },
         fixed: 'left',
-        width: 200
+        width: 150
       },
       {
         title: '发送号码',
@@ -87,7 +88,7 @@ export default {
         dataIndex: 'sendcontent',
         scopedSlots: { customRender: 'operationSendcontent' },
         ellipsis: true,
-        width: 500
+        width: 460
       },
       {
         title: '状态',

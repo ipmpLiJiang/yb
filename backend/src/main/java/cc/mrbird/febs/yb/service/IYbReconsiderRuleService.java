@@ -27,4 +27,6 @@ public interface IYbReconsiderRuleService extends IService<YbReconsiderRule> {
         void updateYbReconsiderRule(YbReconsiderRule ybReconsiderRule);
 
         void deleteYbReconsiderRules(String[]Ids);
+
+        List<YbReconsiderRule> findReconsiderRuleList(YbReconsiderRule ybReconsiderRule);
         }

@@ -32,6 +32,11 @@
           style="margin-left: 30px"
           @click="showModal"
         >上传类型维护</a-button>
+        <a-button
+          type="primary"
+          style="margin-left: 30px"
+          @click="showDeptModal"
+        >大专业维护</a-button>
         <a-dropdown v-hasPermission="['ybDrgApply:export']">
           <a-menu slot="overlay">
             <a-menu-item key="export-data" @click="exportExcel"
@@ -57,6 +62,7 @@
           onChange: onSelectChange,
         }"
         @change="handleTableChange"
+        size="small"
         :bordered="bordered"
         :scroll="{ x: 900 }"
       >
@@ -143,6 +149,17 @@
         </a-modal>
       </div>
     </template>
+    <template>
+      <div>
+        <a-modal width="60%" :maskClosable="false" :footer="null" v-model="typeDeptVisible" title="大专业维护" @cancel="handleDeptOk">
+          <comType-dept
+          ref="comTypeDept"
+          @close="handleDeptOk"
+          >
+          </comType-dept>
+        </a-modal>
+      </div>
+    </template>
   </a-card>
 </template>
 
@@ -152,6 +169,7 @@ import YbDrgApplyAdd from './YbDrgApplyAdd'
 import YbDrgApplyEdit from './YbDrgApplyEdit'
 import YbDrgApplyUpload from './YbDrgApplyUpload'
 import ComTypeData from '../../com/ComType/ComTypeDrgData'
+import ComTypeDept from '../../com/ComType/ComTypeDept'
 
 const formItemLayout = {
   labelCol: {
@@ -168,7 +186,8 @@ export default {
     YbDrgApplyAdd,
     YbDrgApplyEdit,
     YbDrgApplyUpload,
-    ComTypeData
+    ComTypeData,
+    ComTypeDept
   },
   data () {
     return {
@@ -194,7 +213,9 @@ export default {
       editVisiable: false,
       gotoVisiable: false,
       typeVisible: false,
+      typeDeptVisible: false,
       ctType: 2,
+      ctDeptType: 4,
       loading: false,
       bordered: true
     }
@@ -290,7 +311,7 @@ export default {
         dataIndex: 'operation',
         scopedSlots: { customRender: 'operation' },
         fixed: 'right',
-        width: 200
+        width: 180
       }]
     }
   },
@@ -316,6 +337,15 @@ export default {
     },
     handleOk (e) {
       this.typeVisible = false
+    },
+    showDeptModal () {
+      this.typeDeptVisible = true
+      setTimeout(() => {
+        this.$refs.comTypeDept.searchPage(this.ctDeptType)
+      }, 200)
+    },
+    handleDeptOk (e) {
+      this.typeDeptVisible = false
     },
     handleCancel () {
       this.gotoVisiable = false

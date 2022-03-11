@@ -1,41 +1,42 @@
 <template>
   <div id="tab" style="margin: 0px!important">
-        <!-- 接受申请 表格区域 -->
-        <a-table
-          ref="TableInfo"
-          :columns="columns"
-          :rowKey="record => record.id"
-          :dataSource="dataSource"
-          :pagination="pagination"
-          :loading="loading"
-          :rowSelection="{type: 'radio', selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
-          @change="handleTableChange"
-          :bordered="bordered"
-          :customRow="handleClickRow"
-          :scroll="{ x: 900 }"
-        >
-          <template slot="operationLy" slot-scope="text, record, index">
-            <span :title="record.ly">{{record.ly}}</span>
-          </template>
-          <template
-            slot="operation"
-            slot-scope="text, record, index"
-          >
-            <div class="editable-row-operations">
-              <span>
-                <a
-                  @click.stop="() => look(record,index)"
-                >查看</a>
-              </span>
-              <a-divider type="vertical" />
-              <span>
-                <a
-                  @click.stop="() => change(record,index)"
-                >变更</a>
-              </span>
-            </div>
-          </template>
-        </a-table>
+    <!-- 接受申请 表格区域 -->
+    <a-table
+      ref="TableInfo"
+      :columns="columns"
+      :rowKey="record => record.id"
+      :dataSource="dataSource"
+      :pagination="pagination"
+      :loading="loading"
+      :rowSelection="{type: 'radio', selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
+      @change="handleTableChange"
+      size="small"
+      :bordered="bordered"
+      :customRow="handleClickRow"
+      :scroll="{ x: 900 }"
+    >
+      <template slot="operationLy" slot-scope="text, record, index">
+        <span :title="record.ly">{{record.ly}}</span>
+      </template>
+      <template
+        slot="operation"
+        slot-scope="text, record, index"
+      >
+        <div class="editable-row-operations">
+          <span>
+            <a
+              @click.stop="() => look(record,index)"
+            >查看</a>
+          </span>
+          <a-divider type="vertical" />
+          <span>
+            <a
+              @click.stop="() => change(record,index)"
+            >变更</a>
+          </span>
+        </div>
+      </template>
+    </a-table>
   </div>
 </template>
 
@@ -94,24 +95,24 @@ export default {
         title: '科室',
         dataIndex: 'ks',
         fixed: 'left',
-        width: 140
+        width: 120
       },
       {
         title: '就诊记录号',
         dataIndex: 'jzjlh',
         fixed: 'left',
-        width: 105
+        width: 90
       },
       {
         title: '病案号',
         dataIndex: 'bah',
         fixed: 'left',
-        width: 90
+        width: 80
       },
       {
         title: '违规类型',
         dataIndex: 'wglx',
-        width: 90
+        width: 80
       },
       {
         title: '问题描述',
@@ -155,13 +156,13 @@ export default {
           }
         },
         fixed: 'right',
-        width: 120
+        width: 108
       },
       {
         title: '复议科室',
         dataIndex: 'readyDksName',
         fixed: 'right',
-        width: 160
+        width: 130
       },
       {
         title: '复议医生',
@@ -172,14 +173,14 @@ export default {
           }
         },
         fixed: 'right',
-        width: 130
+        width: 120
       },
       {
         title: '操作',
         dataIndex: 'operation',
         scopedSlots: { customRender: 'operation' },
         fixed: 'right',
-        width: 120
+        width: 100
       }]
     }
   },
@@ -321,6 +322,7 @@ export default {
 </script>
 
 <style scoped>
-.editable-row-operations a {
+/* .editable-row-operations a {
   margin-right: 8px;
-}
+} */
+</style>

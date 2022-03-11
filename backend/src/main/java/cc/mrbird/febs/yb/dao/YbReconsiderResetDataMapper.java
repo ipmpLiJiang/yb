@@ -24,5 +24,19 @@ public interface YbReconsiderResetDataMapper extends BaseMapper<YbReconsiderRese
 
     List<YbReconsiderResetData> findResetNotExistsRepayByApplyDate(@Param("applyDateStr") String applyDateStr, @Param("areaType") Integer areaType, @Param("dataType") Integer dataType);
 
+    List<YbReconsiderResetData> findReconsiderResetDataByApplyDateStr(@Param("applyDateStr") String applyDateStr, @Param("areaType") Integer areaType);
+
     int updateReconsiderResetCancelData(@Param("resetList") List<YbReconsiderResetData> resetList);
+
+
+    List<YbReconsiderResetData> findReconsiderResetSt1DataDownLoadList(
+            @Param("pid") String pid,
+            @Param("applyDateStr") String applyDateStr,
+            @Param("areaType") Integer areaType,
+            @Param("dataType") Integer dataType,
+            @Param("deptCode") String deptCode,
+            @Param("dksName") String dksName,
+            @Param("sumId") String sumId,
+            @Param("resultId") String resultId
+    );
 }

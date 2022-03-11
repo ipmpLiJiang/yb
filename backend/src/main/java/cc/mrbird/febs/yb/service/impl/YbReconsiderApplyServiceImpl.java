@@ -399,15 +399,19 @@ public class YbReconsiderApplyServiceImpl extends ServiceImpl<YbReconsiderApplyM
     }
 
     @Override
-    public boolean findReconsiderApplyCheckEndDate(String appltDateStr, Integer areaType, int typeno) {
+    public boolean findReconsiderApplyCheckEndDate(String appltDateStr, Integer areaType, Integer typeno,int sourceType) {
         YbReconsiderApply reconsiderApply = this.findReconsiderApplyByApplyDateStrs(appltDateStr, areaType);
         boolean isUpdate = false;
         Date thisDate = new Date();
         Date compareDate = new Date();
-        if (typeno == YbDefaultValue.TYPENO_1) {
-            compareDate = reconsiderApply.getEndDateOne();
+        if(sourceType==YbDefaultValue.SOURCETYPE_0) {
+            if (typeno == YbDefaultValue.TYPENO_1) {
+                compareDate = reconsiderApply.getEndDateOne();
+            } else {
+                compareDate = reconsiderApply.getEndDateTwo();
+            }
         } else {
-            compareDate = reconsiderApply.getEndDateTwo();
+            compareDate = reconsiderApply.getEndDateReset();
         }
 
         if (compareDate.compareTo(thisDate) == 1) {

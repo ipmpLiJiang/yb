@@ -97,18 +97,6 @@
         <if test="inUploadFile.state != null and inUploadFile.state==2">and yb_appeal_result.STATE = 2</if>
         <if test="inUploadFile.deptId != null">and yb_appeal_result.deptCode = #{inUploadFile.deptId}</if>
     </select>
-    <select id="findDrgResultComFile" resultType="cc.mrbird.febs.com.entity.ComFile">
-    SELECT
-        cf.*
-    FROM
-        com_file cf
-    inner join yb_drg_result dr on
-        cf.REF_TAB_ID = dr.id
-    WHERE
-        cf.REF_TAB_TABLE = 'yb_drg_result'
-        and dr.applyDateStr = #{applyDateStr}
-        and dr.areaType = #{areaType}
-</select>
     <select id="findAppealResultSumComFile" resultType="cc.mrbird.febs.com.entity.ComFile"
             parameterType="cc.mrbird.febs.com.entity.InUploadFile">
         SELECT
@@ -166,6 +154,19 @@
         </if>
     </select>
 
+
+    <select id="findDrgResultComFile" resultType="cc.mrbird.febs.com.entity.ComFile">
+        SELECT
+            cf.*
+        FROM
+            com_file cf
+        inner join yb_drg_result dr on
+            cf.REF_TAB_ID = dr.id
+        WHERE
+            cf.REF_TAB_TABLE = 'yb_drg_result'
+            and dr.applyDateStr = #{applyDateStr}
+            and dr.areaType = #{areaType}
+    </select>
 
     <delete id="batchRefIdDelete">
         delete from com_file where REF_TAB_ID = #{refTabId}

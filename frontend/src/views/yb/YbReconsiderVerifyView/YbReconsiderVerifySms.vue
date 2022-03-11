@@ -1,21 +1,22 @@
 <template>
   <div id="tab" style="margin: 0px!important">
-        <!-- 表格区域 -->
-        <a-table
-          ref="TableInfo"
-          :columns="columns"
-          :rowKey="record => record.id"
-          :dataSource="dataSource"
-          :pagination="pagination"
-          :loading="loading"
-          @change="handleTableChange"
-          :bordered="bordered"
-          :scroll="{ x: 900 }"
-        >
-      <template slot="operationSendcontent" slot-scope="text, record, index">
-        <span :title="record.sendcontent">{{record.sendcontent}}</span>
-      </template>
-        </a-table>
+    <!-- 表格区域 -->
+    <a-table
+      ref="TableInfo"
+      :columns="columns"
+      :rowKey="record => record.id"
+      :dataSource="dataSource"
+      :pagination="pagination"
+      :loading="loading"
+      @change="handleTableChange"
+      size="small"
+      :bordered="bordered"
+      :scroll="{ x: 900 }"
+    >
+  <template slot="operationSendcontent" slot-scope="text, record, index">
+    <span :title="record.sendcontent">{{record.sendcontent}}</span>
+  </template>
+    </a-table>
   </div>
 </template>
 
@@ -78,7 +79,7 @@ export default {
           }
         },
         fixed: 'left',
-        width: 200
+        width: 150
       },
       {
         title: '发送号码',
@@ -90,7 +91,7 @@ export default {
         dataIndex: 'sendcontent',
         scopedSlots: { customRender: 'operationSendcontent' },
         ellipsis: true,
-        width: 500
+        width: 460
       },
       {
         title: '状态',

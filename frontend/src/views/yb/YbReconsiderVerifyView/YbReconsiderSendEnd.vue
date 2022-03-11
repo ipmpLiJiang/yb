@@ -9,6 +9,7 @@
     :pagination="pagination"
     :loading="loading"
     @change="handleTableChange"
+    size="small"
     :bordered="bordered"
     :scroll="{ x: 900 }"
   >
@@ -88,19 +89,19 @@ export default {
         title: '交易流水号',
         dataIndex: 'serialNo',
         fixed: 'left',
-        width: 140
+        width: 120
       },
       {
         title: '项目编码',
         dataIndex: 'projectCode',
         fixed: 'left',
-        width: 130
+        width: 120
       },
       {
         title: '项目名称',
         dataIndex: 'projectName',
         fixed: 'left',
-        width: 160
+        width: 150
       },
       {
         title: '数量',
@@ -115,7 +116,7 @@ export default {
       {
         title: '规则名称',
         dataIndex: 'ruleName',
-        width: 140
+        width: 160
       },
       {
         title: '扣除金额',
@@ -148,19 +149,19 @@ export default {
         title: '汇总科室',
         dataIndex: 'dksName',
         fixed: 'right',
-        width: 140
+        width: 100
       },
       {
         title: '复议科室',
         dataIndex: 'verifyDeptName',
         fixed: 'right',
-        width: 160
+        width: 150
       },
       {
         title: '复议医生',
         dataIndex: 'verifyDoctorName',
         fixed: 'right',
-        width: 130
+        width: 120
       },
       {
         title: '发送日期',
@@ -173,7 +174,7 @@ export default {
           }
         },
         fixed: 'right',
-        width: 110
+        width: 100
       }]
     }
   },

@@ -12,7 +12,7 @@
   </a-popconfirm>
 
   <!-- 表格区域 -->
-  <a-table :columns="columns" :data-source="dataSource" bordered :scroll="{ x: 600 }">
+  <a-table :columns="columns" :data-source="dataSource" size="small" bordered :scroll="{ x: 600 }">
   <a slot="operation" slot-scope="text, record, index" @click="() => downloadFile(record)">下载</a>
   </a-table>
   </div>

@@ -61,7 +61,10 @@ public class YbReconsiderVerifyViewServiceImpl extends ServiceImpl<YbReconsiderV
                             applyState == YbDefaultValue.APPLYSTATE_4 || applyState == YbDefaultValue.APPLYSTATE_5 ? YbDefaultValue.TYPENO_2 : 0;
                 }
                 ybReconsiderVerifyView.setPid(reconsiderApply.getId());
-                ybReconsiderVerifyView.setTypeno(typeno);
+                if(typeno != 0) {
+                    ybReconsiderVerifyView.setTypeno(typeno);
+                }
+
                 int count = this.baseMapper.findReconsiderVerifyCount(ybReconsiderVerifyView);
                 if (count > 0) {
                     page.setSearchCount(false);

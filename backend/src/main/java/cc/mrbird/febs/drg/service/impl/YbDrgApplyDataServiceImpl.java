@@ -1,6 +1,8 @@
 package cc.mrbird.febs.drg.service.impl;
 
 import cc.mrbird.febs.com.entity.ComConfiguremanage;
+import cc.mrbird.febs.com.entity.ComType;
+import cc.mrbird.febs.com.service.IComTypeService;
 import cc.mrbird.febs.common.domain.QueryRequest;
 import cc.mrbird.febs.common.utils.SortUtil;
 import cc.mrbird.febs.drg.entity.*;
@@ -9,6 +11,7 @@ import cc.mrbird.febs.drg.service.IYbDrgApplyDataService;
 import cc.mrbird.febs.drg.service.IYbDrgApplyService;
 import cc.mrbird.febs.drg.service.IYbDrgJkService;
 import cc.mrbird.febs.yb.entity.YbDefaultValue;
+import cn.hutool.core.collection.ListUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import cc.mrbird.febs.common.utils.MySqlDB;
 
@@ -47,6 +50,9 @@ public class YbDrgApplyDataServiceImpl extends ServiceImpl<YbDrgApplyDataMapper,
 
     @Autowired
     private IYbDrgJkService iYbDrgJkService;
+
+    @Autowired
+    private IComTypeService iComTypeService;
 
     @Override
     public IPage<YbDrgApplyData> findYbDrgApplyDatas(QueryRequest request, YbDrgApplyData ybDrgApplyData) {
@@ -207,13 +213,33 @@ public class YbDrgApplyDataServiceImpl extends ServiceImpl<YbDrgApplyDataMapper,
                         LambdaQueryWrapper<YbDrgApplyData> wrapper = new LambdaQueryWrapper<>();
                         wrapper.eq(YbDrgApplyData::getPid, drgApply.getId());
                         List<YbDrgApplyData> dataList = this.list(wrapper);
+
                         if (dataList.size() > 0) {
+                            List<ComType> createTypeList = new ArrayList<>();
                             MySqlDB<YbDrgJkData> mysqlDB = new MySqlDB<>();
                             String mysql = this.getSql(dataList);
                             List<YbDrgJkData> jkList = mysqlDB.excuteSqlRS(new YbDrgJkData(), mysql);
+                            List<String> dksJkList = ListUtil.toLinkedList("小儿外科","急诊外科","肝胆外科","神经内科");
+
+                            List<ComType> queryDksList = new ArrayList<>();
                             List<YbDrgJk> createList = new ArrayList<>();
                             List<YbDrgJkData> query = new ArrayList<>();
+                            int ctType= 4;
                             if (jkList.size() > 0) {
+                                ComType typeQuery= new ComType();
+                                typeQuery.setIsDeletemark(1);
+                                typeQuery.setCtType(ctType);
+                                List<ComType> typeList = iComTypeService.findComTypeList(typeQuery);
+                                for (String dksName : dksJkList) {
+                                    if(dksName!=null) {
+                                        String dksNameTrim = dksName.trim();
+                                        queryDksList = typeList.stream().filter(s -> s.getCtName() != null && s.getCtName().trim().equals(dksNameTrim)).collect(Collectors.toList());
+                                        if (queryDksList.size() == 0) {
+                                            this.getCreateDksList(createTypeList, dksName, ctType);
+                                        }
+                                    }
+                                }
+
                                 for (YbDrgApplyData item : dataList) {
                                     query = jkList.stream().filter(s -> s.getJzjlh().equals(item.getJzjlh()) &&
                                             s.getBah().equals(item.getBah())).collect(Collectors.toList());
@@ -255,6 +281,14 @@ public class YbDrgApplyDataServiceImpl extends ServiceImpl<YbDrgApplyDataMapper,
                                         jk.setYlzDocId(jkData.getYlzDocId());
                                         jk.setYlzDocName(jkData.getYlzDocName());
 
+                                        queryDksList = typeList.stream().filter(s->s.getCtName() != null && s.getCtName().trim().equals(jkData.getDeptName())).collect(Collectors.toList());
+                                        if(queryDksList.size() == 0) {
+                                            queryDksList = createTypeList.stream().filter(s->s.getCtName().equals(jkData.getDeptName())).collect(Collectors.toList());
+                                            if(queryDksList.size() == 0) {
+                                                this.getCreateDksList(createTypeList, jkData.getDeptName(), ctType);
+                                            }
+                                        }
+
                                         createList.add(jk);
                                     }
                                 }
@@ -266,6 +300,9 @@ public class YbDrgApplyDataServiceImpl extends ServiceImpl<YbDrgApplyDataMapper,
                                     iYbDrgApplyService.updateYbDrgApply(updateApply);
                                     msg = "ok";
                                 }
+                            }
+                            if(createTypeList.size() > 0) {
+                                iComTypeService.saveBatch(createTypeList);
                             }
                         } else {
                             msg = applyDateStr+" DRG复议申请未上传数据.";
@@ -287,6 +324,16 @@ public class YbDrgApplyDataServiceImpl extends ServiceImpl<YbDrgApplyDataMapper,
         }
         System.out.println("DrgJk end:" + msg);
         return msg;
+    }
+
+    private void getCreateDksList(List<ComType> createTypeList,String ctName,int ctType){
+        ComType create = new ComType();
+        create.setCtName(ctName);
+        create.setCtType(ctType);
+        create.setIsDeletemark(1);
+        create.setState(0);
+        create.setCreateTime(new Date());
+        createTypeList.add(create);
     }
 
     private String getSql(List<YbDrgApplyData> dataList) {

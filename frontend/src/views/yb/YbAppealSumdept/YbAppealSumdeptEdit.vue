@@ -2,7 +2,7 @@
   <a-drawer
     title="编辑"
     :maskClosable="false"
-    width=65%
+    width=70%
     placement="right"
     :closable="false"
     @close="onClose"
@@ -43,13 +43,13 @@
             </input-select>
           </a-form-item>
         </a-col>
-        <a-col :span=3>
+        <a-col :span=4>
           <a-button
             @click="handleSubmit"
             type="primary"
           >添加科室/保存</a-button>
         </a-col>
-        <a-col :span=11>
+        <a-col :span=10>
           <a-popconfirm
             title="确定返回列表？"
             @confirm="onClose"
@@ -75,7 +75,7 @@
 import InputSelect from '../../common/InputSelect'
 import YbAppealSumdeptData from './YbAppealSumdeptData'
 const formItemLayout = {
-  labelCol: { span: 5 },
+  labelCol: { span: 6 },
   wrapperCol: { span: 16 }
 }
 export default {

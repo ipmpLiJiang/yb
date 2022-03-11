@@ -75,6 +75,19 @@
         </a-form-item>
       </a-row>
       <a-row>
+        <a-form-item
+          v-bind="formItemLayout"
+          label="非常规截止日期"
+        >
+        <a-date-picker
+          placeholder="请输入非常规截止日期"
+          style="width:250px"
+          v-decorator="['endDateReset']"
+          show-time
+          :format="dayFormat"/>
+        </a-form-item>
+      </a-row>
+      <a-row>
         <a-col :span=12>
         <a-form-item
           v-bind="{
@@ -186,8 +199,8 @@ export default {
     setFormValues ({ ...ybReconsiderApply }) {
       this.checked = false
       this.isJob = false
-      let fields = ['applyDate', 'endDateOne', 'endDateTwo', 'enableDateOne', 'enableDateTwo']
-      let fieldDates = ['applyDate', 'endDateOne', 'endDateTwo', 'enableDateOne', 'enableDateTwo']
+      let fields = ['applyDate', 'endDateOne', 'endDateTwo', 'enableDateOne', 'enableDateTwo', 'endDateReset']
+      let fieldDates = ['applyDate', 'endDateOne', 'endDateTwo', 'enableDateOne', 'enableDateTwo', 'endDateReset']
       Object.keys(ybReconsiderApply).forEach((key) => {
         if (fields.indexOf(key) !== -1) {
           this.form.getFieldDecorator(key)
@@ -212,6 +225,9 @@ export default {
         if (!err) {
           this.setFields()
           let ybReconsiderApply = this.form.getFieldsValue()
+          if (ybReconsiderApply.endDateReset === '') {
+            ybReconsiderApply.endDateReset = null
+          }
           ybReconsiderApply.id = this.ybReconsiderApply.id
           ybReconsiderApply.isUpOverdue = this.checked
           ybReconsiderApply.areaType = this.user.areaType.value
@@ -245,7 +261,7 @@ export default {
       })
     },
     setFields () {
-      let values = this.form.getFieldsValue(['endDateOne', 'endDateTwo', 'enableDateOne', 'enableDateTwo'])
+      let values = this.form.getFieldsValue(['endDateOne', 'endDateTwo', 'enableDateOne', 'enableDateTwo', 'endDateReset'])
       if (typeof values !== 'undefined') {
         Object.keys(values).forEach(_key => { this.ybReconsiderApply[_key] = values[_key] })
       }

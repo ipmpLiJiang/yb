@@ -20,7 +20,7 @@
         />
       </a-form-item>
       <a-form-item
-          label="默认复议科室类型"
+          label="复议科室类型"
           v-bind="formItemLayout"
         >
         <a-radio-group  v-decorator="['deptType']" @change="handleDeptChange">
@@ -51,7 +51,7 @@
         </input-select>
       </a-form-item>
       <a-form-item
-          label="默认复议医生类型"
+          label="复议医生类型"
           v-bind="formItemLayout"
         >
         <a-radio-group  v-decorator="['personType']" @change="handlePersonChange">

@@ -74,6 +74,7 @@
         :loading="loading"
         :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
         @change="handleTableChange"
+        size="small"
         :bordered="bordered"
         :scroll="{ x: 900 }"
       >
@@ -179,28 +180,29 @@ export default {
       {
         title: '规则描述',
         dataIndex: 'rdescribe',
-        width: 120
+        width: 110
       },
       {
         title: '规则解释',
         dataIndex: 'rxplain',
-        width: 350
+        width: 250
       },
       {
         title: '复议重点',
         dataIndex: 'rkeypoints',
-        width: 150
+        width: 120
       },
       {
         title: '复议资料',
-        dataIndex: 'rmaterials'
+        dataIndex: 'rmaterials',
+        width: 250
       },
       {
         title: '操作',
         dataIndex: 'operation',
         scopedSlots: { customRender: 'operation' },
         fixed: 'right',
-        width: 100
+        width: 70
       }]
     }
   },
@@ -272,6 +274,8 @@ export default {
         sortField = sortedInfo.field
         sortOrder = sortedInfo.order
       }
+
+      this.queryParams.dataJson = '[{title: "规则描述",dataIndex: "rdescribe"},{title: "规则解释",dataIndex: "rxplain"},{title: "复议重点",dataIndex: "rkeypoints"},{title: "复议资料",dataIndex: "rmaterials"}]'
       this.$export('ybReconsiderRule/excel', {
         sortField: sortField,
         sortOrder: sortOrder,

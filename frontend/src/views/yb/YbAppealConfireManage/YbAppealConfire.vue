@@ -126,6 +126,7 @@
         :loading="loading"
         :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
         @change="handleTableChange"
+        size="small"
         :bordered="bordered"
         :scroll="{ x: 900 }"
       >
@@ -242,7 +243,7 @@ export default {
         customRender: (text, row, index) => {
           return this.rowNo(index)
         },
-        width: 75,
+        width: 70,
         fixed: 'left'
       },
       {

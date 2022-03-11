@@ -38,7 +38,7 @@
                   label="复议科室">
                     <input-selectdks
                       ref="inputSelectVerifyDks"
-                      :ctType=3
+                      :ctType=4
                       @selectChange=selectDksChang
                     >
                     </input-selectdks>

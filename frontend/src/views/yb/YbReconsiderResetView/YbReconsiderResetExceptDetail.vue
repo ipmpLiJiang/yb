@@ -63,6 +63,7 @@
         :loading="loading"
         :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
         @change="handleTableChange"
+        size="small"
         :customRow="handleClickRow"
         :bordered="bordered"
         :scroll="{ x: 700 }"
@@ -229,19 +230,19 @@ export default {
         title: '交易流水号',
         dataIndex: 'serialNo',
         fixed: 'left',
-        width: 140
+        width: 120
       },
       {
         title: '单据号',
         dataIndex: 'billNo',
         fixed: 'left',
-        width: 105
+        width: 90
       },
       {
         title: '项目名称',
         dataIndex: 'projectName',
         fixed: 'left',
-        width: 160
+        width: 150
       },
       {
         title: '数量',
@@ -333,7 +334,7 @@ export default {
           }
         },
         fixed: 'right',
-        width: 90
+        width: 80
       }]
     },
     columns1 () {
@@ -347,25 +348,25 @@ export default {
         title: '交易流水号',
         dataIndex: 'serialNo',
         fixed: 'left',
-        width: 140
+        width: 120
       },
       {
         title: '单据号',
         dataIndex: 'billNo',
         fixed: 'left',
-        width: 110
+        width: 90
       },
       {
         title: '项目编码',
         dataIndex: 'projectCode',
         fixed: 'left',
-        width: 130
+        width: 110
       },
       {
         title: '项目名称',
         dataIndex: 'projectName',
         fixed: 'left',
-        width: 160
+        width: 150
       },
       {
         title: '医保内金额',
@@ -432,7 +433,7 @@ export default {
           }
         },
         fixed: 'right',
-        width: 90
+        width: 80
       }]
     }
   },

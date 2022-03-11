@@ -18,7 +18,7 @@
             >
               <a-month-picker
                 placeholder="请输入复议年月"
-                style="width: 120px"
+                style="width: 105px"
                 @change="monthChange"
                 v-model="searchApplyDate"
                 :default-value="searchApplyDate"
@@ -30,12 +30,12 @@
             <a-button
               type="primary"
               v-show="tableSelectKey==4?false:true"
-              style="margin-right: 10px"
+              style="margin-right: 8px"
               @click="showSearchModal"
             >筛选</a-button>
           <a-button
             type="primary"
-            style="margin-right: 10px"
+            style="margin-right: 8px"
             @click.stop="hideMatch"
             v-show="tableSelectKey==1?true:false">
             自动匹配
@@ -54,7 +54,7 @@
             <a-popconfirm
               title="确定删除匹配？"
               slot="content"
-              style="margin-left: 10px"
+              style="margin-left: 8px"
               @confirm="deleteVerify"
               okText="确定"
               cancelText="取消"
@@ -65,13 +65,13 @@
           </a-popover>
             <a-button
               type="primary"
-              style="margin-right: 10px"
+              style="margin-right: 8px"
               v-show="tableSelectKey==1?true:false"
               @click="showUpdateModal"
             >手动匹配</a-button>
             <a-popconfirm
               title="确定批量核对?"
-              style="margin-right: 10px"
+              style="margin-right: 8px"
               :visible="pcmVisible"
               ok-text="确定"
               cancel-text="取消"
@@ -84,7 +84,7 @@
             </a-popconfirm>
             <a-popconfirm
               title="确定全部核对？"
-              style="margin-right: 10px"
+              style="margin-right: 8px"
               v-show="tableSelectKey==1?true:false"
               @confirm="batchVerifyA"
               okText="确定"
@@ -94,7 +94,7 @@
             </a-popconfirm>
             <a-popconfirm
               title="确定全部返回？"
-              style="margin-right: 10px"
+              style="margin-right: 8px"
               v-show="tableSelectKey==2?true:false"
               @confirm="batchAllBack"
               okText="确定"
@@ -104,7 +104,7 @@
             </a-popconfirm>
             <a-popconfirm
               title="确定批量发送？"
-              style="margin-right: 10px"
+              style="margin-right: 8px"
               v-show="tableSelectKey==2?true:false"
               @confirm="batchSend"
               okText="确定"
@@ -114,7 +114,7 @@
             </a-popconfirm>
             <a-popconfirm
               title="确定全部发送？"
-              style="margin-right: 10px"
+              style="margin-right: 8px"
               v-show="tableSelectKey==2?true:false"
               @confirm="batchSendA"
               okText="确定"
@@ -125,22 +125,22 @@
             <a-button type="danger" @click="showDateModal" v-show="tableSelectKey==2||tableSelectKey==3||tableSelectKey==4?true:false" style="margin-right: 15px">DRG日期</a-button>
             <a-button  v-show="tableSelectKey==4?false:true"
               type="primary"
-              style="margin-right: 10px"
+              style="margin-right: 8px"
               @click="searchTable"
             >刷新</a-button>
           <a-checkbox :checked="checked"  @change="onChange" v-show="tableSelectKey==4?true:false">
             是否发送
           </a-checkbox>
-          <a-input-search placeholder="请输入关键字" v-model="searchText" style="width: 170px" enter-button @search="searchTable" v-show="tableSelectKey==4?true:false" />
+          <a-input-search placeholder="请输入关键字" v-model="searchText" style="width: 160px" enter-button @search="searchTable" v-show="tableSelectKey==4?true:false" />
           <a-popconfirm
               title="确定发送短信？"
               @confirm="sendSms"
               okText="确定"
-              style="margin-left: 10px"
+              style="margin-left: 8px"
               cancelText="取消"
               v-show="tableSelectKey==4?true:false"
             >
-              <a-button type="primary">DRG发送短信</a-button>
+              <a-button type="primary">发送短信</a-button>
             </a-popconfirm>
             <a-button type="primary" style="margin-left: 15px" @click.stop="hideJob"  v-show="tableSelectKey==3 || tableSelectKey==4?true:false">
               开启服务
@@ -149,7 +149,7 @@
               <a-popconfirm
                 slot="content"
                 title="确定开启DRG截止服务？"
-                style="margin-right: 10px"
+                style="margin-right: 8px"
                 @confirm="startJob(1)"
                 okText="确定"
                 cancelText="取消"
@@ -159,7 +159,7 @@
               <a-popconfirm
                 slot="content"
                 title="确定开启确认截止服务？"
-                style="margin-right: 10px"
+                style="margin-right: 8px"
                 @confirm="startJob(2)"
                 okText="确定"
                 cancelText="取消"
@@ -169,7 +169,7 @@
               <a-popconfirm
                 slot="content"
                 title="确定开启截止提醒服务？"
-                style="margin-right: 10px"
+                style="margin-right: 8px"
                 @confirm="startJob(3)"
                 okText="确定"
                 cancelText="取消"
@@ -179,7 +179,7 @@
               <!-- <a-popconfirm
                 slot="content"
                 title="确定开启1和2服务？"
-                style="margin-right: 10px"
+                style="margin-right: 8px"
                 @confirm="startJob(4)"
                 okText="确定"
                 cancelText="取消"
@@ -189,7 +189,7 @@
               <a-popconfirm
                 slot="content"
                 title="确定开启全部服务？"
-                style="margin-right: 10px"
+                style="margin-right: 8px"
                 @confirm="startJob(5)"
                 okText="确定"
                 cancelText="取消"
@@ -202,7 +202,7 @@
             <a-upload
                 name="file"
                 accept=".xlsx,.xls"
-                style="margin-right: 10px"
+                style="margin-right: 8px"
                 :fileList="fileList"
                 :beforeUpload="beforeUpload"
               >
@@ -399,7 +399,7 @@
           >
             <input-selectdks
               ref="inputSelectVerifyDks"
-              :ctType=3
+              :ctType=4
               @selectChange=selectDksChange
             >
             </input-selectdks>
@@ -451,7 +451,7 @@
             >
               <a-month-picker
                 placeholder="请输入复议年月"
-                style="width: 120px"
+                style="width: 105px"
                 @change="monthChange"
                 v-model="searchApplyDate"
                 :default-value="searchApplyDate"

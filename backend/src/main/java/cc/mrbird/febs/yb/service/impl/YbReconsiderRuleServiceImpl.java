@@ -15,10 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * <p>
@@ -92,5 +89,22 @@ public class YbReconsiderRuleServiceImpl extends ServiceImpl<YbReconsiderRuleMap
         this.baseMapper.deleteBatchIds(list);
     }
 
+    @Override
+    public List<YbReconsiderRule> findReconsiderRuleList(YbReconsiderRule ybReconsiderRule){
+        List<YbReconsiderRule> list = new ArrayList<>();
+        try {
+            LambdaQueryWrapper<YbReconsiderRule> queryWrapper = new LambdaQueryWrapper<>();
+            queryWrapper.eq(YbReconsiderRule::getIsDeletemark, 1);//1是未删 0是已删
 
+            if (StringUtils.isNotBlank(ybReconsiderRule.getRdescribe())) {
+                queryWrapper.like(YbReconsiderRule::getRdescribe, ybReconsiderRule.getRdescribe());
+            }
+
+            list = this.list(queryWrapper);
+        } catch (Exception e) {
+            log.error("获取字典信息失败", e);
+            return list;
+        }
+        return  list;
+    }
 }

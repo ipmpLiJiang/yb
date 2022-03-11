@@ -2,7 +2,7 @@
   <a-drawer
     :title="title"
     :maskClosable="false"
-    width=75%
+    width=80%
     placement="right"
     :closable="true"
     @close="onClose"
@@ -25,6 +25,7 @@
         :loading="loading"
         :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
         @change="handleTableChange"
+        size="small"
         :bordered="bordered"
         :scroll="{ x: 900 }"
       >
@@ -88,7 +89,7 @@ export default {
       return [{
         title: '序号',
         dataIndex: 'id',
-        width: 100,
+        width: 70,
         fixed: 'left'
       },
       {
@@ -116,12 +117,12 @@ export default {
       {
         title: '交易流水号',
         dataIndex: 'transNo',
-        width: 140
+        width: 120
       },
       {
         title: '项目代码',
         dataIndex: 'itemId',
-        width: 130
+        width: 120
       },
       {
         title: '项目医保编码',
@@ -131,7 +132,7 @@ export default {
       {
         title: '项目名称',
         dataIndex: 'itemName',
-        width: 160
+        width: 150
       },
       {
         title: '项目数量',
@@ -191,7 +192,7 @@ export default {
           }
         },
         fixed: 'right',
-        width: 120
+        width: 110
       }]
     }
   },

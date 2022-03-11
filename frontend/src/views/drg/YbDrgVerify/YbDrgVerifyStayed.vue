@@ -10,6 +10,7 @@
     :loading="loading"
     :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
     @change="handleTableChange"
+    size="small"
     :bordered="bordered"
     :scroll="{ x: 900 }"
     >
@@ -178,24 +179,24 @@ export default {
         title: '科室',
         dataIndex: 'ks',
         fixed: 'left',
-        width: 140
+        width: 120
       },
       {
         title: '就诊记录号',
         dataIndex: 'jzjlh',
         fixed: 'left',
-        width: 105
+        width: 90
       },
       {
         title: '病案号',
         dataIndex: 'bah',
         fixed: 'left',
-        width: 90
+        width: 80
       },
       {
         title: '违规类型',
         dataIndex: 'wglx',
-        width: 90
+        width: 80
       },
       {
         title: '问题描述',
@@ -229,21 +230,21 @@ export default {
         dataIndex: 'verifyDksName',
         scopedSlots: { customRender: 'verifyDksName' },
         fixed: 'right',
-        width: 180
+        width: 160
       },
       {
         title: '复议医生',
         dataIndex: 'verifyDoctorName',
         scopedSlots: { customRender: 'verifyDoctorName' },
         fixed: 'right',
-        width: 170
+        width: 150
       },
       {
         title: '操作',
         dataIndex: 'operation',
         scopedSlots: { customRender: 'operation' },
         fixed: 'right',
-        width: 160
+        width: 130
       }]
     }
   },
@@ -399,7 +400,7 @@ export default {
     // 模拟往服务器发送请求
     ajaxDks (keyword) {
       let dataSource = []
-      let params = {isDeletemark: 1, ctType: 3, comments: keyword}
+      let params = {isDeletemark: 1, ctType: 4, comments: keyword}
       this.$get('comType/getComTypeByNameList', {
         ...params
       }).then((r) => {
@@ -663,7 +664,4 @@ export default {
 @import "../../../../static/less/Common";
 </style>
 <style scoped>
-.editable-row-operations a {
-  margin-right: 8px;
-}
 </style>

@@ -12,12 +12,15 @@ import cc.mrbird.febs.common.domain.QueryRequest;
 
 import cc.mrbird.febs.common.properties.FebsProperties;
 import cc.mrbird.febs.yb.domain.ResponseResultData;
-import cc.mrbird.febs.yb.entity.YbAppealResultDownLoad;
+import cc.mrbird.febs.yb.entity.*;
 import cc.mrbird.febs.yb.service.IYbAppealResultService;
-import cc.mrbird.febs.yb.entity.YbAppealResult;
 
 import cc.mrbird.febs.common.utils.FebsUtil;
 import cc.mrbird.febs.system.domain.User;
+import cc.mrbird.febs.yb.service.IYbHandleVerifyDataService;
+import cc.mrbird.febs.yb.service.IYbReconsiderApplyDataService;
+import cc.mrbird.febs.yb.service.IYbReconsiderApplyService;
+import cn.hutool.core.io.file.FileNameUtil;
 import com.baomidou.mybatisplus.core.toolkit.StringPool;
 import com.google.common.io.Files;
 import com.wuwenze.poi.ExcelKit;
@@ -47,14 +50,21 @@ public class YbAppealResultController extends BaseController {
 
     private String message;
     @Autowired
-    public IYbAppealResultService iYbAppealResultService;
+    IYbAppealResultService iYbAppealResultService;
 
     @Autowired
     IComFileService iComFileService;
 
     @Autowired
     FebsProperties febsProperties;
+    @Autowired
+    IYbHandleVerifyDataService iYbHandleVerifyDataService;
 
+    @Autowired
+    IYbReconsiderApplyDataService iYbReconsiderApplyDataService;
+
+    @Autowired
+    IYbReconsiderApplyService iYbReconsiderApplyService;
 
     /**
      * 分页查询数据
@@ -173,69 +183,98 @@ public class YbAppealResultController extends BaseController {
     public FebsResponse findLoadLastAppealResuls(YbAppealResult ybAppealResult) {
         int success = 0;
         try {
+            boolean isUpdate = iYbReconsiderApplyService.findReconsiderApplyCheckEndDate(ybAppealResult.getApplyDateStr(), ybAppealResult.getAreaType(), 0,YbDefaultValue.SOURCETYPE_1);
+            if (isUpdate) {
+                String loadId = ybAppealResult.getId();//获得传过来的 sourceType==1 的 manageId
 
-            String loadId = ybAppealResult.getId();//获得传过来的 sourceType==1 的 manageId
-            //获取当前是否上传过附件 sourceType==1
-            List<ComFile> comFileList = this.iComFileService.findListComFile(loadId,null);
-            Date thisDate = new Date();
-            if (comFileList.size() == 0) {
-                String applyDateStr = ybAppealResult.getApplyDateStr(); //获得传过来的 applyDateStr
-                //获得之前申诉记录
-                ybAppealResult = this.iYbAppealResultService.findLoadLastAppealResulData(ybAppealResult);
-                if (ybAppealResult != null) {
-                    User currentUser = FebsUtil.getCurrentUser();
-                    comFileList = this.iComFileService.findListComFile(ybAppealResult.getId(),null);
-                    if (comFileList.size() > 0) {
-                        List<ComFile> loadLastList = new ArrayList<ComFile>();
+                //获取当前是否上传过附件 sourceType==1
+                List<ComFile> comFileList = this.iComFileService.findListComFile(loadId, null);
 
-                        String filePath = febsProperties.getUploadPath(); // 上传后的路径
-                        String oldDept = filePath + applyDateStr + "/" + currentUser.getUsername() + "/In";
-                        String newDept = filePath + applyDateStr + "/" + currentUser.getUsername() + "/Out";
-                        if(ybAppealResult.getAreaType() != 0){
-                            oldDept += ybAppealResult.getAreaType();
-                            newDept += ybAppealResult.getAreaType();
-                        }
+                Date thisDate = new Date();
+                if (comFileList.size() == 0) {
+                    String applyDateStr = ybAppealResult.getApplyDateStr(); //获得传过来的 applyDateStr
+                    //获得之前申诉记录
+                    ybAppealResult = this.iYbAppealResultService.findLoadLastAppealResulData(ybAppealResult);
+//                YbHandleVerifyData handleVerifyData = iYbHandleVerifyDataService.getHandleVerifyDataByApplyDataId(ybAppealResult.getApplyDataId());
+//                if (ybAppealResult != null && handleVerifyData != null) {
+                    if (ybAppealResult != null) {
+                        YbReconsiderApplyData applyData = iYbReconsiderApplyDataService.getById(ybAppealResult.getApplyDataId());
+                        User currentUser = FebsUtil.getCurrentUser();
+                        comFileList = this.iComFileService.findListComFile(ybAppealResult.getId(), null);
+                        if (comFileList.size() > 0) {
+                            List<ComFile> loadLastList = new ArrayList<>();
 
-                        File f = new File(newDept);
-                        if (!f.exists()) {
-                            f.mkdirs(); //创建目录
-                        }
-                        for (ComFile comfile : comFileList) {
-                            ComFile file = new ComFile();
-                            file.setId(UUID.randomUUID().toString());
-                            file.setRefTabId(loadId);
-                            file.setServerName(comfile.getServerName());
-                            file.setClientName(comfile.getClientName());
-                            file.setRefTabTable(comfile.getRefTabTable());
-                            file.setIsDeletemark(1);
-                            file.setCreateTime(thisDate);
-
-                            thisDate = this.addSecond(thisDate,1);
-                            String oldFileUrl = oldDept + "/" + comfile.getServerName();
-                            String newFileUrl = newDept + "/" + comfile.getServerName();
-                            File oldFile = new File(oldFileUrl);
-                            if (oldFile.exists()) {
-                                File newFile = new File(newFileUrl);
-                                Files.copy(oldFile, newFile);
-                                loadLastList.add(file);
+                            String filePath = febsProperties.getUploadPath(); // 上传后的路径
+                            String oldDept = filePath + applyDateStr + "/" + currentUser.getUsername() + "/In";
+                            String newDept = filePath + applyDateStr + "/" + currentUser.getUsername() + "/Out";
+                            if (ybAppealResult.getAreaType() != 0) {
+                                oldDept += ybAppealResult.getAreaType();
+                                newDept += ybAppealResult.getAreaType();
                             }
-                        }
 
-                        if (loadLastList.size() > 0) {
-                            boolean bl = this.iComFileService.loadLastComFiles(loadLastList);
-                            if (bl) {
-                                success = 1;
-                                message = "获取数据成功.";
+                            File f = new File(newDept);
+                            if (!f.exists()) {
+                                f.mkdirs(); //创建目录
                             }
+//                        String dateStr = applyDateStr.replace("-", "");
+//                        dateStr += "-" + handleVerifyData.getOrderNumber() + "-";
+
+                            String dateStr = applyData.getProposalCode() + "-";
+                            String fileStr = "";
+                            int num = 0;
+                            for (ComFile comfile : comFileList) {
+                                fileStr = dateStr;
+                                num++;
+                                ComFile file = new ComFile();
+                                file.setId(UUID.randomUUID().toString());
+                                file.setRefTabId(loadId);
+                                file.setClientName(comfile.getClientName());
+                                file.setRefTabTable(comfile.getRefTabTable());
+                                file.setIsDeletemark(1);
+                                file.setCreateTime(thisDate);
+                                thisDate = this.addSecond(thisDate, 1);
+                                if (num < 10) {
+                                    fileStr += "00" + num;
+                                } else if (num < 100) {
+                                    fileStr += "0" + num;
+                                } else {
+                                    fileStr += num;
+                                }
+                                String oldFileUrl = oldDept + "/" + comfile.getServerName();
+                                File oldFile = new File(oldFileUrl);
+                                fileStr += "." + FileNameUtil.extName(oldFile);
+                                String newFileUrl = newDept + "/" + fileStr;
+                                file.setServerName(fileStr);
+                                if (oldFile.exists()) {
+                                    File newFile = new File(newFileUrl);
+                                    Files.copy(oldFile, newFile);
+                                    loadLastList.add(file);
+                                }
+                            }
+
+                            if (loadLastList.size() > 0) {
+                                boolean bl = this.iComFileService.loadLastComFiles(loadLastList);
+                                if (bl) {
+                                    success = 1;
+                                    message = "获取数据成功.";
+                                }
+                            }
+                        } else {
+                            message = "意见书未上传复议图片.";
                         }
-                    }else{
-                        message = "上次未上传复议图片.";
+                    } else {
+//                    if(ybAppealResult == null) {
+                        message = applyDateStr + "未找到意见书复议图片和申诉理由.";
+//                    }
+//                    if(handleVerifyData == null) {
+//                        message = applyDateStr + "未找到剔除数据数据.";
+//                    }
                     }
-                }else{
-                    message = "未找到上次复议图片和申诉理由.";
+                } else {
+                    message = "当前已上传图片，请先删除后再重新获取上次复议图片和申诉理由.";
                 }
-            }else{
-                message = "当前已上传图片，请先删除后再重新获取上次复议图片和申诉理由.";
+            } else {
+                message = ybAppealResult.getApplyDateStr() + "当前已过 非常规复议 截止日期，无法上传图片.";
             }
         } catch (Exception e) {
             message = "获取数据失败.";
@@ -245,9 +284,9 @@ public class YbAppealResultController extends BaseController {
         ResponseResultData rrd = new ResponseResultData();
         rrd.setMessage(message);
         rrd.setSuccess(success);
-        if(ybAppealResult!=null && ybAppealResult.getOperateReason()!=null) {
+        if (ybAppealResult != null && ybAppealResult.getOperateReason() != null) {
             rrd.setData(ybAppealResult.getOperateReason());
-        }else{
+        } else {
             rrd.setData("");
         }
         return new FebsResponse().data(rrd);
@@ -255,9 +294,9 @@ public class YbAppealResultController extends BaseController {
 
     @GetMapping("findAppealResultCheckDksList")
     public FebsResponse findAppealResultCheckDksList(YbAppealResult ybAppealResult) {
-        List<YbAppealResult> appealResultList = this.iYbAppealResultService.findDeptCheckDksNameByDateAndAreaData(ybAppealResult.getApplyDateStr(),ybAppealResult.getAreaType());
+        List<YbAppealResult> appealResultList = this.iYbAppealResultService.findDeptCheckDksNameByDateAndAreaData(ybAppealResult.getApplyDateStr(), ybAppealResult.getAreaType());
         List<YbAppealResultDownLoad> list = new ArrayList<>();
-        for(YbAppealResult item : appealResultList){
+        for (YbAppealResult item : appealResultList) {
             YbAppealResultDownLoad load = new YbAppealResultDownLoad();
             load.setKey(UUID.randomUUID().toString());
             load.setDeptId(item.getDeptCode());
@@ -281,7 +320,7 @@ public class YbAppealResultController extends BaseController {
     public FebsResponse updateAppealResultCheckDks(YbAppealResult ybAppealResult) {
         Map<String, Object> result = new HashMap<>();
         try {
-            int count = this.iYbAppealResultService.updateDksNameByDateAndAreaData(ybAppealResult.getApplyDateStr(),ybAppealResult.getAreaType());
+            int count = this.iYbAppealResultService.updateDksNameByDateAndAreaData(ybAppealResult.getApplyDateStr(), ybAppealResult.getAreaType());
             if (count > 0) {
                 result.put("message", "ok");
                 result.put("success", 1);
@@ -296,7 +335,7 @@ public class YbAppealResultController extends BaseController {
         return new FebsResponse().data(result);
     }
 
-    private Date addSecond(Date date,int t){
+    private Date addSecond(Date date, int t) {
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);
         cal.add(Calendar.SECOND, t);// 24小时制

@@ -176,7 +176,8 @@ public class YbReconsiderResetDataServiceImpl extends ServiceImpl<YbReconsiderRe
 
 
     @Override
-    public List<YbReconsiderResetData> findReconsiderResetDataByApplyDates(String applyDateStr, Integer areaType, Integer dataType) {
+    public List<YbReconsiderResetData> findReconsiderResetDataByApplyDates(String applyDateStr, Integer areaType,
+                                                                           Integer dataType) {
         List<YbReconsiderResetData> list = new ArrayList<>();
         YbReconsiderReset reconsiderReset = iYbReconsiderResetService.findReconsiderResetByApplyDateStr(applyDateStr, areaType);
         if (reconsiderReset != null) {
@@ -191,8 +192,29 @@ public class YbReconsiderResetDataServiceImpl extends ServiceImpl<YbReconsiderRe
     }
 
     @Override
+    public List<YbReconsiderResetData> findReconsiderResetDataByApplyDateStr(String applyDateStr, Integer areaType) {
+        return this.findReconsiderResetDataByApplyDateStr(applyDateStr, areaType);
+    }
+
+    @Override
     public List<YbReconsiderResetData> findResetNotExistsRepayByApplyDates(String applyDateStr, Integer areaType, Integer dataType) {
         return this.baseMapper.findResetNotExistsRepayByApplyDate(applyDateStr, areaType, dataType);
+    }
+
+    @Override
+    public YbReconsiderResetData findReconsiderResetDataByRelatelDataId(String applyDateStr, Integer areaType, String relatelDataId) {
+        YbReconsiderResetData resetData = null;
+        YbReconsiderReset reconsiderReset = iYbReconsiderResetService.findReconsiderResetByApplyDateStr(applyDateStr, areaType);
+        if (reconsiderReset != null) {
+            LambdaQueryWrapper<YbReconsiderResetData> wrapperReset = new LambdaQueryWrapper<>();
+            wrapperReset.eq(YbReconsiderResetData::getPid, reconsiderReset.getId());
+            wrapperReset.eq(YbReconsiderResetData::getRelatelDataId, relatelDataId);
+            List<YbReconsiderResetData> resetDataList = this.list(wrapperReset);
+            if (resetDataList.size() > 0) {
+                resetData = resetDataList.get(0);
+            }
+        }
+        return resetData;
     }
 
     @Override
@@ -494,8 +516,8 @@ public class YbReconsiderResetDataServiceImpl extends ServiceImpl<YbReconsiderRe
                 LambdaQueryWrapper<YbReconsiderResetData> wrapper = new LambdaQueryWrapper<>();
                 wrapper.eq(YbReconsiderResetData::getPid, reconsiderReset.getId());
                 List<YbReconsiderResetData> list = this.list(wrapper);
-                long count = list.stream().filter(s->s.getSeekState() == 0 && s.getState()==0).count();
-                if(list.size() == count) {
+                long count = list.stream().filter(s -> s.getSeekState() == 0 && s.getState() == 0).count();
+                if (list.size() == count) {
                     this.iYbReconsiderResetService.getBaseMapper().deleteById(reconsiderReset.getId());
                     this.baseMapper.delete(wrapper);
                 } else {
@@ -510,5 +532,14 @@ public class YbReconsiderResetDataServiceImpl extends ServiceImpl<YbReconsiderRe
         return message;
     }
 
+    @Override
+    public  List<YbReconsiderResetData> findReconsiderResetSt1DataDownLoadList(
+            String applyDateStr, Integer areaType, Integer dataType, String deptCode, String dksName, String sumId,String resultId){
+        YbReconsiderReset reconsiderReset = iYbReconsiderResetService.findReconsiderResetByApplyDateStr(applyDateStr, areaType);
+        if (reconsiderReset != null) {
+            return this.baseMapper.findReconsiderResetSt1DataDownLoadList(reconsiderReset.getId(),applyDateStr,areaType,dataType,deptCode,dksName,sumId,resultId);
+        }
+        return null;
+    }
 
 }

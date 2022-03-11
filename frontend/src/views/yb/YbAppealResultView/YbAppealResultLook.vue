@@ -154,6 +154,9 @@ export default {
     downloadFile () {
       let formData = {}
       formData.id = this.ybAppealResult.id
+      // sourceType=1 利用orderNumber编文件名
+      formData.serName = this.ybAppealResult.orderNumber
+      formData.dataType = this.ybAppealResult.dataType
       formData.deptId = this.ybAppealResult.arDeptCode
       formData.deptName = this.ybAppealResult.arDeptName
       formData.applyDateStr = this.ybAppealResult.applyDateStr

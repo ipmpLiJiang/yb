@@ -85,6 +85,7 @@
         :loading="loading"
         :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
         @change="handleTableChange"
+        size="small"
         :bordered="bordered"
         :scroll="{ x: 900 }"
       >
@@ -237,17 +238,19 @@ export default {
             this.pagination.defaultPageSize +
             index +
             1}`,
+        fixed: 'left',
         width: 70
       },
       {
         title: '复议年月',
         dataIndex: 'applyDateStr',
+        fixed: 'left',
         width: 90
       },
       {
         title: '操作员',
         dataIndex: 'operatorName',
-        width: 130
+        width: 120
       },
       {
         title: '状态',
@@ -288,7 +291,7 @@ export default {
             return text
           }
         },
-        width: 135
+        width: 115
       },
       {
         title: '第一版确认日期',
@@ -304,7 +307,7 @@ export default {
             return text
           }
         },
-        width: 135
+        width: 115
       },
       {
         title: '第二版截止日期',
@@ -320,7 +323,7 @@ export default {
             return text
           }
         },
-        width: 135
+        width: 115
       },
       {
         title: '第二版确认日期',
@@ -336,7 +339,23 @@ export default {
             return text
           }
         },
-        width: 135
+        width: 115
+      },
+      {
+        title: '非常规截止日期',
+        dataIndex: 'endDateReset',
+        customRender: (text, row, index) => {
+          if (text !== '' && text !== null) {
+            if (isNaN(text) && !isNaN(Date.parse(text))) {
+              return moment(text).format(this.tableFormat1)
+            } else {
+              return text
+            }
+          } else {
+            return text
+          }
+        },
+        width: 115
       },
       {
         title: '创建日期',
@@ -359,7 +378,7 @@ export default {
         dataIndex: 'operation',
         scopedSlots: { customRender: 'operation' },
         fixed: 'right',
-        width: 300
+        width: 280
       }]
     }
   },

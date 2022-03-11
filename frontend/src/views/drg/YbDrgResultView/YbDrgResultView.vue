@@ -12,7 +12,7 @@
             >
               <a-month-picker
                 placeholder="请输入复议年月"
-                style="width: 120px"
+                style="width: 105px"
                 @change="monthChange"
                 v-model="searchApplyDate"
                 :default-value="searchApplyDate"
@@ -21,7 +21,7 @@
             </a-form-item>
           </a-col>
           <a-col :span=8>
-            <a-select v-model="searchItem.keyField" style="width: 115px">
+            <a-select v-model="searchItem.keyField" style="width: 110px">
               <a-select-option
               v-for="d in searchDropDataSource"
               :key="d.value"
@@ -30,13 +30,13 @@
               </a-select-option>
             </a-select>
             =
-            <a-input-search placeholder="请输入关键字" v-model="searchItem.value" style="width: 170px" enter-button @search="search" />
+            <a-input-search placeholder="请输入关键字" v-model="searchItem.value" style="width: 160px" enter-button @search="search" />
           </a-col>
           <a-col :span=3 >
             <a-button
             type="primary"
             @click="onHistoryLook"
-            >历史操作记录</a-button>
+            >历史记录</a-button>
           </a-col>
           <a-col :span=8 >
             <a-button type="primary" style="margin-left: 15px" @click.stop="hideExport">
@@ -77,6 +77,7 @@
           onChange: onSelectChange,
         }"
         @change="handleTableChange"
+        size="small"
         :customRow="handleClickRow"
         :bordered="bordered"
         :scroll="{ x: 900 }"
@@ -198,13 +199,13 @@ export default {
         title: '科室',
         dataIndex: 'ks',
         fixed: 'left',
-        width: 140
+        width: 130
       },
       {
         title: '就诊记录号',
         dataIndex: 'jzjlh',
         fixed: 'left',
-        width: 105
+        width: 100
       },
       {
         title: '病案号',
@@ -255,7 +256,7 @@ export default {
         title: '复议科室',
         dataIndex: 'dksName',
         fixed: 'right',
-        width: 150
+        width: 130
       },
       {
         title: '复议医生',
@@ -266,7 +267,7 @@ export default {
           }
         },
         fixed: 'right',
-        width: 130
+        width: 120
       },
       {
         title: '操作',
@@ -275,7 +276,7 @@ export default {
           customRender: 'operation'
         },
         fixed: 'right',
-        width: 100
+        width: 80
       }
       ]
     }

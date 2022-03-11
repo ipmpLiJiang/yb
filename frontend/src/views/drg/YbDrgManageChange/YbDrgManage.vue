@@ -8,13 +8,13 @@
             <a-month-picker
               placeholder="请输入复议年月"
               @change="monthChange"
-              style="width: 120px"
+              style="width: 105px"
               :default-value="searchApplyDate"
               :format="monthFormat"
             />
           </a-col>
           <a-col :span="8">
-            <a-select v-model="searchItem.keyField" style="width: 115px">
+            <a-select v-model="searchItem.keyField" style="width: 110px">
               <a-select-option v-for="d in searchDropDataSource" :key="d.value">
                 {{ d.text }}
               </a-select-option>
@@ -23,13 +23,13 @@
             <a-input-search
               placeholder="请输入关键字"
               v-model="searchItem.value"
-              style="width: 170px"
+              style="width: 160px"
               enter-button
               @search="searchTable"
             />
           </a-col>
           <a-col :span="3">
-            <a-button type="primary" @click="onHistory">历史操作记录</a-button>
+            <a-button type="primary" @click="onHistory">历史记录</a-button>
           </a-col>
         </a-row>
       </div>

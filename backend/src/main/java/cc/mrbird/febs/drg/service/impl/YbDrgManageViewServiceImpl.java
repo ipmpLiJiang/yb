@@ -7,8 +7,6 @@ import cc.mrbird.febs.system.domain.User;
 import cc.mrbird.febs.drg.dao.YbDrgManageViewMapper;
 import cc.mrbird.febs.drg.entity.*;
 import cc.mrbird.febs.drg.service.*;
-import cc.mrbird.febs.yb.entity.YbDept;
-import cc.mrbird.febs.yb.service.IYbDeptService;
 import cc.mrbird.febs.yb.service.IYbPersonService;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -49,7 +47,7 @@ public class YbDrgManageViewServiceImpl extends ServiceImpl<YbDrgManageViewMappe
     IYbDrgApplyDataService iYbDrgApplyDataService;
 
     @Autowired
-    IYbDeptService iYbDeptService;
+    IYbDrgConfireDataService iYbDrgConfireDataService;
 
     @Override
     public IPage<YbDrgManageView> findDrgManageView(QueryRequest request, YbDrgManageView ybDrgManageView, String keyField, boolean isConf) {
@@ -91,10 +89,10 @@ public class YbDrgManageViewServiceImpl extends ServiceImpl<YbDrgManageViewMappe
                 }
 
                 if (ybDrgManageView.getReadyDoctorCode() != null && isConf) {
-                    List<YbDept> deptlist = iYbDeptService.findDeptAppealConfireByUserList(ybDrgManageView.getReadyDoctorCode(), areaType);
-                    if (deptlist.size() > 0) {
+                    List<YbDrgConfireData> confireDataList = iYbDrgConfireDataService.findDrgConfireDataByInDoctorCodeList(ybDrgManageView.getReadyDoctorCode(), areaType);
+                    if (confireDataList.size() > 0) {
                         strList = new ArrayList<>();
-                        for (YbDept item : deptlist) {
+                        for (YbDrgConfireData item : confireDataList) {
                             if (!strList.contains(item.getDksName())) {
                                 strList.add(item.getDksName());
                             }

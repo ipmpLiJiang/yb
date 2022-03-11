@@ -15,7 +15,7 @@
             <a-input
                 placeholder="复议年月"
                 disabled
-                width="100px"
+                width="110px"
                 v-model="ybDrgApply.applyDateStr"
               />
             </a-form-item>
@@ -61,7 +61,7 @@
           <a-col :span=5 v-show="tableSelectKey == 2 ? true:false">
             <a-popconfirm
               title="确定获取数据？"
-              @confirm="addHis"
+              @confirm="addDrgJk"
               okText="确定"
               style="margin-left: 8px"
               cancelText="取消"
@@ -205,7 +205,7 @@ export default {
       this.fileList = []
       this.$emit('cancel')
     },
-    addHis () {
+    addDrgJk () {
       let key = '2'
       if (this.tableSelectKey === key) {
         this.spinning = true

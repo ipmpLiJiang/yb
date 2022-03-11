@@ -110,6 +110,7 @@
         :loading="loading"
         :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
         @change="handleTableChange"
+        size="small"
         :bordered="bordered"
         :scroll="{ x: 900 }"
       >
@@ -211,7 +212,7 @@ export default {
             this.pagination.defaultPageSize +
             index +
             1}`,
-        width: 80
+        width: 70
       },
       {
         title: '医生编码',
@@ -286,7 +287,7 @@ export default {
         dataIndex: 'operation',
         scopedSlots: { customRender: 'operation' },
         fixed: 'right',
-        width: 100
+        width: 80
       }]
     }
   },

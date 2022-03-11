@@ -5,56 +5,44 @@
     class="card-area"
   >
     <template>
-    <a-spin tip="Loading..." :spinning="spinning" :delay="delayTime">
-      <div>
-        <a-row justify="center" type="flex">
-          <a-col :span=5>
-            <a-form-item
-              :label="applyDateText"
-              v-bind="formItemLayout1"
-            >
+      <a-spin tip="Loading..." :spinning="spinning" :delay="delayTime">
+        <div style="margin-bottom:16px">
+        <a-row type="flex">
+          <a-col flex="200px">
+            {{applyDateText}}
               <a-month-picker
                 @change="monthChange"
-                style="width: 130px"
+                style="width: 100px"
                 :default-value="defaultApplyDate"
                 :format="monthFormat"
               />
-            </a-form-item>
           </a-col>
-          <a-col :span=4 v-show="isJx">
-            <a-form-item
-              label="至"
-              v-bind="formItemLayout"
+          <a-col flex="140px" v-show="isJx">
+            至：
+            <a-month-picker
+              placeholder="请选择复议年月"
+              @change="monthToChange"
+              style="width: 100px"
+              :default-value="defaultApplyDate"
+              :format="monthFormat"
+            />
+          </a-col>
+          <a-col flex="110px">
+            <a-select
+              :value="searchDataType"
+              @change="handleDataTypeChange"
+              style="width: 95px;margin-left: 3px;"
             >
-              <a-month-picker
-                placeholder="请选择复议年月"
-                @change="monthToChange"
-                :default-value="defaultApplyDate"
-                :format="monthFormat"
-              />
-            </a-form-item>
-          </a-col>
-          <a-col :span=5>
-              <a-form-item
-                label="扣款类型"
-                v-bind="formItemLayout"
+              <a-select-option
+                v-for="d in selectDataTypeDataSource"
+                :key="d.value"
               >
-                <a-select
-                  :value="searchDataType"
-                   @change="handleDataTypeChange"
-                  style="width: 100px"
-                >
-                  <a-select-option
-                    v-for="d in selectDataTypeDataSource"
-                    :key="d.value"
-                  >
-                    {{ d.text }}
-                  </a-select-option>
-                </a-select>
-              </a-form-item>
+                {{ d.text }}
+              </a-select-option>
+            </a-select>
           </a-col>
-          <a-col :span=7>
-            <a-select v-model="searchItem.keyField" style="width: 115px">
+          <a-col flex="auto">
+            <a-select v-model="searchItem.keyField" style="width: 110px">
               <a-select-option
               v-for="d in searchDropDataSource"
               :key="d.value"
@@ -63,23 +51,20 @@
               </a-select-option>
             </a-select>
             =
-            <a-input-search placeholder="请输入关键字" v-model="searchItem.value" style="width: 170px" enter-button @search="searchTable" />
+            <a-input-search placeholder="请输入关键字" v-model="searchItem.value" style="width: 160px" enter-button @search="searchTable" />
           </a-col>
-          <a-col :span=2 >
-              <template>
-                <a-upload
-                  name="file"
-                  accept=".xlsx,.xls"
-                  :fileList="fileList"
-                  :beforeUpload="beforeUpload"
-                >
-                  <a-button type="primary">
-                    <a-icon type="upload" /> 上传扣款落实数据 </a-button>
-                </a-upload>
-              </template>
-            </a-col>
+          <a-col flex="150px">
+            <a-upload
+              name="file"
+              accept=".xlsx,.xls"
+              :fileList="fileList"
+              :beforeUpload="beforeUpload"
+            >
+              <a-button type="primary">上传扣款落实数据</a-button>
+            </a-upload>
+          </a-col>
         </a-row>
-      </div>
+        </div>
       </a-spin>
     </template>
     <!--表格-->
@@ -296,6 +281,7 @@ export default {
 @import "../../../../static/less/Common";
 </style>
 <style scoped>
-.editable-row-operations a {
+/* .editable-row-operations a {
   margin-right: 8px;
-}
+} */
+</style>

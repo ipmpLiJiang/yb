@@ -74,6 +74,7 @@
         :loading="loading"
         :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
         @change="handleTableChange"
+        size="small"
         :bordered="bordered"
         :scroll="{ x: 900 }"
       >
@@ -183,6 +184,7 @@ export default {
             this.pagination.defaultPageSize +
             index +
             1}`,
+        fixed: 'left',
         width: 70
       },
       {

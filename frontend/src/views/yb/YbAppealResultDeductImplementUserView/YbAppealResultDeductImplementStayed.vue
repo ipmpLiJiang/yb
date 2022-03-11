@@ -9,6 +9,7 @@
           :pagination="pagination"
           :loading="loading"
           @change="handleTableChange"
+          size="small"
           :bordered="bordered"
           :scroll="{ x: 900 }"
         >
@@ -81,19 +82,19 @@ export default {
         title: '交易流水号',
         dataIndex: 'serialNo',
         fixed: 'left',
-        width: 140
+        width: 120
       },
       {
         title: '项目编码',
         dataIndex: 'projectCode',
         fixed: 'left',
-        width: 140
+        width: 120
       },
       {
         title: '项目名称',
         dataIndex: 'projectName',
         fixed: 'left',
-        width: 180
+        width: 150
       },
       {
         title: '医保内金额',
@@ -103,7 +104,7 @@ export default {
       {
         title: '规则名称',
         dataIndex: 'ruleName',
-        width: 180
+        width: 160
       },
       {
         title: '扣除金额',
@@ -135,7 +136,7 @@ export default {
           }
         },
         fixed: 'right',
-        width: 95
+        width: 80
       }]
     }
   },

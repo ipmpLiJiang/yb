@@ -9,6 +9,7 @@
     :loading="loading"
     :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
     @change="handleTableChange"
+    size="small"
     :bordered="bordered"
     :scroll="{ x: 700 }"
     >
@@ -61,13 +62,6 @@ export default {
   computed: {
     columns () {
       return [{
-        title: '序号',
-        customRender: (text, row, index) => {
-          return this.rowNo(index)
-        },
-        width: 70
-      },
-      {
         title: '数据类型',
         dataIndex: 'dataType',
         customRender: (text, row, index) => {
@@ -90,7 +84,7 @@ export default {
             return row.readyDeptCode + '-' + row.readyDeptName
           }
         },
-        width: 250
+        width: 180
       },
       {
         title: '复议医生',
@@ -100,7 +94,7 @@ export default {
             return row.readyDoctorCode + '-' + row.readyDoctorName
           }
         },
-        width: 180
+        width: 130
       },
       {
         title: '复议类型',
@@ -115,7 +109,7 @@ export default {
               return text
           }
         },
-        width: 100
+        width: 90
       },
       {
         title: '状态',
@@ -140,12 +134,12 @@ export default {
               return text
           }
         },
-        width: 130
+        width: 120
       },
       {
         title: '操作过程',
         dataIndex: 'operateProcess',
-        width: 150
+        width: 130
       },
       {
         title: '操作时间',
@@ -156,7 +150,8 @@ export default {
           } else {
             return text
           }
-        }
+        },
+        width: 110
       }]
     }
   },

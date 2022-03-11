@@ -260,8 +260,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     }
 
     @Override
-    public void saveConfUser(String[] userName, boolean isLly, boolean isSaveOrDel) throws Exception {
-        List<Role> roleList = roleService.findRoleConfLists(8);
+    public void saveConfUser(String[] userName, boolean isLly, boolean isSaveOrDel,int conType) throws Exception {
+        List<Role> roleList = roleService.findRoleConfLists(conType);
 
         if (roleList.size() > 0) {
             List<UserRole> userRoleList = this.userRoleService.findUserRoleLists(userName);

@@ -4,20 +4,19 @@
     class="card-area"
   >
     <template>
-      <div style="text-align:center;margin-bottom:16px">
-        <a-row justify="center"
-          align="middle">
-          <a-col :span=5>
+      <div style="margin-bottom:16px">
+        <a-row type="flex">
+          <a-col flex="190px">
               复议年月：
               <a-month-picker
                 placeholder="请输入复议年月"
-                style="width: 120px"
+                style="width: 105px"
                 @change="monthChange"
                 :default-value="searchApplyDate"
                 :format="monthFormat"
               />
           </a-col>
-          <a-col :span=5>
+          <a-col flex="200px">
             版本类型：
             <a-select :value="searchTypeno" style="width: 110px" @change="handleTypenoChange">
               <a-select-option
@@ -28,8 +27,8 @@
               </a-select-option>
             </a-select>
           </a-col>
-          <a-col :span=8>
-            <a-select v-model="searchItem.keyField" style="width: 115px">
+          <a-col flex="300px">
+            <a-select v-model="searchItem.keyField" style="width: 110px">
               <a-select-option
               v-for="d in searchDropDataSource"
               :key="d.value"
@@ -38,13 +37,13 @@
               </a-select-option>
             </a-select>
             =
-            <a-input-search placeholder="请输入关键字" v-model="searchItem.value" style="width: 170px" enter-button @search="searchTable" />
+            <a-input-search placeholder="请输入关键字" v-model="searchItem.value" style="width: 160px" enter-button @search="searchTable" />
           </a-col>
-          <a-col :span=3 >
+          <a-col flex="auto">
             <a-button
             type="primary"
             @click="onHistory"
-            >历史操作记录</a-button>
+            >历史记录</a-button>
           </a-col>
         </a-row>
       </div>

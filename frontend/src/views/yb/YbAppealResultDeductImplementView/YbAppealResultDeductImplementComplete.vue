@@ -9,6 +9,7 @@
           :pagination="pagination"
           :loading="loading"
           @change="handleTableChange"
+          size="small"
           :bordered="bordered"
           :scroll="{ x: 900 }"
         >
@@ -81,19 +82,19 @@ export default {
         title: '交易流水号',
         dataIndex: 'serialNo',
         fixed: 'left',
-        width: 140
+        width: 120
       },
       {
         title: '项目编码',
         dataIndex: 'projectCode',
         fixed: 'left',
-        width: 140
+        width: 120
       },
       {
         title: '项目名称',
         dataIndex: 'projectName',
         fixed: 'left',
-        width: 180
+        width: 150
       },
       {
         title: '医保内金额',
@@ -103,7 +104,7 @@ export default {
       {
         title: '规则名称',
         dataIndex: 'ruleName',
-        width: 180
+        width: 160
       },
       {
         title: '扣除金额',
@@ -129,7 +130,7 @@ export default {
             return row.arDeptCode + '-' + row.arDeptName
           }
         },
-        width: 150
+        width: 140
       },
       {
         title: '医生姓名',
@@ -139,7 +140,7 @@ export default {
             return row.arDoctorCode + '-' + row.arDoctorName
           }
         },
-        width: 130
+        width: 120
       },
       {
         title: '扣款类型',
@@ -155,13 +156,13 @@ export default {
           }
         },
         fixed: 'right',
-        width: 95
+        width: 80
       },
       {
         title: '落实年月',
         dataIndex: 'implementDateStr',
         fixed: 'right',
-        width: 95
+        width: 90
       },
       {
         title: '分摊方式',
@@ -179,13 +180,13 @@ export default {
           }
         },
         fixed: 'right',
-        width: 95
+        width: 80
       },
       {
         title: '分摊方案',
         dataIndex: 'shareProgramme',
         fixed: 'right',
-        width: 250
+        width: 240
       }]
     }
   },

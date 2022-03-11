@@ -1,6 +1,6 @@
 <template>
   <div>
-    <a-table :columns="columns" :data-source="dataSource" :rowKey="record => record.id" :pagination="pagination" bordered :scroll="{ x: 500, y:400 }">
+    <a-table :columns="columns" :data-source="dataSource" size="small" :rowKey="record => record.id" :pagination="pagination" bordered :scroll="{ x: 500, y:400 }">
       <template
         slot="operation"
         slot-scope="text, record"

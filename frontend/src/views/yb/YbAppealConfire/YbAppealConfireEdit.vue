@@ -70,13 +70,13 @@
             </a-select>
           </a-form-item>
         </a-col>
-        <a-col :span=3>
+        <a-col :span=4>
           <a-button
             @click="handleSubmit"
             type="primary"
           >添加科室/保存</a-button>
         </a-col>
-        <a-col :span=11>
+        <a-col :span=10>
           <a-popconfirm
             title="确定返回列表？"
             @confirm="onClose"
@@ -93,6 +93,7 @@
       <ybAppealConfire-data
         ref="ybAppealConfireData"
         :pid="ybAppealConfire.id"
+        @del="del"
       >
       </ybAppealConfire-data>
     </template>
@@ -138,6 +139,9 @@ export default {
       // this.$refs.inputSelectDept.dataSource = []
       // this.$refs.inputSelectDept.value = ''
       this.form.resetFields()
+    },
+    del () {
+      this.isUpdate = true
     },
     onClose () {
       this.reset()

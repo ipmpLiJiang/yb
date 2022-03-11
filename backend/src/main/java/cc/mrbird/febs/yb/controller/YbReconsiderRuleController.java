@@ -6,6 +6,7 @@ import cc.mrbird.febs.common.domain.router.VueRouter;
 import cc.mrbird.febs.common.exception.FebsException;
 import cc.mrbird.febs.common.domain.QueryRequest;
 
+import cc.mrbird.febs.export.excel.ExportExcelUtils;
 import cc.mrbird.febs.yb.service.IYbReconsiderRuleService;
 import cc.mrbird.febs.yb.entity.YbReconsiderRule;
 
@@ -120,10 +121,12 @@ public class YbReconsiderRuleController extends BaseController {
 
     @PostMapping("excel")
     @RequiresPermissions("ybReconsiderRule:export")
-    public void export(QueryRequest request, YbReconsiderRule ybReconsiderRule, HttpServletResponse response) throws FebsException {
+    public void export(QueryRequest request, YbReconsiderRule ybReconsiderRule, String dataJson, HttpServletResponse response) throws FebsException {
         try {
-            List<YbReconsiderRule> ybReconsiderRules = this.iYbReconsiderRuleService.findYbReconsiderRules(request, ybReconsiderRule).getRecords();
-            ExcelKit.$Export(YbReconsiderRule.class, response).downXlsx(ybReconsiderRules, false);
+//            List<YbReconsiderRule> ybReconsiderRules = this.iYbReconsiderRuleService.findYbReconsiderRules(request, ybReconsiderRule).getRecords();
+            List<YbReconsiderRule> ybReconsiderRules = this.iYbReconsiderRuleService.findReconsiderRuleList(ybReconsiderRule);
+            ExportExcelUtils.exportCustomExcel(response, ybReconsiderRules,dataJson,"复议规则");
+//            ExcelKit.$Export(YbReconsiderRule.class, response).downXlsx(ybReconsiderRules, false);
         } catch (Exception e) {
             message = "导出Excel失败";
             log.error(message, e);

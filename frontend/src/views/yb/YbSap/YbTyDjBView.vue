@@ -64,6 +64,7 @@
         :pagination="pagination"
         :loading="loading"
         :bordered="bordered"
+        size="small"
         :scroll="{ x: 900 }"
       >
       </a-table>

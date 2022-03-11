@@ -17,7 +17,7 @@
     <a-checkbox :checked="checked"  @change="onChange">
       是否发送
     </a-checkbox>
-    <a-input-search placeholder="请输入关键字" v-model="searchText" style="width: 170px" enter-button @search="search" />
+    <a-input-search placeholder="请输入关键字" v-model="searchText" style="width: 160px" enter-button @search="search" />
     <a-popconfirm
         title="确定发送短信？"
         @confirm="sendSms"
@@ -40,6 +40,7 @@
       :pagination="pagination"
       :loading="loading"
       @change="handleTableChange"
+      size="small"
       :bordered="bordered"
       :scroll="{ x: 900 }"
     >

@@ -60,7 +60,7 @@
                 >
                   <input-selectdks
                   ref="inputSelectVerifyDks"
-                  :ctType=3
+                  :ctType=4
                   @selectChange=selectDksChang
                   >
                   </input-selectdks>

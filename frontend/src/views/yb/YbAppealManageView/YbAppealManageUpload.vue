@@ -2,7 +2,7 @@
   <a-drawer
     title="申诉填报"
     :maskClosable="false"
-    width=75%
+    width=80%
     placement="right"
     :closable="true"
     @close="onClose"
@@ -221,6 +221,12 @@ export default {
       formData.append('file', file)
       formData.append('id', this.ybAppealManageUpload.id)
       formData.append('refTab', 'yb_appeal_result')
+      // 如果sourceType == 1 proposalCode = applyDataId
+      // if (this.ybAppealManageUpload.sourceType === 1) {
+      //   formData.append('proposalCode', this.ybAppealManageUpload.applyDataId)
+      // } else {
+      //   formData.append('proposalCode', this.ybAppealManageUpload.proposalCode)
+      // }
       formData.append('proposalCode', this.ybAppealManageUpload.proposalCode)
       formData.append('deptName', this.ybAppealManageUpload.readyDeptName)
       formData.append('applyDateStr', this.ybAppealManageUpload.applyDateStr)
@@ -262,6 +268,7 @@ export default {
           formData.applyDateStr = that.ybAppealManageUpload.applyDateStr
           formData.sourceType = that.ybAppealManageUpload.sourceType
           formData.serName = file.serName
+          formData.isCheck = 1
           formData.areaType = that.user.areaType.value
           that.$post('comFile/deleteImg', {
             ...formData
@@ -311,6 +318,7 @@ export default {
           applyDataId: this.ybAppealManageUpload.applyDataId,
           id: this.ybAppealManageUpload.id,
           applyDateStr: this.ybAppealManageUpload.applyDateStr,
+          sourceType: this.ybAppealManageUpload.sourceType,
           areaType: this.user.areaType.value
         }
         this.$post('ybAppealResult/findLoadLastAppealResul', {

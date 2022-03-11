@@ -74,6 +74,7 @@
         :loading="loading"
         :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
         @change="handleTableChange"
+        size="small"
         :bordered="bordered"
         :scroll="{ x: 900 }"
       >
@@ -183,15 +184,17 @@ export default {
             this.pagination.defaultPageSize +
             index +
             1}`,
+        fixed: 'left',
         width: 70
       },
       {
         title: '项目名称',
         dataIndex: 'rplName',
+        fixed: 'left',
         width: 300
       },
       {
-        title: '默认复议科室类型',
+        title: '复议科室类型',
         dataIndex: 'deptType',
         customRender: (text, row, index) => {
           switch (text) {
@@ -207,7 +210,7 @@ export default {
               return text
           }
         },
-        width: 150
+        width: 130
       },
       {
         title: '科室名称',
@@ -217,10 +220,10 @@ export default {
             return row.deptCode + '-' + row.deptName
           }
         },
-        width: 200
+        width: 160
       },
       {
-        title: '默认复议医生类型',
+        title: '复议医生类型',
         dataIndex: 'personType',
         customRender: (text, row, index) => {
           switch (text) {
@@ -236,7 +239,7 @@ export default {
               return text
           }
         },
-        width: 150
+        width: 130
       },
       {
         title: '医生名称',
@@ -246,12 +249,12 @@ export default {
             return row.doctorCode + '-' + row.doctorName
           }
         },
-        width: 150
+        width: 130
       },
       {
         title: '操作员',
         dataIndex: 'operatorName',
-        width: 160
+        width: 130
       },
       {
         title: '操作',
@@ -260,7 +263,7 @@ export default {
           customRender: 'operation'
         },
         fixed: 'right',
-        width: 100
+        width: 80
       }
       ]
     }

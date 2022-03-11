@@ -25,6 +25,7 @@
         :loading="loading"
         :rowSelection="{type: 'radio', selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
         @change="handleTableChange"
+        size="small"
         :customRow="handleClickRow"
         :bordered="bordered"
         :scroll="{ x: 700 }"
@@ -124,7 +125,7 @@ export default {
         title: '单据号',
         dataIndex: 'billNo',
         fixed: 'left',
-        width: 120
+        width: 100
       },
       {
         title: '项目编码',

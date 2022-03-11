@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cc.mrbird.febs.drg.dao.YbDrgConfireMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="cc.mrbird.febs.drg.entity.YbDrgConfire">
+        <id column="id" property="id"/>
+        <result column="doctorCode" property="doctorCode"/>
+        <result column="doctorName" property="doctorName"/>
+        <result column="adminType" property="adminType"/>
+        <result column="COMMENTS" property="comments"/>
+        <result column="STATE" property="state"/>
+        <result column="IS_DELETEMARK" property="isDeletemark"/>
+        <result column="MODIFY_TIME" property="modifyTime"/>
+        <result column="CREATE_TIME" property="createTime"/>
+        <result column="CREATE_USER_ID" property="createUserId"/>
+        <result column="MODIFY_USER_ID" property="modifyUserId"/>
+        <result column="currencyField" property="currencyField"/>
+        <result column="areaType" property="areaType"/>
+        <result column="operatorId" property="operatorId"/>
+        <result column="operatorName" property="operatorName"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, doctorCode, doctorName, adminType, COMMENTS, STATE, IS_DELETEMARK, MODIFY_TIME, CREATE_TIME, CREATE_USER_ID, MODIFY_USER_ID, currencyField,areaType,operatorId,operatorName
+    </sql>
+    <update id="updateYbDrgConfire" parameterType="cc.mrbird.febs.drg.entity.YbDrgConfire">
+        update yb_drg_confire
+        <trim prefix="set" suffixOverrides=",">
+            <if test="doctorCode != null">doctorCode=#{doctorCode},</if>
+            <if test="doctorName != null">doctorName=#{doctorName},</if>
+            <if test="adminType != null">adminType=#{adminType},</if>
+            <if test="comments != null">COMMENTS=#{comments},</if>
+            <if test="state != null">STATE=#{state},</if>
+            <if test="isDeletemark != null">IS_DELETEMARK=#{isDeletemark},</if>
+            <if test="modifyTime != null">MODIFY_TIME=#{modifyTime},</if>
+            <if test="createTime != null">CREATE_TIME=#{createTime},</if>
+            <if test="createUserId != null">CREATE_USER_ID=#{createUserId},</if>
+            <if test="modifyUserId != null">MODIFY_USER_ID=#{modifyUserId},</if>
+            <if test="currencyField != null">currencyField=#{currencyField},</if>
+            <if test="areaType != null">areaType=#{areaType},</if>
+        </trim>
+        where id=#{id}
+
+    </update>
+    <select id="findYbDrgConfire" resultType="cc.mrbird.febs.drg.entity.YbDrgConfire"
+            parameterType="cc.mrbird.febs.drg.entity.YbDrgConfire">
+        select * from yb_drg_confire
+        where 1=1
+        <if test="ybDrgConfire.id != null and ybDrgConfire.id != ''">and id =#{ ybDrgConfire.id}</if>
+        <if test="ybDrgConfire.doctorCode != null and ybDrgConfire.doctorCode != ''">and doctorCode like
+            concat('%', #{ ybDrgConfire.doctorCode} ,'%')
+        </if>
+        <if test="ybDrgConfire.doctorName != null and ybDrgConfire.doctorName != ''">and doctorName like
+            concat('%', #{ ybDrgConfire.doctorName} ,'%')
+        </if>
+        <if test="ybDrgConfire.adminType != null">and adminType =#{ ybDrgConfire.adminType}</if>
+        <if test="ybDrgConfire.comments != null and ybDrgConfire.comments != ''">and COMMENTS like concat('%',
+            #{ ybDrgConfire.comments} ,'%')
+        </if>
+        <if test="ybDrgConfire.state != null">and STATE =#{ ybDrgConfire.state}</if>
+        <if test="ybDrgConfire.isDeletemark != null">and IS_DELETEMARK =#{ ybDrgConfire.isDeletemark}</if>
+        <if test="ybDrgConfire.modifyTimeFrom!= null">
+            AND ybDrgConfire.MODIFY_TIME <![CDATA[ >= ]]>  modifyTimeFrom}
+        </if>
+        <if test="ybDrgConfire.modifyTimeTo!= null">
+            AND ybDrgConfire.MODIFY_TIME <![CDATA[ <= ]]>  modifyTimeTo}
+        </if>
+        <if test="ybDrgConfire.createTimeFrom!= null">
+            AND ybDrgConfire.CREATE_TIME <![CDATA[ >= ]]>  createTimeFrom}
+        </if>
+        <if test="ybDrgConfire.createTimeTo!= null">
+            AND ybDrgConfire.CREATE_TIME <![CDATA[ <= ]]>  createTimeTo}
+        </if>
+        <if test="ybDrgConfire.currencyField != null and ybDrgConfire.currencyField != ''">and currencyField like
+            concat('%', #{ ybDrgConfire.currencyField} ,'%')
+        </if>
+        <if test="ybDrgConfire.areaType != null">and ybDrgConfire.areaType =#{ ybDrgConfire.areaType}</if>
+    </select>
+
+    <select id="findDrgConfireView" resultType="cc.mrbird.febs.drg.entity.YbDrgConfire">
+        SELECT
+        p.id,
+        p.doctorCode,
+        p.doctorName,
+        p.adminType,
+        p.COMMENTS,
+        p.STATE,
+        p.IS_DELETEMARK,
+        p.MODIFY_TIME,
+        p.CREATE_TIME,
+        p.CREATE_USER_ID,
+        p.MODIFY_USER_ID,
+        GROUP_CONCAT(d.dksName) currencyField,
+        p.areaType,
+        p.operatorId,
+        p.operatorName
+        FROM yb_drg_confire p
+        left join yb_drg_confire_data d on
+        p.id = d.pid
+        where
+        p.IS_DELETEMARK = 1
+        <if test="areaType!= null">
+            AND p.areaType = #{ areaType }
+        </if>
+        <if test="doctorContent != null and doctorContent != ''">
+            and (p.doctorCode like concat('%', #{ doctorContent } ,'%') or p.doctorName like concat('%',
+            #{ doctorContent } ,'%'))
+        </if>
+        <if test="adminType != null">
+            and p.adminType = #{ adminType }
+        </if>
+        <if test="deptContent != null and deptContent != ''">
+            and p.id in(select DISTINCT pid from yb_drg_confire_data where dksName like concat('%', #{ deptContent }
+            ,'%'))
+        </if>
+        <if test="operatorName != null and operatorName != ''">
+            and p.operatorName like concat('%', #{ operatorName } ,'%')
+        </if>
+        GROUP BY p.id
+        <if test="type == null">
+            order by p.create_time desc
+        </if>
+        <if test="type != null and type == 'excel'">
+            order by p.operatorId desc
+        </if>
+    </select>
+
+    <select id="findDrgConfireCount" resultType="Integer">
+        SELECT
+        count(1)
+        FROM yb_drg_confire
+        where
+        IS_DELETEMARK = 1
+        <if test="areaType!= null">
+            AND areaType = #{ areaType }
+        </if>
+        <if test="adminType != null">
+            and adminType = #{ adminType }
+        </if>
+        <if test="doctorContent != null and doctorContent != ''">
+            and (doctorCode like concat('%', #{ doctorContent } ,'%') or doctorName like concat('%', #{ doctorContent }
+            ,'%'))
+        </if>
+        <if test="deptContent != null and deptContent != ''">
+            and id in(select DISTINCT pid from yb_drg_confire_data where dksName like concat('%', #{ deptContent }
+            ,'%'))
+        </if>
+        <if test="operatorName != null and operatorName != ''">
+            and operatorName like concat('%', #{ operatorName } ,'%')
+        </if>
+    </select>
+
+    <select id="findDrgConfireLlyList" resultType="cc.mrbird.febs.drg.entity.YbDrgConfire">
+        SELECT * FROM yb_drg_confire where doctorCode= #{ ybDrgConfire.doctorCode }
+        <if test="ybDrgConfire.id != null">
+            and id != #{ ybDrgConfire.id }
+        </if>
+        <if test="ybDrgConfire.areaType != null">
+            and areaType = #{ ybDrgConfire.areaType }
+        </if>
+        and adminType in (
+        select id from com_type where ctName like concat('%', #{ ybDrgConfire.comments } ,'%')
+        )
+    </select>
+
+    <select id="findDrgConfireUserView" resultType="cc.mrbird.febs.drg.entity.YbDrgConfire">
+        SELECT
+        p.id,
+        p.doctorCode,
+        p.doctorName,
+        p.adminType,
+        p.COMMENTS,
+        <if test="doctorCode == null">
+            1 STATE,
+        </if>
+        <if test="doctorCode != null">
+            case when p.doctorCode = #{ doctorCode } then 2 else 1 end STATE,
+        </if>
+        p.IS_DELETEMARK,
+        p.MODIFY_TIME,
+        p.CREATE_TIME,
+        p.CREATE_USER_ID,
+        p.MODIFY_USER_ID,
+        GROUP_CONCAT(d.dksName) currencyField,
+        p.areaType,
+        p.operatorId,
+        p.operatorName
+        FROM yb_drg_confire p
+        left join yb_drg_confire_data d on
+        p.id = d.pid
+        where
+        p.IS_DELETEMARK = 1
+        <if test="areaType!= null">
+            AND p.areaType = #{ areaType }
+        </if>
+        <if test="doctorContent != null and doctorContent != ''">
+            and (p.doctorCode like concat('%', #{ doctorContent } ,'%') or p.doctorName like concat('%',
+            #{ doctorContent } ,'%'))
+        </if>
+        <if test="adminType != null">
+            and p.adminType = #{ adminType }
+        </if>
+        <if test="uid != null and doctorCode == null">
+            and p.CREATE_USER_ID = #{ uid }
+        </if>
+        <if test="uid != null and doctorCode != null">
+            and (p.CREATE_USER_ID = #{ uid } or p.doctorCode=#{ doctorCode })
+        </if>
+        <if test="deptContent != null and deptContent != ''">
+            and p.id in(select DISTINCT pid from yb_drg_confire_data where dksName like concat('%', #{ deptContent }
+            ,'%'))
+        </if>
+        <if test="operatorName != null and operatorName != ''">
+            and p.operatorName like concat('%', #{ operatorName } ,'%')
+        </if>
+        GROUP BY p.id
+        <if test="type == null">
+            order by p.create_time desc
+        </if>
+        <if test="type != null and type == 'excel'">
+            order by p.operatorId desc
+        </if>
+    </select>
+    <select id="findDrgConfireUserCount" resultType="Integer">
+        SELECT
+        count(1)
+        FROM yb_drg_confire
+        where
+        IS_DELETEMARK = 1
+        <if test="areaType!= null">
+            AND areaType = #{ areaType }
+        </if>
+        <if test="adminType != null">
+            and adminType = #{ adminType }
+        </if>
+        <if test="uid != null and doctorCode == null">
+            and CREATE_USER_ID = #{ uid }
+        </if>
+        <if test="uid != null and doctorCode != null">
+            and (CREATE_USER_ID = #{ uid } or doctorCode=#{ doctorCode })
+        </if>
+        <if test="doctorContent != null and doctorContent != ''">
+            and (doctorCode like concat('%', #{ doctorContent } ,'%') or doctorName like concat('%', #{ doctorContent }
+            ,'%'))
+        </if>
+        <if test="deptContent != null and deptContent != ''">
+            and id in(select DISTINCT pid from yb_drg_confire_data where dksName like concat('%', #{ deptContent }
+            ,'%'))
+        </if>
+        <if test="operatorName != null and operatorName != ''">
+            and operatorName like concat('%', #{ operatorName } ,'%')
+        </if>
+    </select>
+
+</mapper>

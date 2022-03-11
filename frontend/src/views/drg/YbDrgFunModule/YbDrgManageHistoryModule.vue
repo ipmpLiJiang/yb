@@ -30,6 +30,7 @@
         :pagination="pagination"
         :loading="loading"
         @change="handleTableChange"
+        size="small"
         :bordered="bordered"
         :scroll="{ x: 700 }"
       >
@@ -91,16 +92,9 @@ export default {
   computed: {
     columns () {
       return [{
-        title: '序号',
-        customRender: (text, row, index) => {
-          return this.rowNo(index)
-        },
-        width: 70
-      },
-      {
         title: '复议科室',
         dataIndex: 'readyDksName',
-        width: 250
+        width: 160
       },
       {
         title: '复议医生',
@@ -110,7 +104,7 @@ export default {
             return row.readyDoctorCode + '-' + row.readyDoctorName
           }
         },
-        width: 180
+        width: 150
       },
       {
         title: '状态',
@@ -135,7 +129,7 @@ export default {
               return text
           }
         },
-        width: 130
+        width: 110
       },
       {
         title: '操作过程',
@@ -151,7 +145,8 @@ export default {
           } else {
             return text
           }
-        }
+        },
+        width: 110
       }]
     }
   },

@@ -6,55 +6,37 @@
   >
     <template>
       <a-form layout="horizontal">
-        <a-row justify="center" type="flex">
-          <a-col :span=5>
-            <a-form-item
-              label="复议年月"
-              v-bind="formItemLayout"
+        <div style="margin-bottom:16px">
+          复议年月:
+          <a-month-picker
+            @change="monthChange"
+            style="width: 105px"
+            :default-value="defaultApplyDate"
+            :format="monthFormat"
+          />
+          至:
+          <a-month-picker
+            placeholder="请选择复议年月"
+            style="width: 105px"
+            @change="monthToChange"
+            :default-value="defaultApplyDate"
+            :format="monthFormat"
+          />
+          扣款类型：
+          <a-select
+            :value="searchDataType"
+            @change="handleDataTypeChange"
+            style="width: 100px"
+          >
+            <a-select-option
+              v-for="d in selectDataTypeDataSource"
+              :key="d.value"
             >
-              <a-month-picker
-                @change="monthChange"
-                :default-value="defaultApplyDate"
-                :format="monthFormat"
-              />
-            </a-form-item>
-          </a-col>
-          <a-col :span=4>
-            <a-form-item
-              label="至"
-              v-bind="formItemLayout"
-            >
-              <a-month-picker
-                placeholder="请选择复议年月"
-                @change="monthToChange"
-                :default-value="defaultApplyDate"
-                :format="monthFormat"
-              />
-            </a-form-item>
-          </a-col>
-          <a-col :span=5>
-              <a-form-item
-                label="扣款类型"
-                v-bind="formItemLayout"
-              >
-                <a-select
-                  :value="searchDataType"
-                   @change="handleDataTypeChange"
-                  style="width: 100px"
-                >
-                  <a-select-option
-                    v-for="d in selectDataTypeDataSource"
-                    :key="d.value"
-                  >
-                    {{ d.text }}
-                  </a-select-option>
-                </a-select>
-              </a-form-item>
-          </a-col>
-          <a-col :span=5>
-            <a-input-search placeholder="请输入关键字" v-model="searchText" style="width: 15px" enter-button @search="searchTable" />
-          </a-col>
-        </a-row>
+              {{ d.text }}
+            </a-select-option>
+          </a-select>
+          <a-input-search placeholder="请输入关键字" v-model="searchText" style="width: 160px" enter-button @search="searchTable" />
+        </div>
       </a-form>
     </template>
     <!--表格-->

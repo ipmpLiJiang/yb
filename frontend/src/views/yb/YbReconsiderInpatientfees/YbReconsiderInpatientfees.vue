@@ -63,6 +63,7 @@
         :loading="loading"
         :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
         @change="handleTableChange"
+        size="small"
         :bordered="bordered"
         :scroll="{ x: 900 }"
       >
@@ -195,7 +196,7 @@ export default {
       {
         title: '项目名称',
         dataIndex: 'itemName',
-        width: 160
+        width: 150
       },
       {
         title: '项目数量',

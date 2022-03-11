@@ -2,7 +2,7 @@
   <a-drawer
     title="申诉更改"
     :maskClosable="false"
-    width=75%
+    width=80%
     placement="right"
     :closable="true"
     @close="onClose"
@@ -201,6 +201,12 @@ export default {
       formData.append('file', file)
       formData.append('id', this.ybAppealManageUpload.id)
       formData.append('refTab', 'yb_appeal_result')
+      // 如果sourceType == 1 proposalCode = applyDataId
+      // if (this.ybAppealManageUpload.sourceType === 1) {
+      //   formData.append('proposalCode', this.ybAppealManageUpload.applyDataId)
+      // } else {
+      //   formData.append('proposalCode', this.ybAppealManageUpload.proposalCode)
+      // }
       formData.append('proposalCode', this.ybAppealManageUpload.proposalCode)
       formData.append('deptName', this.ybAppealManageUpload.readyDeptName)
       formData.append('applyDateStr', this.ybAppealManageUpload.applyDateStr)

@@ -6,64 +6,45 @@
   >
     <template>
       <a-form layout="horizontal">
-        <a-row justify="center" type="flex">
-          <a-col :span=5>
-            <a-form-item
-              :label="applyDateText"
-              v-bind="formItemLayout1"
-            >
-              <a-month-picker
-                @change="monthChange"
-                :default-value="defaultApplyDate"
-                :format="monthFormat"
-              />
-            </a-form-item>
-          </a-col>
-          <a-col :span=4>
-            <a-form-item
-              label="至"
-              v-bind="formItemLayout"
-            >
-              <a-month-picker
-                placeholder="请选择复议年月"
-                @change="monthToChange"
-                :default-value="defaultApplyDate"
-                :format="monthFormat"
-              />
-            </a-form-item>
-          </a-col>
-          <a-col :span=5>
-              <a-form-item
-                label="扣款类型"
-                v-bind="formItemLayout"
-              >
-                <a-select
-                  :value="searchDataType"
-                   @change="handleDataTypeChange"
-                  style="width: 100px"
-                >
-                  <a-select-option
-                    v-for="d in selectDataTypeDataSource"
-                    :key="d.value"
-                  >
-                    {{ d.text }}
-                  </a-select-option>
-                </a-select>
-              </a-form-item>
-          </a-col>
-          <a-col :span=8>
-            <a-select v-model="searchItem.keyField" style="width: 115px">
-              <a-select-option
-              v-for="d in searchDropDataSource"
+        <div style="margin-bottom:16px">
+          {{applyDateText}}：
+          <a-month-picker
+            @change="monthChange"
+            style="width: 105px"
+            :default-value="defaultApplyDate"
+            :format="monthFormat"
+          />
+          至：
+          <a-month-picker
+            placeholder="请选择复议年月"
+            @change="monthToChange"
+            style="width: 105px"
+            :default-value="defaultApplyDate"
+            :format="monthFormat"
+          />
+          <a-select
+            :value="searchDataType"
+            @change="handleDataTypeChange"
+            style="width: 95px"
+          >
+            <a-select-option
+              v-for="d in selectDataTypeDataSource"
               :key="d.value"
-              >
+            >
               {{ d.text }}
-              </a-select-option>
-            </a-select>
-            =
-            <a-input-search placeholder="请输入关键字" v-model="searchItem.value" style="width: 170px" enter-button @search="searchTable" />
-          </a-col>
-        </a-row>
+            </a-select-option>
+          </a-select>
+          <a-select v-model="searchItem.keyField" style="width: 110px">
+            <a-select-option
+            v-for="d in searchDropDataSource"
+            :key="d.value"
+            >
+            {{ d.text }}
+            </a-select-option>
+          </a-select>
+          =
+          <a-input-search placeholder="请输入关键字" v-model="searchItem.value" style="width: 160px" enter-button @search="searchTable" />
+        </div>
       </a-form>
     </template>
     <!--表格-->

@@ -1,31 +1,32 @@
 <template>
   <div id="tab" style="margin: 0px!important">
-        <!-- 表格区域 -->
-        <a-table
-          ref="TableInfo"
-          :columns="columns"
-          :rowKey="record => record.id"
-          :dataSource="dataSource"
-          :pagination="pagination"
-          :loading="loading"
-          :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
-          @change="handleTableChange"
-          :bordered="bordered"
-          :scroll="{ x: 900 }"
-        >
-          <template
-            slot="operation"
-            slot-scope="text, record, index"
-          >
-            <div class="editable-row-operations">
-              <span>
-                <a
-                  @click="() => look(record,index)"
-                >查看剔除明细</a>
-              </span>
-            </div>
-          </template>
-        </a-table>
+    <!-- 表格区域 -->
+    <a-table
+      ref="TableInfo"
+      :columns="columns"
+      :rowKey="record => record.id"
+      :dataSource="dataSource"
+      :pagination="pagination"
+      :loading="loading"
+      :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
+      @change="handleTableChange"
+      size="small"
+      :bordered="bordered"
+      :scroll="{ x: 900 }"
+    >
+      <template
+        slot="operation"
+        slot-scope="text, record, index"
+      >
+        <div class="editable-row-operations">
+          <span>
+            <a
+              @click="() => look(record,index)"
+            >查看剔除明细</a>
+          </span>
+        </div>
+      </template>
+    </a-table>
   </div>
 </template>
 
@@ -79,13 +80,13 @@ export default {
         title: '交易流水号',
         dataIndex: 'serialNo',
         fixed: 'left',
-        width: 140
+        width: 120
       },
       {
         title: '单据号',
         dataIndex: 'billNo',
         fixed: 'left',
-        width: 110
+        width: 90
       },
       {
         title: '医保内金额',
@@ -95,7 +96,7 @@ export default {
       {
         title: '规则名称',
         dataIndex: 'ruleName',
-        width: 120
+        width: 160
       },
       {
         title: '扣除金额',
@@ -146,14 +147,14 @@ export default {
           }
         },
         fixed: 'right',
-        width: 90
+        width: 70
       },
       {
         title: '操作',
         dataIndex: 'operation',
         scopedSlots: { customRender: 'operation' },
         fixed: 'right',
-        width: 120
+        width: 105
       }]
     }
   },

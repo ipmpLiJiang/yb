@@ -31,7 +31,7 @@
         <input-selectdks
           ref="inputSelectVerifyDks"
           v-decorator="['dksNameTo', {rules: [{ required: checkDeptType, message: '更改科室名称不能为空' }] }]"
-          :ctType=3
+          :ctType=4
           @selectChange=selectDksChang
         >
         </input-selectdks>

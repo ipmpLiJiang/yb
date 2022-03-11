@@ -140,6 +140,9 @@ public class ComTypeController extends BaseController {
             ComType query = new ComType();
             query.setCtType(comType.getCtType());
             List<ComType> listAll = this.iComTypeService.findComTypeList(query);
+            if(comType.getCtName() != null) {
+                comType.setCtName(comType.getCtName().trim());
+            }
             List<ComType> list = listAll.stream().filter(s -> s.getCtName().equals(comType.getCtName())).collect(Collectors.toList());
             if (list.size() == 0 || comType.getId() != null) {
                 User currentUser = FebsUtil.getCurrentUser();

@@ -143,6 +143,7 @@ export default {
     downloadFile () {
       let formData = {}
       formData.id = this.ybAppealManage.id
+      formData.dataType = this.ybAppealManage.dataType
       formData.deptId = this.ybAppealManage.readyDeptCode
       formData.deptName = this.ybAppealManage.readyDeptName
       formData.applyDateStr = this.ybAppealManage.applyDateStr

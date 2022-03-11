@@ -163,13 +163,14 @@ public class YbAppealConfireServiceImpl extends ServiceImpl<YbAppealConfireMappe
 
             LambdaQueryWrapper<ComType> wrapper = new LambdaQueryWrapper<>();
             wrapper.eq(ComType::getId,ybAppealConfire.getAdminType());
+            wrapper.eq(ComType::getCtType,1);
             wrapper.like(ComType::getCtName,"联络员");
             List<ComType> typeList= iComTypeService.getBaseMapper().selectList(wrapper);
             boolean isPersonLly = typeList.size() > 0 ? true : false;
             if(!isPersonLly){
                 isPersonLly=  this.isLly(ybAppealConfire.getDoctorCode(),null);
             }
-            userService.saveConfUser(users, isPersonLly,true);
+            userService.saveConfUser(users, isPersonLly,true,8);
         }
     }
 
@@ -184,6 +185,7 @@ public class YbAppealConfireServiceImpl extends ServiceImpl<YbAppealConfireMappe
 
             LambdaQueryWrapper<ComType> wrapper = new LambdaQueryWrapper<>();
             wrapper.eq(ComType::getId,ybAppealConfire.getAdminType());
+            wrapper.eq(ComType::getCtType,1);
             wrapper.like(ComType::getCtName,"联络员");
             List<ComType> typeList= iComTypeService.getBaseMapper().selectList(wrapper);
             boolean  isPersonLly = typeList.size() > 0 ? true : false;
@@ -191,7 +193,7 @@ public class YbAppealConfireServiceImpl extends ServiceImpl<YbAppealConfireMappe
             if(!isPersonLly){
                 isPersonLly=  this.isLly(ybAppealConfire.getDoctorCode(),ybAppealConfire.getId());
             }
-            userService.saveConfUser(users,isPersonLly, true);
+            userService.saveConfUser(users,isPersonLly, true,8);
         }
     }
 
@@ -229,11 +231,11 @@ public class YbAppealConfireServiceImpl extends ServiceImpl<YbAppealConfireMappe
                     boolean  isPersonLly=  this.isLly(appealConfire.getDoctorCode(),Ids[0]);
                     String[] users = new String[1];
                     users[0] = appealConfire.getDoctorCode();
-                    userService.saveConfUser(users,isPersonLly, true);
+                    userService.saveConfUser(users,isPersonLly, true,8);
                 }else{
                     String[] users = new String[1];
                     users[0] = appealConfire.getDoctorCode();
-                    userService.saveConfUser(users,true, false);
+                    userService.saveConfUser(users,true, false,8);
                 }
             }
 //            List<String> userList = new ArrayList<>();
