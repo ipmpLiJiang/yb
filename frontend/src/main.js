@@ -29,6 +29,7 @@ Vue.prototype.$get = request.get
 Vue.prototype.$put = request.put
 Vue.prototype.$delete = request.delete
 Vue.prototype.$export = request.export
+Vue.prototype.$export1 = request.export1
 Vue.prototype.$download = request.download
 Vue.prototype.$upload = request.upload
 Vue.prototype.$baseURL = request.baseURL

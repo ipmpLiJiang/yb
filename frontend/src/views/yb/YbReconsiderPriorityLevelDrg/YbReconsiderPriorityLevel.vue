@@ -200,6 +200,11 @@ export default {
       {
         title: '更改科室名称',
         dataIndex: 'dksNameTo',
+        customRender: (text, row, index) => {
+          if (text !== '' && text !== null) {
+            return row.dksIdTo + '-' + row.dksNameTo
+          }
+        },
         width: 200
       },
       {

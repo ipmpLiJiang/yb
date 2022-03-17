@@ -151,12 +151,12 @@ export default {
         },
         width: 110
       },
-      {
-        title: '汇总科室',
-        dataIndex: 'dksName',
-        fixed: 'right',
-        width: 110
-      },
+      // {
+      //   title: '汇总科室',
+      //   dataIndex: 'dksName',
+      //   fixed: 'right',
+      //   width: 110
+      // },
       {
         title: '复议科室',
         dataIndex: 'verifyDeptName',

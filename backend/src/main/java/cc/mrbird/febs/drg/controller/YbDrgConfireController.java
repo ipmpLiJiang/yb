@@ -134,8 +134,8 @@ public class YbDrgConfireController extends BaseController {
 //                    createData.setDeptId(item.getDeptId());
 //                    String strDeptName = DataTypeHelpers.stringReplaceSetString(item.getDeptName(), item.getDeptId() + "-");
 //                    createData.setDeptName(strDeptName);
-                    String strDksName = item.getDksName();
-                    createData.setDksName(strDksName);
+                    createData.setDksId(item.getDksId());
+                    createData.setDksName(item.getDksName());
                     createDataList.add(createData);
                 }
                 this.iYbDrgConfireService.createDrgConfire(create, createDataList);
@@ -188,8 +188,8 @@ public class YbDrgConfireController extends BaseController {
 //                    updateData.setDeptId(item.getDeptId());
 //                    String strDeptName = DataTypeHelpers.stringReplaceSetString(item.getDeptName(), item.getDeptId() + "-");
 //                    updateData.setDeptName(strDeptName);
-                    String strDksName = item.getDksName();
-                    updateData.setDksName(strDksName);
+                    updateData.setDksId(item.getDksId());
+                    updateData.setDksName(item.getDksName());
                     if (updateData.getId() == null) {
                         updateData.setId(UUID.randomUUID().toString());
                         createDataList.add(updateData);
@@ -203,7 +203,7 @@ public class YbDrgConfireController extends BaseController {
                 } else {
                     YbDrgConfireData quertAcd = new YbDrgConfireData();
                     quertAcd.setPid(drgConfireJson.getId());
-//                    quertAcd.setDeptId(createDataList.get(0).getDeptId());
+                    quertAcd.setDksId(createDataList.get(0).getDksId());
                     quertAcd.setDksName(createDataList.get(0).getDksName());
                     List<YbDrgConfireData> queryAcdList = iYbDrgConfireDataService.findDrgConfireDataList(quertAcd);
                     if (queryAcdList.size() == 0) {
@@ -212,7 +212,7 @@ public class YbDrgConfireController extends BaseController {
                     } else {
                         message = iComConfiguremanageService.getConfigAreaName(drgConfireJson.getAreaType());
 //                        message = message + " " + createDataList.get(0).getDeptId() + "-" + createDataList.get(0).getDeptName() + " 科室已存在!";
-                        message = message + " " + createDataList.get(0).getDksName() + " 已存在!";
+                        message = message + " " + createDataList.get(0).getDksId() + "-" + createDataList.get(0).getDksName() + " 已存在!";
                     }
                 }
             } else {

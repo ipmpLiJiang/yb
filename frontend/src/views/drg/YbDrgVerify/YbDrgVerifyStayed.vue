@@ -173,7 +173,7 @@ export default {
         title: '序号',
         dataIndex: 'orderNumber',
         fixed: 'left',
-        width: 70
+        width: 65
       },
       {
         title: '科室',
@@ -230,7 +230,7 @@ export default {
         dataIndex: 'verifyDksName',
         scopedSlots: { customRender: 'verifyDksName' },
         fixed: 'right',
-        width: 160
+        width: 180
       },
       {
         title: '复议医生',
@@ -285,6 +285,7 @@ export default {
           let arrData = {
             verifyDoctorCode: target.verifyDoctorCode,
             verifyDoctorName: target.verifyDoctorName,
+            verifyDksId: target.verifyDksId,
             verifyDksName: target.verifyDksName
           }
           data.push(arrData)
@@ -309,6 +310,7 @@ export default {
             applyDataId: target.applyDataId,
             verifyDoctorCode: selectDate.doctorCode,
             verifyDoctorName: selectDate.doctorName,
+            verifyDksId: selectDate.dksId,
             verifyDksName: selectDate.dksName,
             applyDateStr: target.applyDateStr,
             orderNumber: target.orderNumber,
@@ -348,6 +350,7 @@ export default {
             applyDataId: target.applyDataId,
             verifyDoctorCode: target.verifyDoctorCode,
             verifyDoctorName: target.verifyDoctorName,
+            verifyDksId: target.verifyDksId,
             verifyDksName: target.verifyDksName,
             applyDateStr: target.applyDateStr,
             orderNumber: target.orderNumber,
@@ -400,14 +403,14 @@ export default {
     // 模拟往服务器发送请求
     ajaxDks (keyword) {
       let dataSource = []
-      let params = {isDeletemark: 1, ctType: 4, comments: keyword}
-      this.$get('comType/getComTypeByNameList', {
+      let params = {comments: keyword, areaId: this.user.areaType.value}
+      this.$get('ybDrgDks/findDksList', {
         ...params
       }).then((r) => {
         r.data.data.forEach((item, i) => {
           dataSource.push({
-            value: item.ctName,
-            text: item.ctName
+            value: item.dksId,
+            text: item.dksId + '-' + item.dksName + '(' + item.areaName + ')'
           })
         })
       })
@@ -415,7 +418,7 @@ export default {
     },
     ajaxDoctor (keyword) {
       let dataSource = []
-      let params = {comments: keyword, dksName: '医生'}
+      let params = {comments: keyword, deptName: '医生'}
       this.$get('ybPerson/findPersonList', {
         ...params
       }).then((r) => {
@@ -458,7 +461,9 @@ export default {
       if (target) {
         target[column] = value
         const textData = this.selectDksDataSource.filter(item => value === item.value)[0]
+        target.verifyDksId = textData.value
         target.verifyDksName = textData.text
+        this.ybDrgVerify.verifyDksId = target.verifyDksId
         this.ybDrgVerify.verifyDksName = target.verifyDksName
         this.dataSource = newData
       }
@@ -471,7 +476,7 @@ export default {
       if (target !== undefined) {
         this.selectDksDataSource = [{
           text: target.verifyDksName,
-          value: target.verifyDksName
+          value: target.verifyDksId
         }]
         this.selectDoctorDataSource = [{
           text: target.verifyDoctorName,
@@ -479,12 +484,13 @@ export default {
         }]
 
         this.selectDoctorValue = target.verifyDoctorCode
-        this.selectDksValue = target.verifyDksName
+        this.selectDksValue = target.verifyDksId
 
         this.ybDrgVerify.id = key
         this.ybDrgVerify.applyDataId = target.applyDataId
         this.ybDrgVerify.verifyDoctorCode = target.verifyDoctorCode
         this.ybDrgVerify.verifyDoctorName = target.verifyDoctorName
+        this.ybDrgVerify.verifyDksId = target.verifyDksId
         this.ybDrgVerify.verifyDksName = target.verifyDksName
 
         this.editingKey = key
@@ -521,6 +527,7 @@ export default {
             applyDataId: this.ybDrgVerify.applyDataId,
             verifyDoctorCode: this.ybDrgVerify.verifyDoctorCode,
             verifyDoctorName: this.ybDrgVerify.verifyDoctorName,
+            verifyDksId: this.ybDrgVerify.verifyDksId,
             verifyDksName: this.ybDrgVerify.verifyDksName,
             applyDateStr: target.applyDateStr,
             orderNumber: target.orderNumber,

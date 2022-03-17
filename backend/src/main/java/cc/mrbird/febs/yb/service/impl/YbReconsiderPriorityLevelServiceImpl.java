@@ -110,6 +110,8 @@ public class YbReconsiderPriorityLevelServiceImpl extends ServiceImpl<YbReconsid
         if (ybReconsiderPriorityLevel.getState() == YbReconsiderPriorityLevel.PERSON_TYPE_4) {
             String strDoctorToName = DataTypeHelpers.stringReplaceSetString(ybReconsiderPriorityLevel.getDoctorNameTo(), ybReconsiderPriorityLevel.getDoctorCodeTo() + "-");
             ybReconsiderPriorityLevel.setDoctorNameTo(strDoctorToName);
+            String strDksToName = DataTypeHelpers.stringReplaceSetString(ybReconsiderPriorityLevel.getDksNameTo(), ybReconsiderPriorityLevel.getDksIdTo() + "-");
+            ybReconsiderPriorityLevel.setDksNameTo(strDksToName);
         }
         this.baseMapper.updateYbReconsiderPriorityLevel(ybReconsiderPriorityLevel);
     }

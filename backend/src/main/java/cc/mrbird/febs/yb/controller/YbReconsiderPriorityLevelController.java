@@ -89,6 +89,7 @@ public class YbReconsiderPriorityLevelController extends BaseController {
             }
             if (ybReconsiderPriorityLevel.getState() == YbReconsiderPriorityLevel.PL_STATE_4) {
                 if(ybReconsiderPriorityLevel.getPersonType() != YbReconsiderPriorityLevel.PERSON_TYPE_2){
+                    ybReconsiderPriorityLevel.setDksId("");
                     ybReconsiderPriorityLevel.setDksName("");
                 }
             }
@@ -132,6 +133,7 @@ public class YbReconsiderPriorityLevelController extends BaseController {
             }
             if (ybReconsiderPriorityLevel.getState() == YbReconsiderPriorityLevel.PL_STATE_4) {
                 if(ybReconsiderPriorityLevel.getPersonType() != YbReconsiderPriorityLevel.PERSON_TYPE_2){
+                    ybReconsiderPriorityLevel.setDksId("");
                     ybReconsiderPriorityLevel.setDksName("");
                 }
             }

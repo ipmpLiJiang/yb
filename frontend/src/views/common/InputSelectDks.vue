@@ -25,13 +25,11 @@
 <script>
 export default {
   props: {
-    ctType: {
-      default: 3
-    }
   },
   data () {
     return {
       value: '',
+      user: this.$store.state.account.user,
       dataSource: []
     }
   },
@@ -54,14 +52,14 @@ export default {
     // 模拟往服务器发送请求
     ajax (keyword) {
       let body = []
-      let params = {isDeletemark: 1, ctType: this.ctType, comments: keyword}
-      this.$get('comType/getComTypeByNameList', {
+      let params = {comments: keyword, areaId: this.user.areaType.value}
+      this.$get('ybDrgDks/findDksList', {
         ...params
       }).then((r) => {
         r.data.data.forEach((item, i) => {
           body.push({
-            value: item.ctName,
-            text: item.ctName
+            value: item.dksId,
+            text: item.dksId + '-' + item.dksName + '(' + item.areaName + ')'
           })
         })
       })

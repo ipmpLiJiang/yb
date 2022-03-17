@@ -56,6 +56,21 @@ const custom = {
         return ''
       }
     }
+  },
+  excelContentSaveBlob (content, fileName) {
+    const blob = new Blob([content])
+    if ('download' in document.createElement('a')) {
+      const elink = document.createElement('a')
+      elink.download = fileName
+      elink.style.display = 'none'
+      elink.href = URL.createObjectURL(blob)
+      document.body.appendChild(elink)
+      elink.click()
+      URL.revokeObjectURL(elink.href)
+      document.body.removeChild(elink)
+    } else {
+      navigator.msSaveBlob(blob, fileName)
+    }
   }
 }
 const data = {

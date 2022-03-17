@@ -58,16 +58,13 @@
             v-bind="formItemLayout"
             label="管理科室列表"
           >
-            <a-select
-              allowClear
-              :showSearch="true"
-              @change="selectKsTypeChange"
-              v-model="vdksName"
+            <input-select
+              ref="inputSelectDept"
+              :type=3
+              :areaType="this.ybAppealConfire.areaType"
+              @selectChange=selectDeptChange
             >
-              <a-select-option :value="d.text" v-for="d in ksList" :key="d.text">
-                {{d.text}}
-              </a-select-option>
-            </a-select>
+            </input-select>
           </a-form-item>
         </a-col>
         <a-col :span=4>
@@ -124,7 +121,7 @@ export default {
       isEdit: false,
       txtValue: '',
       ksList: [],
-      vdksName: '',
+      // vdksName: '',
       selectAdminTypeDataSource: [],
       ybAppealConfire: {}
     }
@@ -136,8 +133,8 @@ export default {
       this.ksList = []
       this.$refs.inputSelectDoctor.dataSource = []
       this.$refs.inputSelectDoctor.value = ''
-      // this.$refs.inputSelectDept.dataSource = []
-      // this.$refs.inputSelectDept.value = ''
+      this.$refs.inputSelectDept.dataSource = []
+      this.$refs.inputSelectDept.value = ''
       this.form.resetFields()
     },
     del () {
@@ -158,7 +155,8 @@ export default {
       }).then((r) => {
         if (r.data.data.length > 0) {
           for (var i in r.data.data) {
-            var at = {text: r.data.data[i].dksName}
+            // var at = {text: r.data.data[i].dksName}
+            var at = {text: r.data.data[i].deptName}
             this.ksList.push(at)
           }
         }
@@ -180,7 +178,7 @@ export default {
       this.ybAcData.dksName = value
     },
     setFormValues (obj, areaType, atDataSource) {
-      this.ybAcData.dksName = ''
+      // this.ybAcData.dksName = ''
       this.ybAppealConfire.areaType = areaType
       this.findComType3()
       this.isUpdate = false
@@ -230,11 +228,11 @@ export default {
           doctorName: this.ybAppealConfire.doctorName
         })
       }
-      // if (this.ybAcData.deptId !== '' && this.ybAcData.deptId !== undefined) {
-      if (this.ybAcData.dksName !== '' && this.ybAcData.dksName !== undefined) {
+      if (this.ybAcData.deptId !== '' && this.ybAcData.deptId !== undefined) {
+      // if (this.ybAcData.dksName !== '' && this.ybAcData.dksName !== undefined) {
         this.ybAppealConfire.child = [
-          // { deptId: this.ybAcData.deptId, deptName: this.ybAcData.deptName }
-          { dksName: this.ybAcData.dksName }
+          { deptId: this.ybAcData.deptId, deptName: this.ybAcData.deptName }
+          // { dksName: this.ybAcData.dksName }
         ]
         isData = true
       } else {
@@ -279,12 +277,12 @@ export default {
             })
           }
         }
-        // this.$refs.inputSelectDept.dataSource = []
-        // this.$refs.inputSelectDept.value = ''
-        // this.ybAcData.deptId = ''
-        // this.ybAcData.deptName = ''
-        this.ybAcData.dksName = ''
-        this.vdksName = ''
+        this.$refs.inputSelectDept.dataSource = []
+        this.$refs.inputSelectDept.value = ''
+        this.ybAcData.deptId = ''
+        this.ybAcData.deptName = ''
+        // this.ybAcData.dksName = ''
+        // this.vdksName = ''
       })
     },
     setFields () {

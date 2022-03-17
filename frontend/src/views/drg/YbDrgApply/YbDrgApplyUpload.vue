@@ -241,7 +241,6 @@ export default {
       }
     },
     setFormValues ({ ...ybDrgApply }) {
-      console.log(ybDrgApply)
       this.tableSelectKey = '1'
       this.ybDrgApply = ybDrgApply
       let pid = ybDrgApply.id

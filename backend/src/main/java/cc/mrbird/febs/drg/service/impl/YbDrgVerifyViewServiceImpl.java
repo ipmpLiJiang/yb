@@ -113,6 +113,9 @@ public class YbDrgVerifyViewServiceImpl extends ServiceImpl<YbDrgVerifyViewMappe
                 if (ybDrgVerifyView.getVerifyDoctorName() != null) {
                     queryWrapper.eq(YbDrgVerify::getVerifyDoctorName, ybDrgVerifyView.getVerifyDoctorName());
                 }
+                if (ybDrgVerifyView.getVerifyDksId() != null) {
+                    queryWrapper.eq(YbDrgVerify::getVerifyDksId, ybDrgVerifyView.getVerifyDksId());
+                }
                 if (ybDrgVerifyView.getVerifyDksName() != null) {
                     queryWrapper.eq(YbDrgVerify::getVerifyDksName, ybDrgVerifyView.getVerifyDksName());
                 }
@@ -175,6 +178,7 @@ public class YbDrgVerifyViewServiceImpl extends ServiceImpl<YbDrgVerifyViewMappe
         drgVerifyView.setApplyDataId(drgApplyData.getId());
         drgVerifyView.setVerifyDoctorCode(verify.getVerifyDoctorCode());
         drgVerifyView.setVerifyDoctorName(verify.getVerifyDoctorName());
+        drgVerifyView.setVerifyDksId(verify.getVerifyDksId());
         drgVerifyView.setVerifyDksName(verify.getVerifyDksName());
 
         drgVerifyView.setState(verify.getState());

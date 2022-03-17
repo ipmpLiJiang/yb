@@ -146,12 +146,12 @@ export default {
         },
         width: 110
       },
-      {
-        title: '汇总科室',
-        dataIndex: 'dksName',
-        fixed: 'right',
-        width: 110
-      },
+      // {
+      //   title: '汇总科室',
+      //   dataIndex: 'dksName',
+      //   fixed: 'right',
+      //   width: 110
+      // },
       {
         title: '科室名称',
         dataIndex: 'arDeptName',
@@ -217,6 +217,18 @@ export default {
       this.$export('ybAppealResultView/excel1', {
         ...queryParams
       })
+      // this.$export1('ybAppealResultView/excel1', {
+      //   ...queryParams
+      // }).then((r) => {
+      //   const content = r.data
+      //   const fileName = `${new Date().getTime()}_导出结果.xlsx`
+      //   custom.excelContentSaveBlob(content, fileName)
+      //   this.$emit('spinclose')
+      // }).catch((r) => {
+      //   console.error(r)
+      //   this.$message.error('导出失败')
+      //   this.$emit('spinclose')
+      // })
     },
     onSelectChange (selectedRowKeys) {
       this.selectedRowKeys = selectedRowKeys

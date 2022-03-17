@@ -22,6 +22,7 @@
         <result column="sendDate" property="sendDate"/>
         <result column="verifyDoctorCode" property="verifyDoctorCode"/>
         <result column="verifyDoctorName" property="verifyDoctorName"/>
+        <result column="verifyDksId" property="verifyDksId"/>
         <result column="verifyDksName" property="verifyDksName"/>
         <result column="orderNumber" property="orderNumber"/>
         <result column="orderNum" property="orderNum"/>
@@ -35,7 +36,7 @@
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
         id, pid, applyDataId, applyDateStr, ks, jzjlh, bah, wglx, wtms, ylzfy, wgje, sfbmzczjcw, ly,
-        orderNumber, orderNum, verifyDoctorCode, verifyDoctorName, verifyDksName, isVerify,isPerson, sendPersonId, sendPersonName, sendDate,STATE, areaType
+        orderNumber, orderNum, verifyDoctorCode, verifyDoctorName, verifyDksId, verifyDksName, isVerify,isPerson, sendPersonId, sendPersonName, sendDate,STATE, areaType
     </sql>
 
     <select id="findDrgVerifyView" resultType="cc.mrbird.febs.drg.entity.YbDrgVerifyView"
@@ -58,7 +59,8 @@
         ad.orderNum,
         rv.verifyDoctorCode,
         concat(rv.verifyDoctorCode,'-',rv.verifyDoctorName) verifyDoctorName,
-        rv.verifyDksName,
+        rv.verifyDksId,
+        concat(rv.verifyDksId,'-',rv.verifyDksName) verifyDksName,
         case when rv.id is null then 0 else 1 end isVerify,
         case when yp.id is null then 0 else 1 end isPerson,
         rv.sendPersonId,
@@ -97,6 +99,9 @@
         </if>
         <if test="ybDrgVerifyView.verifyDoctorName != null and ybDrgVerifyView.verifyDoctorName != ''">
             and rv.verifyDoctorName = #{ ybDrgVerifyView.verifyDoctorName}
+        </if>
+        <if test="ybDrgVerifyView.verifyDksId != null and ybDrgVerifyView.verifyDksId != ''">
+            and rv.verifyDksId = #{ ybDrgVerifyView.verifyDksId}
         </if>
         <if test="ybDrgVerifyView.verifyDksName != null and ybDrgVerifyView.verifyDksName != ''">
             and rv.verifyDksName = #{ ybDrgVerifyView.verifyDksName}
@@ -138,6 +143,9 @@
         <if test="ybDrgVerifyView.verifyDoctorName != null and ybDrgVerifyView.verifyDoctorName != ''">
             and rv.verifyDoctorName = #{ ybDrgVerifyView.verifyDoctorName}
         </if>
+        <if test="ybDrgVerifyView.verifyDksId != null and ybDrgVerifyView.verifyDksId != ''">
+            and rv.verifyDksId = #{ ybDrgVerifyView.verifyDksId}
+        </if>
         <if test="ybDrgVerifyView.verifyDksName != null and ybDrgVerifyView.verifyDksName != ''">
             and rv.verifyDksName = #{ ybDrgVerifyView.verifyDksName}
         </if>
@@ -163,7 +171,8 @@
             ad.orderNum,
             rv.verifyDoctorCode,
             concat(rv.verifyDoctorCode,'-',rv.verifyDoctorName) verifyDoctorName,
-            rv.verifyDksName,
+            rv.verifyDksId,
+            concat(rv.verifyDksId,'-',rv.verifyDksName) verifyDksName,
             case when rv.id is null then 0 else 1 end isVerify,
             rv.sendPersonId,
             rv.sendPersonName,

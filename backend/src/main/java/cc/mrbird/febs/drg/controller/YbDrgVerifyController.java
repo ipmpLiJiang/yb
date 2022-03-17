@@ -229,7 +229,7 @@ public class YbDrgVerifyController extends BaseController {
                             if (objMx.size() > 1) {
                                 List<YbDrgVerify> verifyList = new ArrayList<>();
                                 if (objMx.size() > 1) {
-                                    if (objMx.get(0).length >= 13) {
+                                    if (objMx.get(0).length >= 14) {
                                         YbDrgJk queryRif = new YbDrgJk();
                                         queryRif.setApplyDateStr(applyDateStr);
                                         queryRif.setAreaType(areaType);
@@ -291,20 +291,22 @@ public class YbDrgVerifyController extends BaseController {
 //        String strDeptName = "";
         String strDocCode = "";
         String strDocName = "";
+        String strDksId = "";
         String strDksName = "";
 
 //        strDeptCode = DataTypeHelpers.importTernaryOperate(obj.get(i), 10);//病区编码
 //        strDeptName = DataTypeHelpers.importTernaryOperate(obj.get(i), 11);//病区名称
-        strDksName = DataTypeHelpers.importTernaryOperate(obj.get(i), 10);//科室名称
-        strDocCode = DataTypeHelpers.importTernaryOperate(obj.get(i), 11);//医生编码
-        strDocName = DataTypeHelpers.importTernaryOperate(obj.get(i), 12);//医生名称
+        strDksId = DataTypeHelpers.importTernaryOperate(obj.get(i), 10);//科室名称
+        strDksName = DataTypeHelpers.importTernaryOperate(obj.get(i), 11);//科室名称
+        strDocCode = DataTypeHelpers.importTernaryOperate(obj.get(i), 12);//医生编码
+        strDocName = DataTypeHelpers.importTernaryOperate(obj.get(i), 13);//医生名称
 
         if (!strOrderNumber.equals("")) {
             queryApplyDataList = applyDataList.stream().filter(
                     s -> s.getOrderNumber().equals(strOrderNumber)
             ).collect(Collectors.toList());
             if (queryApplyDataList.size() > 0) {
-                if (!strDksName.equals("") && !strDksName.equals("") &&
+                if (!strDksId.equals("") && !strDksName.equals("") &&
                         !strDocCode.equals("") && !strDocName.equals("")) {
                     YbDrgApplyData entity = queryApplyDataList.get(0);
 
@@ -313,11 +315,10 @@ public class YbDrgVerifyController extends BaseController {
                     ybDrgVerify.setApplyDataId(entity.getId());
 //                    ybDrgVerify.setVerifyDeptCode(strDeptCode);
 //                    ybDrgVerify.setVerifyDeptName(strDeptName);
+                    ybDrgVerify.setVerifyDksId(strDksId);
                     ybDrgVerify.setVerifyDksName(strDksName);
                     ybDrgVerify.setVerifyDoctorCode(strDocCode);
                     ybDrgVerify.setVerifyDoctorName(strDocName);
-
-                    ybDrgVerify.setVerifyDksName(strDksName);
 
                     ybDrgVerify.setApplyDateStr(applyDateStr);
                     ybDrgVerify.setOrderNumber(entity.getOrderNumber());

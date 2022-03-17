@@ -254,11 +254,25 @@ public class YbReconsiderPriorityLevel implements Serializable, Comparable<YbRec
     private Integer areaType;
 
     /**
-     * 科室To
+     * 科室编码To
+     */
+    @TableField("dksId")
+    @ExcelField(value ="科室编码")
+    private String dksId;
+
+    /**
+     * 科室
      */
     @TableField("dksName")
     @ExcelField(value ="科室")
     private String dksName;
+
+    /**
+     * 科室编码To
+     */
+    @TableField("dksIdTo")
+    @ExcelField(value ="科室编码")
+    private String dksIdTo;
 
     /**
      * 科室To
@@ -321,7 +335,11 @@ public class YbReconsiderPriorityLevel implements Serializable, Comparable<YbRec
 
     public static final String AREATYPE ="areaType" ;
 
+    public static final String DKSID ="dksId" ;
+
     public static final String DKSNAME ="dksName" ;
+
+    public static final String DKSIDTO ="dksIdTo" ;
 
     public static final String DKSNAMETO ="dksNameTo" ;
 

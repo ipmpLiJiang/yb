@@ -68,7 +68,7 @@ export default {
       return [{
         title: '序号',
         dataIndex: 'orderNumber',
-        width: 70
+        width: 65
       },
       {
         title: '科室',

@@ -94,7 +94,12 @@ export default {
       return [{
         title: '复议科室',
         dataIndex: 'readyDksName',
-        width: 160
+        customRender: (text, row, index) => {
+          if (text !== '' && text !== null) {
+            return row.readyDksId + '-' + row.readyDksName
+          }
+        },
+        width: 200
       },
       {
         title: '复议医生',
@@ -185,7 +190,6 @@ export default {
       this.selectedRowKeys = selectedRowKeys
     },
     setFormValues ({ ...ybDrgManageHistory }) {
-      console.log(ybDrgManageHistory)
       this.ybDrgManageHistory = ybDrgManageHistory
       this.fetch()
       setTimeout(() => {

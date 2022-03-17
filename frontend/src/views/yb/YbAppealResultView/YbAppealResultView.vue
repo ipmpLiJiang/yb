@@ -5,7 +5,8 @@
     class="card-area"
   >
     <template>
-      <div style="text-align:center;margin-bottom:16px">
+      <div style="text-align:left;margin-bottom:16px">
+        <a-spin tip="Loading..." :spinning="spinning" :delay="delayTime">
         <a-row>
           复议年月：
           <a-month-picker
@@ -33,18 +34,19 @@
           </a-select>
           =
           <a-input-search placeholder="请输入关键字" v-model="searchItem.value" style="width: 160px;margin-right:6px" enter-button @search="searchTable" />
-          <a-button style="margin-right:6px" @click="showCheckDksModal">验证汇科</a-button>
+          <!-- <a-button style="margin-right:6px" @click="showCheckDksModal">验证汇科</a-button> -->
           <a-button type="primary" style="margin-right:6px" @click="exportExcel">导出表格</a-button>
           <a-popover v-model="visibleTup" placement="top" trigger="click" title="请选择导出类型">
             <a-space slot="content" :size="8">
-            <a-button slot="content" size="small" @click="showModal(1)">汇总病区</a-button>
-            <a-button slot="content" size="small" type="primary"  @click="showModal(0)">单个病区</a-button>
-            <a-button slot="content" size="small" @click="showModal(2)">汇总科室</a-button>
+            <a-button slot="content" size="small" @click="e => showModal(e, 1)">汇总病区</a-button>
+            <a-button slot="content" size="small" type="primary" @click="e => showModal(e, 0)">单个病区</a-button>
+            <!-- <a-button slot="content" size="small" @click="e => showModal(e, 2)">汇总科室</a-button> -->
             </a-space>
           </a-popover>
           <a-button type="primary" style="margin-right:6px" @click="tupOpen">导出图片</a-button>
           <a-button type="primary" @click="onHistory">历史记录</a-button>
         </a-row>
+        </a-spin>
       </div>
     </template>
     <!--表格-->
@@ -65,6 +67,7 @@
               :searchDataType="searchDataType"
               @look="look"
               @onHistoryLook="onHistoryLook"
+              @spinclose="spinclose"
             >
             </ybAppealResult-one>
           </a-tab-pane>
@@ -117,7 +120,7 @@
       </div>
     </template>
     <template>
-      <a-modal width="85%" :maskClosable="false" :footer="null" v-model="downLoadVisible" title="导出图片" @ok="handleOk">
+      <a-modal width="85%" :maskClosable="false" :footer="null" v-model="downLoadVisible" :title="showModalTitle" @ok="handleOk">
         <ybAppealResult-downLoad
         ref="ybAppealResultDownload"
         :tableSelectKey="tableSelectKey"
@@ -191,7 +194,10 @@ export default {
       checkDksVisible: false,
       searchApplyDate: this.formatDate(),
       defaultApplyDate: this.formatDate(),
+      showModalTitle: '',
       visibleTup: false,
+      spinning: false,
+      delayTime: 500,
       selectDataTypeDataSource: [
         {text: '明细扣款', value: 0},
         {text: '主单扣款', value: 1}
@@ -212,7 +218,8 @@ export default {
     monthChange (date, dateString) {
       this.searchApplyDate = dateString
     },
-    showModal (type) {
+    showModal (e, type) {
+      this.showModalTitle = '导出图片   -   ' + e.target.innerText
       this.downLoadVisible = true
       this.visibleTup = false
       let appealResultDownLoad = {}
@@ -246,8 +253,12 @@ export default {
     handleCheckDksOk (e) {
       this.checkDksVisible = false
     },
+    spinclose () {
+      this.spinning = false
+    },
     exportExcel () {
       if (this.tableSelectKey === '1') {
+        // this.spinning = true
         this.$refs.ybAppealResultOne.exportExcel()
       } else if (this.tableSelectKey === '2') {
         this.$refs.ybAppealResultTwo.exportExcel()
@@ -256,7 +267,7 @@ export default {
       } else if (this.tableSelectKey === '4') {
         this.$refs.ybAppealResultHandle1.exportExcel()
       } else {
-        console.log('exportExcel')
+        // console.log('exportExcel')
       }
     },
     handleLookClose () {
@@ -290,7 +301,7 @@ export default {
       } else if (key === '4') {
         this.$refs.ybAppealResultHandle1.onHistory()
       } else {
-        console.log('4444')
+        // console.log('4444')
       }
     },
     handleDataTypeChange (value) {

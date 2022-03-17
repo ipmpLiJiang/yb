@@ -204,6 +204,12 @@ public class YbDrgResultView implements Serializable {
     private String ly;
 
     /**
+     * 科室编码
+     */
+    @ExcelField(value ="科室编码")
+    private String dksId;
+
+    /**
      * 科室
      */
     @ExcelField(value ="科室")

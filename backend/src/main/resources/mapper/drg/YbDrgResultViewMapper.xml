@@ -19,6 +19,7 @@
         <result column="ly" property="ly"/>
         <result column="doctorCode" property="doctorCode"/>
         <result column="doctorName" property="doctorName"/>
+        <result column="dksId" property="dksId"/>
         <result column="dksName" property="dksName"/>
         <result column="orderNumber" property="orderNumber"/>
         <result column="orderNum" property="orderNum"/>
@@ -32,7 +33,7 @@
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
         id, pid, applyDataId, applyDateStr, ks, jzjlh, bah, wglx, wtms, ylzfy, wgje, sfbmzczjcw, ly,
-        orderNumber, orderNum, doctorCode, doctorName, dksName,STATE, areaType,operateReason,operateDate
+        orderNumber, orderNum, doctorCode, doctorName, dksId, dksName,STATE, areaType,operateReason,operateDate
     </sql>
 
     <select id="findDrgResultViewList" resultType="cc.mrbird.febs.drg.entity.YbDrgResultView"
@@ -55,6 +56,7 @@
             ad.orderNum,
             dr.doctorCode,
             concat(dr.doctorCode,'-',dr.doctorName) doctorName,
+            dr.dksId,
             dr.dksName,
             dr.operateReason,
             dr.operateDate,
@@ -88,6 +90,7 @@
             ad.orderNum,
             dr.doctorCode,
             concat(dr.doctorCode,'-',dr.doctorName) doctorName,
+            dr.dksId,
             dr.dksName,
             dr.operateReason,
             dr.operateDate,

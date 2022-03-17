@@ -92,7 +92,8 @@
         p.CREATE_TIME,
         p.CREATE_USER_ID,
         p.MODIFY_USER_ID,
-        GROUP_CONCAT(d.dksName) currencyField,
+--         GROUP_CONCAT(d.dksName) currencyField,
+        GROUP_CONCAT(d.deptName) currencyField,
         p.areaType,
         p.operatorId,
         p.operatorName
@@ -112,8 +113,7 @@
             and p.adminType = #{ adminType }
         </if>
         <if test="deptContent != null and deptContent != ''">
-            and p.id in(select DISTINCT pid from yb_appeal_confire_data where dksName like concat('%', #{ deptContent }
-            ,'%'))
+            and p.id in(select DISTINCT pid from yb_appeal_confire_data where deptName like concat('%', #{ deptContent } ,'%'))
         </if>
         <if test="operatorName != null and operatorName != ''">
             and p.operatorName like concat('%', #{ operatorName } ,'%')
@@ -140,12 +140,10 @@
             and adminType = #{ adminType }
         </if>
         <if test="doctorContent != null and doctorContent != ''">
-            and (doctorCode like concat('%', #{ doctorContent } ,'%') or doctorName like concat('%', #{ doctorContent }
-            ,'%'))
+            and (doctorCode like concat('%', #{ doctorContent } ,'%') or doctorName like concat('%', #{ doctorContent } ,'%'))
         </if>
         <if test="deptContent != null and deptContent != ''">
-            and id in(select DISTINCT pid from yb_appeal_confire_data where dksName like concat('%', #{ deptContent }
-            ,'%'))
+            and id in(select DISTINCT pid from yb_appeal_confire_data where deptName like concat('%', #{ deptContent } ,'%'))
         </if>
         <if test="operatorName != null and operatorName != ''">
             and operatorName like concat('%', #{ operatorName } ,'%')
@@ -183,7 +181,8 @@
         p.CREATE_TIME,
         p.CREATE_USER_ID,
         p.MODIFY_USER_ID,
-        GROUP_CONCAT(d.dksName) currencyField,
+        GROUP_CONCAT(d.deptName) currencyField,
+--         GROUP_CONCAT(d.dksName) currencyField,
         p.areaType,
         p.operatorId,
         p.operatorName
@@ -196,8 +195,7 @@
             AND p.areaType = #{ areaType }
         </if>
         <if test="doctorContent != null and doctorContent != ''">
-            and (p.doctorCode like concat('%', #{ doctorContent } ,'%') or p.doctorName like concat('%',
-            #{ doctorContent } ,'%'))
+            and (p.doctorCode like concat('%', #{ doctorContent } ,'%') or p.doctorName like concat('%', #{ doctorContent } ,'%'))
         </if>
         <if test="adminType != null">
             and p.adminType = #{ adminType }
@@ -209,8 +207,7 @@
             and (p.CREATE_USER_ID = #{ uid } or p.doctorCode=#{ doctorCode })
         </if>
         <if test="deptContent != null and deptContent != ''">
-            and p.id in(select DISTINCT pid from yb_appeal_confire_data where dksName like concat('%', #{ deptContent }
-            ,'%'))
+            and p.id in(select DISTINCT pid from yb_appeal_confire_data where deptName like concat('%', #{ deptContent } ,'%'))
         </if>
         <if test="operatorName != null and operatorName != ''">
             and p.operatorName like concat('%', #{ operatorName } ,'%')
@@ -242,12 +239,10 @@
             and (CREATE_USER_ID = #{ uid } or doctorCode=#{ doctorCode })
         </if>
         <if test="doctorContent != null and doctorContent != ''">
-            and (doctorCode like concat('%', #{ doctorContent } ,'%') or doctorName like concat('%', #{ doctorContent }
-            ,'%'))
+            and (doctorCode like concat('%', #{ doctorContent } ,'%') or doctorName like concat('%', #{ doctorContent } ,'%'))
         </if>
         <if test="deptContent != null and deptContent != ''">
-            and id in(select DISTINCT pid from yb_appeal_confire_data where dksName like concat('%', #{ deptContent }
-            ,'%'))
+            and id in(select DISTINCT pid from yb_appeal_confire_data where deptName like concat('%', #{ deptContent } ,'%'))
         </if>
         <if test="operatorName != null and operatorName != ''">
             and operatorName like concat('%', #{ operatorName } ,'%')

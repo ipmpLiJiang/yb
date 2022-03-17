@@ -38,7 +38,6 @@
                   label="复议科室">
                     <input-selectdks
                       ref="inputSelectVerifyDks"
-                      :ctType=4
                       @selectChange=selectDksChang
                     >
                     </input-selectdks>
@@ -135,7 +134,7 @@ export default {
     },
     handleSubmit () {
       let dtc = this.ybDrgVerify.verifyDoctorCode
-      let dec = this.ybDrgVerify.verifyDksName
+      let dec = this.ybDrgVerify.verifyDksId
       if (dtc !== undefined && dec !== undefined && dtc !== null && dec !== null && dtc !== '' && dec !== '') {
         this.loading = true
         this.spinning = true
@@ -144,6 +143,7 @@ export default {
           applyDataId: this.ybDrgVerifyView.applyDataId,
           verifyDoctorCode: this.ybDrgVerify.verifyDoctorCode,
           verifyDoctorName: this.ybDrgVerify.verifyDoctorName,
+          verifyDksId: this.ybDrgVerify.verifyDksId,
           verifyDksName: this.ybDrgVerify.verifyDksName,
           applyDateStr: this.ybDrgVerifyView.applyDateStr,
           orderNumber: this.ybDrgVerifyView.orderNumber,
@@ -171,6 +171,7 @@ export default {
       this.ybDrgVerify.verifyDoctorName = item.text
     },
     selectDksChang (item) {
+      this.ybDrgVerify.verifyDksId = item.value
       this.ybDrgVerify.verifyDksName = item.text
     },
     setFormValues ({ ...ybDrgVerifyView }) {
@@ -183,9 +184,9 @@ export default {
     setForms (target) {
       this.$refs.inputSelectVerifyDks.dataSource = [{
         text: target.verifyDksName,
-        value: target.verifyDksName
+        value: target.verifyDksId
       }]
-      this.$refs.inputSelectVerifyDks.value = target.verifyDksName
+      this.$refs.inputSelectVerifyDks.value = target.verifyDksId
 
       this.$refs.inputSelectVerifyDoctor.dataSource = [{
         text: target.verifyDoctorName,
@@ -197,6 +198,7 @@ export default {
         id: target.id,
         verifyDoctorCode: target.verifyDoctorCode,
         verifyDoctorName: target.verifyDoctorName,
+        verifyDksId: target.verifyDksId,
         verifyDksName: target.verifyDksName,
         state: 2
       }

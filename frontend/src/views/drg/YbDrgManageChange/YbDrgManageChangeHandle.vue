@@ -33,7 +33,7 @@
                         v-bind="formItemLayout0"
                         label="申请科室"
                       >
-                        {{ybDrgManageChangeHandle.readyDksName}}
+                        {{ybDrgManageChangeHandle.readyDksId}}-{{ybDrgManageChangeHandle.readyDksName}}
                       </a-form-item>
                     </a-col>
                     <a-col :span=14>
@@ -43,7 +43,6 @@
                       >
                         <input-selectdks
                         ref="inputSelectChangeDks"
-                        :ctType=4
                         @selectChange=selectDksChange
                         >
                         </input-selectdks>
@@ -217,15 +216,17 @@ export default {
       }, 200)
     },
     setForms (amch) {
+      debugger
+      let deptId = amch.changeDksId !== '' && amch.changeDksId !== undefined ? amch.changeDksId : amch.readyDksId
       let deptName = amch.changeDksName !== '' && amch.changeDksName !== undefined ? amch.changeDksName : amch.readyDksName
       let doctorName = amch.changeDoctorCode !== '' && amch.changeDoctorCode !== undefined ? amch.changeDoctorName : amch.readyDoctorName
       let doctorCode = amch.changeDoctorCode !== '' && amch.changeDoctorCode !== undefined ? amch.changeDoctorCode : amch.readyDoctorCode
 
       this.$refs.inputSelectChangeDks.dataSource = [{
-        text: deptName,
-        value: deptName
+        text: deptId + '-' + deptName,
+        value: deptId
       }]
-      this.$refs.inputSelectChangeDks.value = deptName
+      this.$refs.inputSelectChangeDks.value = deptId
 
       this.$refs.inputSelectChangeDoctor.dataSource = [{
         text: doctorCode + '-' + doctorName,
@@ -236,6 +237,7 @@ export default {
       this.ybDrgManageChangeHandle.changeDoctorCode = doctorCode
       this.ybDrgManageChangeHandle.changeDoctorName = doctorName
       this.ybDrgManageChangeHandle.changeDksName = deptName
+      this.ybDrgManageChangeHandle.changeDksId = deptId
 
       setTimeout(() => {
         this.$refs.ybDrgJkModule.search()
@@ -246,6 +248,7 @@ export default {
       this.ybDrgManageChangeHandle.changeDoctorName = item.text
     },
     selectDksChange (item) {
+      this.ybDrgManageChangeHandle.changeDksId = item.value
       this.ybDrgManageChangeHandle.changeDksName = item.text
     },
     handleRejectSubmit () {
@@ -260,6 +263,7 @@ export default {
           ybDrgManage.id = this.ybDrgManageChangeHandle.id
           ybDrgManage.applyDataId = this.ybDrgManageChangeHandle.applyDataId
           ybDrgManage.verifyId = this.ybDrgManageChangeHandle.verifyId
+          ybDrgManage.readyDksId = this.ybDrgManageChangeHandle.readyDksId
           ybDrgManage.readyDksName = this.ybDrgManageChangeHandle.readyDksName
           ybDrgManage.readyDoctorCode = this.ybDrgManageChangeHandle.readyDoctorCode
           ybDrgManage.readyDoctorName = this.ybDrgManageChangeHandle.readyDoctorName
@@ -286,9 +290,11 @@ export default {
           ybDrgManage.id = this.ybDrgManageChangeHandle.id
           ybDrgManage.applyDataId = this.ybDrgManageChangeHandle.applyDataId
           ybDrgManage.verifyId = this.ybDrgManageChangeHandle.verifyId
+          ybDrgManage.changeDksId = this.ybDrgManageChangeHandle.changeDksId
           ybDrgManage.changeDksName = this.ybDrgManageChangeHandle.changeDksName
           ybDrgManage.changeDoctorCode = this.ybDrgManageChangeHandle.changeDoctorCode
           ybDrgManage.changeDoctorName = this.ybDrgManageChangeHandle.changeDoctorName
+          ybDrgManage.readyDksId = this.ybDrgManageChangeHandle.readyDksId
           ybDrgManage.readyDksName = this.ybDrgManageChangeHandle.readyDksName
           ybDrgManage.readyDoctorCode = this.ybDrgManageChangeHandle.readyDoctorCode
           ybDrgManage.readyDoctorName = this.ybDrgManageChangeHandle.readyDoctorName

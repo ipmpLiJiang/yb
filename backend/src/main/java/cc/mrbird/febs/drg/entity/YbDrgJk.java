@@ -176,6 +176,13 @@ public class YbDrgJk implements Serializable, Comparable<YbDrgJk> {
     private String deptName;
 
     /**
+     * 科室编码
+     */
+    @TableField("deptId")
+    @ExcelField(value = "科室编码")
+    private String deptId;
+
+    /**
      * 病区编码
      */
     @TableField("areaId")
@@ -267,6 +274,13 @@ public class YbDrgJk implements Serializable, Comparable<YbDrgJk> {
     private String ylzDocName;
 
     /**
+     * 医疗组医师科室Id
+     */
+    @TableField("ylzDeptId")
+    @ExcelField(value = "医疗组医师科室Id")
+    private String ylzDeptId;
+
+    /**
      * 医疗组医师科室名称
      */
     @TableField("ylzDeptName")
@@ -312,6 +326,8 @@ public class YbDrgJk implements Serializable, Comparable<YbDrgJk> {
 
     public static final String QTSSNAME = "qtssName";
 
+    public static final String DEPTID = "deptId";
+
     public static final String DEPTNAME = "deptName";
 
     public static final String AREAID = "areaId";
@@ -335,6 +351,8 @@ public class YbDrgJk implements Serializable, Comparable<YbDrgJk> {
     public static final String ZYYSDOCID = "zyysDocId";
 
     public static final String ZYYSDOCNAME = "zyysDocName";
+
+    public static final String YLZDEPTID = "ylzDeptId";
 
     public static final String YLZDEPTNAME = "ylzDeptName";
 

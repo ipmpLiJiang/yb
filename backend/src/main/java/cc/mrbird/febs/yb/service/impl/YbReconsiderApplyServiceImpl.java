@@ -165,82 +165,107 @@ public class YbReconsiderApplyServiceImpl extends ServiceImpl<YbReconsiderApplyM
 
     @Override
     @Transactional
-    public void updateYbReconsiderApply(YbReconsiderApply ybReconsiderApply, Integer isChangDate) {
+    public String updateYbReconsiderApply(YbReconsiderApply ybReconsiderApply, Integer isChangDate) {
+        String msg = "";
         ybReconsiderApply.setModifyTime(new Date());
         YbReconsiderApply entity = this.getById(ybReconsiderApply.getId());
-        if (entity != null && (entity.getState() == YbDefaultValue.APPLYSTATE_3 || entity.getState() == YbDefaultValue.APPLYSTATE_5)) {
-            long endMinute = 0;
-            long enableDay = 0;
-            int typeno = entity.getState() == YbDefaultValue.APPLYSTATE_3 ? 1 : 2;
-            // 当前Apply日期
-            Date enableDate = typeno == 1 ? entity.getEnableDateOne() : entity.getEnableDateTwo();
-            Date endDate = typeno == 1 ? entity.getEndDateOne() : entity.getEndDateTwo();
-            // 更改日期
-            Date upEnableDate = typeno == 1 ? ybReconsiderApply.getEnableDateOne() : ybReconsiderApply.getEnableDateTwo();
-            Date upEndDate = typeno == 1 ? ybReconsiderApply.getEndDateOne() : ybReconsiderApply.getEndDateTwo();
+        if (entity != null) {
+            if(entity.getState() == YbDefaultValue.APPLYSTATE_3 || entity.getState() == YbDefaultValue.APPLYSTATE_5) {
+                long endMinute = 0;
+                long enableDay = 0;
+                int typeno = entity.getState() == YbDefaultValue.APPLYSTATE_3 ? 1 : 2;
+                // 当前Apply日期
+                Date enableDate = typeno == 1 ? entity.getEnableDateOne() : entity.getEnableDateTwo();
+                Date endDate = typeno == 1 ? entity.getEndDateOne() : entity.getEndDateTwo();
+                // 更改日期
+                Date upEnableDate = typeno == 1 ? ybReconsiderApply.getEnableDateOne() : ybReconsiderApply.getEnableDateTwo();
+                Date upEndDate = typeno == 1 ? ybReconsiderApply.getEndDateOne() : ybReconsiderApply.getEndDateTwo();
 
-            endMinute = DateUtil.between(upEndDate, endDate, DateUnit.MINUTE);
-            enableDay = DateUtil.between(upEnableDate, enableDate, DateUnit.DAY);
+                endMinute = DateUtil.between(upEndDate, endDate, DateUnit.MINUTE);
+                enableDay = DateUtil.between(upEnableDate, enableDate, DateUnit.DAY);
 
-            if (isChangDate != null && isChangDate == 1) {
-                List<ComSms> updateSmsList = new ArrayList<>();
-                List<YbAppealManage> updateAmList = new ArrayList<>();
+                if (isChangDate != null && isChangDate == 1) {
+                    List<ComSms> updateSmsList = new ArrayList<>();
+                    List<YbAppealManage> updateAmList = new ArrayList<>();
 
-                List<ComSms> smsList = new ArrayList<>();
-                List<YbAppealManage> appealManageList = new ArrayList<>();
+                    List<ComSms> smsList = new ArrayList<>();
+                    List<YbAppealManage> appealManageList = new ArrayList<>();
+                    if (enableDay != 0 || endMinute != 0) {
+                        LambdaQueryWrapper<ComSms> wrapperSms = new LambdaQueryWrapper<>();
+                        wrapperSms.eq(ComSms::getApplyDateStr, entity.getApplyDateStr());
+                        wrapperSms.eq(ComSms::getAreaType, entity.getAreaType());
+                        wrapperSms.eq(ComSms::getTypeno, typeno);
+                        wrapperSms.eq(ComSms::getSendType, ComSms.SENDTYPE_1);
+                        wrapperSms.eq(ComSms::getState, ComSms.STATE_0);
+                        smsList = this.iComSmsService.list(wrapperSms);
+                    }
+
+                    if (enableDay != 0) {
+                        LambdaQueryWrapper<YbAppealManage> wrapperAm = new LambdaQueryWrapper<>();
+                        wrapperAm.eq(YbAppealManage::getApplyDateStr, entity.getApplyDateStr());
+                        wrapperAm.eq(YbAppealManage::getAreaType, entity.getAreaType());
+                        wrapperAm.eq(YbAppealManage::getTypeno, typeno);
+                        appealManageList = iYbAppealManageService.list(wrapperAm);
+                    }
+
+                    enableDate = DataTypeHelpers.addDateMethod(upEnableDate, 1);
+
+                    if (smsList.size() > 0) {
+                        String sendContent = this.getChangSendMessage(entity.getApplyDateStr(), upEndDate, enableDate, entity.getAreaType(), typeno, false);
+                        for (ComSms item : smsList) {
+                            ComSms update = new ComSms();
+                            update.setId(item.getId());
+                            update.setSendcontent(sendContent);
+                            updateSmsList.add(update);
+                        }
+                    }
+                    if (appealManageList.size() > 0) {
+                        for (YbAppealManage item : appealManageList) {
+                            YbAppealManage update = new YbAppealManage();
+                            update.setId(item.getId());
+                            update.setEnableDate(enableDate);
+                            updateAmList.add(update);
+                        }
+                    }
+
+                    if (updateSmsList.size() > 0) {
+                        iComSmsService.updateBatchById(updateSmsList);
+                    }
+
+                    if (updateAmList.size() > 0) {
+                        iYbAppealManageService.updateBatchById(updateAmList);
+                    }
+                }
+
                 if (enableDay != 0 || endMinute != 0) {
-                    LambdaQueryWrapper<ComSms> wrapperSms = new LambdaQueryWrapper<>();
-                    wrapperSms.eq(ComSms::getApplyDateStr, entity.getApplyDateStr());
-                    wrapperSms.eq(ComSms::getAreaType, entity.getAreaType());
-                    wrapperSms.eq(ComSms::getTypeno, typeno);
-                    wrapperSms.eq(ComSms::getSendType, ComSms.SENDTYPE_1);
-                    wrapperSms.eq(ComSms::getState, ComSms.STATE_0);
-                    smsList = this.iComSmsService.list(wrapperSms);
+                    this.baseMapper.updateYbReconsiderApply(ybReconsiderApply);
                 }
-
-                if (enableDay != 0) {
-                    LambdaQueryWrapper<YbAppealManage> wrapperAm = new LambdaQueryWrapper<>();
-                    wrapperAm.eq(YbAppealManage::getApplyDateStr, entity.getApplyDateStr());
-                    wrapperAm.eq(YbAppealManage::getAreaType, entity.getAreaType());
-                    wrapperAm.eq(YbAppealManage::getTypeno, typeno);
-                    appealManageList = iYbAppealManageService.list(wrapperAm);
-                }
-
-                enableDate = DataTypeHelpers.addDateMethod(upEnableDate, 1);
-
-                if (smsList.size() > 0) {
-                    String sendContent = this.getChangSendMessage(entity.getApplyDateStr(), upEndDate, enableDate, entity.getAreaType(), typeno, false);
-                    for (ComSms item : smsList) {
-                        ComSms update = new ComSms();
-                        update.setId(item.getId());
-                        update.setSendcontent(sendContent);
-                        updateSmsList.add(update);
-                    }
-                }
-                if (appealManageList.size() > 0) {
-                    for (YbAppealManage item : appealManageList) {
-                        YbAppealManage update = new YbAppealManage();
-                        update.setId(item.getId());
-                        update.setEnableDate(enableDate);
-                        updateAmList.add(update);
-                    }
-                }
-
-                if (updateSmsList.size() > 0) {
-                    iComSmsService.updateBatchById(updateSmsList);
-                }
-
-                if (updateAmList.size() > 0) {
-                    iYbAppealManageService.updateBatchById(updateAmList);
-                }
+            } else {
+                msg = entity.getApplyDateStr() + "当前状态无法更改数据.";
             }
-
-            if (enableDay != 0 || endMinute != 0) {
-                this.baseMapper.updateYbReconsiderApply(ybReconsiderApply);
-            }
+        } else {
+            msg = "未找到当前复议年月的申请数据.";
         }
+        return  msg;
     }
 
+    @Override
+    @Transactional
+    public String updateReconsiderApplyEndResetDate(YbReconsiderApply ybReconsiderApply) {
+        String msg = "";
+        YbReconsiderApply entity = this.getById(ybReconsiderApply.getId());
+        if (entity != null && ybReconsiderApply.getEndDateReset() != null && entity.getState() == YbDefaultValue.APPLYSTATE_6 &&
+                entity.getResetState() == 1){
+            YbReconsiderApply update = new YbReconsiderApply();
+            update.setId(ybReconsiderApply.getId());
+            update.setEndDateReset(ybReconsiderApply.getEndDateReset());
+            update.setModifyTime(new Date());
+            this.baseMapper.updateYbReconsiderApply(update);
+        } else {
+            msg = "no";
+        }
+        return msg;
+    }
     @Override
     @Transactional
     public void updateYbReconsiderApply(YbReconsiderApply ybReconsiderApply) {

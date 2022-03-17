@@ -120,14 +120,15 @@ public class YbDrgVerifyViewController extends BaseController {
                     dataExport.setSfbmzczjcw(item.getSfbmzczjcw());//是否编码造成直接错误
                     dataExport.setLy(item.getLy());//理由
 
-//                    String strVerifyDeptName = DataTypeHelpers.stringReplaceSetString(item.getVerifyDeptName(), item.getVerifyDeptCode() + "-");
+                    String strVerifyDksName = DataTypeHelpers.stringReplaceSetString(item.getVerifyDksName(), item.getVerifyDksId() + "-");
                     String strVerifyDoctorName = DataTypeHelpers.stringReplaceSetString(item.getVerifyDoctorName(), item.getVerifyDoctorCode() + "-");
 
                     dataExport.setVerifyDoctorCode(item.getVerifyDoctorCode());//复议医生编码
                     dataExport.setVerifyDoctorName(strVerifyDoctorName);//复议医生姓名
 //                    dataExport.setVerifyDeptCode(item.getVerifyDeptCode());//病区编码
 //                    dataExport.setVerifyDeptName(strVerifyDeptName);//病区名称
-                    dataExport.setVerifyDksName(item.getVerifyDksName());//科室名称
+                    dataExport.setVerifyDksId(item.getVerifyDksId());//科室名称
+                    dataExport.setVerifyDksName(strVerifyDksName);//科室名称
 
                     queryJkList = jkList.stream().filter(s -> s.getApplyDataId().equals(item.getApplyDataId())).collect(Collectors.toList());
                     if (queryJkList.size() > 0) {

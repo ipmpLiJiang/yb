@@ -89,7 +89,7 @@ export default {
         title: '序号',
         dataIndex: 'orderNumber',
         fixed: 'left',
-        width: 70
+        width: 65
       },
       {
         title: '科室',
@@ -145,7 +145,7 @@ export default {
         title: '复议科室',
         dataIndex: 'verifyDksName',
         fixed: 'right',
-        width: 130
+        width: 150
       },
       {
         title: '复议医生',
@@ -194,6 +194,7 @@ export default {
           applyDataId: target.applyDataId,
           verifyDoctorCode: target.verifyDoctorCode,
           verifyDoctorName: target.verifyDoctorName,
+          verifyDksId: target.verifyDksId,
           verifyDksName: target.verifyDksName,
           applyDateStr: target.applyDateStr,
           orderNumber: target.orderNumber,
@@ -218,6 +219,7 @@ export default {
               applyDataId: target.applyDataId,
               verifyDoctorCode: target.verifyDoctorCode,
               verifyDoctorName: target.verifyDoctorName,
+              verifyDksId: target.verifyDksId,
               verifyDksName: target.verifyDksName,
               applyDateStr: target.applyDateStr,
               orderNumber: target.orderNumber,

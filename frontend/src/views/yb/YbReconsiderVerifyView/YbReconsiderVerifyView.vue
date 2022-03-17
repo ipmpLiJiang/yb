@@ -150,8 +150,9 @@
                 v-show="
                   tableSelectKey == 3 ||
                   tableSelectKey == 4 ||
-                  tableSelectKey == 5 ? true: false" style="margin-right: 15px">日期</a-button
-              >
+                  tableSelectKey == 5 ? true: false" style="margin-right: 15px">
+                  日期
+              </a-button>
               <a-select
                 :value="searchDataType"
                 style="width: 100px"
@@ -492,8 +493,8 @@
             <a-form-item v-bind="formItemLayout" label="复议年月">
               <a-month-picker
                 placeholder="请输入复议年月"
-                style="width: 105px"
-                @change="monthChange"
+                style="width: 125px"
+                disabled
                 v-model="searchApplyDate"
                 :default-value="searchApplyDate"
                 :format="monthFormat"

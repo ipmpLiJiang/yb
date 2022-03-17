@@ -106,8 +106,20 @@
             art.dksName
         FROM
             yb_reconsider_reset_data rrd
-            INNER JOIN yb_appeal_result art on
-                art.relatelDataId = rrd.relatelDataId AND art.sourceType = 1
+            INNER JOIN (
+                select * from yb_appeal_result where applyDateStr= #{ybAppealResultResetView.applyDateStr} and
+                areaType = #{ybAppealResultResetView.areaType} and sourceType = 1
+            <if test="ybAppealResultResetView.dataType!= null">
+                and dataType = #{ybAppealResultResetView.dataType}
+            </if>
+            <if test="keyField == 'doctorCode' and ybAppealResultResetView.currencyField != null and ybAppealResultResetView.currencyField != ''">
+                and doctorCode = #{ ybAppealResultResetView.currencyField}
+            </if>
+            <if test="keyField == 'doctorName' and ybAppealResultResetView.currencyField != null and ybAppealResultResetView.currencyField != ''">
+                and doctorName = #{ ybAppealResultResetView.currencyField}
+            </if>
+            ) art on
+                art.relatelDataId = rrd.relatelDataId
         WHERE
             rrd.pid = #{ybAppealResultResetView.pid}
         <if test="ybAppealResultResetView.dataType!= null and (ybAppealResultResetView.currencyField == null or ybAppealResultResetView.currencyField == '')">
@@ -169,26 +181,6 @@
             </if>
             )
         </if>
-            <if test="keyField == 'doctorCode' and ybAppealResultResetView.currencyField != null and ybAppealResultResetView.currencyField != ''">
-                and art.id in (
-                select id from yb_appeal_result where applyDateStr = #{ybAppealResultResetView.applyDateStr} and
-                areaType = #{ybAppealResultResetView.areaType} and sourceType = 1
-                and doctorCode = #{ ybAppealResultResetView.currencyField}
-                <if test="ybAppealResultResetView.dataType!= null">
-                    and dataType = #{ybAppealResultResetView.dataType}
-                </if>
-                )
-            </if>
-            <if test="keyField == 'doctorName' and ybAppealResultResetView.currencyField != null and ybAppealResultResetView.currencyField != ''">
-                and art.id in (
-                select id from yb_appeal_result where applyDateStr = #{ybAppealResultResetView.applyDateStr} and
-                areaType = #{ybAppealResultResetView.areaType} and sourceType = 1
-                and doctorName = #{ ybAppealResultResetView.currencyField}
-                <if test="ybAppealResultResetView.dataType!= null">
-                    and dataType = #{ybAppealResultResetView.dataType}
-                </if>
-                )
-            </if>
     </select>
 
     <select id="findAppealResultResetCount" resultType="Integer"
@@ -197,8 +189,20 @@
             count(1)
         FROM
             yb_reconsider_reset_data rrd
-        INNER JOIN yb_appeal_result art on
-            art.relatelDataId = rrd.relatelDataId AND art.sourceType = 1
+        INNER JOIN (
+            select * from yb_appeal_result where applyDateStr= #{ybAppealResultResetView.applyDateStr} and
+            areaType = #{ybAppealResultResetView.areaType} and sourceType = 1
+        <if test="ybAppealResultResetView.dataType!= null">
+            and dataType = #{ybAppealResultResetView.dataType}
+        </if>
+        <if test="keyField == 'doctorCode' and ybAppealResultResetView.currencyField != null and ybAppealResultResetView.currencyField != ''">
+            and doctorCode = #{ ybAppealResultResetView.currencyField}
+        </if>
+        <if test="keyField == 'doctorName' and ybAppealResultResetView.currencyField != null and ybAppealResultResetView.currencyField != ''">
+            and doctorName = #{ ybAppealResultResetView.currencyField}
+        </if>
+        ) art on
+        art.relatelDataId = rrd.relatelDataId
         WHERE
         rrd.pid = #{ybAppealResultResetView.pid}
         <if test="ybAppealResultResetView.dataType!= null and (ybAppealResultResetView.currencyField == null or ybAppealResultResetView.currencyField == '')">
@@ -260,26 +264,6 @@
             </if>
             )
         </if>
-        <if test="keyField == 'doctorCode' and ybAppealResultResetView.currencyField != null and ybAppealResultResetView.currencyField != ''">
-            and art.id in (
-            select id from yb_appeal_result where applyDateStr = #{ybAppealResultResetView.applyDateStr} and
-            areaType = #{ybAppealResultResetView.areaType} and sourceType = 1
-            and doctorCode = #{ ybAppealResultResetView.currencyField}
-            <if test="ybAppealResultResetView.dataType!= null">
-                and dataType = #{ybAppealResultResetView.dataType}
-            </if>
-            )
-        </if>
-        <if test="keyField == 'doctorName' and ybAppealResultResetView.currencyField != null and ybAppealResultResetView.currencyField != ''">
-            and art.id in (
-            select id from yb_appeal_result where applyDateStr = #{ybAppealResultResetView.applyDateStr} and
-            areaType = #{ybAppealResultResetView.areaType} and sourceType = 1
-            and doctorName = #{ ybAppealResultResetView.currencyField}
-            <if test="ybAppealResultResetView.dataType!= null">
-                and dataType = #{ybAppealResultResetView.dataType}
-            </if>
-            )
-        </if>
     </select>
 
     <select id="findAppealResultResetList" resultType="cc.mrbird.febs.yb.entity.YbAppealResultResetView"
@@ -332,9 +316,11 @@
         art.dksName
         FROM
             yb_reconsider_reset_data rrd
-        LEFT JOIN yb_appeal_result art on
+        LEFT JOIN (
+            select * from yb_appeal_result where applyDateStr= #{ybAppealResultResetView.applyDateStr} and
+            areaType = #{ybAppealResultResetView.areaType} and sourceType = 1
+        ) art on
             art.relatelDataId = rrd.relatelDataId
-            AND art.sourceType = 1
         WHERE
             rrd.pid = #{ybAppealResultResetView.pid}
     </select>

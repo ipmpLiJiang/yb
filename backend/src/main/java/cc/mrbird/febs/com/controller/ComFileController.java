@@ -430,28 +430,40 @@ public class ComFileController extends BaseController {
                 }
             }
         }
+
         int num = 0;
         String fileStr = "";
         String dateStr = applyDateStr.replace("-", "");
         List<ComFile> resultFileList = new ArrayList<>();
+        List<ComFile> queryList = new ArrayList<>();
+        List<String> orderNumberList = null;
         for (String relatelDataId : relatelDataIdList) {
-            num = 0;
+            orderNumberList = new ArrayList<>();
             refFileList = newFileList.stream().filter(s -> s.getId().equals(relatelDataId)).collect(Collectors.toList());
-            if (refFileList.size() > 0) {
-                refFileList = refFileList.stream().sorted(Comparator.comparing(ComFile::getOrderNumber).thenComparing(ComFile::getCreateTime)).collect(Collectors.toList());
-            }
-            for (ComFile file : refFileList) {
-                fileStr = dateStr + "-" + file.getIsDeletemark() + "-" + file.getOrderNumber() + "-";
-                num++;
-                if (num < 10) {
-                    fileStr += "00" + num;
-                } else if (num < 100) {
-                    fileStr += "0" + num;
-                } else {
-                    fileStr += num;
+            for(ComFile item : refFileList) {
+                if(!orderNumberList.contains(item.getOrderNumber())) {
+                    orderNumberList.add(item.getOrderNumber());
                 }
-                file.setClientName(fileStr);
-                resultFileList.add(file);
+            }
+            for (String o : orderNumberList) {
+                num = 0;
+                queryList = refFileList.stream().filter(s -> s.getOrderNumber().equals(o)).collect(Collectors.toList());
+                if(queryList.size() > 0) {
+                    queryList = queryList.stream().sorted(Comparator.comparing(ComFile::getCreateTime)).collect(Collectors.toList());
+                }
+                for (ComFile file : queryList) {
+                    fileStr = dateStr + "-" + file.getIsDeletemark() + "-" + file.getOrderNumber() + "-";
+                    num++;
+                    if (num < 10) {
+                        fileStr += "00" + num;
+                    } else if (num < 100) {
+                        fileStr += "0" + num;
+                    } else {
+                        fileStr += num;
+                    }
+                    file.setClientName(fileStr);
+                    resultFileList.add(file);
+                }
             }
         }
 
@@ -841,7 +853,7 @@ public class ComFileController extends BaseController {
             String strId = inUploadFile.getId();
             User currentUser = FebsUtil.getCurrentUser();
 
-            String strSourceType = sourceType == 0 ? "In" : "Out";
+            String strSourceType = sourceType == YbDefaultValue.SOURCETYPE_0 ? "In" : "Out";
             if (inUploadFile.getAreaType() != 0) {
                 strSourceType += inUploadFile.getAreaType();
             }
@@ -921,7 +933,7 @@ public class ComFileController extends BaseController {
                 if (comFile != null) {
 //                    String strRefId = comFile.getRefTabId();
 
-                    String strSourceType = sourceType == 0 ? "In" : "Out";
+                    String strSourceType = sourceType == YbDefaultValue.SOURCETYPE_0 ? "In" : "Out";
                     if (inUploadFile.getAreaType() != 0) {
                         strSourceType += inUploadFile.getAreaType();
                     }

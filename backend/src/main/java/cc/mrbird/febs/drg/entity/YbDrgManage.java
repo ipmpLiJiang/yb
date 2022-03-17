@@ -214,6 +214,12 @@ public class YbDrgManage implements Serializable, Comparable<YbDrgManage> {
     @ExcelField(value = "院区")
     private Integer areaType;
 
+    /**
+     * 科室编码
+     */
+    @TableField("readyDksId")
+    @ExcelField(value ="科室编码")
+    private String readyDksId;
 
     /**
      * 科室
@@ -221,6 +227,13 @@ public class YbDrgManage implements Serializable, Comparable<YbDrgManage> {
     @TableField("readyDksName")
     @ExcelField(value = "科室")
     private String readyDksName;
+
+    /**
+     * 变更科室编码
+     */
+    @TableField("changeDksId")
+    @ExcelField(value ="变更科室编码")
+    private String changeDksId;
 
     /**
      * 变更科室

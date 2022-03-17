@@ -77,7 +77,7 @@ export default {
         title: '序号',
         dataIndex: 'orderNumber',
         fixed: 'left',
-        width: 70
+        width: 65
       },
       {
         title: '科室',
@@ -133,7 +133,7 @@ export default {
         title: '复议科室',
         dataIndex: 'verifyDksName',
         fixed: 'right',
-        width: 130
+        width: 150
       },
       {
         title: '复议医生',
@@ -152,7 +152,7 @@ export default {
           }
         },
         fixed: 'right',
-        width: 110
+        width: 95
       }]
     }
   },

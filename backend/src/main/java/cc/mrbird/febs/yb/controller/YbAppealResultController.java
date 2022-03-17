@@ -198,6 +198,7 @@ public class YbAppealResultController extends BaseController {
 //                YbHandleVerifyData handleVerifyData = iYbHandleVerifyDataService.getHandleVerifyDataByApplyDataId(ybAppealResult.getApplyDataId());
 //                if (ybAppealResult != null && handleVerifyData != null) {
                     if (ybAppealResult != null) {
+                        String oldUsername = ybAppealResult.getDoctorCode();
                         YbReconsiderApplyData applyData = iYbReconsiderApplyDataService.getById(ybAppealResult.getApplyDataId());
                         User currentUser = FebsUtil.getCurrentUser();
                         comFileList = this.iComFileService.findListComFile(ybAppealResult.getId(), null);
@@ -205,7 +206,7 @@ public class YbAppealResultController extends BaseController {
                             List<ComFile> loadLastList = new ArrayList<>();
 
                             String filePath = febsProperties.getUploadPath(); // 上传后的路径
-                            String oldDept = filePath + applyDateStr + "/" + currentUser.getUsername() + "/In";
+                            String oldDept = filePath + applyDateStr + "/" + oldUsername + "/In";
                             String newDept = filePath + applyDateStr + "/" + currentUser.getUsername() + "/Out";
                             if (ybAppealResult.getAreaType() != 0) {
                                 oldDept += ybAppealResult.getAreaType();
@@ -229,7 +230,7 @@ public class YbAppealResultController extends BaseController {
                                 file.setId(UUID.randomUUID().toString());
                                 file.setRefTabId(loadId);
                                 file.setClientName(comfile.getClientName());
-                                file.setRefTabTable(comfile.getRefTabTable());
+                                file.setRefTabTable(currentUser.getUsername());
                                 file.setIsDeletemark(1);
                                 file.setCreateTime(thisDate);
                                 thisDate = this.addSecond(thisDate, 1);

@@ -246,12 +246,12 @@ export default {
         dataIndex: 'doctorName',
         width: 100
       },
-      {
-        title: '汇总科室',
-        dataIndex: 'dksName',
-        fixed: 'right',
-        width: 100
-      },
+      // {
+      //   title: '汇总科室',
+      //   dataIndex: 'dksName',
+      //   fixed: 'right',
+      //   width: 100
+      // },
       {
         title: '参考复议科室',
         dataIndex: 'verifyDeptName',

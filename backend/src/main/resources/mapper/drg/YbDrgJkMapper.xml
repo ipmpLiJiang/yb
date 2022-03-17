@@ -23,6 +23,7 @@
         <result column="qtzdName" property="qtzdName"/>
         <result column="qtssCode" property="qtssCode"/>
         <result column="qtssName" property="qtssName"/>
+        <result column="deptId" property="deptId"/>
         <result column="deptName" property="deptName"/>
         <result column="areaId" property="areaId"/>
         <result column="areaName" property="areaName"/>
@@ -35,6 +36,7 @@
         <result column="zzysDocName" property="zzysDocName"/>
         <result column="zyysDocId" property="zyysDocId"/>
         <result column="zyysDocName" property="zyysDocName"/>
+        <result column="ylzDeptId" property="ylzDeptId"/>
         <result column="ylzDeptName" property="ylzDeptName"/>
         <result column="ylzDocId" property="ylzDocId"/>
         <result column="ylzDocName" property="ylzDocName"/>
@@ -42,7 +44,7 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, applyDateStr, orderNumber, orderNum, applyDataId, areaType, tczf, ryDate, cyDate, fzCode, fzName, zyzdCode, zyzdName, zssCode, zssName, qtzdCode, qtzdName, qtssCode, qtssName, deptName, areaId, areaName, qz, kzrDocId, kzrDocName, zrysDocId, zrysDocName, zzysDocId, zzysDocName, zyysDocId, zyysDocName, ylzDeptName, ylzDocId, ylzDocName
+        id, applyDateStr, orderNumber, orderNum, applyDataId, areaType, tczf, ryDate, cyDate, fzCode, fzName, zyzdCode, zyzdName, zssCode, zssName, qtzdCode, qtzdName, qtssCode, qtssName, deptId, deptName, areaId, areaName, qz, kzrDocId, kzrDocName, zrysDocId, zrysDocName, zzysDocId, zzysDocName, zyysDocId, zyysDocName, ylzDeptId, ylzDeptName, ylzDocId, ylzDocName
     </sql>
     <update id="updateYbDrgJk" parameterType="cc.mrbird.febs.drg.entity.YbDrgJk">
         update yb_drg_jk
@@ -64,6 +66,7 @@
             <if test="qtzdName != null">qtzdName=#{qtzdName},</if>
             <if test="qtssCode != null">qtssCode=#{qtssCode},</if>
             <if test="qtssName != null">qtssName=#{qtssName},</if>
+            <if test="deptId != null">deptId=#{deptId},</if>
             <if test="deptName != null">deptName=#{deptName},</if>
             <if test="areaId != null">areaId=#{areaId},</if>
             <if test="areaName != null">areaName=#{areaName},</if>
@@ -76,6 +79,10 @@
             <if test="zzysDocName != null">zzysDocName=#{zzysDocName},</if>
             <if test="zyysDocId != null">zyysDocId=#{zyysDocId},</if>
             <if test="zyysDocName != null">zyysDocName=#{zyysDocName},</if>
+            <if test="ylzDeptId != null">ylzDeptId=#{ylzDeptId},</if>
+            <if test="ylzDeptName != null">ylzDeptName=#{ylzDeptName},</if>
+            <if test="ylzDocId != null">ylzDocId=#{ylzDocId},</if>
+            <if test="ylzDocName != null">ylzDocName=#{ylzDocName},</if>
         </trim>
         where id=#{id}
 

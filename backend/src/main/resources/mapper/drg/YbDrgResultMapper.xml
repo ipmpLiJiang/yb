@@ -10,6 +10,7 @@
         <result column="manageId" property="manageId"/>
         <result column="doctorCode" property="doctorCode"/>
         <result column="doctorName" property="doctorName"/>
+        <result column="dksId" property="dksId"/>
         <result column="dksName" property="dksName"/>
         <result column="operateReason" property="operateReason"/>
         <result column="operateDate" property="operateDate"/>
@@ -22,7 +23,7 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, applyDataId, verifyId, manageId, doctorCode, doctorName, dksName, operateReason, operateDate, STATE, applyDateStr, orderNumber, orderNum, areaType
+        id, applyDataId, verifyId, manageId, doctorCode, doctorName, dksId, dksName, operateReason, operateDate, STATE, applyDateStr, orderNumber, orderNum, areaType
     </sql>
     <update id="updateYbDrgResult" parameterType="cc.mrbird.febs.drg.entity.YbDrgResult">
         update yb_drg_result
@@ -32,6 +33,7 @@
             <if test="manageId != null">manageId=#{manageId},</if>
             <if test="doctorCode != null">doctorCode=#{doctorCode},</if>
             <if test="doctorName != null">doctorName=#{doctorName},</if>
+            <if test="dksId != null">dksId=#{dksId},</if>
             <if test="dksName != null">dksName=#{dksName},</if>
             <if test="operateReason != null">operateReason=#{operateReason},</if>
             <if test="operateDate != null">operateDate=#{operateDate},</if>

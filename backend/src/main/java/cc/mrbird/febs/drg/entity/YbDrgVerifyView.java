@@ -201,6 +201,13 @@ public class YbDrgVerifyView implements Serializable {
     private Integer isPerson;
 
     /**
+     * 科室编码
+     */
+    @TableField("verifyDksId")
+    @ExcelField(value ="科室编码")
+    private String verifyDksId;
+
+    /**
      * 科室
      */
     @TableField("verifyDksName")

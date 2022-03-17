@@ -82,9 +82,15 @@ public class YbDrgApplyDataVerify {
 //    private String verifyDeptName;
 
     /**
+     * 复议科室编码
+     */
+    @ExcelField(value = "复议科室编码")
+    private String verifyDksId;
+
+    /**
      * 科室
      */
-    @ExcelField(value = "复议科室")
+    @ExcelField(value = "复议科室名称")
     private String verifyDksName;
 
     /**

@@ -134,6 +134,13 @@ private static final long serialVersionUID=1L;
     private Integer areaType;
 
     /**
+     * 科室编码
+     */
+    @TableField("dksId")
+    @ExcelField(value ="科室编码")
+    private String dksId;
+
+    /**
      * 科室
      */
     @TableField("dksName")

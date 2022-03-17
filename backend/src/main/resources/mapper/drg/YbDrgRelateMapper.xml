@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cc.mrbird.febs.drg.dao.YbDrgRelateMapper">
+
+        <!-- 通用查询映射结果 -->
+        <resultMap id="BaseResultMap" type="cc.mrbird.febs.drg.entity.YbDrgRelate">
+                    <id column="id" property="id"/>
+                    <result column="bqCode" property="bqCode"/>
+                    <result column="bqName" property="bqName"/>
+                    <result column="ksCode" property="ksCode"/>
+                    <result column="ksName" property="ksName"/>
+                    <result column="dzyCode" property="dzyCode"/>
+                    <result column="dzyName" property="dzyName"/>
+                    <result column="yq" property="yq"/>
+                    <result column="currencyField" property="currencyField"/>
+                    <result column="COMMENTS" property="comments"/>
+                    <result column="STATE" property="state"/>
+        </resultMap>
+
+        <!-- 通用查询结果列 -->
+        <sql id="Base_Column_List">
+        id, bqCode, bqName, ksCode, ksName, dzyCode, dzyName, yq, currencyField, COMMENTS, STATE
+    </sql>
+    <update id="updateYbDrgRelate" parameterType="cc.mrbird.febs.drg.entity.YbDrgRelate">
+        update yb_drg_relate
+        <trim prefix="set" suffixOverrides=",">
+<if test="bqCode != null">bqCode=#{bqCode},</if>
+<if test="bqName != null">bqName=#{bqName},</if>
+<if test="ksCode != null">ksCode=#{ksCode},</if>
+<if test="ksName != null">ksName=#{ksName},</if>
+<if test="dzyCode != null">dzyCode=#{dzyCode},</if>
+<if test="dzyName != null">dzyName=#{dzyName},</if>
+<if test="yq != null">yq=#{yq},</if>
+<if test="currencyField != null">currencyField=#{currencyField},</if>
+<if test="comments != null">COMMENTS=#{comments},</if>
+<if test="state != null">STATE=#{state},</if>
+        </trim>
+                where id=#{id}
+
+    </update>
+    <select id="findYbDrgRelate" resultType="cc.mrbird.febs.drg.entity.YbDrgRelate" parameterType="cc.mrbird.febs.drg.entity.YbDrgRelate">
+        select  *  from yb_drg_relate
+        where  1=1
+        <if test="ybDrgRelate.id != null"> and id =#{ ybDrgRelate.id} </if>
+            <if test="ybDrgRelate.bqCode != null and ybDrgRelate.bqCode != ''"> and bqCode like concat('%', #{ ybDrgRelate.bqCode} ,'%')</if>
+            <if test="ybDrgRelate.bqName != null and ybDrgRelate.bqName != ''"> and bqName like concat('%', #{ ybDrgRelate.bqName} ,'%')</if>
+            <if test="ybDrgRelate.ksCode != null and ybDrgRelate.ksCode != ''"> and ksCode like concat('%', #{ ybDrgRelate.ksCode} ,'%')</if>
+            <if test="ybDrgRelate.ksName != null and ybDrgRelate.ksName != ''"> and ksName like concat('%', #{ ybDrgRelate.ksName} ,'%')</if>
+            <if test="ybDrgRelate.dzyCode != null and ybDrgRelate.dzyCode != ''"> and dzyCode like concat('%', #{ ybDrgRelate.dzyCode} ,'%')</if>
+            <if test="ybDrgRelate.dzyName != null and ybDrgRelate.dzyName != ''"> and dzyName like concat('%', #{ ybDrgRelate.dzyName} ,'%')</if>
+            <if test="ybDrgRelate.yq != null and ybDrgRelate.yq != ''"> and yq like concat('%', #{ ybDrgRelate.yq} ,'%')</if>
+            <if test="ybDrgRelate.currencyField != null and ybDrgRelate.currencyField != ''"> and currencyField like concat('%', #{ ybDrgRelate.currencyField} ,'%')</if>
+            <if test="ybDrgRelate.comments != null and ybDrgRelate.comments != ''"> and COMMENTS like concat('%', #{ ybDrgRelate.comments} ,'%')</if>
+        <if test="ybDrgRelate.state != null"> and STATE =#{ ybDrgRelate.state} </if>
+</select>
+
+</mapper>

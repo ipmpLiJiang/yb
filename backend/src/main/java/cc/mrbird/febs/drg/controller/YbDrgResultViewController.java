@@ -116,7 +116,8 @@ public class YbDrgResultViewController extends BaseController {
 
                     dataExport.setOperateReason(item.getOperateReason());
                     dataExport.setDoctorCode(item.getDoctorCode());//复议医生编码
-                    dataExport.setDoctorName(strDoctorName);//复议医生姓名
+                    dataExport.setDoctorName(strDoctorName);//
+                    dataExport.setDksId(item.getDksId());//复议科室名称
                     dataExport.setDksName(item.getDksName());//复议科室名称
 
                     if (item.getDoctorCode() == null) {
@@ -124,6 +125,7 @@ public class YbDrgResultViewController extends BaseController {
                         if (queryManageList.size() > 0) {
                             dataExport.setDoctorCode(queryManageList.get(0).getReadyDoctorCode());//复议医生编码
                             dataExport.setDoctorName(queryManageList.get(0).getReadyDoctorName());//复议医生姓名
+                            dataExport.setDksId(queryManageList.get(0).getReadyDksId());//复议科室名称
                             dataExport.setDksName(queryManageList.get(0).getReadyDksName());//复议科室名称
                         }
                     }

@@ -41,7 +41,6 @@
           >
             <input-selectdks
             ref="inputSelectChangeDks"
-            :ctType=4
             @selectChange=selectDksChange
             >
             </input-selectdks>
@@ -171,6 +170,7 @@ export default {
       this.ybDrgManageReject.changeDoctorName = item.text
     },
     selectDksChange (item) {
+      this.ybDrgManageReject.changeDksId = item.value
       this.ybDrgManageReject.changeDksName = item.text
     },
     onClose () {
@@ -189,17 +189,19 @@ export default {
           let fromData = this.form.getFieldsValue(['refuseReason'])
           let ybDrgManage = this.ybDrgManage
 
+          let dksId = this.ybDrgManageReject.changeDksId !== this.ybDrgManageReject.readyDksId ? this.ybDrgManageReject.changeDksId : ''
           let dksName = this.ybDrgManageReject.changeDksName !== this.ybDrgManageReject.readyDksName ? this.ybDrgManageReject.changeDksName : ''
           let doctorName = this.ybDrgManageReject.changeDoctorCode !== this.ybDrgManageReject.readyDoctorCode ? this.ybDrgManageReject.changeDoctorName : ''
           let doctorCode = this.ybDrgManageReject.changeDoctorCode !== this.ybDrgManageReject.readyDoctorCode ? this.ybDrgManageReject.changeDoctorCode : ''
 
           ybDrgManage.state = 2
           ybDrgManage.refuseReason = fromData.refuseReason
-          ybDrgManage.changeDoctorCode = dksName !== '' && (doctorCode === '' || doctorCode === undefined) ? this.ybDrgManageReject.readyDoctorCode : doctorCode
-          ybDrgManage.changeDoctorName = dksName !== '' && (doctorCode === '' || doctorCode === undefined) ? this.ybDrgManageReject.readyDoctorName : doctorName
+          ybDrgManage.changeDoctorCode = dksId !== '' && dksName !== '' && (doctorCode === '' || doctorCode === undefined) ? this.ybDrgManageReject.readyDoctorCode : doctorCode
+          ybDrgManage.changeDoctorName = dksId !== '' && dksName !== '' && (doctorCode === '' || doctorCode === undefined) ? this.ybDrgManageReject.readyDoctorName : doctorName
+          ybDrgManage.changeDksId = (dksId === '' || dksId === undefined) && doctorCode !== '' ? this.ybDrgManageReject.readyDksId : dksId
           ybDrgManage.changeDksName = (dksName === '' || dksName === undefined) && doctorCode !== '' ? this.ybDrgManageReject.readyDksName : dksName
 
-          if (ybDrgManage.changeDksName !== '' && ybDrgManage.changeDksName !== undefined) {
+          if (ybDrgManage.changeDksId !== '' && ybDrgManage.changeDksId !== undefined) {
             this.loading = true
             let data = [{
               id: ybDrgManage.id,
@@ -207,6 +209,7 @@ export default {
               operateReason: ybDrgManage.refuseReason,
               changeDoctorCode: ybDrgManage.changeDoctorCode,
               changeDoctorName: ybDrgManage.changeDoctorName,
+              changeDksId: ybDrgManage.changeDksId,
               changeDksName: ybDrgManage.changeDksName
             }]
             let jsonString = JSON.stringify(data)
@@ -230,6 +233,7 @@ export default {
       this.ybDrgManage.state = ybDrgManageReject.state
       this.ybDrgManageReject.changeDoctorCode = ybDrgManageReject.readyDoctorCode
       this.ybDrgManageReject.changeDoctorName = ybDrgManageReject.readyDoctorName
+      this.ybDrgManageReject.changeDksId = ybDrgManageReject.readyDksId
       this.ybDrgManageReject.changeDksName = ybDrgManageReject.readyDksName
       setTimeout(() => {
         this.fromSetTimeoutValue(ybDrgManageReject)
@@ -237,10 +241,10 @@ export default {
     },
     fromSetTimeoutValue (item) {
       this.$refs.inputSelectChangeDks.dataSource = [{
-        text: item.readyDksName,
-        value: item.readyDksName
+        text: item.readyDksId + '-' + item.readyDksName,
+        value: item.readyDksId
       }]
-      this.$refs.inputSelectChangeDks.value = item.readyDksName
+      this.$refs.inputSelectChangeDks.value = item.readyDksId
 
       this.$refs.inputSelectChangeDoctor.dataSource = [{
         text: item.readyDoctorCode + '-' + item.readyDoctorName,

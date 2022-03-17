@@ -161,7 +161,8 @@ public class YbDrgManageServiceImpl extends ServiceImpl<YbDrgManageMapper, YbDrg
                         queryWrapper.eq(YbDrgManage::getState, YbDefaultValue.AMSTATE_0);
                         queryWrapper.eq(YbDrgManage::getId, item.getId());
 
-                        item.setChangeDksName(item.getChangeDksName());
+                        String strChangeDksName = DataTypeHelpers.stringReplaceSetString(item.getChangeDksName(), item.getChangeDksId() + "-");
+                        item.setChangeDksName(strChangeDksName);
                         String strChangeDoctorName = DataTypeHelpers.stringReplaceSetString(item.getChangeDoctorName(), item.getChangeDoctorCode() + "-");
                         item.setChangeDoctorName(strChangeDoctorName);
 
@@ -275,10 +276,12 @@ public class YbDrgManageServiceImpl extends ServiceImpl<YbDrgManageMapper, YbDrg
         newDrgResult.setVerifyId(ybDrgManage.getVerifyId());
         newDrgResult.setManageId(ybDrgManage.getId());
 
-        ybDrgManage.setReadyDksName(ybDrgManage.getReadyDksName());
+        String strReadyDksName = DataTypeHelpers.stringReplaceSetString(ybDrgManage.getReadyDksName(), ybDrgManage.getReadyDksId() + "-");
+        ybDrgManage.setReadyDksName(strReadyDksName);
         String strReadyDoctorName = DataTypeHelpers.stringReplaceSetString(ybDrgManage.getReadyDoctorName(), ybDrgManage.getReadyDoctorCode() + "-");
         ybDrgManage.setReadyDoctorName(strReadyDoctorName);
 
+        newDrgResult.setDksId(ybDrgManage.getReadyDksId());
         newDrgResult.setDksName(ybDrgManage.getReadyDksName());
         newDrgResult.setDoctorCode(ybDrgManage.getReadyDoctorCode());
         newDrgResult.setDoctorName(ybDrgManage.getReadyDoctorName());
@@ -305,6 +308,9 @@ public class YbDrgManageServiceImpl extends ServiceImpl<YbDrgManageMapper, YbDrg
         }
         if (ybDrgManage.getReadyDoctorCode() != null) {
             queryWrapper.eq(YbDrgManage::getReadyDoctorCode, ybDrgManage.getReadyDoctorCode());
+        }
+        if (ybDrgManage.getReadyDksId() != null) {
+            queryWrapper.eq(YbDrgManage::getReadyDksId, ybDrgManage.getReadyDksId());
         }
         if (ybDrgManage.getReadyDksName() != null) {
             queryWrapper.eq(YbDrgManage::getReadyDksName, ybDrgManage.getReadyDksName());
@@ -341,11 +347,13 @@ public class YbDrgManageServiceImpl extends ServiceImpl<YbDrgManageMapper, YbDrg
             newDrgManage.setOrderNum(entity.getOrderNum());
             newDrgManage.setOrderNumber(entity.getOrderNumber());
 
-            ybDrgManage.setReadyDksName(ybDrgManage.getReadyDksName());
+            String strReadyDksName = DataTypeHelpers.stringReplaceSetString(ybDrgManage.getReadyDksName(), ybDrgManage.getReadyDksId() + "-");
+            ybDrgManage.setReadyDksName(strReadyDksName);
             String strReadyDoctorName = DataTypeHelpers.stringReplaceSetString(ybDrgManage.getReadyDoctorName(), ybDrgManage.getReadyDoctorCode() + "-");
             ybDrgManage.setReadyDoctorName(strReadyDoctorName);
 
-            ybDrgManage.setChangeDksName(ybDrgManage.getChangeDksName());
+            String strChangeDksName = DataTypeHelpers.stringReplaceSetString(ybDrgManage.getChangeDksName(), ybDrgManage.getChangeDksId() + "-");
+            ybDrgManage.setChangeDksName(strChangeDksName);
             String strChangeDoctorName = DataTypeHelpers.stringReplaceSetString(ybDrgManage.getChangeDoctorName(), ybDrgManage.getChangeDoctorCode() + "-");
             ybDrgManage.setChangeDoctorName(strChangeDoctorName);
 
@@ -354,6 +362,7 @@ public class YbDrgManageServiceImpl extends ServiceImpl<YbDrgManageMapper, YbDrg
             updateManage.setOperateDate(thisDate);
             if (type == 2) {
                 //拒绝
+                newDrgManage.setReadyDksId(ybDrgManage.getReadyDksId());
                 newDrgManage.setReadyDksName(ybDrgManage.getReadyDksName());
                 newDrgManage.setReadyDoctorCode(ybDrgManage.getReadyDoctorCode());
                 newDrgManage.setReadyDoctorName(ybDrgManage.getReadyDoctorName());
@@ -368,6 +377,7 @@ public class YbDrgManageServiceImpl extends ServiceImpl<YbDrgManageMapper, YbDrg
                 personCode = ybDrgManage.getReadyDoctorCode();
             } else {
                 //同意
+                newDrgManage.setReadyDksId(ybDrgManage.getChangeDksId());
                 newDrgManage.setReadyDksName(ybDrgManage.getChangeDksName());
                 newDrgManage.setReadyDoctorCode(ybDrgManage.getChangeDoctorCode());
                 newDrgManage.setReadyDoctorName(ybDrgManage.getChangeDoctorName());
@@ -375,6 +385,7 @@ public class YbDrgManageServiceImpl extends ServiceImpl<YbDrgManageMapper, YbDrg
                 updateManage.setOperateProcess("变更申请-同意");
                 updateManage.setApprovalState(YbDefaultValue.APPROVALSTATE_1);
 
+                updateManage.setChangeDksId(ybDrgManage.getChangeDksId());
                 updateManage.setChangeDksName(ybDrgManage.getChangeDksName());
                 updateManage.setChangeDoctorCode(ybDrgManage.getChangeDoctorCode());
                 updateManage.setChangeDoctorName(ybDrgManage.getChangeDoctorName());
@@ -408,11 +419,12 @@ public class YbDrgManageServiceImpl extends ServiceImpl<YbDrgManageMapper, YbDrg
                 entity.getState() == YbDefaultValue.AMSTATE_7)) {
             YbDrgManage updateDrgManage = new YbDrgManage();
             updateDrgManage.setId(ybDrgManage.getId());
+            String strReadyDksName = DataTypeHelpers.stringReplaceSetString(ybDrgManage.getReadyDksName(), ybDrgManage.getReadyDksId() + "-");
             String strReadyDoctorName = DataTypeHelpers.stringReplaceSetString(ybDrgManage.getReadyDoctorName(), ybDrgManage.getReadyDoctorCode() + "-");
             boolean isChang = false;
 
             if (!entity.getReadyDoctorCode().equals(ybDrgManage.getReadyDoctorCode()) ||
-                    !entity.getReadyDksName().equals(ybDrgManage.getReadyDksName())) {
+                    !entity.getReadyDksId().equals(ybDrgManage.getReadyDksId())) {
                 isChang = true;
             }
             int n7State = 10;
@@ -435,9 +447,11 @@ public class YbDrgManageServiceImpl extends ServiceImpl<YbDrgManageMapper, YbDrg
                 if (n7State == 71) {
                     updateDrgManage.setReadyDoctorCode(ybDrgManage.getReadyDoctorCode());
                     updateDrgManage.setReadyDoctorName(strReadyDoctorName);
-                    updateDrgManage.setReadyDksName(ybDrgManage.getReadyDksName());
+                    updateDrgManage.setReadyDksId(ybDrgManage.getReadyDksId());
+                    updateDrgManage.setReadyDksName(strReadyDksName);
                     updateDrgManage.setChangeDoctorCode(entity.getReadyDoctorCode());
                     updateDrgManage.setChangeDoctorName(entity.getReadyDoctorName());
+                    updateDrgManage.setChangeDksId(entity.getReadyDksId());
                     updateDrgManage.setChangeDksName(entity.getReadyDksName());
                 }
                 updateDrgManage.setState(ybDrgManage.getState());
@@ -446,7 +460,8 @@ public class YbDrgManageServiceImpl extends ServiceImpl<YbDrgManageMapper, YbDrg
                 updateDrgManage.setState(YbDefaultValue.AMSTATE_3);
                 updateDrgManage.setChangeDoctorCode(ybDrgManage.getReadyDoctorCode());
                 updateDrgManage.setChangeDoctorName(strReadyDoctorName);
-                updateDrgManage.setChangeDksName(ybDrgManage.getReadyDksName());
+                updateDrgManage.setChangeDksId(ybDrgManage.getReadyDksId());
+                updateDrgManage.setChangeDksName(strReadyDksName);
             }
             if (entity.getState() == YbDefaultValue.AMSTATE_7 && ybDrgManage.getState() == YbDefaultValue.AMSTATE_6) {
                 updateDrgManage.setOperateProcess("未申诉-已申诉");
@@ -492,7 +507,8 @@ public class YbDrgManageServiceImpl extends ServiceImpl<YbDrgManageMapper, YbDrg
                 ybDrgResult.setOperateReason("");
                 ybDrgResult.setDoctorCode(ybDrgManage.getReadyDoctorCode());
                 ybDrgResult.setDoctorName(strReadyDoctorName);
-                ybDrgResult.setDksName(ybDrgManage.getReadyDksName());
+                ybDrgResult.setDksId(ybDrgManage.getReadyDksId());
+                ybDrgResult.setDksName(strReadyDksName);
                 iYbDrgResultService.updateById(ybDrgResult);
             }
             // 待申诉 和 已申诉 删除 结果和附件
@@ -531,10 +547,12 @@ public class YbDrgManageServiceImpl extends ServiceImpl<YbDrgManageMapper, YbDrg
                 newDrgManage.setOrderNum(entity.getOrderNum());
                 newDrgManage.setOrderNumber(entity.getOrderNumber());
 
-                ybDrgManage.setReadyDksName(ybDrgManage.getReadyDksName());
+                ybDrgManage.setReadyDksId(ybDrgManage.getReadyDksId());
+                ybDrgManage.setReadyDksName(strReadyDksName);
                 ybDrgManage.setReadyDoctorName(strReadyDoctorName);
 
-                newDrgManage.setReadyDksName(ybDrgManage.getReadyDksName());
+                newDrgManage.setReadyDksId(ybDrgManage.getReadyDksId());
+                newDrgManage.setReadyDksName(strReadyDksName);
                 newDrgManage.setReadyDoctorCode(ybDrgManage.getReadyDoctorCode());
                 newDrgManage.setReadyDoctorName(ybDrgManage.getReadyDoctorName());
 
@@ -607,6 +625,7 @@ public class YbDrgManageServiceImpl extends ServiceImpl<YbDrgManageMapper, YbDrg
                                     create.setManageId(item.getId());
                                     create.setDoctorCode(item.getReadyDoctorCode());
                                     create.setDoctorName(item.getReadyDoctorName());
+                                    create.setDksId(item.getReadyDksId());
                                     create.setDksName(item.getReadyDksName());
                                     create.setOperateReason("未申诉");
                                     create.setOperateDate(thisDate);

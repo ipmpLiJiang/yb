@@ -399,7 +399,6 @@
           >
             <input-selectdks
               ref="inputSelectVerifyDks"
-              :ctType=4
               @selectChange=selectDksChange
             >
             </input-selectdks>
@@ -451,8 +450,8 @@
             >
               <a-month-picker
                 placeholder="请输入复议年月"
-                style="width: 105px"
-                @change="monthChange"
+                style="width: 125px"
+                disabled
                 v-model="searchApplyDate"
                 :default-value="searchApplyDate"
                 :format="monthFormat"
@@ -589,9 +588,9 @@ export default {
     setSelect (item) {
       this.$refs.inputSelectVerifyDks.dataSource = [{
         text: item.verifyDksName,
-        value: item.verifyDksName
+        value: item.verifyDksId
       }]
-      this.$refs.inputSelectVerifyDks.value = item.verifyDksName
+      this.$refs.inputSelectVerifyDks.value = item.verifyDksId
 
       this.$refs.inputSelectVerifyDoctor.dataSource = [{
         text: item.verifyDoctorName,
@@ -601,6 +600,7 @@ export default {
 
       this.selectDate.doctorCode = item.verifyDoctorCode
       this.selectDate.doctorName = item.verifyDoctorName
+      this.selectDate.dksId = item.verifyDksId
       this.selectDate.dksName = item.verifyDksName
     },
     selectDoctorChange (item) {
@@ -608,6 +608,7 @@ export default {
       this.selectDate.doctorName = item.text
     },
     selectDksChange (item) {
+      this.selectDate.dksId = item.value
       this.selectDate.dksName = item.text
     },
     onIsDateChange () {
@@ -910,7 +911,7 @@ export default {
       } else if (key === '4') {
         this.$refs.ybDrgVerifySms.searchPage()
       } else {
-        console.log('ok')
+        // console.log('ok')
       }
     },
     searchTable () {

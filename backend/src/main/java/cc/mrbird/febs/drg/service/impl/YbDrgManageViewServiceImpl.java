@@ -93,19 +93,19 @@ public class YbDrgManageViewServiceImpl extends ServiceImpl<YbDrgManageViewMappe
                     if (confireDataList.size() > 0) {
                         strList = new ArrayList<>();
                         for (YbDrgConfireData item : confireDataList) {
-                            if (!strList.contains(item.getDksName())) {
-                                strList.add(item.getDksName());
+                            if (!strList.contains(item.getDksId())) {
+                                strList.add(item.getDksId());
                             }
                         }
                         if (strList.size() > 0) {
                             if (strList.size() == 1) {
-                                queryWrapper.eq(YbDrgManage::getReadyDksName, strList.get(0));
+                                queryWrapper.eq(YbDrgManage::getReadyDksId, strList.get(0));
                             } else {
-                                queryWrapper.in(YbDrgManage::getReadyDksName, strList);
+                                queryWrapper.in(YbDrgManage::getReadyDksId, strList);
                             }
                         }
                     } else {
-                        queryWrapper.eq(YbDrgManage::getReadyDksName, "dks");
+                        queryWrapper.eq(YbDrgManage::getReadyDksId, "dks");
                     }
                 }
 
@@ -188,9 +188,11 @@ public class YbDrgManageViewServiceImpl extends ServiceImpl<YbDrgManageViewMappe
         amv.setVerifyId(am.getVerifyId());
         amv.setReadyDoctorCode(am.getReadyDoctorCode());
         amv.setReadyDoctorName(am.getReadyDoctorName());
+        amv.setReadyDksId(am.getReadyDksId());
         amv.setReadyDksName(am.getReadyDksName());
         amv.setChangeDoctorCode(am.getChangeDoctorCode());
         amv.setChangeDoctorName(am.getChangeDoctorName());
+        amv.setChangeDksId(am.getChangeDksId());
         amv.setChangeDksName(am.getChangeDksName());
         amv.setOperateReason(am.getOperateReason());
         amv.setOperateDate(am.getOperateDate());

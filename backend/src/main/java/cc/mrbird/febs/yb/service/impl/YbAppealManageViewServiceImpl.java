@@ -224,20 +224,24 @@ public class YbAppealManageViewServiceImpl extends ServiceImpl<YbAppealManageVie
                     queryWrapper.eq(YbAppealManage::getApplyDateStr, applyDateStr);
                     queryWrapper.eq(YbAppealManage::getAreaType, areaType);
                     queryWrapper.eq(YbAppealManage::getAcceptState, acceptState);
-                    List<YbDept> deptlist = iYbDeptService.findDeptAppealConfireByUserList(ybAppealManageView.getReadyDoctorCode(), areaType);
-                    if (deptlist.size() > 0) {
+//                    List<YbDept> deptlist = iYbDeptService.findDeptAppealConfireByUserList(ybAppealManageView.getReadyDoctorCode(), areaType);
+//                    if (deptlist.size() > 0) {
+                    List<YbAppealConfireData> acdlist = iYbAppealConfireDataService.findAppealConfireDataByInDoctorCodeList(ybAppealManageView.getReadyDoctorCode(),areaType);
+                    if (acdlist.size() > 0) {
                         if (ybAppealManageView.getSourceType() != null) {
                             queryWrapper.eq(YbAppealManage::getSourceType, sourceType);
                         }
                         strList = new ArrayList<>();
-                        for (YbDept item : deptlist) {
-//                            strList.add(item.getDeptId());
-                            if(!strList.contains(item.getDksName())){
-                                strList.add(item.getDksName());
-                            }
+//                        for (YbDept item : deptlist) {
+//                            if(!strList.contains(item.getDksName())){
+//                                strList.add(item.getDksName());
+//                            }
+//                        }
+                        for (YbAppealConfireData item : acdlist){
+                            strList.add(item.getDeptId());
                         }
-//                        queryWrapper.in(YbAppealManage::getReadyDeptCode, strList);
-                        queryWrapper.in(YbAppealManage::getDksName, strList);
+                        queryWrapper.in(YbAppealManage::getReadyDeptCode, strList);
+//                        queryWrapper.in(YbAppealManage::getDksName, strList);
                         if (value != null && !value.equals("") && keyField.equals("readyDoctorName")) {
                             strList = this.iYbPersonService.findPersonCodeList(value);
                             if (strList.size() > 0) {
@@ -298,14 +302,14 @@ public class YbAppealManageViewServiceImpl extends ServiceImpl<YbAppealManageVie
                         } else {
                             nValue = item.getEnableDate().after(reconsiderApply.getEndDateTwo()) ? 0 : 1;
                         }
-                        if(item.getSourceType() == 0) {
+                        if(item.getSourceType() == YbDefaultValue.SOURCETYPE_0) {
                             item.setApplyEndDate(item.getTypeno() == YbDefaultValue.TYPENO_1 ? reconsiderApply.getEndDateOne() : reconsiderApply.getEndDateTwo());
                         } else {
                             item.setApplyEndDate(reconsiderApply.getEndDateReset());
                         }
                         item.setIsEnableDate(nValue);//计算
 
-                        if (item.getSourceType() == 0) {
+                        if (item.getSourceType() == YbDefaultValue.SOURCETYPE_0) {
                             if (item.getTypeno() == YbDefaultValue.TYPENO_1) {
                                 nValue = reconsiderApply.getEndDateOne().after(thisDate) ? 0 : 1;
                             } else {

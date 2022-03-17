@@ -37,6 +37,13 @@ public class YbDrgConfireData implements Serializable, Comparable<YbDrgConfireDa
     private String pid;
 
     /**
+     * 科室编码
+     */
+    @TableField("dksId")
+    @ExcelField(value ="科室编码")
+    private String dksId;
+
+    /**
      * 科室
      */
     @TableField("dksName")

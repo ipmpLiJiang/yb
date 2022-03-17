@@ -9,9 +9,11 @@
         <result column="verifyId" property="verifyId"/>
         <result column="readyDoctorCode" property="readyDoctorCode"/>
         <result column="readyDoctorName" property="readyDoctorName"/>
+        <result column="readyDksId" property="readyDksId"/>
         <result column="readyDksName" property="readyDksName"/>
         <result column="changeDoctorCode" property="changeDoctorCode"/>
         <result column="changeDoctorName" property="changeDoctorName"/>
+        <result column="changeDksId" property="changeDksId"/>
         <result column="changeDksName" property="changeDksName"/>
         <result column="operateReason" property="operateReason"/>
         <result column="operateDate" property="operateDate"/>
@@ -35,7 +37,7 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, applyDataId, verifyId, readyDoctorCode, readyDoctorName, readyDksName, changeDoctorCode, changeDoctorName, changeDksName, operateReason, operateDate, refuseId, refuseName, refuseReason, refuseDate, adminPersonId, adminPersonName, adminChangeDate, adminReason, STATE, enableDate, operateProcess, approvalState, applyDateStr, orderNumber, orderNum, areaType
+        id, applyDataId, verifyId, readyDoctorCode, readyDoctorName, readyDksId, readyDksName, changeDoctorCode, changeDoctorName, changeDksId, changeDksName, operateReason, operateDate, refuseId, refuseName, refuseReason, refuseDate, adminPersonId, adminPersonName, adminChangeDate, adminReason, STATE, enableDate, operateProcess, approvalState, applyDateStr, orderNumber, orderNum, areaType
     </sql>
     <update id="updateYbDrgManage" parameterType="cc.mrbird.febs.drg.entity.YbDrgManage">
         update yb_drg_manage
@@ -44,9 +46,11 @@
             <if test="verifyId != null">verifyId=#{verifyId},</if>
             <if test="readyDoctorCode != null">readyDoctorCode=#{readyDoctorCode},</if>
             <if test="readyDoctorName != null">readyDoctorName=#{readyDoctorName},</if>
+            <if test="readyDksId != null">readyDksId=#{readyDksId},</if>
             <if test="readyDksName != null">readyDksName=#{readyDksName},</if>
             <if test="changeDoctorCode != null">changeDoctorCode=#{changeDoctorCode},</if>
             <if test="changeDoctorName != null">changeDoctorName=#{changeDoctorName},</if>
+            <if test="changeDksId != null">changeDksId=#{changeDksId},</if>
             <if test="changeDksName != null">changeDksName=#{changeDksName},</if>
             <if test="operateReason != null">operateReason=#{operateReason},</if>
             <if test="operateDate != null">operateDate=#{operateDate},</if>

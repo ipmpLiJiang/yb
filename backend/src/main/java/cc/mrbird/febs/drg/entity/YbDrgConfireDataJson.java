@@ -31,6 +31,11 @@ public class YbDrgConfireDataJson {
 //    private String deptId;
 
     /**
+     * 科室编码
+     */
+    private String dksId;
+
+    /**
      * 科室名称
      */
 //    private String deptName;

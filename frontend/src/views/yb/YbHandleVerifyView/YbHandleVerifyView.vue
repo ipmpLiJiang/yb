@@ -84,6 +84,11 @@
                 <a-button type="primary">全部发送</a-button>
               </a-popconfirm>
               <a-button type="primary" @click="searchTable">刷新</a-button>
+              <a-button
+                type="danger"
+                @click="showDateModal">
+                  日期
+              </a-button>
             </a-col>
           </a-row>
         </div>
@@ -124,6 +129,49 @@
         </a-tabs>
       </div>
     </template>
+    <a-modal v-model="visibleDate" title="变更日期" on-ok="handleDateOk">
+      <template slot="footer">
+        <a-button key="back" @click="handleDateCancel"> 取消 </a-button>
+        <a-popconfirm
+          title="确定匹配？"
+          @confirm="handleDateOk"
+          :disabled="reconsiderApply.applyId == null ? true : false"
+          okText="确定"
+          cancelText="取消"
+        >
+          <a-button
+            type="primary"
+            :disabled="reconsiderApply.applyId == null ? true : false"
+            style="margin-right: 0.8rem"
+            >确定</a-button
+          >
+        </a-popconfirm>
+      </template>
+      <a-row>
+        <a-form-item v-bind="formItemLayout" label="复议年月">
+          <a-month-picker
+            placeholder="请输入复议年月"
+            style="width: 125px"
+            disabled
+            v-model="searchApplyDate"
+            :default-value="searchApplyDate"
+            :format="monthFormat"
+          />
+        </a-form-item>
+        <a-form-item
+          v-bind="formItemLayout"
+          label="非常规截止时间"
+        >
+          <a-date-picker
+            placeholder="请输入非常规截止时间"
+            style="width: 220px"
+            v-model="reconsiderApply.endDateReset"
+            show-time
+            :format="dayFormat"
+          />
+        </a-form-item>
+      </a-row>
+    </a-modal>
   </a-card>
 </template>
 
@@ -152,6 +200,7 @@ export default {
       formItemLayout,
       loading: false,
       monthFormat: 'YYYY-MM',
+      dayFormat: 'YYYY-MM-DD HH:mm:ss',
       searchText: '',
       searchApplyDate: this.formatDate(),
       defaultApplyDate: this.formatDate(),
@@ -172,12 +221,19 @@ export default {
       spinning: false,
       checked: false,
       delayTime: 500,
+      visibleDate: false,
+      reconsiderApply: {
+        applyId: null,
+        endDateReset: null
+      },
       user: this.$store.state.account.user,
       tableSelectKey: '1'
     }
   },
   computed: {},
-  mounted () { },
+  mounted () {
+    this.initTypeno(this.searchApplyDate)
+  },
   methods: {
     moment,
     formatDate () {
@@ -186,9 +242,56 @@ export default {
     },
     monthChange (date, dateString) {
       this.searchApplyDate = dateString
+      this.initTypeno(dateString)
     },
     handleDataTypeChange (value) {
       this.searchDataType = value
+    },
+    initTypeno (applyDateStr) {
+      this.$get('ybReconsiderApply/getReconsiderApply', {
+        applyDateStr: applyDateStr, areaType: this.user.areaType.value
+      }).then((r) => {
+        if (r.data.data.success === 1 && r.data.data.apply !== null) {
+          this.reconsiderApply.endDateReset = r.data.data.apply.endDateReset
+          this.reconsiderApply.applyId = r.data.data.apply.id
+        } else {
+          this.reconsiderApply.applyId = null
+          this.reconsiderApply.endDateReset = null
+        }
+      })
+    },
+    handleDateOk () {
+      let ybReconsiderApply = {
+        id: this.reconsiderApply.applyId,
+        endDateReset: this.reconsiderApply.endDateReset
+      }
+      if (ybReconsiderApply.id != null && ybReconsiderApply.endDateReset != null) {
+        ybReconsiderApply.endDateReset = moment(ybReconsiderApply.endDateReset)
+        this.$put('ybReconsiderApply/updateEndResetDate', {
+          ...ybReconsiderApply
+        }).then((r) => {
+          if (r.data.data.success === 1) {
+            this.$message.success('当前' + this.searchApplyDate + '修改非常规截止时间成功.')
+            this.visibleDate = false
+          } else {
+            this.$message.warning('当前' + this.searchApplyDate + '修改非常规截止时间失败,请检查是否剔除完成操作..')
+          }
+        }).catch(() => {
+          this.$message.error('当前' + this.searchApplyDate + '修改非常规截止时间失败.')
+        })
+      } else {
+        this.$message.error(this.searchApplyDate + '请选择正确的非常规截止时间.')
+      }
+    },
+    handleDateCancel () {
+      this.visibleDate = false
+    },
+    showDateModal () {
+      if (this.reconsiderApply.applyId !== null) {
+        this.visibleDate = true
+      } else {
+        this.$message.error('当前' + this.searchApplyDate + '无复议申请数据.')
+      }
     },
     onChange () {
       this.checked = !this.checked

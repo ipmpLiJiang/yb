@@ -111,6 +111,10 @@ public class YbDrgConfireDataServiceImpl extends ServiceImpl<YbDrgConfireDataMap
             wrapper.eq(YbDrgConfireData::getPid,drgConfireData.getPid());
         }
 
+        if(drgConfireData.getDksId() !=null){
+            wrapper.eq(YbDrgConfireData::getDksId,drgConfireData.getDksId());
+        }
+
         if(drgConfireData.getDksName() !=null){
             wrapper.eq(YbDrgConfireData::getDksName,drgConfireData.getDksName());
         }

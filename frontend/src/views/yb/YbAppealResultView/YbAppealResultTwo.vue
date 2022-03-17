@@ -146,12 +146,12 @@ export default {
         },
         width: 110
       },
-      {
-        title: '汇总科室',
-        dataIndex: 'dksName',
-        fixed: 'right',
-        width: 110
-      },
+      // {
+      //   title: '汇总科室',
+      //   dataIndex: 'dksName',
+      //   fixed: 'right',
+      //   width: 110
+      // },
       {
         title: '科室名称',
         dataIndex: 'arDeptName',

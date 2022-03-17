@@ -188,7 +188,6 @@ export default {
       this.ybAppealManage.readyDeptName = item.text
     },
     setFormValues (ybAppealManageChangeDetail, type) {
-      console.log(ybAppealManageChangeDetail)
       this.type = type
       if (type === 0) {
         this.selectAcceptStateDataSource = [{value: 0, text: '接受申请'}]

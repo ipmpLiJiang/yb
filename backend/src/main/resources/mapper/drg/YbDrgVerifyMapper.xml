@@ -8,6 +8,7 @@
         <result column="applyDataId" property="applyDataId"/>
         <result column="verifyDoctorCode" property="verifyDoctorCode"/>
         <result column="verifyDoctorName" property="verifyDoctorName"/>
+        <result column="verifyDksId" property="verifyDksId"/>
         <result column="verifyDksName" property="verifyDksName"/>
         <result column="STATE" property="state"/>
         <result column="applyDateStr" property="applyDateStr"/>
@@ -21,7 +22,7 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, applyDataId, verifyDoctorCode, verifyDoctorName, verifyDksName, STATE, applyDateStr, orderNumber, orderNum, areaType, sendPersonId, sendPersonName, sendDate
+        id, applyDataId, verifyDoctorCode, verifyDoctorName, verifyDksId, verifyDksName, STATE, applyDateStr, orderNumber, orderNum, areaType, sendPersonId, sendPersonName, sendDate
     </sql>
     <update id="updateYbDrgVerify" parameterType="cc.mrbird.febs.drg.entity.YbDrgVerify">
         update yb_drg_verify
@@ -29,6 +30,7 @@
             <if test="applyDataId != null">applyDataId=#{applyDataId},</if>
             <if test="verifyDoctorCode != null">verifyDoctorCode=#{verifyDoctorCode},</if>
             <if test="verifyDoctorName != null">verifyDoctorName=#{verifyDoctorName},</if>
+            <if test="verifyDksId != null">verifyDksId=#{verifyDksId},</if>
             <if test="verifyDksName != null">verifyDksName=#{verifyDksName},</if>
             <if test="state != null">STATE=#{state},</if>
             <if test="applyDateStr != null">applyDateStr=#{applyDateStr},</if>
@@ -88,7 +90,7 @@
         applyDateStr = #{ applyDateStr }
         <if test="areaType != null">and areaType =#{ areaType }</if>
         <if test="state != null">and state =#{ state }</if>
-        <if test="isDksName">and verifyDksName is null</if>
+        <if test="isDksName">and verifyDksId is null</if>
     </select>
 
 </mapper>

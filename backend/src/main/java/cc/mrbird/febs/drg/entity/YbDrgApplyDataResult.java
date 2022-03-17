@@ -76,6 +76,11 @@ public class YbDrgApplyDataResult {
     @ExcelField(value = "医院意见")
     private String operateReason;
 
+    /**
+     * 科室编码
+     */
+    @ExcelField(value = "科室编码")
+    private String dksId;
 
     /**
      * 科室名称

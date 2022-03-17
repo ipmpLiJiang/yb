@@ -66,6 +66,7 @@
       <ybAppealSumdept-data
         ref="ybAppealSumdeptData"
         :pid="ybAppealSumdept.id"
+        @del="del"
       >
       </ybAppealSumdept-data>
     </template>
@@ -106,6 +107,9 @@ export default {
       this.$refs.inputSelectDept.dataSource = []
       this.$refs.inputSelectDept.value = ''
       this.form.resetFields()
+    },
+    del () {
+      this.isUpdate = true
     },
     onClose () {
       this.reset()

@@ -142,7 +142,7 @@
             and art.doctorCode in (select personCode from yb_person where personName = #{ ybAppealResultDeductimplementView.arDoctorName})
         </if>
         <if test="appealConfireId != null and appealConfireId != ''">
-            and art.dksName in (select dksName from yb_appeal_confire_data where pid = #{ appealConfireId})
+            and art.deptCode in (select deptId from yb_appeal_confire_data where pid =#{appealConfireId})
         </if>
         where
         <if test="ybAppealResultDeductimplementView.implementDateStr != null and ybAppealResultDeductimplementView.implementDateStr != ''">
@@ -199,7 +199,7 @@
             and art.doctorCode in (select personCode from yb_person where personName = #{ ybAppealResultDeductimplementView.arDoctorName})
         </if>
         <if test="appealConfireId != null and appealConfireId != ''">
-            and art.dksName in (select dksName from yb_appeal_confire_data where pid = #{ appealConfireId})
+            and art.deptCode in (select deptId from yb_appeal_confire_data where pid = #{appealConfireId})
         </if>
         where
         <if test="ybAppealResultDeductimplementView.implementDateStr != null and ybAppealResultDeductimplementView.implementDateStr != ''">
@@ -277,7 +277,7 @@
             and art.doctorCode in (select personCode from yb_person where personName = #{ ybAppealResultDeductimplementView.arDoctorName})
         </if>
         <if test="appealConfireId != null and appealConfireId != ''">
-            and art.dksName in (select dksName from yb_appeal_confire_data where pid = #{ appealConfireId})
+            and art.deptCode in (select deptId from yb_appeal_confire_data where pid = #{appealConfireId})
         </if>
         where
         <if test="ybAppealResultDeductimplementView.pid != null and ybAppealResultDeductimplementView.pid != ''">
@@ -334,7 +334,7 @@
             and art.doctorCode in (select personCode from yb_person where personName = #{ ybAppealResultDeductimplementView.arDoctorName})
         </if>
         <if test="appealConfireId != null and appealConfireId != ''">
-            and art.dksName in (select dksName from yb_appeal_confire_data where pid = #{ appealConfireId})
+            and art.deptCode in (select deptId from yb_appeal_confire_data where pid = #{appealConfireId})
         </if>
         where
         <if test="ybAppealResultDeductimplementView.pid != null and ybAppealResultDeductimplementView.pid != ''">
@@ -440,7 +440,7 @@
                 and doctorCode=#{ ybAppealResultDeductimplementView.arDoctorCode}
             </if>
             <if test="ybAppealResultDeductimplementView.arDoctorName != null and ybAppealResultDeductimplementView.arDoctorName != ''">
-                and .doctorCode in (select personCode from yb_person where personName = #{ ybAppealResultDeductimplementView.arDoctorName})
+                and doctorCode in (select personCode from yb_person where personName = #{ ybAppealResultDeductimplementView.arDoctorName})
             </if>
         )
         where
@@ -514,7 +514,7 @@
             and doctorCode=#{ ybAppealResultDeductimplementView.arDoctorCode}
         </if>
         <if test="ybAppealResultDeductimplementView.arDoctorName != null and ybAppealResultDeductimplementView.arDoctorName != ''">
-            and .doctorCode in (select personCode from yb_person where personName = #{ ybAppealResultDeductimplementView.arDoctorName})
+            and doctorCode in (select personCode from yb_person where personName = #{ ybAppealResultDeductimplementView.arDoctorName})
         </if>
         )
         where

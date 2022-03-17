@@ -60,7 +60,6 @@
                 >
                   <input-selectdks
                   ref="inputSelectVerifyDks"
-                  :ctType=4
                   @selectChange=selectDksChang
                   >
                   </input-selectdks>
@@ -185,6 +184,7 @@ export default {
       this.ybDrgManage.readyDoctorName = item.text
     },
     selectDksChang (item) {
+      this.ybDrgManage.readyDksId = item.value
       this.ybDrgManage.readyDksName = item.text
     },
     setFormValues (ybDrgManageChangeAdminHandle, type) {
@@ -207,15 +207,15 @@ export default {
       this.ybDrgManage.verifyId = ybDrgManageChangeAdminHandle.verifyId
       this.ybDrgManage.applyDataId = ybDrgManageChangeAdminHandle.applyDataId
       this.ybDrgManage.state = ybDrgManageChangeAdminHandle.state
-      this.changePersons = this.ybDrgManageChangeAdminHandle.readyDksName + ' - ' + this.ybDrgManageChangeAdminHandle.readyDoctorName
+      this.changePersons = this.ybDrgManageChangeAdminHandle.readyDksId + '-' + this.ybDrgManageChangeAdminHandle.readyDksName + ' - ' + this.ybDrgManageChangeAdminHandle.readyDoctorCode + '-' + this.ybDrgManageChangeAdminHandle.readyDoctorName
       setTimeout(() => {
         this.setForms(ybDrgManageChangeAdminHandle)
       }, 200)
     },
     setForms (target) {
       this.$refs.inputSelectVerifyDks.dataSource = [{
-        text: target.readyDksName,
-        value: target.readyDksName
+        text: target.readyDksId + '-' + target.readyDksName,
+        value: target.readyDksId
       }]
       this.$refs.inputSelectVerifyDks.value = target.readyDksName
 
@@ -228,6 +228,7 @@ export default {
       this.ybDrgManage.readyDoctorCode = target.readyDoctorCode
       this.ybDrgManage.readyDoctorName = target.readyDoctorName
 
+      this.ybDrgManage.readyDksId = target.readyDksId
       this.ybDrgManage.readyDksName = target.readyDksName
 
       setTimeout(() => {
@@ -249,7 +250,7 @@ export default {
 
       if (this.type === 0 || this.type === 3) {
         if (ybDrgManage.readyDoctorCode === this.ybDrgManageChangeAdminHandle.readyDoctorCode &&
-            ybDrgManage.readyDksName === this.ybDrgManageChangeAdminHandle.readyDksName) {
+            ybDrgManage.readyDksId === this.ybDrgManageChangeAdminHandle.readyDksId) {
           this.$message.error('未更改 复议科室 和 复议医生 , 不可提交数据.')
           this.loading = false
           this.spinning = false

@@ -30,8 +30,7 @@
       >
         <input-selectdks
           ref="inputSelectVerifyDks"
-          v-decorator="['dksNameTo', {rules: [{ required: checkDeptType, message: '更改科室名称不能为空' }] }]"
-          :ctType=4
+          v-decorator="['dksIdTo', {rules: [{ required: checkDeptType, message: '更改科室名称不能为空' }] }]"
           @selectChange=selectDksChang
         >
         </input-selectdks>
@@ -124,24 +123,27 @@ export default {
       this.ybPriorityLevel.doctorNameTo = item.text
     },
     selectDksChang (item) {
-      this.ybPriorityLevel.dksNameTo = item.value
+      this.ybPriorityLevel.dksIdTo = item.value
+      this.ybPriorityLevel.dksNameTo = item.text
     },
     handleDeptChange (e) {
       if (e.target.value === '2') {
         this.checkDeptType = true
         this.$nextTick(() => {
-          this.form.validateFields(['dksNameTo'], { force: this.checkDeptType })
+          this.form.validateFields(['dksIdTo'], { force: this.checkDeptType })
         })
       } else {
         this.checkDeptType = false
         this.$nextTick(() => {
-          this.form.validateFields(['dksNameTo'], { force: this.checkDeptType })
+          this.form.validateFields(['dksIdTo'], { force: this.checkDeptType })
         })
         this.ybPriorityLevel.dksNameTo = ''
+        this.ybPriorityLevel.dksIdTo = ''
         this.form.getFieldDecorator('dksNameTo')
-
+        this.form.getFieldDecorator('dksIdTo')
         this.form.setFieldsValue({
-          dksNameTo: ''
+          dksNameTo: '',
+          dksIdTo: ''
         })
       }
     },
@@ -174,10 +176,12 @@ export default {
           doctorNameTo: this.ybPriorityLevel.doctorNameTo
         })
       }
-      if (this.ybPriorityLevel.dksNameTo !== '' && this.ybPriorityLevel.dksNameTo !== undefined) {
+      if (this.ybPriorityLevel.dksIdTo !== '' && this.ybPriorityLevel.dksIdTo !== undefined) {
         this.form.getFieldDecorator('dksNameTo')
+        this.form.getFieldDecorator('dksIdTo')
         this.form.setFieldsValue({
-          dksNameTo: this.ybPriorityLevel.dksNameTo
+          dksNameTo: this.ybPriorityLevel.dksNameTo,
+          dksIdTo: this.ybPriorityLevel.dksIdTo
         })
       }
       this.form.validateFields((err, values) => {
@@ -203,7 +207,7 @@ export default {
       })
     },
     setFields () {
-      let values = this.form.getFieldsValue(['doctorCode', 'doctorName', 'dksNameTo', 'doctorCodeTo', 'doctorNameTo'])
+      let values = this.form.getFieldsValue(['doctorCode', 'doctorName', 'dksIdTo', 'dksNameTo', 'doctorCodeTo', 'doctorNameTo'])
       if (typeof values !== 'undefined') {
         Object.keys(values).forEach(_key => {
           this.ybReconsiderPriorityLevel[_key] = values[_key]

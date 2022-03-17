@@ -193,6 +193,7 @@ public class YbDrgApplyServiceImpl extends ServiceImpl<YbDrgApplyMapper, YbDrgAp
 
     }
 
+    //普通的修改数据
     @Override
     @Transactional
     public void updateYbDrgApply(YbDrgApply ybDrgApply) {
@@ -200,6 +201,7 @@ public class YbDrgApplyServiceImpl extends ServiceImpl<YbDrgApplyMapper, YbDrgAp
         this.baseMapper.updateYbDrgApply(ybDrgApply);
     }
 
+    // 申请修改数据，包含数据过期更改
     @Override
     @Transactional
     public String updateYbDrgApply(YbDrgApply ybDrgApply, boolean isUpOverdue) throws ParseException {

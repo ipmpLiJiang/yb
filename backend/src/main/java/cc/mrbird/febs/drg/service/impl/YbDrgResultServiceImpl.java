@@ -127,6 +127,9 @@ public class YbDrgResultServiceImpl extends ServiceImpl<YbDrgResultMapper, YbDrg
             wrapper.eq(YbDrgResult::getDoctorName, drgResult.getDoctorName());
         }
 
+        if (drgResult.getDksId() != null) {
+            wrapper.eq(YbDrgResult::getDksId, drgResult.getDksId());
+        }
 
         if (drgResult.getDksName() != null) {
             wrapper.eq(YbDrgResult::getDksName, drgResult.getDksName());

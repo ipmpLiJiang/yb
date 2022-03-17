@@ -285,8 +285,30 @@ public class YbReconsiderApplyController extends BaseController {
     public FebsResponse updateReconsiderApplys(@Valid YbReconsiderApply ybReconsiderApply,Integer isChangDate){
         int success = 0;
         try {
-            this.iYbReconsiderApplyService.updateYbReconsiderApply(ybReconsiderApply,isChangDate);
-            success = 1;
+            message = this.iYbReconsiderApplyService.updateYbReconsiderApply(ybReconsiderApply,isChangDate);
+            if (message.equals("")) {
+                success = 1;
+            }
+        } catch (Exception e) {
+            message = "修改失败";
+            log.error(message, e);
+        }
+        ResponseResult rr = new ResponseResult();
+        rr.setSuccess(success);
+        rr.setMessage(message);
+        return  new FebsResponse().data(rr);
+    }
+
+    @Log("修改")
+    @PutMapping("updateEndResetDate")
+    @RequiresPermissions("ybReconsiderApply:update")
+    public FebsResponse updateEndResetDates(@Valid YbReconsiderApply ybReconsiderApply){
+        int success = 0;
+        try {
+            message = this.iYbReconsiderApplyService.updateReconsiderApplyEndResetDate(ybReconsiderApply);
+            if(message.equals("")) {
+                success = 1;
+            }
         } catch (Exception e) {
             message = "修改失败";
             log.error(message, e);

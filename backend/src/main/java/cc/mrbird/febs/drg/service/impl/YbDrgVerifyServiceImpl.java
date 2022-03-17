@@ -15,10 +15,8 @@ import cc.mrbird.febs.drg.service.*;
 import cc.mrbird.febs.job.domain.Job;
 import cc.mrbird.febs.job.service.JobService;
 import cc.mrbird.febs.yb.entity.YbDefaultValue;
-import cc.mrbird.febs.yb.entity.YbDept;
 import cc.mrbird.febs.yb.entity.YbPerson;
 import cc.mrbird.febs.yb.entity.YbReconsiderPriorityLevel;
-import cc.mrbird.febs.yb.service.IYbDeptService;
 import cc.mrbird.febs.yb.service.IYbPersonService;
 import cc.mrbird.febs.yb.service.IYbReconsiderPriorityLevelService;
 import cn.hutool.core.lang.Validator;
@@ -53,8 +51,6 @@ import java.util.stream.Collectors;
 public class YbDrgVerifyServiceImpl extends ServiceImpl<YbDrgVerifyMapper, YbDrgVerify> implements IYbDrgVerifyService {
 
     @Autowired
-    IYbDeptService iYbDeptService;
-    @Autowired
     IYbDrgApplyService iYbDrgApplyService;
 
     @Autowired
@@ -82,7 +78,7 @@ public class YbDrgVerifyServiceImpl extends ServiceImpl<YbDrgVerifyMapper, YbDrg
     IYbDrgJkService iYbDrgJkService;
 
     @Autowired
-    IComTypeService iComTypeService;
+    IYbDrgDksService iYbDrgDksService;
 
     @Autowired
     IYbReconsiderPriorityLevelService iYbReconsiderPriorityLevelService;
@@ -162,20 +158,14 @@ public class YbDrgVerifyServiceImpl extends ServiceImpl<YbDrgVerifyMapper, YbDrg
         wrapper.eq(YbDrgVerify::getAreaType, drgApply.getAreaType());
         List<YbDrgVerify> list = this.list(wrapper);
 
-        int ctType = ComType.CTTYPE_3;
-        ComType queryType = new ComType();
-        queryType.setCtType(ctType);
-        queryType.setIsDeletemark(1);
-        List<ComType> typeList = iComTypeService.findComTypeList(queryType);
-
-        List<ComType> createTypeList = new ArrayList<>();
+//        List<YbDrgDks> dksList = iYbDrgDksService.findDksList(new YbDrgDks(), 0);
+//        List<YbDrgDks> createDrgList = new ArrayList<>();
         List<YbDrgVerify> queryList = new ArrayList<>();
         List<YbDrgVerify> createList = new ArrayList<>();
         List<YbDrgVerify> updateList = new ArrayList<>();
-        int maxCount = typeList.size();
-        long count = 0;
+//        long count = 0;
         boolean isCreate = false;
-        boolean isDept = false;
+//        boolean isDept = false;
         if (list.size() > 0) {
             for (YbDrgVerify item : verifyList) {
                 queryList = list.stream().filter(
@@ -184,41 +174,34 @@ public class YbDrgVerifyServiceImpl extends ServiceImpl<YbDrgVerifyMapper, YbDrg
                 if (queryList.size() > 0) {
                     YbDrgVerify rv = queryList.get(0);
 
-                    if (!isImportTrue(item.getVerifyDksName(), rv.getVerifyDksName()) ||
+                    if (!isImportTrue(item.getVerifyDksId(), rv.getVerifyDksId()) ||
+                            !isImportTrue(item.getVerifyDksName(), rv.getVerifyDksName()) ||
                             !isImportTrue(item.getVerifyDoctorCode(), rv.getVerifyDoctorCode()) ||
                             !isImportTrue(item.getVerifyDoctorName(), rv.getVerifyDoctorName())
                     ) {
-                        isDept = true;
+//                        isDept = true;
                         YbDrgVerify udpate = new YbDrgVerify();
                         udpate.setId(rv.getId());
+                        udpate.setVerifyDksId(item.getVerifyDksId());
                         udpate.setVerifyDksName(item.getVerifyDksName());
                         udpate.setVerifyDoctorCode(item.getVerifyDoctorCode());
                         udpate.setVerifyDoctorName(item.getVerifyDoctorName());
                         updateList.add(udpate);
                     }
                 } else {
-                    isDept = true;
+//                    isDept = true;
                     createList.add(item);
                 }
-                if (isDept) {
-                    String dksName = item.getVerifyDksName();
-                    count = typeList.stream().filter(s -> s.getCtName().equals(dksName)).count();
-                    if (count == 0) {
-                        count = createTypeList.stream().filter(s -> s.getCtName().equals(dksName)).count();
-                        if (count == 0) {
-                            maxCount += 1;
-                            ComType create = new ComType();
-                            create.setCtName(item.getVerifyDksName());
-                            create.setCreateTime(new Date());
-                            create.setCtType(ctType);
-                            create.setState(0);
-                            create.setOrderNum(maxCount);
-                            create.setIsDeletemark(1);
-                            createTypeList.add(create);
-                        }
-                    }
-                }
-                isDept = false;
+//                if (isDept) {
+//                    String dksId = item.getVerifyDksId();
+//                    count = dksList.stream().filter(s -> s.getDksId().equals(dksId)).count();
+//                    if (count == 0) {
+//                        count = createDrgList.stream().filter(s -> s.getDksId().equals(dksId)).count();
+//                        if (count == 0) {
+//                        }
+//                    }
+//                }
+//                isDept = false;
             }
         } else {
             this.saveBatch(verifyList);
@@ -227,10 +210,6 @@ public class YbDrgVerifyServiceImpl extends ServiceImpl<YbDrgVerifyMapper, YbDrg
         if (createList.size() > 0) {
             this.saveBatch(createList);
             isCreate = true;
-        }
-
-        if (createTypeList.size() > 0) {
-            iComTypeService.saveBatch(createTypeList);
         }
 
         if (updateList.size() > 0) {
@@ -262,8 +241,8 @@ public class YbDrgVerifyServiceImpl extends ServiceImpl<YbDrgVerifyMapper, YbDrg
                 stateList.add(YbReconsiderPriorityLevel.PL_STATE_4);
                 List<YbReconsiderPriorityLevel> rplList = iYbReconsiderPriorityLevelService.findReconsiderPriorityLevelList(areaType, stateList);
                 List<YbReconsiderPriorityLevel> rplQueryList = new ArrayList<>();
-                List<YbDept> deptList = iYbDeptService.findDeptList(new YbDept(), 0);
-                List<YbDept> deptQueryList = new ArrayList<>();
+                List<YbDrgDks> dksList = iYbDrgDksService.findDksList(new YbDrgDks(), 0);
+                List<YbDrgDks> dksQueryList = new ArrayList<>();
 
                 if (radList.size() > 0) {
                     List<YbDrgVerify> createList = new ArrayList<>();
@@ -284,15 +263,17 @@ public class YbDrgVerifyServiceImpl extends ServiceImpl<YbDrgVerifyMapper, YbDrg
                             if (rplQueryList.size() == 0) {
                                 ybDrgVerify.setVerifyDoctorCode(jk.getYlzDocId());
                                 ybDrgVerify.setVerifyDoctorName(jk.getYlzDocName());
-                                deptQueryList = deptList.stream().filter(s -> s.getDeptName().equals(jk.getAreaName())).collect(Collectors.toList());
-                                if (deptQueryList.size() > 0 && deptQueryList.get(0).getDksName() != null && !deptQueryList.get(0).getDksName().equals("")) {
-                                    ybDrgVerify.setVerifyDksName(deptQueryList.get(0).getDksName());
+                                dksQueryList = dksList.stream().filter(s -> s.getDksId().equals(jk.getDeptId())).collect(Collectors.toList());
+                                if (dksQueryList.size() > 0 && StringUtils.isNotBlank(dksQueryList.get(0).getDksId()) && StringUtils.isNotBlank(dksQueryList.get(0).getDksName())) {
+                                    ybDrgVerify.setVerifyDksName(dksQueryList.get(0).getDksName() + "(" + dksQueryList.get(0).getAreaName() + ")");
+                                    ybDrgVerify.setVerifyDksId(dksQueryList.get(0).getDksId());
                                 }
                             } else {
                                 YbReconsiderPriorityLevel rpl = rplQueryList.get(0);
                                 if (this.isNotNullRpl(rpl)) {
                                     ybDrgVerify.setVerifyDoctorCode(rpl.getDoctorCodeTo());
                                     ybDrgVerify.setVerifyDoctorName(rpl.getDoctorNameTo());
+                                    ybDrgVerify.setVerifyDksId(rpl.getDksIdTo());
                                     ybDrgVerify.setVerifyDksName(rpl.getDksNameTo());
                                 }
                             }
@@ -315,20 +296,24 @@ public class YbDrgVerifyServiceImpl extends ServiceImpl<YbDrgVerifyMapper, YbDrg
                             YbDrgJk jk = queryJkList.get(0);
                             rplQueryList = rplList.stream().filter(s -> s.getDoctorCode().equals(jk.getYlzDocId())).collect(Collectors.toList());
                             if (rplQueryList.size() == 0) {
-                                deptQueryList = deptList.stream().filter(s -> s.getDeptName().equals(jk.getAreaName())).collect(Collectors.toList());
-                                if (deptQueryList.size() > 0 && deptQueryList.get(0).getDksName() != null && !deptQueryList.get(0).getDksName().equals("")) {
-                                    update.setVerifyDksName(deptQueryList.get(0).getDksName());
+                                dksQueryList = dksList.stream().filter(s -> s.getDksId().equals(jk.getDeptId())).collect(Collectors.toList());
+                                if (dksQueryList.size() > 0 && StringUtils.isNotBlank(dksQueryList.get(0).getDksId()) && StringUtils.isNotBlank(dksQueryList.get(0).getDksName())) {
+                                    update.setVerifyDksName(dksQueryList.get(0).getDksName() + "(" + dksQueryList.get(0).getAreaName() + ")");
+                                    update.setVerifyDksId(dksQueryList.get(0).getDksId());
                                 }
                             } else {
                                 YbReconsiderPriorityLevel rpl = rplQueryList.get(0);
                                 if (this.isNotNullRpl(rpl)) {
+                                    update.setVerifyDksId(rpl.getDksIdTo());
                                     update.setVerifyDksName(rpl.getDksNameTo());
                                     update.setVerifyDoctorCode(rpl.getDoctorCodeTo());
                                     update.setVerifyDoctorName(rpl.getDoctorNameTo());
                                 }
                             }
                         }
-                        if (update.getVerifyDksName() != null && !update.getVerifyDksName().equals("")) {
+
+                        if (StringUtils.isNotBlank(update.getVerifyDksId()) &&
+                                StringUtils.isNotBlank(update.getVerifyDksName())) {
                             updateList.add(update);
                         }
                     }
@@ -344,8 +329,8 @@ public class YbDrgVerifyServiceImpl extends ServiceImpl<YbDrgVerifyMapper, YbDrg
     }
 
     private boolean isNotNull(YbDrgJk jk) {
-        if (jk.getYlzDocId() != null && !jk.getYlzDocId().equals("") &&
-                jk.getYlzDocName() != null && !jk.getYlzDocName().equals("")) {
+        if (StringUtils.isNotBlank(jk.getYlzDocId()) &&
+                StringUtils.isNotBlank(jk.getYlzDocName())) {
 //            jk.getYlzDeptName() != null && !jk.getYlzDeptName().equals("")
             return true;
         }
@@ -353,9 +338,10 @@ public class YbDrgVerifyServiceImpl extends ServiceImpl<YbDrgVerifyMapper, YbDrg
     }
 
     private boolean isNotNullRpl(YbReconsiderPriorityLevel rpl) {
-        if (rpl.getDoctorCodeTo() != null && !rpl.getDoctorCodeTo().equals("") &&
-                rpl.getDoctorNameTo() != null && !rpl.getDoctorNameTo().equals("") &&
-                rpl.getDksNameTo() != null && !rpl.getDksNameTo().equals("")) {
+        if (StringUtils.isNotBlank(rpl.getDoctorCodeTo()) &&
+                StringUtils.isNotBlank(rpl.getDoctorNameTo()) &&
+                StringUtils.isNotBlank(rpl.getDksIdTo()) &&
+                StringUtils.isNotBlank(rpl.getDksNameTo())) {
             return true;
         }
         return false;
@@ -365,12 +351,14 @@ public class YbDrgVerifyServiceImpl extends ServiceImpl<YbDrgVerifyMapper, YbDrg
     @Transactional
     public void updateDrgVerifyImports(List<YbDrgVerify> list) {
         for (YbDrgVerify item : list) {
-            if (item.getVerifyDksName() != null && !item.getVerifyDksName().equals("") &&
-                    item.getVerifyDoctorCode() != null && !item.getVerifyDoctorCode().equals("") &&
-                    item.getVerifyDoctorName() != null && !item.getVerifyDoctorName().equals("")) {
-                item.setState(YbDefaultValue.VERIFYSTATE_1);
+            if (StringUtils.isNotBlank(item.getVerifyDksId()) &&
+                    StringUtils.isNotBlank(item.getVerifyDksName()) &&
+                    StringUtils.isNotBlank(item.getVerifyDoctorCode()) &&
+                    StringUtils.isNotBlank(item.getVerifyDoctorName())) {
 
-                item.setVerifyDksName(item.getVerifyDksName());
+                item.setState(YbDefaultValue.VERIFYSTATE_1);
+                String strVerifyDksName = DataTypeHelpers.stringReplaceSetString(item.getVerifyDksName(), item.getVerifyDksId() + "-");
+                item.setVerifyDksName(strVerifyDksName);
                 String strVerifyDoctorName = DataTypeHelpers.stringReplaceSetString(item.getVerifyDoctorName(), item.getVerifyDoctorCode() + "-");
                 item.setVerifyDoctorName(strVerifyDoctorName);
 
@@ -384,6 +372,7 @@ public class YbDrgVerifyServiceImpl extends ServiceImpl<YbDrgVerifyMapper, YbDrg
                     YbDrgVerify updateVerify = new YbDrgVerify();
                     updateVerify.setVerifyDoctorCode(item.getVerifyDoctorCode());
                     updateVerify.setVerifyDoctorName(item.getVerifyDoctorName());
+                    updateVerify.setVerifyDksId(item.getVerifyDksId());
                     updateVerify.setVerifyDksName(item.getVerifyDksName());
                     this.baseMapper.update(updateVerify, queryWrapper);
                 }
@@ -436,14 +425,16 @@ public class YbDrgVerifyServiceImpl extends ServiceImpl<YbDrgVerifyMapper, YbDrg
 
             }
             for (YbDrgVerify ybDrgVerify : list) {
-                if (ybDrgVerify.getVerifyDksName() != null && !ybDrgVerify.getVerifyDksName().equals("") &&
-                        ybDrgVerify.getVerifyDoctorCode() != null && !ybDrgVerify.getVerifyDoctorCode().equals("") &&
-                        ybDrgVerify.getVerifyDoctorName() != null && !ybDrgVerify.getVerifyDoctorName().equals("")) {
+                if (StringUtils.isNotBlank(ybDrgVerify.getVerifyDksId()) &&
+                        StringUtils.isNotBlank(ybDrgVerify.getVerifyDksName()) &&
+                        StringUtils.isNotBlank(ybDrgVerify.getVerifyDoctorCode()) &&
+                        StringUtils.isNotBlank(ybDrgVerify.getVerifyDoctorName())) {
                     queryPersonList = personList.stream().filter(
                             s -> s.getPersonCode().equals(ybDrgVerify.getVerifyDoctorCode())
                     ).collect(Collectors.toList());
                     if (queryPersonList.size() > 0) {
-                        ybDrgVerify.setVerifyDksName(ybDrgVerify.getVerifyDksName());
+                        String strVerifyDksName = DataTypeHelpers.stringReplaceSetString(ybDrgVerify.getVerifyDksName(), ybDrgVerify.getVerifyDksId() + "-");
+                        ybDrgVerify.setVerifyDksName(strVerifyDksName);
                         String strVerifyDoctorName = DataTypeHelpers.stringReplaceSetString(ybDrgVerify.getVerifyDoctorName(), ybDrgVerify.getVerifyDoctorCode() + "-");
                         ybDrgVerify.setVerifyDoctorName(strVerifyDoctorName);
 
@@ -451,6 +442,7 @@ public class YbDrgVerifyServiceImpl extends ServiceImpl<YbDrgVerifyMapper, YbDrg
                         YbDrgManage ybDrgManage = new YbDrgManage();
                         ybDrgManage.setVerifyId(ybDrgVerify.getId());
                         ybDrgManage.setApplyDataId(ybDrgVerify.getApplyDataId());
+                        ybDrgManage.setReadyDksId(ybDrgVerify.getVerifyDksId());
                         ybDrgManage.setReadyDksName(ybDrgVerify.getVerifyDksName());
                         ybDrgManage.setReadyDoctorCode(ybDrgVerify.getVerifyDoctorCode());
                         ybDrgManage.setReadyDoctorName(ybDrgVerify.getVerifyDoctorName());
@@ -516,13 +508,17 @@ public class YbDrgVerifyServiceImpl extends ServiceImpl<YbDrgVerifyMapper, YbDrg
 
         if (drgApply != null) {
             Date addDate = DataTypeHelpers.addDateMethod(drgApply.getEnableDate(), 1);
-            List<YbPerson> personList = iYbPersonService.findPersonList(new YbPerson(), 0);
+            List<YbPerson> personList = new ArrayList<>();
             List<YbPerson> queryPersonList = new ArrayList<>();
             List<ComSms> smsList = new ArrayList<>();
             List<String> userCodeList = new ArrayList<>();
             int nOpenSms = febsProperties.getOpenSms();
             List<YbDrgVerify> list = this.baseMapper.findDrgVerifyList(applyDateStr, areaType, state, false);
-
+            if(list.size() > 100) {
+                personList = iYbPersonService.findPersonList(new YbPerson(), 0);
+            } else {
+                personList = this.findPerson(list);
+            }
             String sendContent = "";
             boolean isOpenSms = nOpenSms == 1 ? true : false;
             if (isOpenSms && list.size() > 0) {
@@ -541,7 +537,8 @@ public class YbDrgVerifyServiceImpl extends ServiceImpl<YbDrgVerifyMapper, YbDrg
                     ).collect(Collectors.toList());
 
                     if (queryPersonList.size() > 0) {
-                        ybDrgVerify.setVerifyDksName(ybDrgVerify.getVerifyDksName());
+                        String strVerifyDksName = DataTypeHelpers.stringReplaceSetString(ybDrgVerify.getVerifyDksName(), ybDrgVerify.getVerifyDksId() + "-");
+                        ybDrgVerify.setVerifyDksName(strVerifyDksName);
                         String strVerifyDoctorName = DataTypeHelpers.stringReplaceSetString(ybDrgVerify.getVerifyDoctorName(), ybDrgVerify.getVerifyDoctorCode() + "-");
                         ybDrgVerify.setVerifyDoctorName(strVerifyDoctorName);
 
@@ -549,6 +546,7 @@ public class YbDrgVerifyServiceImpl extends ServiceImpl<YbDrgVerifyMapper, YbDrg
                         YbDrgManage ybDrgManage = new YbDrgManage();
                         ybDrgManage.setVerifyId(ybDrgVerify.getId());
                         ybDrgManage.setApplyDataId(ybDrgVerify.getApplyDataId());
+                        ybDrgManage.setReadyDksId(ybDrgVerify.getVerifyDksId());
                         ybDrgManage.setReadyDksName(ybDrgVerify.getVerifyDksName());
                         ybDrgManage.setReadyDoctorCode(ybDrgVerify.getVerifyDoctorCode());
                         ybDrgManage.setReadyDoctorName(ybDrgVerify.getVerifyDoctorName());
@@ -614,11 +612,13 @@ public class YbDrgVerifyServiceImpl extends ServiceImpl<YbDrgVerifyMapper, YbDrg
     public void updateReviewerStates(List<YbDrgVerify> list) {
         List<YbPerson> personList = this.findPerson(list);
         for (YbDrgVerify item : list) {
-            if (item.getVerifyDksName() != null && !item.getVerifyDksName().equals("") &&
-                    item.getVerifyDoctorCode() != null && !item.getVerifyDoctorCode().equals("") &&
-                    item.getVerifyDoctorName() != null && !item.getVerifyDoctorName().equals("")) {
+            if (StringUtils.isNotBlank(item.getVerifyDksId()) &&
+                    StringUtils.isNotBlank(item.getVerifyDksName()) &&
+                    StringUtils.isNotBlank(item.getVerifyDoctorCode()) &&
+                    StringUtils.isNotBlank(item.getVerifyDoctorName())) {
                 if (personList.stream().filter(s -> s.getPersonCode().equals(item.getVerifyDoctorCode())).count() > 0) {
-                    item.setVerifyDksName(item.getVerifyDksName());
+                    String strVerifyDksName = DataTypeHelpers.stringReplaceSetString(item.getVerifyDksName(), item.getVerifyDksId() + "-");
+                    item.setVerifyDksName(strVerifyDksName);
                     String strVerifyDoctorName = DataTypeHelpers.stringReplaceSetString(item.getVerifyDoctorName(), item.getVerifyDoctorCode() + "-");
                     item.setVerifyDoctorName(strVerifyDoctorName);
 
@@ -632,6 +632,7 @@ public class YbDrgVerifyServiceImpl extends ServiceImpl<YbDrgVerifyMapper, YbDrg
                         YbDrgVerify updateVerify = new YbDrgVerify();
                         updateVerify.setVerifyDoctorCode(item.getVerifyDoctorCode());
                         updateVerify.setVerifyDoctorName(strVerifyDoctorName);
+                        updateVerify.setVerifyDksId(item.getVerifyDksId());
                         updateVerify.setVerifyDksName(item.getVerifyDksName());
                         updateVerify.setState(YbDefaultValue.VERIFYSTATE_2);
                         LambdaQueryWrapper<YbDrgVerify> queryWrapper = new LambdaQueryWrapper<>();
@@ -653,11 +654,17 @@ public class YbDrgVerifyServiceImpl extends ServiceImpl<YbDrgVerifyMapper, YbDrg
         if (drgApply != null) {
             List<YbDrgVerify> list = this.baseMapper.findDrgVerifyList(applyDateStr, areaType, state, false);
             List<YbDrgVerify> updateList = new ArrayList<>();
-            List<YbPerson> personList = this.iYbPersonService.findPersonList(new YbPerson(), 0);
+            List<YbPerson> personList = new ArrayList<>();
+            if(list.size() > 100) {
+                personList = iYbPersonService.findPersonList(new YbPerson(), 0);
+            } else {
+                personList = this.findPerson(list);
+            }
             for (YbDrgVerify item : list) {
-                if (item.getVerifyDksName() != null && !item.getVerifyDksName().equals("") &&
-                        item.getVerifyDoctorCode() != null && !item.getVerifyDoctorCode().equals("") &&
-                        item.getVerifyDoctorName() != null && !item.getVerifyDoctorName().equals("")) {
+                if (StringUtils.isNotBlank(item.getVerifyDksId()) &&
+                        StringUtils.isNotBlank(item.getVerifyDksName()) &&
+                        StringUtils.isNotBlank(item.getVerifyDoctorCode()) &&
+                        StringUtils.isNotBlank(item.getVerifyDoctorName())) {
                     if (personList.stream().filter(s -> s.getPersonCode().equals(item.getVerifyDoctorCode())).count() > 0) {
                         YbDrgVerify update = new YbDrgVerify();
                         update.setId(item.getId());

@@ -147,8 +147,8 @@ export default {
         value = moment(value).add(1, 'hours')
         // subtract(1,'hours')
       }
-      console.log(value)
-      console.log(moment(value).format('YYYY-MM-DD HH:mm:ss'))
+      // console.log(value)
+      // console.log(moment(value).format('YYYY-MM-DD HH:mm:ss'))
     },
     onChange () {
       this.checked = !this.checked

@@ -310,10 +310,24 @@ public class YbDrgManageView implements Serializable {
     private String ly;
 
     /**
+     * 科室编码
+     */
+    @TableField("readyDksId")
+    @ExcelField(value ="科室编码")
+    private String readyDksId;
+
+    /**
      * 科室
      */
     @ExcelField(value ="科室")
     private String readyDksName;
+
+    /**
+     * 变更科室编码
+     */
+    @TableField("changeDksId")
+    @ExcelField(value ="变更科室编码")
+    private String changeDksId;
 
     /**
      * 变更科室

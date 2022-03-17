@@ -183,16 +183,16 @@ public class YbAppealManageServiceImpl extends ServiceImpl<YbAppealManageMapper,
                         String strChangeDoctorName = DataTypeHelpers.stringReplaceSetString(item.getChangeDoctorName(), item.getChangeDoctorCode() + "-");
                         item.setChangeDoctorName(strChangeDoctorName);
 
-                        if(item.getChangeDeptCode() != null && !item.getChangeDeptCode().equals("")){
-                            LambdaQueryWrapper<YbDept> wrapperDept = new LambdaQueryWrapper<>();
-                            wrapperDept.eq(YbDept::getDeptId,item.getChangeDeptCode());
-                            List<YbDept> deptList = iYbDeptService.list(wrapperDept);
-                            if(deptList.size() > 0 && deptList.get(0).getDksName() != null) {
-                                item.setChangeDksName(deptList.get(0).getDksName());
-                            }else {
-                                item.setChangeDksName("");
-                            }
-                        }
+//                        if(item.getChangeDeptCode() != null && !item.getChangeDeptCode().equals("")){
+//                            LambdaQueryWrapper<YbDept> wrapperDept = new LambdaQueryWrapper<>();
+//                            wrapperDept.eq(YbDept::getDeptId,item.getChangeDeptCode());
+//                            List<YbDept> deptList = iYbDeptService.list(wrapperDept);
+//                            if(deptList.size() > 0 && deptList.get(0).getDksName() != null) {
+//                                item.setChangeDksName(deptList.get(0).getDksName());
+//                            }else {
+//                                item.setChangeDksName("");
+//                            }
+//                        }
 
                         this.baseMapper.update(item, queryWrapper);
                     }
@@ -459,16 +459,16 @@ public class YbAppealManageServiceImpl extends ServiceImpl<YbAppealManageMapper,
 
                 personCode = ybAppealManage.getReadyDoctorCode();
             } else {
-                LambdaQueryWrapper<YbDept> wrapperDept = new LambdaQueryWrapper<>();
-                wrapperDept.eq(YbDept::getDeptId,ybAppealManage.getChangeDeptCode());
-                List<YbDept> deptList = iYbDeptService.list(wrapperDept);
-                if(deptList.size() > 0 && deptList.get(0).getDksName() != null) {
-                    newAppealManage.setDksName(deptList.get(0).getDksName());
-                    updateManage.setChangeDksName(deptList.get(0).getDksName());
-                }else {
-                    newAppealManage.setDksName("");
-                    updateManage.setChangeDksName("");
-                }
+//                LambdaQueryWrapper<YbDept> wrapperDept = new LambdaQueryWrapper<>();
+//                wrapperDept.eq(YbDept::getDeptId,ybAppealManage.getChangeDeptCode());
+//                List<YbDept> deptList = iYbDeptService.list(wrapperDept);
+//                if(deptList.size() > 0 && deptList.get(0).getDksName() != null) {
+//                    newAppealManage.setDksName(deptList.get(0).getDksName());
+//                    updateManage.setChangeDksName(deptList.get(0).getDksName());
+//                }else {
+//                    newAppealManage.setDksName("");
+//                    updateManage.setChangeDksName("");
+//                }
                 //同意
                 newAppealManage.setReadyDeptCode(ybAppealManage.getChangeDeptCode());
                 newAppealManage.setReadyDeptName(ybAppealManage.getChangeDeptName());
@@ -595,16 +595,16 @@ public class YbAppealManageServiceImpl extends ServiceImpl<YbAppealManageMapper,
                     updateAppealManage.setChangeDeptName(entity.getReadyDeptName());
                     updateAppealManage.setChangeDksName(entity.getDksName());
 
-                    if(updateAppealManage.getReadyDeptCode() !=null) {
-                        LambdaQueryWrapper<YbDept> wrapperDept = new LambdaQueryWrapper<>();
-                        wrapperDept.eq(YbDept::getDeptId, updateAppealManage.getReadyDeptCode());
-                        List<YbDept> deptList = iYbDeptService.list(wrapperDept);
-                        if (deptList.size() > 0 && deptList.get(0).getDksName() != null) {
-                            updateAppealManage.setDksName(deptList.get(0).getDksName());
-                        } else {
-                            updateAppealManage.setDksName("");
-                        }
-                    }
+//                    if(updateAppealManage.getReadyDeptCode() !=null) {
+//                        LambdaQueryWrapper<YbDept> wrapperDept = new LambdaQueryWrapper<>();
+//                        wrapperDept.eq(YbDept::getDeptId, updateAppealManage.getReadyDeptCode());
+//                        List<YbDept> deptList = iYbDeptService.list(wrapperDept);
+//                        if (deptList.size() > 0 && deptList.get(0).getDksName() != null) {
+//                            updateAppealManage.setDksName(deptList.get(0).getDksName());
+//                        } else {
+//                            updateAppealManage.setDksName("");
+//                        }
+//                    }
                 }
                 updateAppealManage.setAcceptState(ybAppealManage.getAcceptState());
                 updateAppealManage.setOperateReason("");
@@ -649,16 +649,16 @@ public class YbAppealManageServiceImpl extends ServiceImpl<YbAppealManageMapper,
             updateAppealManage.setAdminReason(adminReason);
             updateAppealManage.setAdminChangeDate(thisDate);
             //方法 更改状态为0的数据 业务更改 管理员更改状态为1的数据 所有不调用该方法
-            if(updateAppealManage.getChangeDeptCode() !=null) {
-                LambdaQueryWrapper<YbDept> wrapperDept = new LambdaQueryWrapper<>();
-                wrapperDept.eq(YbDept::getDeptId, updateAppealManage.getChangeDeptCode());
-                List<YbDept> deptList = iYbDeptService.list(wrapperDept);
-                if (deptList.size() > 0 && deptList.get(0).getDksName() != null) {
-                    updateAppealManage.setChangeDksName(deptList.get(0).getDksName());
-                }else {
-                    updateAppealManage.setChangeDksName("");
-                }
-            }
+//            if(updateAppealManage.getChangeDeptCode() !=null) {
+//                LambdaQueryWrapper<YbDept> wrapperDept = new LambdaQueryWrapper<>();
+//                wrapperDept.eq(YbDept::getDeptId, updateAppealManage.getChangeDeptCode());
+//                List<YbDept> deptList = iYbDeptService.list(wrapperDept);
+//                if (deptList.size() > 0 && deptList.get(0).getDksName() != null) {
+//                    updateAppealManage.setChangeDksName(deptList.get(0).getDksName());
+//                }else {
+//                    updateAppealManage.setChangeDksName("");
+//                }
+//            }
             //方法 更改状态为1的数据
             LambdaQueryWrapper<YbAppealManage> queryWrapper = new LambdaQueryWrapper<>();
             queryWrapper.eq(YbAppealManage::getAcceptState, entity.getAcceptState());
@@ -674,14 +674,14 @@ public class YbAppealManageServiceImpl extends ServiceImpl<YbAppealManageMapper,
                 ybAppealResult.setDeptCode(ybAppealManage.getReadyDeptCode());
                 ybAppealResult.setDeptName(strReadyDeptName);
 
-                LambdaQueryWrapper<YbDept> wrapperDept = new LambdaQueryWrapper<>();
-                wrapperDept.eq(YbDept::getDeptId, ybAppealResult.getDeptCode());
-                List<YbDept> deptList = iYbDeptService.list(wrapperDept);
-                if (deptList.size() > 0 && deptList.get(0).getDksName() != null) {
-                    ybAppealResult.setDksName(deptList.get(0).getDksName());
-                } else {
-                    ybAppealResult.setDksName("");
-                }
+//                LambdaQueryWrapper<YbDept> wrapperDept = new LambdaQueryWrapper<>();
+//                wrapperDept.eq(YbDept::getDeptId, ybAppealResult.getDeptCode());
+//                List<YbDept> deptList = iYbDeptService.list(wrapperDept);
+//                if (deptList.size() > 0 && deptList.get(0).getDksName() != null) {
+//                    ybAppealResult.setDksName(deptList.get(0).getDksName());
+//                } else {
+//                    ybAppealResult.setDksName("");
+//                }
                 iYbAppealResultService.updateById(ybAppealResult);
             }
             // 待申诉 和 已申诉 删除 结果和附件
@@ -748,14 +748,14 @@ public class YbAppealManageServiceImpl extends ServiceImpl<YbAppealManageMapper,
 
                 String personCode = newAppealManage.getReadyDoctorCode();
 
-                LambdaQueryWrapper<YbDept> wrapperDept = new LambdaQueryWrapper<>();
-                wrapperDept.eq(YbDept::getDeptId,newAppealManage.getReadyDeptCode());
-                List<YbDept> deptList = iYbDeptService.list(wrapperDept);
-                if(deptList.size() > 0 && deptList.get(0).getDksName() != null) {
-                    newAppealManage.setDksName(deptList.get(0).getDksName());
-                }else {
-                    newAppealManage.setDksName("");
-                }
+//                LambdaQueryWrapper<YbDept> wrapperDept = new LambdaQueryWrapper<>();
+//                wrapperDept.eq(YbDept::getDeptId,newAppealManage.getReadyDeptCode());
+//                List<YbDept> deptList = iYbDeptService.list(wrapperDept);
+//                if(deptList.size() > 0 && deptList.get(0).getDksName() != null) {
+//                    newAppealManage.setDksName(deptList.get(0).getDksName());
+//                }else {
+//                    newAppealManage.setDksName("");
+//                }
 
                 this.save(newAppealManage);
 

@@ -83,7 +83,7 @@ export default {
         title: '序号',
         dataIndex: 'orderNumber',
         fixed: 'left',
-        width: 70
+        width: 65
       },
       {
         title: '科室',
@@ -172,8 +172,13 @@ export default {
       {
         title: '复议科室',
         dataIndex: 'readyDksName',
+        customRender: (text, row, index) => {
+          if (text !== '' && text !== null) {
+            return row.readyDksId + '-' + row.readyDksName
+          }
+        },
         fixed: 'right',
-        width: 130
+        width: 170
       },
       {
         title: '复议医生',

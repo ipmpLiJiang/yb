@@ -184,6 +184,21 @@ const request = {
       message.error('导出失败')
     })
   },
+  export1 (url, params = {}) {
+    message.loading('导出数据中')
+    return FEBS_REQUEST.post(url, params, {
+      transformRequest: [(params) => {
+        let result = ''
+        Object.keys(params).forEach((key) => {
+          if (!Object.is(params[key], undefined) && !Object.is(params[key], null)) {
+            result += encodeURIComponent(key) + '=' + encodeURIComponent(params[key]) + '&'
+          }
+        })
+        return result
+      }],
+      responseType: 'blob'
+    })
+  },
   download (url, params, filename) {
     message.loading('文件传输中')
     return FEBS_REQUEST.post(url, params, {

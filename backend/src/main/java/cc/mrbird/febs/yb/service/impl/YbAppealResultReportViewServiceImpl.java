@@ -291,17 +291,21 @@ public class YbAppealResultReportViewServiceImpl extends ServiceImpl<YbAppealRes
 //                    List<YbDept> deptlist = iYbDeptService.findDeptAppealConfireByUserList(confDocCode, areaType);
                     if (acdlist.size() > 0) {
                         if (acdlist.size() == 1) {
-                            sql += " and dksName = '" + acdlist.get(0).getDksName()+ "'";
+//                            sql += " and dksName = '" + acdlist.get(0).getDksName()+ "'";
+                            sql += " and deptCode = '" + acdlist.get(0).getDeptId()+ "'";
                         } else {
                             strIn = "";
                             for (YbAppealConfireData item : acdlist) {
                                 if (strIn.equals("")) {
-                                    strIn = "'" + item.getDksName() + "'";
+//                                    strIn = "'" + item.getDksName() + "'";
+                                    strIn = "'" + item.getDeptId() + "'";
                                 } else {
-                                    strIn += ",'" + item.getDksName() + "'";
+//                                    strIn += ",'" + item.getDksName() + "'";
+                                    strIn += ",'" + item.getDeptId() + "'";
                                 }
                             }
-                            sql += " and dksName in (" + strIn + ")";
+//                            sql += " and dksName in (" + strIn + ")";
+                            sql += " and deptCode in (" + strIn + ")";
                         }
                     } else {
                         sql += " and 1 = 2";
@@ -727,17 +731,21 @@ public class YbAppealResultReportViewServiceImpl extends ServiceImpl<YbAppealRes
 //                    List<YbDept> deptlist = iYbDeptService.findDeptAppealConfireByUserList(confDocCode, areaType);
                     if (acdlist.size() > 0) {
                         if (acdlist.size() == 1) {
-                            sql += " and dksName = '" + acdlist.get(0).getDksName()+ "'";
+//                            sql += " and dksName = '" + acdlist.get(0).getDksName()+ "'";
+                            sql += " and deptCode = '" + acdlist.get(0).getDeptId()+ "'";
                         } else {
                             strIn = "";
                             for (YbAppealConfireData item : acdlist) {
                                 if (strIn.equals("")) {
-                                    strIn = "'" + item.getDksName() + "'";
+//                                    strIn = "'" + item.getDksName() + "'";
+                                    strIn = "'" + item.getDeptId() + "'";
                                 } else {
-                                    strIn += ",'" + item.getDksName() + "'";
+//                                    strIn += ",'" + item.getDksName() + "'";
+                                    strIn += ",'" + item.getDeptId() + "'";
                                 }
                             }
-                            sql += " and dksName in (" + strIn + ")";
+//                            sql += " and dksName in (" + strIn + ")";
+                            sql += " and deptCode in (" + strIn + ")";
                         }
                     } else {
                         sql += " and 1 = 2";
