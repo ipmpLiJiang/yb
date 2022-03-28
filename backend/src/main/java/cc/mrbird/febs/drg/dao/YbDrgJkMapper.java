@@ -22,4 +22,6 @@ public interface YbDrgJkMapper extends BaseMapper<YbDrgJk> {
     IPage<YbDrgJk> findYbDrgJk(Page page, @Param("ybDrgJk") YbDrgJk ybDrgJk);
 
       List<YbDrgJk> findDrgJkApplyDataByPid(String pid);
+
+      int delDrgJkByPid(String pid);
 }

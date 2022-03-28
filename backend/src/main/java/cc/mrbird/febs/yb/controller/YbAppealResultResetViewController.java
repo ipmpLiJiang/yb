@@ -153,7 +153,7 @@ public class YbAppealResultResetViewController extends BaseController {
                         are.setResultDeptName(item.getArDeptCode() + "-" + item.getArDeptName());
                     }
 
-                    are.setProposalCode(item.getProposalCode());
+//                    are.setProposalCode(item.getProposalCode());
                     are.setDksName(item.getDksName());
 
                     dataList.add(are);
@@ -204,7 +204,7 @@ public class YbAppealResultResetViewController extends BaseController {
                         are.setResultDeptName(item.getArDeptCode() + "-" + item.getArDeptName());
                     }
 
-                    are.setProposalCode(item.getProposalCode());
+//                    are.setProposalCode(item.getProposalCode());
                     are.setDksName(item.getDksName());
                     mainList.add(are);
                 }

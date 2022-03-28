@@ -134,6 +134,20 @@ public class YbDrgJkData implements Serializable {
     private String qtssName;
 
     /**
+     * 院区
+     */
+    @TableField("yq")
+    @ExcelField(value = "院区")
+    private String yq;
+
+    /**
+     * 科室编码
+     */
+    @TableField("deptId")
+    @ExcelField(value = "科室编码")
+    private String deptId;
+
+    /**
      * 科室名称
      */
     @TableField("deptName")
@@ -230,6 +244,13 @@ public class YbDrgJkData implements Serializable {
     @TableField("ylzDocName")
     @ExcelField(value = "医疗组医师姓名")
     private String ylzDocName;
+
+    /**
+     * 医疗组医师科室编码
+     */
+    @TableField("ylzDeptId")
+    @ExcelField(value = "医疗组医师科室编码")
+    private String ylzDeptId;
 
     /**
      * 医疗组医师科室名称

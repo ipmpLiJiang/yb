@@ -23,6 +23,7 @@
         <result column="qtzdName" property="qtzdName"/>
         <result column="qtssCode" property="qtssCode"/>
         <result column="qtssName" property="qtssName"/>
+        <result column="yq" property="yq"/>
         <result column="deptId" property="deptId"/>
         <result column="deptName" property="deptName"/>
         <result column="areaId" property="areaId"/>
@@ -44,7 +45,7 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, applyDateStr, orderNumber, orderNum, applyDataId, areaType, tczf, ryDate, cyDate, fzCode, fzName, zyzdCode, zyzdName, zssCode, zssName, qtzdCode, qtzdName, qtssCode, qtssName, deptId, deptName, areaId, areaName, qz, kzrDocId, kzrDocName, zrysDocId, zrysDocName, zzysDocId, zzysDocName, zyysDocId, zyysDocName, ylzDeptId, ylzDeptName, ylzDocId, ylzDocName
+        id, applyDateStr, orderNumber, orderNum, applyDataId, areaType, tczf, ryDate, cyDate, fzCode, fzName, zyzdCode, zyzdName, zssCode, zssName, qtzdCode, qtzdName, qtssCode, qtssName, yq, deptId, deptName, areaId, areaName, qz, kzrDocId, kzrDocName, zrysDocId, zrysDocName, zzysDocId, zzysDocName, zyysDocId, zyysDocName, ylzDeptId, ylzDeptName, ylzDocId, ylzDocName
     </sql>
     <update id="updateYbDrgJk" parameterType="cc.mrbird.febs.drg.entity.YbDrgJk">
         update yb_drg_jk
@@ -66,6 +67,7 @@
             <if test="qtzdName != null">qtzdName=#{qtzdName},</if>
             <if test="qtssCode != null">qtssCode=#{qtssCode},</if>
             <if test="qtssName != null">qtssName=#{qtssName},</if>
+            <if test="yq != null">yq=#{yq},</if>
             <if test="deptId != null">deptId=#{deptId},</if>
             <if test="deptName != null">deptName=#{deptName},</if>
             <if test="areaId != null">areaId=#{areaId},</if>
@@ -151,7 +153,7 @@
         </if>
     </select>
     <select id="findDrgJkApplyDataByPid" resultType="cc.mrbird.febs.drg.entity.YbDrgJk"
-            parameterType="cc.mrbird.febs.drg.entity.YbDrgJk">
+                     parameterType="cc.mrbird.febs.drg.entity.YbDrgJk">
     SELECT
         jk.*
     FROM
@@ -161,4 +163,8 @@
     where
         dad.pid = #{pid}
     </select>
+
+    <delete id="delDrgJkByPid">
+    DELETE FROM yb_drg_jk WHERE applyDataId in (select id from yb_drg_apply_data where pid = #{pid})
+    </delete>
 </mapper>

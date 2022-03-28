@@ -4,37 +4,35 @@
     class="card-area"
   >
     <template>
-      <div style="text-align:center;margin-bottom:16px">
-        <a-row justify="center"
-          align="middle">
-          <a-col :span=5>
-              复议年月：
-              <a-month-picker
-                placeholder="请输入复议年月"
-                @change="monthChange"
-                style="width: 105px"
-                :default-value="searchApplyDate"
-                :format="monthFormat"
-              />
-          </a-col>
-          <a-col :span=8>
-            <a-select v-model="searchItem.keyField" style="width: 110px">
-              <a-select-option
-              v-for="d in searchDropDataSource"
-              :key="d.value"
-              >
-              {{ d.text }}
-              </a-select-option>
-            </a-select>
-            =
-            <a-input-search placeholder="请输入关键字" v-model="searchItem.value" style="width: 160px" enter-button @search="searchTable" />
-          </a-col>
-          <a-col :span=3 >
-            <a-button
-            type="primary"
-            @click="onHistory"
-            >历史记录</a-button>
-          </a-col>
+      <div style="margin-bottom:16px">
+        <a-row>
+          复议年月：
+          <a-month-picker
+            placeholder="请输入复议年月"
+            @change="monthChange"
+            style="width: 105px;margin-right: 6px"
+            :default-value="searchApplyDate"
+            :format="monthFormat"
+          />
+          <a-select v-model="searchItem.keyField" style="width: 110px">
+            <a-select-option
+            v-for="d in searchDropDataSource"
+            :key="d.value"
+            >
+            {{ d.text }}
+            </a-select-option>
+          </a-select>
+          =
+          <a-input-search
+            placeholder="请输入关键字"
+            v-model="searchItem.value"
+            style="width: 180px;margin-right: 22px"
+            enter-button
+            @search="searchTable" />
+          <a-button
+          type="primary"
+          @click="onHistory"
+          >历史记录</a-button>
         </a-row>
       </div>
     </template>

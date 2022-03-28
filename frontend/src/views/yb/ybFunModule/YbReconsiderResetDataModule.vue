@@ -2,7 +2,7 @@
   <a-drawer
     title="查看剔除明细"
     :maskClosable="false"
-    width=90%
+    width=85%
     placement="right"
     :closable="true"
     @close="onClose"
@@ -144,7 +144,7 @@ export default {
         title: '单据号',
         dataIndex: 'billNo',
         fixed: 'left',
-        width: 100
+        width: 90
       },
       {
         title: '项目名称',
@@ -206,19 +206,29 @@ export default {
             return text
           }
         },
-        width: 110
+        width: 100
       },
       {
         title: '科室名称',
         dataIndex: 'arDeptName',
+        customRender: (text, row, index) => {
+          if (text !== '' && text !== null) {
+            return row.arDeptCode + '-' + row.arDeptName
+          }
+        },
         fixed: 'right',
-        width: 120
+        width: 140
       },
       {
         title: '医生姓名',
         dataIndex: 'arDoctorName',
+        customRender: (text, row, index) => {
+          if (text !== '' && text !== null) {
+            return row.arDoctorCode + '-' + row.arDoctorName
+          }
+        },
         fixed: 'right',
-        width: 105
+        width: 100
       },
       {
         title: '状态',
@@ -234,7 +244,7 @@ export default {
           }
         },
         fixed: 'right',
-        width: 90
+        width: 70
       }]
     }
   },

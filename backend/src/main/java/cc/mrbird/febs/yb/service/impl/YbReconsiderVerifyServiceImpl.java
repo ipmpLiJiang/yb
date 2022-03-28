@@ -416,7 +416,10 @@ public class YbReconsiderVerifyServiceImpl extends ServiceImpl<YbReconsiderVerif
         return ybReconsiderVerify;
     }
 
-    private YbReconsiderVerify getReconsiderVerifyDeptImport(YbReconsiderVerify ybReconsiderVerify, List<YbReconsiderPriorityLevel> rlExcuteDeptList, List<YbPerson> personList, YbReconsiderInpatientfees entityRif) {
+    private YbReconsiderVerify getReconsiderVerifyDeptImport(YbReconsiderVerify ybReconsiderVerify,
+                                                             List<YbReconsiderPriorityLevel> rlExcuteDeptList,
+                                                             List<YbPerson> personList,
+                                                             YbReconsiderInpatientfees entityRif) {
         String strDocId = "";
         String strDocName = "";
         String strDeptId = "";
@@ -1344,27 +1347,40 @@ public class YbReconsiderVerifyServiceImpl extends ServiceImpl<YbReconsiderVerif
         String msg = "ok";
         YbReconsiderApply reconsiderApply = this.iYbReconsiderApplyService.findReconsiderApplyByApplyDateStrs(applyDateStr, areaType);
         if (reconsiderApply != null) {
+            if(reconsiderApply.getState() != 6 && jobTypeList.length > 0 && jobTypeList[0] == 4){
+                return "noResetState";
+            }
+            if(reconsiderApply.getState() == 6 && reconsiderApply.getEndDateReset() == null) {
+                return "noReset";
+            }
             int typeno = 1;
-            if (reconsiderApply.getState() == 2 || reconsiderApply.getState() == 3) {
-                typeno = 1;
-            } else if (reconsiderApply.getState() == 4 || reconsiderApply.getState() == 5) {
-                typeno = 2;
-            } else {
-                return "";
+            if(jobTypeList.length > 0 && jobTypeList[0] != 4) {
+                if (reconsiderApply.getState() == 2 || reconsiderApply.getState() == 3) {
+                    typeno = 1;
+                } else if (reconsiderApply.getState() == 4 || reconsiderApply.getState() == 5) {
+                    typeno = 2;
+                } else {
+                    return "";
+                }
             }
             String cron = "";
             Date thisDate = new Date();
             Date endDate = thisDate;
             Date enableDate = thisDate;
             String areaName = iComConfiguremanageService.getConfigAreaName(areaType);
-            if (typeno == 1) {
-                endDate = reconsiderApply.getEndDateOne();
-                enableDate = DataTypeHelpers.addDateMethod(reconsiderApply.getEnableDateOne(), 1);
+            if(reconsiderApply.getState() == 6){
+                endDate = reconsiderApply.getEndDateReset();
             } else {
-                endDate = reconsiderApply.getEndDateTwo();
-                enableDate = DataTypeHelpers.addDateMethod(reconsiderApply.getEnableDateTwo(), 1);
+                if (typeno == 1) {
+                    endDate = reconsiderApply.getEndDateOne();
+                    enableDate = DataTypeHelpers.addDateMethod(reconsiderApply.getEnableDateOne(), 1);
+                } else {
+                    endDate = reconsiderApply.getEndDateTwo();
+                    enableDate = DataTypeHelpers.addDateMethod(reconsiderApply.getEnableDateTwo(), 1);
+                }
             }
-            String bb = applyDateStr + " " + areaName + " " + (typeno == 1 ? "版本一" : "版本二");
+            String bb = applyDateStr + " " + areaName + " " + (reconsiderApply.getState() == 6 ? "非常规复议" : (typeno == 1 ? "版本一" : "版本二"));
+
             String remark = "";
             String methodName = "";
             String beanName = "";
@@ -1387,7 +1403,12 @@ public class YbReconsiderVerifyServiceImpl extends ServiceImpl<YbReconsiderVerif
                         remark = bb + " 提醒申诉";
                         methodName = "sendSmsWarnTask";
                         cron = this.getCron(endDate, 3, null, areaType);
-                    } else {
+                    } else if (type == 4) {
+                        beanName = "smsTask";
+                        remark = bb + " 提醒申诉";
+                        methodName = "sendSmsWarnTask1";
+                        cron = this.getCron(endDate, 4, null, areaType);
+                    }  else {
                         msg = "noType";
                         break;
                     }
@@ -1461,7 +1482,7 @@ public class YbReconsiderVerifyServiceImpl extends ServiceImpl<YbReconsiderVerif
             }
         }
         //
-        if (type == 3) {
+        if (type == 3 || type == 4) {
             if (areaType == 0) {
                 cron = "0 0/3 8 " + ri + " " + yue + " ? " + nian + "-" + nian;
             } else {

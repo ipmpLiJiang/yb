@@ -25,12 +25,25 @@
       </a-form-item>
       <a-divider orientation="left">更改信息</a-divider>
       <a-form-item
+          label="复议科室类型"
+          v-bind="formItemLayout"
+        >
+        <a-radio-group  v-decorator="['deptType']" @change="handleDeptChange">
+          <a-radio value="1">
+            医疗组科室
+          </a-radio>
+          <a-radio value="2">
+            固定科室
+          </a-radio>
+        </a-radio-group>
+      </a-form-item>
+      <a-form-item
         v-bind="formItemLayout"
         label="更改科室名称"
       >
         <input-selectdks
-          ref="inputSelectVerifyDks"
-          v-decorator="['dksIdTo', {rules: [{ required: true, message: '更改科室名称不能为空' }] }]"
+          ref="inputSelectDks"
+          v-decorator="['dksIdTo', {rules: [{ required: checkDeptType, message: '更改科室名称不能为空' }] }]"
           @selectChange=selectDksChang
         >
         </input-selectdks>
@@ -105,8 +118,8 @@ export default {
       this.$refs.inputSelectDoctor.value = ''
       this.$refs.inputSelectDoctorTo.dataSource = []
       this.$refs.inputSelectDoctorTo.value = ''
-      this.$refs.inputSelectVerifyDks.dataSource = []
-      this.$refs.inputSelectVerifyDks.value = ''
+      this.$refs.inputSelectDks.dataSource = []
+      this.$refs.inputSelectDks.value = ''
       this.form.resetFields()
     },
     onClose () {
@@ -136,6 +149,8 @@ export default {
         this.$nextTick(() => {
           this.form.validateFields(['dksIdTo'], { force: this.checkDeptType })
         })
+        this.$refs.inputSelectDks.dataSource = []
+        this.$refs.inputSelectDks.value = ''
         this.ybPriorityLevel.dksNameTo = ''
         this.ybPriorityLevel.dksIdTo = ''
         this.form.getFieldDecorator('dksNameTo')
@@ -150,23 +165,23 @@ export default {
       ...ybReconsiderPriorityLevel
     }) {
       this.ybReconsiderPriorityLevel.id = ybReconsiderPriorityLevel.id
-      // if (ybReconsiderPriorityLevel.deptType === 2) {
-      //   this.checkDeptType = true
-      // } else {
-      //   this.checkDeptType = false
-      // }
-      // this.form.getFieldDecorator('deptType')
-      // this.form.setFieldsValue({
-      //   deptType: ybReconsiderPriorityLevel.deptType.toString()
-      // })
+      if (ybReconsiderPriorityLevel.deptType === 2) {
+        this.checkDeptType = true
+      } else {
+        this.checkDeptType = false
+      }
+      this.form.getFieldDecorator('deptType')
+      this.form.setFieldsValue({
+        deptType: ybReconsiderPriorityLevel.deptType.toString()
+      })
       setTimeout(() => {
         if (ybReconsiderPriorityLevel.dksIdTo !== '' && ybReconsiderPriorityLevel.dksIdTo !== null) {
-          this.$refs.inputSelectVerifyDks.dataSource = [{
+          this.$refs.inputSelectDks.dataSource = [{
             text: ybReconsiderPriorityLevel.dksIdTo + '-' + ybReconsiderPriorityLevel.dksNameTo,
             value: ybReconsiderPriorityLevel.dksIdTo
           }]
         }
-        this.$refs.inputSelectVerifyDks.value = ybReconsiderPriorityLevel.dksIdTo
+        this.$refs.inputSelectDks.value = ybReconsiderPriorityLevel.dksIdTo
 
         if (ybReconsiderPriorityLevel.doctorCode !== '' && ybReconsiderPriorityLevel.doctorCode !== null) {
           this.$refs.inputSelectDoctor.dataSource = [{
@@ -226,11 +241,19 @@ export default {
           let ybReconsiderPriorityLevel = this.form.getFieldsValue()
           ybReconsiderPriorityLevel.id = this.ybReconsiderPriorityLevel.id
           ybReconsiderPriorityLevel.state = 4
-          if (this.ybReconsiderPriorityLevel.doctorCode === '') {
-            this.ybReconsiderPriorityLevel.doctorName = ''
+          if (ybReconsiderPriorityLevel.doctorCode === '') {
+            ybReconsiderPriorityLevel.doctorName = ''
           }
-          if (this.ybReconsiderPriorityLevel.doctorCodeTo === '') {
-            this.ybReconsiderPriorityLevel.doctorNameTo = ''
+          if (ybReconsiderPriorityLevel.doctorCodeTo === '') {
+            ybReconsiderPriorityLevel.doctorNameTo = ''
+          }
+          if (ybReconsiderPriorityLevel.dksIdTo === '') {
+            ybReconsiderPriorityLevel.dksIdTo = ''
+            ybReconsiderPriorityLevel.dksNameTo = ''
+          }
+          if (ybReconsiderPriorityLevel.deptType === '1') {
+            ybReconsiderPriorityLevel.dksIdTo = ''
+            ybReconsiderPriorityLevel.dksNameTo = ''
           }
           this.$put('ybReconsiderPriorityLevel', {
             ...ybReconsiderPriorityLevel

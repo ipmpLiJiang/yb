@@ -21,10 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.time.LocalDate;
 
 /**
@@ -101,5 +98,15 @@ public class YbHandleVerifyDataViewServiceImpl extends ServiceImpl<YbHandleVerif
         this.baseMapper.deleteBatchIds(list);
     }
 
+    @Override
+    public List<YbHandleVerifyDataView> findHVerifyAndManageDataList (String applyDateStr,int areaType) {
+        List<YbHandleVerifyDataView> list = new ArrayList<>();
+        YbHandleVerify ybHandleVerify = iYbHandleVerifyService.findYbHandleVerifyApplyDateStr(applyDateStr, areaType);
+        if(ybHandleVerify!=null) {
+            list = this.baseMapper.findHVerifyAndManageData(ybHandleVerify.getId(),applyDateStr,areaType);
+        }
+
+        return  list;
+    }
 
 }

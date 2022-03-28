@@ -13,6 +13,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -67,7 +68,7 @@ public class YbDrgManageViewServiceImpl extends ServiceImpl<YbDrgManageViewMappe
                 queryWrapper.eq(YbDrgManage::getApplyDateStr, applyDateStr);
                 queryWrapper.eq(YbDrgManage::getAreaType, areaType);
                 queryWrapper.eq(YbDrgManage::getState, state);
-                if (value != null && !value.equals("") && keyField.equals("readyDoctorName")) {
+                if (StringUtils.isNotBlank(value) && keyField.equals("readyDoctorName")) {
                     strList = this.iYbPersonService.findPersonCodeList(value);
                     if (strList.size() > 0) {
                         if (strList.size() == 1) {
@@ -77,13 +78,13 @@ public class YbDrgManageViewServiceImpl extends ServiceImpl<YbDrgManageViewMappe
                         }
                     }
                 } else {
-                    if (value != null && !value.equals("") && keyField.equals("readyDoctorCode")) {
+                    if (StringUtils.isNotBlank(value) && keyField.equals("readyDoctorCode")) {
                         queryWrapper.eq(YbDrgManage::getReadyDoctorCode, value);
                     }
                     if (ybDrgManageView.getReadyDoctorCode() != null && !isConf) {
                         queryWrapper.eq(YbDrgManage::getReadyDoctorCode, ybDrgManageView.getReadyDoctorCode());
                     }
-                    if (value != null && !value.equals("") && keyField.equals("orderNumber")) {
+                    if (StringUtils.isNotBlank(value) && keyField.equals("orderNumber")) {
                         queryWrapper.eq(YbDrgManage::getOrderNumber, value);
                     }
                 }

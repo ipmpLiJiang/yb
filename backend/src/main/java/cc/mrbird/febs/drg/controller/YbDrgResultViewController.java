@@ -19,6 +19,7 @@ import cc.mrbird.febs.export.excel.ExportExcelUtils;
 import cc.mrbird.febs.system.domain.User;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
@@ -28,6 +29,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletResponse;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -99,6 +101,7 @@ public class YbDrgResultViewController extends BaseController {
                 }
 
                 List<YbDrgApplyDataResult> exportList = new ArrayList<>();
+                SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
                 for (YbDrgResultView item : list) {
                     YbDrgApplyDataResult dataExport = new YbDrgApplyDataResult();
                     dataExport.setOrderNumber(item.getOrderNumber());//序号
@@ -133,8 +136,8 @@ public class YbDrgResultViewController extends BaseController {
                     queryJkList = jkList.stream().filter(s -> s.getApplyDataId().equals(item.getApplyDataId())).collect(Collectors.toList());
                     if (queryJkList.size() > 0) {
                         YbDrgJk jk = queryJkList.get(0);
-                        dataExport.setRyDate(jk.getRyDate());
-                        dataExport.setCyDate(jk.getCyDate());
+                        dataExport.setRyDateStr(formatter.format(jk.getRyDate()));
+                        dataExport.setCyDateStr(formatter.format(jk.getCyDate()));
                         dataExport.setTczf(jk.getTczf());
                         dataExport.setFzCode(jk.getFzCode());
                         dataExport.setFzName(jk.getFzName());
@@ -146,26 +149,43 @@ public class YbDrgResultViewController extends BaseController {
                         dataExport.setQtzdName(jk.getQtzdName());
                         dataExport.setQtssCode(jk.getQtssCode());
                         dataExport.setQtssName(jk.getQtssName());
-                        dataExport.setDeptName(jk.getDeptName());
-                        dataExport.setAreaName(jk.getAreaName());
+                        dataExport.setYq(jk.getYq());
+                        dataExport.setDeptName(jk.getDeptId()+ "-" +jk.getDeptName());
+                        dataExport.setAreaName(jk.getAreaId()+ "-" +jk.getAreaName());
                         dataExport.setQz(jk.getQz());
-                        if (jk.getKzrDocId() != null && !jk.getKzrDocId().equals("")) {
+                        if (StringUtils.isNotBlank(jk.getKzrDocId())) {
                             dataExport.setKzrDocName(jk.getKzrDocId() + "-" + jk.getKzrDocName());
+                        } else if (StringUtils.isNotBlank(jk.getKzrDocName())) {
+                            dataExport.setKzrDocName(jk.getKzrDocName());
                         }
-                        if (jk.getZrysDocId() != null && !jk.getZrysDocId().equals("")) {
+                        if (StringUtils.isNotBlank(jk.getZrysDocId())) {
                             dataExport.setZrysDocName(jk.getZrysDocId() + "-" + jk.getZrysDocName());
+                        } else if(StringUtils.isNotBlank(jk.getZrysDocName())){
+                            dataExport.setZrysDocName(jk.getZrysDocName());
                         }
-                        if (jk.getZzysDocId() != null && !jk.getZzysDocId().equals("")) {
+                        if (StringUtils.isNotBlank(jk.getZzysDocId())) {
                             dataExport.setZzysDocName(jk.getZzysDocId() + "-" + jk.getZzysDocName());
+                        } else if(StringUtils.isNotBlank(jk.getZzysDocName())){
+                            dataExport.setZzysDocName(jk.getZzysDocName());
                         }
-                        if (jk.getZyysDocId() != null && !jk.getZyysDocId().equals("")) {
-                            dataExport.setZyysDocName(jk.getZyysDocId() + "-" + jk.getZyysDocName());
+                        if (StringUtils.isNotBlank(jk.getZyysDocId())) {
+                            if(StringUtils.isNotBlank(jk.getZyysDocName()) && jk.getZyysDocId().equals(jk.getZyysDocName())){
+                                dataExport.setZyysDocName(jk.getZyysDocName());
+                            } else {
+                                dataExport.setZyysDocName(jk.getZyysDocId() + "-" + jk.getZyysDocName());
+                            }
+                        } else if(StringUtils.isNotBlank(jk.getZyysDocName())){
+                            dataExport.setZyysDocName(jk.getZyysDocName());
                         }
-                        if (jk.getYlzDeptName() != null && !jk.getYlzDeptName().equals("")) {
+                        if (StringUtils.isNotBlank(jk.getYlzDeptId())) {
+                            dataExport.setYlzDeptName(jk.getYlzDeptId()+ "-" +jk.getYlzDeptName());
+                        } else if(StringUtils.isNotBlank(jk.getYlzDeptName())){
                             dataExport.setYlzDeptName(jk.getYlzDeptName());
                         }
-                        if (jk.getYlzDocId() != null && !jk.getYlzDocId().equals("")) {
+                        if (StringUtils.isNotBlank(jk.getYlzDocId())) {
                             dataExport.setYlzDocName(jk.getYlzDocId() + "-" + jk.getYlzDocName());
+                        } else if(StringUtils.isNotBlank(jk.getYlzDocName())){
+                            dataExport.setYlzDocName(jk.getYlzDocName());
                         }
                     }
                     exportList.add(dataExport);

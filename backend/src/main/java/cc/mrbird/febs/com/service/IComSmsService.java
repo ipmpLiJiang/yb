@@ -41,6 +41,8 @@ public interface IComSmsService extends IService<ComSms> {
 
         String sendAppealManageWarnSms(String applyDateStr, Integer areaType);
 
+        String sendAppealManageWarnSms1(String applyDateStr, Integer areaType);
+
         void sendSmsService(String applyDateStr,Integer typeno,ArrayList<String> personCodeList, int sendType,int areaType, String sendContent, Long uId, String Uname);
 
         void sendSmsService(String applyDateStr,Integer typeno,String personCode, int sendType,int areaType, String sendContent, Long uId, String Uname);

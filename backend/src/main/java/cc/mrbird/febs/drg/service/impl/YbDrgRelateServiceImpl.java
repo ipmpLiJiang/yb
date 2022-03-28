@@ -44,7 +44,10 @@ public class YbDrgRelateServiceImpl extends ServiceImpl<YbDrgRelateMapper, YbDrg
 //        queryWrapper.eq(YbDrgRelate::getIsDeletemark, 1);//1是未删 0是已删
 
             if (StringUtils.isNotBlank(ybDrgRelate.getCurrencyField())) {
-                queryWrapper.like(YbDrgRelate::getCurrencyField, ybDrgRelate.getCurrencyField());
+                String sql = "dzyCode like '%"+ybDrgRelate.getCurrencyField()+"%'";
+                sql += "or dzyName like '%"+ybDrgRelate.getCurrencyField()+"%'";
+                sql += "or yq like '%"+ybDrgRelate.getCurrencyField()+"%'";
+                queryWrapper.apply(sql);
             }
 
             Page<YbDrgRelate> page = new Page<>();
@@ -88,6 +91,35 @@ public class YbDrgRelateServiceImpl extends ServiceImpl<YbDrgRelateMapper, YbDrg
     public void deleteYbDrgRelates(String[] Ids) {
         List<String> list = Arrays.asList(Ids);
         this.baseMapper.deleteBatchIds(list);
+    }
+
+    @Override
+    public List<YbDrgRelate> findDrgRelateList(){
+        List<YbDrgRelate> list = this.list();
+        for(YbDrgRelate item : list){
+            if(item.getBqCode() == null) {
+                item.setBqCode("");
+            }
+            if(item.getBqName() == null) {
+                item.setBqName("");
+            }
+            if(item.getKsCode() == null) {
+                item.setKsCode("");
+            }
+            if(item.getKsName() == null) {
+                item.setKsName("");
+            }
+            if(item.getDzyCode() == null) {
+                item.setDzyCode("");
+            }
+            if(item.getDzyName() == null) {
+                item.setDzyName("");
+            }
+            if(item.getYq() == null) {
+                item.setYq("");
+            }
+        }
+        return list;
     }
 
 

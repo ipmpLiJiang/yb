@@ -49,6 +49,7 @@ export default {
       },
       queryParams: {
       },
+      tableFormat: 'YYYY-MM-DD',
       loading: false,
       bordered: true,
       ybDrgApplyTask: {}
@@ -64,22 +65,44 @@ export default {
       {
         title: '入院日期',
         dataIndex: 'ryDate',
-        width: 120
+        customRender: (text, row, index) => {
+          if (text !== '' && text !== null) {
+            if (isNaN(text) && !isNaN(Date.parse(text))) {
+              return moment(text).format(this.tableFormat)
+            } else {
+              return text
+            }
+          } else {
+            return text
+          }
+        },
+        width: 110
       },
       {
         title: '出院日期',
         dataIndex: 'cyDate',
-        width: 120
+        customRender: (text, row, index) => {
+          if (text !== '' && text !== null) {
+            if (isNaN(text) && !isNaN(Date.parse(text))) {
+              return moment(text).format(this.tableFormat)
+            } else {
+              return text
+            }
+          } else {
+            return text
+          }
+        },
+        width: 110
       },
       {
         title: '统筹支付',
         dataIndex: 'tczf',
-        width: 120
+        width: 100
       },
       {
         title: 'DRG分组编码',
         dataIndex: 'fzCode',
-        width: 150
+        width: 130
       },
       {
         title: 'DRG分组名称',
@@ -129,17 +152,17 @@ export default {
       {
         title: '科室',
         dataIndex: 'deptName',
-        width: 180
+        width: 160
       },
       {
         title: '病区',
         dataIndex: 'areaName',
-        width: 180
+        width: 160
       },
       {
         title: '权重',
         dataIndex: 'qz',
-        width: 100
+        width: 80
       },
       {
         title: '科主任',
@@ -184,7 +207,7 @@ export default {
       {
         title: '医疗组科室',
         dataIndex: 'ylzDeptName',
-        width: 120
+        width: 140
       },
       {
         title: '医疗组医师',

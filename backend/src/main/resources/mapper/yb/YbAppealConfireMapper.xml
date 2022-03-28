@@ -93,7 +93,7 @@
         p.CREATE_USER_ID,
         p.MODIFY_USER_ID,
 --         GROUP_CONCAT(d.dksName) currencyField,
-        GROUP_CONCAT(d.deptName) currencyField,
+        GROUP_CONCAT(CONCAT(d.deptId,'-',d.deptName)) currencyField,
         p.areaType,
         p.operatorId,
         p.operatorName
@@ -181,7 +181,7 @@
         p.CREATE_TIME,
         p.CREATE_USER_ID,
         p.MODIFY_USER_ID,
-        GROUP_CONCAT(d.deptName) currencyField,
+        GROUP_CONCAT(CONCAT(d.deptId,'-',d.deptName)) currencyField,
 --         GROUP_CONCAT(d.dksName) currencyField,
         p.areaType,
         p.operatorId,

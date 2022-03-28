@@ -31,4 +31,6 @@ public interface IYbDrgJkService extends IService<YbDrgJk> {
         YbDrgJk findYbDrgJkByApplyDataId(String applyDataId);
 
         List<YbDrgJk> findDrgJkApplyDataByPid(String pid);
+
+        Integer delDrgJkApplyDataByPid(String pid);
         }

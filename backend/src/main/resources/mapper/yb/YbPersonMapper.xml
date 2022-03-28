@@ -193,7 +193,9 @@
 			applyDateStr = #{applyDateStr}
 			AND areaType = #{areaType}
 			AND acceptState = #{acceptState}
-			AND typeno = #{typeno}
+            <if test="typeno != null">
+                AND typeno = #{typeno}
+            </if>
 			AND sourceType = #{sourceType}
 			group by readyDoctorCode
 	)

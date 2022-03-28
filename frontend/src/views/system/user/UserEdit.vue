@@ -176,7 +176,8 @@ export default {
   watch: {
     userEditVisiable () {
       if (this.userEditVisiable) {
-        this.$get('role').then((r) => {
+        let params = {pageNum: 1, pageSize: 20}
+        this.$get('role', {...params}).then((r) => {
           this.roleData = r.data.rows
         })
         this.$get('dept').then((r) => {

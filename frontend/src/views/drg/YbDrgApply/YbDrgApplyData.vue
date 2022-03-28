@@ -88,7 +88,7 @@ export default {
       {
         title: '违规类型',
         dataIndex: 'wglx',
-        width: 90
+        width: 120
       },
       {
         title: '问题描述',

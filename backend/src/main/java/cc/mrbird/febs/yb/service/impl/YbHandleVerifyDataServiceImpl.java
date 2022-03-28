@@ -29,6 +29,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.time.LocalDate;
 import java.util.stream.Collectors;
@@ -227,154 +228,22 @@ public class YbHandleVerifyDataServiceImpl extends ServiceImpl<YbHandleVerifyDat
     @Override
     @Transactional
     public void updateSendStates(List<YbHandleVerifyData> list,String applyDateStr, Integer areaType, Long uId, String Uname) {
-        Date thisDate = new java.sql.Timestamp(new Date().getTime());
-        int day = iComConfiguremanageService.getConfigDay();
-        List<YbHandleVerifyData> updateHandleVerifyList = new ArrayList<>();
-        List<YbAppealManage> appealManageList = new ArrayList<>();
-        //加1 表示忽略当前日期，从第二天开始
-        Date addDate = DataTypeHelpers.addDateMethod(thisDate, day + 1);
-
-        List<YbPerson> personList = this.findPerson(list);
-        List<YbPerson> queryPersonList = new ArrayList<>();
-        List<YbHandleVerifyData> hvdList = this.findHandleVerifyDataByIdList(list);
-
-//        List<YbAppealResult> resultGroupRelateList = iYbAppealResultService.findAppealResulRelateGroups(applyDateStr,areaType);
-
-        List<ComSms> smsList = new ArrayList<>();
-        List<ComSms> saveSmsList = new ArrayList<>();
-        List<String> userCodeList = new ArrayList<>();
-        int nOpenSms = febsProperties.getOpenSms();
-        boolean isOpenSms = nOpenSms == 1 ? true : false;
-        if (isOpenSms) {
-            ComSms qu = new ComSms();
-            qu.setApplyDateStr(applyDateStr);
-            qu.setAreaType(areaType);
-            qu.setSendType(ComSms.SENDTYPE_6);
-            qu.setState(ComSms.STATE_0);
-            smsList = iComSmsService.findLmdSmsList(qu);
-        }
-
-        for (YbHandleVerifyData ybHandleVerifyData : hvdList) {
-            if (ybHandleVerifyData.getState() != YbDefaultValue.VERIFYDATASTATE_3) {
-                queryPersonList = personList.stream().filter(
-                        s -> s.getPersonCode().equals(ybHandleVerifyData.getDoctorCode())
-                ).collect(Collectors.toList());
-                if (queryPersonList.size() > 0) {
-                    //更新
-                    YbHandleVerifyData updateHandleVerify = new YbHandleVerifyData();
-                    updateHandleVerify.setId(ybHandleVerifyData.getId());
-                    updateHandleVerify.setState(YbDefaultValue.VERIFYDATASTATE_3);
-                    updateHandleVerify.setSendPersonId(uId);
-                    updateHandleVerify.setSendPersonName(Uname);
-                    updateHandleVerify.setSendDate(thisDate);
-                    //插入申诉管理
-                    YbAppealManage ybAppealManage = new YbAppealManage();
-                    ybAppealManage.setId(UUID.randomUUID().toString());
-                    ybAppealManage.setVerifyId(ybHandleVerifyData.getId());
-                    ybAppealManage.setVerifySendId(ybHandleVerifyData.getVerifyId());
-                    ybAppealManage.setApplyDataId(ybHandleVerifyData.getApplyDataId());
-                    ybAppealManage.setReadyDeptCode(ybHandleVerifyData.getDeptCode());
-                    ybAppealManage.setReadyDeptName(ybHandleVerifyData.getDeptName());
-                    ybAppealManage.setReadyDoctorCode(ybHandleVerifyData.getDoctorCode());
-                    ybAppealManage.setReadyDoctorName(ybHandleVerifyData.getDoctorName());
-                    ybAppealManage.setOperateDate(thisDate);
-                    ybAppealManage.setOperateProcess("发送操作-待申诉");
-                    ybAppealManage.setEnableDate(addDate);
-
-                    ybAppealManage.setIsDeletemark(1);
-                    ybAppealManage.setApprovalState(0);
-//                    ybAppealManage.setCreateUserId(uId);
-//                    ybAppealManage.setCreateTime(thisDate);
-
-                    ybAppealManage.setSourceType(YbDefaultValue.SOURCETYPE_1);
-                    ybAppealManage.setAcceptState(YbDefaultValue.ACCEPTSTATE_1);
-                    ybAppealManage.setDataType(ybHandleVerifyData.getDataType());
-                    ybAppealManage.setApplyDateStr(applyDateStr);
-                    ybAppealManage.setAreaType(areaType);
-
-                    ybAppealManage.setOrderDoctorCode(ybHandleVerifyData.getOrderDoctorCode());
-                    ybAppealManage.setOrderDoctorName(ybHandleVerifyData.getOrderDoctorName());
-                    ybAppealManage.setOrderDeptCode(ybHandleVerifyData.getOrderDeptCode());
-                    ybAppealManage.setOrderDeptName(ybHandleVerifyData.getOrderDeptName());
-                    ybAppealManage.setOrderNum(ybHandleVerifyData.getOrderNum());
-                    ybAppealManage.setOrderNumber(ybHandleVerifyData.getOrderNumber());
-                    ybAppealManage.setTypeno(ybHandleVerifyData.getTypeno());
-
-                    ybAppealManage.setDksName(ybHandleVerifyData.getDksName());
-
-                    updateHandleVerifyList.add(updateHandleVerify);
-                    appealManageList.add(ybAppealManage);
-
-                    if (isOpenSms) {
-                        if (userCodeList.stream().filter(s -> s.equals(ybHandleVerifyData.getDoctorCode())).count() == 0) {
-                            if (smsList.stream().filter(s -> s.getSendcode().equals(ybHandleVerifyData.getDoctorCode())).count() == 0) {
-                                userCodeList.add(ybHandleVerifyData.getDoctorCode());
-
-                                if (queryPersonList.get(0).getTel() != null && !queryPersonList.get(0).getTel().equals("")) {
-                                    if (Validator.isMobile(queryPersonList.get(0).getTel())) {
-                                        ComSms comSms = new ComSms();
-                                        comSms.setId(UUID.randomUUID().toString());
-                                        comSms.setSendcode(queryPersonList.get(0).getPersonCode());
-                                        comSms.setSendname(queryPersonList.get(0).getPersonName());
-                                        comSms.setMobile(queryPersonList.get(0).getTel());
-                                        comSms.setSendType(ComSms.SENDTYPE_6);
-                                        comSms.setState(ComSms.STATE_0);
-                                        comSms.setAreaType(areaType);
-
-                                        comSms.setSendcontent("医保管理平台提醒您，" + applyDateStr + "非常规复议任务已发布，请尽快处理。");
-                                        comSms.setOperatorId(uId);
-                                        comSms.setOperatorName(Uname);
-                                        comSms.setIsDeletemark(1);
-                                        comSms.setCreateUserId(uId);
-                                        comSms.setCreateTime(thisDate);
-                                        comSms.setApplyDateStr(applyDateStr);
-//                                    comSms.setTypeno(typeno);非常规复议无
-                                        saveSmsList.add(comSms);
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        if (appealManageList.size() > 0) {
-            this.updateBatchById(updateHandleVerifyList);
-            this.iYbAppealManageService.saveBatch(appealManageList);
-            if (isOpenSms && saveSmsList.size() > 0) {
-                this.iComSmsService.saveBatch(saveSmsList);
-            }
-        }
-    }
-    @Override
-    public YbHandleVerifyData getHandleVerifyDataByApplyDataId(String applyDataId){
-        YbHandleVerifyData verifyData = null;
-        LambdaQueryWrapper<YbHandleVerifyData> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(YbHandleVerifyData::getApplyDataId, applyDataId);
-        List<YbHandleVerifyData> list = this.list(queryWrapper);
-        if(list.size() > 0) {
-            verifyData =  list.get(0);
-        }
-        return verifyData;
-    }
-
-    @Override
-    @Transactional
-    public void updateAllSendStates(String applyDateStr, Integer dataType, Integer areaType, Integer state, Long uId, String Uname) {
-        YbHandleVerify handleVerify = iYbHandleVerifyService.findYbHandleVerifyApplyDateStr(applyDateStr, areaType);
-        if (handleVerify != null) {
+        YbReconsiderApply ybReconsiderApply = this.iYbReconsiderApplyService.findReconsiderApplyByApplyDateStrs(applyDateStr, areaType);
+        if(ybReconsiderApply != null && ybReconsiderApply.getEndDateReset() != null) {
+            SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy年MM月dd日 E HH:mm点");//HH时mm分ss秒
             Date thisDate = new java.sql.Timestamp(new Date().getTime());
             int day = iComConfiguremanageService.getConfigDay();
             List<YbHandleVerifyData> updateHandleVerifyList = new ArrayList<>();
             List<YbAppealManage> appealManageList = new ArrayList<>();
             //加1 表示忽略当前日期，从第二天开始
             Date addDate = DataTypeHelpers.addDateMethod(thisDate, day + 1);
-            List<YbHandleVerifyData> list = this.baseMapper.findHandleVerifyDataList(handleVerify.getId(), dataType, state);
-            List<YbAppealResult> resultGroupRelateList = iYbAppealResultService.findAppealResulRelateGroups(applyDateStr,areaType);
 
-            List<YbPerson> personList = iYbPersonService.findPersonList(new YbPerson(), 0);
+            List<YbPerson> personList = this.findPerson(list);
             List<YbPerson> queryPersonList = new ArrayList<>();
+            List<YbHandleVerifyData> hvdList = this.findHandleVerifyDataByIdList(list);
+
+//        List<YbAppealResult> resultGroupRelateList = iYbAppealResultService.findAppealResulRelateGroups(applyDateStr,areaType);
+
             List<ComSms> smsList = new ArrayList<>();
             List<ComSms> saveSmsList = new ArrayList<>();
             List<String> userCodeList = new ArrayList<>();
@@ -388,18 +257,12 @@ public class YbHandleVerifyDataServiceImpl extends ServiceImpl<YbHandleVerifyDat
                 qu.setState(ComSms.STATE_0);
                 smsList = iComSmsService.findLmdSmsList(qu);
             }
-            long count = 0;
-            for (YbHandleVerifyData ybHandleVerifyData : list) {
+
+            for (YbHandleVerifyData ybHandleVerifyData : hvdList) {
                 if (ybHandleVerifyData.getState() != YbDefaultValue.VERIFYDATASTATE_3) {
-                    if(resultGroupRelateList.size()>0) {
-                        count = resultGroupRelateList.stream().filter(s -> s.getRelatelDataId().equals(ybHandleVerifyData.getRelatelDataId())).count();
-                    }else{
-                        count = 0;
-                    }
-                    if (count == 0){
-                        queryPersonList = personList.stream().filter(
-                                s -> s.getPersonCode().equals(ybHandleVerifyData.getDoctorCode())
-                        ).collect(Collectors.toList());
+                    queryPersonList = personList.stream().filter(
+                            s -> s.getPersonCode().equals(ybHandleVerifyData.getDoctorCode())
+                    ).collect(Collectors.toList());
                     if (queryPersonList.size() > 0) {
                         //更新
                         YbHandleVerifyData updateHandleVerify = new YbHandleVerifyData();
@@ -423,23 +286,23 @@ public class YbHandleVerifyDataServiceImpl extends ServiceImpl<YbHandleVerifyDat
                         ybAppealManage.setEnableDate(addDate);
 
                         ybAppealManage.setIsDeletemark(1);
-//                        ybAppealManage.setCreateUserId(uId);
-//                        ybAppealManage.setCreateTime(thisDate);
+                        ybAppealManage.setApprovalState(0);
+//                    ybAppealManage.setCreateUserId(uId);
+//                    ybAppealManage.setCreateTime(thisDate);
 
                         ybAppealManage.setSourceType(YbDefaultValue.SOURCETYPE_1);
                         ybAppealManage.setAcceptState(YbDefaultValue.ACCEPTSTATE_1);
                         ybAppealManage.setDataType(ybHandleVerifyData.getDataType());
+                        ybAppealManage.setApplyDateStr(applyDateStr);
                         ybAppealManage.setAreaType(areaType);
-
-                        ybAppealManage.setOrderNum(ybHandleVerifyData.getOrderNum());
-                        ybAppealManage.setOrderNumber(ybHandleVerifyData.getOrderNumber());
-                        ybAppealManage.setTypeno(ybHandleVerifyData.getTypeno());
 
                         ybAppealManage.setOrderDoctorCode(ybHandleVerifyData.getOrderDoctorCode());
                         ybAppealManage.setOrderDoctorName(ybHandleVerifyData.getOrderDoctorName());
                         ybAppealManage.setOrderDeptCode(ybHandleVerifyData.getOrderDeptCode());
                         ybAppealManage.setOrderDeptName(ybHandleVerifyData.getOrderDeptName());
-                        ybAppealManage.setApplyDateStr(applyDateStr);
+                        ybAppealManage.setOrderNum(ybHandleVerifyData.getOrderNum());
+                        ybAppealManage.setOrderNumber(ybHandleVerifyData.getOrderNumber());
+                        ybAppealManage.setTypeno(ybHandleVerifyData.getTypeno());
 
                         ybAppealManage.setDksName(ybHandleVerifyData.getDksName());
 
@@ -450,6 +313,7 @@ public class YbHandleVerifyDataServiceImpl extends ServiceImpl<YbHandleVerifyDat
                             if (userCodeList.stream().filter(s -> s.equals(ybHandleVerifyData.getDoctorCode())).count() == 0) {
                                 if (smsList.stream().filter(s -> s.getSendcode().equals(ybHandleVerifyData.getDoctorCode())).count() == 0) {
                                     userCodeList.add(ybHandleVerifyData.getDoctorCode());
+
                                     if (queryPersonList.get(0).getTel() != null && !queryPersonList.get(0).getTel().equals("")) {
                                         if (Validator.isMobile(queryPersonList.get(0).getTel())) {
                                             ComSms comSms = new ComSms();
@@ -459,22 +323,22 @@ public class YbHandleVerifyDataServiceImpl extends ServiceImpl<YbHandleVerifyDat
                                             comSms.setMobile(queryPersonList.get(0).getTel());
                                             comSms.setSendType(ComSms.SENDTYPE_6);
                                             comSms.setState(ComSms.STATE_0);
-                                            comSms.setAreaType(handleVerify.getAreaType());
-                                            comSms.setSendcontent("医保管理平台提醒您，" + applyDateStr + " 非常规复议任务已发布，请尽快处理。");
+                                            comSms.setAreaType(areaType);
+
+                                            comSms.setSendcontent("医保管理平台提醒您，" + applyDateStr + "非常规复议任务已发布，请在"+ sdf1.format(ybReconsiderApply.getEndDateReset()) +"前完成非常规复议，请尽快处理。");
                                             comSms.setOperatorId(uId);
                                             comSms.setOperatorName(Uname);
                                             comSms.setIsDeletemark(1);
                                             comSms.setCreateUserId(uId);
                                             comSms.setCreateTime(thisDate);
                                             comSms.setApplyDateStr(applyDateStr);
-//                                        comSms.setTypeno(typeno);//非常规复议无
+//                                    comSms.setTypeno(typeno);非常规复议无
                                             saveSmsList.add(comSms);
                                         }
                                     }
                                 }
                             }
                         }
-                    }
                     }
                 }
             }
@@ -484,6 +348,151 @@ public class YbHandleVerifyDataServiceImpl extends ServiceImpl<YbHandleVerifyDat
                 this.iYbAppealManageService.saveBatch(appealManageList);
                 if (isOpenSms && saveSmsList.size() > 0) {
                     this.iComSmsService.saveBatch(saveSmsList);
+                }
+            }
+        }
+    }
+    @Override
+    public YbHandleVerifyData getHandleVerifyDataByApplyDataId(String applyDataId){
+        YbHandleVerifyData verifyData = null;
+        LambdaQueryWrapper<YbHandleVerifyData> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(YbHandleVerifyData::getApplyDataId, applyDataId);
+        List<YbHandleVerifyData> list = this.list(queryWrapper);
+        if(list.size() > 0) {
+            verifyData =  list.get(0);
+        }
+        return verifyData;
+    }
+
+    @Override
+    @Transactional
+    public void updateAllSendStates(String applyDateStr, Integer dataType, Integer areaType, Integer state, Long uId, String Uname) {
+        YbReconsiderApply ybReconsiderApply = this.iYbReconsiderApplyService.findReconsiderApplyByApplyDateStrs(applyDateStr, areaType);
+        if(ybReconsiderApply != null && ybReconsiderApply.getEndDateReset() != null) {
+            YbHandleVerify handleVerify = iYbHandleVerifyService.findYbHandleVerifyApplyDateStr(applyDateStr, areaType);
+            if (handleVerify != null) {
+                SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy年MM月dd日 E HH:mm点");//HH时mm分ss秒
+                Date thisDate = new java.sql.Timestamp(new Date().getTime());
+                int day = iComConfiguremanageService.getConfigDay();
+                List<YbHandleVerifyData> updateHandleVerifyList = new ArrayList<>();
+                List<YbAppealManage> appealManageList = new ArrayList<>();
+                //加1 表示忽略当前日期，从第二天开始
+                Date addDate = DataTypeHelpers.addDateMethod(thisDate, day + 1);
+                List<YbHandleVerifyData> list = this.baseMapper.findHandleVerifyDataList(handleVerify.getId(), dataType, state);
+                List<YbAppealResult> resultGroupRelateList = iYbAppealResultService.findAppealResulRelateGroups(applyDateStr, areaType);
+
+                List<YbPerson> personList = iYbPersonService.findPersonList(new YbPerson(), 0);
+                List<YbPerson> queryPersonList = new ArrayList<>();
+                List<ComSms> smsList = new ArrayList<>();
+                List<ComSms> saveSmsList = new ArrayList<>();
+                List<String> userCodeList = new ArrayList<>();
+                int nOpenSms = febsProperties.getOpenSms();
+                boolean isOpenSms = nOpenSms == 1 ? true : false;
+                if (isOpenSms) {
+                    ComSms qu = new ComSms();
+                    qu.setApplyDateStr(applyDateStr);
+                    qu.setAreaType(areaType);
+                    qu.setSendType(ComSms.SENDTYPE_6);
+                    qu.setState(ComSms.STATE_0);
+                    smsList = iComSmsService.findLmdSmsList(qu);
+                }
+                long count = 0;
+                for (YbHandleVerifyData ybHandleVerifyData : list) {
+                    if (ybHandleVerifyData.getState() != YbDefaultValue.VERIFYDATASTATE_3) {
+                        if (resultGroupRelateList.size() > 0) {
+                            count = resultGroupRelateList.stream().filter(s -> s.getRelatelDataId().equals(ybHandleVerifyData.getRelatelDataId())).count();
+                        } else {
+                            count = 0;
+                        }
+                        if (count == 0) {
+                            queryPersonList = personList.stream().filter(
+                                    s -> s.getPersonCode().equals(ybHandleVerifyData.getDoctorCode())
+                            ).collect(Collectors.toList());
+                            if (queryPersonList.size() > 0) {
+                                //更新
+                                YbHandleVerifyData updateHandleVerify = new YbHandleVerifyData();
+                                updateHandleVerify.setId(ybHandleVerifyData.getId());
+                                updateHandleVerify.setState(YbDefaultValue.VERIFYDATASTATE_3);
+                                updateHandleVerify.setSendPersonId(uId);
+                                updateHandleVerify.setSendPersonName(Uname);
+                                updateHandleVerify.setSendDate(thisDate);
+                                //插入申诉管理
+                                YbAppealManage ybAppealManage = new YbAppealManage();
+                                ybAppealManage.setId(UUID.randomUUID().toString());
+                                ybAppealManage.setVerifyId(ybHandleVerifyData.getId());
+                                ybAppealManage.setVerifySendId(ybHandleVerifyData.getVerifyId());
+                                ybAppealManage.setApplyDataId(ybHandleVerifyData.getApplyDataId());
+                                ybAppealManage.setReadyDeptCode(ybHandleVerifyData.getDeptCode());
+                                ybAppealManage.setReadyDeptName(ybHandleVerifyData.getDeptName());
+                                ybAppealManage.setReadyDoctorCode(ybHandleVerifyData.getDoctorCode());
+                                ybAppealManage.setReadyDoctorName(ybHandleVerifyData.getDoctorName());
+                                ybAppealManage.setOperateDate(thisDate);
+                                ybAppealManage.setOperateProcess("发送操作-待申诉");
+                                ybAppealManage.setEnableDate(addDate);
+
+                                ybAppealManage.setIsDeletemark(1);
+//                        ybAppealManage.setCreateUserId(uId);
+//                        ybAppealManage.setCreateTime(thisDate);
+
+                                ybAppealManage.setSourceType(YbDefaultValue.SOURCETYPE_1);
+                                ybAppealManage.setAcceptState(YbDefaultValue.ACCEPTSTATE_1);
+                                ybAppealManage.setDataType(ybHandleVerifyData.getDataType());
+                                ybAppealManage.setAreaType(areaType);
+
+                                ybAppealManage.setOrderNum(ybHandleVerifyData.getOrderNum());
+                                ybAppealManage.setOrderNumber(ybHandleVerifyData.getOrderNumber());
+                                ybAppealManage.setTypeno(ybHandleVerifyData.getTypeno());
+
+                                ybAppealManage.setOrderDoctorCode(ybHandleVerifyData.getOrderDoctorCode());
+                                ybAppealManage.setOrderDoctorName(ybHandleVerifyData.getOrderDoctorName());
+                                ybAppealManage.setOrderDeptCode(ybHandleVerifyData.getOrderDeptCode());
+                                ybAppealManage.setOrderDeptName(ybHandleVerifyData.getOrderDeptName());
+                                ybAppealManage.setApplyDateStr(applyDateStr);
+
+                                ybAppealManage.setDksName(ybHandleVerifyData.getDksName());
+
+                                updateHandleVerifyList.add(updateHandleVerify);
+                                appealManageList.add(ybAppealManage);
+
+                                if (isOpenSms) {
+                                    if (userCodeList.stream().filter(s -> s.equals(ybHandleVerifyData.getDoctorCode())).count() == 0) {
+                                        if (smsList.stream().filter(s -> s.getSendcode().equals(ybHandleVerifyData.getDoctorCode())).count() == 0) {
+                                            userCodeList.add(ybHandleVerifyData.getDoctorCode());
+                                            if (queryPersonList.get(0).getTel() != null && !queryPersonList.get(0).getTel().equals("")) {
+                                                if (Validator.isMobile(queryPersonList.get(0).getTel())) {
+                                                    ComSms comSms = new ComSms();
+                                                    comSms.setId(UUID.randomUUID().toString());
+                                                    comSms.setSendcode(queryPersonList.get(0).getPersonCode());
+                                                    comSms.setSendname(queryPersonList.get(0).getPersonName());
+                                                    comSms.setMobile(queryPersonList.get(0).getTel());
+                                                    comSms.setSendType(ComSms.SENDTYPE_6);
+                                                    comSms.setState(ComSms.STATE_0);
+                                                    comSms.setAreaType(handleVerify.getAreaType());
+                                                    comSms.setSendcontent("医保管理平台提醒您，" + applyDateStr + " 非常规复议任务已发布，请在" + sdf1.format(ybReconsiderApply.getEndDateReset()) + "前完成非常规复议，请尽快处理。");
+                                                    comSms.setOperatorId(uId);
+                                                    comSms.setOperatorName(Uname);
+                                                    comSms.setIsDeletemark(1);
+                                                    comSms.setCreateUserId(uId);
+                                                    comSms.setCreateTime(thisDate);
+                                                    comSms.setApplyDateStr(applyDateStr);
+//                                        comSms.setTypeno(typeno);//非常规复议无
+                                                    saveSmsList.add(comSms);
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                if (appealManageList.size() > 0) {
+                    this.updateBatchById(updateHandleVerifyList);
+                    this.iYbAppealManageService.saveBatch(appealManageList);
+                    if (isOpenSms && saveSmsList.size() > 0) {
+                        this.iComSmsService.saveBatch(saveSmsList);
+                    }
                 }
             }
         }

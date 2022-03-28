@@ -196,12 +196,12 @@ export default {
       {
         title: '违规类型',
         dataIndex: 'wglx',
-        width: 80
+        width: 120
       },
       {
         title: '问题描述',
         dataIndex: 'wtms',
-        width: 300
+        width: 350
       },
       {
         title: '医疗总费用',
@@ -230,7 +230,7 @@ export default {
         dataIndex: 'verifyDksName',
         scopedSlots: { customRender: 'verifyDksName' },
         fixed: 'right',
-        width: 180
+        width: 220
       },
       {
         title: '复议医生',

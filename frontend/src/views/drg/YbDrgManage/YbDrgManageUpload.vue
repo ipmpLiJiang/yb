@@ -34,9 +34,7 @@
                   </a-col>
                   <a-col :span="9">
                     <a-form-item v-bind="formItemLayout" label="复议医生">
-                      {{ ybDrgManageUpload.readyDoctorCode }}-{{
-                        ybDrgManageUpload.readyDoctorName
-                      }}
+                      {{ ybDrgManageUpload.readyDoctorCode }}-{{ ybDrgManageUpload.readyDoctorName }}
                     </a-form-item>
                   </a-col>
                   <a-col :span="5"> &nbsp; </a-col>

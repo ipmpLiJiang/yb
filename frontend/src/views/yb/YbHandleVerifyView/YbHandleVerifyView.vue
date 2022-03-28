@@ -14,7 +14,7 @@
                 :format="monthFormat"
               />
             </a-col>
-            <a-col :span="18" >
+            <a-col :span="19" >
               <a-select
                 :value="searchDataType"
                 v-show="tableSelectKey != 3 ? true : false"
@@ -48,7 +48,7 @@
                 v-show="tableSelectKey == 3 ? true : false"
                 @confirm="sendSms"
                 okText="确定"
-                style="margin-left: 6px"
+                style="margin-left: 3px"
                 cancelText="取消"
               >
                 <a-button type="primary">发送短信</a-button>
@@ -57,7 +57,7 @@
                 title="确定获取剔除数据剔除？"
                 @confirm="importData"
                  v-show="tableSelectKey == 1 ? true : false"
-                style="margin-left: 6px"
+                style="margin-left: 3px"
                 okText="确定"
                 cancelText="取消"
               >
@@ -67,7 +67,7 @@
                 title="确定批量发送？"
                 @confirm="batchSend"
                  v-show="tableSelectKey == 1 ? true : false"
-                style="margin-left: 6px"
+                style="margin-left: 3px"
                 okText="确定"
                 cancelText="取消"
               >
@@ -77,7 +77,7 @@
                 title="确定全部发送？"
                 @confirm="batchSendA"
                  v-show="tableSelectKey == 1 ? true : false"
-                style="margin-left: 6px"
+                style="margin-left: 3px"
                 okText="确定"
                 cancelText="取消"
               >
@@ -89,6 +89,16 @@
                 @click="showDateModal">
                   日期
               </a-button>
+              <a-popconfirm
+                title="确定开启截止提醒服务？"
+                v-show="tableSelectKey != 1 ? true : false"
+                style="margin-left: 3px"
+                @confirm="startJob()"
+                okText="确定"
+                cancelText="取消"
+              >
+                <a-button style="width:115px">截止提醒服务</a-button>
+              </a-popconfirm>
             </a-col>
           </a-row>
         </div>
@@ -298,6 +308,22 @@ export default {
       setTimeout(() => {
         this.searchTable()
       }, 500)
+    },
+    startJob () {
+      let types = [4]
+      this.$put('ybReconsiderVerify/startJob', {
+        applyDateStr: this.searchApplyDate,
+        areaType: this.user.areaType.value,
+        jobTypeList: types
+      }).then((r) => {
+        if (r.data.data.success === 1) {
+          this.$message.success('启动Job成功')
+        } else {
+          this.$message.warning(r.data.data.message)
+        }
+      }).catch(() => {
+        this.$message.error('启动Job失败')
+      })
     },
     sendSms () {
       if (this.tableSelectKey === '3') {

@@ -11,6 +11,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import io.swagger.models.auth.In;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
@@ -102,5 +103,10 @@ public class YbDrgJkServiceImpl extends ServiceImpl<YbDrgJkMapper, YbDrgJk> impl
     @Override
     public List<YbDrgJk> findDrgJkApplyDataByPid(String pid){
         return this.baseMapper.findDrgJkApplyDataByPid(pid);
+    }
+
+    @Override
+    public Integer delDrgJkApplyDataByPid(String pid){
+        return this.baseMapper.delDrgJkByPid(pid);
     }
 }

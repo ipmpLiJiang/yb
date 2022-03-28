@@ -131,11 +131,9 @@ public class YbDrgConfireController extends BaseController {
                     YbDrgConfireData createData = new YbDrgConfireData();
                     createData.setId(UUID.randomUUID().toString());
                     createData.setPid(id);
-//                    createData.setDeptId(item.getDeptId());
-//                    String strDeptName = DataTypeHelpers.stringReplaceSetString(item.getDeptName(), item.getDeptId() + "-");
-//                    createData.setDeptName(strDeptName);
+                    String strDksName = DataTypeHelpers.stringReplaceSetString(item.getDksName(), item.getDksId() + "-");
                     createData.setDksId(item.getDksId());
-                    createData.setDksName(item.getDksName());
+                    createData.setDksName(strDksName);
                     createDataList.add(createData);
                 }
                 this.iYbDrgConfireService.createDrgConfire(create, createDataList);
@@ -185,11 +183,9 @@ public class YbDrgConfireController extends BaseController {
                     YbDrgConfireData updateData = new YbDrgConfireData();
                     updateData.setId(item.getId());
                     updateData.setPid(drgConfireJson.getId());
-//                    updateData.setDeptId(item.getDeptId());
-//                    String strDeptName = DataTypeHelpers.stringReplaceSetString(item.getDeptName(), item.getDeptId() + "-");
-//                    updateData.setDeptName(strDeptName);
+                    String strDksName = DataTypeHelpers.stringReplaceSetString(item.getDksName(), item.getDksId() + "-");
                     updateData.setDksId(item.getDksId());
-                    updateData.setDksName(item.getDksName());
+                    updateData.setDksName(strDksName);
                     if (updateData.getId() == null) {
                         updateData.setId(UUID.randomUUID().toString());
                         createDataList.add(updateData);

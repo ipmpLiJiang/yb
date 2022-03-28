@@ -92,7 +92,7 @@
         p.CREATE_TIME,
         p.CREATE_USER_ID,
         p.MODIFY_USER_ID,
-        GROUP_CONCAT(d.dksName) currencyField,
+        GROUP_CONCAT(CONCAT(d.dksId, '-', d.dksName)) currencyField,
         p.areaType,
         p.operatorId,
         p.operatorName
@@ -123,7 +123,7 @@
             order by p.create_time desc
         </if>
         <if test="type != null and type == 'excel'">
-            order by p.operatorId desc
+            order by p.operatorId,p.CREATE_TIME desc
         </if>
     </select>
 
@@ -183,7 +183,7 @@
         p.CREATE_TIME,
         p.CREATE_USER_ID,
         p.MODIFY_USER_ID,
-        GROUP_CONCAT(d.dksName) currencyField,
+        GROUP_CONCAT(CONCAT(d.dksId, '-', d.dksName)) currencyField,
         p.areaType,
         p.operatorId,
         p.operatorName
@@ -220,7 +220,7 @@
             order by p.create_time desc
         </if>
         <if test="type != null and type == 'excel'">
-            order by p.operatorId desc
+            order by p.operatorId,p.CREATE_TIME desc
         </if>
     </select>
     <select id="findDrgConfireUserCount" resultType="Integer">

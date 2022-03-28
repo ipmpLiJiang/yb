@@ -31,7 +31,7 @@
                   v-bind="formItemLayout"
                   label="科室名称"
                 >
-                  {{ybDrgResultLook.dksName}}
+                  {{ybDrgResultLook.dksId}}-{{ybDrgResultLook.dksName}}
                 </a-form-item>
               </a-col>
               <a-col :span=14>

@@ -169,6 +169,12 @@
           <a-col :span=4>
             {{ybDrgJkModule.ylzDocId}}-{{ybDrgJkModule.ylzDocName}}
           </a-col>
+          <a-col :span=2>
+            院区：
+          </a-col>
+          <a-col :span=4>
+            {{ybDrgJkModule.yq}}
+          </a-col>
         </a-row>
       </a-row>
       <a-list :data-source="[]" v-else />

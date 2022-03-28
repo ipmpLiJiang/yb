@@ -60,13 +60,22 @@
           </a-col>
           <a-col :span=5 v-show="tableSelectKey == 2 ? true:false">
             <a-popconfirm
-              title="确定获取数据？"
+              title="确定获取DRG数据？"
               @confirm="addDrgJk"
               okText="确定"
               style="margin-left: 8px"
               cancelText="取消"
             >
-              <a-button type="primary">获取数据</a-button>
+              <a-button type="primary">获取DRG数据</a-button>
+            </a-popconfirm>
+            <a-popconfirm
+              title="确定删除DRG数据？"
+              @confirm="delDrgJk"
+              okText="确定"
+              style="margin-left: 8px"
+              cancelText="取消"
+            >
+              <a-button type="primary">删除DRG数据</a-button>
             </a-popconfirm>
           </a-col>
           <a-col :span=2 v-show="tableSelectKey == '2' ? false:showBtn">
@@ -226,6 +235,31 @@ export default {
           }
         }).catch(() => {
           this.$message.error('DRG数据获取失败.')
+          this.spinning = false
+        })
+      }
+    },
+    delDrgJk () {
+      let key = '2'
+      if (this.tableSelectKey === key) {
+        this.spinning = true
+        this.$post('ybDrgApplyData/delJk', {
+          applyDateStr: this.ybDrgApply.applyDateStr,
+          areaType: this.ybDrgApply.areaType
+        }).then((r) => {
+          if (r.data.data.success === 1) {
+            this.showDelBtn = true
+            this.$message.success('删除DRG数据成功.')
+            if (this.tableSelectKey === key) {
+              this.callback(key)
+            }
+            this.spinning = false
+          } else {
+            this.$message.warning(r.data.data.message)
+            this.spinning = false
+          }
+        }).catch(() => {
+          this.$message.error('删除DRG数据失败.')
           this.spinning = false
         })
       }

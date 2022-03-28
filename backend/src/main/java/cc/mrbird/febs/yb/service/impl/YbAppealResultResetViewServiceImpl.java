@@ -45,6 +45,9 @@ public class YbAppealResultResetViewServiceImpl extends ServiceImpl<YbAppealResu
     @Autowired
     IYbAppealManageService iYbAppealManageService;
 
+    @Autowired
+    IYbHandleVerifyDataViewService iYbHandleVerifyDataViewService;
+
     @Override
     public IPage<YbAppealResultResetView> findAppealResultResetViews(QueryRequest request, YbAppealResultResetView ybAppealResultResetView, String keyField) {
         try {
@@ -79,36 +82,48 @@ public class YbAppealResultResetViewServiceImpl extends ServiceImpl<YbAppealResu
             appealResultResetView.setPid(reconsiderReset.getId());
             // 与 Result 做关联 ApplyDataId 无值 OrderNumber 是 resetData 的值
             List<YbAppealResultResetView> list = this.baseMapper.findAppealResultResetList(appealResultResetView);
-
 //            LambdaQueryWrapper<YbAppealManage> wrapperManage = new LambdaQueryWrapper<>();
 //            wrapperManage.eq(YbAppealManage::getApplyDateStr, reconsiderReset.getApplyDateStr());
 //            wrapperManage.eq(YbAppealManage::getAreaType, reconsiderReset.getAreaType());
 //            wrapperManage.eq(YbAppealManage::getSourceType, YbDefaultValue.SOURCETYPE_1);
-//            List<Integer> asList = new ArrayList<>();
-//            asList.add(0);
-//            asList.add(1);
-//            asList.add(2);
-//            wrapperManage.in(YbAppealManage::getAcceptState, asList);
+//            wrapperManage.eq(YbAppealManage::getAcceptState, YbDefaultValue.ACCEPTSTATE_1);
 //            List<YbAppealManage> manageList = iYbAppealManageService.list(wrapperManage);
-            YbAppealManage query = new YbAppealManage();
-            query.setApplyDateStr(reconsiderReset.getApplyDateStr());
-            query.setAreaType(reconsiderReset.getAreaType());
-            query.setSourceType(YbDefaultValue.SOURCETYPE_1);
-            List<Integer> asList = new ArrayList<>();
-            asList.add(6);
-            List<YbAppealManage> manageList = iYbAppealManageService.findAppealManageBySoutInActList(query,asList);
-            List<YbAppealManage> queryManageList = new ArrayList<>();
-            if(manageList.size() > 0) {
-                for (YbAppealResultResetView item : list) {
-                    queryManageList = manageList.stream().filter(s -> s.getApplyDataId().equals(item.getApplyDataId())).collect(Collectors.toList());
-                    if (queryManageList.size() > 0) {
-                        if (item.getArDoctorCode() == null) {
-                            item.setArDoctorCode(queryManageList.get(0).getReadyDoctorCode());
-                            item.setArDoctorName(queryManageList.get(0).getReadyDoctorName());
-                            item.setArDeptCode(queryManageList.get(0).getReadyDeptCode());
-                            item.setArDeptName(queryManageList.get(0).getReadyDeptName());
+//            YbAppealManage query = new YbAppealManage();
+//            query.setApplyDateStr(reconsiderReset.getApplyDateStr());
+//            query.setAreaType(reconsiderReset.getAreaType());
+//            query.setSourceType(YbDefaultValue.SOURCETYPE_1);
+//            List<Integer> asList = new ArrayList<>();
+//            asList.add(6);
+//            List<YbAppealManage> manageList = iYbAppealManageService.findAppealManageBySoutInActList(query,asList);
+//            List<YbAppealManage> queryManageList = new ArrayList<>();
+//            if(manageList.size() > 0) {
+//                for (YbAppealResultResetView item : list) {
+//                    queryManageList = manageList.stream().filter(s -> s.getApplyDataId().equals(item.getApplyDataId())).collect(Collectors.toList());
+//                    if (queryManageList.size() > 0) {
+//                        if (item.getArDoctorCode() == null) {
+//                            item.setArDoctorCode(queryManageList.get(0).getReadyDoctorCode());
+//                            item.setArDoctorName(queryManageList.get(0).getReadyDoctorName());
+//                            item.setArDeptCode(queryManageList.get(0).getReadyDeptCode());
+//                            item.setArDeptName(queryManageList.get(0).getReadyDeptName());
+//                        }
+////                        item.setProposalCode(queryManageList.get(0).getComments());
+//                    }
+//                }
+//            }
+
+            if (list.size() > 0) {
+                List<YbHandleVerifyDataView> verifyDataList = iYbHandleVerifyDataViewService.findHVerifyAndManageDataList(reconsiderReset.getApplyDateStr(), reconsiderReset.getAreaType());
+                if (verifyDataList.size() > 0) {
+                    List<YbHandleVerifyDataView> queryList = new ArrayList<>();
+                    for (YbAppealResultResetView item : list) {
+                        queryList = verifyDataList.stream().filter(s ->
+                                s.getRelatelDataId().equals(item.getRelatelDataId())).collect(Collectors.toList());
+                        if (queryList.size() > 0 && item.getArDoctorCode() == null) {
+                            item.setArDoctorCode(queryList.get(0).getHvDoctorCode());
+                            item.setArDoctorName(queryList.get(0).getHvDoctorName());
+                            item.setArDeptCode(queryList.get(0).getHvDeptCode());
+                            item.setArDeptName(queryList.get(0).getHvDeptName());
                         }
-                        item.setProposalCode(queryManageList.get(0).getComments());
                     }
                 }
             }

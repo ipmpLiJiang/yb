@@ -589,7 +589,7 @@ public class YbDrgManageServiceImpl extends ServiceImpl<YbDrgManageMapper, YbDrg
     @Override
     @Transactional
     public void updateDrgApplyEndDate(String applyDateStr, Integer areaType) {
-        if (applyDateStr != null && !applyDateStr.equals("") && areaType != null) {
+        if (StringUtils.isNotBlank(applyDateStr) && areaType != null) {
             if (lockDrgApplyEndDate.tryLock()) {
                 try {
                     YbDrgApply drgApply = this.iYbDrgApplyService.findDrgApplyByApplyDateStrs(applyDateStr, areaType);
@@ -670,7 +670,7 @@ public class YbDrgManageServiceImpl extends ServiceImpl<YbDrgManageMapper, YbDrg
     @Override
     @Transactional
     public void updateDrgEnableOverdue(String applyDateStr, Integer areaType) {
-        if (applyDateStr != null && !applyDateStr.equals("") && areaType != null) {
+        if (StringUtils.isNotBlank(applyDateStr) && areaType != null) {
             if (lockDrgEnableOverdue.tryLock()) {
                 try {
                     YbDrgApply drgApply = this.iYbDrgApplyService.findDrgApplyByApplyDateStrs(applyDateStr, areaType);

@@ -5,7 +5,7 @@
         <a-row>
           <div :class="advanced ? null : 'fold'">
             <a-col :md="8" :sm="24">
-              <a-form-item label="通用字段" v-bind="formItemLayout">
+              <a-form-item label="关键字" v-bind="formItemLayout">
                 <a-input v-model="queryParams.currencyField" />
               </a-form-item>
             </a-col>
@@ -254,6 +254,7 @@ export default {
         sortField = sortedInfo.field
         sortOrder = sortedInfo.order
       }
+      this.queryParams.dataJson = '[{title: "病区编码", dataIndex: "bqCode"},{title: "病区名称",dataIndex: "bqName"},{title: "科室编码", dataIndex: "ksCode"},{title: "科室名称",dataIndex: "ksName"},{title: "大专业编码", dataIndex: "dzyCode"},{title: "大专业名称",dataIndex: "dzyName"},{title: "院区", dataIndex: "yq"}]'
       this.$export('ybDrgRelate/excel', {
         sortField: sortField,
         sortOrder: sortOrder,

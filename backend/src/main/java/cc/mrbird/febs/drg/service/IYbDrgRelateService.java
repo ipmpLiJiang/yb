@@ -22,6 +22,8 @@ public interface IYbDrgRelateService extends IService<YbDrgRelate> {
 
         IPage<YbDrgRelate> findYbDrgRelateList(QueryRequest request, YbDrgRelate ybDrgRelate);
 
+        List<YbDrgRelate> findDrgRelateList();
+
         void createYbDrgRelate(YbDrgRelate ybDrgRelate);
 
         void updateYbDrgRelate(YbDrgRelate ybDrgRelate);

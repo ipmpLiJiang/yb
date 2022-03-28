@@ -225,6 +225,7 @@ export default {
         this.$put('ybHandleVerifyData/updateASendState', {
           applyDateStr: this.applyDate, state: 1, areaType: this.user.areaType.value
         }).then(() => {
+          this.loading = false
           this.$message.success('发送成功')
           this.$emit('closeSpin')
           this.search()

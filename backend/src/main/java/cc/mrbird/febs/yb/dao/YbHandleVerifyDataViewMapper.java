@@ -6,6 +6,8 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.List;
+
 /**
  * <p>
  * VIEW Mapper 接口
@@ -21,4 +23,6 @@ public interface YbHandleVerifyDataViewMapper extends BaseMapper<YbHandleVerifyD
         IPage<YbHandleVerifyDataView> findHandleVerifyDataView(Page page, @Param("ybHandleVerifyDataView") YbHandleVerifyDataView ybHandleVerifyDataView);
 
         int findHandleVerifyDataCount(@Param("ybHandleVerifyDataView") YbHandleVerifyDataView ybHandleVerifyDataView);
+
+        List<YbHandleVerifyDataView> findHVerifyAndManageData(@Param("pid") String pid, @Param("applyDateStr") String applyDateStr, @Param("areaType") Integer areaType);
         }

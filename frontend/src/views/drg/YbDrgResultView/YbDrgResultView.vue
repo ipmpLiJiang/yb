@@ -1,66 +1,56 @@
 <template>
   <a-card :bordered="false" class="card-area">
-    <div>
-        <a-row
-          justify="center"
-          align="middle"
-        >
-          <a-col :span=5>
-            <a-form-item
-              v-bind="formItemLayout"
-              label="复议年月"
-            >
-              <a-month-picker
-                placeholder="请输入复议年月"
-                style="width: 105px"
-                @change="monthChange"
-                v-model="searchApplyDate"
-                :default-value="searchApplyDate"
-                :format="monthFormat"
-              />
-            </a-form-item>
-          </a-col>
-          <a-col :span=8>
-            <a-select v-model="searchItem.keyField" style="width: 110px">
-              <a-select-option
-              v-for="d in searchDropDataSource"
-              :key="d.value"
-              >
-              {{ d.text }}
-              </a-select-option>
-            </a-select>
-            =
-            <a-input-search placeholder="请输入关键字" v-model="searchItem.value" style="width: 160px" enter-button @search="search" />
-          </a-col>
-          <a-col :span=3 >
-            <a-button
-            type="primary"
-            @click="onHistoryLook"
-            >历史记录</a-button>
-          </a-col>
-          <a-col :span=8 >
-            <a-button type="primary" style="margin-left: 15px" @click.stop="hideExport">
-              导出Excel
-            </a-button>
-            <a-popover v-model="visibleExport" trigger="click" title="导出Excel">
-              <a-button
-                slot="content"
-                style="margin-right:15px"
-                @click="exportExcel"
-                >导出详情</a-button>
-              <a-button
-                slot="content"
-                style="margin-right:15px"
-                @click="exportExcelYj"
-                >导出意见</a-button>
-              <a-button
-                slot="content"
-                @click="exportExcelWj"
-                >导出文件</a-button>
-            </a-popover>
-            <a-button type="primary" style="margin-left: 15px" @click="showModal">图片打包下载</a-button>
-          </a-col>
-        </a-row>
+    <div style="text-align:left;margin-bottom:16px">
+      <a-row>
+        复议年月：
+        <a-month-picker
+          placeholder="请输入复议年月"
+          style="width: 105px;margin-right: 6px"
+          @change="monthChange"
+          v-model="searchApplyDate"
+          :default-value="searchApplyDate"
+          :format="monthFormat"
+        />
+        <a-select v-model="searchItem.keyField" style="width: 110px;margin-right: 6px">
+          <a-select-option
+          v-for="d in searchDropDataSource"
+          :key="d.value"
+          >
+          {{ d.text }}
+          </a-select-option>
+        </a-select>
+        =
+        <a-input-search
+          placeholder="请输入关键字"
+          v-model="searchItem.value"
+          style="width: 180px;margin-right: 22px"
+          enter-button
+          @search="search" />
+        <a-button type="primary" style="margin-right: 22px" @click.stop="hideExport">
+          导出Excel
+        </a-button>
+        <a-popover v-model="visibleExport" trigger="click" title="导出Excel">
+          <a-button
+            slot="content"
+            style="margin-right: 6px"
+            @click="exportExcel"
+            >导出详情</a-button>
+          <a-button
+            slot="content"
+            style="margin-right: 6px"
+            @click="exportExcelYj"
+            >导出意见</a-button>
+          <a-button
+            slot="content"
+            @click="exportExcelWj"
+            >导出文件</a-button>
+        </a-popover>
+        <a-button type="primary" style="margin-right: 22px" @click="showModal">图片打包下载</a-button>
+        <a-button
+        type="primary"
+        @click="onHistoryLook"
+        >历史记录</a-button>
+      </a-row>
     </div>
     <div>
       <!-- 表格区域 -->
@@ -104,7 +94,7 @@
     </div>
     <template>
       <div>
-        <a-modal width="65%" :maskClosable="false" :footer="null" v-model="downLoadVisible" title="DRG图片打包下载" @ok="handleOk">
+        <a-modal width="70%" :maskClosable="false" :footer="null" v-model="downLoadVisible" title="DRG图片打包下载" @ok="handleOk">
           <ybDrgResult-downLoad
           ref="ybDrgResultDownLoad"
           >
@@ -216,12 +206,12 @@ export default {
       {
         title: '违规类型',
         dataIndex: 'wglx',
-        width: 90
+        width: 120
       },
       {
         title: '问题描述',
         dataIndex: 'wtms',
-        width: 300
+        width: 350
       },
       {
         title: '医疗总费用',
@@ -255,8 +245,13 @@ export default {
       {
         title: '复议科室',
         dataIndex: 'dksName',
+        customRender: (text, row, index) => {
+          if (text !== '' && text !== null) {
+            return row.dksId + '-' + row.dksName
+          }
+        },
         fixed: 'right',
-        width: 130
+        width: 170
       },
       {
         title: '复议医生',

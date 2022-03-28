@@ -22,6 +22,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -78,7 +79,7 @@ public class YbDrgResultViewServiceImpl extends ServiceImpl<YbDrgResultViewMappe
                 List<String> strList = new ArrayList<>();
                 List<YbDrgResultView> list = new ArrayList<>();
                 List<YbDrgResult> resultList = new ArrayList<>();
-                if (value != null && !value.equals("") && keyField.equals("doctorName")) {
+                if (StringUtils.isNotBlank(value) && keyField.equals("doctorName")) {
                     LambdaQueryWrapper<YbDrgResult> queryWrapper = new LambdaQueryWrapper<>();
                     queryWrapper.eq(YbDrgResult::getApplyDateStr, applyDateStr);
                     queryWrapper.eq(YbDrgResult::getAreaType, areaType);
@@ -100,13 +101,13 @@ public class YbDrgResultViewServiceImpl extends ServiceImpl<YbDrgResultViewMappe
                     queryResult.setAreaType(areaType);
                     queryResult.setState(state);
 
-                    if (value != null && !value.equals("") && keyField.equals("doctorCode")) {
+                    if (StringUtils.isNotBlank(value) && keyField.equals("doctorCode")) {
                         queryResult.setDoctorCode(value);
                     }
                     if (ybDrgResultView.getDoctorCode() != null) {
                         queryResult.setDoctorCode(ybDrgResultView.getDoctorCode());
                     }
-                    if (value != null && !value.equals("") && keyField.equals("orderNumber")) {
+                    if (StringUtils.isNotBlank(value) && keyField.equals("orderNumber")) {
                         queryResult.setOrderNumber(value);
                     }
                     resultList = iYbDrgResultService.findDrgResultList(queryResult);

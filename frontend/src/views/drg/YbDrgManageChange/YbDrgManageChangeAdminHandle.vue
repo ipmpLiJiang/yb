@@ -217,7 +217,7 @@ export default {
         text: target.readyDksId + '-' + target.readyDksName,
         value: target.readyDksId
       }]
-      this.$refs.inputSelectVerifyDks.value = target.readyDksName
+      this.$refs.inputSelectVerifyDks.value = target.readyDksId
 
       this.$refs.inputSelectVerifyDoctor.dataSource = [{
         text: target.readyDoctorCode + '-' + target.readyDoctorName,

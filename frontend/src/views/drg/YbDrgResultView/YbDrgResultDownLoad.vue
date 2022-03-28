@@ -21,7 +21,12 @@
     </a-row>
   <br>
   <!-- 表格区域 -->
-  <a-table :columns="columns" :data-source="dataSource" size="small" bordered :scroll="{ x: 600 }">
+  <a-table
+    :columns="columns"
+    :data-source="dataSource"
+    :pagination="pagination"
+    size="small"
+    bordered :scroll="{ x: 700 }">
   <a slot="operation" slot-scope="text, record, index" @click="() => downloadFile(record)">
     {{record.orderNum === 0 ? '全部下载' : '下载'}}
   </a>
@@ -42,6 +47,14 @@ export default {
       },
       startOrderNumber: 1,
       endOrderNumber: 10,
+      pagination: {
+        pageSizeOptions: ['10', '20', '30', '40', '100'],
+        defaultCurrent: 1,
+        defaultPageSize: 10,
+        showQuickJumper: true,
+        showSizeChanger: true,
+        showTotal: (total, range) => `显示 ${range[0]} ~ ${range[1]} 条记录，共 ${total} 条记录`
+      },
       user: this.$store.state.account.user,
       loading: false
     }
@@ -58,24 +71,19 @@ export default {
         title: '科室',
         dataIndex: 'ks',
         fixed: 'left',
-        width: 155
+        width: 120
       },
       {
         title: '就诊记录号',
         dataIndex: 'jzjlh',
         fixed: 'left',
-        width: 110
+        width: 90
       },
       {
         title: '病案号',
         dataIndex: 'bah',
         fixed: 'left',
-        width: 95
-      },
-      {
-        title: '复议科室',
-        dataIndex: 'dksName',
-        width: 165
+        width: 80
       },
       {
         title: '复议医生',
@@ -85,26 +93,36 @@ export default {
             return row.orderNum === 0 ? '-' : row.doctorCode + '-' + row.doctorName
           }
         },
-        width: 135
+        width: 120
+      },
+      {
+        title: '复议科室',
+        dataIndex: 'dksName',
+        customRender: (text, row, index) => {
+          if (text !== '' && text !== null) {
+            return row.dksId + '-' + row.dksName
+          }
+        },
+        width: 200
       },
       {
         title: '文件个数',
         dataIndex: 'fileNumber',
         fixed: 'right',
-        width: 90
+        width: 80
       },
       {
         title: '文件大小',
         dataIndex: 'fileSizeWork',
         fixed: 'right',
-        width: 110
+        width: 90
       },
       {
         title: '操作',
         dataIndex: 'operation',
         scopedSlots: { customRender: 'operation' },
         fixed: 'right',
-        width: 100
+        width: 85
       }]
     }
   },

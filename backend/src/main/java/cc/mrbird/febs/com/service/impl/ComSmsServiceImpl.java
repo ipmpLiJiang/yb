@@ -449,6 +449,8 @@ public class ComSmsServiceImpl extends ServiceImpl<ComSmsMapper, ComSms> impleme
 
     private Lock lockSendWarn = new ReentrantLock();
 
+    private Lock lockSendWarn1 = new ReentrantLock();
+
     private Lock lockDrgSendWarn = new ReentrantLock();
 
     @Override
@@ -487,10 +489,10 @@ public class ComSmsServiceImpl extends ServiceImpl<ComSmsMapper, ComSms> impleme
                             querySms.setState(ComSms.STATE_1);
                             querySmsList = this.findSmsTopLists(querySms);
                             if (querySmsList.size() == 0) {
-                                String sendContent = iYbReconsiderApplyService.getSendMessage(applyDateStr, endDate, typeno, areaType);
                                 List<YbPerson> list = iYbPersonService.findPersonWarnLists(applyDateStr, areaType, 1, typeno, 0);
-                                List<ComSms> smsList = new ArrayList<>();
                                 if (list.size() > 0) {
+                                    String sendContent = iYbReconsiderApplyService.getSendMessage(applyDateStr, endDate, typeno, areaType,0);
+                                    List<ComSms> smsList = new ArrayList<>();
                                     long uid = 1;
                                     for (YbPerson item : list) {
                                         if(item.getTel()!=null && !item.getTel().equals("")) {
@@ -541,6 +543,94 @@ public class ComSmsServiceImpl extends ServiceImpl<ComSmsMapper, ComSms> impleme
             msg = "未获取到数据.";
         }
         System.out.println("sendAppealManageWarnSms:" + msg);
+        return msg;
+    }
+
+    @Override
+    @Transactional
+    public String sendAppealManageWarnSms1(String applyDateStr, Integer areaType) {
+        String msg = "ok";
+        if (lockSendWarn1.tryLock()) {
+            try {
+                YbReconsiderApply reconsiderApply = this.iYbReconsiderApplyService.findReconsiderApplyByApplyDateStrs(applyDateStr, areaType);
+
+                if (reconsiderApply != null) {
+                    Date endDate = null;
+                    if (reconsiderApply.getState() == 6) {
+                        endDate = reconsiderApply.getEndDateReset();
+                    } else {
+                        return "该" + applyDateStr + "年月未完成数据剔除";
+                    }
+                    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
+                    String thisDateStr = dateFormat.format(new Date());
+                    String endDateStr = dateFormat.format(endDate);
+                    if(thisDateStr.equals(endDateStr)){
+                        int sendType = ComSms.SENDTYPE_9;
+                        ComSms querySms = new ComSms();
+                        querySms.setApplyDateStr(applyDateStr);
+                        querySms.setAreaType(areaType);
+                        querySms.setSendType(sendType);
+                        querySms.setTypeno(null);
+                        querySms.setState(ComSms.STATE_0);
+                        List<ComSms> querySmsList = this.findSmsTopLists(querySms);
+                        if (querySmsList.size() == 0) {
+                            querySms.setState(ComSms.STATE_1);
+                            querySmsList = this.findSmsTopLists(querySms);
+                            if (querySmsList.size() == 0) {
+                                List<YbPerson> list = iYbPersonService.findPersonWarnLists(applyDateStr, areaType, 1, null, 1);
+                                if (list.size() > 0) {
+                                    String sendContent = iYbReconsiderApplyService.getSendMessage(applyDateStr, endDate, null, areaType,1);
+                                    List<ComSms> smsList = new ArrayList<>();
+                                    long uid = 1;
+                                    for (YbPerson item : list) {
+                                        if(item.getTel()!=null && !item.getTel().equals("")) {
+                                            ComSms comSms = new ComSms();
+                                            comSms.setId(UUID.randomUUID().toString());
+                                            comSms.setSendcode(item.getPersonCode());
+                                            comSms.setSendname(item.getPersonName());
+                                            comSms.setMobile(item.getTel());
+
+                                            comSms.setSendType(sendType);
+                                            comSms.setState(ComSms.STATE_0);
+                                            comSms.setSendcontent(sendContent);
+                                            comSms.setAreaType(areaType);
+                                            comSms.setOperatorId(uid);
+                                            comSms.setOperatorName("mrbird");
+                                            comSms.setIsDeletemark(1);
+                                            comSms.setCreateUserId(uid);
+                                            comSms.setCreateTime(new Date());
+                                            comSms.setTypeno(null);
+                                            comSms.setApplyDateStr(applyDateStr);
+                                            smsList.add(comSms);
+                                        }
+                                    }
+                                    this.saveBatch(smsList);
+                                } else {
+                                    msg = "未找到" + applyDateStr + "年月申诉数据.";
+                                }
+                            } else {
+                                msg = "该" + applyDateStr + "年月已经创建过截止提醒.";
+                            }
+                        } else {
+                            msg = this.sendSms(null, querySmsList);
+                            log.info(applyDateStr + " 复议提醒短信发送成功.");
+                        }
+                    } else {
+                        msg = applyDateStr + "年月,还未到执行日期.";
+                    }
+                } else {
+                    msg = "未找到" + applyDateStr + "年月数据.";
+                }
+            } catch (Exception e) {
+                msg = e.getMessage();
+                log.error(msg);
+            } finally {
+                lockSendWarn1.unlock();
+            }
+        } else {
+            msg = "未获取到数据.";
+        }
+        System.out.println("sendAppealManageWarnSms1:" + msg);
         return msg;
     }
 

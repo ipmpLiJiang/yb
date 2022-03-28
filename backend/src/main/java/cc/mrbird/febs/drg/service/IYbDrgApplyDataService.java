@@ -45,5 +45,5 @@ public interface IYbDrgApplyDataService extends IService<YbDrgApplyData> {
 
     String getDrgJk (String applyDateStr, Integer areaType);
 
-
+    String delDrgJk(String applyDateStr, Integer areaType);
 }

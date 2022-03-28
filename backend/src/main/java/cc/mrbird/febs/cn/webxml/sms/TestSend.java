@@ -29,6 +29,13 @@ public class TestSend {
     }
 
     public static void main(String[] args) {
+        String aa = "";
+        String bb = "";
+        if(aa == bb){
+            System.out.println("OK");
+        } else {
+            System.out.println("NO");
+        }
 //        testXc c = new testXc();
 //        new Thread(c).start();
 //        new Thread(c).start();

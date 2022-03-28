@@ -45,7 +45,7 @@
                 </a-form-item>
               </a-col>
             </a-row>
-            <!--申诉理由-->
+            <!--医院意见-->
             <a-row type="flex" justify="start">
               <a-col :span=24>
                   <a-form-item
@@ -53,7 +53,7 @@
                     labelCol: { span: 4 },
                     wrapperCol: { span: 19, offset: 1 }
                   }"
-                  label="申诉理由"
+                  label="医院意见"
                 >
                 {{ybDrgManageLook.operateReason}}
                 </a-form-item>

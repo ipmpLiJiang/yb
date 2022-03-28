@@ -198,6 +198,21 @@ export default {
         width: 150
       },
       {
+        title: '科室类型',
+        dataIndex: 'deptType',
+        customRender: (text, row, index) => {
+          switch (text) {
+            case 1:
+              return '医疗组科室'
+            case 2:
+              return '固定科室'
+            default:
+              return text
+          }
+        },
+        width: 120
+      },
+      {
         title: '更改科室名称',
         dataIndex: 'dksNameTo',
         customRender: (text, row, index) => {

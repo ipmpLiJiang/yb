@@ -27,4 +27,6 @@ public interface IYbHandleVerifyDataViewService extends IService<YbHandleVerifyD
         void updateYbHandleVerifyDataView(YbHandleVerifyDataView ybHandleVerifyDataView);
 
         void deleteYbHandleVerifyDataViews(String[]Ids);
+
+        List<YbHandleVerifyDataView> findHVerifyAndManageDataList (String applyDateStr,int areaType);
         }

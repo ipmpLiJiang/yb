@@ -26,7 +26,7 @@
           <template>
             <a-form :form="form">
               <a-row type="flex" justify="start">
-                <a-col :span=12>
+                <a-col :span=14>
                   <a-row>
                     <a-col :span=10>
                       <a-form-item
@@ -94,7 +94,7 @@
                     </a-col>
                   </a-row>
                 </a-col>
-                <a-col :span=12>
+                <a-col :span=10>
                   <a-form-item
                       v-bind="formItemLayout2"
                       label="拒绝理由"
@@ -216,7 +216,6 @@ export default {
       }, 200)
     },
     setForms (amch) {
-      debugger
       let deptId = amch.changeDksId !== '' && amch.changeDksId !== undefined ? amch.changeDksId : amch.readyDksId
       let deptName = amch.changeDksName !== '' && amch.changeDksName !== undefined ? amch.changeDksName : amch.readyDksName
       let doctorName = amch.changeDoctorCode !== '' && amch.changeDoctorCode !== undefined ? amch.changeDoctorName : amch.readyDoctorName

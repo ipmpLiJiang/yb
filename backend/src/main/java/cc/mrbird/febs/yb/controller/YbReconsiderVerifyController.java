@@ -571,7 +571,11 @@ public class YbReconsiderVerifyController extends BaseController {
                     message = "未找到" + applyDateStr + "年月数据.";
                 } else if (msg.equals("noType")) {
                     message = "未找到传入的类型.";
-                } else {
+                } else if (msg.equals("noReset")) {
+                    message = applyDateStr + "年月数据,未设置非常规截止日期.";
+                } else if (msg.equals("noResetState")) {
+                    message = applyDateStr + "年月数据,未完成数据剔除.";
+                }  else {
                     message = msg;
                 }
             }

@@ -11,6 +11,7 @@ import cc.mrbird.febs.drg.service.IYbDrgDksService;
 import cc.mrbird.febs.drg.entity.YbDrgDks;
 
 import cc.mrbird.febs.common.utils.FebsUtil;
+import cc.mrbird.febs.export.excel.ExportExcelUtils;
 import cc.mrbird.febs.system.domain.User;
 import com.baomidou.mybatisplus.core.toolkit.StringPool;
 import com.wuwenze.poi.ExcelKit;
@@ -128,10 +129,12 @@ public class YbDrgDksController extends BaseController {
 
     @PostMapping("excel")
     @RequiresPermissions("ybDrgDks:export")
-    public void export(QueryRequest request, YbDrgDks ybDrgDks, HttpServletResponse response) throws FebsException {
+    public void export(QueryRequest request, YbDrgDks ybDrgDks,String dataJson, HttpServletResponse response) throws FebsException {
         try {
-            List<YbDrgDks> ybDrgDkss = this.iYbDrgDksService.findYbDrgDkss(request, ybDrgDks).getRecords();
-            ExcelKit.$Export(YbDrgDks.class, response).downXlsx(ybDrgDkss, false);
+//            List<YbDrgDks> ybDrgDkss = this.iYbDrgDksService.findYbDrgDkss(request, ybDrgDks).getRecords();
+//            ExcelKit.$Export(YbDrgDks.class, response).downXlsx(ybDrgDkss, false);
+            List<YbDrgDks> ybDrgDkss = this.iYbDrgDksService.list();
+            ExportExcelUtils.exportCustomExcel(response,ybDrgDkss,dataJson,"Sheel1");
         } catch (Exception e) {
             message = "导出Excel失败";
             log.error(message, e);

@@ -158,7 +158,6 @@ export default {
       this.$emit('close')
     },
     startJob () {
-      debugger
       this.$put('ybDrgVerify/startJob', {
         applyDateStr: this.ybDrgApply.applyDateStr,
         areaType: this.user.areaType.value,

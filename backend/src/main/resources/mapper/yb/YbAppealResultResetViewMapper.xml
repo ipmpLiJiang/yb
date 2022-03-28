@@ -311,7 +311,7 @@
         art.operateReason,
         art.operateDate,
         '' currencyField,
-        art.relatelDataId,
+        rrd.relatelDataId,
         art.areaType,
         art.dksName
         FROM

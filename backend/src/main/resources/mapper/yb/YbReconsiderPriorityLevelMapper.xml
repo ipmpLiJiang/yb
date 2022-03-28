@@ -25,7 +25,9 @@
         <result column="CREATE_USER_ID" property="createUserId"/>
         <result column="MODIFY_USER_ID" property="modifyUserId"/>
         <result column="areaType" property="areaType"/>
+        <result column="dksId" property="dksId"/>
         <result column="dksName" property="dksName"/>
+        <result column="dksIdTo" property="dksIdTo"/>
         <result column="dksNameTo" property="dksNameTo"/>
         <result column="doctorCodeTo" property="doctorCodeTo"/>
         <result column="doctorNameTo" property="doctorNameTo"/>
@@ -33,7 +35,7 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, rplName, doctorCode, doctorName, deptCode, deptName,deptState,deptType,personType,isFixDept, operatorId, operatorName, currencyField, COMMENTS, STATE, IS_DELETEMARK, MODIFY_TIME, CREATE_TIME, CREATE_USER_ID, MODIFY_USER_ID,areaType, dksName, dksNameTo, doctorCodeTo, doctorNameTo
+        id, rplName, doctorCode, doctorName, deptCode, deptName,deptState,deptType,personType,isFixDept, operatorId, operatorName, currencyField, COMMENTS, STATE, IS_DELETEMARK, MODIFY_TIME, CREATE_TIME, CREATE_USER_ID, MODIFY_USER_ID,areaType, dksId, dksName, dksIdTo, dksNameTo, doctorCodeTo, doctorNameTo
     </sql>
     <update id="updateYbReconsiderPriorityLevel" parameterType="cc.mrbird.febs.yb.entity.YbReconsiderPriorityLevel">
         update yb_reconsider_priority_level
@@ -58,7 +60,9 @@
             <if test="createUserId != null">CREATE_USER_ID=#{createUserId},</if>
             <if test="modifyUserId != null">MODIFY_USER_ID=#{modifyUserId},</if>
             <if test="areaType != null">areaType=#{areaType},</if>
+            <if test="dksId != null">dksId=#{dksId},</if>
             <if test="dksName != null">dksName=#{dksName},</if>
+            <if test="dksIdTo != null">dksIdTo=#{dksIdTo},</if>
             <if test="dksNameTo != null">dksNameTo=#{dksNameTo},</if>
             <if test="doctorCodeTo != null">doctorCodeTo=#{doctorCodeTo},</if>
             <if test="doctorNameTo != null">doctorNameTo=#{doctorNameTo},</if>

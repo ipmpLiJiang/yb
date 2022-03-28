@@ -41,7 +41,10 @@ public class YbDrgDksServiceImpl extends ServiceImpl<YbDrgDksMapper, YbDrgDks> i
 //        queryWrapper.eq(YbDrgDks::getIsDeletemark, 1);//1是未删 0是已删
 
             if (StringUtils.isNotBlank(ybDrgDks.getCurrencyField())) {
-                queryWrapper.like(YbDrgDks::getCurrencyField, ybDrgDks.getCurrencyField());
+                String sql = "dksId like '%"+ybDrgDks.getCurrencyField()+"%'";
+                sql += "or dksName like '%"+ybDrgDks.getCurrencyField()+"%'";
+                sql += "or areaName like '%"+ybDrgDks.getCurrencyField()+"%'";
+                queryWrapper.apply(sql);
             }
 
             Page<YbDrgDks> page = new Page<>();

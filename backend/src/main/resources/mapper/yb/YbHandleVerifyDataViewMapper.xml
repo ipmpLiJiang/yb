@@ -161,6 +161,7 @@
             or rrd.ruleName like concat('%', #{ ybHandleVerifyDataView.currencyField} ,'%'))
         </if>
     </select>
+
     <select id="findHandleVerifyDataCount" resultType="Integer"
             parameterType="cc.mrbird.febs.yb.entity.YbHandleVerifyDataView">
         select
@@ -204,6 +205,28 @@
             or rrd.projectName like concat('%', #{ ybHandleVerifyDataView.currencyField} ,'%')
             or rrd.ruleName like concat('%', #{ ybHandleVerifyDataView.currencyField} ,'%'))
         </if>
+    </select>
+
+    <select id="findHVerifyAndManageData" resultType="cc.mrbird.febs.yb.entity.YbHandleVerifyDataView">
+        SELECT
+            hvd.id,
+            hvd.verifyId,
+            hvd.manageId,
+            hvd.resultId,
+            am.readyDoctorCode hvDoctorCode,
+            am.readyDoctorName hvDoctorName,
+            am.readyDeptCode hvDeptCode,
+            am.readyDeptName hvDeptName,
+            hvd.applyDataId,
+            hvd.relatelDataId,
+            hvd.dksName
+        FROM
+            yb_handle_verify_data hvd
+            inner join (
+                select * from yb_appeal_manage where applyDateStr = #{applyDateStr} and areaType = #{areaType} and acceptState = 1 and sourceType = 1
+            ) am on am.applyDataId = hvd.applyDataId
+        WHERE
+            hvd.pid = #{pid}
     </select>
 
 </mapper>

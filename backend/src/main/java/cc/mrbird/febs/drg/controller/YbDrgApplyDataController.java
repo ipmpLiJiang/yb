@@ -182,6 +182,34 @@ public class YbDrgApplyDataController extends BaseController {
         return new FebsResponse().data(rr);
     }
 
+    @PostMapping("delJk")
+    @RequiresPermissions("ybDrgApplyData:add")
+    public FebsResponse delJk1(String applyDateStr,Integer areaType) {
+        int success = 0;
+        try {
+            message= this.iYbDrgApplyDataService.delDrgJk(applyDateStr,areaType);
+            if(message.equals("ok")){
+                success = 1;
+            } else {
+                if(message.equals("no")) {
+                    message = applyDateStr + "未获申请数据.";
+                }
+                if(message.equals("no1")) {
+                    message = "未查询到" + applyDateStr + "DRG数据.";
+                }
+            }
+        } catch (Exception e) {
+            message = "获取DRG数据失败.";
+            log.error(message, e);
+        }
+
+        ResponseResult rr = new ResponseResult();
+        rr.setSuccess(success);
+        rr.setMessage(message);
+        return new FebsResponse().data(rr);
+    }
+
+
     @PostMapping("downFile")
     public void export1(HttpServletResponse response) throws FebsException {
         try {

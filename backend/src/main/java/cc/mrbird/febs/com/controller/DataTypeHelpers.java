@@ -23,7 +23,7 @@ import java.util.regex.Pattern;
  */
 public class DataTypeHelpers {
     public static boolean isNumeric(String strNum) {
-        if (strNum == null || "".equals(strNum)) {
+        if (StringUtils.isNotBlank(strNum)) {
             return false;
         }
         try {
@@ -47,7 +47,7 @@ public class DataTypeHelpers {
 
     public static boolean isNullOrEmpty(String val) {
         boolean isTrue = false;
-        if (val == null || val.equals("")) {
+        if (StringUtils.isNotBlank(val)) {
             isTrue = true;
         }
         return isTrue;

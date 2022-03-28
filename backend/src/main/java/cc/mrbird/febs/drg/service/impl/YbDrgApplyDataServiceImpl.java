@@ -7,9 +7,7 @@ import cc.mrbird.febs.common.domain.QueryRequest;
 import cc.mrbird.febs.common.utils.SortUtil;
 import cc.mrbird.febs.drg.entity.*;
 import cc.mrbird.febs.drg.dao.YbDrgApplyDataMapper;
-import cc.mrbird.febs.drg.service.IYbDrgApplyDataService;
-import cc.mrbird.febs.drg.service.IYbDrgApplyService;
-import cc.mrbird.febs.drg.service.IYbDrgJkService;
+import cc.mrbird.febs.drg.service.*;
 import cc.mrbird.febs.yb.entity.YbDefaultValue;
 import cn.hutool.core.collection.ListUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -52,7 +50,10 @@ public class YbDrgApplyDataServiceImpl extends ServiceImpl<YbDrgApplyDataMapper,
     private IYbDrgJkService iYbDrgJkService;
 
     @Autowired
-    private IComTypeService iComTypeService;
+    private IYbDrgRelateService iYbDrgRelateService;
+
+    @Autowired
+    private IYbDrgDksService iYbDrgDksService;
 
     @Override
     public IPage<YbDrgApplyData> findYbDrgApplyDatas(QueryRequest request, YbDrgApplyData ybDrgApplyData) {
@@ -156,16 +157,16 @@ public class YbDrgApplyDataServiceImpl extends ServiceImpl<YbDrgApplyDataMapper,
 
         LambdaQueryWrapper<YbDrgApplyData> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(YbDrgApplyData::getPid, ybDrgApply.getId());
-        if (k != null && !k.equals("")) {
+        if (StringUtils.isNotBlank(k)) {
             wrapper.eq(YbDrgApplyData::getKs, k);
         }
-        if (j != null && !j.equals("")) {
+        if (StringUtils.isNotBlank(j)) {
             wrapper.eq(YbDrgApplyData::getJzjlh, j);
         }
-        if (p != null && !p.equals("")) {
+        if (StringUtils.isNotBlank(p)) {
             wrapper.eq(YbDrgApplyData::getBah, p);
         }
-        if (o != null && !o.equals("")) {
+        if (StringUtils.isNotBlank(o)) {
             wrapper.eq(YbDrgApplyData::getOrderNumber, o);
         }
 
@@ -182,7 +183,7 @@ public class YbDrgApplyDataServiceImpl extends ServiceImpl<YbDrgApplyDataMapper,
     public List<YbDrgApplyData> getApplyDataByKeyFieldList(String pid, String keyField, String value) {
         LambdaQueryWrapper<YbDrgApplyData> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(YbDrgApplyData::getPid, pid);
-        if (value != null && !value.equals("") && !keyField.equals("readyDoctorCode") && !keyField.equals("readyDoctorName")) {
+        if (StringUtils.isNotBlank(value) && !keyField.equals("readyDoctorCode") && !keyField.equals("readyDoctorName")) {
             if (keyField.equals("orderNumber")) {
                 wrapper.eq(YbDrgApplyData::getOrderNumber, value);
             }
@@ -198,6 +199,73 @@ public class YbDrgApplyDataServiceImpl extends ServiceImpl<YbDrgApplyDataMapper,
         }
         return this.list(wrapper);
     }
+
+    private boolean ckIsCunZai(YbDrgRelate s, YbDrgJkDataDept item) {
+        boolean b = false;
+        if (s.getBqCode() == null)
+            s.setBqCode("");
+        if (s.getBqName() == null)
+            s.setBqName("");
+        if (s.getKsCode() == null)
+            s.setKsCode("");
+        if (s.getKsName() == null)
+            s.setKsName("");
+        if (s.getDzyCode() == null)
+            s.setDzyCode("");
+        if (s.getDzyName() == null)
+            s.setDzyName("");
+        if (s.getYq() == null)
+            s.setYq("");
+
+        if (s.getBqCode().equals(item.getBq_code()) && s.getKsCode().equals(item.getKs_id()) &&
+                s.getDzyCode().equals(item.getDzy_id()) && s.getYq().equals(item.getYq())) {
+            b = true;
+        }
+
+        return b;
+    }
+
+    private String getYq(String yq){
+        if(yq.equals("1")) {
+            yq = "本院";
+        } else if(yq.equals("2")) {
+            yq = "西院";
+        } else if(yq.equals("3")) {
+            yq = "肿瘤分院";
+        } else if(yq.equals("4")) {
+            yq = "金银湖";
+        }
+//        1本院、2西院、3肿瘤分院、4金银湖
+        return yq;
+    }
+
+    @Override
+    @Transactional
+    public String delDrgJk(String applyDateStr, Integer areaType) {
+        String msg = "";
+        try {
+            YbDrgApply drgApply = this.iYbDrgApplyService.findDrgApplyByApplyDateStrs(applyDateStr, areaType);
+            if (drgApply != null) {
+                int count = iYbDrgJkService.delDrgJkApplyDataByPid(drgApply.getId());
+                if(count > 0) {
+                    YbDrgApply updateApply = new YbDrgApply();
+                    updateApply.setId(drgApply.getId());
+                    updateApply.setState(YbDefaultValue.DRGAPPLYSTATE_2);
+                    iYbDrgApplyService.updateYbDrgApply(updateApply);
+                    msg = "ok";
+                } else {
+                    msg = "no1";
+                }
+            } else {
+                msg = "no";
+            }
+        } catch (Exception e) {
+            msg = e.getMessage();
+            log.error(msg);
+        }
+        return msg;
+    }
+
     private Lock lockDrgJk = new ReentrantLock();
 
     @Override
@@ -215,28 +283,68 @@ public class YbDrgApplyDataServiceImpl extends ServiceImpl<YbDrgApplyDataMapper,
                         List<YbDrgApplyData> dataList = this.list(wrapper);
 
                         if (dataList.size() > 0) {
-                            List<ComType> createTypeList = new ArrayList<>();
+                            List<YbDrgRelate> createRelateList = new ArrayList<>();
+                            List<YbDrgRelate> queryRelateList = new ArrayList<>();
+                            List<YbDrgDks> createDksList = new ArrayList<>();
+                            List<YbDrgDks> abcDksList = new ArrayList<>();
+                            List<YbDrgDks> queryDksList = new ArrayList<>();
                             MySqlDB<YbDrgJkData> mysqlDB = new MySqlDB<>();
+                            MySqlDB<YbDrgJkDataDept> mysqlDBDept = new MySqlDB<>();
                             String mysql = this.getSql(dataList);
                             List<YbDrgJkData> jkList = mysqlDB.excuteSqlRS(new YbDrgJkData(), mysql);
-                            List<String> dksJkList = ListUtil.toLinkedList("小儿外科","急诊外科","肝胆外科","神经内科");
+                            List<YbDrgJkDataDept> dksJkDeptList = mysqlDBDept.excuteSqlRS(new YbDrgJkDataDept(), "select * from V_dept_info");
 
-                            List<ComType> queryDksList = new ArrayList<>();
                             List<YbDrgJk> createList = new ArrayList<>();
                             List<YbDrgJkData> query = new ArrayList<>();
-                            int ctType= 4;
                             if (jkList.size() > 0) {
-                                ComType typeQuery= new ComType();
-                                typeQuery.setIsDeletemark(1);
-                                typeQuery.setCtType(ctType);
-                                List<ComType> typeList = iComTypeService.findComTypeList(typeQuery);
-                                for (String dksName : dksJkList) {
-                                    if(dksName!=null) {
-                                        String dksNameTrim = dksName.trim();
-                                        queryDksList = typeList.stream().filter(s -> s.getCtName() != null && s.getCtName().trim().equals(dksNameTrim)).collect(Collectors.toList());
-                                        if (queryDksList.size() == 0) {
-                                            this.getCreateDksList(createTypeList, dksName, ctType);
+                                List<YbDrgRelate> relateList = iYbDrgRelateService.findDrgRelateList();
+                                List<YbDrgDks> dksList = iYbDrgDksService.findDksList(new YbDrgDks(), 0);
+                                List<String> dksIdList = new ArrayList<>();
+                                for (YbDrgJkDataDept item : dksJkDeptList) {
+                                    if(StringUtils.isBlank(item.getDzy_id())){
+                                        continue;
+                                    }
+                                    item.setYq(item.getYq() == null ? "" : item.getYq());
+                                    item.setYq(this.getYq(item.getYq()));
+                                    item.setBq_code(item.getBq_code() == null ? "" : item.getBq_code());
+                                    item.setKs_id(item.getKs_id() == null ? "" : item.getKs_id());
+                                    item.setDzy_id(item.getDzy_id() == null ? "" : item.getDzy_id());
+
+                                    queryRelateList = relateList.stream().filter(s -> this.ckIsCunZai(s, item)).collect(Collectors.toList());
+
+                                    if (queryRelateList.size() == 0) {
+                                        YbDrgRelate relateCreate = new YbDrgRelate();
+                                        relateCreate.setBqCode(item.getBq_code());
+                                        relateCreate.setBqName(item.getBq_name());
+                                        relateCreate.setKsCode(item.getKs_id());
+                                        relateCreate.setKsName(item.getKs_name());
+                                        relateCreate.setDzyCode(item.getDzy_id());
+                                        relateCreate.setDzyName(item.getDzy_name());
+                                        relateCreate.setYq(item.getYq());
+                                        createRelateList.add(relateCreate);
+
+                                        if (!dksIdList.contains(item.getDzy_id() + item.getYq())) {
+                                            dksIdList.add(item.getDzy_id() + item.getYq());
+                                            YbDrgDks dksCtrate = new YbDrgDks();
+                                            dksCtrate.setDksId(item.getDzy_id());
+                                            dksCtrate.setDksName(item.getDzy_name());
+                                            dksCtrate.setAreaId(item.getYq().equals("西院") ? 1 : 0);
+                                            dksCtrate.setAreaName(item.getYq());
+                                            abcDksList.add(dksCtrate);
                                         }
+                                    }
+                                }
+
+                                for (YbDrgDks item : abcDksList) {
+                                    queryDksList = dksList.stream().filter(s -> s.getDksId().equals(item.getDksId()) &&
+                                            s.getAreaId().equals(item.getAreaId())).collect(Collectors.toList());
+                                    if (queryDksList.size() == 0) {
+                                        YbDrgDks dksCtrate = new YbDrgDks();
+                                        dksCtrate.setDksId(item.getDksId());
+                                        dksCtrate.setDksName(item.getDksName());
+                                        dksCtrate.setAreaId(item.getAreaId());
+                                        dksCtrate.setAreaName(item.getAreaName());
+                                        createDksList.add(dksCtrate);
                                     }
                                 }
 
@@ -245,6 +353,7 @@ public class YbDrgApplyDataServiceImpl extends ServiceImpl<YbDrgApplyDataMapper,
                                             s.getBah().equals(item.getBah())).collect(Collectors.toList());
                                     if (query.size() > 0) {
                                         YbDrgJkData jkData = query.get(0);
+                                        jkData.setYq(this.getYq(jkData.getYq()));
                                         YbDrgJk jk = new YbDrgJk();
                                         jk.setId(UUID.randomUUID().toString());
                                         jk.setApplyDataId(item.getId());
@@ -265,6 +374,8 @@ public class YbDrgApplyDataServiceImpl extends ServiceImpl<YbDrgApplyDataMapper,
                                         jk.setQtzdName(jkData.getQtzdName());
                                         jk.setQtssCode(jkData.getQtssCode());
                                         jk.setQtssName(jkData.getQtssName());
+                                        jk.setYq(jkData.getYq());
+                                        jk.setDeptId(jkData.getDeptId());
                                         jk.setDeptName(jkData.getDeptName());
                                         jk.setAreaId(jkData.getAreaId());
                                         jk.setAreaName(jkData.getAreaName());
@@ -277,22 +388,15 @@ public class YbDrgApplyDataServiceImpl extends ServiceImpl<YbDrgApplyDataMapper,
                                         jk.setZzysDocName(jkData.getZzysDocName());
                                         jk.setZyysDocId(jkData.getZyysDocId());
                                         jk.setZyysDocName(jkData.getZyysDocName());
+                                        jk.setYlzDeptId(jkData.getYlzDeptId());
                                         jk.setYlzDeptName(jkData.getYlzDeptName());
                                         jk.setYlzDocId(jkData.getYlzDocId());
                                         jk.setYlzDocName(jkData.getYlzDocName());
 
-                                        queryDksList = typeList.stream().filter(s->s.getCtName() != null && s.getCtName().trim().equals(jkData.getDeptName())).collect(Collectors.toList());
-                                        if(queryDksList.size() == 0) {
-                                            queryDksList = createTypeList.stream().filter(s->s.getCtName().equals(jkData.getDeptName())).collect(Collectors.toList());
-                                            if(queryDksList.size() == 0) {
-                                                this.getCreateDksList(createTypeList, jkData.getDeptName(), ctType);
-                                            }
-                                        }
-
                                         createList.add(jk);
                                     }
                                 }
-                                if(createList.size() > 0) {
+                                if (createList.size() > 0) {
                                     iYbDrgJkService.saveBatch(createList);
                                     YbDrgApply updateApply = new YbDrgApply();
                                     updateApply.setId(drgApply.getId());
@@ -301,17 +405,20 @@ public class YbDrgApplyDataServiceImpl extends ServiceImpl<YbDrgApplyDataMapper,
                                     msg = "ok";
                                 }
                             }
-                            if(createTypeList.size() > 0) {
-                                iComTypeService.saveBatch(createTypeList);
+                            if (createRelateList.size() > 0) {
+                                iYbDrgRelateService.saveBatch(createRelateList);
+                            }
+                            if (createDksList.size() > 0) {
+                                iYbDrgDksService.saveBatch(createDksList);
                             }
                         } else {
-                            msg = applyDateStr+" DRG复议申请未上传数据.";
+                            msg = applyDateStr + " DRG复议申请未上传数据.";
                         }
                     } else {
-                        msg = applyDateStr+" DRG接口数据已获取完.";
+                        msg = applyDateStr + " DRG接口数据已获取完.";
                     }
                 } else {
-                    msg = "无法查找"+applyDateStr+" DRG复议申请.";
+                    msg = "无法查找" + applyDateStr + " DRG复议申请.";
                 }
             } catch (Exception e) {
                 msg = e.getMessage();
@@ -324,16 +431,6 @@ public class YbDrgApplyDataServiceImpl extends ServiceImpl<YbDrgApplyDataMapper,
         }
         System.out.println("DrgJk end:" + msg);
         return msg;
-    }
-
-    private void getCreateDksList(List<ComType> createTypeList,String ctName,int ctType){
-        ComType create = new ComType();
-        create.setCtName(ctName);
-        create.setCtType(ctType);
-        create.setIsDeletemark(1);
-        create.setState(0);
-        create.setCreateTime(new Date());
-        createTypeList.add(create);
     }
 
     private String getSql(List<YbDrgApplyData> dataList) {

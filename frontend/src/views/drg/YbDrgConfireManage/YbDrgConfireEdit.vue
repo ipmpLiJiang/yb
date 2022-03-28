@@ -58,16 +58,11 @@
             v-bind="formItemLayout"
             label="管理科室列表"
           >
-            <a-select
-              allowClear
-              :showSearch="true"
-              @change="selectKsTypeChange"
-              v-model="vdksName"
+            <input-selectdks
+            ref="inputSelectDks"
+            @selectChange=selectDksChange
             >
-              <a-select-option :value="d.text" v-for="d in ksList" :key="d.text">
-                {{d.text}}
-              </a-select-option>
-            </a-select>
+            </input-selectdks>
           </a-form-item>
         </a-col>
         <a-col :span=4>
@@ -101,6 +96,7 @@
 </template>
 <script>
 import InputSelect from '../../common/InputSelect'
+import InputSelectdks from '../../common/InputSelectDks'
 import YbDrgConfireData from './YbDrgConfireData'
 const formItemLayout = {
   labelCol: { span: 6 },
@@ -113,7 +109,7 @@ export default {
       default: false
     }
   },
-  components: { InputSelect, YbDrgConfireData },
+  components: { InputSelect, InputSelectdks, YbDrgConfireData },
   data () {
     return {
       loading: false,
@@ -123,8 +119,6 @@ export default {
       isUpdate: false,
       isEdit: false,
       txtValue: '',
-      ksList: [],
-      vdksName: '',
       selectAdminTypeDataSource: [],
       user: this.$store.state.account.user,
       ybDrgConfire: {}
@@ -133,12 +127,11 @@ export default {
   methods: {
     reset () {
       this.loading = false
-      this.ksList = []
       this.ybDrgConfire = {}
       this.$refs.inputSelectDoctor.dataSource = []
       this.$refs.inputSelectDoctor.value = ''
-      // this.$refs.inputSelectDept.dataSource = []
-      // this.$refs.inputSelectDept.value = ''
+      this.$refs.inputSelectDks.dataSource = []
+      this.$refs.inputSelectDks.value = ''
       this.form.resetFields()
     },
     onClose () {
@@ -152,39 +145,6 @@ export default {
     del () {
       this.isUpdate = true
     },
-    findComType4 (obj) {
-      this.findComTypeAdmin4()
-      // this.findComTypeUser4()
-    },
-    findComTypeAdmin4 () {
-      let ctParams = {ctType: 4, isDeletemark: 1}
-      this.ksList = []
-      this.$get('comType/findList', {
-        ...ctParams
-      }).then((r) => {
-        if (r.data.data.length > 0) {
-          for (var i in r.data.data) {
-            var at = {text: r.data.data[i].ctName}
-            this.ksList.push(at)
-          }
-        }
-      }
-      )
-    },
-    findComTypeUser4 () {
-      this.ksList = []
-      this.$get('ybDrgConfireData/findDrgConfireDataList', {
-        areaType: this.ybDrgConfire.areaType
-      }).then((r) => {
-        if (r.data.data.length > 0) {
-          for (var i in r.data.data) {
-            var at = {text: r.data.data[i].dksName}
-            this.ksList.push(at)
-          }
-        }
-      }
-      )
-    },
     selectDoctorChange (item) {
       this.ybDrgConfire.doctorCode = item.value
       this.ybDrgConfire.doctorName = item.text
@@ -192,17 +152,14 @@ export default {
     handleAdminTypeChange (value) {
       this.ybDrgConfire.adminType = value
     },
-    selectDeptChange (item) {
-      this.ybAcData.deptId = item.value
-      this.ybAcData.deptName = item.text
-    },
-    selectKsTypeChange (value) {
-      this.ybAcData.dksName = value
+    selectDksChange (item) {
+      this.ybAcData.dksId = item.value
+      this.ybAcData.dksName = item.text
     },
     setFormValues (obj, areaType, atDataSource) {
+      this.ybAcData.dksId = ''
       this.ybAcData.dksName = ''
       this.ybDrgConfire.areaType = areaType
-      this.findComType4(obj)
       this.isUpdate = false
       this.selectAdminTypeDataSource = atDataSource
       this.form.getFieldDecorator('adminType')
@@ -252,11 +209,9 @@ export default {
           doctorName: this.ybDrgConfire.doctorName
         })
       }
-      // if (this.ybAcData.deptId !== '' && this.ybAcData.deptId !== undefined) {
-      if (this.ybAcData.dksName !== '' && this.ybAcData.dksName !== undefined) {
+      if (this.ybAcData.dksId !== '' && this.ybAcData.dksId !== undefined) {
         this.ybDrgConfire.child = [
-          // { deptId: this.ybAcData.deptId, deptName: this.ybAcData.deptName }
-          { dksName: this.ybAcData.dksName }
+          { dksId: this.ybAcData.dksId, dksName: this.ybAcData.dksName }
         ]
         isData = true
       } else {
@@ -301,10 +256,10 @@ export default {
             })
           }
         }
-        // this.$refs.inputSelectDept.dataSource = []
-        // this.$refs.inputSelectDept.value = ''
+        this.$refs.inputSelectDks.dataSource = []
+        this.$refs.inputSelectDks.value = ''
+        this.ybAcData.dksId = ''
         this.ybAcData.dksName = ''
-        this.vdksName = ''
       })
     },
     setFields () {

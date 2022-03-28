@@ -5,7 +5,7 @@
         <a-row>
           <div :class="advanced ? null : 'fold'">
             <a-col :md="8" :sm="24">
-              <a-form-item label="通用字段" v-bind="formItemLayout">
+              <a-form-item label="关键字" v-bind="formItemLayout">
                 <a-input v-model="queryParams.currencyField" />
               </a-form-item>
             </a-col>
@@ -143,12 +143,12 @@ export default {
   computed: {
     columns () {
       return [{
-        title: '编码',
+        title: '大专业编码',
         dataIndex: 'dksId',
         width: 80
       },
       {
-        title: '名称',
+        title: '大专业名称',
         dataIndex: 'dksName',
         width: 350
       },
@@ -234,6 +234,7 @@ export default {
         sortField = sortedInfo.field
         sortOrder = sortedInfo.order
       }
+      this.queryParams.dataJson = '[{title: "大专业编码", dataIndex: "dksId"},{title: "大专业名称",dataIndex: "dksName"},{title: "院区", dataIndex: "areaName"}]'
       this.$export('ybDrgDks/excel', {
         sortField: sortField,
         sortOrder: sortOrder,

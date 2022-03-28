@@ -57,7 +57,7 @@ public interface IYbReconsiderApplyService extends IService<YbReconsiderApply> {
 
     String getSendMessage(String applyDateStr,Integer areaType);
 
-    String getSendMessage(String applyDateStr, Date endDate, Integer typeno, Integer areaType);
+    String getSendMessage(String applyDateStr, Date endDate, Integer typeno, Integer areaType, Integer sourceType);
 
     String getSendNoticeMessage(String title, Integer areaType);
 

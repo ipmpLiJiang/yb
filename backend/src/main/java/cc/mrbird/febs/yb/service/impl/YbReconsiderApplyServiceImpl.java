@@ -686,14 +686,18 @@ public class YbReconsiderApplyServiceImpl extends ServiceImpl<YbReconsiderApplyM
      * @return 短信内容
      */
     @Override
-    public String getSendMessage(String applyDateStr, Date endDate, Integer typeno, Integer areaType) {
+    public String getSendMessage(String applyDateStr, Date endDate, Integer typeno, Integer areaType , Integer sourceType) {
         applyDateStr = applyDateStr.replace("-", "年");
         String wangz = febsProperties.getSmsWebsite();
         String ssm = "";
-        if (typeno == YbDefaultValue.TYPENO_1) {
-            ssm = "第一版";
+        if(sourceType == null || sourceType==0) {
+            if (typeno == YbDefaultValue.TYPENO_1) {
+                ssm = "第一版";
+            } else {
+                ssm = "第二版";
+            }
         } else {
-            ssm = "第二版";
+            ssm = "非常规";
         }
         Calendar now = Calendar.getInstance();
         now.setTime(endDate);

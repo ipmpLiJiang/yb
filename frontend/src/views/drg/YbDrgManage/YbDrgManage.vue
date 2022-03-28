@@ -4,48 +4,45 @@
     class="card-area"
   >
     <template>
-      <div style="text-align:center;margin-bottom:16px">
-        <a-row justify="center"
-          align="middle">
-          <a-col :span=5>
-              复议年月：
-              <a-month-picker
-                placeholder="请输入复议年月"
-                @change="monthChange"
-                style="width: 105px"
-                :default-value="searchApplyDate"
-                :format="monthFormat"
-              />
-          </a-col>
-          <a-col :span=8>
-            <a-select v-model="searchItem.keyField" style="width: 110px">
-              <a-select-option
-              v-for="d in searchDropDataSource"
-              :key="d.value"
-              >
-              {{ d.text }}
-              </a-select-option>
-            </a-select>
-            =
-            <a-input-search placeholder="请输入关键字" v-model="searchItem.value" style="width: 160px" enter-button @search="searchTable" />
-          </a-col>
-          <a-col :span=3 v-show="tableSelectKey==1?true:false">
-            <a-popconfirm
-              title="确定批量接受？"
-              @confirm="batchAccept"
-              okText="确定"
-              cancelText="取消"
-              :disabled="!hasSelected"
+      <div style="margin-bottom:16px">
+        <a-row>
+          复议年月：
+          <a-month-picker
+            placeholder="请输入复议年月"
+            @change="monthChange"
+            style="width: 105px;margin-right: 6px"
+            :default-value="searchApplyDate"
+            :format="monthFormat"
+          />
+          <a-select v-model="searchItem.keyField" style="width: 110px">
+            <a-select-option
+            v-for="d in searchDropDataSource"
+            :key="d.value"
             >
-              <a-button type="primary" :disabled="!hasSelected" style="margin-right: 15px">批量接受</a-button>
-            </a-popconfirm>
-          </a-col>
-          <a-col :span=3 >
-            <a-button
-            type="primary"
-            @click="onHistory"
-            >历史记录</a-button>
-          </a-col>
+            {{ d.text }}
+            </a-select-option>
+          </a-select>
+          =
+          <a-input-search
+            placeholder="请输入关键字"
+            v-model="searchItem.value"
+            style="width: 180px;margin-right: 22px"
+            enter-button
+            @search="searchTable" />
+          <a-popconfirm
+            title="确定批量接受？"
+            v-show="tableSelectKey==1?true:false"
+            @confirm="batchAccept"
+            okText="确定"
+            cancelText="取消"
+            :disabled="!hasSelected"
+          >
+            <a-button type="primary" :disabled="!hasSelected" style="margin-right: 22px">批量接受</a-button>
+          </a-popconfirm>
+          <a-button
+          type="primary"
+          @click="onHistory"
+          >历史记录</a-button>
         </a-row>
       </div>
     </template>
@@ -271,7 +268,7 @@ export default {
     },
     handleDrgClose () {
       this.drgVisiable = false
-      // 保存数据返回时，申诉理由未更新，刷新后更新数据
+      // 保存数据返回时，医院意见未更新，刷新后更新数据
       this.$refs.ybDrgManageStayed.search()
     },
     drg (record) {
@@ -280,7 +277,7 @@ export default {
     },
     handleDrgCompleteClose () {
       this.drgCompleteVisiable = false
-      // 保存数据返回时，申诉理由未更新，刷新后更新数据
+      // 保存数据返回时，医院意见未更新，刷新后更新数据
       this.$refs.ybDrgManageCompleted.search()
     },
     drgComplete (record) {

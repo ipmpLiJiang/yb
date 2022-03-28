@@ -25,11 +25,24 @@
       </a-form-item>
       <a-divider orientation="left">更改信息</a-divider>
       <a-form-item
+          label="复议科室类型"
+          v-bind="formItemLayout"
+        >
+        <a-radio-group  v-decorator="['deptType']" @change="handleDeptChange">
+          <a-radio value="1">
+            医疗组科室
+          </a-radio>
+          <a-radio value="2">
+            固定科室
+          </a-radio>
+        </a-radio-group>
+      </a-form-item>
+      <a-form-item
         v-bind="formItemLayout"
         label="更改科室名称"
       >
         <input-selectdks
-          ref="inputSelectVerifyDks"
+          ref="inputSelectDks"
           v-decorator="['dksIdTo', {rules: [{ required: checkDeptType, message: '更改科室名称不能为空' }] }]"
           @selectChange=selectDksChang
         >
@@ -106,8 +119,8 @@ export default {
       this.$refs.inputSelectDoctor.value = ''
       this.$refs.inputSelectDoctorTo.dataSource = []
       this.$refs.inputSelectDoctorTo.value = ''
-      this.$refs.inputSelectVerifyDks.dataSource = []
-      this.$refs.inputSelectVerifyDks.value = ''
+      this.$refs.inputSelectDks.dataSource = []
+      this.$refs.inputSelectDks.value = ''
       this.form.resetFields()
     },
     onClose () {
@@ -137,6 +150,8 @@ export default {
         this.$nextTick(() => {
           this.form.validateFields(['dksIdTo'], { force: this.checkDeptType })
         })
+        this.$refs.inputSelectDks.dataSource = []
+        this.$refs.inputSelectDks.value = ''
         this.ybPriorityLevel.dksNameTo = ''
         this.ybPriorityLevel.dksIdTo = ''
         this.form.getFieldDecorator('dksNameTo')
@@ -148,11 +163,11 @@ export default {
       }
     },
     setFormValues (areaType) {
-      // this.form.getFieldDecorator('deptType')
-      // this.form.setFieldsValue({
-      //   deptType: '2'
-      // })
-      // this.checkDeptType = true
+      this.form.getFieldDecorator('deptType')
+      this.form.setFieldsValue({
+        deptType: '2'
+      })
+      this.checkDeptType = true
       this.areaType = areaType
     },
     handleSubmit () {
@@ -194,6 +209,14 @@ export default {
           if (this.ybReconsiderPriorityLevel.doctorCodeTo === '') {
             this.ybReconsiderPriorityLevel.doctorNameTo = ''
           }
+          if (this.ybReconsiderPriorityLevel.dksIdTo === '') {
+            this.ybReconsiderPriorityLevel.dksIdTo = ''
+            this.ybReconsiderPriorityLevel.dksNameTo = ''
+          }
+          if (this.ybReconsiderPriorityLevel.deptType === '1') {
+            this.ybReconsiderPriorityLevel.dksIdTo = ''
+            this.ybReconsiderPriorityLevel.dksNameTo = ''
+          }
           this.ybReconsiderPriorityLevel.areaType = this.areaType
           this.$post('ybReconsiderPriorityLevel', {
             ...this.ybReconsiderPriorityLevel
@@ -207,7 +230,7 @@ export default {
       })
     },
     setFields () {
-      let values = this.form.getFieldsValue(['doctorCode', 'doctorName', 'dksIdTo', 'dksNameTo', 'doctorCodeTo', 'doctorNameTo'])
+      let values = this.form.getFieldsValue(['doctorCode', 'doctorName', 'deptType', 'dksIdTo', 'dksNameTo', 'doctorCodeTo', 'doctorNameTo'])
       if (typeof values !== 'undefined') {
         Object.keys(values).forEach(_key => {
           this.ybReconsiderPriorityLevel[_key] = values[_key]

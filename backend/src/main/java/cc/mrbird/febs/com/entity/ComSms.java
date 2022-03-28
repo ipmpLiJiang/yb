@@ -66,6 +66,11 @@ private static final long serialVersionUID=1L;
     public static final int SENDTYPE_8 = 8 ;
 
     /**
+     * 9 非常规截止日期提醒
+     */
+    public static final int SENDTYPE_9 = 9 ;
+
+    /**
      * 10 DRG核对发生
      */
     public static final int SENDTYPE_10 = 10 ;

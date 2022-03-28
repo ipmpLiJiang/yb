@@ -104,13 +104,13 @@ public class YbDrgApplyDataResult {
      * 入院日期
      */
     @ExcelField(value = "入院日期")
-    private Date ryDate;
+    private String ryDateStr;
 
     /**
      * 出院日期
      */
     @ExcelField(value = "出院日期")
-    private Date cyDate;
+    private String cyDateStr;
 
     /**
      * 统筹支付
@@ -179,9 +179,15 @@ public class YbDrgApplyDataResult {
     private String qtssName;
 
     /**
-     * 科室
+     * 院区
      */
-    @ExcelField(value = "DRG科室")
+    @ExcelField(value = "院区")
+    private String yq;
+
+    /**
+     * 大专业
+     */
+    @ExcelField(value = "大专业")
     private String deptName;
 
     /**
