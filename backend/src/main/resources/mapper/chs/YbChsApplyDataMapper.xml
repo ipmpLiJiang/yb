@@ -1,0 +1,262 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cc.mrbird.febs.chs.dao.YbChsApplyDataMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="cc.mrbird.febs.chs.entity.YbChsApplyData">
+        <id column="id" property="id"/>
+        <result column="pid" property="pid"/>
+        <result column="appealEndDate" property="appealEndDate"/>
+        <result column="payPlaceType" property="payPlaceType"/>
+        <result column="ydState" property="ydState"/>
+        <result column="areaName" property="areaName"/>
+        <result column="yyjgCode" property="yyjgCode"/>
+        <result column="yyjgName" property="yyjgName"/>
+        <result column="deptName" property="deptName"/>
+        <result column="doctorName" property="doctorName"/>
+        <result column="medicalType" property="medicalType"/>
+        <result column="zymzNumber" property="zymzNumber"/>
+        <result column="insuredName" property="insuredName"/>
+        <result column="enterHospitalDate" property="enterHospitalDate"/>
+        <result column="outHospitalDate" property="outHospitalDate"/>
+        <result column="settlementDate" property="settlementDate"/>
+        <result column="cardNumber" property="cardNumber"/>
+        <result column="projectCode" property="projectCode"/>
+        <result column="projectName" property="projectName"/>
+        <result column="projectYyName" property="projectYyName"/>
+        <result column="ruleName" property="ruleName"/>
+        <result column="violateCsPrice" property="violateCsPrice"/>
+        <result column="violatePrice" property="violatePrice"/>
+        <result column="violateReason" property="violateReason"/>
+        <result column="zdNote" property="zdNote"/>
+        <result column="costDate" property="costDate"/>
+        <result column="insuredType" property="insuredType"/>
+        <result column="num" property="num"/>
+        <result column="price" property="price"/>
+        <result column="medicalPrice" property="medicalPrice"/>
+        <result column="tcPayPrice" property="tcPayPrice"/>
+        <result column="specs" property="specs"/>
+        <result column="jx" property="jx"/>
+        <result column="jgLevel" property="jgLevel"/>
+        <result column="COMMENTS" property="comments"/>
+        <result column="STATE" property="state"/>
+        <result column="IS_DELETEMARK" property="isDeletemark"/>
+        <result column="orderNum" property="orderNum"/>
+        <result column="isOutpfees" property="isOutpfees"/>
+        <result column="orderSettlementNum" property="orderSettlementNum"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, pid, appealEndDate, payPlaceType, ydState, areaName, yyjgCode, yyjgName, deptName, doctorName, medicalType, zymzNumber, insuredName, enterHospitalDate, outHospitalDate, settlementDate, cardNumber, projectCode, projectName, projectYyName, ruleName, violateCsPrice, violatePrice, violateReason, zdNote, costDate, insuredType, num, price, medicalPrice, tcPayPrice, specs, jx, jgLevel, COMMENTS, STATE, IS_DELETEMARK, orderNum, isOutpfees, orderSettlementNum
+    </sql>
+    <update id="updateYbChsApplyData" parameterType="cc.mrbird.febs.chs.entity.YbChsApplyData">
+        update yb_chs_apply_data
+        <trim prefix="set" suffixOverrides=",">
+            <if test="pid != null">pid=#{pid},</if>
+            <if test="appealEndDate != null">appealEndDate=#{appealEndDate},</if>
+            <if test="payPlaceType != null">payPlaceType=#{payPlaceType},</if>
+            <if test="ydState != null">ydState=#{ydState},</if>
+            <if test="areaName != null">areaName=#{areaName},</if>
+            <if test="yyjgCode != null">yyjgCode=#{yyjgCode},</if>
+            <if test="yyjgName != null">yyjgName=#{yyjgName},</if>
+            <if test="deptName != null">deptName=#{deptName},</if>
+            <if test="doctorName != null">doctorName=#{doctorName},</if>
+            <if test="medicalType != null">medicalType=#{medicalType},</if>
+            <if test="zymzNumber != null">zymzNumber=#{zymzNumber},</if>
+            <if test="insuredName != null">insuredName=#{insuredName},</if>
+            <if test="enterHospitalDate != null">enterHospitalDate=#{enterHospitalDate},</if>
+            <if test="outHospitalDate != null">outHospitalDate=#{outHospitalDate},</if>
+            <if test="settlementDate != null">settlementDate=#{settlementDate},</if>
+            <if test="cardNumber != null">cardNumber=#{cardNumber},</if>
+            <if test="projectCode != null">projectCode=#{projectCode},</if>
+            <if test="projectName != null">projectName=#{projectName},</if>
+            <if test="projectYyName != null">projectYyName=#{projectYyName},</if>
+            <if test="ruleName != null">ruleName=#{ruleName},</if>
+            <if test="violateCsPrice != null">violateCsPrice=#{violateCsPrice},</if>
+            <if test="violatePrice != null">violatePrice=#{violatePrice},</if>
+            <if test="violateReason != null">violateReason=#{violateReason},</if>
+            <if test="zdNote != null">zdNote=#{zdNote},</if>
+            <if test="costDate != null">costDate=#{costDate},</if>
+            <if test="insuredType != null">insuredType=#{insuredType},</if>
+            <if test="num != null">num=#{num},</if>
+            <if test="price != null">price=#{price},</if>
+            <if test="medicalPrice != null">medicalPrice=#{medicalPrice},</if>
+            <if test="tcPayPrice != null">tcPayPrice=#{tcPayPrice},</if>
+            <if test="specs != null">specs=#{specs},</if>
+            <if test="jx != null">jx=#{jx},</if>
+            <if test="jgLevel != null">jgLevel=#{jgLevel},</if>
+            <if test="comments != null">COMMENTS=#{comments},</if>
+            <if test="state != null">STATE=#{state},</if>
+            <if test="isDeletemark != null">IS_DELETEMARK=#{isDeletemark},</if>
+            <if test="orderNum != null">orderNum=#{orderNum},</if>
+            <if test="isOutpfees != null">isOutpfees=#{isOutpfees},</if>
+            <if test="orderSettlementNum != null">orderSettlementNum=#{orderSettlementNum},</if>
+        </trim>
+        where id=#{id}
+
+    </update>
+    <select id="findYbChsApplyData" resultType="cc.mrbird.febs.chs.entity.YbChsApplyData"
+            parameterType="cc.mrbird.febs.chs.entity.YbChsApplyData">
+        select * from yb_chs_apply_data
+        where 1=1
+        <if test="ybChsApplyData.id != null and ybChsApplyData.id != ''">and id =#{ ybChsApplyData.id}</if>
+        <if test="ybChsApplyData.pid != null and ybChsApplyData.pid != ''">and pid = #{ ybChsApplyData.pid}</if>
+        <if test="ybChsApplyData.appealEndDateFrom!= null">
+            AND ybChsApplyData.appealEndDate <![CDATA[ >= ]]>  appealEndDateFrom}
+        </if>
+        <if test="ybChsApplyData.appealEndDateTo!= null">
+            AND ybChsApplyData.appealEndDate <![CDATA[ <= ]]>  appealEndDateTo}
+        </if>
+        <if test="ybChsApplyData.payPlaceType != null and ybChsApplyData.payPlaceType != ''">and payPlaceType like
+            concat('%', #{ ybChsApplyData.payPlaceType} ,'%')
+        </if>
+        <if test="ybChsApplyData.ydState != null and ybChsApplyData.ydState != ''">and ydState like concat('%',
+            #{ ybChsApplyData.ydState} ,'%')
+        </if>
+        <if test="ybChsApplyData.areaName != null and ybChsApplyData.areaName != ''">and areaName like concat('%',
+            #{ ybChsApplyData.areaName} ,'%')
+        </if>
+        <if test="ybChsApplyData.yyjgCode != null and ybChsApplyData.yyjgCode != ''">and yyjgCode like concat('%',
+            #{ ybChsApplyData.yyjgCode} ,'%')
+        </if>
+        <if test="ybChsApplyData.yyjgName != null and ybChsApplyData.yyjgName != ''">and yyjgName like concat('%',
+            #{ ybChsApplyData.yyjgName} ,'%')
+        </if>
+        <if test="ybChsApplyData.deptName != null and ybChsApplyData.deptName != ''">and deptName like concat('%',
+            #{ ybChsApplyData.deptName} ,'%')
+        </if>
+        <if test="ybChsApplyData.doctorName != null and ybChsApplyData.doctorName != ''">and doctorName like concat('%',
+            #{ ybChsApplyData.doctorName} ,'%')
+        </if>
+        <if test="ybChsApplyData.medicalType != null and ybChsApplyData.medicalType != ''">and medicalType like
+            concat('%', #{ ybChsApplyData.medicalType} ,'%')
+        </if>
+        <if test="ybChsApplyData.zymzNumber != null and ybChsApplyData.zymzNumber != ''">and zymzNumber like concat('%',
+            #{ ybChsApplyData.zymzNumber} ,'%')
+        </if>
+        <if test="ybChsApplyData.insuredName != null and ybChsApplyData.insuredName != ''">and insuredName like
+            concat('%', #{ ybChsApplyData.insuredName} ,'%')
+        </if>
+        <if test="ybChsApplyData.enterHospitalDateFrom!= null">
+            AND ybChsApplyData.enterHospitalDate <![CDATA[ >= ]]>  enterHospitalDateFrom}
+        </if>
+        <if test="ybChsApplyData.enterHospitalDateTo!= null">
+            AND ybChsApplyData.enterHospitalDate <![CDATA[ <= ]]>  enterHospitalDateTo}
+        </if>
+        <if test="ybChsApplyData.outHospitalDateFrom!= null">
+            AND ybChsApplyData.outHospitalDate <![CDATA[ >= ]]>  outHospitalDateFrom}
+        </if>
+        <if test="ybChsApplyData.outHospitalDateTo!= null">
+            AND ybChsApplyData.outHospitalDate <![CDATA[ <= ]]>  outHospitalDateTo}
+        </if>
+        <if test="ybChsApplyData.settlementDateFrom!= null">
+            AND ybChsApplyData.settlementDate <![CDATA[ >= ]]>  settlementDateFrom}
+        </if>
+        <if test="ybChsApplyData.settlementDateTo!= null">
+            AND ybChsApplyData.settlementDate <![CDATA[ <= ]]>  settlementDateTo}
+        </if>
+        <if test="ybChsApplyData.cardNumber != null and ybChsApplyData.cardNumber != ''">and cardNumber like concat('%',
+            #{ ybChsApplyData.cardNumber} ,'%')
+        </if>
+        <if test="ybChsApplyData.projectCode != null and ybChsApplyData.projectCode != ''">and projectCode like
+            concat('%', #{ ybChsApplyData.projectCode} ,'%')
+        </if>
+        <if test="ybChsApplyData.projectName != null and ybChsApplyData.projectName != ''">and projectName like
+            concat('%', #{ ybChsApplyData.projectName} ,'%')
+        </if>
+        <if test="ybChsApplyData.projectYyName != null and ybChsApplyData.projectYyName != ''">and projectYyName like
+            concat('%', #{ ybChsApplyData.projectYyName} ,'%')
+        </if>
+        <if test="ybChsApplyData.ruleName != null and ybChsApplyData.ruleName != ''">and ruleName like concat('%',
+            #{ ybChsApplyData.ruleName} ,'%')
+        </if>
+        <if test="ybChsApplyData.violateReason != null and ybChsApplyData.violateReason != ''">and violateReason like
+            concat('%', #{ ybChsApplyData.violateReason} ,'%')
+        </if>
+        <if test="ybChsApplyData.zdNote != null and ybChsApplyData.zdNote != ''">and zdNote like concat('%',
+            #{ ybChsApplyData.zdNote} ,'%')
+        </if>
+        <if test="ybChsApplyData.costDateFrom!= null">
+            AND ybChsApplyData.costDate <![CDATA[ >= ]]>  costDateFrom}
+        </if>
+        <if test="ybChsApplyData.costDateTo!= null">
+            AND ybChsApplyData.costDate <![CDATA[ <= ]]>  costDateTo}
+        </if>
+        <if test="ybChsApplyData.insuredType != null and ybChsApplyData.insuredType != ''">and insuredType like
+            concat('%', #{ ybChsApplyData.insuredType} ,'%')
+        </if>
+        <if test="ybChsApplyData.specs != null and ybChsApplyData.specs != ''">and specs like concat('%',
+            #{ ybChsApplyData.specs} ,'%')
+        </if>
+        <if test="ybChsApplyData.jx != null and ybChsApplyData.jx != ''">and jx like concat('%', #{ ybChsApplyData.jx}
+            ,'%')
+        </if>
+        <if test="ybChsApplyData.jgLevel != null and ybChsApplyData.jgLevel != ''">and jgLevel like concat('%',
+            #{ ybChsApplyData.jgLevel} ,'%')
+        </if>
+        <if test="ybChsApplyData.comments != null and ybChsApplyData.comments != ''">and COMMENTS like concat('%',
+            #{ ybChsApplyData.comments} ,'%')
+        </if>
+        <if test="ybChsApplyData.state != null">and STATE =#{ ybChsApplyData.state}</if>
+        <if test="ybChsApplyData.isDeletemark != null">and IS_DELETEMARK =#{ ybChsApplyData.isDeletemark}</if>
+        <if test="ybChsApplyData.orderNum != null">and orderNum =#{ ybChsApplyData.orderNum}</if>
+        <if test="ybChsApplyData.isOutpfees != null">and isOutpfees =#{ ybChsApplyData.isOutpfees}</if>
+        <if test="ybChsApplyData.orderSettlementNum != null">and orderSettlementNum
+            =#{ ybChsApplyData.orderSettlementNum}
+        </if>
+    </select>
+
+    <select id="findChsApplyDataCount" resultType="Integer">
+        SELECT
+        count(1)
+        FROM
+        yb_chs_apply_data
+        where
+        pid = #{pid}
+        <if test="isOutpfees != null">and isOutpfees =#{ isOutpfees}</if>
+    </select>
+
+    <select id="findChsApplyDataNotCount" resultType="Integer">
+        SELECT
+        count(1)
+        FROM
+        yb_chs_apply_data
+        where
+        pid = #{pid} and
+        <if test="isOutpfees != null">isOutpfees =#{ isOutpfees} and</if>
+        id not in(
+        select applyDataId from yb_chs_jk where
+        applyDateStr = #{applyDateStr} and areaType = #{areaType} and
+        <if test="isOutpfees != null">and isOutpfees =#{ isOutpfees}</if>
+        )
+    </select>
+
+    <select id="findChsApplyDataNotJk" resultType="cc.mrbird.febs.chs.entity.YbChsApplyData">
+        SELECT
+        *
+        FROM
+        yb_chs_apply_data
+        where
+        pid = #{pid} and
+        <if test="isOutpfees != null">isOutpfees =#{ isOutpfees} and</if>
+        id not in(
+        select applyDataId from yb_reconsider_inpatientfees where
+        applyDateStr = #{applyDateStr} and areaType = #{areaType}
+        <if test="isOutpfees != null">and isOutpfees =#{ isOutpfees}</if>
+        )
+    </select>
+
+    <select id="findChsApplyDataBetween" resultType="cc.mrbird.febs.chs.entity.YbChsApplyData">
+        SELECT
+        *
+        FROM
+        yb_chs_apply_data
+        where
+        pid = #{pid} and
+        <if test="state != null">state = #{state} and</if>
+        <if test="isOutpfees != null">isOutpfees =#{ isOutpfees} and</if>
+        orderSettlementNum between #{startNum} and #{endNum}
+    </select>
+
+</mapper>

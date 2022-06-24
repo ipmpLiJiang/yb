@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cc.mrbird.febs.chs.dao.YbChsVerifyMapper">
+
+        <!-- 通用查询映射结果 -->
+        <resultMap id="BaseResultMap" type="cc.mrbird.febs.chs.entity.YbChsVerify">
+                    <id column="id" property="id"/>
+                    <result column="applyDataId" property="applyDataId"/>
+                    <result column="verifyDoctorCode" property="verifyDoctorCode"/>
+                    <result column="verifyDoctorName" property="verifyDoctorName"/>
+                    <result column="verifyDksId" property="verifyDksId"/>
+                    <result column="verifyDksName" property="verifyDksName"/>
+                    <result column="STATE" property="state"/>
+                    <result column="applyDateStr" property="applyDateStr"/>
+                    <result column="orderNum" property="orderNum"/>
+                    <result column="areaType" property="areaType"/>
+                    <result column="sendPersonId" property="sendPersonId"/>
+                    <result column="sendPersonName" property="sendPersonName"/>
+                    <result column="sendDate" property="sendDate"/>
+        </resultMap>
+
+        <!-- 通用查询结果列 -->
+        <sql id="Base_Column_List">
+        id, applyDataId, verifyDoctorCode, verifyDoctorName, verifyDksId, verifyDksName, STATE, applyDateStr, orderNum, areaType, sendPersonId, sendPersonName, sendDate
+    </sql>
+    <update id="updateYbChsVerify" parameterType="cc.mrbird.febs.chs.entity.YbChsVerify">
+        update yb_chs_verify
+        <trim prefix="set" suffixOverrides=",">
+<if test="applyDataId != null">applyDataId=#{applyDataId},</if>
+<if test="verifyDoctorCode != null">verifyDoctorCode=#{verifyDoctorCode},</if>
+<if test="verifyDoctorName != null">verifyDoctorName=#{verifyDoctorName},</if>
+<if test="verifyDksId != null">verifyDksId=#{verifyDksId},</if>
+<if test="verifyDksName != null">verifyDksName=#{verifyDksName},</if>
+<if test="state != null">STATE=#{state},</if>
+<if test="applyDateStr != null">applyDateStr=#{applyDateStr},</if>
+<if test="orderNum != null">orderNum=#{orderNum},</if>
+<if test="areaType != null">areaType=#{areaType},</if>
+<if test="sendPersonId != null">sendPersonId=#{sendPersonId},</if>
+<if test="sendPersonName != null">sendPersonName=#{sendPersonName},</if>
+<if test="sendDate != null">sendDate=#{sendDate},</if>
+        </trim>
+                where id=#{id}
+
+    </update>
+    <select id="findYbChsVerify" resultType="cc.mrbird.febs.chs.entity.YbChsVerify" parameterType="cc.mrbird.febs.chs.entity.YbChsVerify">
+        select  *  from yb_chs_verify
+        where  1=1
+            <if test="ybChsVerify.id != null and ybChsVerify.id != ''"> and id =#{ ybChsVerify.id} </if>
+            <if test="ybChsVerify.applyDataId != null and ybChsVerify.applyDataId != ''"> and applyDataId like concat('%', #{ ybChsVerify.applyDataId} ,'%')</if>
+            <if test="ybChsVerify.verifyDoctorCode != null and ybChsVerify.verifyDoctorCode != ''"> and verifyDoctorCode like concat('%', #{ ybChsVerify.verifyDoctorCode} ,'%')</if>
+            <if test="ybChsVerify.verifyDoctorName != null and ybChsVerify.verifyDoctorName != ''"> and verifyDoctorName like concat('%', #{ ybChsVerify.verifyDoctorName} ,'%')</if>
+            <if test="ybChsVerify.verifyDksId != null and ybChsVerify.verifyDksId != ''"> and verifyDksId like concat('%', #{ ybChsVerify.verifyDksId} ,'%')</if>
+            <if test="ybChsVerify.verifyDksName != null and ybChsVerify.verifyDksName != ''"> and verifyDksName like concat('%', #{ ybChsVerify.verifyDksName} ,'%')</if>
+        <if test="ybChsVerify.state != null"> and STATE =#{ ybChsVerify.state} </if>
+            <if test="ybChsVerify.applyDateStr != null and ybChsVerify.applyDateStr != ''"> and applyDateStr like concat('%', #{ ybChsVerify.applyDateStr} ,'%')</if>
+        <if test="ybChsVerify.orderNum != null"> and orderNum =#{ ybChsVerify.orderNum} </if>
+        <if test="ybChsVerify.areaType != null"> and areaType =#{ ybChsVerify.areaType} </if>
+            <if test="ybChsVerify.sendPersonName != null and ybChsVerify.sendPersonName != ''"> and sendPersonName like concat('%', #{ ybChsVerify.sendPersonName} ,'%')</if>
+        <if test="ybChsVerify.sendDateFrom!= null">
+            AND ybChsVerify.sendDate <![CDATA[ >= ]]>  sendDateFrom}
+        </if>
+        <if test="ybChsVerify.sendDateTo!= null">
+            AND ybChsVerify.sendDate <![CDATA[ <= ]]>  sendDateTo}
+        </if>
+</select>
+
+</mapper>

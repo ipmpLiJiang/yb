@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cc.mrbird.febs.chs.dao.YbChsApplyTaskMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="cc.mrbird.febs.chs.entity.YbChsApplyTask">
+        <id column="id" property="id"/>
+        <result column="applyDateStr" property="applyDateStr"/>
+        <result column="startNum" property="startNum"/>
+        <result column="endNum" property="endNum"/>
+        <result column="totalRow" property="totalRow"/>
+        <result column="currentPage" property="currentPage"/>
+        <result column="pageSize" property="pageSize"/>
+        <result column="totalPage" property="totalPage"/>
+        <result column="COMMENTS" property="comments"/>
+        <result column="STATE" property="state"/>
+        <result column="IS_DELETEMARK" property="isDeletemark"/>
+        <result column="MODIFY_TIME" property="modifyTime"/>
+        <result column="CREATE_TIME" property="createTime"/>
+        <result column="CREATE_USER_ID" property="createUserId"/>
+        <result column="MODIFY_USER_ID" property="modifyUserId"/>
+        <result column="areaType" property="areaType"/>
+        <result column="hisCount" property="hisCount"/>
+        <result column="isOutpfees" property="isOutpfees"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, applyDateStr, startNum, endNum, totalRow, currentPage, pageSize, totalPage, COMMENTS, STATE, IS_DELETEMARK, MODIFY_TIME, CREATE_TIME, CREATE_USER_ID, MODIFY_USER_ID, areaType, hisCount, isOutpfees
+    </sql>
+    <update id="updateYbChsApplyTask" parameterType="cc.mrbird.febs.chs.entity.YbChsApplyTask">
+        update yb_chs_apply_task
+        <trim prefix="set" suffixOverrides=",">
+            <if test="applyDateStr != null">applyDateStr=#{applyDateStr},</if>
+            <if test="startNum != null">startNum=#{startNum},</if>
+            <if test="endNum != null">endNum=#{endNum},</if>
+            <if test="totalRow != null">totalRow=#{totalRow},</if>
+            <if test="currentPage != null">currentPage=#{currentPage},</if>
+            <if test="pageSize != null">pageSize=#{pageSize},</if>
+            <if test="totalPage != null">totalPage=#{totalPage},</if>
+            <if test="comments != null">COMMENTS=#{comments},</if>
+            <if test="state != null">STATE=#{state},</if>
+            <if test="isDeletemark != null">IS_DELETEMARK=#{isDeletemark},</if>
+            <if test="modifyTime != null">MODIFY_TIME=#{modifyTime},</if>
+            <if test="createTime != null">CREATE_TIME=#{createTime},</if>
+            <if test="createUserId != null">CREATE_USER_ID=#{createUserId},</if>
+            <if test="modifyUserId != null">MODIFY_USER_ID=#{modifyUserId},</if>
+            <if test="areaType != null">areaType=#{areaType},</if>
+            <if test="hisCount != null">hisCount=#{hisCount},</if>
+            <if test="isOutpfees != null">isOutpfees=#{isOutpfees},</if>
+        </trim>
+        where id=#{id}
+
+    </update>
+    <select id="findYbChsApplyTask" resultType="cc.mrbird.febs.chs.entity.YbChsApplyTask"
+            parameterType="cc.mrbird.febs.chs.entity.YbChsApplyTask">
+        select * from yb_chs_apply_task
+        where 1=1
+        <if test="ybChsApplyTask.id != null and ybChsApplyTask.id != ''">and id =#{ ybChsApplyTask.id}</if>
+        <if test="ybChsApplyTask.applyDateStr != null and ybChsApplyTask.applyDateStr != ''">and applyDateStr like
+            concat('%', #{ ybChsApplyTask.applyDateStr} ,'%')
+        </if>
+        <if test="ybChsApplyTask.startNum != null">and startNum =#{ ybChsApplyTask.startNum}</if>
+        <if test="ybChsApplyTask.endNum != null">and endNum =#{ ybChsApplyTask.endNum}</if>
+        <if test="ybChsApplyTask.totalRow != null">and totalRow =#{ ybChsApplyTask.totalRow}</if>
+        <if test="ybChsApplyTask.currentPage != null">and currentPage =#{ ybChsApplyTask.currentPage}</if>
+        <if test="ybChsApplyTask.pageSize != null">and pageSize =#{ ybChsApplyTask.pageSize}</if>
+        <if test="ybChsApplyTask.totalPage != null">and totalPage =#{ ybChsApplyTask.totalPage}</if>
+        <if test="ybChsApplyTask.comments != null and ybChsApplyTask.comments != ''">and COMMENTS like concat('%',
+            #{ ybChsApplyTask.comments} ,'%')
+        </if>
+        <if test="ybChsApplyTask.state != null">and STATE =#{ ybChsApplyTask.state}</if>
+        <if test="ybChsApplyTask.isDeletemark != null">and IS_DELETEMARK =#{ ybChsApplyTask.isDeletemark}</if>
+        <if test="ybChsApplyTask.modifyTimeFrom!= null">
+            AND ybChsApplyTask.MODIFY_TIME <![CDATA[ >= ]]>  modifyTimeFrom}
+        </if>
+        <if test="ybChsApplyTask.modifyTimeTo!= null">
+            AND ybChsApplyTask.MODIFY_TIME <![CDATA[ <= ]]>  modifyTimeTo}
+        </if>
+        <if test="ybChsApplyTask.createTimeFrom!= null">
+            AND ybChsApplyTask.CREATE_TIME <![CDATA[ >= ]]>  createTimeFrom}
+        </if>
+        <if test="ybChsApplyTask.createTimeTo!= null">
+            AND ybChsApplyTask.CREATE_TIME <![CDATA[ <= ]]>  createTimeTo}
+        </if>
+        <if test="ybChsApplyTask.areaType != null">and areaType =#{ ybChsApplyTask.areaType}</if>
+        <if test="ybChsApplyTask.hisCount != null">and hisCount =#{ ybChsApplyTask.hisCount}</if>
+        <if test="ybChsApplyTask.isOutpfees != null">and isOutpfees =#{ ybChsApplyTask.isOutpfees}</if>
+    </select>
+
+    <select id="findChsApplyTask" resultType="cc.mrbird.febs.chs.entity.YbChsApplyTask"
+            parameterType="cc.mrbird.febs.chs.entity.YbChsApplyTask">
+        SELECT
+        *
+        FROM
+        yb_chs_apply_task
+        WHERE
+        applyDateStr = #{ ybChsApplyTask.applyDateStr} and
+        areaType = #{ ybChsApplyTask.areaType} and
+        state = #{ ybChsApplyTask.state} and
+        isOutpfees = #{ ybChsApplyTask.isOutpfees}
+        order by currentPage desc LIMIT 0,1
+    </select>
+</mapper>

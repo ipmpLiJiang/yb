@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cc.mrbird.febs.chs.dao.YbChsJkMapper">
+
+        <!-- 通用查询映射结果 -->
+        <resultMap id="BaseResultMap" type="cc.mrbird.febs.chs.entity.YbChsJk">
+                    <id column="id" property="id"/>
+                    <result column="inpatientId" property="inpatientId"/>
+                    <result column="patientName" property="patientName"/>
+                    <result column="settlementId" property="settlementId"/>
+                    <result column="billNo" property="billNo"/>
+                    <result column="transNo" property="transNo"/>
+                    <result column="itemId" property="itemId"/>
+                    <result column="itemCode" property="itemCode"/>
+                    <result column="itemName" property="itemName"/>
+                    <result column="itemCount" property="itemCount"/>
+                    <result column="itemPrice" property="itemPrice"/>
+                    <result column="itemAmount" property="itemAmount"/>
+                    <result column="feeDate" property="feeDate"/>
+                    <result column="deptId" property="deptId"/>
+                    <result column="deptName" property="deptName"/>
+                    <result column="orderDocId" property="orderDocId"/>
+                    <result column="orderDocName" property="orderDocName"/>
+                    <result column="excuteDeptId" property="excuteDeptId"/>
+                    <result column="excuteDeptName" property="excuteDeptName"/>
+                    <result column="excuteDocId" property="excuteDocId"/>
+                    <result column="excuteDocName" property="excuteDocName"/>
+                    <result column="settlementDate" property="settlementDate"/>
+                    <result column="COMMENTS" property="comments"/>
+                    <result column="STATE" property="state"/>
+                    <result column="IS_DELETEMARK" property="isDeletemark"/>
+                    <result column="applyDateStr" property="applyDateStr"/>
+                    <result column="orderNum" property="orderNum"/>
+                    <result column="applyDataId" property="applyDataId"/>
+                    <result column="miCode" property="miCode"/>
+                    <result column="hisName" property="hisName"/>
+                    <result column="miName" property="miName"/>
+                    <result column="dyyz" property="dyyz"/>
+                    <result column="attendDocId" property="attendDocId"/>
+                    <result column="attendDocName" property="attendDocName"/>
+                    <result column="itemTypeCode" property="itemTypeCode"/>
+                    <result column="itemTypeName" property="itemTypeName"/>
+                    <result column="feeOperatorId" property="feeOperatorId"/>
+                    <result column="feeOperatorName" property="feeOperatorName"/>
+                    <result column="feeDeptId" property="feeDeptId"/>
+                    <result column="feeDeptName" property="feeDeptName"/>
+                    <result column="areaType" property="areaType"/>
+                    <result column="isOutpfees" property="isOutpfees"/>
+                    <result column="jzkh" property="jzkh"/>
+        </resultMap>
+
+        <!-- 通用查询结果列 -->
+        <sql id="Base_Column_List">
+        id, inpatientId, patientName, settlementId, billNo, transNo, itemId, itemCode, itemName, itemCount, itemPrice, itemAmount, feeDate, deptId, deptName, orderDocId, orderDocName, excuteDeptId, excuteDeptName, excuteDocId, excuteDocName, settlementDate, COMMENTS, STATE, IS_DELETEMARK, applyDateStr, orderNum, applyDataId, miCode, hisName, miName, dyyz, attendDocId, attendDocName, itemTypeCode, itemTypeName, feeOperatorId, feeOperatorName, feeDeptId, feeDeptName, areaType, isOutpfees, jzkh
+    </sql>
+    <update id="updateYbChsJk" parameterType="cc.mrbird.febs.chs.entity.YbChsJk">
+        update yb_chs_jk
+        <trim prefix="set" suffixOverrides=",">
+<if test="inpatientId != null">inpatientId=#{inpatientId},</if>
+<if test="patientName != null">patientName=#{patientName},</if>
+<if test="settlementId != null">settlementId=#{settlementId},</if>
+<if test="billNo != null">billNo=#{billNo},</if>
+<if test="transNo != null">transNo=#{transNo},</if>
+<if test="itemId != null">itemId=#{itemId},</if>
+<if test="itemCode != null">itemCode=#{itemCode},</if>
+<if test="itemName != null">itemName=#{itemName},</if>
+<if test="itemCount != null">itemCount=#{itemCount},</if>
+<if test="itemPrice != null">itemPrice=#{itemPrice},</if>
+<if test="itemAmount != null">itemAmount=#{itemAmount},</if>
+<if test="feeDate != null">feeDate=#{feeDate},</if>
+<if test="deptId != null">deptId=#{deptId},</if>
+<if test="deptName != null">deptName=#{deptName},</if>
+<if test="orderDocId != null">orderDocId=#{orderDocId},</if>
+<if test="orderDocName != null">orderDocName=#{orderDocName},</if>
+<if test="excuteDeptId != null">excuteDeptId=#{excuteDeptId},</if>
+<if test="excuteDeptName != null">excuteDeptName=#{excuteDeptName},</if>
+<if test="excuteDocId != null">excuteDocId=#{excuteDocId},</if>
+<if test="excuteDocName != null">excuteDocName=#{excuteDocName},</if>
+<if test="settlementDate != null">settlementDate=#{settlementDate},</if>
+<if test="comments != null">COMMENTS=#{comments},</if>
+<if test="state != null">STATE=#{state},</if>
+<if test="isDeletemark != null">IS_DELETEMARK=#{isDeletemark},</if>
+<if test="applyDateStr != null">applyDateStr=#{applyDateStr},</if>
+<if test="orderNum != null">orderNum=#{orderNum},</if>
+<if test="applyDataId != null">applyDataId=#{applyDataId},</if>
+<if test="miCode != null">miCode=#{miCode},</if>
+<if test="hisName != null">hisName=#{hisName},</if>
+<if test="miName != null">miName=#{miName},</if>
+<if test="dyyz != null">dyyz=#{dyyz},</if>
+<if test="attendDocId != null">attendDocId=#{attendDocId},</if>
+<if test="attendDocName != null">attendDocName=#{attendDocName},</if>
+<if test="itemTypeCode != null">itemTypeCode=#{itemTypeCode},</if>
+<if test="itemTypeName != null">itemTypeName=#{itemTypeName},</if>
+<if test="feeOperatorId != null">feeOperatorId=#{feeOperatorId},</if>
+<if test="feeOperatorName != null">feeOperatorName=#{feeOperatorName},</if>
+<if test="feeDeptId != null">feeDeptId=#{feeDeptId},</if>
+<if test="feeDeptName != null">feeDeptName=#{feeDeptName},</if>
+<if test="areaType != null">areaType=#{areaType},</if>
+<if test="isOutpfees != null">isOutpfees=#{isOutpfees},</if>
+<if test="jzkh != null">jzkh=#{jzkh},</if>
+        </trim>
+                where id=#{id}
+
+    </update>
+    <select id="findYbChsJk" resultType="cc.mrbird.febs.chs.entity.YbChsJk" parameterType="cc.mrbird.febs.chs.entity.YbChsJk">
+        select  *  from yb_chs_jk
+        where  1=1
+            <if test="ybChsJk.id != null and ybChsJk.id != ''"> and id =#{ ybChsJk.id} </if>
+            <if test="ybChsJk.inpatientId != null and ybChsJk.inpatientId != ''"> and inpatientId like concat('%', #{ ybChsJk.inpatientId} ,'%')</if>
+            <if test="ybChsJk.patientName != null and ybChsJk.patientName != ''"> and patientName like concat('%', #{ ybChsJk.patientName} ,'%')</if>
+            <if test="ybChsJk.settlementId != null and ybChsJk.settlementId != ''"> and settlementId like concat('%', #{ ybChsJk.settlementId} ,'%')</if>
+            <if test="ybChsJk.billNo != null and ybChsJk.billNo != ''"> and billNo like concat('%', #{ ybChsJk.billNo} ,'%')</if>
+            <if test="ybChsJk.transNo != null and ybChsJk.transNo != ''"> and transNo like concat('%', #{ ybChsJk.transNo} ,'%')</if>
+            <if test="ybChsJk.itemId != null and ybChsJk.itemId != ''"> and itemId like concat('%', #{ ybChsJk.itemId} ,'%')</if>
+            <if test="ybChsJk.itemCode != null and ybChsJk.itemCode != ''"> and itemCode like concat('%', #{ ybChsJk.itemCode} ,'%')</if>
+            <if test="ybChsJk.itemName != null and ybChsJk.itemName != ''"> and itemName like concat('%', #{ ybChsJk.itemName} ,'%')</if>
+        <if test="ybChsJk.feeDateFrom!= null">
+            AND ybChsJk.feeDate <![CDATA[ >= ]]>  feeDateFrom}
+        </if>
+        <if test="ybChsJk.feeDateTo!= null">
+            AND ybChsJk.feeDate <![CDATA[ <= ]]>  feeDateTo}
+        </if>
+            <if test="ybChsJk.deptId != null and ybChsJk.deptId != ''"> and deptId like concat('%', #{ ybChsJk.deptId} ,'%')</if>
+            <if test="ybChsJk.deptName != null and ybChsJk.deptName != ''"> and deptName like concat('%', #{ ybChsJk.deptName} ,'%')</if>
+            <if test="ybChsJk.orderDocId != null and ybChsJk.orderDocId != ''"> and orderDocId like concat('%', #{ ybChsJk.orderDocId} ,'%')</if>
+            <if test="ybChsJk.orderDocName != null and ybChsJk.orderDocName != ''"> and orderDocName like concat('%', #{ ybChsJk.orderDocName} ,'%')</if>
+            <if test="ybChsJk.excuteDeptId != null and ybChsJk.excuteDeptId != ''"> and excuteDeptId like concat('%', #{ ybChsJk.excuteDeptId} ,'%')</if>
+            <if test="ybChsJk.excuteDeptName != null and ybChsJk.excuteDeptName != ''"> and excuteDeptName like concat('%', #{ ybChsJk.excuteDeptName} ,'%')</if>
+            <if test="ybChsJk.excuteDocId != null and ybChsJk.excuteDocId != ''"> and excuteDocId like concat('%', #{ ybChsJk.excuteDocId} ,'%')</if>
+            <if test="ybChsJk.excuteDocName != null and ybChsJk.excuteDocName != ''"> and excuteDocName like concat('%', #{ ybChsJk.excuteDocName} ,'%')</if>
+        <if test="ybChsJk.settlementDateFrom!= null">
+            AND ybChsJk.settlementDate <![CDATA[ >= ]]>  settlementDateFrom}
+        </if>
+        <if test="ybChsJk.settlementDateTo!= null">
+            AND ybChsJk.settlementDate <![CDATA[ <= ]]>  settlementDateTo}
+        </if>
+            <if test="ybChsJk.comments != null and ybChsJk.comments != ''"> and COMMENTS like concat('%', #{ ybChsJk.comments} ,'%')</if>
+        <if test="ybChsJk.state != null"> and STATE =#{ ybChsJk.state} </if>
+        <if test="ybChsJk.isDeletemark != null"> and IS_DELETEMARK =#{ ybChsJk.isDeletemark} </if>
+            <if test="ybChsJk.applyDateStr != null and ybChsJk.applyDateStr != ''"> and applyDateStr =  #{ ybChsJk.applyDateStr} </if>
+        <if test="ybChsJk.orderNum != null"> and orderNum =#{ ybChsJk.orderNum} </if>
+            <if test="ybChsJk.applyDataId != null and ybChsJk.applyDataId != ''"> and applyDataId like concat('%', #{ ybChsJk.applyDataId} ,'%')</if>
+            <if test="ybChsJk.miCode != null and ybChsJk.miCode != ''"> and miCode like concat('%', #{ ybChsJk.miCode} ,'%')</if>
+            <if test="ybChsJk.hisName != null and ybChsJk.hisName != ''"> and hisName like concat('%', #{ ybChsJk.hisName} ,'%')</if>
+            <if test="ybChsJk.miName != null and ybChsJk.miName != ''"> and miName like concat('%', #{ ybChsJk.miName} ,'%')</if>
+        <if test="ybChsJk.dyyz != null"> and dyyz =#{ ybChsJk.dyyz} </if>
+            <if test="ybChsJk.attendDocId != null and ybChsJk.attendDocId != ''"> and attendDocId like concat('%', #{ ybChsJk.attendDocId} ,'%')</if>
+            <if test="ybChsJk.attendDocName != null and ybChsJk.attendDocName != ''"> and attendDocName like concat('%', #{ ybChsJk.attendDocName} ,'%')</if>
+            <if test="ybChsJk.itemTypeCode != null and ybChsJk.itemTypeCode != ''"> and itemTypeCode like concat('%', #{ ybChsJk.itemTypeCode} ,'%')</if>
+            <if test="ybChsJk.itemTypeName != null and ybChsJk.itemTypeName != ''"> and itemTypeName like concat('%', #{ ybChsJk.itemTypeName} ,'%')</if>
+            <if test="ybChsJk.feeOperatorId != null and ybChsJk.feeOperatorId != ''"> and feeOperatorId like concat('%', #{ ybChsJk.feeOperatorId} ,'%')</if>
+            <if test="ybChsJk.feeOperatorName != null and ybChsJk.feeOperatorName != ''"> and feeOperatorName like concat('%', #{ ybChsJk.feeOperatorName} ,'%')</if>
+            <if test="ybChsJk.feeDeptId != null and ybChsJk.feeDeptId != ''"> and feeDeptId like concat('%', #{ ybChsJk.feeDeptId} ,'%')</if>
+            <if test="ybChsJk.feeDeptName != null and ybChsJk.feeDeptName != ''"> and feeDeptName like concat('%', #{ ybChsJk.feeDeptName} ,'%')</if>
+        <if test="ybChsJk.areaType != null"> and areaType =#{ ybChsJk.areaType} </if>
+        <if test="ybChsJk.isOutpfees != null"> and isOutpfees =#{ ybChsJk.isOutpfees} </if>
+            <if test="ybChsJk.jzkh != null and ybChsJk.jzkh != ''"> and jzkh like concat('%', #{ ybChsJk.jzkh} ,'%')</if>
+</select>
+
+</mapper>

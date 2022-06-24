@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cc.mrbird.febs.chs.dao.YbChsApplyMapper">
+
+        <!-- 通用查询映射结果 -->
+        <resultMap id="BaseResultMap" type="cc.mrbird.febs.chs.entity.YbChsApply">
+                    <id column="id" property="id"/>
+                    <result column="applyDate" property="applyDate"/>
+                    <result column="applyDateStr" property="applyDateStr"/>
+                    <result column="operatorId" property="operatorId"/>
+                    <result column="operatorName" property="operatorName"/>
+                    <result column="uploadFileName" property="uploadFileName"/>
+                    <result column="endDate" property="endDate"/>
+                    <result column="taskState" property="taskState"/>
+                    <result column="COMMENTS" property="comments"/>
+                    <result column="STATE" property="state"/>
+                    <result column="IS_DELETEMARK" property="isDeletemark"/>
+                    <result column="MODIFY_TIME" property="modifyTime"/>
+                    <result column="CREATE_TIME" property="createTime"/>
+                    <result column="CREATE_USER_ID" property="createUserId"/>
+                    <result column="MODIFY_USER_ID" property="modifyUserId"/>
+                    <result column="areaType" property="areaType"/>
+                    <result column="enableDate" property="enableDate"/>
+        </resultMap>
+
+        <!-- 通用查询结果列 -->
+        <sql id="Base_Column_List">
+        id, applyDate, applyDateStr, operatorId, operatorName, uploadFileName, endDate, taskState, COMMENTS, STATE, IS_DELETEMARK, MODIFY_TIME, CREATE_TIME, CREATE_USER_ID, MODIFY_USER_ID, areaType, enableDate
+    </sql>
+    <update id="updateYbChsApply" parameterType="cc.mrbird.febs.chs.entity.YbChsApply">
+        update yb_chs_apply
+        <trim prefix="set" suffixOverrides=",">
+<if test="applyDate != null">applyDate=#{applyDate},</if>
+<if test="applyDateStr != null">applyDateStr=#{applyDateStr},</if>
+<if test="operatorId != null">operatorId=#{operatorId},</if>
+<if test="operatorName != null">operatorName=#{operatorName},</if>
+<if test="uploadFileName != null">uploadFileName=#{uploadFileName},</if>
+<if test="endDate != null">endDate=#{endDate},</if>
+<if test="taskState != null">taskState=#{taskState},</if>
+<if test="comments != null">COMMENTS=#{comments},</if>
+<if test="state != null">STATE=#{state},</if>
+<if test="isDeletemark != null">IS_DELETEMARK=#{isDeletemark},</if>
+<if test="modifyTime != null">MODIFY_TIME=#{modifyTime},</if>
+<if test="createTime != null">CREATE_TIME=#{createTime},</if>
+<if test="createUserId != null">CREATE_USER_ID=#{createUserId},</if>
+<if test="modifyUserId != null">MODIFY_USER_ID=#{modifyUserId},</if>
+<if test="areaType != null">areaType=#{areaType},</if>
+<if test="enableDate != null">enableDate=#{enableDate},</if>
+        </trim>
+                where id=#{id}
+
+    </update>
+    <select id="findYbChsApply" resultType="cc.mrbird.febs.chs.entity.YbChsApply" parameterType="cc.mrbird.febs.chs.entity.YbChsApply">
+        select  *  from yb_chs_apply
+        where  1=1
+            <if test="ybChsApply.id != null and ybChsApply.id != ''"> and id =#{ ybChsApply.id} </if>
+        <if test="ybChsApply.applyDateFrom!= null">
+            AND ybChsApply.applyDate <![CDATA[ >= ]]>  applyDateFrom}
+        </if>
+        <if test="ybChsApply.applyDateTo!= null">
+            AND ybChsApply.applyDate <![CDATA[ <= ]]>  applyDateTo}
+        </if>
+            <if test="ybChsApply.applyDateStr != null and ybChsApply.applyDateStr != ''"> and applyDateStr like concat('%', #{ ybChsApply.applyDateStr} ,'%')</if>
+            <if test="ybChsApply.operatorName != null and ybChsApply.operatorName != ''"> and operatorName like concat('%', #{ ybChsApply.operatorName} ,'%')</if>
+            <if test="ybChsApply.uploadFileName != null and ybChsApply.uploadFileName != ''"> and uploadFileName like concat('%', #{ ybChsApply.uploadFileName} ,'%')</if>
+        <if test="ybChsApply.endDateFrom!= null">
+            AND ybChsApply.endDate <![CDATA[ >= ]]>  endDateFrom}
+        </if>
+        <if test="ybChsApply.endDateTo!= null">
+            AND ybChsApply.endDate <![CDATA[ <= ]]>  endDateTo}
+        </if>
+        <if test="ybChsApply.taskState != null"> and taskState =#{ ybChsApply.taskState} </if>
+            <if test="ybChsApply.comments != null and ybChsApply.comments != ''"> and COMMENTS like concat('%', #{ ybChsApply.comments} ,'%')</if>
+        <if test="ybChsApply.state != null"> and STATE =#{ ybChsApply.state} </if>
+        <if test="ybChsApply.isDeletemark != null"> and IS_DELETEMARK =#{ ybChsApply.isDeletemark} </if>
+        <if test="ybChsApply.modifyTimeFrom!= null">
+            AND ybChsApply.MODIFY_TIME <![CDATA[ >= ]]>  modifyTimeFrom}
+        </if>
+        <if test="ybChsApply.modifyTimeTo!= null">
+            AND ybChsApply.MODIFY_TIME <![CDATA[ <= ]]>  modifyTimeTo}
+        </if>
+        <if test="ybChsApply.createTimeFrom!= null">
+            AND ybChsApply.CREATE_TIME <![CDATA[ >= ]]>  createTimeFrom}
+        </if>
+        <if test="ybChsApply.createTimeTo!= null">
+            AND ybChsApply.CREATE_TIME <![CDATA[ <= ]]>  createTimeTo}
+        </if>
+        <if test="ybChsApply.areaType != null"> and areaType =#{ ybChsApply.areaType} </if>
+        <if test="ybChsApply.enableDateFrom!= null">
+            AND ybChsApply.enableDate <![CDATA[ >= ]]>  enableDateFrom}
+        </if>
+        <if test="ybChsApply.enableDateTo!= null">
+            AND ybChsApply.enableDate <![CDATA[ <= ]]>  enableDateTo}
+        </if>
+</select>
+
+    <select id="findChsApplyByApplyDateStr" resultType="cc.mrbird.febs.chs.entity.YbChsApply">
+        select *  from yb_chs_apply where applyDateStr = #{appltDateStr} and areaType = #{areaType}  order by CREATE_TIME asc  limit 1
+    </select>
+
+</mapper>
