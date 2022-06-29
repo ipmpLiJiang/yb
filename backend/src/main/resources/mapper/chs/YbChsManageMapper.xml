@@ -2,125 +2,189 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cc.mrbird.febs.chs.dao.YbChsManageMapper">
 
-        <!-- 通用查询映射结果 -->
-        <resultMap id="BaseResultMap" type="cc.mrbird.febs.chs.entity.YbChsManage">
-                    <id column="id" property="id"/>
-                    <result column="applyDataId" property="applyDataId"/>
-                    <result column="verifyId" property="verifyId"/>
-                    <result column="readyDoctorCode" property="readyDoctorCode"/>
-                    <result column="readyDoctorName" property="readyDoctorName"/>
-                    <result column="readyDksId" property="readyDksId"/>
-                    <result column="readyDksName" property="readyDksName"/>
-                    <result column="changeDoctorCode" property="changeDoctorCode"/>
-                    <result column="changeDoctorName" property="changeDoctorName"/>
-                    <result column="changeDksId" property="changeDksId"/>
-                    <result column="changeDksName" property="changeDksName"/>
-                    <result column="operateReason" property="operateReason"/>
-                    <result column="operateDate" property="operateDate"/>
-                    <result column="refuseId" property="refuseId"/>
-                    <result column="refuseName" property="refuseName"/>
-                    <result column="refuseReason" property="refuseReason"/>
-                    <result column="refuseDate" property="refuseDate"/>
-                    <result column="adminPersonId" property="adminPersonId"/>
-                    <result column="adminPersonName" property="adminPersonName"/>
-                    <result column="adminChangeDate" property="adminChangeDate"/>
-                    <result column="adminReason" property="adminReason"/>
-                    <result column="STATE" property="state"/>
-                    <result column="enableDate" property="enableDate"/>
-                    <result column="operateProcess" property="operateProcess"/>
-                    <result column="approvalState" property="approvalState"/>
-                    <result column="applyDateStr" property="applyDateStr"/>
-                    <result column="orderNum" property="orderNum"/>
-                    <result column="areaType" property="areaType"/>
-        </resultMap>
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="cc.mrbird.febs.chs.entity.YbChsManage">
+        <id column="id" property="id"/>
+        <result column="applyDataId" property="applyDataId"/>
+        <result column="verifyId" property="verifyId"/>
+        <result column="readyDoctorCode" property="readyDoctorCode"/>
+        <result column="readyDoctorName" property="readyDoctorName"/>
+        <result column="readyDksId" property="readyDksId"/>
+        <result column="readyDksName" property="readyDksName"/>
+        <result column="changeDoctorCode" property="changeDoctorCode"/>
+        <result column="changeDoctorName" property="changeDoctorName"/>
+        <result column="changeDksId" property="changeDksId"/>
+        <result column="changeDksName" property="changeDksName"/>
+        <result column="operateReason" property="operateReason"/>
+        <result column="operateDate" property="operateDate"/>
+        <result column="refuseId" property="refuseId"/>
+        <result column="refuseName" property="refuseName"/>
+        <result column="refuseReason" property="refuseReason"/>
+        <result column="refuseDate" property="refuseDate"/>
+        <result column="adminPersonId" property="adminPersonId"/>
+        <result column="adminPersonName" property="adminPersonName"/>
+        <result column="adminChangeDate" property="adminChangeDate"/>
+        <result column="adminReason" property="adminReason"/>
+        <result column="STATE" property="state"/>
+        <result column="enableDate" property="enableDate"/>
+        <result column="operateProcess" property="operateProcess"/>
+        <result column="approvalState" property="approvalState"/>
+        <result column="applyDateStr" property="applyDateStr"/>
+        <result column="orderNum" property="orderNum"/>
+        <result column="areaType" property="areaType"/>
+    </resultMap>
 
-        <!-- 通用查询结果列 -->
-        <sql id="Base_Column_List">
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
         id, applyDataId, verifyId, readyDoctorCode, readyDoctorName, readyDksId, readyDksName, changeDoctorCode, changeDoctorName, changeDksId, changeDksName, operateReason, operateDate, refuseId, refuseName, refuseReason, refuseDate, adminPersonId, adminPersonName, adminChangeDate, adminReason, STATE, enableDate, operateProcess, approvalState, applyDateStr, orderNum, areaType
     </sql>
     <update id="updateYbChsManage" parameterType="cc.mrbird.febs.chs.entity.YbChsManage">
         update yb_chs_manage
         <trim prefix="set" suffixOverrides=",">
-<if test="applyDataId != null">applyDataId=#{applyDataId},</if>
-<if test="verifyId != null">verifyId=#{verifyId},</if>
-<if test="readyDoctorCode != null">readyDoctorCode=#{readyDoctorCode},</if>
-<if test="readyDoctorName != null">readyDoctorName=#{readyDoctorName},</if>
-<if test="readyDksId != null">readyDksId=#{readyDksId},</if>
-<if test="readyDksName != null">readyDksName=#{readyDksName},</if>
-<if test="changeDoctorCode != null">changeDoctorCode=#{changeDoctorCode},</if>
-<if test="changeDoctorName != null">changeDoctorName=#{changeDoctorName},</if>
-<if test="changeDksId != null">changeDksId=#{changeDksId},</if>
-<if test="changeDksName != null">changeDksName=#{changeDksName},</if>
-<if test="operateReason != null">operateReason=#{operateReason},</if>
-<if test="operateDate != null">operateDate=#{operateDate},</if>
-<if test="refuseId != null">refuseId=#{refuseId},</if>
-<if test="refuseName != null">refuseName=#{refuseName},</if>
-<if test="refuseReason != null">refuseReason=#{refuseReason},</if>
-<if test="refuseDate != null">refuseDate=#{refuseDate},</if>
-<if test="adminPersonId != null">adminPersonId=#{adminPersonId},</if>
-<if test="adminPersonName != null">adminPersonName=#{adminPersonName},</if>
-<if test="adminChangeDate != null">adminChangeDate=#{adminChangeDate},</if>
-<if test="adminReason != null">adminReason=#{adminReason},</if>
-<if test="state != null">STATE=#{state},</if>
-<if test="enableDate != null">enableDate=#{enableDate},</if>
-<if test="operateProcess != null">operateProcess=#{operateProcess},</if>
-<if test="approvalState != null">approvalState=#{approvalState},</if>
-<if test="applyDateStr != null">applyDateStr=#{applyDateStr},</if>
-<if test="orderNum != null">orderNum=#{orderNum},</if>
-<if test="areaType != null">areaType=#{areaType},</if>
+            <if test="applyDataId != null">applyDataId=#{applyDataId},</if>
+            <if test="verifyId != null">verifyId=#{verifyId},</if>
+            <if test="readyDoctorCode != null">readyDoctorCode=#{readyDoctorCode},</if>
+            <if test="readyDoctorName != null">readyDoctorName=#{readyDoctorName},</if>
+            <if test="readyDksId != null">readyDksId=#{readyDksId},</if>
+            <if test="readyDksName != null">readyDksName=#{readyDksName},</if>
+            <if test="changeDoctorCode != null">changeDoctorCode=#{changeDoctorCode},</if>
+            <if test="changeDoctorName != null">changeDoctorName=#{changeDoctorName},</if>
+            <if test="changeDksId != null">changeDksId=#{changeDksId},</if>
+            <if test="changeDksName != null">changeDksName=#{changeDksName},</if>
+            <if test="operateReason != null">operateReason=#{operateReason},</if>
+            <if test="operateDate != null">operateDate=#{operateDate},</if>
+            <if test="refuseId != null">refuseId=#{refuseId},</if>
+            <if test="refuseName != null">refuseName=#{refuseName},</if>
+            <if test="refuseReason != null">refuseReason=#{refuseReason},</if>
+            <if test="refuseDate != null">refuseDate=#{refuseDate},</if>
+            <if test="adminPersonId != null">adminPersonId=#{adminPersonId},</if>
+            <if test="adminPersonName != null">adminPersonName=#{adminPersonName},</if>
+            <if test="adminChangeDate != null">adminChangeDate=#{adminChangeDate},</if>
+            <if test="adminReason != null">adminReason=#{adminReason},</if>
+            <if test="state != null">STATE=#{state},</if>
+            <if test="enableDate != null">enableDate=#{enableDate},</if>
+            <if test="operateProcess != null">operateProcess=#{operateProcess},</if>
+            <if test="approvalState != null">approvalState=#{approvalState},</if>
+            <if test="applyDateStr != null">applyDateStr=#{applyDateStr},</if>
+            <if test="orderNum != null">orderNum=#{orderNum},</if>
+            <if test="areaType != null">areaType=#{areaType},</if>
         </trim>
-                where id=#{id}
+        where id=#{id}
 
     </update>
-    <select id="findYbChsManage" resultType="cc.mrbird.febs.chs.entity.YbChsManage" parameterType="cc.mrbird.febs.chs.entity.YbChsManage">
-        select  *  from yb_chs_manage
-        where  1=1
-            <if test="ybChsManage.id != null and ybChsManage.id != ''"> and id =#{ ybChsManage.id} </if>
-            <if test="ybChsManage.applyDataId != null and ybChsManage.applyDataId != ''"> and applyDataId like concat('%', #{ ybChsManage.applyDataId} ,'%')</if>
-            <if test="ybChsManage.verifyId != null and ybChsManage.verifyId != ''"> and verifyId like concat('%', #{ ybChsManage.verifyId} ,'%')</if>
-            <if test="ybChsManage.readyDoctorCode != null and ybChsManage.readyDoctorCode != ''"> and readyDoctorCode like concat('%', #{ ybChsManage.readyDoctorCode} ,'%')</if>
-            <if test="ybChsManage.readyDoctorName != null and ybChsManage.readyDoctorName != ''"> and readyDoctorName like concat('%', #{ ybChsManage.readyDoctorName} ,'%')</if>
-            <if test="ybChsManage.readyDksId != null and ybChsManage.readyDksId != ''"> and readyDksId like concat('%', #{ ybChsManage.readyDksId} ,'%')</if>
-            <if test="ybChsManage.readyDksName != null and ybChsManage.readyDksName != ''"> and readyDksName like concat('%', #{ ybChsManage.readyDksName} ,'%')</if>
-            <if test="ybChsManage.changeDoctorCode != null and ybChsManage.changeDoctorCode != ''"> and changeDoctorCode like concat('%', #{ ybChsManage.changeDoctorCode} ,'%')</if>
-            <if test="ybChsManage.changeDoctorName != null and ybChsManage.changeDoctorName != ''"> and changeDoctorName like concat('%', #{ ybChsManage.changeDoctorName} ,'%')</if>
-            <if test="ybChsManage.changeDksId != null and ybChsManage.changeDksId != ''"> and changeDksId like concat('%', #{ ybChsManage.changeDksId} ,'%')</if>
-            <if test="ybChsManage.changeDksName != null and ybChsManage.changeDksName != ''"> and changeDksName like concat('%', #{ ybChsManage.changeDksName} ,'%')</if>
-            <if test="ybChsManage.operateReason != null and ybChsManage.operateReason != ''"> and operateReason like concat('%', #{ ybChsManage.operateReason} ,'%')</if>
+    <select id="findYbChsManage" resultType="cc.mrbird.febs.chs.entity.YbChsManage"
+            parameterType="cc.mrbird.febs.chs.entity.YbChsManage">
+        select * from yb_chs_manage
+        where 1=1
+        <if test="ybChsManage.id != null and ybChsManage.id != ''">and id =#{ ybChsManage.id}</if>
+        <if test="ybChsManage.applyDataId != null and ybChsManage.applyDataId != ''">and applyDataId like concat('%',
+            #{ ybChsManage.applyDataId} ,'%')
+        </if>
+        <if test="ybChsManage.verifyId != null and ybChsManage.verifyId != ''">and verifyId like concat('%',
+            #{ ybChsManage.verifyId} ,'%')
+        </if>
+        <if test="ybChsManage.readyDoctorCode != null and ybChsManage.readyDoctorCode != ''">and readyDoctorCode like
+            concat('%', #{ ybChsManage.readyDoctorCode} ,'%')
+        </if>
+        <if test="ybChsManage.readyDoctorName != null and ybChsManage.readyDoctorName != ''">and readyDoctorName like
+            concat('%', #{ ybChsManage.readyDoctorName} ,'%')
+        </if>
+        <if test="ybChsManage.readyDksId != null and ybChsManage.readyDksId != ''">and readyDksId like concat('%',
+            #{ ybChsManage.readyDksId} ,'%')
+        </if>
+        <if test="ybChsManage.readyDksName != null and ybChsManage.readyDksName != ''">and readyDksName like concat('%',
+            #{ ybChsManage.readyDksName} ,'%')
+        </if>
+        <if test="ybChsManage.changeDoctorCode != null and ybChsManage.changeDoctorCode != ''">and changeDoctorCode like
+            concat('%', #{ ybChsManage.changeDoctorCode} ,'%')
+        </if>
+        <if test="ybChsManage.changeDoctorName != null and ybChsManage.changeDoctorName != ''">and changeDoctorName like
+            concat('%', #{ ybChsManage.changeDoctorName} ,'%')
+        </if>
+        <if test="ybChsManage.changeDksId != null and ybChsManage.changeDksId != ''">and changeDksId like concat('%',
+            #{ ybChsManage.changeDksId} ,'%')
+        </if>
+        <if test="ybChsManage.changeDksName != null and ybChsManage.changeDksName != ''">and changeDksName like
+            concat('%', #{ ybChsManage.changeDksName} ,'%')
+        </if>
+        <if test="ybChsManage.operateReason != null and ybChsManage.operateReason != ''">and operateReason like
+            concat('%', #{ ybChsManage.operateReason} ,'%')
+        </if>
         <if test="ybChsManage.operateDateFrom!= null">
             AND ybChsManage.operateDate <![CDATA[ >= ]]>  operateDateFrom}
         </if>
         <if test="ybChsManage.operateDateTo!= null">
             AND ybChsManage.operateDate <![CDATA[ <= ]]>  operateDateTo}
         </if>
-            <if test="ybChsManage.refuseName != null and ybChsManage.refuseName != ''"> and refuseName like concat('%', #{ ybChsManage.refuseName} ,'%')</if>
-            <if test="ybChsManage.refuseReason != null and ybChsManage.refuseReason != ''"> and refuseReason like concat('%', #{ ybChsManage.refuseReason} ,'%')</if>
+        <if test="ybChsManage.refuseName != null and ybChsManage.refuseName != ''">and refuseName like concat('%',
+            #{ ybChsManage.refuseName} ,'%')
+        </if>
+        <if test="ybChsManage.refuseReason != null and ybChsManage.refuseReason != ''">and refuseReason like concat('%',
+            #{ ybChsManage.refuseReason} ,'%')
+        </if>
         <if test="ybChsManage.refuseDateFrom!= null">
             AND ybChsManage.refuseDate <![CDATA[ >= ]]>  refuseDateFrom}
         </if>
         <if test="ybChsManage.refuseDateTo!= null">
             AND ybChsManage.refuseDate <![CDATA[ <= ]]>  refuseDateTo}
         </if>
-            <if test="ybChsManage.adminPersonName != null and ybChsManage.adminPersonName != ''"> and adminPersonName like concat('%', #{ ybChsManage.adminPersonName} ,'%')</if>
+        <if test="ybChsManage.adminPersonName != null and ybChsManage.adminPersonName != ''">and adminPersonName like
+            concat('%', #{ ybChsManage.adminPersonName} ,'%')
+        </if>
         <if test="ybChsManage.adminChangeDateFrom!= null">
             AND ybChsManage.adminChangeDate <![CDATA[ >= ]]>  adminChangeDateFrom}
         </if>
         <if test="ybChsManage.adminChangeDateTo!= null">
             AND ybChsManage.adminChangeDate <![CDATA[ <= ]]>  adminChangeDateTo}
         </if>
-            <if test="ybChsManage.adminReason != null and ybChsManage.adminReason != ''"> and adminReason like concat('%', #{ ybChsManage.adminReason} ,'%')</if>
-        <if test="ybChsManage.state != null"> and STATE =#{ ybChsManage.state} </if>
+        <if test="ybChsManage.adminReason != null and ybChsManage.adminReason != ''">and adminReason like concat('%',
+            #{ ybChsManage.adminReason} ,'%')
+        </if>
+        <if test="ybChsManage.state != null">and STATE =#{ ybChsManage.state}</if>
         <if test="ybChsManage.enableDateFrom!= null">
             AND ybChsManage.enableDate <![CDATA[ >= ]]>  enableDateFrom}
         </if>
         <if test="ybChsManage.enableDateTo!= null">
             AND ybChsManage.enableDate <![CDATA[ <= ]]>  enableDateTo}
         </if>
-            <if test="ybChsManage.operateProcess != null and ybChsManage.operateProcess != ''"> and operateProcess like concat('%', #{ ybChsManage.operateProcess} ,'%')</if>
-        <if test="ybChsManage.approvalState != null"> and approvalState =#{ ybChsManage.approvalState} </if>
-            <if test="ybChsManage.applyDateStr != null and ybChsManage.applyDateStr != ''"> and applyDateStr like concat('%', #{ ybChsManage.applyDateStr} ,'%')</if>
-        <if test="ybChsManage.orderNum != null"> and orderNum =#{ ybChsManage.orderNum} </if>
-        <if test="ybChsManage.areaType != null"> and areaType =#{ ybChsManage.areaType} </if>
-</select>
+        <if test="ybChsManage.operateProcess != null and ybChsManage.operateProcess != ''">and operateProcess like
+            concat('%', #{ ybChsManage.operateProcess} ,'%')
+        </if>
+        <if test="ybChsManage.approvalState != null">and approvalState =#{ ybChsManage.approvalState}</if>
+        <if test="ybChsManage.applyDateStr != null and ybChsManage.applyDateStr != ''">and applyDateStr like concat('%',
+            #{ ybChsManage.applyDateStr} ,'%')
+        </if>
+        <if test="ybChsManage.orderNum != null">and orderNum =#{ ybChsManage.orderNum}</if>
+        <if test="ybChsManage.areaType != null">and areaType =#{ ybChsManage.areaType}</if>
+    </select>
+
+    <select id="findChsManageApplyEndDateList" resultType="cc.mrbird.febs.chs.entity.YbChsManage">
+        SELECT
+			yb_chs_manage.*
+		FROM
+			yb_chs_manage
+			INNER JOIN yb_chs_apply_data ON
+				yb_chs_manage.applyDataId = yb_chs_apply_data.id
+		WHERE
+			yb_chs_apply_data.pid= #{pid} and
+			yb_chs_manage.applyDateStr = #{applyDateStr} AND
+			yb_chs_manage.areaType = #{areaType} AND
+			yb_chs_manage.state in(0,1,2);
+    </select>
+
+    <select id="findChsManageEnableOverdueList" resultType="cc.mrbird.febs.chs.entity.YbChsManage">
+        SELECT
+            yb_chs_manage.*
+        FROM
+            yb_chs_manage
+        INNER JOIN yb_chs_apply_data ON
+            yb_chs_manage.applyDataId = yb_chs_apply_data.id
+        WHERE
+            yb_chs_apply_data.pid = #{pid} AND
+            yb_chs_manage.applyDateStr = #{applyDateStr} AND
+            yb_chs_manage.areaType = #{areaType} AND
+            yb_chs_manage.state = 0 AND
+            yb_chs_manage.enableDate <![CDATA[ <= ]]>  STR_TO_DATE( #{enableDate}, '%Y-%m-%d' )
+    </select>
 
 </mapper>

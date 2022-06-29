@@ -1,0 +1,261 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cc.mrbird.febs.chs.dao.YbChsVerifyViewMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="cc.mrbird.febs.chs.entity.YbChsVerifyView">
+        <result column="id" property="id"/>
+        <result column="pid" property="pid"/>
+        <result column="applyDataId" property="applyDataId"/>
+        <result column="applyDateStr" property="applyDateStr"/>
+        <result column="appealEndDate" property="appealEndDate"/>
+        <result column="payPlaceType" property="payPlaceType"/>
+        <result column="ydState" property="ydState"/>
+        <result column="areaName" property="areaName"/>
+        <result column="yyjgCode" property="yyjgCode"/>
+        <result column="yyjgName" property="yyjgName"/>
+        <result column="deptName" property="deptName"/>
+        <result column="doctorName" property="doctorName"/>
+        <result column="medicalType" property="medicalType"/>
+        <result column="zymzNumber" property="zymzNumber"/>
+        <result column="insuredName" property="insuredName"/>
+        <result column="enterHospitalDate" property="enterHospitalDate"/>
+        <result column="outHospitalDate" property="outHospitalDate"/>
+        <result column="settlementDate" property="settlementDate"/>
+        <result column="cardNumber" property="cardNumber"/>
+        <result column="projectCode" property="projectCode"/>
+        <result column="projectName" property="projectName"/>
+        <result column="projectYyName" property="projectYyName"/>
+        <result column="ruleName" property="ruleName"/>
+        <result column="violateCsPrice" property="violateCsPrice"/>
+        <result column="violatePrice" property="violatePrice"/>
+        <result column="violateReason" property="violateReason"/>
+        <result column="zdNote" property="zdNote"/>
+        <result column="costDate" property="costDate"/>
+        <result column="insuredType" property="insuredType"/>
+        <result column="num" property="num"/>
+        <result column="price" property="price"/>
+        <result column="medicalPrice" property="medicalPrice"/>
+        <result column="tcPayPrice" property="tcPayPrice"/>
+        <result column="specs" property="specs"/>
+        <result column="jx" property="jx"/>
+        <result column="jgLevel" property="jgLevel"/>
+        <result column="sendPersonId" property="sendPersonId"/>
+        <result column="sendPersonName" property="sendPersonName"/>
+        <result column="sendDate" property="sendDate"/>
+        <result column="verifyDoctorCode" property="verifyDoctorCode"/>
+        <result column="verifyDoctorName" property="verifyDoctorName"/>
+        <result column="verifyDksId" property="verifyDksId"/>
+        <result column="verifyDksName" property="verifyDksName"/>
+        <result column="orderNum" property="orderNum"/>
+        <result column="isVerify" property="isVerify"/>
+        <result column="isPerson" property="isPerson"/>
+        <result column="STATE" property="state"/>
+        <result column="areaType" property="areaType"/>
+    </resultMap>
+
+
+
+    <select id="findChsVerifyView" resultType="cc.mrbird.febs.chs.entity.YbChsVerifyView"
+            parameterType="cc.mrbird.febs.chs.entity.YbChsVerifyView">
+        select
+        case when rv.id is null then UUID() else rv.id end id,
+        ad.pid,
+        ad.id applyDataId,
+        #{ ybChsVerifyView.applyDateStr} applyDateStr,
+        ad.appealEndDate,
+        ad.payPlaceType,
+        ad.ydState,
+        ad.areaName,
+        ad.yyjgCode,
+        ad.yyjgName,
+        ad.deptName,
+        ad.doctorName,
+        ad.medicalType,
+        ad.zymzNumber,
+        ad.insuredName,
+        ad.enterHospitalDate,
+        ad.outHospitalDate,
+        ad.settlementDate,
+        ad.cardNumber,
+        ad.projectCode,
+        ad.projectName,
+        ad.projectYyName,
+        ad.ruleName,
+        ad.violateCsPrice,
+        ad.violatePrice,
+        ad.violateReason,
+        ad.zdNote,
+        ad.costDate,
+        ad.insuredType,
+        ad.num,
+        ad.price,
+        ad.medicalPrice,
+        ad.tcPayPrice,
+        ad.specs,
+        ad.jx,
+        ad.jgLevel,
+        ad.orderNum,
+        rv.verifyDoctorCode,
+        concat(rv.verifyDoctorCode,'-',rv.verifyDoctorName) verifyDoctorName,
+        rv.verifyDksId,
+        concat(rv.verifyDksId,'-',rv.verifyDksName) verifyDksName,
+        case when rv.id is null then 0 else 1 end isVerify,
+        case when yp.id is null then 0 else 1 end isPerson,
+        rv.sendPersonId,
+        rv.sendPersonName,
+        rv.sendDate,
+        rv.STATE,
+        rv.areaType
+        from
+        yb_chs_verify rv
+        INNER JOIN yb_chs_apply_data ad ON
+            ad.id = rv.applyDataId and
+            ad.pid = #{ ybChsVerifyView.pid}
+        <if test="ybChsVerifyView.orderNum != null">
+            and ad.orderNum = #{ ybChsVerifyView.orderNum}
+        </if>
+        <if test="ybChsVerifyView.zymzNumber != null and ybChsVerifyView.zymzNumber != ''">
+            and ad.zymzNumber = #{ ybChsVerifyView.zymzNumber}
+        </if>
+        <if test="ybChsVerifyView.insuredName != null and ybChsVerifyView.insuredName != ''">
+            and ad.insuredName = #{ ybChsVerifyView.insuredName}
+        </if>
+        <if test="ybChsVerifyView.projectName != null and ybChsVerifyView.projectName != ''">
+            and ad.projectName like concat('%', #{ ybChsVerifyView.projectName} ,'%')
+        </if>
+        LEFT join yb_person yp on
+        rv.verifyDoctorCode = yp.personCode
+        where
+        rv.applyDateStr = #{ ybChsVerifyView.applyDateStr}
+        <if test="ybChsVerifyView.areaType != null">and rv.areaType = #{ ybChsVerifyView.areaType}</if>
+        <if test="ybChsVerifyView.state != null">and rv.state =#{ ybChsVerifyView.state}</if>
+        <if test="ybChsVerifyView.orderNum != null">
+            and rv.orderNum = #{ ybChsVerifyView.orderNum}
+        </if>
+        <if test="ybChsVerifyView.verifyDoctorCode != null and ybChsVerifyView.verifyDoctorCode != ''">
+            and rv.verifyDoctorCode = #{ ybChsVerifyView.verifyDoctorCode}
+        </if>
+        <if test="ybChsVerifyView.verifyDoctorName != null and ybChsVerifyView.verifyDoctorName != ''">
+            and rv.verifyDoctorName = #{ ybChsVerifyView.verifyDoctorName}
+        </if>
+        <if test="ybChsVerifyView.verifyDksId != null and ybChsVerifyView.verifyDksId != ''">
+            and rv.verifyDksId = #{ ybChsVerifyView.verifyDksId}
+        </if>
+        <if test="ybChsVerifyView.verifyDksName != null and ybChsVerifyView.verifyDksName != ''">
+            and rv.verifyDksName = #{ ybChsVerifyView.verifyDksName}
+        </if>
+        order by rv.orderNum
+    </select>
+
+    <select id="findChsVerifyCount" resultType="Integer"
+            parameterType="cc.mrbird.febs.chs.entity.YbChsVerifyView">
+        select
+        count(1)
+        from
+        yb_chs_verify rv
+        inner JOIN yb_chs_apply_data ad ON
+        ad.id = rv.applyDataId and
+        ad.pid = #{ ybChsVerifyView.pid}
+        <if test="ybChsVerifyView.orderNum != null">
+            and ad.orderNum = #{ ybChsVerifyView.orderNum}
+        </if>
+        <if test="ybChsVerifyView.zymzNumber != null and ybChsVerifyView.zymzNumber != ''">
+            and ad.zymzNumber = #{ ybChsVerifyView.zymzNumber}
+        </if>
+        <if test="ybChsVerifyView.insuredName != null and ybChsVerifyView.insuredName != ''">
+            and ad.insuredName = #{ ybChsVerifyView.insuredName}
+        </if>
+        <if test="ybChsVerifyView.projectName != null and ybChsVerifyView.projectName != ''">
+            and ad.projectName like concat('%', #{ ybChsVerifyView.projectName} ,'%')
+        </if>
+        where
+        rv.applyDateStr = #{ ybChsVerifyView.applyDateStr}
+        <if test="ybChsVerifyView.areaType != null">and rv.areaType = #{ ybChsVerifyView.areaType}</if>
+        <if test="ybChsVerifyView.state != null">and rv.state =#{ ybChsVerifyView.state}</if>
+        <if test="ybChsVerifyView.orderNum != null">
+            and rv.orderNum = #{ ybChsVerifyView.orderNum}
+        </if>
+        <if test="ybChsVerifyView.verifyDoctorCode != null and ybChsVerifyView.verifyDoctorCode != ''">
+            and rv.verifyDoctorCode = #{ ybChsVerifyView.verifyDoctorCode}
+        </if>
+        <if test="ybChsVerifyView.verifyDoctorName != null and ybChsVerifyView.verifyDoctorName != ''">
+            and rv.verifyDoctorName = #{ ybChsVerifyView.verifyDoctorName}
+        </if>
+        <if test="ybChsVerifyView.verifyDksId != null and ybChsVerifyView.verifyDksId != ''">
+            and rv.verifyDksId = #{ ybChsVerifyView.verifyDksId}
+        </if>
+        <if test="ybChsVerifyView.verifyDksName != null and ybChsVerifyView.verifyDksName != ''">
+            and rv.verifyDksName = #{ ybChsVerifyView.verifyDksName}
+        </if>
+    </select>
+
+    <select id="findChsVerifyViewList" resultType="cc.mrbird.febs.chs.entity.YbChsVerifyView"
+            parameterType="cc.mrbird.febs.chs.entity.YbChsVerifyView">
+        select
+            case when rv.id is null then UUID() else rv.id end id,
+            ad.pid,
+            ad.id applyDataId,
+            #{ ybChsVerifyView.applyDateStr} applyDateStr,
+            ad.appealEndDate,
+            ad.payPlaceType,
+            ad.ydState,
+            ad.areaName,
+            ad.yyjgCode,
+            ad.yyjgName,
+            ad.deptName,
+            ad.doctorName,
+            ad.medicalType,
+            ad.zymzNumber,
+            ad.insuredName,
+            ad.enterHospitalDate,
+            ad.outHospitalDate,
+            ad.settlementDate,
+            ad.cardNumber,
+            ad.projectCode,
+            ad.projectName,
+            ad.projectYyName,
+            ad.ruleName,
+            ad.violateCsPrice,
+            ad.violatePrice,
+            ad.violateReason,
+            ad.zdNote,
+            ad.costDate,
+            ad.insuredType,
+            ad.num,
+            ad.price,
+            ad.medicalPrice,
+            ad.tcPayPrice,
+            ad.specs,
+            ad.jx,
+            ad.jgLevel,
+            ad.orderNum,
+            rv.verifyDoctorCode,
+            concat(rv.verifyDoctorCode,'-',rv.verifyDoctorName) verifyDoctorName,
+            rv.verifyDksId,
+            concat(rv.verifyDksId,'-',rv.verifyDksName) verifyDksName,
+            case when rv.id is null then 0 else 1 end isVerify,
+            rv.sendPersonId,
+            rv.sendPersonName,
+            rv.sendDate,
+            rv.STATE,
+            rv.areaType
+        from
+            yb_chs_apply_data ad
+            LEFT JOIN yb_chs_verify rv ON
+                ad.id = rv.applyDataId
+        where
+            ad.pid = #{ybChsVerifyView.pid} and
+            rv.state = #{ybChsVerifyView.state}
+    </select>
+
+    <select id="findChsVerifyApplyDateCount" resultType="Integer">
+    select
+        count(1)
+    from
+        yb_chs_verify
+    WHERE
+        applyDateStr= #{ybChsVerifyView.applyDateStr} and
+        areaType = #{ ybChsVerifyView.areaType}
+</select>
+</mapper>

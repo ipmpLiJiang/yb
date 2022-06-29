@@ -44,11 +44,13 @@
         <result column="orderNum" property="orderNum"/>
         <result column="isOutpfees" property="isOutpfees"/>
         <result column="orderSettlementNum" property="orderSettlementNum"/>
+        <result column="projectCodeOne" property="projectCodeOne"/>
+        <result column="projectNameOne" property="projectNameOne"/>
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, pid, appealEndDate, payPlaceType, ydState, areaName, yyjgCode, yyjgName, deptName, doctorName, medicalType, zymzNumber, insuredName, enterHospitalDate, outHospitalDate, settlementDate, cardNumber, projectCode, projectName, projectYyName, ruleName, violateCsPrice, violatePrice, violateReason, zdNote, costDate, insuredType, num, price, medicalPrice, tcPayPrice, specs, jx, jgLevel, COMMENTS, STATE, IS_DELETEMARK, orderNum, isOutpfees, orderSettlementNum
+        id, pid, appealEndDate, payPlaceType, ydState, areaName, yyjgCode, yyjgName, deptName, doctorName, medicalType, zymzNumber, insuredName, enterHospitalDate, outHospitalDate, settlementDate, cardNumber, projectCode, projectName, projectYyName, ruleName, violateCsPrice, violatePrice, violateReason, zdNote, costDate, insuredType, num, price, medicalPrice, tcPayPrice, specs, jx, jgLevel, COMMENTS, STATE, IS_DELETEMARK, orderNum, isOutpfees, orderSettlementNum, projectCodeOne, projectNameOne
     </sql>
     <update id="updateYbChsApplyData" parameterType="cc.mrbird.febs.chs.entity.YbChsApplyData">
         update yb_chs_apply_data
@@ -92,6 +94,8 @@
             <if test="orderNum != null">orderNum=#{orderNum},</if>
             <if test="isOutpfees != null">isOutpfees=#{isOutpfees},</if>
             <if test="orderSettlementNum != null">orderSettlementNum=#{orderSettlementNum},</if>
+            <if test="projectCodeOne != null">projectCodeOne=#{projectCodeOne},</if>
+            <if test="projectNameOne != null">projectNameOne=#{projectNameOne},</if>
         </trim>
         where id=#{id}
 
@@ -227,7 +231,7 @@
         <if test="isOutpfees != null">isOutpfees =#{ isOutpfees} and</if>
         id not in(
         select applyDataId from yb_chs_jk where
-        applyDateStr = #{applyDateStr} and areaType = #{areaType} and
+        applyDateStr = #{applyDateStr} and areaType = #{areaType}
         <if test="isOutpfees != null">and isOutpfees =#{ isOutpfees}</if>
         )
     </select>
@@ -241,7 +245,7 @@
         pid = #{pid} and
         <if test="isOutpfees != null">isOutpfees =#{ isOutpfees} and</if>
         id not in(
-        select applyDataId from yb_reconsider_inpatientfees where
+        select applyDataId from yb_chs_jk where
         applyDateStr = #{applyDateStr} and areaType = #{areaType}
         <if test="isOutpfees != null">and isOutpfees =#{ isOutpfees}</if>
         )
@@ -259,4 +263,16 @@
         orderSettlementNum between #{startNum} and #{endNum}
     </select>
 
+    <select id="findChsApplyDataByNotVerify" resultType="cc.mrbird.febs.chs.entity.YbChsApplyData">
+        select
+          *
+        from
+            yb_chs_apply_data
+            WHERE
+            pid= #{pid}
+            AND id not in(
+                select applyDataId from yb_chs_verify where
+                applyDateStr = #{applyDateStr} and areaType = #{areaType}
+            )
+    </select>
 </mapper>
