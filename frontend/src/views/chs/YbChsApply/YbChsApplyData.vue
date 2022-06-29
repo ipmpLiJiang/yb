@@ -72,7 +72,7 @@ export default {
       },
       {
         title: '申诉截止日期',
-        dataIndex: 'appealEndDateStr',
+        dataIndex: 'appealEndDate',
         width: 110
       },
       {
@@ -127,17 +127,17 @@ export default {
       },
       {
         title: '入院日期',
-        dataIndex: 'enterHospitalDateStr',
+        dataIndex: 'enterHospitalDate',
         width: 110
       },
       {
         title: '出院日期',
-        dataIndex: 'outHospitalDateStr',
+        dataIndex: 'outHospitalDate',
         width: 110
       },
       {
         title: '结算日期',
-        dataIndex: 'settlementDateStr',
+        dataIndex: 'settlementDate',
         width: 110
       },
       {
@@ -158,7 +158,7 @@ export default {
       {
         title: '医院项目名称',
         dataIndex: 'projectYyName',
-        width: 100
+        width: 120
       },
       {
         title: '规则名称',
@@ -187,7 +187,7 @@ export default {
       },
       {
         title: '费用日期',
-        dataIndex: 'costDateStr',
+        dataIndex: 'costDate',
         width: 110
       },
       {

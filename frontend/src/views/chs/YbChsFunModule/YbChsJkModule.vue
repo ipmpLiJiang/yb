@@ -1,33 +1,38 @@
 <template>
-  <div id="tab" style="margin: 0px!important">
-        <!-- 表格区域 -->
-        <a-table
-          ref="TableInfo"
-          :columns="columns"
-          :rowKey="record => record.id"
-          :dataSource="dataSource"
-          :pagination="pagination"
-          :loading="loading"
-          @change="handleTableChange"
-          size="small"
-          :bordered="bordered"
-          :scroll="{ x: 900 }"
-        >
-        </a-table>
-  </div>
+    <!-- 表格区域 -->
+    <a-table
+    ref="TableInfo"
+    :columns="columns"
+    :rowKey="record => record.id"
+    :dataSource="dataSource"
+    :pagination="pagination"
+    :loading="loading"
+    :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
+    @change="handleTableChange"
+    size="small"
+    :bordered="bordered"
+    :scroll="{ x: 900 }"
+    >
+    <a slot="action" slot-scope="text">action</a>
+    <template
+        slot="remark"
+        slot-scope="text,record"
+    >
+        <a-popover placement="topLeft">
+        <template slot="content">
+            <div style="max-width: 200px">{{text}}</div>
+        </template>
+        <p style="width: 200px;margin-bottom: 0">{{text}}</p>
+        </a-popover>
+    </template>
+    </a-table>
 </template>
-
 <script>
 import moment from 'moment'
 export default {
-  name: 'YbChsJk',
+  name: 'YbChsJkModule',
   props: {
-    applyDateStr: {
-      default: ''
-    },
-    areaType: {
-      default: 0
-    }
+    ybChsData: {}
   },
   data () {
     return {
@@ -49,19 +54,18 @@ export default {
       },
       queryParams: {
       },
-      tableFormat: 'YYYY-MM-DD',
+      orderDocTitle: '开方医生',
+      deptTitle: '住院科室',
+      excuteDocTitle: '执行医生',
+      excuteDeptTitle: '执行科室',
       loading: false,
-      bordered: true,
-      ybChsApplyTask: {}
+      bordered: true
     }
   },
   computed: {
     columns () {
       return [{
         title: '序号',
-        // customRender: (text, row, index) => {
-        //   return this.rowNo(index)
-        // },
         dataIndex: 'orderNum',
         width: 70,
         fixed: 'left'
@@ -86,12 +90,12 @@ export default {
       {
         title: '单据号',
         dataIndex: 'billNo',
-        width: 100
+        width: 150
       },
       {
         title: '交易流水号',
         dataIndex: 'transNo',
-        width: 120
+        width: 200
       },
       {
         title: '项目代码',
@@ -231,41 +235,12 @@ export default {
     }
   },
   mounted () {
-    // this.fetch()
   },
   methods: {
     moment,
     rowNo (index) {
       return (this.pagination.defaultCurrent - 1) *
             this.pagination.defaultPageSize + index + 1
-    },
-    onSelectChange (selectedRowKeys) {
-      this.selectedRowKeys = selectedRowKeys
-    },
-    edit (record, index) {
-      record.rowNo = this.rowNo(index)
-      this.$emit('edit', record)
-    },
-    searchPage () {
-      this.pagination.defaultCurrent = 1
-      if (this.paginationInfo) {
-        this.paginationInfo.current = this.pagination.defaultCurrent
-      }
-      this.search()
-    },
-    search () {
-      let { sortedInfo } = this
-      let sortField, sortOrder
-      // 获取当前列的排序和列的过滤规则
-      if (sortedInfo) {
-        sortField = sortedInfo.field
-        sortOrder = sortedInfo.order
-      }
-      this.fetch({
-        sortField: sortField,
-        sortOrder: sortOrder,
-        ...this.queryParams
-      })
     },
     reset () {
       // 取消选中
@@ -282,7 +257,25 @@ export default {
       this.paginationInfo = null
       // 重置查询参数
       this.queryParams = {}
-      this.fetch()
+      this.dataSource = []
+      this.form.resetFields()
+    },
+    onSelectChange (selectedRowKeys) {
+      this.selectedRowKeys = selectedRowKeys
+    },
+    search () {
+      let { sortedInfo } = this
+      let sortField, sortOrder
+      // 获取当前列的排序和列的过滤规则
+      if (sortedInfo) {
+        sortField = sortedInfo.field
+        sortOrder = sortedInfo.order
+      }
+      this.fetch({
+        sortField: sortField,
+        sortOrder: sortOrder,
+        ...this.queryParams
+      })
     },
     handleTableChange (pagination, filters, sorter) {
       this.sortedInfo = sorter
@@ -294,9 +287,10 @@ export default {
       })
     },
     fetch (params = {}) {
+      this.dataSource = []
+      params.applyDateStr = this.ybChsData.applyDateStr
+      params.applyDataId = this.ybChsData.applyDataId
       this.loading = true
-      params.applyDateStr = this.applyDateStr
-      params.areaType = this.areaType
       if (this.paginationInfo) {
         // 如果分页信息不为空，则设置表格当前第几页，每页条数，并设置查询分页参数
         this.$refs.TableInfo.pagination.current = this.paginationInfo.current
@@ -308,9 +302,7 @@ export default {
         params.pageSize = this.pagination.defaultPageSize
         params.pageNum = this.pagination.defaultCurrent
       }
-      params.sortField = 'orderNum'
-      params.sortOrder = 'ascend'
-      this.$get('ybChsJk/findChsJkList', {
+      this.$get('ybChsJk/getJkData', {
         ...params
       }).then((r) => {
         let data = r.data
@@ -319,14 +311,13 @@ export default {
         this.loading = false
         this.dataSource = data.rows
         this.pagination = pagination
-      })
-      this.selectedRowKeys = []
+      }
+      )
     }
   }
 }
 </script>
 
-<style scoped>
-.editable-row-operations a {
-  margin-right: 8px;
-}
+<style lang="less" scoped>
+@import "../../../../static/less/Common";
+</style>

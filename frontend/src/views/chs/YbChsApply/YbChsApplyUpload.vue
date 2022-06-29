@@ -34,7 +34,7 @@
               />
             </a-form-item>
           </a-col>
-          <a-col :span=2 v-show="tableSelectKey == '2' ? false:showBtn">
+          <a-col :span=2 v-show="tableSelectKey == '1' ? showBtn : false">
             <template>
               <a-upload
                 name="file"
@@ -48,7 +48,7 @@
               </a-upload>
             </template>
           </a-col>
-          <a-col :span=2 v-show="tableSelectKey == '2' ? false:showDelBtn">
+          <a-col :span=2 v-show="tableSelectKey == '1' ? showDelBtn:false">
             <a-popconfirm
               title="确定删除明细？"
               @confirm="deleteData"
@@ -58,7 +58,15 @@
               <a-button type="primary" style="margin-right: .8rem">删除明细</a-button>
             </a-popconfirm>
           </a-col>
-          <a-col :span=5 v-show="tableSelectKey == 2 ? true:false">
+          <a-col :span=7 v-show="tableSelectKey == 3 ? true:false">
+            <a-select :value="searchOutpfees" style="width: 100px" @change="handleOutpfeesChange">
+              <a-select-option
+              v-for="d in selectOutpfeesDataSource"
+              :key="d.value"
+              >
+              {{ d.text }}
+              </a-select-option>
+            </a-select>
             <a-popconfirm
               title="确定获取HIS数据？"
               @confirm="addChsJk"
@@ -78,7 +86,7 @@
               <a-button type="primary">删除HIS数据</a-button>
             </a-popconfirm>
           </a-col>
-          <a-col :span=2 v-show="tableSelectKey == '2' ? false:showBtn">
+          <a-col :span=2 v-show="tableSelectKey == '1' ? showBtn : false">
             <a-button
               type="primary"
               style="margin-left: 8px"
@@ -125,6 +133,18 @@
             >
             </ybChs-jk>
           </a-tab-pane>
+          <a-tab-pane
+            key="3"
+            :forceRender="true"
+            tab="获取HIS"
+          >
+            <ybChsApply-task
+              ref="ybChsApplyTask"
+              :applyDateStr="ybChsApply.applyDateStr"
+              :areaType="ybChsApply.areaType"
+            >
+            </ybChsApply-task>
+          </a-tab-pane>
         </a-tabs>
       </div>
     </template>
@@ -134,6 +154,7 @@
 <script>
 import moment from 'moment'
 import YbChsApplyData from './YbChsApplyData'
+import YbChsApplyTask from './YbChsApplyTask'
 import YbChsJk from './YbChsJk'
 const formItemLayout = {
   labelCol: { span: 8 },
@@ -141,7 +162,7 @@ const formItemLayout = {
 }
 export default {
   name: 'YbChsApplyUpload',
-  components: {YbChsApplyData, YbChsJk},
+  components: {YbChsApplyData, YbChsJk, YbChsApplyTask},
   props: {
   },
   data () {
@@ -151,6 +172,9 @@ export default {
       monthFormat: 'YYYY-MM',
       fileList: [],
       tableSelectKey: '1',
+      selectOutpfeesDataSource: [{text: '住院', value: 2},
+        {text: '门诊', value: 1}],
+      searchOutpfees: 2,
       showBtn: false,
       showDelBtn: false,
       spinning: false,
@@ -173,6 +197,12 @@ export default {
     downloadFile () {
       this.$download('ybChsApplyData/downFile', {
       }, '医保明细审核模板.xlsx')
+    },
+    handleOutpfeesChange (value) {
+      this.searchOutpfees = value
+      setTimeout(() => {
+        this.callback('3')
+      }, 200)
     },
     deleteData () {
       if (this.ybChsApply.state === 2) {
@@ -201,24 +231,24 @@ export default {
       this.$emit('cancel')
     },
     addChsJk () {
-      let key = '2'
+      let key = '3'
       if (this.tableSelectKey === key) {
         this.spinning = true
         this.$post('ybChsApplyData/getJk', {
           applyDateStr: this.ybChsApply.applyDateStr,
-          areaType: this.ybChsApply.areaType
+          areaType: this.ybChsApply.areaType,
+          isOutpfees: this.searchOutpfees
         }).then((r) => {
           if (r.data.data.success === 1) {
             this.showDelBtn = false
             this.$message.success('HIS数据获取成功.')
-            if (this.tableSelectKey === key) {
-              this.callback(key)
-            }
-            this.spinning = false
           } else {
             this.$message.warning(r.data.data.message)
-            this.spinning = false
           }
+          if (this.tableSelectKey === key) {
+            this.callback(key)
+          }
+          this.spinning = false
         }).catch(() => {
           this.$message.error('HIS数据获取失败.')
           this.spinning = false
@@ -226,7 +256,7 @@ export default {
       }
     },
     delChsJk () {
-      let key = '2'
+      let key = '3'
       if (this.tableSelectKey === key) {
         this.spinning = true
         this.$post('ybChsApplyData/delJk', {
@@ -256,6 +286,8 @@ export default {
         this.$refs.ybChsApplyData.searchPage()
       } else if (key === '2') {
         this.$refs.ybChsJk.searchPage()
+      } else if (key === '3') {
+        this.$refs.ybChsApplyTask.searchPage()
       } else {
         console.log('ok')
       }

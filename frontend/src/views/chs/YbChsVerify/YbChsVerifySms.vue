@@ -13,6 +13,9 @@
           :bordered="bordered"
           :scroll="{ x: 900 }"
         >
+      <template slot="operationSendcontent" slot-scope="text, record, index">
+        <span :title="record.sendcontent">{{record.sendcontent}}</span>
+      </template>
         </a-table>
   </div>
 </template>
@@ -20,13 +23,20 @@
 <script>
 import moment from 'moment'
 export default {
-  name: 'YbChsJk',
+  name: 'YbChsVerifySms',
   props: {
     applyDateStr: {
       default: ''
     },
-    areaType: {
-      default: 0
+    searchText: {
+      default () {
+        return ''
+      }
+    },
+    checked: {
+      default () {
+        return false
+      }
     }
   },
   data () {
@@ -49,189 +59,55 @@ export default {
       },
       queryParams: {
       },
-      tableFormat: 'YYYY-MM-DD',
       loading: false,
       bordered: true,
-      ybChsApplyTask: {}
+      user: this.$store.state.account.user,
+      ybChsApplyVerifySms: {}
     }
   },
   computed: {
     columns () {
       return [{
-        title: '序号',
-        // customRender: (text, row, index) => {
-        //   return this.rowNo(index)
-        // },
-        dataIndex: 'orderNum',
-        width: 70,
-        fixed: 'left'
-      },
-      {
-        title: '住院号',
-        dataIndex: 'inpatientId',
-        width: 100,
-        fixed: 'left'
-      },
-      {
-        title: '患者姓名',
-        dataIndex: 'patientName',
-        width: 100,
-        fixed: 'left'
-      },
-      {
-        title: 'HIS结算序号',
-        dataIndex: 'settlementId',
-        width: 120
-      },
-      {
-        title: '单据号',
-        dataIndex: 'billNo',
-        width: 100
-      },
-      {
-        title: '交易流水号',
-        dataIndex: 'transNo',
-        width: 120
-      },
-      {
-        title: '项目代码',
-        dataIndex: 'itemId',
-        width: 120
-      },
-      {
-        title: '项目医保编码',
-        dataIndex: 'itemCode',
-        width: 130
-      },
-      {
-        title: '项目名称',
-        dataIndex: 'itemName',
+        title: '发送人',
+        dataIndex: 'sendcode',
+        customRender: (text, row, index) => {
+          if (text !== '' && text !== null) {
+            return row.sendcode + '-' + row.sendname
+          }
+        },
+        fixed: 'left',
         width: 150
       },
       {
-        title: '项目数量',
-        dataIndex: 'itemCount',
+        title: '发送号码',
+        dataIndex: 'mobile',
         width: 100
       },
       {
-        title: '项目单价',
-        dataIndex: 'itemPrice',
-        width: 100
+        title: '发送内容',
+        dataIndex: 'sendcontent',
+        scopedSlots: { customRender: 'operationSendcontent' },
+        ellipsis: true,
+        width: 460
       },
       {
-        title: '项目金额',
-        dataIndex: 'itemAmount',
-        width: 100
-      },
-      {
-        title: '费用日期',
-        dataIndex: 'feeDate',
+        title: '状态',
+        dataIndex: 'state',
         customRender: (text, row, index) => {
-          if (text !== '' && text !== null) {
-            return moment(text).format('YYYY-MM-DD')
-          } else {
-            return text
+          switch (text) {
+            case 0:
+              return '未发送'
+            case 1:
+              return '已发送'
+            default:
+              return text
           }
         },
-        width: 110
-      },
-      {
-        title: '项目类型',
-        dataIndex: 'itemTypeName',
-        width: 100
-      },
-      {
-        title: '门诊卡号',
-        dataIndex: 'jzkh',
-        width: 100
-      },
-      {
-        title: this.deptTitle,
-        dataIndex: 'deptName',
-        customRender: (text, row, index) => {
-          if (text !== '' && text !== null) {
-            return row.deptId + '-' + row.deptName
-          }
-        },
-        width: 150
-      },
-      {
-        title: '主治医生',
-        dataIndex: 'attendDocName',
-        customRender: (text, row, index) => {
-          if (text !== '' && text !== null) {
-            return row.attendDocId + '-' + row.attendDocName
-          }
-        },
-        width: 130
-      },
-      {
-        title: this.orderDocTitle,
-        dataIndex: 'orderDocName',
-        customRender: (text, row, index) => {
-          if (text !== '' && text !== null) {
-            return row.orderDocId + '-' + row.orderDocName
-          }
-        },
-        width: 130
-      },
-      {
-        title: this.excuteDeptTitle,
-        dataIndex: 'excuteDeptName',
-        customRender: (text, row, index) => {
-          if (text !== '' && text !== null) {
-            return row.excuteDeptId + '-' + row.excuteDeptName
-          }
-        },
-        width: 150
-      },
-      {
-        title: this.excuteDocTitle,
-        dataIndex: 'excuteDocName',
-        customRender: (text, row, index) => {
-          if (text !== '' && text !== null) {
-            return row.excuteDocId + '-' + row.excuteDocName
-          }
-        },
-        width: 130
-      },
-      {
-        title: '计费科室',
-        dataIndex: 'feeDeptName',
-        customRender: (text, row, index) => {
-          if (text !== '' && text !== null) {
-            return row.feeDeptId + '-' + row.feeDeptName
-          }
-        },
-        width: 150
-      },
-      {
-        title: '计费人',
-        dataIndex: 'feeOperatorName',
-        customRender: (text, row, index) => {
-          if (text !== '' && text !== null) {
-            return row.feeOperatorId + '-' + row.feeOperatorName
-          }
-        },
-        width: 130
-      },
-      {
-        title: '结算时间',
-        dataIndex: 'settlementDate',
-        customRender: (text, row, index) => {
-          if (text !== '' && text !== null) {
-            return moment(text).format('YYYY-MM-DD')
-          } else {
-            return text
-          }
-        },
-        fixed: 'right',
-        width: 110
+        width: 80
       }]
     }
   },
   mounted () {
-    // this.fetch()
   },
   methods: {
     moment,
@@ -241,10 +117,6 @@ export default {
     },
     onSelectChange (selectedRowKeys) {
       this.selectedRowKeys = selectedRowKeys
-    },
-    edit (record, index) {
-      record.rowNo = this.rowNo(index)
-      this.$emit('edit', record)
     },
     searchPage () {
       this.pagination.defaultCurrent = 1
@@ -296,7 +168,14 @@ export default {
     fetch (params = {}) {
       this.loading = true
       params.applyDateStr = this.applyDateStr
-      params.areaType = this.areaType
+      params.areaType = this.user.areaType.value
+      params.sendType = 21
+      params.comments = this.searchText
+      if (this.checked) {
+        params.state = 1
+      } else {
+        params.state = 0
+      }
       if (this.paginationInfo) {
         // 如果分页信息不为空，则设置表格当前第几页，每页条数，并设置查询分页参数
         this.$refs.TableInfo.pagination.current = this.paginationInfo.current
@@ -308,9 +187,9 @@ export default {
         params.pageSize = this.pagination.defaultPageSize
         params.pageNum = this.pagination.defaultCurrent
       }
-      params.sortField = 'orderNum'
+      params.sortField = 'state'
       params.sortOrder = 'ascend'
-      this.$get('ybChsJk/findChsJkList', {
+      this.$get('comSms', {
         ...params
       }).then((r) => {
         let data = r.data

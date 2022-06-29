@@ -20,13 +20,16 @@
 <script>
 import moment from 'moment'
 export default {
-  name: 'YbChsJk',
+  name: 'YbChsApplyTask',
   props: {
     applyDateStr: {
       default: ''
     },
     areaType: {
       default: 0
+    },
+    isOutpfees: {
+      default: 2
     }
   },
   data () {
@@ -49,7 +52,6 @@ export default {
       },
       queryParams: {
       },
-      tableFormat: 'YYYY-MM-DD',
       loading: false,
       bordered: true,
       ybChsApplyTask: {}
@@ -58,175 +60,51 @@ export default {
   computed: {
     columns () {
       return [{
-        title: '序号',
-        // customRender: (text, row, index) => {
-        //   return this.rowNo(index)
-        // },
-        dataIndex: 'orderNum',
-        width: 70,
-        fixed: 'left'
-      },
-      {
-        title: '住院号',
-        dataIndex: 'inpatientId',
-        width: 100,
-        fixed: 'left'
-      },
-      {
-        title: '患者姓名',
-        dataIndex: 'patientName',
-        width: 100,
-        fixed: 'left'
-      },
-      {
-        title: 'HIS结算序号',
-        dataIndex: 'settlementId',
-        width: 120
-      },
-      {
-        title: '单据号',
-        dataIndex: 'billNo',
+        title: '总数(意见书)',
+        dataIndex: 'totalRow',
         width: 100
       },
       {
-        title: '交易流水号',
-        dataIndex: 'transNo',
-        width: 120
-      },
-      {
-        title: '项目代码',
-        dataIndex: 'itemId',
-        width: 120
-      },
-      {
-        title: '项目医保编码',
-        dataIndex: 'itemCode',
-        width: 130
-      },
-      {
-        title: '项目名称',
-        dataIndex: 'itemName',
-        width: 150
-      },
-      {
-        title: '项目数量',
-        dataIndex: 'itemCount',
+        title: '当前匹配数',
+        dataIndex: 'pageSize',
         width: 100
       },
       {
-        title: '项目单价',
-        dataIndex: 'itemPrice',
+        title: 'his匹配数',
+        dataIndex: 'hisCount',
         width: 100
       },
       {
-        title: '项目金额',
-        dataIndex: 'itemAmount',
+        title: '数据类型',
+        dataIndex: 'isOutpfees',
+        customRender: (text, row, index) => {
+          switch (text) {
+            case 1:
+              return '门诊扣款'
+            case 2:
+              return '住院扣款'
+            default:
+              return text
+          }
+        },
         width: 100
       },
       {
-        title: '费用日期',
-        dataIndex: 'feeDate',
+        title: '状态',
+        dataIndex: 'state',
         customRender: (text, row, index) => {
-          if (text !== '' && text !== null) {
-            return moment(text).format('YYYY-MM-DD')
-          } else {
-            return text
+          switch (text) {
+            case 0:
+              return '第一次,Item项目名称'
+            case 1:
+              return '第二次,His项目名称'
+            case 2:
+              return '第三次,项目编码'
+            default:
+              return text
           }
         },
-        width: 110
-      },
-      {
-        title: '项目类型',
-        dataIndex: 'itemTypeName',
         width: 100
-      },
-      {
-        title: '门诊卡号',
-        dataIndex: 'jzkh',
-        width: 100
-      },
-      {
-        title: this.deptTitle,
-        dataIndex: 'deptName',
-        customRender: (text, row, index) => {
-          if (text !== '' && text !== null) {
-            return row.deptId + '-' + row.deptName
-          }
-        },
-        width: 150
-      },
-      {
-        title: '主治医生',
-        dataIndex: 'attendDocName',
-        customRender: (text, row, index) => {
-          if (text !== '' && text !== null) {
-            return row.attendDocId + '-' + row.attendDocName
-          }
-        },
-        width: 130
-      },
-      {
-        title: this.orderDocTitle,
-        dataIndex: 'orderDocName',
-        customRender: (text, row, index) => {
-          if (text !== '' && text !== null) {
-            return row.orderDocId + '-' + row.orderDocName
-          }
-        },
-        width: 130
-      },
-      {
-        title: this.excuteDeptTitle,
-        dataIndex: 'excuteDeptName',
-        customRender: (text, row, index) => {
-          if (text !== '' && text !== null) {
-            return row.excuteDeptId + '-' + row.excuteDeptName
-          }
-        },
-        width: 150
-      },
-      {
-        title: this.excuteDocTitle,
-        dataIndex: 'excuteDocName',
-        customRender: (text, row, index) => {
-          if (text !== '' && text !== null) {
-            return row.excuteDocId + '-' + row.excuteDocName
-          }
-        },
-        width: 130
-      },
-      {
-        title: '计费科室',
-        dataIndex: 'feeDeptName',
-        customRender: (text, row, index) => {
-          if (text !== '' && text !== null) {
-            return row.feeDeptId + '-' + row.feeDeptName
-          }
-        },
-        width: 150
-      },
-      {
-        title: '计费人',
-        dataIndex: 'feeOperatorName',
-        customRender: (text, row, index) => {
-          if (text !== '' && text !== null) {
-            return row.feeOperatorId + '-' + row.feeOperatorName
-          }
-        },
-        width: 130
-      },
-      {
-        title: '结算时间',
-        dataIndex: 'settlementDate',
-        customRender: (text, row, index) => {
-          if (text !== '' && text !== null) {
-            return moment(text).format('YYYY-MM-DD')
-          } else {
-            return text
-          }
-        },
-        fixed: 'right',
-        width: 110
       }]
     }
   },
@@ -297,6 +175,7 @@ export default {
       this.loading = true
       params.applyDateStr = this.applyDateStr
       params.areaType = this.areaType
+      params.isOutpfees = this.isOutpfees
       if (this.paginationInfo) {
         // 如果分页信息不为空，则设置表格当前第几页，每页条数，并设置查询分页参数
         this.$refs.TableInfo.pagination.current = this.paginationInfo.current
@@ -308,9 +187,9 @@ export default {
         params.pageSize = this.pagination.defaultPageSize
         params.pageNum = this.pagination.defaultCurrent
       }
-      params.sortField = 'orderNum'
-      params.sortOrder = 'ascend'
-      this.$get('ybChsJk/findChsJkList', {
+      params.sortField = 'isOutpfees, state, startNum'
+      params.sortOrder = 'descend'
+      this.$get('ybChsApplyTask', {
         ...params
       }).then((r) => {
         let data = r.data
