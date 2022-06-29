@@ -191,6 +191,8 @@ public class YbChsApplyDataController extends BaseController {
                                 List<YbChsApplyData> ListData = new ArrayList<>();
                                 DateFormat formater = new SimpleDateFormat("yyyy-MM-dd");
                                 if (objMx.size() > 1) {
+                                    int orderZy = 1;
+                                    int orderMz = 1;
                                     if (objMx.get(0).length >= 21) {
                                         for (int i = 1; i < objMx.size(); i++) {
                                             message = "上传数据读取失败，请确保Excel列表数据正确无误.";
@@ -198,7 +200,7 @@ public class YbChsApplyDataController extends BaseController {
                                             rrData.setId(UUID.randomUUID().toString());
                                             rrData.setPid(pid);
                                             rrData.setOrderNum(i);
-                                            rrData.setOrderSettlementNum(i);
+
                                             String appealEndDateStr = DataTypeHelpers.importTernaryOperate(objMx.get(i), 0);//申诉截止日期
                                             if(StringUtils.isNotBlank(appealEndDateStr)) {
                                                 rrData.setAppealEndDate(formater.parse(appealEndDateStr));
@@ -222,8 +224,13 @@ public class YbChsApplyDataController extends BaseController {
                                                 rrData.setMedicalType(medicalType);
                                                 if(medicalType.contains("门诊")) {
                                                     rrData.setIsOutpfees(1);
+                                                    rrData.setOrderSettlementNum(orderMz);
+                                                    orderMz ++;
                                                 } else {
                                                     rrData.setIsOutpfees(2);
+                                                    rrData.setOrderSettlementNum(i);
+                                                    rrData.setOrderSettlementNum(orderZy);
+                                                    orderZy ++;
                                                 }
                                             }
                                             String zymzNumber = DataTypeHelpers.importTernaryOperate(objMx.get(i), 9);//	住院门诊号
@@ -245,9 +252,23 @@ public class YbChsApplyDataController extends BaseController {
                                             String cardNumber = DataTypeHelpers.importTernaryOperate(objMx.get(i), 14);//身份证号
                                             rrData.setCardNumber(cardNumber);
                                             String projectCode = DataTypeHelpers.importTernaryOperate(objMx.get(i), 15);//医保项目编码
-                                            rrData.setProjectCode(projectCode);
+                                            if(StringUtils.isNotBlank(projectCode)) {
+                                                rrData.setProjectCode(projectCode);
+
+                                                projectCode = projectCode.replace("，", ",");
+                                                String[] pcArr = projectCode.split(",");
+                                                projectCode = pcArr[0];
+                                                rrData.setProjectCodeOne(projectCode);
+                                            }
                                             String projectName = DataTypeHelpers.importTernaryOperate(objMx.get(i), 16);//医保项目名称
-                                            rrData.setProjectName(projectName);
+                                            if(StringUtils.isNotBlank(projectName)) {
+                                                rrData.setProjectName(projectName);
+
+                                                projectName = projectName.replace("，", ",");
+                                                String[] pnArr = projectName.split(",");
+                                                projectName = pnArr[0];
+                                                rrData.setProjectNameOne(projectName);
+                                            }
                                             String projectYyName = DataTypeHelpers.importTernaryOperate(objMx.get(i), 17);//医院项目名称
                                             rrData.setProjectYyName(projectYyName);
                                             String ruleName = DataTypeHelpers.importTernaryOperate(objMx.get(i), 18);//规则名称
@@ -306,6 +327,7 @@ public class YbChsApplyDataController extends BaseController {
                                             String jgLevel = DataTypeHelpers.importTernaryOperate(objMx.get(i), 31);//机构等级
                                             rrData.setJgLevel(jgLevel);
                                             rrData.setState(0);
+                                            rrData.setIsDeletemark(1);
                                             ListData.add(rrData);
                                         }
                                     } else {
@@ -319,7 +341,7 @@ public class YbChsApplyDataController extends BaseController {
                                         ybChsApply.setState(YbDefaultValue.APPLYSTATE_2);
                                         ybChsApply.setId(pid);
                                         ybChsApply.setUploadFileName(uploadFileName);
-
+                                        message = "Excel导入失败，插入数据异常.";
                                         this.iYbChsApplyDataService.importChsApply(ybChsApply, ListData);
                                         success = 1;
                                         message = "Excel导入成功.";
@@ -368,7 +390,7 @@ public class YbChsApplyDataController extends BaseController {
                     message = applyDateStr + "未获申请数据.";
                 }
                 if(message.equals("no1")) {
-                    message = "未查询到" + applyDateStr + "HIS数据.";
+                    message = applyDateStr + "数据，当前状态无法删除.";
                 }
             }
         } catch (Exception e) {
@@ -406,7 +428,7 @@ public class YbChsApplyDataController extends BaseController {
     }
 
     @Log("His数据接口")
-    @PutMapping("getJk")
+    @PostMapping("getJk")
     @RequiresPermissions("ybChsApplyData:his")
     public FebsResponse getHiss(String applyDateStr, Integer areaType, Integer isOutpfees) {
         ModelMap map = new ModelMap();

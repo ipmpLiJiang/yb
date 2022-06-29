@@ -1,23 +1,13 @@
 package cc.mrbird.febs.chs.entity;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-
 import com.baomidou.mybatisplus.annotation.TableField;
-
-import java.io.Serializable;
-
-
 import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.Data;
-import lombok.experimental.Accessors;
-
-import java.util.Date;
-
-import com.wuwenze.poi.annotation.Excel;
 import com.wuwenze.poi.annotation.ExcelField;
+import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
+
+import java.math.BigDecimal;
+import java.util.Date;
 
 /**
  * <p>
@@ -28,10 +18,8 @@ import org.springframework.format.annotation.DateTimeFormat;
  * @since 2022-06-27
  */
 
-@Excel("yb_chs_apply_data")
 @Data
-@Accessors(chain = true)
-public class YbChsApplyData implements Serializable, Comparable<YbChsApplyData> {
+public class YbChsVerifyView {
 
     private static final long serialVersionUID = 1L;
 
@@ -46,6 +34,87 @@ public class YbChsApplyData implements Serializable, Comparable<YbChsApplyData> 
      */
     @ExcelField(value = "申请pid")
     private String pid;
+
+
+    /**
+     * chs申请明细
+     */
+    @TableField("applyDataId")
+    @ExcelField(value = "chs申请明细")
+    private String applyDataId;
+
+    /**
+     * chs医生编码
+     */
+    @TableField("verifyDoctorCode")
+    @ExcelField(value = "chs医生编码")
+    private String verifyDoctorCode;
+
+    /**
+     * chs医生
+     */
+    @TableField("verifyDoctorName")
+    @ExcelField(value = "chs医生")
+    private String verifyDoctorName;
+
+    /**
+     * chs编码
+     */
+    @TableField("verifyDksId")
+    @ExcelField(value = "chs编码")
+    private String verifyDksId;
+
+    /**
+     * chs科室
+     */
+    @TableField("verifyDksName")
+    @ExcelField(value = "chs科室")
+    private String verifyDksName;
+
+    /**
+     * 状态
+     */
+    @TableField("STATE")
+    @ExcelField(value = "状态")
+    private Integer state;
+
+    /**
+     * 复议年月Str
+     */
+    @TableField("applyDateStr")
+    @ExcelField(value = "复议年月Str")
+    private String applyDateStr;
+
+    /**
+     * 院区
+     */
+    @TableField("areaType")
+    @ExcelField(value = "院区")
+    private Integer areaType;
+
+    /**
+     * 发送人代码
+     */
+    @TableField("sendPersonId")
+    @ExcelField(value = "发送人代码")
+    private Long sendPersonId;
+
+    /**
+     * 发送人
+     */
+    @TableField("sendPersonName")
+    @ExcelField(value = "发送人")
+    private String sendPersonName;
+
+    /**
+     * 发送日期
+     */
+    @TableField("sendDate")
+    @ExcelField(value = "发送日期")
+    private Date sendDate;
+    private transient String sendDateFrom;
+    private transient String sendDateTo;
+
 
     /**
      * 申诉截止日期
@@ -136,8 +205,6 @@ public class YbChsApplyData implements Serializable, Comparable<YbChsApplyData> 
     @JsonFormat(timezone = "Asia/Shanghai",pattern = "yyyy-MM-dd")
     @ExcelField(value = "入院日期")
     private Date enterHospitalDate;
-    private transient String enterHospitalDateFrom;
-    private transient String enterHospitalDateTo;
 
     /**
      * 出院日期
@@ -147,8 +214,6 @@ public class YbChsApplyData implements Serializable, Comparable<YbChsApplyData> 
     @JsonFormat(timezone = "Asia/Shanghai",pattern = "yyyy-MM-dd")
     @ExcelField(value = "出院日期")
     private Date outHospitalDate;
-    private transient String outHospitalDateFrom;
-    private transient String outHospitalDateTo;
 
     /**
      * 结算日期
@@ -158,8 +223,6 @@ public class YbChsApplyData implements Serializable, Comparable<YbChsApplyData> 
     @JsonFormat(timezone = "Asia/Shanghai",pattern = "yyyy-MM-dd")
     @ExcelField(value = "结算日期")
     private Date settlementDate;
-    private transient String settlementDateFrom;
-    private transient String settlementDateTo;
 
     /**
      * 身份证号
@@ -232,8 +295,6 @@ public class YbChsApplyData implements Serializable, Comparable<YbChsApplyData> 
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     @JsonFormat(timezone = "Asia/Shanghai",pattern = "yyyy-MM-dd")
     private Date costDate;
-    private transient String costDateFrom;
-    private transient String costDateTo;
 
     /**
      * 险种类型
@@ -288,27 +349,6 @@ public class YbChsApplyData implements Serializable, Comparable<YbChsApplyData> 
     private String jgLevel;
 
     /**
-     * 备注
-     */
-    @TableField("COMMENTS")
-    @ExcelField(value = "备注")
-    private String comments;
-
-    /**
-     * 状态
-     */
-    @TableField("STATE")
-    @ExcelField(value = "状态")
-    private Integer state;
-
-    /**
-     * 是否删除
-     */
-    @TableField("IS_DELETEMARK")
-    @ExcelField(value = "是否删除")
-    private Integer isDeletemark;
-
-    /**
      * 序号
      */
     @TableField("orderNum")
@@ -316,127 +356,19 @@ public class YbChsApplyData implements Serializable, Comparable<YbChsApplyData> 
     private Integer orderNum;
 
     /**
-     * 是否门诊
+     * 是否核对
      */
-    @TableField("isOutpfees")
-    @ExcelField(value = "是否门诊")
-    private Integer isOutpfees;
+    @TableField("isVerify")
+    @ExcelField(value = "是否核对")
+    private Integer isVerify;
 
     /**
-     * 结算排序
+     * 是否医生
      */
-    @TableField("orderSettlementNum")
-    @ExcelField(value = "结算排序")
-    private Integer orderSettlementNum;
+    @TableField("isPerson")
+    @ExcelField(value = "是否医生")
+    private Integer isPerson;
 
 
-    /**
-     * 医保项目编码One
-     */
-    @TableField("projectCodeOne")
-    @ExcelField(value = "医保项目编码One")
-    private String projectCodeOne;
 
-    /**
-     * 医保项目名称One
-     */
-    @TableField("projectNameOne")
-    @ExcelField(value = "医保项目名称One")
-    private String projectNameOne;
-
-
-    public static final String ID = "id";
-
-    public static final String PID = "pid";
-
-    public static final String APPEALENDDATE = "appealEndDate";
-
-    public static final String PAYPLACETYPE = "payPlaceType";
-
-    public static final String YDSTATE = "ydState";
-
-    public static final String AREANAME = "areaName";
-
-    public static final String YYJGCODE = "yyjgCode";
-
-    public static final String YYJGNAME = "yyjgName";
-
-    public static final String DEPTNAME = "deptName";
-
-    public static final String DOCTORNAME = "doctorName";
-
-    public static final String MEDICALTYPE = "medicalType";
-
-    public static final String ZYMZNUMBER = "zymzNumber";
-
-    public static final String INSUREDNAME = "insuredName";
-
-    public static final String ENTERHOSPITALDATE = "enterHospitalDate";
-
-    public static final String OUTHOSPITALDATE = "outHospitalDate";
-
-    public static final String SETTLEMENTDATE = "settlementDate";
-
-    public static final String CARDNUMBER = "cardNumber";
-
-    public static final String PROJECTCODE = "projectCode";
-
-    public static final String PROJECTNAME = "projectName";
-
-    public static final String PROJECTYYNAME = "projectYyName";
-
-    public static final String RULENAME = "ruleName";
-
-    public static final String VIOLATECSPRICE = "violateCsPrice";
-
-    public static final String VIOLATEPRICE = "violatePrice";
-
-    public static final String VIOLATEREASON = "violateReason";
-
-    public static final String ZDNOTE = "zdNote";
-
-    public static final String COSTDATE = "costDate";
-
-    public static final String INSUREDTYPE = "insuredType";
-
-    public static final String NUM = "num";
-
-    public static final String PRICE = "price";
-
-    public static final String MEDICALPRICE = "medicalPrice";
-
-    public static final String TCPAYPRICE = "tcPayPrice";
-
-    public static final String SPECS = "specs";
-
-    public static final String JX = "jx";
-
-    public static final String JGLEVEL = "jgLevel";
-
-    public static final String COMMENTS = "COMMENTS";
-
-    public static final String STATE = "STATE";
-
-    public static final String IS_DELETEMARK = "IS_DELETEMARK";
-
-    public static final String ORDERNUM = "orderNum";
-
-    public static final String ISOUTPFEES = "isOutpfees";
-
-    public static final String ORDERSETTLEMENTNUM = "orderSettlementNum";
-
-    public static final String PROJECTCODEONE = "projectCodeOne";
-
-    public static final String PROJECTNAMEONE = "projectNameOne";
-
-    @Override
-    public int compareTo(YbChsApplyData o) {
-        if (this.getId() != null && o.getId() != null) {
-            return this.getId().compareTo(o.getId());
-        } else if (this.getId() != null) {
-            return 1;
-        } else {
-            return 0;
-        }
-    }
 }

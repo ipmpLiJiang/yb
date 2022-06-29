@@ -1,7 +1,9 @@
 package cc.mrbird.febs.chs.service;
 
 import cc.mrbird.febs.chs.entity.YbDks;
+import cc.mrbird.febs.yb.entity.YbDeptHis;
 import com.baomidou.mybatisplus.extension.service.IService;
+
 import java.util.List;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -10,7 +12,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 
 /**
  * <p>
- *  服务类
+ * 服务类
  * </p>
  *
  * @author viki
@@ -18,13 +20,17 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
  */
 public interface IYbDksService extends IService<YbDks> {
 
-        IPage<YbDks> findYbDkss(QueryRequest request, YbDks ybDks);
+    IPage<YbDks> findYbDkss(QueryRequest request, YbDks ybDks);
 
-        IPage<YbDks> findYbDksList(QueryRequest request, YbDks ybDks);
+    IPage<YbDks> findYbDksList(QueryRequest request, YbDks ybDks);
 
-        void createYbDks(YbDks ybDks);
+    void createYbDks(YbDks ybDks);
 
-        void updateYbDks(YbDks ybDks);
+    void updateYbDks(YbDks ybDks);
 
-        void deleteYbDkss(String[]Ids);
-        }
+    void deleteYbDkss(String[] Ids);
+
+    List<YbDks> findDksList(YbDks ybDks, int type);
+
+    boolean createBatchDkss(List<YbDeptHis> list);
+}

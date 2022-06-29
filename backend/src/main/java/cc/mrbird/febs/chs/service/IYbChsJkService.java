@@ -2,6 +2,7 @@ package cc.mrbird.febs.chs.service;
 
 import cc.mrbird.febs.chs.entity.YbChsJk;
 import com.baomidou.mybatisplus.extension.service.IService;
+
 import java.util.List;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -10,7 +11,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 
 /**
  * <p>
- *  服务类
+ * 服务类
  * </p>
  *
  * @author viki
@@ -18,13 +19,15 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
  */
 public interface IYbChsJkService extends IService<YbChsJk> {
 
-        IPage<YbChsJk> findYbChsJks(QueryRequest request, YbChsJk ybChsJk);
+    IPage<YbChsJk> findYbChsJks(QueryRequest request, YbChsJk ybChsJk);
 
-        IPage<YbChsJk> findYbChsJkList(QueryRequest request, YbChsJk ybChsJk);
+    IPage<YbChsJk> findYbChsJkList(QueryRequest request, YbChsJk ybChsJk);
 
-        void createYbChsJk(YbChsJk ybChsJk);
+    void createYbChsJk(YbChsJk ybChsJk);
 
-        void updateYbChsJk(YbChsJk ybChsJk);
+    void updateYbChsJk(YbChsJk ybChsJk);
 
-        void deleteYbChsJks(String[]Ids);
-        }
+    void deleteYbChsJks(String[] Ids);
+
+    IPage<YbChsJk>  findYbChsJkByApplyDataId(QueryRequest request,String applyDataId);
+}

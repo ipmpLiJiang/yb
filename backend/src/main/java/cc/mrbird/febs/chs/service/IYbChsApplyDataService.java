@@ -41,4 +41,6 @@ public interface IYbChsApplyDataService extends IService<YbChsApplyData> {
     String findChsApplyProjCodeTask(String applyDateStr, Integer areaType, Integer isOutpfees);
 
     String findChsApplyDataNotTask(String applyDateStr, Integer areaType, Integer isOutpfees);
+
+    List<YbChsApplyData> findChsApplyDataByNotVerifys(String pid, String applyDateStr, Integer areaType);
 }

@@ -60,6 +60,12 @@ public class YbChsJkController extends BaseController {
         return getDataTable(this.iYbChsJkService.findYbChsJkList(request, ybChsJk));
     }
 
+    @GetMapping("getJkData")
+    @RequiresPermissions("ybChsJk:look")
+    public Map<String, Object> getJkDataByApplyDataId(QueryRequest request,String applyDataId) {
+        return getDataTable(this.iYbChsJkService.findYbChsJkByApplyDataId(request,applyDataId));
+    }
+
     /**
      * 添加
      *
@@ -135,4 +141,6 @@ public class YbChsJkController extends BaseController {
         YbChsJk ybChsJk = this.iYbChsJkService.getById(id);
         return ybChsJk;
     }
+
+
 }

@@ -4,6 +4,7 @@ import cc.mrbird.febs.chs.entity.YbChsApply;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.text.ParseException;
+import java.util.Date;
 import java.util.List;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -12,7 +13,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 
 /**
  * <p>
- *  服务类
+ * 服务类
  * </p>
  *
  * @author viki
@@ -20,25 +21,31 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
  */
 public interface IYbChsApplyService extends IService<YbChsApply> {
 
-        IPage<YbChsApply> findYbChsApplys(QueryRequest request, YbChsApply ybChsApply);
+    IPage<YbChsApply> findYbChsApplys(QueryRequest request, YbChsApply ybChsApply);
 
-        IPage<YbChsApply> findYbChsApplyList(QueryRequest request, YbChsApply ybChsApply);
+    IPage<YbChsApply> findYbChsApplyList(QueryRequest request, YbChsApply ybChsApply);
 
-        YbChsApply findChsApplyByApplyDateStrs(String appltDateStr, Integer areaType);
+    YbChsApply findChsApplyByApplyDateStrs(String appltDateStr, Integer areaType);
 
-        void createYbChsApply(YbChsApply ybChsApply);
+    void createYbChsApply(YbChsApply ybChsApply);
 
-        void updateYbChsApply(YbChsApply ybChsApply);
+    void updateYbChsApply(YbChsApply ybChsApply);
 
-        void deleteYbChsApplys(String[]Ids);
+    void deleteYbChsApplys(String[] Ids);
 
-        String createChsApplyCheck(YbChsApply ybChsApply);
+    String createChsApplyCheck(YbChsApply ybChsApply);
 
-        String updateYbChsApply(YbChsApply ybChsApply, boolean isUpOverdue) throws ParseException;
+    String updateYbChsApply(YbChsApply ybChsApply, boolean isUpOverdue) throws ParseException;
 
-        void updateYbChsApply(YbChsApply ybChsApply, Integer isChangDate);
+    void updateYbChsApply(YbChsApply ybChsApply, Integer isChangDate);
 
-        void deleteYbChsApplys(String[] Ids, int state);
+    void deleteYbChsApplys(String[] Ids, int state);
 
-        List<YbChsApply> findChsApplyList(YbChsApply ybChsApply);
-        }
+    List<YbChsApply> findChsApplyList(YbChsApply ybChsApply);
+
+    void updateChsApplyState3(YbChsApply drgApply);
+
+    String getSendMessage(String applyDateStr, Date enableDate, Integer areaType, boolean isChange);
+
+    String getSendMessage(String applyDateStr, Date endDate, Integer areaType);
+}

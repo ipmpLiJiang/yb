@@ -210,7 +210,7 @@ public class YbChsApplyServiceImpl extends ServiceImpl<YbChsApplyMapper, YbChsAp
                     LambdaQueryWrapper<ComSms> wrapperSms = new LambdaQueryWrapper<>();
                     wrapperSms.eq(ComSms::getApplyDateStr, entity.getApplyDateStr());
                     wrapperSms.eq(ComSms::getAreaType, entity.getAreaType());
-                    wrapperSms.eq(ComSms::getSendType, ComSms.SENDTYPE_1);
+                    wrapperSms.eq(ComSms::getSendType, ComSms.SENDTYPE_21);
                     wrapperSms.eq(ComSms::getState, ComSms.STATE_0);
                     smsList = this.iComSmsService.list(wrapperSms);
                 }
@@ -288,6 +288,22 @@ public class YbChsApplyServiceImpl extends ServiceImpl<YbChsApplyMapper, YbChsAp
     }
 
     @Override
+    public String getSendMessage(String applyDateStr, Date endDate, Integer areaType) {
+        applyDateStr = applyDateStr.replace("-", "年");
+        String wangz = febsProperties.getSmsWebsite();
+        String ssm = "";
+        Calendar now = Calendar.getInstance();
+        now.setTime(endDate);
+        String fen = "" + now.get(Calendar.MINUTE);
+        if (fen.length() == 1) {
+            fen = "0" + fen;
+        }
+        String shi = "" + now.get(Calendar.HOUR_OF_DAY);
+        ssm = "武汉市医保" + applyDateStr + "月 复议将于今天" + shi + ":" + fen + "截止，您尚有未处理的扣款，请登陆系统及时查看并处理。" + wangz;
+        return ssm + this.areaMsg(areaType);
+    }
+
+    @Override
     @Transactional
     public void deleteYbChsApplys(String[] Ids, int state) {
         List<String> list = Arrays.asList(Ids);
@@ -325,6 +341,24 @@ public class YbChsApplyServiceImpl extends ServiceImpl<YbChsApplyMapper, YbChsAp
             wrapper.eq(YbChsApply::getState, ybChsApply.getState());
         }
         return this.list(wrapper);
+    }
+
+    @Override
+    @Transactional
+    public void updateChsApplyState3(YbChsApply drgApply) {
+        YbChsApply updateEntity = new YbChsApply();
+        updateEntity.setId(drgApply.getId());
+        if (drgApply.getState() == YbDefaultValue.DRGAPPLYSTATE_2) { //上传
+            updateEntity.setState(YbDefaultValue.DRGAPPLYSTATE_3);//核对
+        }
+        this.updateById(updateEntity);
+    }
+
+    @Override
+    public String getSendMessage(String applyDateStr, Date enableDate, Integer areaType, boolean isChange) {
+        YbChsApply entity = this.findChsApplyByApplyDateStrs(applyDateStr, areaType);
+        Date endDate = entity.getEndDate();
+        return this.getChangSendMessage(applyDateStr, endDate, enableDate, areaType, isChange);
     }
 
 }

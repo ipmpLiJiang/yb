@@ -3,9 +3,7 @@ package cc.mrbird.febs.chs.service.impl;
 import cc.mrbird.febs.chs.entity.YbChsApply;
 import cc.mrbird.febs.chs.entity.YbChsApplyTask;
 import cc.mrbird.febs.chs.entity.YbChsJk;
-import cc.mrbird.febs.chs.service.IYbChsApplyService;
-import cc.mrbird.febs.chs.service.IYbChsApplyTaskService;
-import cc.mrbird.febs.chs.service.IYbChsJkService;
+import cc.mrbird.febs.chs.service.*;
 import cc.mrbird.febs.com.controller.DataTypeHelpers;
 import cc.mrbird.febs.common.domain.QueryRequest;
 import cc.mrbird.febs.common.properties.FebsProperties;
@@ -13,7 +11,6 @@ import cc.mrbird.febs.common.utils.OracleDB;
 import cc.mrbird.febs.common.utils.SortUtil;
 import cc.mrbird.febs.chs.entity.YbChsApplyData;
 import cc.mrbird.febs.chs.dao.YbChsApplyDataMapper;
-import cc.mrbird.febs.chs.service.IYbChsApplyDataService;
 import cc.mrbird.febs.yb.entity.*;
 import cc.mrbird.febs.yb.service.IYbDeptService;
 import cc.mrbird.febs.yb.service.IYbPersonService;
@@ -24,6 +21,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.extern.slf4j.Slf4j;
+import net.bytebuddy.dynamic.scaffold.MethodGraph;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -60,6 +58,8 @@ public class YbChsApplyDataServiceImpl extends ServiceImpl<YbChsApplyDataMapper,
     FebsProperties febsProperties;
     @Autowired
     IYbDeptService iYbDeptService;
+    @Autowired
+    IYbDksService iYbDksService;
     @Autowired
     IYbPersonService iYbPersonService;
 
@@ -131,14 +131,42 @@ public class YbChsApplyDataServiceImpl extends ServiceImpl<YbChsApplyDataMapper,
         try {
             YbChsApply drgApply = this.iYbChsApplyService.findChsApplyByApplyDateStrs(applyDateStr, areaType);
             if (drgApply != null) {
-                LambdaQueryWrapper<YbChsJk> wrapper = new LambdaQueryWrapper<>();
-                wrapper.eq(YbChsJk::getApplyDateStr, applyDateStr);
-                wrapper.eq(YbChsJk::getAreaType, areaType);
-                boolean istrue = iYbChsJkService.remove(wrapper);
-                if (istrue) {
+                if(drgApply.getState() == YbDefaultValue.APPLYSTATE_2) {
+                    LambdaQueryWrapper<YbChsApplyData> wrapper = new LambdaQueryWrapper<>();
+                    wrapper.eq(YbChsApplyData::getPid, drgApply.getId());
+                    List<YbChsApplyData> list = this.list(wrapper);
+                    List<YbChsApplyData> updateList = new ArrayList<>();
+                    if (list.size() > 0) {
+                        list.sort(Comparator.comparing(YbChsApplyData::getOrderNum));
+                        int orderZy = 1;
+                        int orderMz = 1;
+                        for (YbChsApplyData item : list) {
+                            YbChsApplyData update = new YbChsApplyData();
+                            update.setId(item.getId());
+                            if (item.getIsOutpfees() == 2) {
+                                update.setOrderSettlementNum(orderZy);
+                                orderZy++;
+                            } else {
+                                update.setOrderSettlementNum(orderMz);
+                                orderMz++;
+                            }
+                            update.setState(0);
+                            updateList.add(update);
+                        }
+                    }
+                    LambdaQueryWrapper<YbChsApplyTask> wrapperTask = new LambdaQueryWrapper<>();
+                    wrapperTask.eq(YbChsApplyTask::getApplyDateStr, applyDateStr);
+                    wrapperTask.eq(YbChsApplyTask::getAreaType, areaType);
+                    LambdaQueryWrapper<YbChsJk> wrapperJk = new LambdaQueryWrapper<>();
+                    wrapperJk.eq(YbChsJk::getApplyDateStr, applyDateStr);
+                    wrapperJk.eq(YbChsJk::getAreaType, areaType);
                     YbChsApply updateApply = new YbChsApply();
                     updateApply.setId(drgApply.getId());
                     updateApply.setState(YbDefaultValue.APPLYSTATE_2);
+
+                    this.updateBatchById(updateList);
+                    iYbChsApplyTaskService.remove(wrapperTask);
+                    iYbChsJkService.remove(wrapperJk);
                     iYbChsApplyService.updateYbChsApply(updateApply);
                     msg = "ok";
                 } else {
@@ -483,6 +511,7 @@ public class YbChsApplyDataServiceImpl extends ServiceImpl<YbChsApplyDataMapper,
                                 if (departList.size() > 0) {
                                     //iYbDeptService.deleteBatchDepts();
                                     iYbDeptService.createBatchDepts(departList);
+                                    iYbDksService.createBatchDkss(departList);
                                 }
                             }
                             departList = this.getDeptHisList();
@@ -614,25 +643,16 @@ public class YbChsApplyDataServiceImpl extends ServiceImpl<YbChsApplyDataMapper,
         //查询his日期区间 结束
         String dateStrTo = DataTypeHelpers.stringDateFormatAddMonth(1, dateStrForm, "", false);
 //                String dateStrTo = dateArr[1];
-        if (isOutpfees == 0) {
-            hisWhere = hisTaskWhere(chsApplyDataList, state);
+        hisWhere = hisTaskWhere(chsApplyDataList, state);
 
-            if (!hisWhere.equals("")) {
-                String tab = "V_SAP_INPFEES";
-                if (isOutpfees == 1) {
-                    tab = "V_SAP_OUTPFEES";
-                }
-                hisSql = "select * from his." + tab + " where " + hisWhere +
-                        "settlementdate >= to_date('" + dateStrForm + "',' yyyy-mm-dd') and " +
-                        "settlementdate < to_date('" + dateStrTo + "',' yyyy-mm-dd') ";
+        if (!hisWhere.equals("")) {
+            String tab = "V_SAP_INPFEES";
+            if (isOutpfees == 1) {
+                tab = "V_SAP_OUTPFEES";
             }
-        } else {
-            hisWhere = hisTaskWhere(chsApplyDataList, state);
-            if (!hisWhere.equals("")) {
-                hisSql = "select * from his.V_SAP_INPSETTLEINFO where " + hisWhere +
-                        "settledate >= to_date('" + dateStrForm + "',' yyyy-mm-dd') and " +
-                        "settledate < to_date('" + dateStrTo + "',' yyyy-mm-dd') ";
-            }
+            hisSql = "select * from his." + tab + " where " + hisWhere +
+                    "settlementdate >= to_date('" + dateStrForm + "',' yyyy-mm-dd') and " +
+                    "settlementdate < to_date('" + dateStrTo + "',' yyyy-mm-dd') ";
         }
         return hisSql;
     }
@@ -650,14 +670,7 @@ public class YbChsApplyDataServiceImpl extends ServiceImpl<YbChsApplyDataMapper,
 //            String[] arr = item.getSerialNo().split("-");
 //            String transno1 = state == 2 ? arr[1] + "-" + item.getProjectCode() : arr[1] + "-" + item.getProjectName();
             String zymzNumber = item.getZymzNumber();
-            String project1 = state == 2 ? item.getProjectCode() : item.getProjectName();
-            project1 = project1.replace("，", ",");
-            String[] parr = project1.split(",");
-            project1 = parr[0];
-            if (state == 2 && StringUtils.isNotBlank(project1)) {
-                project1 = project1.toUpperCase();
-            }
-            String project = project1;
+
             if (strList.stream().filter(s -> s.equals(zymzNumber)).count() == 0) {
                 strList.add(zymzNumber);
                 if (sql.equals("")) {
@@ -667,12 +680,23 @@ public class YbChsApplyDataServiceImpl extends ServiceImpl<YbChsApplyDataMapper,
                 }
             }
 
-            if (strList1.stream().filter(s -> s.equals(project)).count() == 0) {
-                strList1.add(project);
-                if (sql1.equals("")) {
-                    sql1 = "'" + project + "'";
-                } else {
-                    sql1 += ",'" + project + "'";
+            String project1 = state == 2 ? item.getProjectCode() : item.getProjectName();
+            project1 = project1.replace("，", ",");
+            String[] parr = project1.split(",");
+            for(String pcn : parr) {
+                project1 = pcn;
+                if (state == 2 && StringUtils.isNotBlank(project1)) {
+                    project1 = project1.toUpperCase();
+                }
+                String project = project1;
+
+                if (strList1.stream().filter(s -> s.equals(project)).count() == 0) {
+                    strList1.add(project);
+                    if (sql1.equals("")) {
+                        sql1 = "'" + project + "'";
+                    } else {
+                        sql1 += ",'" + project + "'";
+                    }
                 }
             }
         }
@@ -716,47 +740,74 @@ public class YbChsApplyDataServiceImpl extends ServiceImpl<YbChsApplyDataMapper,
         List<YbDeptHis> queryDepartList = new ArrayList<>();
         List<YbPerson> queryPersontList = new ArrayList<>();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        String projects;
         for (YbChsApplyData item : chsApplyDataList) {
             if (state == 1) {
-                queryRifDataList = rifDataList.stream().filter(
-                        s -> s.getInpatientId().equals(item.getZymzNumber()) &&
-                                s.getHisName().equals(item.getProjectName()) &&
-                                sdf.format(s.getFeeDate()).equals(sdf.format(item.getCostDate()))
-                ).collect(Collectors.toList());
-
-                if (queryRifDataList.size() == 0) {
+                projects =item.getProjectName();
+                projects = projects.replace("，", ",");
+                String[] projectArr = projects.split(",");
+                for (String project : projectArr) {
                     queryRifDataList = rifDataList.stream().filter(
                             s -> s.getInpatientId().equals(item.getZymzNumber()) &&
-                                    s.getHisName().equals(item.getProjectName())
-                    ).collect(Collectors.toList());
-                }
-            } else if (state == 2) {
-                if (item.getProjectCode() != null && !item.getProjectCode().equals("")) {
-                    queryRifDataList = rifDataList.stream().filter(
-                            s -> s.getInpatientId().equals(item.getZymzNumber()) &&
-                                    s.getItemCode().equals(item.getProjectCode().toUpperCase()) &&
+                                    s.getHisName().equals(project) &&
                                     sdf.format(s.getFeeDate()).equals(sdf.format(item.getCostDate()))
                     ).collect(Collectors.toList());
 
                     if (queryRifDataList.size() == 0) {
                         queryRifDataList = rifDataList.stream().filter(
                                 s -> s.getInpatientId().equals(item.getZymzNumber()) &&
-                                        s.getItemCode().equals(item.getProjectCode().toUpperCase())
+                                        s.getHisName().equals(project)
                         ).collect(Collectors.toList());
+                    }
+                    if (queryRifDataList.size() > 0) {
+                        break;
+                    }
+                }
+            } else if (state == 2) {
+                if (StringUtils.isNotBlank(item.getProjectCode())) {
+                    projects =item.getProjectCode();
+                    projects = projects.replace("，", ",");
+                    String[] projectArr = projects.split(",");
+
+                    for (String project : projectArr) {
+                        queryRifDataList = rifDataList.stream().filter(
+                                s -> s.getInpatientId().equals(item.getZymzNumber()) &&
+                                        s.getItemCode().equals(project.toUpperCase()) &&
+                                        sdf.format(s.getFeeDate()).equals(sdf.format(item.getCostDate()))
+                        ).collect(Collectors.toList());
+
+                        if (queryRifDataList.size() == 0) {
+                            queryRifDataList = rifDataList.stream().filter(
+                                    s -> s.getInpatientId().equals(item.getZymzNumber()) &&
+                                            s.getItemCode().equals(project.toUpperCase())
+                            ).collect(Collectors.toList());
+                        }
+                        if (queryRifDataList.size() > 0) {
+                            break;
+                        }
                     }
                 }
             } else {
-                queryRifDataList = rifDataList.stream().filter(
-                        s -> s.getInpatientId().equals(item.getZymzNumber()) &&
-                                s.getItemName().equals(item.getProjectName()) &&
-                                sdf.format(s.getFeeDate()).equals(sdf.format(item.getCostDate()))
-                ).collect(Collectors.toList());
+                projects =item.getProjectName();
+                projects = projects.replace("，", ",");
+                String[] projectArr = projects.split(",");
 
-                if (queryRifDataList.size() == 0) {
+                for (String project : projectArr) {
                     queryRifDataList = rifDataList.stream().filter(
                             s -> s.getInpatientId().equals(item.getZymzNumber()) &&
-                                    s.getItemName().equals(item.getProjectName())
+                                    s.getItemName().equals(project) &&
+                                    sdf.format(s.getFeeDate()).equals(sdf.format(item.getCostDate()))
                     ).collect(Collectors.toList());
+
+                    if (queryRifDataList.size() == 0) {
+                        queryRifDataList = rifDataList.stream().filter(
+                                s -> s.getInpatientId().equals(item.getZymzNumber()) &&
+                                        s.getItemName().equals(project)
+                        ).collect(Collectors.toList());
+                    }
+                    if (queryRifDataList.size() > 0) {
+                        break;
+                    }
                 }
             }
             if (queryRifDataList.size() > 0) {
@@ -851,5 +902,9 @@ public class YbChsApplyDataServiceImpl extends ServiceImpl<YbChsApplyDataMapper,
         return createList;
     }
 
+    @Override
+    public List<YbChsApplyData> findChsApplyDataByNotVerifys(String pid, String applyDateStr, Integer areaType) {
+        return this.baseMapper.findChsApplyDataByNotVerify(pid, applyDateStr, areaType);
+    }
 
 }

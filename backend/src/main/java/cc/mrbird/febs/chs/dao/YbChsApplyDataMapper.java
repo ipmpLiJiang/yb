@@ -31,4 +31,7 @@ public interface YbChsApplyDataMapper extends BaseMapper<YbChsApplyData> {
 
     List<YbChsApplyData> findChsApplyDataBetween(@Param("pid") String pid, @Param("startNum") Integer startNum, @Param("endNum") Integer endNum,
                                                  @Param("state") Integer state, @Param("isOutpfees") Integer isOutpfees);
+
+    List<YbChsApplyData> findChsApplyDataByNotVerify(@Param("pid") String pid,@Param("applyDateStr") String applyDateStr,
+                                                     @Param("areaType") Integer areaType);
 }

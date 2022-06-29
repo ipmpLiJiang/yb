@@ -88,5 +88,19 @@ public class YbChsJkServiceImpl extends ServiceImpl<YbChsJkMapper, YbChsJk> impl
         this.baseMapper.deleteBatchIds(list);
     }
 
+    @Override
+    public IPage<YbChsJk>  findYbChsJkByApplyDataId(QueryRequest request,String applyDataId) {
+        try {
+            LambdaQueryWrapper<YbChsJk> queryWrapper = new LambdaQueryWrapper<>();
+            queryWrapper.eq(YbChsJk::getApplyDataId, applyDataId);
+
+            Page<YbChsJk> page = new Page<>();
+            SortUtil.handlePageSort(request, page, false);//true 是属性  false是数据库字段可两个
+            return this.page(page, queryWrapper);
+        } catch (Exception e) {
+            log.error("获取字典信息失败", e);
+            return null;
+        }
+    }
 
 }
