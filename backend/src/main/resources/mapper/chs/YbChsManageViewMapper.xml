@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cc.mrbird.febs.chs.dao.YbChsManageViewMapper">
+
+    <select id="findChsManageView" resultType="cc.mrbird.febs.chs.entity.YbChsManageView"
+            parameterType="cc.mrbird.febs.chs.entity.YbChsManageView">
+        select
+        ad.pid,
+        ad.appealEndDate,
+        ad.payPlaceType,
+        ad.ydState,
+        ad.areaName,
+        ad.yyjgCode,
+        ad.yyjgName,
+        ad.deptName,
+        ad.doctorName,
+        ad.medicalType,
+        ad.zymzNumber,
+        ad.insuredName,
+        ad.enterHospitalDate,
+        ad.outHospitalDate,
+        ad.settlementDate,
+        ad.cardNumber,
+        ad.projectCode,
+        ad.projectName,
+        ad.projectYyName,
+        ad.ruleName,
+        ad.violateCsPrice,
+        ad.violatePrice,
+        ad.violateReason,
+        ad.zdNote,
+        ad.costDate,
+        ad.insuredType,
+        ad.num,
+        ad.price,
+        ad.medicalPrice,
+        ad.tcPayPrice,
+        ad.specs,
+        ad.jx,
+        ad.jgLevel,
+        ad.orderNum,
+        ra.applyDateStr,
+        ra.endDate applyEndDate,
+        am.id,
+        ad.id applyDataId,
+        am.verifyId,
+        am.readyDoctorCode,
+        am.readyDoctorName,
+        am.readyDksId,
+        am.readyDksName,
+        am.changeDoctorCode,
+        am.changeDoctorName,
+        am.changeDksId,
+        am.changeDksName,
+        am.operateReason,
+        am.operateDate,
+        am.state,
+        am.refuseId,
+        am.refuseName,
+        am.refuseReason,
+        am.refuseDate,
+        am.adminPersonId,
+        am.adminPersonName,
+        am.adminChangeDate,
+        am.adminReason,
+        CASE WHEN
+        DATE_FORMAT(am.enableDate,'%Y-%m-%d %H:%i:%s')>DATE_FORMAT(ra.endDate,'%Y-%m-%d %H:%i:%s' ) = 1
+        THEN 0 ELSE 1 END isEnableDate,
+        date_add(am.enableDate,INTERVAL -1 DAY) enableDate,
+        am.STATE,
+        '' currencyField,
+        am.operateProcess,
+        am.approvalState,
+        case when (UNIX_TIMESTAMP(ra.endDate)-UNIX_TIMESTAMP(sysdate()))/(60*60*24) > 0 then 0 else 1 end isEnd,
+        case when (UNIX_TIMESTAMP(am.enableDate)-UNIX_TIMESTAMP(sysdate()))/(60*60*24) > 0 then 1 else 0 end enableType,
+        am.areaType
+        from
+        yb_chs_manage am
+        STRAIGHT_JOIN yb_chs_apply_data ad ON
+        am.applyDataId = ad.id and ad.pid = #{ybChsManageView.pid}
+        STRAIGHT_JOIN yb_chs_apply ra ON ra.id = ad.pid
+        where
+        am.applyDateStr = #{ybChsManageView.applyDateStr}
+        <if test="ybChsManageView.areaType != null">
+            and am.areaType = #{ybChsManageView.areaType}
+        </if>
+        <if test="ybChsManageView.state != null">
+            and am.state = #{ybChsManageView.state}
+        </if>
+        order by am.orderNum
+    </select>
+
+    <select id="findChsManageCount" resultType="Integer"
+            parameterType="cc.mrbird.febs.chs.entity.YbChsManageView">
+        select
+        count(1)
+        from
+        yb_chs_manage am
+        STRAIGHT_JOIN yb_chs_apply_data ad ON
+        am.applyDataId = ad.id and ad.pid = #{ybChsManageView.pid}
+        where
+        am.applyDateStr = #{ybChsManageView.applyDateStr}
+        <if test="ybChsManageView.areaType != null">
+            and am.areaType = #{ybChsManageView.areaType}
+        </if>
+        <if test="ybChsManageView.state != null">
+            and am.state = #{ybChsManageView.state}
+        </if>
+    </select>
+
+    <select id="findChsManageList" resultType="cc.mrbird.febs.chs.entity.YbChsManageView"
+            parameterType="cc.mrbird.febs.chs.entity.YbChsManageView">
+        select
+        ad.pid,
+        ad.appealEndDate,
+        ad.payPlaceType,
+        ad.ydState,
+        ad.areaName,
+        ad.yyjgCode,
+        ad.yyjgName,
+        ad.deptName,
+        ad.doctorName,
+        ad.medicalType,
+        ad.zymzNumber,
+        ad.insuredName,
+        ad.enterHospitalDate,
+        ad.outHospitalDate,
+        ad.settlementDate,
+        ad.cardNumber,
+        ad.projectCode,
+        ad.projectName,
+        ad.projectYyName,
+        ad.ruleName,
+        ad.violateCsPrice,
+        ad.violatePrice,
+        ad.violateReason,
+        ad.zdNote,
+        ad.costDate,
+        ad.insuredType,
+        ad.num,
+        ad.price,
+        ad.medicalPrice,
+        ad.tcPayPrice,
+        ad.specs,
+        ad.jx,
+        ad.jgLevel,
+        ad.orderNum,
+        ra.applyDateStr,
+        ra.endDate applyEndDate,
+        am.id,
+        ad.id applyDataId,
+        am.verifyId,
+        am.readyDoctorCode,
+        am.readyDoctorName,
+        am.readyDksId,
+        am.readyDksName,
+        am.changeDoctorCode,
+        am.changeDoctorName,
+        am.changeDksId,
+        am.changeDksName,
+        am.operateReason,
+        am.operateDate,
+        am.state,
+        am.refuseId,
+        am.refuseName,
+        am.refuseReason,
+        am.refuseDate,
+        am.adminPersonId,
+        am.adminPersonName,
+        am.adminChangeDate,
+        am.adminReason,
+        CASE WHEN
+        DATE_FORMAT(am.enableDate,'%Y-%m-%d %H:%i:%s')>DATE_FORMAT(ra.endDate,'%Y-%m-%d %H:%i:%s' ) = 1
+        THEN 0 ELSE 1 END isEnableDate,
+        date_add(am.enableDate,INTERVAL -1 DAY) enableDate,
+        am.STATE,
+        '' currencyField,
+        am.operateProcess,
+        am.approvalState,
+        case when (UNIX_TIMESTAMP(ra.endDate)-UNIX_TIMESTAMP(sysdate()))/(60*60*24) > 0 then 0 else 1 end isEnd,
+        case when (UNIX_TIMESTAMP(am.enableDate)-UNIX_TIMESTAMP(sysdate()))/(60*60*24) > 0 then 1 else 0 end enableType,
+        am.areaType
+        from
+        yb_chs_manage am
+        STRAIGHT_JOIN yb_chs_apply_data ad ON
+        am.applyDataId = ad.id and ad.pid = #{ybChsManageView.pid}
+        STRAIGHT_JOIN yb_chs_apply ra ON ra.id = ad.pid
+        where
+        am.applyDateStr = #{ybChsManageView.applyDateStr}
+        <if test="ybChsManageView.areaType != null">
+            and am.areaType = #{ybChsManageView.areaType}
+        </if>
+        <if test="ybChsManageView.state != null">
+            and am.state = #{ybChsManageView.state}
+        </if>
+    </select>
+
+</mapper>
