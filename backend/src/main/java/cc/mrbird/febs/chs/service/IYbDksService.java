@@ -33,4 +33,6 @@ public interface IYbDksService extends IService<YbDks> {
     List<YbDks> findDksList(YbDks ybDks, int type);
 
     boolean createBatchDkss(List<YbDeptHis> list);
+
+    List<YbDks> findDksChsConfireList(String doctorCode,String comments, Integer areaType);
 }

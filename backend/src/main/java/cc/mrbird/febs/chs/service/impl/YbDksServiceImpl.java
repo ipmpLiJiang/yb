@@ -1,5 +1,7 @@
 package cc.mrbird.febs.chs.service.impl;
 
+import cc.mrbird.febs.chs.entity.YbChsConfireData;
+import cc.mrbird.febs.chs.service.IYbChsConfireDataService;
 import cc.mrbird.febs.common.domain.QueryRequest;
 import cc.mrbird.febs.common.utils.SortUtil;
 import cc.mrbird.febs.chs.entity.YbDks;
@@ -14,6 +16,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,6 +37,8 @@ import java.time.LocalDate;
 @Transactional(propagation = Propagation.SUPPORTS, readOnly = true, rollbackFor = Exception.class)
 public class YbDksServiceImpl extends ServiceImpl<YbDksMapper, YbDks> implements IYbDksService {
 
+    @Autowired
+    IYbChsConfireDataService iYbChsConfireDataService;
 
     @Override
     public IPage<YbDks> findYbDkss(QueryRequest request, YbDks ybDks) {
@@ -124,10 +129,10 @@ public class YbDksServiceImpl extends ServiceImpl<YbDksMapper, YbDks> implements
     public boolean createBatchDkss(List<YbDeptHis> list) {
         List<YbDks> createList = new ArrayList<>();
         List<YbDks> findList = this.findDksList(new YbDks(), 0);
-        List<String> codeList =new ArrayList<>();
+        List<String> codeList = new ArrayList<>();
         for (YbDeptHis item : list) {
             if (findList.stream().filter(s -> s.getDksId().equals(item.getParentCode())).count() == 0) {
-                if(codeList.stream().filter(s-> s.equals(item.getParentCode())).count() == 0) {
+                if (codeList.stream().filter(s -> s.equals(item.getParentCode())).count() == 0) {
                     codeList.add(item.getParentCode());
                     YbDks dept = new YbDks();
                     dept.setDksId(item.getParentCode());
@@ -145,5 +150,17 @@ public class YbDksServiceImpl extends ServiceImpl<YbDksMapper, YbDks> implements
         }
     }
 
-
+    @Override
+    public List<YbDks> findDksChsConfireList(String doctorCode,String comments, Integer areaType) {
+        List<YbDks> list = new ArrayList<>();
+        List<YbChsConfireData> acdList = this.iYbChsConfireDataService.findChsConfireDataByInDoctorCodeList(doctorCode,areaType);
+        if(acdList.size() > 0) {
+            list = this.baseMapper.findDksChsConfireList(acdList.get(0).getPid(), comments, areaType);
+            int count = 15;
+            if (list.size() >= count) {
+                list = list.subList(0, count);
+            }
+        }
+        return list;
+    }
 }

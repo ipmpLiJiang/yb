@@ -6,15 +6,21 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.List;
+
 /**
  * <p>
- *  Mapper 接口
+ * Mapper 接口
  * </p>
  *
  * @author viki
  * @since 2022-06-24
  */
 public interface YbDksMapper extends BaseMapper<YbDks> {
-        void updateYbDks(YbDks ybDks);
-        IPage<YbDks> findYbDks(Page page, @Param("ybDks") YbDks ybDks);
-        }
+    void updateYbDks(YbDks ybDks);
+
+    IPage<YbDks> findYbDks(Page page, @Param("ybDks") YbDks ybDks);
+
+    List<YbDks> findDksChsConfireList(@Param("chsConfireId") String chsConfireId, @Param("comments") String comments, @Param("areaType") Integer areaType);
+
+}

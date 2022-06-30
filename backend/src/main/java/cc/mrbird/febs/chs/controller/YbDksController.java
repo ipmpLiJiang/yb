@@ -144,4 +144,18 @@ public class YbDksController extends BaseController {
 
         return new FebsResponse().data(list);
     }
+
+    @GetMapping("findDksChsConfireList")
+    public FebsResponse findDksChsConfireLists(String comments, Integer areaType) {
+        List<YbDks> list = new ArrayList<>();
+        try{
+            User currentUser = FebsUtil.getCurrentUser();
+            list = this.iYbDksService.findDksChsConfireList(currentUser.getUsername(),comments,areaType);
+
+        } catch (Exception e) {
+            log.error("获取科室失败", e);
+        }
+
+        return new FebsResponse().data(list);
+    }
 }

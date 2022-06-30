@@ -907,4 +907,26 @@ public class YbChsApplyDataServiceImpl extends ServiceImpl<YbChsApplyDataMapper,
         return this.baseMapper.findChsApplyDataByNotVerify(pid, applyDateStr, areaType);
     }
 
+    @Override
+    public List<YbChsApplyData> getApplyDataByKeyFieldList(String pid, String keyField, String value) {
+        LambdaQueryWrapper<YbChsApplyData> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(YbChsApplyData::getPid, pid);
+        if (StringUtils.isNotBlank(value) && !keyField.equals("readyDoctorCode") && !keyField.equals("readyDoctorName")) {
+            if (keyField.equals("orderNum")) {
+                wrapper.eq(YbChsApplyData::getOrderNum, value);
+            }
+            if (keyField.equals("zymzNumber")) {
+                wrapper.eq(YbChsApplyData::getZymzNumber, value);
+            }
+            if (keyField.equals("insuredName")) {
+                wrapper.eq(YbChsApplyData::getInsuredName, value);
+            }
+            if (keyField.equals("projectName")) {
+                wrapper.like(YbChsApplyData::getProjectName, value);
+            }
+        }
+        return this.list(wrapper);
+    }
+
+
 }

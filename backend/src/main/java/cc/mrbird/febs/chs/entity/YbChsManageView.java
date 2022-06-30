@@ -8,73 +8,26 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 /**
  * <p>
- *
+ * VIEW
  * </p>
  *
  * @author viki
- * @since 2022-06-27
+ * @since 2020-07-30
  */
 
 @Data
-public class YbChsVerifyView {
+public class YbChsManageView {
 
     /**
-     * id
+     * pid
      */
-    @ExcelField(value = "id")
-    private String id;
-
-    /**
-     * 申请pid
-     */
-    @ExcelField(value = "申请pid")
+    @TableField("pid")
+    @ExcelField(value = "pid")
     private String pid;
-
-
-    /**
-     * chs申请明细
-     */
-    @TableField("applyDataId")
-    @ExcelField(value = "chs申请明细")
-    private String applyDataId;
-
-    /**
-     * chs医生编码
-     */
-    @TableField("verifyDoctorCode")
-    @ExcelField(value = "chs医生编码")
-    private String verifyDoctorCode;
-
-    /**
-     * chs医生
-     */
-    @TableField("verifyDoctorName")
-    @ExcelField(value = "chs医生")
-    private String verifyDoctorName;
-
-    /**
-     * chs编码
-     */
-    @TableField("verifyDksId")
-    @ExcelField(value = "chs编码")
-    private String verifyDksId;
-
-    /**
-     * chs科室
-     */
-    @TableField("verifyDksName")
-    @ExcelField(value = "chs科室")
-    private String verifyDksName;
-
-    /**
-     * 状态
-     */
-    @TableField("STATE")
-    @ExcelField(value = "状态")
-    private Integer state;
 
     /**
      * 复议年月Str
@@ -84,6 +37,207 @@ public class YbChsVerifyView {
     private String applyDateStr;
 
     /**
+     * 申诉Id
+     */
+    @ExcelField(value = "申诉Id")
+    private String id;
+
+    /**
+     * 申请数据明细
+     */
+    @TableField("applyDataId")
+    @ExcelField(value = "申请数据明细")
+    private String applyDataId;
+
+    /**
+     * 核对申请
+     */
+    @TableField("verifyId")
+    @ExcelField(value = "核对申请")
+    private String verifyId;
+
+    /**
+     * 复议医生编码
+     */
+    @TableField("readyDoctorCode")
+    @ExcelField(value = "复议医生编码")
+    private String readyDoctorCode;
+
+    /**
+     * 复议医生
+     */
+    @TableField("readyDoctorName")
+    @ExcelField(value = "复议医生")
+    private String readyDoctorName;
+
+
+    /**
+     * 变更医生编码
+     */
+    @TableField("changeDoctorCode")
+    @ExcelField(value = "变更医生编码")
+    private String changeDoctorCode;
+
+    /**
+     * 变更医生
+     */
+    @TableField("changeDoctorName")
+    @ExcelField(value = "变更医生")
+    private String changeDoctorName;
+
+
+    /**
+     * 复议截止日期
+     */
+    @TableField("applyEndDate")
+    @ExcelField(value = "复议截止日期")
+    private Date applyEndDate;
+
+    /**
+     * 操作理由
+     */
+    @TableField("operateReason")
+    @ExcelField(value = "操作理由")
+    private String operateReason;
+
+    /**
+     * 操作日期
+     */
+    @TableField("operateDate")
+    @ExcelField(value = "操作日期")
+    private Date operateDate;
+    private transient String operateDateFrom;
+    private transient String operateDateTo;
+
+    /**
+     * 医保人代码
+     */
+    @TableField("refuseId")
+    @ExcelField(value = "医保人代码")
+    private Long refuseId;
+
+    /**
+     * 医保人
+     */
+    @TableField("refuseName")
+    @ExcelField(value = "医保人")
+    private String refuseName;
+
+    /**
+     * 拒绝理由
+     */
+    @TableField("refuseReason")
+    @ExcelField(value = "拒绝理由")
+    private String refuseReason;
+
+    /**
+     * 拒绝日期
+     */
+    @TableField("refuseDate")
+    @ExcelField(value = "拒绝日期")
+    private Date refuseDate;
+    private transient String refuseDateFrom;
+    private transient String refuseDateTo;
+
+    /**
+     * 管理员代码
+     */
+    @TableField("adminPersonId")
+    @ExcelField(value = "管理员代码")
+    private Long adminPersonId;
+
+    /**
+     * 管理员
+     */
+    @TableField("adminPersonName")
+    @ExcelField(value = "管理员")
+    private String adminPersonName;
+
+    /**
+     * 更改日期
+     */
+    @TableField("adminChangeDate")
+    @ExcelField(value = "更改日期")
+    private Date adminChangeDate;
+    private transient String adminChangeDateFrom;
+    private transient String adminChangeDateTo;
+
+    /**
+     * 管理员理由
+     */
+    @TableField("adminReason")
+    @ExcelField(value = "管理员理由")
+    private String adminReason;
+
+    /**
+     * 可操作日期
+     */
+    @TableField("enableDate")
+    @ExcelField(value = "可操作日期")
+    private Date enableDate;
+    private transient String enableDateFrom;
+    private transient String enableDateTo;
+
+    /**
+     * 是否可操作日期
+     */
+    @TableField("isEnableDate")
+    @ExcelField(value = "是否可操作日期")
+    private Integer isEnableDate;
+
+    /**
+     * 可操作状态
+     */
+    @TableField("enableType")
+    @ExcelField(value = "可操作状态")
+    private Integer enableType;
+
+
+    /**
+     * 序号
+     */
+    @TableField("orderNum")
+    @ExcelField(value = "序号")
+    private Integer orderNum;
+
+
+    /**
+     * 操作过程
+     */
+    @TableField("operateProcess")
+    @ExcelField(value = "操作过程")
+    private String operateProcess;
+
+    /**
+     * 审批状态
+     */
+    @TableField("approvalState")
+    @ExcelField(value = "审批状态")
+    private Integer approvalState;
+
+    /**
+     * 是否截止
+     */
+    @TableField("isEnd")
+    @ExcelField(value = "是否截止")
+    private Integer isEnd;
+
+
+    /**
+     * 状态
+     */
+    @TableField("STATE")
+    @ExcelField(value = "状态")
+    private Integer state;
+
+    /**
+     * 通用
+     */
+    @TableField("currencyField")
+    @ExcelField(value = "通用")
+    private String currencyField;
+
+    /**
      * 院区
      */
     @TableField("areaType")
@@ -91,35 +245,11 @@ public class YbChsVerifyView {
     private Integer areaType;
 
     /**
-     * 发送人代码
-     */
-    @TableField("sendPersonId")
-    @ExcelField(value = "发送人代码")
-    private Long sendPersonId;
-
-    /**
-     * 发送人
-     */
-    @TableField("sendPersonName")
-    @ExcelField(value = "发送人")
-    private String sendPersonName;
-
-    /**
-     * 发送日期
-     */
-    @TableField("sendDate")
-    @ExcelField(value = "发送日期")
-    private Date sendDate;
-    private transient String sendDateFrom;
-    private transient String sendDateTo;
-
-
-    /**
      * 申诉截止日期
      */
     @TableField("appealEndDate")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    @JsonFormat(timezone = "Asia/Shanghai",pattern = "yyyy-MM-dd")
+    @JsonFormat(timezone = "Asia/Shanghai", pattern = "yyyy-MM-dd")
     @ExcelField(value = "申诉截止日期")
     private Date appealEndDate;
     private transient String appealEndDateFrom;
@@ -200,7 +330,7 @@ public class YbChsVerifyView {
      */
     @TableField("enterHospitalDate")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    @JsonFormat(timezone = "Asia/Shanghai",pattern = "yyyy-MM-dd")
+    @JsonFormat(timezone = "Asia/Shanghai", pattern = "yyyy-MM-dd")
     @ExcelField(value = "入院日期")
     private Date enterHospitalDate;
 
@@ -209,7 +339,7 @@ public class YbChsVerifyView {
      */
     @TableField("outHospitalDate")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    @JsonFormat(timezone = "Asia/Shanghai",pattern = "yyyy-MM-dd")
+    @JsonFormat(timezone = "Asia/Shanghai", pattern = "yyyy-MM-dd")
     @ExcelField(value = "出院日期")
     private Date outHospitalDate;
 
@@ -218,7 +348,7 @@ public class YbChsVerifyView {
      */
     @TableField("settlementDate")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    @JsonFormat(timezone = "Asia/Shanghai",pattern = "yyyy-MM-dd")
+    @JsonFormat(timezone = "Asia/Shanghai", pattern = "yyyy-MM-dd")
     @ExcelField(value = "结算日期")
     private Date settlementDate;
 
@@ -291,7 +421,7 @@ public class YbChsVerifyView {
     @TableField("costDate")
     @ExcelField(value = "费用日期")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    @JsonFormat(timezone = "Asia/Shanghai",pattern = "yyyy-MM-dd")
+    @JsonFormat(timezone = "Asia/Shanghai", pattern = "yyyy-MM-dd")
     private Date costDate;
 
     /**
@@ -347,26 +477,32 @@ public class YbChsVerifyView {
     private String jgLevel;
 
     /**
-     * 序号
+     * 科室编码
      */
-    @TableField("orderNum")
-    @ExcelField(value = "序号")
-    private Integer orderNum;
+    @TableField("readyDksId")
+    @ExcelField(value = "科室编码")
+    private String readyDksId;
 
     /**
-     * 是否核对
+     * 科室
      */
-    @TableField("isVerify")
-    @ExcelField(value = "是否核对")
-    private Integer isVerify;
+    @ExcelField(value = "科室")
+    private String readyDksName;
 
     /**
-     * 是否医生
+     * 变更科室编码
      */
-    @TableField("isPerson")
-    @ExcelField(value = "是否医生")
-    private Integer isPerson;
+    @TableField("changeDksId")
+    @ExcelField(value = "变更科室编码")
+    private String changeDksId;
 
+    /**
+     * 变更科室
+     */
+    @ExcelField(value = "变更科室")
+    private String changeDksName;
+
+    private transient List<String> listPid;
 
 
 }
