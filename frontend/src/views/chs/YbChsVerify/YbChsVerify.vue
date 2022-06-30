@@ -436,11 +436,11 @@
             <a-popconfirm
               title="确定匹配？"
               @confirm="handleDateOk"
-              :disabled="drgApply.id == null?true:false"
+              :disabled="chsApply.id == null?true:false"
               okText="确定"
               cancelText="取消"
             >
-              <a-button type="primary" :disabled="drgApply.id == null?true:false" style="margin-right: .8rem">确定</a-button>
+              <a-button type="primary" :disabled="chsApply.id == null?true:false" style="margin-right: .8rem">确定</a-button>
             </a-popconfirm>
           </template>
           <a-row>
@@ -464,7 +464,7 @@
           <a-date-picker
             placeholder="请输入截止日期"
             style="width:220px"
-            v-model="drgApply.endDate"
+            v-model="chsApply.endDate"
             show-time
             :format="dayFormat"/>
           </a-form-item>
@@ -477,7 +477,7 @@
           <a-date-picker
             placeholder="请输入确认日期"
             style="width:220px"
-            v-model="drgApply.enableDate"
+            v-model="chsApply.enableDate"
             :format="enableFormat"/>
           </a-form-item>
         </a-row>
@@ -532,7 +532,7 @@ export default {
       delayTime: 500,
       selectDate: {},
       fileList: [],
-      drgApply: {id: null},
+      chsApply: {id: null},
       checked: false,
       dateChecked: false,
       searchText: '',
@@ -567,13 +567,13 @@ export default {
       }).then((r) => {
         if (r.data.data.success === 1) {
           if (r.data.data.apply != null) {
-            this.drgApply = {
+            this.chsApply = {
               id: r.data.data.apply.id,
               endDate: r.data.data.apply.endDate,
               enableDate: r.data.data.apply.enableDate
             }
           } else {
-            this.drgApply = {id: null}
+            this.chsApply = {id: null}
           }
         } else {
         }
@@ -624,27 +624,27 @@ export default {
     handleDateOk (e) {
       if (this.tableSelectKey !== '4') {
         this.dateChecked = false
-        this.drgApply.isChangDate = 0
+        this.chsApply.isChangDate = 0
       }
       if (this.dateChecked) {
-        this.drgApply.isChangDate = 1
+        this.chsApply.isChangDate = 1
       } else {
-        this.drgApply.isChangDate = 0
+        this.chsApply.isChangDate = 0
       }
-      if (this.drgApply.id !== null) {
-        if (this.drgApply.endDate === null) {
+      if (this.chsApply.id !== null) {
+        if (this.chsApply.endDate === null) {
           this.$message.warning('当前' + this.searchApplyDate + ',截止日期 不能为空.')
           return false
         } else {
-          this.drgApply.endDate = moment(this.drgApply.endDate)
+          this.chsApply.endDate = moment(this.chsApply.endDate)
         }
-        if (this.drgApply.enableDate === null) {
+        if (this.chsApply.enableDate === null) {
           this.$message.warning('当前' + this.searchApplyDate + ',确认日期 不能为空.')
           return false
         } else {
-          this.drgApply.enableDate = moment(this.drgApply.enableDate)
+          this.chsApply.enableDate = moment(this.chsApply.enableDate)
         }
-        let ybChsApply = this.drgApply
+        let ybChsApply = this.chsApply
         this.$put('ybChsApply/updateChsApply', {
           ...ybChsApply
         }).then((r) => {
@@ -669,7 +669,7 @@ export default {
     },
     showDateModal () {
       this.dateChecked = false
-      if (this.drgApply.id !== null) {
+      if (this.chsApply.id !== null) {
         this.visibleDate = true
       } else {
         this.$message.error('当前' + this.searchApplyDate + '无复议申请数据.')

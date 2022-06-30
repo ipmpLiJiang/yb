@@ -66,7 +66,7 @@
         <a-tooltip>
           <template slot="title">
             打钩后提交数据，将会把未申诉数据更新至待申诉中，
-            使用此操作需要重新启动DRG截止服务，请谨慎使用.
+            使用此操作需要重新启动截止服务，请谨慎使用.
           </template>
           <a-checkbox :checked="checked" @change="onChange">
             是否更新
@@ -77,12 +77,12 @@
         <a-col :span=12 style="margin-top:10px">
           <a-popconfirm
           v-show="isJob"
-          title="确定开启DRG截止服务？"
+          title="确定开启截止服务？"
           @confirm="startJob"
           okText="确定"
           cancelText="取消"
         >
-        <a>DRG截止服务</a>
+        <a>截止服务</a>
         </a-popconfirm>
         </a-col>
       </a-row>
