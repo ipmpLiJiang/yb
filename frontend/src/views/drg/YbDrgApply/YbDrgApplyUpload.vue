@@ -174,20 +174,6 @@ export default {
       this.$download('ybDrgApplyData/downFile', {
       }, 'DRG审核模板.xlsx')
     },
-    startUp () {
-      this.$put('ybDrgApply/startJob', {
-        applyDateStr: this.ybDrgApply.applyDateStr,
-        areaType: this.ybDrgApply.areaType
-      }).then((r) => {
-        if (r.data.data.success === 1) {
-          this.$message.success('启动Job成功')
-        } else {
-          this.$message.warning(r.data.data.message)
-        }
-      }).catch(() => {
-        this.$message.error('启动Job失败')
-      })
-    },
     deleteData () {
       if (this.ybDrgApply.state === 2) {
         let params = { pid: this.ybDrgApply.id, state: this.ybDrgApply.state }

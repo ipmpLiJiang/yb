@@ -291,7 +291,7 @@ export default {
         params.pageSize = this.pagination.defaultPageSize
         params.pageNum = this.pagination.defaultCurrent
       }
-      // params.sortField = 'ad.orderNum'
+      // params.sortField = 'am.orderNum'
       // params.sortOrder = 'ascend'
       this.$get('ybDrgManageView/drgManageDeptView', {
         ...params

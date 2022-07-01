@@ -163,7 +163,7 @@ export default {
           this.spinning = false
         })
       } else {
-        this.$message.warning('未选择，参考复议科室 或 参考复议医生.')
+        this.$message.warning('未选择复议科室 或 复议医生.')
       }
     },
     selectDoctorChang (item) {

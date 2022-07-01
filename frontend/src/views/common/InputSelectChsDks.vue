@@ -27,17 +27,12 @@ export default {
   props: {
     type: {
       default: 1
-    },
-    areaType: {
-      default: 0
-    },
-    dept: {
-      default: ''
     }
   },
   data () {
     return {
       value: '',
+      user: this.$store.state.account.user,
       dataSource: []
     }
   },
@@ -62,46 +57,29 @@ export default {
       let body = []
       let params = {comments: keyword}
       if (this.type === 1) {
-        this.$get('ybDept/findDeptList', {
+        this.$get('ybDks/findChsDksList', {
           ...params
         }).then((r) => {
           r.data.data.forEach((item, i) => {
             body.push({
-              value: item.deptId,
-              text: item.deptId + '-' + item.deptName
-            })
-          })
-        })
-      }
-      if (this.type === 3) {
-        params = {comments: keyword, areaType: this.areaType}
-        this.$get('ybDept/findDeptAppealConfireList', {
-          ...params
-        }).then((r) => {
-          r.data.data.forEach((item, i) => {
-            body.push({
-              value: item.deptId,
-              text: item.deptId + '-' + item.deptName
+              value: item.dksId,
+              text: item.dksId + '-' + item.dksName
             })
           })
         })
       }
       if (this.type === 2) {
-        params = {comments: keyword}
-        if (this.dept !== '' && this.dept !== null) {
-          params.deptName = this.dept
-        }
-        this.$get('ybPerson/findPersonList', {
+        params = {comments: keyword, areaType: this.user.areaType.value}
+        this.$get('ybDks/findDksChsConfireList', {
           ...params
         }).then((r) => {
           r.data.data.forEach((item, i) => {
             body.push({
-              value: item.personCode,
-              text: item.personCode + '-' + item.personName
+              value: item.dksId,
+              text: item.dksId + '-' + item.dksName
             })
           })
         })
-        // body = [{value: 'mrbird', text: '系统管理员'}, {value: '102A', text: '测试医生2'}, {value: '103A', text: '测试医生3'}]
       }
       return body
     },

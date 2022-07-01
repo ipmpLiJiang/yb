@@ -536,7 +536,7 @@ export default {
           }]
           this.verifyService(arrData)
         } else {
-          this.$message.warning('未选择，参考复议科室 或 参考复议医生.')
+          this.$message.warning('未选择，复议科室 或 复议医生.')
         }
       } else {
         this.$message.warning('未找到对象.')
