@@ -2,7 +2,7 @@
   <a-drawer
     title="管理员变更详情"
     :maskClosable="false"
-    width=80%
+    width=85%
     placement="right"
     :closable="true"
     @close="onClose"
@@ -58,11 +58,11 @@
                   v-bind="formItemLayout1"
                   label="复议科室"
                 >
-                  <input-selectdks
+                  <inputSelectChs-dks
                   ref="inputSelectVerifyDks"
                   @selectChange=selectDksChang
                   >
-                  </input-selectdks>
+                  </inputSelectChs-dks>
                 </a-form-item>
               </a-col>
               <a-col :span=10>
@@ -119,7 +119,7 @@
 <script>
 import moment from 'moment'
 import InputSelect from '../../common/InputSelect'
-import InputSelectdks from '../../common/InputSelectDks'
+import InputSelectChsDks from '../../common/InputSelectChsDks'
 import YbChsDataModule from '../YbChsFunModule/YbChsDataModule'
 import YbChsJkModule from '../YbChsFunModule/YbChsJkModule'
 const formItemLayout = {
@@ -133,7 +133,7 @@ const formItemLayout1 = {
 export default {
   name: 'YbChsManageChangeAdminHandle',
   components: {
-    YbChsDataModule, YbChsJkModule, InputSelect, InputSelectdks},
+    YbChsDataModule, YbChsJkModule, InputSelect, InputSelectChsDks},
   props: {
     adminVisiable: {
       default: false

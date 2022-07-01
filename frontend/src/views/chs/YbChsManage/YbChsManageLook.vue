@@ -2,7 +2,7 @@
   <a-drawer
     title="查看"
     :maskClosable="false"
-    width=80%
+    width=85%
     placement="right"
     :closable="true"
     @close="onClose"
@@ -59,36 +59,25 @@
                 </a-form-item>
               </a-col>
             </a-row>
+            <br>
+            <a-row type="flex" justify="start">
+              <a-col :span=24>
+                <a-form-item
+                  v-bind="{
+                    labelCol: { span: 4 },
+                    wrapperCol: { span: 19, offset: 1 }
+                  }"
+                  label="复议附件"
+                >
+                  <a-upload
+                    :file-list="fileList"
+                    disabled="disabled"
+                  >
+                </a-upload>
+              </a-form-item>
+              </a-col>
+            </a-row>
           </a-col>
-          </a-row>
-          <br>
-          <a-row>
-            <a-col :span=24>
-              <div style="margin:0px 60px">
-              <a-row>
-                <a-col>
-                  <template>
-                    <!--上传图片-->
-                    <div>
-                      <a-upload
-                        list-type="picture"
-                        :file-list="fileList"
-                        disabled="disabled"
-                        @preview="handlePreview"
-                        class="upload-list-inline"
-                      >
-                      </a-upload>
-                      <a-modal width="85%" :visible="previewVisible" :footer="null" @cancel="handleCancel">
-                        <div style="text-align:center">
-                        <img alt="example" style="width: auto; height: auto; max-width: 100%; max-height: 100%;" :src="previewImage" />
-                      </div>
-                      </a-modal>
-                    </div>
-                  </template>
-                </a-col>
-              </a-row>
-              </div>
-            </a-col>
           </a-row>
         </div>
         <!--拒绝-->
@@ -172,14 +161,6 @@ const formItemLayout = {
   labelCol: { span: 10 },
   wrapperCol: { span: 13, offset: 1 }
 }
-function getBase64 (file) {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader()
-    reader.readAsDataURL(file)
-    reader.onload = () => resolve(reader.result)
-    reader.onerror = error => reject(error)
-  })
-}
 
 export default {
   name: 'YbChsManageLook',
@@ -194,8 +175,6 @@ export default {
     return {
       formItemLayout,
       fileList: [],
-      previewVisible: false,
-      previewImage: '',
       ybChsManageLook: {},
       user: this.$store.state.account.user,
       ybChsManage: {}
@@ -208,22 +187,10 @@ export default {
   methods: {
     moment,
     onClose () {
-      this.previewVisible = false
       this.fileList = []
-      this.previewImage = ''
       this.ybChsManage = {}
       this.ybChsManageLook = {}
       this.$emit('close')
-    },
-    handleCancel () {
-      this.previewVisible = false
-    },
-    async handlePreview (file) {
-      if (!file.url && !file.preview) {
-        file.preview = await getBase64(file.originFileObj)
-      }
-      this.previewImage = file.url || file.preview
-      this.previewVisible = true
     },
     setFormValues ({ ...ybChsManageLook }) {
       this.ybChsManageLook = ybChsManageLook
@@ -231,9 +198,7 @@ export default {
         this.$refs.ybChsJkModule.search()
       }, 200)
       if (ybChsManageLook.state === 6 || ybChsManageLook.state === 1) {
-        this.previewVisible = false
         this.fileList = []
-        this.previewImage = ''
         this.findFileList(ybChsManageLook)
       }
     },
@@ -241,10 +206,8 @@ export default {
       let formData = {}
       formData.id = ybChsManageLook.id
       formData.applyDateStr = ybChsManageLook.applyDateStr
-      formData.orderNum = ybChsManageLook.orderNum
       formData.areaType = this.user.areaType.value
-      formData.isOn = 1
-      this.$post('comFile/listChsImgComFile', {
+      this.$post('comFile/uploadFileList', {
         ...formData
       }).then((r) => {
         for (let data of r.data.data) {
@@ -267,18 +230,4 @@ export default {
 
 <style lang="less" scoped>
 @import "../../../../static/less/Common";
-</style><style scoped>
-.upload-list-inline >>> .ant-upload-list-item {
-  float: left;
-  width: 230px;
-  margin-right: 8px;
-}
-
-.upload-list-inline >>> .ant-upload-animate-enter {
-  animation-name: uploadAnimateInlineIn;
-}
-
-.upload-list-inline >>> .ant-upload-animate-leave {
-  animation-name: uploadAnimateInlineOut;
-}
 </style>

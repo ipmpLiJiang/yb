@@ -23,10 +23,11 @@
               :sm="24"
             >
               <a-form-item
-                label="科室"
+                label="汇总科室"
                 v-bind="formItemLayout"
               >
-                <a-select
+                <a-input v-model="queryParams.dksName" />
+                <!-- <a-select
                   allowClear
                   show-search
                   v-model="queryParams.dksName"
@@ -34,7 +35,7 @@
                   <a-select-option :value="d.text" v-for="d in ksList" :key="d.text">
                     {{d.text}}
                   </a-select-option>
-                </a-select>
+                </a-select> -->
               </a-form-item>
             </a-col>
           </div>
@@ -82,11 +83,11 @@
             <a-icon type="down" />
           </a-button>
         </a-dropdown>
-        <a-button
+        <!-- <a-button
           type="primary"
           style="margin-left: 30px"
           @click="showModal"
-        >汇总科室维护</a-button>
+        >汇总科室维护</a-button> -->
       </div>
       <!-- 表格区域 -->
       <a-table
@@ -149,7 +150,7 @@
       :editVisiable="editVisiable"
     >
     </ybDept-edit>
-    <template>
+    <!-- <template>
       <div>
         <a-modal width="60%" :maskClosable="false" :footer="null" v-model="typeVisible" title="汇总科室大专业维护" @cancel="handleOk">
           <comType-data
@@ -159,7 +160,7 @@
           </comType-data>
         </a-modal>
       </div>
-    </template>
+    </template> -->
   </a-card>
 </template>
 
@@ -201,7 +202,7 @@ export default {
       editVisiable: false,
       typeVisible: false,
       ctType: 3,
-      ksList: [],
+      // ksList: [],
       loading: false,
       bordered: true
     }
@@ -218,16 +219,16 @@ export default {
         width: 70
       },
       {
-        title: '部门编码',
+        title: '楼层编码',
         dataIndex: 'deptId',
         width: 120
       },
       {
-        title: '部门名称',
+        title: '楼层名称',
         dataIndex: 'deptName'
       },
       {
-        title: '拼音编码',
+        title: '楼层拼音编码',
         dataIndex: 'spellCode'
       },
       {
@@ -245,7 +246,7 @@ export default {
   },
   mounted () {
     this.fetch()
-    this.findComType()
+    // this.findComType()
   },
   methods: {
     showModal () {
@@ -256,7 +257,7 @@ export default {
     },
     handleOk (e) {
       this.typeVisible = false
-      this.findComType()
+      // this.findComType()
     },
     findComType () {
       let ctParams = {ctType: this.ctType, isDeletemark: 1}
@@ -291,7 +292,8 @@ export default {
       this.addVisiable = false
     },
     add () {
-      this.$refs.ybDeptAdd.setFormValues(this.ksList)
+      this.$refs.ybDeptAdd.setFormValues()
+      // this.$refs.ybDeptAdd.setFormValues(this.ksList)
       this.addVisiable = true
     },
     handleEditSuccess () {
@@ -303,7 +305,7 @@ export default {
       this.editVisiable = false
     },
     edit (record) {
-      record.ksList = this.ksList
+      // record.ksList = this.ksList
       this.$refs.ybDeptEdit.setFormValues(record)
       this.editVisiable = true
     },

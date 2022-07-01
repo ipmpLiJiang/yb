@@ -2,7 +2,7 @@
   <a-drawer
     title="申诉更改"
     :maskClosable="false"
-    width="80%"
+    width="85%"
     placement="right"
     :closable="true"
     @close="onClose"
@@ -24,24 +24,27 @@
         <template>
           <a-form :form="form">
             <a-row type="flex" justify="start">
-              <a-col :span="20">
+              <a-col :span="22">
                 <!--复议科室、医生-->
                 <a-row type="flex" justify="center">
-                  <a-col :span="9">
+                  <a-col :span="8">
                     <a-form-item v-bind="formItemLayout" label="复议科室">
                       {{ ybChsManageUpload.readyDksId }}-{{ ybChsManageUpload.readyDksName }}
                     </a-form-item>
                   </a-col>
-                  <a-col :span="9">
+                  <a-col :span="8">
                     <a-form-item v-bind="formItemLayout" label="复议医生">
                       {{ ybChsManageUpload.readyDoctorCode }}-{{ ybChsManageUpload.readyDoctorName }}
                     </a-form-item>
                   </a-col>
-                  <a-col :span="5"> &nbsp; </a-col>
+                  <a-col :span="1"> &nbsp; </a-col>
+                  <a-col :span="6" style="color:red">
+                    *复议上传附件：大小不得大于4MB，格式为.doc, .docx
+                  </a-col>
                 </a-row>
                 <!--医院意见-->
                 <a-row type="flex" justify="center">
-                  <a-col :span="18">
+                  <a-col :span="16">
                     <a-form-item
                       v-bind="{
                         labelCol: { span: 4 },
@@ -64,61 +67,18 @@
                       />
                     </a-form-item>
                   </a-col>
-                  <a-col :span="5"> &nbsp; </a-col>
-                </a-row>
-                <!--上传显示图片-->
-                <a-row type="flex" justify="start">
                   <a-col :span="1"> &nbsp; </a-col>
-                  <a-col :span="23">
-                    <div style="color: red">
-                      *&nbsp;复议上传图片：图片大小不得大于300KB，图片格式为.jpg
-                    </div>
-                    <div
-                      style="margin-top: 10px; margin-left: 10px; height: 100%"
+                  <a-col :span="6">
+                    <a-upload
+                      accept=".doc,.docx"
+                      :file-list="fileList"
+                      :remove="handleImageRemove"
+                      :beforeUpload="beforeUpload"
                     >
-                      <a-row type="flex" justify="center">
-                        <a-col :span="1"> &nbsp; </a-col>
-                        <a-col :span="20">
-                          佐证资料：<br />资料类型(勾选)：
-                          <a-radio-group
-                            v-model="ftype"
-                            @change="typeChange"
-                            :options="typeList"
-                            size="large"
-                          />
-                        </a-col>
-                        <a-col :span="3"> &nbsp; </a-col>
-                      </a-row>
-                      <br />
-                      <a-row type="flex" justify="center">
-                        <a-col :span="24">
-                          <template>
-                            <!--上传图片-->
-                            <div class="clearfix">
-                              <a-upload
-                                list-type="picture"
-                                accept=".jpg"
-                                :file-list="fileList"
-                                :remove="handleImageRemove"
-                                :beforeUpload="beforeUpload"
-                                @preview="handlePreview"
-                                class="upload-list-inline"
-                              >
-                                <a-button>
-                                  <a-icon type="upload" /> 上传图片
-                                </a-button>
-                                <span style="color:red">{{ftypeName}}</span>
-                              </a-upload>
-                              <a-modal width="85%" :visible="previewVisible" :footer="null" @cancel="handleCancel">
-                              <div style="text-align:center">
-                                <img alt="example" style="width: auto; height: auto; max-width: 100%; max-height: 100%;" :src="previewImage" />
-                              </div>
-                            </a-modal>
-                            </div>
-                          </template>
-                        </a-col>
-                      </a-row>
-                    </div>
+                      <a-button>
+                        <a-icon type="upload" /> 上传附件
+                      </a-button>
+                    </a-upload>
                   </a-col>
                 </a-row>
                 <br />
@@ -164,14 +124,6 @@ const formItemLayout = {
   }
 }
 
-function getBase64 (file) {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader()
-    reader.readAsDataURL(file)
-    reader.onload = () => resolve(reader.result)
-    reader.onerror = error => reject(error)
-  })
-}
 export default {
   name: 'YbChsManageUpload',
   components: {
@@ -189,12 +141,7 @@ export default {
       loading: false,
       ybChsManageUpload: {},
       ybChsManage: {},
-      previewVisible: false,
-      previewImage: '',
       fileList: [],
-      typeList: [],
-      ftype: '',
-      ftypeName: '',
       lableErr: '',
       user: this.$store.state.account.user,
       form: this.$form.createForm(this)
@@ -208,40 +155,38 @@ export default {
       this.form.resetFields()
     },
     beforeUpload (file) {
-      // 限制图片 格式、size、分辨率
-      const isJPG = file.type === 'image/jpg'
-      const isJPEG = file.type === 'image/jpeg'
-      // const isGIF = file.type === 'image/gif'
-      // const isPNG = file.type === 'image/png'
-      if (!(isJPG || isJPEG)) {
+      var testmsg = file.name.substring(file.name.lastIndexOf('.') + 1)
+      testmsg = testmsg.toLowerCase()
+
+      const isfile1 = testmsg === 'doc'
+      const isfile2 = testmsg === 'docx'
+      if (!(isfile1 || isfile2)) {
         this.$error({
-          title: '只能上传JPG 格式的图片~'
+          title: '只能上传.doc, .docx 格式的文件~'
         })
         return
       }
-      const isLt2M = file.size / 1024 < 301
-      if (!isLt2M) {
+      const isLt = file.size / 1024 < 4001
+      if (!isLt) {
         this.$error({
-          title: '超300KB限制，不允许上传~'
+          title: '超4MB限制，不允许上传~'
         })
         return
       }
-      return (isJPG || isJPEG) && isLt2M && this.customRequest(file)
+      return (isfile1 || isfile2) && isLt && this.customRequest(file)
     },
     customRequest (file) {
       const formData = new FormData()
       formData.append('file', file)
       formData.append('id', this.ybChsManageUpload.id)
       formData.append('refTab', 'yb_chs_result')
-      formData.append('refType', this.ftype)
-      formData.append('refTypeName', this.ftypeName)
-      formData.append('orderNum', this.ybChsManageUpload.orderNum)
+      formData.append('refType', 'chs')
+      formData.append('fileType', 'doc')
       formData.append('applyDateStr', this.ybChsManageUpload.applyDateStr)
-      formData.append('isCheck', 1)
       formData.append('areaType', this.user.areaType.value)
       this.uploading = true
       let that = this
-      this.$upload('comFile/uploadChsImg', formData).then((r) => {
+      this.$upload('comFile/uploadCheck', formData).then((r) => {
         if (r.data.data.success === 1) {
           that.fileList.unshift(r.data.data)
           this.uploading = false
@@ -257,8 +202,8 @@ export default {
     },
     handleImageRemove (file) {
       if (this.fileList.length === 1) {
-        this.$message.warning('复议图片无法删除，请确认保，至少存在一张复议图片！')
-        this.lableErr = '复议图片无法删除，请确认保，至少存在一张复议图片！'
+        this.$message.warning('申诉附件无法删除，申诉复议必须上传附件！')
+        this.lableErr = '申诉附件无法删除，申诉复议必须上传附件！'
         return false
       }
       let that = this
@@ -270,11 +215,8 @@ export default {
           let formData = {}
           formData.id = file.uid
           formData.applyDateStr = that.ybChsManageUpload.applyDateStr
-          // formData.refType = that.ftype
-          formData.serName = file.serName
-          formData.orderNum = that.ybChsManageUpload.orderNum
           formData.areaType = that.user.areaType.value
-          that.$post('comFile/deleteChsImg', {
+          that.$post('comFile/deleteFile', {
             ...formData
           }).then((r) => {
             that.uploading = false
@@ -294,32 +236,19 @@ export default {
         onCancel () { }
       })
     },
-    handleCancel () {
-      this.previewVisible = false
-    },
-    async handlePreview (file) {
-      if (!file.url && !file.preview) {
-        file.preview = await getBase64(file.originFileObj)
-      }
-      this.previewImage = file.url || file.preview
-      this.previewVisible = true
-    },
     onClose () {
       this.loading = false
       this.ybChsManage = {}
       this.ybChsManageUpload = {}
       this.fileList = []
-      this.typeList = []
-      this.previewVisible = false
-      this.previewImage = ''
       this.$emit('close')
     },
     handleSubmit () {
       this.lableErr = ''
       // 复议判断图片必须上传
-      if (this.fileList.length < 1) {
-        this.$message.warning('未上传复议图片，无法保存！')
-        this.lableErr = '未上传复议图片，无法保存！'
+      if (this.fileList.length === 0) {
+        this.$message.warning('未上传申诉附件，无法保存！')
+        this.lableErr = '未上传申诉附件，无法保存！'
         return false
       }
       this.form.validateFields((err, values) => {
@@ -356,54 +285,19 @@ export default {
         'operateReason': ybChsManageUpload.operateReason
       })
 
+      this.findFileList(ybChsManageUpload.id)
+
       setTimeout(() => {
         this.$refs.ybChsJkModule.search()
-        this.getType(this.ybChsManageUpload.id)
       }, 200)
-    },
-    getType (id) {
-      this.ftype = ''
-      this.ftypeName = ''
-      this.typeList = []
-      this.$get('comType/getComTypeList', {
-        ctType: 2, isDeletemark: 1
-      }).then((r) => {
-        if (r.data.length > 0) {
-          for (var i in r.data) {
-            var type = {
-              label: r.data[i].ctName,
-              value: r.data[i].id.toString()
-            }
-            this.typeList.push(type)
-            if (this.ftype === '') {
-              this.ftype = type.value
-              this.ftypeName = type.label
-              this.findFileList(id)
-            }
-          }
-        } else {
-          this.typeList = []
-        }
-      }).catch(() => {
-        this.typeList = []
-      })
-    },
-    typeChange (e) {
-      this.ftype = e.target.value
-      let target = this.typeList.filter(item => item.value === this.ftype)[0]
-      this.ftypeName = target.label
-      // this.findFileList(this.ybChsManageUpload.id)
     },
     findFileList (id) {
       let formData = {}
       this.fileList = []
       formData.id = id
       formData.applyDateStr = this.ybChsManageUpload.applyDateStr
-      formData.orderNum = this.ybChsManageUpload.orderNum
-      // formData.refType = this.ftype
       formData.areaType = this.user.areaType.value
-      formData.isOn = 1
-      this.$post('comFile/listChsImgComFile', {
+      this.$post('comFile/uploadFileList', {
         ...formData
       }).then((r) => {
         for (let data of r.data.data) {
@@ -419,18 +313,4 @@ export default {
 
 <style lang="less" scoped>
 @import "../../../../static/less/Common";
-</style><style scoped>
-.upload-list-inline >>> .ant-upload-list-item {
-  float: left;
-  width: 230px;
-  margin-right: 8px;
-}
-
-.upload-list-inline >>> .ant-upload-animate-enter {
-  animation-name: uploadAnimateInlineIn;
-}
-
-.upload-list-inline >>> .ant-upload-animate-leave {
-  animation-name: uploadAnimateInlineOut;
-}
 </style>

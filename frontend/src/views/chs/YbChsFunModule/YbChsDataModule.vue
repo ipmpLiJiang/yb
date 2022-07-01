@@ -7,10 +7,8 @@
       <a-col :span="4">
         {{ ybChsData.orderNum }}
       </a-col>
-      <a-col :span="2">
-        医疗类别：
-      </a-col>
-      <a-col :span="4">
+      <a-col :span="3"> 医疗类别：</a-col>
+      <a-col :span="3">
         {{ ybChsData.medicalType }}
       </a-col>
       <a-col :span="2"> 住院门诊号： </a-col>
@@ -22,13 +20,13 @@
         {{ ybChsData.insuredName }}
       </a-col>
     </a-row>
-    <a-row style="margin-bottom: 10px">
+    <a-row style="margin-bottom: 15px">
       <a-col :span="3"> 身份证号： </a-col>
       <a-col :span="4">
         {{ ybChsData.cardNumber }}
       </a-col>
-      <a-col :span="2"> 入院日期： </a-col>
-      <a-col :span="4">
+      <a-col :span="3"> 入院日期： </a-col>
+      <a-col :span="3">
         {{ ybChsData.enterHospitalDate }}
       </a-col>
       <a-col :span="2"> 出院日期： </a-col>
@@ -40,32 +38,34 @@
         {{ ybChsData.settlementDate }}
       </a-col>
     </a-row>
-    <a-row style="margin-bottom: 10px">
+    <a-row style="margin-bottom: 15px">
       <a-col :span="3"> 医保项目编码： </a-col>
-      <a-col :span="4">
+      <a-col :span="10">
         {{ ybChsData.projectCode }}
       </a-col>
-      <a-col :span="2"> 医保项目名称： </a-col>
-      <a-col :span="4">
-        {{ ybChsData.projectName }}
-      </a-col>
       <a-col :span="2"> 规则名称： </a-col>
-      <a-col :span="3">
+      <a-col :span="9">
         {{ ybChsData.ruleName }}
       </a-col>
-      <a-col :span="3"> 初审违规金额（元）： </a-col>
-      <a-col :span="3">
-        {{ ybChsData.violateCsPrice }}
-      </a-col>
     </a-row>
-    <a-row style="margin-bottom: 10px">
-      <a-col :span="3"> 违规金额（元）： </a-col>
-      <a-col :span="4">
-        {{ ybChsData.violatePrice }}
+    <a-row style="margin-bottom: 15px">
+      <a-col :span="3"> 医保项目名称： </a-col>
+      <a-col :span="10">
+        {{ ybChsData.projectName }}
       </a-col>
       <a-col :span="2"> 违规内容： </a-col>
-      <a-col :span="4">
+      <a-col :span="9">
         {{ ybChsData.violateReason }}
+      </a-col>
+    </a-row>
+    <a-row style="margin-bottom: 15px">
+      <a-col :span="3"> 初审违规金额（元）： </a-col>
+      <a-col :span="4">
+        {{ ybChsData.violateCsPrice }}
+      </a-col>
+      <a-col :span="3"> 违规金额（元）： </a-col>
+      <a-col :span="3">
+        {{ ybChsData.violatePrice }}
       </a-col>
       <a-col :span="2"> 费用日期： </a-col>
       <a-col :span="3">
@@ -76,13 +76,13 @@
         {{ ybChsData.insuredType }}
       </a-col>
     </a-row>
-    <a-row style="margin-bottom: 10px">
+    <a-row style="margin-bottom: 15px">
       <a-col :span="3"> 单价（元）： </a-col>
       <a-col :span="4">
         {{ ybChsData.price }}
       </a-col>
-      <a-col :span="2"> 数量： </a-col>
-      <a-col :span="4">
+      <a-col :span="3"> 数量： </a-col>
+      <a-col :span="3">
         {{ ybChsData.num }}
       </a-col>
       <a-col :span="2"> 金额（元）： </a-col>
@@ -94,13 +94,13 @@
         {{ ybChsData.tcPayPrice }}
       </a-col>
     </a-row>
-    <a-row style="margin-bottom: 10px">
+    <a-row style="margin-bottom: 15px">
       <a-col :span="3"> 规格： </a-col>
       <a-col :span="4">
         {{ ybChsData.specs }}
       </a-col>
-      <a-col :span="2"> 剂型： </a-col>
-      <a-col :span="4">
+      <a-col :span="3"> 剂型： </a-col>
+      <a-col :span="3">
         {{ ybChsData.jx }}
       </a-col>
       <a-col :span="2"> 机构等级： </a-col>

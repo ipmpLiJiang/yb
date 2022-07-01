@@ -12,33 +12,37 @@
     <a-form :form="form">
       <a-form-item
         v-bind="formItemLayout"
-        label="部门编码"
+        label="楼层编码"
       >
         <a-input
-          placeholder="请输入部门编码"
-          v-decorator="['deptId', {rules: [{ required: true, message: '部门编码不能为空' }] }]"
+          placeholder="请输入楼层编码"
+          v-decorator="['deptId', {rules: [{ required: true, message: '楼层编码不能为空' }] }]"
         />
       </a-form-item>
       <a-form-item
         v-bind="formItemLayout"
-        label="部门名称"
+        label="楼层名称"
       >
         <a-input
-          placeholder="请输入部门名称"
-          v-decorator="['deptName', {rules: [{ required: true, message: '部门名称不能为空' }] }]"
+          placeholder="请输入楼层名称"
+          v-decorator="['deptName', {rules: [{ required: true, message: '楼层名称不能为空' }] }]"
         />
       </a-form-item>
       <a-form-item
         v-bind="formItemLayout"
-        label="拼音编码"
+        label="楼层拼音编码"
       >
         <a-input
-          placeholder="请输入拼音编码"
-          v-decorator="['spellCode', {rules: [{ required: true, message: '拼音编码不能为空' }] }]"
+          placeholder="请输入楼层拼音编码"
+          v-decorator="['spellCode', {rules: [{ required: true, message: '楼层拼音编码不能为空' }] }]"
         />
       </a-form-item>
       <a-form-item v-bind="formItemLayout" label="汇总科室">
-        <a-select
+        <a-input
+          placeholder="请输入汇总科室"
+          v-decorator="['dksName', {rules: [{ required: true, message: '汇总科室不能为空' }] }]"
+        />
+        <!-- <a-select
           allowClear
           :showSearch="true"
           v-decorator="['dksName']"
@@ -46,7 +50,7 @@
           <a-select-option :value="d.text" v-for="d in ksList" :key="d.text">
             {{d.text}}
           </a-select-option>
-        </a-select>
+        </a-select> -->
       </a-form-item>
     </a-form>
     <div class="drawer-bootom-button">
@@ -83,13 +87,13 @@ export default {
       loading: false,
       formItemLayout,
       form: this.$form.createForm(this),
-      ksList: [],
+      // ksList: [],
       ybDept: {}
     }
   },
   methods: {
-    setFormValues (ksList) {
-      this.ksList = ksList
+    setFormValues () {
+      // this.ksList = ksList
     },
     reset () {
       this.loading = false
