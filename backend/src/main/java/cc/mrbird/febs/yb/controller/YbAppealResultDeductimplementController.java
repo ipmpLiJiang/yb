@@ -405,7 +405,7 @@ public class YbAppealResultDeductimplementController extends BaseController {
                                         }
                                         if (DataTypeHelpers.isNullOrEmpty(message)) {
                                             User currentUser = FebsUtil.getCurrentUser();
-                                            String newApplyDateStr = applyDateStr + "15";
+                                            String newApplyDateStr = applyDateStr + "-15";
                                             Date applyDate = DataTypeHelpers.stringDateFormat(newApplyDateStr, null, false);
                                             YbAppealResultDeductimplement ybAppealResultDeductimplement = new YbAppealResultDeductimplement();
                                             ybAppealResultDeductimplement.setApplyDateStr(applyDateStr);

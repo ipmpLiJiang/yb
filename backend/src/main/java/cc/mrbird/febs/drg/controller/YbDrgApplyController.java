@@ -214,7 +214,6 @@ public class YbDrgApplyController extends BaseController {
     public FebsResponse getDrgApplys(String applyDateStr, Integer areaType) {
         ModelMap map = new ModelMap();
         int success = 0;
-        int typeno = 1;
         YbDrgApply drgApply = null;
         try {
             drgApply = this.iYbDrgApplyService.findDrgApplyByApplyDateStrs(applyDateStr, areaType);

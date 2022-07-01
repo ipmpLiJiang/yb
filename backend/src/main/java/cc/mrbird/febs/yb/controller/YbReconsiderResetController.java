@@ -225,7 +225,7 @@ public class YbReconsiderResetController extends BaseController {
                                 reconsiderReset.setAreaType(areaType);
                                 reconsiderReset.setCreateTime(thisDate);
                                 reconsiderReset.setCreateUserId(currentUser.getUserId());
-                                String newApplyDateStr = applyDateStr + "15";
+                                String newApplyDateStr = applyDateStr + "-15";
                                 Date applyDate = DataTypeHelpers.stringDateFormat(newApplyDateStr, null, false);
                                 reconsiderReset.setApplyDate(applyDate);
                                 List<String> mxOrderNumberList = new ArrayList<>();

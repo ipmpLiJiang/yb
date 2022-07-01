@@ -1,5 +1,6 @@
 package cc.mrbird.febs.com.controller;
 
+import cn.hutool.core.date.DateUnit;
 import cn.hutool.core.date.DateUtil;
 import lombok.val;
 import org.apache.commons.lang3.StringUtils;
@@ -23,7 +24,7 @@ import java.util.regex.Pattern;
  */
 public class DataTypeHelpers {
     public static boolean isNumeric(String strNum) {
-        if (StringUtils.isNotBlank(strNum)) {
+        if (StringUtils.isBlank(strNum)) {
             return false;
         }
         try {
@@ -47,7 +48,7 @@ public class DataTypeHelpers {
 
     public static boolean isNullOrEmpty(String val) {
         boolean isTrue = false;
-        if (StringUtils.isNotBlank(val)) {
+        if (StringUtils.isBlank(val)) {
             isTrue = true;
         }
         return isTrue;
@@ -146,8 +147,9 @@ public class DataTypeHelpers {
         if (!isFormat) {
             strDate = strDate.replace("-", "").replace("/", "");
         }
-        SimpleDateFormat sdf = new SimpleDateFormat(format);
-        Date date = sdf.parse(strDate, new ParsePosition(0));
+//        SimpleDateFormat sdf = new SimpleDateFormat(format);
+//        Date date = sdf.parse(strDate, new ParsePosition(0));
+        Date date = DateUtil.parse(strDate);
 
         return date;
     }
@@ -206,9 +208,9 @@ public class DataTypeHelpers {
         if (!isFormat) {
             strDate = strDate.replace("-", "").replace("/", "");
         }
-        SimpleDateFormat sdf = new SimpleDateFormat(format);
-        Date date = sdf.parse(strDate, new ParsePosition(0));
-
+//        SimpleDateFormat sdf = new SimpleDateFormat(format);
+//        Date date = sdf.parse(strDate, new ParsePosition(0));
+        Date date = DateUtil.parse(strDate);
         Calendar a = Calendar.getInstance();
         a.setTime(date);
         a.set(Calendar.DATE, 1);//把日期设置为当月第一天
@@ -226,9 +228,9 @@ public class DataTypeHelpers {
         if (!isFormat) {
             strDate = strDate.replace("-", "").replace("/", "");
         }
-        SimpleDateFormat sdf = new SimpleDateFormat(format);
-        Date date = sdf.parse(strDate, new ParsePosition(0));
-
+//        SimpleDateFormat sdf = new SimpleDateFormat(format);
+//        Date date = sdf.parse(strDate, new ParsePosition(0));
+        Date date = DateUtil.parse(strDate);
         Calendar a = Calendar.getInstance();
         a.setTime(date);
         a.add(Calendar.MONTH, addMonth);
@@ -256,6 +258,18 @@ public class DataTypeHelpers {
         } catch (Exception e) {
         }
         return date;
+    }
+
+    public static String dateToString(Date date) {
+        String dateStr = null;
+        try {
+            if(date != null) {
+                SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd");
+                dateStr = sdf1.format(date);
+            }
+        } catch (Exception e) {
+        }
+        return dateStr;
     }
 
     public static List<String> stringApplyDateStrToList(String applyDateStr, String applyDateStrTo) {

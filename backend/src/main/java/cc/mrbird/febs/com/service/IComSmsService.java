@@ -49,4 +49,6 @@ public interface IComSmsService extends IService<ComSms> {
 
 
         String sendDrgManageWarnSms(String applyDateStr, Integer areaType);
+
+        String sendChsManageWarnSms(String applyDateStr, Integer areaType);
 }

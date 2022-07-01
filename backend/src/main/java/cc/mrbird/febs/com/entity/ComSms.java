@@ -1,18 +1,21 @@
 package cc.mrbird.febs.com.entity;
 
 import com.baomidou.mybatisplus.annotation.TableField;
+
 import java.io.Serializable;
 
 
 import lombok.Data;
 import lombok.experimental.Accessors;
+
 import java.util.Date;
+
 import com.wuwenze.poi.annotation.Excel;
 import com.wuwenze.poi.annotation.ExcelField;
 
 /**
  * <p>
- * 
+ *
  * </p>
  *
  * @author viki
@@ -22,161 +25,180 @@ import com.wuwenze.poi.annotation.ExcelField;
 @Excel("com_sms")
 @Data
 @Accessors(chain = true)
-public class ComSms implements Serializable , Comparable<ComSms>{
+public class ComSms implements Serializable, Comparable<ComSms> {
 
-private static final long serialVersionUID=1L;
+    private static final long serialVersionUID = 1L;
 
     /**
      * 1 核对发送
      */
-    public static final int SENDTYPE_1 = 1 ;
+    public static final int SENDTYPE_1 = 1;
     /**
      * 2 非常规复议发送
      */
 
-    public static final int SENDTYPE_2 = 2 ;
+    public static final int SENDTYPE_2 = 2;
     /**
      * 3 医保办变更
      */
-    public static final int SENDTYPE_3 = 3 ;
+    public static final int SENDTYPE_3 = 3;
 
     /**
      * 4 管理员变更
      */
-    public static final int SENDTYPE_4 = 4 ;
+    public static final int SENDTYPE_4 = 4;
 
     /**
      * 5 完成剔除
      */
-    public static final int SENDTYPE_5 = 5 ;
+    public static final int SENDTYPE_5 = 5;
 
     /**
      * 6 非常规复议
      */
-    public static final int SENDTYPE_6 = 6 ;
+    public static final int SENDTYPE_6 = 6;
 
     /**
      * 7 培训通知
      */
-    public static final int SENDTYPE_7 = 7 ;
+    public static final int SENDTYPE_7 = 7;
 
     /**
      * 8 截止日期提醒
      */
-    public static final int SENDTYPE_8 = 8 ;
+    public static final int SENDTYPE_8 = 8;
 
     /**
      * 9 非常规截止日期提醒
      */
-    public static final int SENDTYPE_9 = 9 ;
+    public static final int SENDTYPE_9 = 9;
 
     /**
      * 10 DRG核对发生
      */
-    public static final int SENDTYPE_10 = 10 ;
+    public static final int SENDTYPE_10 = 10;
 
     /**
      * 11 DRG医保办变更
      */
-    public static final int SENDTYPE_11 = 11 ;
+    public static final int SENDTYPE_11 = 11;
 
     /**
      * 12 DRG截止日期提醒
      */
-    public static final int SENDTYPE_12 = 12 ;
+    public static final int SENDTYPE_12 = 12;
 
     /**
      * 13 DRG管理员变更
      */
-    public static final int SENDTYPE_13 = 13 ;
+    public static final int SENDTYPE_13 = 13;
+
+    /**
+     * 21 Chs核对发送
+     */
+    public static final int SENDTYPE_21 = 21;
+    /**
+     * 23 Chs医保办变更
+     */
+    public static final int SENDTYPE_23 = 23;
+
+    /**
+     * 24 Chs管理员变更
+     */
+    public static final int SENDTYPE_24 = 24;
+
+    /**
+     * 25 Chs截止日期提醒
+     */
+    public static final int SENDTYPE_25 = 25;
 
     /**
      * 0 未发送
      */
-    public static final int STATE_0 = 0 ;
+    public static final int STATE_0 = 0;
     /**
      * 1 已发送
      */
 
-    public static final int STATE_1 = 1 ;
+    public static final int STATE_1 = 1;
 
     /**
      * 信息ID
      */
-                                @ExcelField(value ="信息ID")
+    @ExcelField(value = "信息ID")
     private String id;
 
     /**
      * 发送账户
      */
-            @ExcelField(value ="发送账户")
+    @ExcelField(value = "发送账户")
     private String sendcode;
 
     /**
      * 发送人
      */
-            @ExcelField(value ="发送人")
+    @ExcelField(value = "发送人")
     private String sendname;
 
     /**
      * 电话号码
      */
-            @ExcelField(value ="手机号码")
+    @ExcelField(value = "手机号码")
     private String mobile;
 
     /**
      * 发送类型
      */
     @TableField("sendType")
-            @ExcelField(value ="发送类型")
+    @ExcelField(value = "发送类型")
     private Integer sendType;
 
     /**
      * 操作员代码
      */
     @TableField("operatorId")
-            @ExcelField(value ="操作员代码")
+    @ExcelField(value = "操作员代码")
     private Long operatorId;
 
     /**
      * 操作员名称
      */
     @TableField("operatorName")
-            @ExcelField(value ="操作员名称")
+    @ExcelField(value = "操作员名称")
     private String operatorName;
 
     /**
      * 发送内容
      */
-            @ExcelField(value ="发送内容")
+    @ExcelField(value = "发送内容")
     private String sendcontent;
 
     /**
      * 备注
      */
     @TableField("COMMENTS")
-            @ExcelField(value ="备注")
+    @ExcelField(value = "备注")
     private String comments;
 
     /**
      * 状态
      */
     @TableField("STATE")
-            @ExcelField(value ="状态")
+    @ExcelField(value = "状态")
     private Integer state;
 
     /**
      * 是否删除
      */
     @TableField("IS_DELETEMARK")
-            @ExcelField(value ="是否删除")
+    @ExcelField(value = "是否删除")
     private Integer isDeletemark;
 
     /**
      * 修改时间
      */
     @TableField("MODIFY_TIME")
-            @ExcelField(value ="修改时间")
+    @ExcelField(value = "修改时间")
     private Date modifyTime;
     private transient String modifyTimeFrom;
     private transient String modifyTimeTo;
@@ -185,7 +207,7 @@ private static final long serialVersionUID=1L;
      * 创建时间
      */
     @TableField("CREATE_TIME")
-            @ExcelField(value ="创建时间")
+    @ExcelField(value = "创建时间")
     private Date createTime;
     private transient String createTimeFrom;
     private transient String createTimeTo;
@@ -194,14 +216,14 @@ private static final long serialVersionUID=1L;
      * 创建人
      */
     @TableField("CREATE_USER_ID")
-            @ExcelField(value ="创建人")
+    @ExcelField(value = "创建人")
     private Long createUserId;
 
     /**
      * 修改人
      */
     @TableField("MODIFY_USER_ID")
-            @ExcelField(value ="修改人")
+    @ExcelField(value = "修改人")
     private Long modifyUserId;
 
     /**
@@ -230,55 +252,55 @@ private static final long serialVersionUID=1L;
      * 记录ID
      */
     @TableField("refTableId")
-    @ExcelField(value ="记录ID")
+    @ExcelField(value = "记录ID")
     private String refTableId;
 
-    public static final String ID ="id" ;
+    public static final String ID = "id";
 
-    public static final String SENDCODE ="sendcode" ;
+    public static final String SENDCODE = "sendcode";
 
-    public static final String SENDNAME ="sendname" ;
+    public static final String SENDNAME = "sendname";
 
-    public static final String MOBILE ="mobile" ;
+    public static final String MOBILE = "mobile";
 
-    public static final String SENDTYPE ="sendType" ;
+    public static final String SENDTYPE = "sendType";
 
-    public static final String OPERATORID ="operatorId" ;
+    public static final String OPERATORID = "operatorId";
 
-    public static final String OPERATORNAME ="operatorName" ;
+    public static final String OPERATORNAME = "operatorName";
 
-    public static final String SENDCONTENT ="sendcontent" ;
+    public static final String SENDCONTENT = "sendcontent";
 
-    public static final String COMMENTS ="COMMENTS" ;
+    public static final String COMMENTS = "COMMENTS";
 
-    public static final String STATE ="STATE" ;
+    public static final String STATE = "STATE";
 
-    public static final String IS_DELETEMARK ="IS_DELETEMARK" ;
+    public static final String IS_DELETEMARK = "IS_DELETEMARK";
 
-    public static final String MODIFY_TIME ="MODIFY_TIME" ;
+    public static final String MODIFY_TIME = "MODIFY_TIME";
 
-    public static final String CREATE_TIME ="CREATE_TIME" ;
+    public static final String CREATE_TIME = "CREATE_TIME";
 
-    public static final String CREATE_USER_ID ="CREATE_USER_ID" ;
+    public static final String CREATE_USER_ID = "CREATE_USER_ID";
 
-    public static final String MODIFY_USER_ID ="MODIFY_USER_ID" ;
+    public static final String MODIFY_USER_ID = "MODIFY_USER_ID";
 
-    public static final String AREATYPE ="areaType" ;
+    public static final String AREATYPE = "areaType";
 
     public static final String APPLYDATESTR = "applyDateStr";
 
     public static final String TYPENO = "typeno";
 
-    public static final String REFTABLEID ="refTableId" ;
+    public static final String REFTABLEID = "refTableId";
 
-@Override
-public int compareTo(ComSms o) {
+    @Override
+    public int compareTo(ComSms o) {
         if (this.getId() != null && o.getId() != null) {
-        return this.getId().compareTo(o.getId());
+            return this.getId().compareTo(o.getId());
         } else if (this.getId() != null) {
-        return 1;
+            return 1;
         } else {
-        return 0;
+            return 0;
         }
-        }
+    }
 }

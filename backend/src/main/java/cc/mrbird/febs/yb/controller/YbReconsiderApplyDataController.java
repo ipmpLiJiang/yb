@@ -393,7 +393,6 @@ public class YbReconsiderApplyDataController extends BaseController {
                                     if (objMx.size() > 1 || objZd.size() > 1) {
                                         List<YbReconsiderApplyData> ListData = new ArrayList<>();
                                         List<YbReconsiderApplyData> ListMain = new ArrayList<>();
-                                        String guid = pid;
 
                                         if (objMx.size() > 1) {
                                             if (objMx.get(0).length >= 27) {
@@ -403,7 +402,7 @@ public class YbReconsiderApplyDataController extends BaseController {
                                                         message = "明细扣款数据读取失败，请确保Excel列表数据正确无误.";
                                                         YbReconsiderApplyData rrData = new YbReconsiderApplyData();
                                                         rrData.setId(UUID.randomUUID().toString());
-                                                        rrData.setPid(guid);
+                                                        rrData.setPid(pid);
                                                         rrData.setIsDeletemark(1);
                                                         String strOrderNumber = DataTypeHelpers.importTernaryOperate(objMx.get(i), 0);//序号',
                                                         rrData.setOrderNumber(strOrderNumber);
@@ -509,7 +508,7 @@ public class YbReconsiderApplyDataController extends BaseController {
                                                             YbReconsiderApplyData rrMain = new YbReconsiderApplyData();
                                                             rrMain.setIsDeletemark(1);
                                                             rrMain.setId(UUID.randomUUID().toString());
-                                                            rrMain.setPid(guid);
+                                                            rrMain.setPid(pid);
                                                             String strOrderNumber = DataTypeHelpers.importTernaryOperate(objZd.get(i), 0);//序号',
                                                             rrMain.setOrderNumber(strOrderNumber);
                                                             rrMain.setOrderNum(i);

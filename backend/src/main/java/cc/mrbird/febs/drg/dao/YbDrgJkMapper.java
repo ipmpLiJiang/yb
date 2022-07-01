@@ -23,5 +23,4 @@ public interface YbDrgJkMapper extends BaseMapper<YbDrgJk> {
 
       List<YbDrgJk> findDrgJkApplyDataByPid(String pid);
 
-      int delDrgJkByPid(String pid);
 }

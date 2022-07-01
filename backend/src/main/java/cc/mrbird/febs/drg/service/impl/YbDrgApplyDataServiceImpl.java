@@ -132,20 +132,11 @@ public class YbDrgApplyDataServiceImpl extends ServiceImpl<YbDrgApplyDataMapper,
     @Override
     @Transactional
     public void importDrgApply(YbDrgApply ybDrgApply, List<YbDrgApplyData> listData) {
-//        List<YbDrgApplyData> createDataList = new ArrayList<>();
-//        for (YbDrgApplyData item : listData) {
-//            YbDrgApplyData rrData = new YbDrgApplyData();
-//            rrData.setId(item.getId());
-//            rrData.setPid(item.getPid());
-//            rrData.setOrderNumber(item.getOrderNumber());//序号
-//            rrData.setOrderNum(item.getOrderNum());//排序
-//            rrData.setKs(item.getKs())
-//        }
         if (listData.size() > 0) {
             this.saveBatch(listData);
         }
-
-        this.iYbDrgApplyService.updateYbDrgApply(ybDrgApply);
+        ybDrgApply.setModifyTime(new Date());
+        this.iYbDrgApplyService.updateById(ybDrgApply);
     }
 
     @Override
@@ -246,8 +237,11 @@ public class YbDrgApplyDataServiceImpl extends ServiceImpl<YbDrgApplyDataMapper,
         try {
             YbDrgApply drgApply = this.iYbDrgApplyService.findDrgApplyByApplyDateStrs(applyDateStr, areaType);
             if (drgApply != null) {
-                int count = iYbDrgJkService.delDrgJkApplyDataByPid(drgApply.getId());
-                if(count > 0) {
+                LambdaQueryWrapper<YbDrgJk> wrapper = new LambdaQueryWrapper<>();
+                wrapper.eq(YbDrgJk::getApplyDateStr,applyDateStr);
+                wrapper.eq(YbDrgJk::getAreaType,areaType);
+                boolean istrue = iYbDrgJkService.remove(wrapper);
+                if(istrue) {
                     YbDrgApply updateApply = new YbDrgApply();
                     updateApply.setId(drgApply.getId());
                     updateApply.setState(YbDefaultValue.DRGAPPLYSTATE_2);

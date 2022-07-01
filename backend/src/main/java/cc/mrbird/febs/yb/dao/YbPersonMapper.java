@@ -27,6 +27,7 @@ public interface YbPersonMapper extends BaseMapper<YbPerson> {
 
     List<YbPerson> findDrgPersonWarnList(@Param("applyDateStr") String applyDateStr, @Param("areaType") Integer areaType, @Param("state") Integer state);
 
+    List<YbPerson> findChsPersonWarnList(@Param("applyDateStr") String applyDateStr, @Param("areaType") Integer areaType, @Param("state") Integer state);
 
     List<YbPerson> findPersonResultList(@Param("applyDateStr") String applyDateStr, @Param("areaType") Integer areaType);
 }

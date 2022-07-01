@@ -49,4 +49,6 @@ public interface IYbPersonService extends IService<YbPerson> {
     YbPerson findByName(String personCode);
 
     List<YbPerson> findDrgPersonWarnLists(String applyDateStr,Integer areaType, Integer state);
+
+    List<YbPerson> findChsPersonWarnLists(String applyDateStr,Integer areaType, Integer state);
 }

@@ -320,4 +320,9 @@ public class YbPersonServiceImpl extends ServiceImpl<YbPersonMapper, YbPerson> i
     public  List<YbPerson> findDrgPersonWarnLists(String applyDateStr,Integer areaType, Integer state){
         return this.baseMapper.findDrgPersonWarnList(applyDateStr,areaType, state);
     }
+
+    @Override
+    public  List<YbPerson> findChsPersonWarnLists(String applyDateStr,Integer areaType, Integer state){
+        return this.baseMapper.findChsPersonWarnList(applyDateStr,areaType, state);
+    }
 }

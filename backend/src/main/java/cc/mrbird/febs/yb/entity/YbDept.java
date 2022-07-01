@@ -53,6 +53,13 @@ private static final long serialVersionUID=1L;
     /**
      * 科室
      */
+    @TableField("dksId")
+    @ExcelField(value ="科室Id")
+    private String dksId;
+
+    /**
+     * 科室
+     */
     @TableField("dksName")
     @ExcelField(value ="科室")
     private String dksName;
@@ -124,6 +131,8 @@ private static final long serialVersionUID=1L;
     public static final String DEPTID ="deptId" ;
 
     public static final String DEPTNAME ="deptName" ;
+
+    public static final String DKSID ="dksId" ;
 
     public static final String DKSNAME ="dksName" ;
 

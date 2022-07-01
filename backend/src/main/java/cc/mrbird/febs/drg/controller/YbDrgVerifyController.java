@@ -6,30 +6,28 @@ import cc.mrbird.febs.com.controller.ImportExcelUtils;
 import cc.mrbird.febs.common.annotation.Log;
 import cc.mrbird.febs.common.controller.BaseController;
 import cc.mrbird.febs.common.domain.FebsResponse;
-import cc.mrbird.febs.common.domain.router.VueRouter;
-import cc.mrbird.febs.common.exception.FebsException;
 import cc.mrbird.febs.common.domain.QueryRequest;
-
+import cc.mrbird.febs.common.exception.FebsException;
 import cc.mrbird.febs.common.properties.FebsProperties;
-import cc.mrbird.febs.drg.entity.YbDrgApply;
-import cc.mrbird.febs.drg.entity.YbDrgJk;
-import cc.mrbird.febs.drg.service.IYbDrgApplyDataService;
-import cc.mrbird.febs.drg.service.IYbDrgVerifyService;
-import cc.mrbird.febs.drg.service.IYbDrgApplyService;
-import cc.mrbird.febs.drg.entity.YbDrgVerify;
-import cc.mrbird.febs.drg.entity.YbDrgApplyData;
-
 import cc.mrbird.febs.common.utils.FebsUtil;
+import cc.mrbird.febs.drg.entity.YbDrgApply;
+import cc.mrbird.febs.drg.entity.YbDrgApplyData;
+import cc.mrbird.febs.drg.entity.YbDrgJk;
+import cc.mrbird.febs.drg.entity.YbDrgVerify;
+import cc.mrbird.febs.drg.service.IYbDrgApplyDataService;
+import cc.mrbird.febs.drg.service.IYbDrgApplyService;
+import cc.mrbird.febs.drg.service.IYbDrgVerifyService;
 import cc.mrbird.febs.system.domain.User;
 import cc.mrbird.febs.yb.domain.ResponseImportResultData;
 import cc.mrbird.febs.yb.domain.ResponseResult;
 import cc.mrbird.febs.yb.entity.YbDefaultValue;
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
+import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.StringPool;
 import com.wuwenze.poi.ExcelKit;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
@@ -230,9 +228,6 @@ public class YbDrgVerifyController extends BaseController {
                                 List<YbDrgVerify> verifyList = new ArrayList<>();
                                 if (objMx.size() > 1) {
                                     if (objMx.get(0).length >= 14) {
-                                        YbDrgJk queryRif = new YbDrgJk();
-                                        queryRif.setApplyDateStr(applyDateStr);
-                                        queryRif.setAreaType(areaType);
                                         for (int i = 1; i < objMx.size(); i++) {
                                             YbDrgVerify rv = this.getDrgVerify(objMx, i, applyDateStr, applyDataList);
                                             if (rv != null) {
@@ -287,27 +282,21 @@ public class YbDrgVerifyController extends BaseController {
         YbDrgVerify ybDrgVerify = null;
         List<YbDrgApplyData> queryApplyDataList = new ArrayList<>();
         String strOrderNumber = DataTypeHelpers.importTernaryOperate(obj.get(i), 0);//序号
-//        String strDeptCode = "";
-//        String strDeptName = "";
-        String strDocCode = "";
-        String strDocName = "";
-        String strDksId = "";
-        String strDksName = "";
 
-//        strDeptCode = DataTypeHelpers.importTernaryOperate(obj.get(i), 10);//病区编码
-//        strDeptName = DataTypeHelpers.importTernaryOperate(obj.get(i), 11);//病区名称
-        strDksId = DataTypeHelpers.importTernaryOperate(obj.get(i), 10);//科室名称
-        strDksName = DataTypeHelpers.importTernaryOperate(obj.get(i), 11);//科室名称
-        strDocCode = DataTypeHelpers.importTernaryOperate(obj.get(i), 12);//医生编码
-        strDocName = DataTypeHelpers.importTernaryOperate(obj.get(i), 13);//医生名称
+//        String strDeptCode = DataTypeHelpers.importTernaryOperate(obj.get(i), 10);//病区编码
+//        String strDeptName = DataTypeHelpers.importTernaryOperate(obj.get(i), 11);//病区名称
+        String strDksId = DataTypeHelpers.importTernaryOperate(obj.get(i), 10);//科室名称
+        String strDksName = DataTypeHelpers.importTernaryOperate(obj.get(i), 11);//科室名称
+        String strDocCode = DataTypeHelpers.importTernaryOperate(obj.get(i), 12);//医生编码
+        String strDocName = DataTypeHelpers.importTernaryOperate(obj.get(i), 13);//医生名称
 
         if (!strOrderNumber.equals("")) {
             queryApplyDataList = applyDataList.stream().filter(
                     s -> s.getOrderNumber().equals(strOrderNumber)
             ).collect(Collectors.toList());
             if (queryApplyDataList.size() > 0) {
-                if (!strDksId.equals("") && !strDksName.equals("") &&
-                        !strDocCode.equals("") && !strDocName.equals("")) {
+                if (StringUtils.isNotBlank(strDksId) && StringUtils.isNotBlank(strDksName) &&
+                        StringUtils.isNotBlank(strDocCode) && StringUtils.isNotBlank(strDocName)) {
                     YbDrgApplyData entity = queryApplyDataList.get(0);
 
                     ybDrgVerify = new YbDrgVerify();
@@ -338,7 +327,7 @@ public class YbDrgVerifyController extends BaseController {
             });
             this.iYbDrgVerifyService.updateDrgVerifyImports(list);
         } catch (Exception e) {
-            message = "匹配失败";
+            message = "更新失败";
             log.error(message, e);
             throw new FebsException(message);
         }

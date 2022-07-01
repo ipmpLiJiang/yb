@@ -220,6 +220,7 @@
             order by p.operatorId desc
         </if>
     </select>
+
     <select id="findAppealConfireUserCount" resultType="Integer">
         SELECT
         count(1)

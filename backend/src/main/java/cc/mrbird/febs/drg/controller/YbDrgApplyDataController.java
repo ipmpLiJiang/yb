@@ -229,13 +229,13 @@ public class YbDrgApplyDataController extends BaseController {
         if (file.isEmpty()) {
             message = "空文件";
         } else {
-            YbDrgApply queryDrgApply = new YbDrgApply();
-            queryDrgApply.setId(pid);
-            List<YbDrgApply> list = iYbDrgApplyService.findDrgApplyList(queryDrgApply);
-            queryDrgApply = list.size() > 0 ? list.get(0) : null;
+            YbDrgApply drgApply = new YbDrgApply();
+            drgApply.setId(pid);
+            List<YbDrgApply> list = iYbDrgApplyService.findDrgApplyList(drgApply);
+            drgApply = list.size() > 0 ? list.get(0) : null;
 
-            if (queryDrgApply != null) {
-                int state = queryDrgApply.getState();
+            if (drgApply != null) {
+                int state = drgApply.getState();
                 if (state == YbDefaultValue.DRGAPPLYSTATE_1 || state == YbDefaultValue.DRGAPPLYSTATE_2) {
                     uploadFileName = file.getOriginalFilename();
                     boolean blError = false;
@@ -252,53 +252,49 @@ public class YbDrgApplyDataController extends BaseController {
                             }
                             if (objMx.size() > 1) {
                                 List<YbDrgApplyData> ListData = new ArrayList<>();
-                                String guid = pid;
+                                if (objMx.get(0).length >= 10) {
+                                    for (int i = 1; i < objMx.size(); i++) {
+                                        message = "上传数据读取失败，请确保Excel列表数据正确无误.";
+                                        YbDrgApplyData rrData = new YbDrgApplyData();
+                                        rrData.setId(UUID.randomUUID().toString());
+                                        rrData.setPid(pid);
+                                        String strOrderNumber = DataTypeHelpers.importTernaryOperate(objMx.get(i), 0);//序号
+                                        rrData.setOrderNumber(strOrderNumber);
+                                        rrData.setOrderNum(i);
+                                        String strKs = DataTypeHelpers.importTernaryOperate(objMx.get(i), 1);//科室
+                                        rrData.setKs(strKs);
+                                        String strJzjlh = DataTypeHelpers.importTernaryOperate(objMx.get(i), 2);//就诊记录号
+                                        rrData.setJzjlh(strJzjlh);
+                                        String strBah = DataTypeHelpers.importTernaryOperate(objMx.get(i), 3);//病案号
+                                        rrData.setBah(strBah);
+                                        String strWglx = DataTypeHelpers.importTernaryOperate(objMx.get(i), 4);//违规类型
+                                        rrData.setWglx(strWglx);
+                                        String strWtms = DataTypeHelpers.importTernaryOperate(objMx.get(i), 5);//问题描述
+                                        rrData.setWtms(strWtms);
 
-                                if (objMx.size() > 1) {
-                                    if (objMx.get(0).length >= 10) {
-                                        for (int i = 1; i < objMx.size(); i++) {
-                                            message = "上传数据读取失败，请确保Excel列表数据正确无误.";
-                                            YbDrgApplyData rrData = new YbDrgApplyData();
-                                            rrData.setId(UUID.randomUUID().toString());
-                                            rrData.setPid(guid);
-                                            String strOrderNumber = DataTypeHelpers.importTernaryOperate(objMx.get(i), 0);//序号
-                                            rrData.setOrderNumber(strOrderNumber);
-                                            rrData.setOrderNum(i);
-                                            String strKs = DataTypeHelpers.importTernaryOperate(objMx.get(i), 1);//科室
-                                            rrData.setKs(strKs);
-                                            String strJzjlh = DataTypeHelpers.importTernaryOperate(objMx.get(i), 2);//就诊记录号
-                                            rrData.setJzjlh(strJzjlh);
-                                            String strBah = DataTypeHelpers.importTernaryOperate(objMx.get(i), 3);//病案号
-                                            rrData.setBah(strBah);
-                                            String strWglx = DataTypeHelpers.importTernaryOperate(objMx.get(i), 4);//违规类型
-                                            rrData.setWglx(strWglx);
-                                            String strWtms = DataTypeHelpers.importTernaryOperate(objMx.get(i), 5);//问题描述
-                                            rrData.setWtms(strWtms);
-
-                                            String strYlzfy = DataTypeHelpers.importTernaryOperate(objMx.get(i), 6);//医疗总费用
-                                            BigDecimal bd = new BigDecimal(0);
-                                            if (DataTypeHelpers.isNumeric(strYlzfy)) {
-                                                bd = new BigDecimal(strYlzfy);
-                                                rrData.setYlzfy(bd);
-                                            }
-
-                                            String strWgje = DataTypeHelpers.importTernaryOperate(objMx.get(i), 7);//违规金额
-                                            bd = new BigDecimal(0);
-                                            if (DataTypeHelpers.isNumeric(strWgje)) {
-                                                bd = new BigDecimal(strWgje);
-                                                rrData.setWgje(bd);
-                                            }
-                                            String strSfbmzczjcw = DataTypeHelpers.importTernaryOperate(objMx.get(i), 8);//是否编码造成直接错误
-                                            rrData.setSfbmzczjcw(strSfbmzczjcw);
-
-                                            String strLy = DataTypeHelpers.importTernaryOperate(objMx.get(i), 9);//理由
-                                            rrData.setLy(strLy);
-                                            ListData.add(rrData);
+                                        String strYlzfy = DataTypeHelpers.importTernaryOperate(objMx.get(i), 6);//医疗总费用
+                                        BigDecimal bd = new BigDecimal(0);
+                                        if (DataTypeHelpers.isNumeric(strYlzfy)) {
+                                            bd = new BigDecimal(strYlzfy);
+                                            rrData.setYlzfy(bd);
                                         }
-                                    } else {
-                                        blError = true;
-                                        message = "Excel导入失败，Sheet明细扣款 列表列数不正确";
+
+                                        String strWgje = DataTypeHelpers.importTernaryOperate(objMx.get(i), 7);//违规金额
+                                        bd = new BigDecimal(0);
+                                        if (DataTypeHelpers.isNumeric(strWgje)) {
+                                            bd = new BigDecimal(strWgje);
+                                            rrData.setWgje(bd);
+                                        }
+                                        String strSfbmzczjcw = DataTypeHelpers.importTernaryOperate(objMx.get(i), 8);//是否编码造成直接错误
+                                        rrData.setSfbmzczjcw(strSfbmzczjcw);
+
+                                        String strLy = DataTypeHelpers.importTernaryOperate(objMx.get(i), 9);//理由
+                                        rrData.setLy(strLy);
+                                        ListData.add(rrData);
                                     }
+                                } else {
+                                    blError = true;
+                                    message = "Excel导入失败，Sheet明细扣款 列表列数不正确";
                                 }
                                 if (!blError) {
                                     if (ListData.size() > 0) {
@@ -315,10 +311,10 @@ public class YbDrgApplyDataController extends BaseController {
                                     }
                                 }
                             } else {
-                                message = "Excel导入失败，需确保存在两个Sheet 明细扣款、主单扣款,并确认列表数据是否正确.";
+                                message = "Excel导入失败，需确保明细扣款,并确认列表数据是否正确.";
                             }
                         } else {
-                            message = "Excel导入失败，Sheet个数不正确,需确保存在1个Sheet.";
+                            message = "Excel导入失败,需确保存在1个Sheet.";
                         }
                     } catch (Exception ex) {
                         //message = ex.getMessage();

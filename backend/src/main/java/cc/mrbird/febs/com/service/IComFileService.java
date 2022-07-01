@@ -49,4 +49,6 @@ public interface IComFileService extends IService<ComFile> {
     List<ComFile> findAppealResultDksComFiles(InUploadFile iup);
 
     boolean loadLastComFiles(List<ComFile> listComFile);
+
+
 }

@@ -757,14 +757,15 @@ public class YbReconsiderVerifyServiceImpl extends ServiceImpl<YbReconsiderVerif
                             !isImportTrue(item.getOrderDeptCode(), rv.getOrderDeptCode()) || !isImportTrue(item.getOrderDeptName(), rv.getOrderDeptName()) ||
                             !isImportTrue(item.getOrderDoctorCode(), rv.getOrderDoctorCode()) || !isImportTrue(item.getOrderDoctorName(), rv.getOrderDoctorName())
                     ) {
-                        isDept = true;
-                        YbReconsiderVerify udpate = new YbReconsiderVerify();
-                        udpate.setId(rv.getId());
+                        if(rv.getState() == YbDefaultValue.VERIFYSTATE_1) {
+                            isDept = true;
+                            YbReconsiderVerify udpate = new YbReconsiderVerify();
+                            udpate.setId(rv.getId());
 
-                        udpate.setVerifyDeptCode(item.getVerifyDeptCode());
-                        udpate.setVerifyDeptName(item.getVerifyDeptName());
-                        udpate.setVerifyDoctorCode(item.getVerifyDoctorCode());
-                        udpate.setVerifyDoctorName(item.getVerifyDoctorName());
+                            udpate.setVerifyDeptCode(item.getVerifyDeptCode());
+                            udpate.setVerifyDeptName(item.getVerifyDeptName());
+                            udpate.setVerifyDoctorCode(item.getVerifyDoctorCode());
+                            udpate.setVerifyDoctorName(item.getVerifyDoctorName());
 
 //                        queryDept = deptList.stream().filter(s->s.getDeptId().equals(item.getVerifyDeptCode())).collect(Collectors.toList());
 //                        if(queryDept.size() > 0 && queryDept.get(0).getDksName() != null) {
@@ -781,12 +782,13 @@ public class YbReconsiderVerifyServiceImpl extends ServiceImpl<YbReconsiderVerif
 //                            }
 //                        }
 
-                        udpate.setOrderDeptCode(item.getOrderDeptCode());
-                        udpate.setOrderDeptName(item.getOrderDeptName());
-                        udpate.setOrderDoctorCode(item.getOrderDoctorCode());
-                        udpate.setOrderDoctorName(item.getOrderDoctorName());
+                            udpate.setOrderDeptCode(item.getOrderDeptCode());
+                            udpate.setOrderDeptName(item.getOrderDeptName());
+                            udpate.setOrderDoctorCode(item.getOrderDoctorCode());
+                            udpate.setOrderDoctorName(item.getOrderDoctorName());
 
-                        updateList.add(udpate);
+                            updateList.add(udpate);
+                        }
                     }
                 } else {
                     isDept = true;

@@ -25,4 +25,5 @@ public interface YbDrgManageMapper extends BaseMapper<YbDrgManage> {
 
         List<YbDrgManage> findDrgManageEnableOverdueList(@Param("pid") String pid,@Param("applyDateStr") String applyDateStr,
                                                         @Param("areaType") Integer areaType,@Param("enableDate") String enableDate);
-        }
+
+}

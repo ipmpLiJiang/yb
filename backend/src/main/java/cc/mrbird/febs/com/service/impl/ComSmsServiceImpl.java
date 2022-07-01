@@ -1,5 +1,7 @@
 package cc.mrbird.febs.com.service.impl;
 
+import cc.mrbird.febs.chs.entity.YbChsApply;
+import cc.mrbird.febs.chs.service.IYbChsApplyService;
 import cc.mrbird.febs.cn.webxml.sms.SmsService;
 import cc.mrbird.febs.cn.webxml.sms.SmsServicePortType;
 import cc.mrbird.febs.common.domain.QueryRequest;
@@ -57,6 +59,9 @@ public class ComSmsServiceImpl extends ServiceImpl<ComSmsMapper, ComSms> impleme
 
     @Autowired
     IYbDrgApplyService iYbDrgApplyService;
+
+    @Autowired
+    IYbChsApplyService iYbChsApplyService;
 
     @Override
     public IPage<ComSms> findComSmss(QueryRequest request, ComSms comSms) {
@@ -453,6 +458,8 @@ public class ComSmsServiceImpl extends ServiceImpl<ComSmsMapper, ComSms> impleme
 
     private Lock lockDrgSendWarn = new ReentrantLock();
 
+    private Lock lockChsSendWarn = new ReentrantLock();
+
     @Override
     @Transactional
     public String sendAppealManageWarnSms(String applyDateStr, Integer areaType) {
@@ -717,6 +724,92 @@ public class ComSmsServiceImpl extends ServiceImpl<ComSmsMapper, ComSms> impleme
             msg = "未获取到数据.";
         }
         System.out.println("sendDrgManageWarnSms:" + msg);
+        return msg;
+    }
+
+    @Override
+    @Transactional
+    public String sendChsManageWarnSms(String applyDateStr, Integer areaType) {
+        String msg = "ok";
+        if (lockChsSendWarn.tryLock()) {
+            try {
+                YbChsApply drgApply = this.iYbChsApplyService.findChsApplyByApplyDateStrs(applyDateStr, areaType);
+
+                if (drgApply != null) {
+                    Date endDate = null;
+                    if (drgApply.getState() == 2 || drgApply.getState() == 3) {
+                        endDate = drgApply.getEndDate();
+                    } else {
+                        return "该" + applyDateStr + "年月已完成复议";
+                    }
+                    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
+                    String thisDateStr = dateFormat.format(new Date());
+                    String endDateStr = dateFormat.format(endDate);
+                    if(thisDateStr.equals(endDateStr)){
+                        int sendType = ComSms.SENDTYPE_25;
+                        ComSms querySms = new ComSms();
+                        querySms.setApplyDateStr(applyDateStr);
+                        querySms.setAreaType(areaType);
+                        querySms.setSendType(sendType);
+                        querySms.setState(ComSms.STATE_0);
+                        List<ComSms> querySmsList = this.findSmsTopLists(querySms);
+                        if (querySmsList.size() == 0) {
+                            querySms.setState(ComSms.STATE_1);
+                            querySmsList = this.findSmsTopLists(querySms);
+                            if (querySmsList.size() == 0) {
+                                String sendContent = iYbChsApplyService.getSendMessage(applyDateStr, endDate, areaType);
+                                List<YbPerson> list = iYbPersonService.findChsPersonWarnLists(applyDateStr, areaType, 1);
+                                List<ComSms> smsList = new ArrayList<>();
+                                if (list.size() > 0) {
+                                    long uid = 1;
+                                    for (YbPerson item : list) {
+                                        if(item.getTel()!=null && !item.getTel().equals("")) {
+                                            ComSms comSms = new ComSms();
+                                            comSms.setId(UUID.randomUUID().toString());
+                                            comSms.setSendcode(item.getPersonCode());
+                                            comSms.setSendname(item.getPersonName());
+                                            comSms.setMobile(item.getTel());
+
+                                            comSms.setSendType(sendType);
+                                            comSms.setState(ComSms.STATE_0);
+                                            comSms.setSendcontent(sendContent);
+                                            comSms.setAreaType(areaType);
+                                            comSms.setOperatorId(uid);
+                                            comSms.setOperatorName("mrbird");
+                                            comSms.setIsDeletemark(1);
+                                            comSms.setCreateUserId(uid);
+                                            comSms.setCreateTime(new Date());
+                                            comSms.setApplyDateStr(applyDateStr);
+                                            smsList.add(comSms);
+                                        }
+                                    }
+                                    this.saveBatch(smsList);
+                                } else {
+                                    msg = "未找到" + applyDateStr + "年月申诉数据.";
+                                }
+                            } else {
+                                msg = "该" + applyDateStr + "年月已经创建过截止提醒.";
+                            }
+                        } else {
+                            msg = this.sendSms(null, querySmsList);
+                            log.info(applyDateStr + " 复议提醒短信发送成功.");
+                        }
+                    } else {
+                        msg = applyDateStr + "年月,还未到执行日期.";
+                    }
+                } else {
+                    msg = "未找到" + applyDateStr + "年月数据.";
+                }
+            } catch (Exception e) {
+                msg = e.getMessage();
+                log.error(msg);
+            } finally {
+                lockChsSendWarn.unlock();
+            }
+        } else {
+            msg = "未获取到数据.";
+        }
+        System.out.println("sendChsManageWarnSms:" + msg);
         return msg;
     }
 

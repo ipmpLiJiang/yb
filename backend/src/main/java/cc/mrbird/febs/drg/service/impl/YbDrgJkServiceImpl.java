@@ -105,8 +105,4 @@ public class YbDrgJkServiceImpl extends ServiceImpl<YbDrgJkMapper, YbDrgJk> impl
         return this.baseMapper.findDrgJkApplyDataByPid(pid);
     }
 
-    @Override
-    public Integer delDrgJkApplyDataByPid(String pid){
-        return this.baseMapper.delDrgJkByPid(pid);
-    }
 }

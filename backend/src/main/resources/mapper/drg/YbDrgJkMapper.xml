@@ -164,7 +164,4 @@
         dad.pid = #{pid}
     </select>
 
-    <delete id="delDrgJkByPid">
-    DELETE FROM yb_drg_jk WHERE applyDataId in (select id from yb_drg_apply_data where pid = #{pid})
-    </delete>
 </mapper>

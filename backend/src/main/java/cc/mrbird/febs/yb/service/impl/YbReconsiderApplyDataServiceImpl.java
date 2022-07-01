@@ -363,6 +363,8 @@ public class YbReconsiderApplyDataServiceImpl extends ServiceImpl<YbReconsiderAp
             his.setDeptId(item.getDeptId());
             his.setDeptName(item.getDeptName());
             his.setSpellCode(item.getSpellCode());
+            his.setParentCode(item.getDksId());
+            his.setBm_mc(item.getDksName());
             departList.add(his);
         }
         return departList;

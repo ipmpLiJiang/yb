@@ -7,6 +7,7 @@
         <id column="id" property="id"/>
         <result column="deptId" property="deptId"/>
         <result column="deptName" property="deptName"/>
+        <result column="dksId" property="dksId"/>
         <result column="dksName" property="dksName"/>
         <result column="spellCode" property="spellCode"/>
         <result column="COMMENTS" property="comments"/>
@@ -20,13 +21,14 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, deptId, deptName,dksName,spellCode, COMMENTS, STATE, IS_DELETEMARK, MODIFY_TIME, CREATE_TIME, CREATE_USER_ID, MODIFY_USER_ID
+        id, deptId, deptName,dksId,dksName,spellCode, COMMENTS, STATE, IS_DELETEMARK, MODIFY_TIME, CREATE_TIME, CREATE_USER_ID, MODIFY_USER_ID
     </sql>
     <update id="updateYbDept" parameterType="cc.mrbird.febs.yb.entity.YbDept">
         update yb_dept
         <trim prefix="set" suffixOverrides=",">
             <if test="deptId != null">deptId=#{deptId},</if>
             <if test="deptName != null">deptName=#{deptName},</if>
+            <if test="dksId != null">dksId=#{dksId},</if>
             <if test="dksName != null">dksName=#{dksName},</if>
             <if test="spellCode != null">spellCode=#{spellCode},</if>
             <if test="comments != null">COMMENTS=#{comments},</if>
@@ -50,6 +52,7 @@
         <if test="ybDept.deptName != null and ybDept.deptName != ''">and (deptName like concat('%', #{ ybDept.deptName}
             ,'%') or spellCode like concat('%', #{ ybDept.deptName} ,'%'))
         </if>
+        <if test="ybDept.dksId != null and ybDept.dksId != ''">and dksId = #{ ybDept.dksId}</if>
         <if test="ybDept.dksName != null and ybDept.dksName != ''">and dksName = #{ ybDept.dksName}</if>
         <if test="ybDept.spellCode != null and ybDept.spellCode != ''">and spellCode like concat('%',
             #{ ybDept.spellCode} ,'%')

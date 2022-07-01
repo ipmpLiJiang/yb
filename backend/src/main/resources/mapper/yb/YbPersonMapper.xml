@@ -215,4 +215,18 @@
 	)
     </select>
 
+    <select id="findChsPersonWarnList" resultType="cc.mrbird.febs.yb.entity.YbPerson">
+        select * from yb_person where personCode in(
+		SELECT
+			readyDoctorCode
+		FROM
+			yb_chs_manage
+		WHERE
+			applyDateStr = #{applyDateStr}
+			AND areaType = #{areaType}
+			AND state = #{state}
+			group by readyDoctorCode
+	)
+    </select>
+
 </mapper>

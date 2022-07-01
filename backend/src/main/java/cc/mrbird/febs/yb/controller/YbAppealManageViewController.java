@@ -14,6 +14,7 @@ import cc.mrbird.febs.system.domain.User;
 import com.baomidou.mybatisplus.core.toolkit.StringPool;
 import com.wuwenze.poi.ExcelKit;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
@@ -52,7 +53,7 @@ public class YbAppealManageViewController extends BaseController {
     @GetMapping
     @RequiresPermissions("ybAppealManageView:view")
     public Map<String, Object> List(QueryRequest request, YbAppealManageView ybAppealManageView, String keyField) {
-        if (ybAppealManageView.getCurrencyField() != null && !ybAppealManageView.getCurrencyField().equals("")) {
+        if (StringUtils.isNotBlank(ybAppealManageView.getCurrencyField())) {
             System.out.println("View-New");
             return getDataTable(this.iYbAppealManageViewService.findAppealManageViewNew(request, ybAppealManageView, keyField, false));
         } else {

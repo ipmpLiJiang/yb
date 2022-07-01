@@ -180,13 +180,15 @@ public class YbDrgVerifyServiceImpl extends ServiceImpl<YbDrgVerifyMapper, YbDrg
                             !isImportTrue(item.getVerifyDoctorName(), rv.getVerifyDoctorName())
                     ) {
 //                        isDept = true;
-                        YbDrgVerify udpate = new YbDrgVerify();
-                        udpate.setId(rv.getId());
-                        udpate.setVerifyDksId(item.getVerifyDksId());
-                        udpate.setVerifyDksName(item.getVerifyDksName());
-                        udpate.setVerifyDoctorCode(item.getVerifyDoctorCode());
-                        udpate.setVerifyDoctorName(item.getVerifyDoctorName());
-                        updateList.add(udpate);
+                        if(rv.getState() == YbDefaultValue.VERIFYSTATE_1) {
+                            YbDrgVerify udpate = new YbDrgVerify();
+                            udpate.setId(rv.getId());
+                            udpate.setVerifyDksId(item.getVerifyDksId());
+                            udpate.setVerifyDksName(item.getVerifyDksName());
+                            udpate.setVerifyDoctorCode(item.getVerifyDoctorCode());
+                            udpate.setVerifyDoctorName(item.getVerifyDoctorName());
+                            updateList.add(udpate);
+                        }
                     }
                 } else {
 //                    isDept = true;

@@ -1,7 +1,11 @@
 package cc.mrbird.febs.cn.webxml.sms;
 
 
-import java.util.List;
+import cc.mrbird.febs.system.domain.Test;
+import cc.mrbird.febs.yb.entity.YbDept;
+
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author lijiang
@@ -29,13 +33,92 @@ public class TestSend {
     }
 
     public static void main(String[] args) {
-        String aa = "";
-        String bb = "";
-        if(aa == bb){
-            System.out.println("OK");
-        } else {
-            System.out.println("NO");
-        }
+        List<Test> testList = new ArrayList<>();
+        Test test = new Test();
+        test.setId(3l);
+        test.setField1("C");
+        testList.add(test);
+
+        test = new Test();
+        test.setId(2l);
+        test.setField1("B");
+        testList.add(test);
+        test = new Test();
+        test.setId(1l);
+        test.setField1("A");
+        testList.add(test);
+
+        List<Test> testArr = new ArrayList<>();
+        testList.forEach(item -> {
+            Test tt = new Test();
+            tt.setId(item.getId());
+            tt.setField1(item.getField1());
+            testArr.add(tt);
+        });
+
+        testArr.forEach(item -> {
+            if (item.getId() == 2) {
+                item.setField1("BBB");
+            }
+        });
+
+        test = new Test();
+        test.setId(5l);
+        test.setField1("E");
+        testArr.add(test);
+
+        test = new Test();
+        test.setId(4l);
+        test.setField1("D");
+        testArr.add(test);
+
+        test = new Test();
+        test.setId(5l);
+        test.setField1("F");
+        testArr.add(test);
+
+        test = new Test();
+        test.setId(6l);
+        test.setField1("G");
+        testArr.add(test);
+
+//        System.out.println(testList);
+        System.out.println(testArr);
+
+//        Optional<Test> min= testArr.stream().min(Comparator.comparing(Test::getId));
+//        System.out.println("min:" + min);
+
+//        Optional<Test> max = testArr.stream().max(Comparator.comparing(Test::getId));
+//        System.out.println("max:" + max);
+
+        LongSummaryStatistics longSummaryStatistics = testArr.stream().collect(Collectors.summarizingLong(Test::getId));
+
+        System.out.println("Average:" + longSummaryStatistics.getAverage());
+        System.out.println("Count:" + longSummaryStatistics.getCount());
+        System.out.println("Max:" + longSummaryStatistics.getMax());
+        System.out.println("Min:" + longSummaryStatistics.getMin());
+        System.out.println("Sum:" + longSummaryStatistics.getSum());
+//        List<Test> tlist1 = testList.stream().filter(a -> testArr.stream().noneMatch(b ->
+//                a.getId().equals(b.getId()) && a.getField1().equals(b.getField1())
+//        )).collect(Collectors.toList());
+//
+//        System.out.println("集合:" + tlist1);
+
+        // testArr.stream().reduce((a,b) -> a.getId() + b.getId());
+
+//        Long sum = testArr.stream().map(Test::getId).reduce(0l,Long::sum);
+//        System.out.println("sum:" + sum);
+//        Map<Long, String> list2 = testArr.stream().collect(Collectors.toMap(Test::getId, Test::getField1, (x1, x2) -> x1 + "," + x2));
+//        System.out.println("list2:" + list2);
+
+//        Map<Long, List<Test>> list3 = testArr.stream().collect(Collectors.groupingBy(Test::getId));
+//        System.out.println("list3:" + list3);
+
+        //id不能重复 (a,b)-> a)指定取一个
+//        Map<Long, Test> list4 = testArr.stream().collect(Collectors.toMap(Test::getId, t -> t, (a,b)-> a));
+//        System.out.println("list4:" + list4);
+
+
 //        testXc c = new testXc();
 //        new Thread(c).start();
 //        new Thread(c).start();

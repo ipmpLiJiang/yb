@@ -42,9 +42,9 @@ public class YbDrgManageView implements Serializable {
     private String applyDateStr;
 
     /**
-     * 核对申请
+     * 申诉Id
      */
-    @ExcelField(value = "核对申请")
+    @ExcelField(value = "申诉Id")
     private String id;
 
     /**
