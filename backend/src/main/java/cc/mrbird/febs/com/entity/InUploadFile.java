@@ -13,7 +13,8 @@ public class InUploadFile implements Serializable {
     private String id;//外键Id
     private String sumId;
     private String refTab;//外键表
-    private String refType;//外键表
+    private String refType;
+    private String fileType;
     private String proposalCode;//意见书编码 上传图片名称
     private String deptId;
     private String deptName;

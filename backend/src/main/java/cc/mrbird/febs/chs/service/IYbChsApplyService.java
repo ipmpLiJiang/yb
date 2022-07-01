@@ -48,4 +48,6 @@ public interface IYbChsApplyService extends IService<YbChsApply> {
     String getSendMessage(String applyDateStr, Date enableDate, Integer areaType, boolean isChange);
 
     String getSendMessage(String applyDateStr, Date endDate, Integer areaType);
+
+    boolean findChsApplyCheckEndDate(String appltDateStr, Integer areaType);
 }

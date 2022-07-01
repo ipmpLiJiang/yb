@@ -329,22 +329,22 @@ public class ComSmsServiceImpl extends ServiceImpl<ComSmsMapper, ComSms> impleme
     }
 
     private String sendMsg(String mobiles, String sendContent) {
-        String sms = "";
-        try {
-            SmsService smsService = new SmsService();
-            SmsServicePortType ssp = smsService.getSmsServiceHttpPort();
-
-            String in0 = febsProperties.getIn0();
-            String in1 = febsProperties.getIn1();
-            String in2 = febsProperties.getIn2();
-            String in3 = febsProperties.getIn3();
-            String in4 = mobiles;
-            String in5 = sendContent;
-            sms = ssp.service(in0, in1, in2, in3, in4, in5);
-
-        } catch (Exception e) {
-            sms = e.getMessage();
-        }
+        String sms = "0";
+//        try {
+//            SmsService smsService = new SmsService();
+//            SmsServicePortType ssp = smsService.getSmsServiceHttpPort();
+//
+//            String in0 = febsProperties.getIn0();
+//            String in1 = febsProperties.getIn1();
+//            String in2 = febsProperties.getIn2();
+//            String in3 = febsProperties.getIn3();
+//            String in4 = mobiles;
+//            String in5 = sendContent;
+//            sms = ssp.service(in0, in1, in2, in3, in4, in5);
+//
+//        } catch (Exception e) {
+//            sms = e.getMessage();
+//        }
 
         return sms;
     }

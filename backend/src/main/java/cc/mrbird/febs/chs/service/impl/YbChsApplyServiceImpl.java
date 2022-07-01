@@ -361,4 +361,16 @@ public class YbChsApplyServiceImpl extends ServiceImpl<YbChsApplyMapper, YbChsAp
         return this.getChangSendMessage(applyDateStr, endDate, enableDate, areaType, isChange);
     }
 
+    @Override
+    public boolean findChsApplyCheckEndDate(String applyDateStr, Integer areaType) {
+        YbChsApply drgApply = this.findChsApplyByApplyDateStrs(applyDateStr, areaType);
+        boolean isUpdate = false;
+        Date thisDate = new Date();
+        Date compareDate = drgApply.getEndDate();
+        if (compareDate.compareTo(thisDate) == 1) {
+            isUpdate = true;
+        }
+        return isUpdate;
+    }
+
 }

@@ -4,7 +4,13 @@ import cc.mrbird.febs.chs.entity.YbChsApply;
 import cc.mrbird.febs.chs.entity.YbChsResult;
 import cc.mrbird.febs.chs.service.IYbChsApplyService;
 import cc.mrbird.febs.chs.service.IYbChsResultService;
+import cc.mrbird.febs.com.controller.DataTypeHelpers;
+import cc.mrbird.febs.com.entity.ComFile;
+import cc.mrbird.febs.com.entity.ComSms;
+import cc.mrbird.febs.com.service.IComFileService;
+import cc.mrbird.febs.com.service.IComSmsService;
 import cc.mrbird.febs.common.domain.QueryRequest;
+import cc.mrbird.febs.common.properties.FebsProperties;
 import cc.mrbird.febs.common.utils.SortUtil;
 import cc.mrbird.febs.chs.entity.YbChsManage;
 import cc.mrbird.febs.chs.dao.YbChsManageMapper;
@@ -49,11 +55,29 @@ public class YbChsManageServiceImpl extends ServiceImpl<YbChsManageMapper, YbChs
     @Autowired
     IYbChsResultService iYbChsResultService;
 
+    @Autowired
+    IComSmsService iComSmsService;
+
+    @Autowired
+    FebsProperties febsProperties;
+
+    @Autowired
+    IComFileService iComFileService;
+
     @Override
     public IPage<YbChsManage> findYbChsManages(QueryRequest request, YbChsManage ybChsManage) {
         try {
             LambdaQueryWrapper<YbChsManage> queryWrapper = new LambdaQueryWrapper<>();
-//            queryWrapper.eq(YbChsManage::getIsDeletemark, 1);//1是未删 0是已删
+            if (ybChsManage.getApplyDateStr() != null) {
+                queryWrapper.eq(YbChsManage::getApplyDateStr, ybChsManage.getApplyDateStr());
+            }
+            if (ybChsManage.getApplyDataId() != null) {
+                queryWrapper.eq(YbChsManage::getApplyDataId, ybChsManage.getApplyDataId());
+            }
+
+            if (ybChsManage.getState() != null) {
+                queryWrapper.eq(YbChsManage::getState, ybChsManage.getState());
+            }
 
 
             Page<YbChsManage> page = new Page<>();
@@ -253,4 +277,430 @@ public class YbChsManageServiceImpl extends ServiceImpl<YbChsManageMapper, YbChs
     }
 
 
+    //批量接收或单个拒绝
+    @Override
+    @Transactional
+    public void updateAcceptRejectStates(List<YbChsManage> list) {
+        List<YbChsManage> findList = new ArrayList<>();
+        List<YbChsManage> queryList = new ArrayList<>();
+        LambdaQueryWrapper<YbChsManage> wrapper = new LambdaQueryWrapper<>();
+        List<String> idList = new ArrayList<>();
+        for (YbChsManage item : list) {
+            idList.add(item.getId());
+        }
+        if (idList.size() > 0) {
+            wrapper.in(YbChsManage::getId, idList);
+            findList = this.list(wrapper);
+        }
+        if (findList.size() > 0) {
+            for (YbChsManage item : list) {
+                queryList = findList.stream().filter(
+                        s -> s.getId().equals(item.getId())
+                ).collect(Collectors.toList());
+                if (queryList.size() > 0) {
+                    if (queryList.get(0).getState() == YbDefaultValue.AMSTATE_0) {
+                        Date thisDate = new Date();
+                        if (item.getState() == YbDefaultValue.AMSTATE_2) {
+                            item.setOperateDate(thisDate);
+                            item.setOperateProcess("接受申请-已拒绝");
+                        } else if (item.getState() == YbDefaultValue.AMSTATE_1) {
+                            item.setOperateDate(thisDate);
+                            item.setOperateProcess("接受申请-待申诉");
+                        }
+                        LambdaQueryWrapper<YbChsManage> queryWrapper = new LambdaQueryWrapper<>();
+                        queryWrapper.eq(YbChsManage::getState, YbDefaultValue.AMSTATE_0);
+                        queryWrapper.eq(YbChsManage::getId, item.getId());
+
+                        String strChangeDksName = DataTypeHelpers.stringReplaceSetString(item.getChangeDksName(), item.getChangeDksId() + "-");
+                        item.setChangeDksName(strChangeDksName);
+                        String strChangeDoctorName = DataTypeHelpers.stringReplaceSetString(item.getChangeDoctorName(), item.getChangeDoctorCode() + "-");
+                        item.setChangeDoctorName(strChangeDoctorName);
+
+                        this.baseMapper.update(item, queryWrapper);
+                    }
+                }
+            }
+        }
+    }
+
+    @Override
+    @Transactional
+    public String updateUploadStates(YbChsManage ybChsManage) {
+        String message = "";
+        YbChsManage entity = this.getById(ybChsManage.getId());
+        if (entity != null) {
+            Date thisDate = new Date();
+            boolean isUpdate = false;
+            isUpdate = iYbChsApplyService.findChsApplyCheckEndDate(entity.getApplyDateStr(), entity.getAreaType());
+            if (isUpdate) {
+                if (entity.getState() == YbDefaultValue.ACCEPTSTATE_1) {
+                    isUpdate = true;
+                    YbChsManage updateChsManage = new YbChsManage();
+                    if (ybChsManage.getState() == YbDefaultValue.ACCEPTSTATE_6) {
+                        ybChsManage.setApplyDateStr(entity.getApplyDateStr());
+                        ybChsManage.setOrderNum(entity.getOrderNum());
+                        ybChsManage.setAreaType(entity.getAreaType());
+                        isUpdate = this.createUpdateAcceptChsResult(ybChsManage, thisDate);
+
+                        updateChsManage.setOperateProcess("待申诉-已申诉");
+                    }
+                    updateChsManage.setId(ybChsManage.getId());
+                    updateChsManage.setOperateDate(thisDate);
+                    updateChsManage.setOperateReason(ybChsManage.getOperateReason());
+                    updateChsManage.setState(ybChsManage.getState());
+
+                    if (isUpdate) {
+                        LambdaQueryWrapper<YbChsManage> queryWrapper = new LambdaQueryWrapper<>();
+                        queryWrapper.eq(YbChsManage::getId, ybChsManage.getId());
+                        queryWrapper.eq(YbChsManage::getState, YbDefaultValue.ACCEPTSTATE_1);
+                        int count = this.baseMapper.update(updateChsManage, queryWrapper);
+                        if (count == 0) {
+                            message = "申诉状态更新失败.";
+                        } else {
+                            message = "ok";
+                        }
+                    } else {
+                        message = "结果数据创建失败.";
+                    }
+                } else {
+                    message = "该申诉数据已申诉.";
+                }
+            } else {
+                message = "当前已过截止日期，无法修改.";
+            }
+        } else {
+            message = "未找到申诉数据.";
+        }
+
+        return message;
+    }
+
+    private boolean createUpdateAcceptChsResult(YbChsManage ybChsManage, Date thisDate) {
+        YbChsResult newChsResult = new YbChsResult();
+        newChsResult.setId(ybChsManage.getId());
+        newChsResult.setApplyDataId(ybChsManage.getApplyDataId());
+        newChsResult.setVerifyId(ybChsManage.getVerifyId());
+        newChsResult.setManageId(ybChsManage.getId());
+
+        String strReadyDksName = DataTypeHelpers.stringReplaceSetString(ybChsManage.getReadyDksName(), ybChsManage.getReadyDksId() + "-");
+        ybChsManage.setReadyDksName(strReadyDksName);
+        String strReadyDoctorName = DataTypeHelpers.stringReplaceSetString(ybChsManage.getReadyDoctorName(), ybChsManage.getReadyDoctorCode() + "-");
+        ybChsManage.setReadyDoctorName(strReadyDoctorName);
+
+        newChsResult.setDksId(ybChsManage.getReadyDksId());
+        newChsResult.setDksName(ybChsManage.getReadyDksName());
+        newChsResult.setDoctorCode(ybChsManage.getReadyDoctorCode());
+        newChsResult.setDoctorName(ybChsManage.getReadyDoctorName());
+
+        newChsResult.setApplyDateStr(ybChsManage.getApplyDateStr());
+        newChsResult.setOrderNum(ybChsManage.getOrderNum());
+        newChsResult.setAreaType(ybChsManage.getAreaType());
+        newChsResult.setOperateDate(thisDate);
+        newChsResult.setOperateReason(ybChsManage.getOperateReason());
+        newChsResult.setState(1);
+        return this.iYbChsResultService.saveOrUpdate(newChsResult);
+    }
+
+
+    @Override
+    @Transactional
+    public String updateUploadStateCompleteds(YbChsManage ybChsManage) {
+        String message = "";
+        YbChsManage entity = this.getById(ybChsManage.getId());
+        if (entity != null) {
+            Date thisDate = new Date();
+            boolean isUpdate = false;
+            isUpdate = iYbChsApplyService.findChsApplyCheckEndDate(entity.getApplyDateStr(), entity.getAreaType());
+
+            if (isUpdate) {
+                if (entity.getState() == YbDefaultValue.ACCEPTSTATE_6) {
+                    YbChsResult updateChsResult = new YbChsResult();
+                    updateChsResult.setId(ybChsManage.getId());
+                    updateChsResult.setOperateDate(thisDate);
+                    updateChsResult.setOperateReason(ybChsManage.getOperateReason());
+                    this.iYbChsResultService.updateById(updateChsResult);
+
+                    YbChsManage updateChsManage = new YbChsManage();
+                    updateChsManage.setId(ybChsManage.getId());
+                    updateChsManage.setOperateDate(thisDate);
+                    updateChsManage.setOperateReason(ybChsManage.getOperateReason());
+
+                    int count = this.baseMapper.updateById(updateChsManage);
+                    if (count == 0) {
+                        message = "申诉状态更新失败.";
+                    } else {
+                        message = "ok";
+                    }
+                } else {
+                    message = "未找到申诉数据1.";
+                }
+            } else {
+                message = "当前已过截止日期，无法修改.";
+            }
+        } else {
+            message = "未找到申诉数据2.";
+        }
+
+        return message;
+    }
+
+
+    @Override
+    @Transactional
+    public void updateCreateChsManage(YbChsManage ybChsManage, Long uId, String Uname, Integer type) {
+        YbChsManage entity = this.getById(ybChsManage.getId());
+        if (entity != null && entity.getState() == YbDefaultValue.ACCEPTSTATE_2) {
+            YbChsManage newChsManage = new YbChsManage();
+            String personCode = "";
+            Date thisDate = new Date();
+            newChsManage.setId(UUID.randomUUID().toString());
+            newChsManage.setApplyDataId(ybChsManage.getApplyDataId());
+            newChsManage.setVerifyId(ybChsManage.getVerifyId());
+            newChsManage.setState(YbDefaultValue.ACCEPTSTATE_0);
+
+            Date newDate = this.addSecond(thisDate, 10);
+            newChsManage.setOperateDate(newDate);
+            newChsManage.setAreaType(entity.getAreaType());
+
+            Date enableDate = entity.getEnableDate();
+            newChsManage.setEnableDate(enableDate);
+            newChsManage.setOperateProcess("变更申请-创建");
+
+            newChsManage.setApplyDateStr(entity.getApplyDateStr());
+            newChsManage.setOrderNum(entity.getOrderNum());
+
+            String strReadyDksName = DataTypeHelpers.stringReplaceSetString(ybChsManage.getReadyDksName(), ybChsManage.getReadyDksId() + "-");
+            ybChsManage.setReadyDksName(strReadyDksName);
+            String strReadyDoctorName = DataTypeHelpers.stringReplaceSetString(ybChsManage.getReadyDoctorName(), ybChsManage.getReadyDoctorCode() + "-");
+            ybChsManage.setReadyDoctorName(strReadyDoctorName);
+
+            String strChangeDksName = DataTypeHelpers.stringReplaceSetString(ybChsManage.getChangeDksName(), ybChsManage.getChangeDksId() + "-");
+            ybChsManage.setChangeDksName(strChangeDksName);
+            String strChangeDoctorName = DataTypeHelpers.stringReplaceSetString(ybChsManage.getChangeDoctorName(), ybChsManage.getChangeDoctorCode() + "-");
+            ybChsManage.setChangeDoctorName(strChangeDoctorName);
+
+            YbChsManage updateManage = new YbChsManage();
+            updateManage.setState(YbDefaultValue.ACCEPTSTATE_4);
+            updateManage.setOperateDate(thisDate);
+            if (type == 2) {
+                //拒绝
+                newChsManage.setReadyDksId(ybChsManage.getReadyDksId());
+                newChsManage.setReadyDksName(ybChsManage.getReadyDksName());
+                newChsManage.setReadyDoctorCode(ybChsManage.getReadyDoctorCode());
+                newChsManage.setReadyDoctorName(ybChsManage.getReadyDoctorName());
+
+                updateManage.setRefuseId(uId);
+                updateManage.setRefuseName(Uname);
+                updateManage.setRefuseDate(thisDate);
+                updateManage.setRefuseReason(ybChsManage.getRefuseReason());
+                updateManage.setOperateProcess("变更申请-拒绝");
+                updateManage.setApprovalState(YbDefaultValue.APPROVALSTATE_2);
+
+                personCode = ybChsManage.getReadyDoctorCode();
+            } else {
+                //同意
+                newChsManage.setReadyDksId(ybChsManage.getChangeDksId());
+                newChsManage.setReadyDksName(ybChsManage.getChangeDksName());
+                newChsManage.setReadyDoctorCode(ybChsManage.getChangeDoctorCode());
+                newChsManage.setReadyDoctorName(ybChsManage.getChangeDoctorName());
+
+                updateManage.setOperateProcess("变更申请-同意");
+                updateManage.setApprovalState(YbDefaultValue.APPROVALSTATE_1);
+
+                updateManage.setChangeDksId(ybChsManage.getChangeDksId());
+                updateManage.setChangeDksName(ybChsManage.getChangeDksName());
+                updateManage.setChangeDoctorCode(ybChsManage.getChangeDoctorCode());
+                updateManage.setChangeDoctorName(ybChsManage.getChangeDoctorName());
+
+                personCode = ybChsManage.getChangeDoctorCode();
+            }
+
+            LambdaQueryWrapper<YbChsManage> queryWrapper = new LambdaQueryWrapper<>();
+            queryWrapper.eq(YbChsManage::getState, YbDefaultValue.ACCEPTSTATE_2);
+            queryWrapper.eq(YbChsManage::getId, ybChsManage.getId());
+            this.baseMapper.update(updateManage, queryWrapper);
+
+            this.save(newChsManage);
+            int nOpenSms = febsProperties.getOpenSms();
+            boolean isOpenSms = nOpenSms == 1 ? true : false;
+            if (isOpenSms) {
+                String sendContent = this.iYbChsApplyService.getSendMessage(entity.getApplyDateStr(), enableDate, entity.getAreaType(), true);
+                iComSmsService.sendSmsService(entity.getApplyDateStr(), null, personCode, ComSms.SENDTYPE_23, entity.getAreaType(), sendContent, uId, Uname);
+            }
+        }
+    }
+
+    private Date addSecond(Date date, int t) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        cal.add(Calendar.SECOND, t);// 24小时制
+        return cal.getTime();
+    }
+
+    @Override
+    @Transactional
+    public void updateCreateAdminChsManage(YbChsManage ybChsManage, Long uId, String Uname) {
+        Date thisDate = new Date();
+        YbChsManage entity = this.getById(ybChsManage.getId());
+        if (entity != null && (entity.getState() == YbDefaultValue.ACCEPTSTATE_0 ||
+                entity.getState() == YbDefaultValue.ACCEPTSTATE_1 ||
+                entity.getState() == YbDefaultValue.ACCEPTSTATE_6 ||
+                entity.getState() == YbDefaultValue.ACCEPTSTATE_7)) {
+            YbChsManage updateChsManage = new YbChsManage();
+            updateChsManage.setId(ybChsManage.getId());
+            String strReadyDksName = DataTypeHelpers.stringReplaceSetString(ybChsManage.getReadyDksName(), ybChsManage.getReadyDksId() + "-");
+            String strReadyDoctorName = DataTypeHelpers.stringReplaceSetString(ybChsManage.getReadyDoctorName(), ybChsManage.getReadyDoctorCode() + "-");
+            boolean isChang = false;
+
+            if (!entity.getReadyDoctorCode().equals(ybChsManage.getReadyDoctorCode()) ||
+                    !entity.getReadyDksId().equals(ybChsManage.getReadyDksId())) {
+                isChang = true;
+            }
+            int n7State = 10;
+            if (entity.getState() == YbDefaultValue.ACCEPTSTATE_0) {
+                n7State = 0;
+            }
+            if (n7State != 0 && entity.getState() == YbDefaultValue.ACCEPTSTATE_7) {
+                n7State = 7;
+                if (isChang) {
+                    n7State = 71;
+                }
+            }
+            // 变更管理，未申诉，不新增，只修改
+            if (n7State != 0 && n7State != 7 && n7State != 71 && isChang) {
+                n7State = 0;
+            }
+
+            if (n7State != 0) {
+                //修改当前 Change值
+                if (n7State == 71) {
+                    updateChsManage.setReadyDoctorCode(ybChsManage.getReadyDoctorCode());
+                    updateChsManage.setReadyDoctorName(strReadyDoctorName);
+                    updateChsManage.setReadyDksId(ybChsManage.getReadyDksId());
+                    updateChsManage.setReadyDksName(strReadyDksName);
+                    updateChsManage.setChangeDoctorCode(entity.getReadyDoctorCode());
+                    updateChsManage.setChangeDoctorName(entity.getReadyDoctorName());
+                    updateChsManage.setChangeDksId(entity.getReadyDksId());
+                    updateChsManage.setChangeDksName(entity.getReadyDksName());
+                }
+                updateChsManage.setState(ybChsManage.getState());
+                updateChsManage.setOperateReason("");
+            } else {
+                updateChsManage.setState(YbDefaultValue.ACCEPTSTATE_3);
+                updateChsManage.setChangeDoctorCode(ybChsManage.getReadyDoctorCode());
+                updateChsManage.setChangeDoctorName(strReadyDoctorName);
+                updateChsManage.setChangeDksId(ybChsManage.getReadyDksId());
+                updateChsManage.setChangeDksName(strReadyDksName);
+            }
+            if (entity.getState() == YbDefaultValue.ACCEPTSTATE_7 && ybChsManage.getState() == YbDefaultValue.ACCEPTSTATE_6) {
+                updateChsManage.setOperateProcess("未申诉-已申诉");
+            }
+            if (entity.getState() == YbDefaultValue.ACCEPTSTATE_6 && ybChsManage.getState() == YbDefaultValue.ACCEPTSTATE_1) {
+                updateChsManage.setOperateProcess("已申诉-待申诉");
+            }
+            if (entity.getState() == YbDefaultValue.ACCEPTSTATE_6 && ybChsManage.getState() == YbDefaultValue.ACCEPTSTATE_0) {
+                updateChsManage.setOperateProcess("已申诉-接受申请");
+            }
+            if (entity.getState() == YbDefaultValue.ACCEPTSTATE_1 && ybChsManage.getState() == YbDefaultValue.ACCEPTSTATE_0) {
+                updateChsManage.setOperateProcess("待申诉-接受申请");
+            }
+            if (entity.getState() == ybChsManage.getState()) {
+                updateChsManage.setOperateProcess("非状态变更");
+            }
+            updateChsManage.setOperateDate(thisDate);
+            updateChsManage.setAdminPersonId(uId);
+            updateChsManage.setAdminPersonName(Uname);
+            String adminReason = "管理员更改";
+            if (entity.getState() == YbDefaultValue.ACCEPTSTATE_0) {
+                adminReason += "-接受申请";
+            } else if (entity.getState() == YbDefaultValue.ACCEPTSTATE_1) {
+                adminReason += "-待申诉";
+            } else if (entity.getState() == YbDefaultValue.ACCEPTSTATE_6) {
+                adminReason += "-已申请";
+            } else {
+                adminReason += "-未申请";
+            }
+
+            updateChsManage.setAdminReason(adminReason);
+            updateChsManage.setAdminChangeDate(thisDate);
+            //方法 更改状态为0的数据 业务更改 管理员更改状态为1的数据 所有不调用该方法
+            //方法 更改状态为1的数据
+            LambdaQueryWrapper<YbChsManage> queryWrapper = new LambdaQueryWrapper<>();
+            queryWrapper.eq(YbChsManage::getState, entity.getState());
+            queryWrapper.eq(YbChsManage::getId, ybChsManage.getId());
+            this.baseMapper.update(updateChsManage, queryWrapper);
+            // 未申诉，修改结果 科室、人员 值
+            if (n7State == 71) {
+                YbChsResult ybChsResult = new YbChsResult();
+                ybChsResult.setId(entity.getId());
+                ybChsResult.setOperateReason("");
+                ybChsResult.setDoctorCode(ybChsManage.getReadyDoctorCode());
+                ybChsResult.setDoctorName(strReadyDoctorName);
+                ybChsResult.setDksId(ybChsManage.getReadyDksId());
+                ybChsResult.setDksName(strReadyDksName);
+                iYbChsResultService.updateById(ybChsResult);
+            }
+            // 待申诉 和 已申诉 删除 结果和附件
+            if (entity.getState() == YbDefaultValue.ACCEPTSTATE_1 ||
+                    entity.getState() == YbDefaultValue.ACCEPTSTATE_6) {
+                iYbChsResultService.getBaseMapper().deleteById(entity.getId());
+                List<ComFile> list = this.iComFileService.findListComFile(entity.getId(), null);
+                if (list.size() > 0) {
+                    this.iComFileService.batchRefIdDelete(entity.getId());
+                }
+
+                String filePath = febsProperties.getUploadPath(); // 上传后的路径
+                for (ComFile cf : list) {
+                    String fileUrl = filePath + entity.getApplyDateStr() + "/CHS" + entity.getAreaType() +
+                            "/" + entity.getOrderNum() + "/" + cf.getServerName();
+                    DataTypeHelpers.deleteFile(fileUrl);
+                }
+            }
+            // 管理员变更 复制新增 数据
+            if (n7State == 0) {
+                YbChsManage newChsManage = new YbChsManage();
+                newChsManage.setId(UUID.randomUUID().toString());
+                newChsManage.setApplyDataId(ybChsManage.getApplyDataId());
+                newChsManage.setVerifyId(ybChsManage.getVerifyId());
+
+//            int day = iComConfiguremanageService.getConfigDay();
+                ////变更日期不变 this.addDateMethod(thisDate, day);
+                Date enableDate = entity.getEnableDate();
+                newChsManage.setEnableDate(enableDate);
+                newChsManage.setState(ybChsManage.getState());
+
+                thisDate = this.addSecond(thisDate, 10);
+                newChsManage.setOperateDate(thisDate);
+
+                newChsManage.setApplyDateStr(entity.getApplyDateStr());
+                newChsManage.setOrderNum(entity.getOrderNum());
+
+                ybChsManage.setReadyDksId(ybChsManage.getReadyDksId());
+                ybChsManage.setReadyDksName(strReadyDksName);
+                ybChsManage.setReadyDoctorName(strReadyDoctorName);
+
+                newChsManage.setReadyDksId(ybChsManage.getReadyDksId());
+                newChsManage.setReadyDksName(strReadyDksName);
+                newChsManage.setReadyDoctorCode(ybChsManage.getReadyDoctorCode());
+                newChsManage.setReadyDoctorName(ybChsManage.getReadyDoctorName());
+
+                newChsManage.setAreaType(entity.getAreaType());
+                newChsManage.setOperateProcess("管理员更改-创建");
+
+                String personCode = newChsManage.getReadyDoctorCode();
+
+                this.save(newChsManage);
+
+                int nOpenSms = febsProperties.getOpenSms();
+                boolean isOpenSms = nOpenSms == 1 ? true : false;
+                if (isOpenSms) {
+                    if (entity.getState() == YbDefaultValue.ACCEPTSTATE_1) {
+                        enableDate = null;
+                    }
+                    String sendContent = this.iYbChsApplyService.getSendMessage(entity.getApplyDateStr(), enableDate, entity.getAreaType(), true);
+                    iComSmsService.sendSmsService(entity.getApplyDateStr(), null, personCode, ComSms.SENDTYPE_24, entity.getAreaType(), sendContent, uId, Uname);
+                }
+            }
+        }
+    }
 }

@@ -34,4 +34,15 @@ public interface IYbChsManageService extends IService<YbChsManage> {
     void updateChsApplyEndDate(String applyDateStr, Integer areaType);
 
     void updateChsEnableOverdue(String applyDateStr, Integer areaType);
+
+    void updateCreateAdminChsManage(YbChsManage ybChsManage, Long uId, String Uname);
+
+    void updateCreateChsManage(YbChsManage ybChsManage, Long uId, String Uname, Integer type);
+
+    String updateUploadStateCompleteds(YbChsManage ybChsManage);
+
+    String updateUploadStates(YbChsManage ybChsManage);
+
+    void updateAcceptRejectStates(List<YbChsManage> list);
+
 }

@@ -31,12 +31,15 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.StringPool;
 import com.google.common.io.Files;
 import com.wuwenze.poi.ExcelKit;
+import freemarker.template.utility.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 import net.bytebuddy.implementation.bytecode.Throw;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.ui.ModelMap;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -1193,6 +1196,184 @@ public class ComFileController extends BaseController {
             throw new FebsException(message);
         }
     }
+
+    @PostMapping("uploadFileList")
+    public FebsResponse uploadFileLists(InDrgUploadFile inUploadFile) {
+        List<OutComFile> outList = new ArrayList<>();
+        try {
+            List<ComFile> list = this.iComFileService.findListComFile(inUploadFile.getId(), inUploadFile.getRefType());
+            if (list.size() > 0) {
+                String otherUrl = "";
+                for (ComFile item : list) {
+                    otherUrl = "";
+                    if(StringUtils.isNotBlank(item.getRefType())) {
+                        otherUrl += item.getRefType() + "/";
+                    }
+                    if(StringUtils.isNotBlank(inUploadFile.getApplyDateStr())) {
+                        otherUrl += inUploadFile.getApplyDateStr() + "/";
+                    }
+                    if(inUploadFile.getAreaType() != null) {
+                        otherUrl += inUploadFile.getAreaType() + "/";
+                    }
+                    String fileUrl = "uploadFile/"+ otherUrl + item.getServerName();
+                    OutComFile outComFile = new OutComFile();
+                    outComFile.setUid(item.getId());
+                    outComFile.setName(item.getClientName());
+                    outComFile.setStatus("done");
+                    outComFile.setUrl(fileUrl);
+                    outComFile.setSerName(item.getServerName());
+                    outComFile.setThumbUrl(fileUrl);
+                    outList.add(outComFile);
+                }
+            }
+        } catch (Exception e) {
+            log.error(message, e);
+        }
+        return new FebsResponse().data(outList);
+    }
+
+    @PostMapping("uploadCheck")
+    public FebsResponse Uploads(@RequestParam("file") MultipartFile file, InUploadFile inUploadFile) throws FebsException {
+        if (file.isEmpty()) {
+            throw new FebsException("空文件");
+        }
+        OutComFile outComFile = new OutComFile();
+        String fileName2 = file.getOriginalFilename();  // 文件名
+        String suffixName = fileName2.substring(fileName2.lastIndexOf("."));  // 后缀名
+        suffixName = suffixName.toLowerCase();
+        if (this.isSuffixTrue(inUploadFile.getFileType(), suffixName)) {
+            String strId = inUploadFile.getId();
+            Date thisDate = new Date();
+            String filePath = febsProperties.getUploadPath(); // 上传后的路径
+            String fileName = UUID.randomUUID().toString() + suffixName;
+            String otherUrl = "";
+            if(StringUtils.isNotBlank(inUploadFile.getRefType())) {
+                otherUrl += inUploadFile.getRefType() + "/";
+            }
+            if(StringUtils.isNotBlank(inUploadFile.getApplyDateStr())) {
+                otherUrl += inUploadFile.getApplyDateStr() + "/";
+            }
+            if(inUploadFile.getAreaType() != null) {
+                otherUrl += inUploadFile.getAreaType() + "/";
+            }
+            File dest = new File(filePath + otherUrl + fileName);
+            String Id = UUID.randomUUID().toString();
+            if (!dest.getParentFile().exists()) {
+                dest.getParentFile().mkdirs();
+            }
+            try {
+                file.transferTo(dest);
+                ComFile cf = new ComFile();
+                cf.setId(Id);
+                cf.setCreateTime(thisDate);
+                cf.setClientName(fileName2);//客户端的名称
+                cf.setServerName(fileName);
+                cf.setRefTabId(strId);
+                cf.setRefType(inUploadFile.getRefType());
+                cf.setRefTabTable(inUploadFile.getRefTab());
+                iComFileService.createComFile(cf);
+
+            } catch (IOException e) {
+                throw new FebsException(e.getMessage());
+            }
+            String fileUrl = febsProperties.getBaseUrl() + "/uploadFile/" + otherUrl + fileName;
+            outComFile.setSuccess(1);
+            outComFile.setUid(Id);
+            outComFile.setName(fileName2);
+            outComFile.setStatus("done");
+            outComFile.setUrl(fileUrl);
+            outComFile.setThumbUrl(fileUrl);
+            outComFile.setSerName(fileName);
+        } else {
+            List<String> fileTypeList = this.getFileTypeList(inUploadFile.getFileType());
+            outComFile.setSuccess(0);
+            outComFile.setMessage("上传文件的格式不正确，应上传" + fileTypeList.toString() + "格式.");
+        }
+        return new FebsResponse().put("data", outComFile);
+    }
+
+    @Log("删除")
+    @PostMapping("deleteFile")
+    public FebsResponse deleteFiles(InUploadFile inUploadFile) {
+        ModelMap map = new ModelMap();
+        int success = 0;
+        try {
+            String strId = inUploadFile.getId();
+            ComFile comFile = this.iComFileService.findComFileById(strId);
+            if (comFile != null) {
+                int count = this.iComFileService.deleteComFile(inUploadFile.getId());
+                if (count > 0) {
+                    success = 1;
+                    String filePath = febsProperties.getUploadPath(); // 上传后的路径
+                    String otherUrl = "";
+                    if(StringUtils.isNotBlank(comFile.getRefType())) {
+                        otherUrl += comFile.getRefType() + "/";
+                    }
+                    if(StringUtils.isNotBlank(inUploadFile.getApplyDateStr())) {
+                        otherUrl += inUploadFile.getApplyDateStr() + "/";
+                    }
+                    if(inUploadFile.getAreaType() != null) {
+                        otherUrl += inUploadFile.getAreaType() + "/";
+                    }
+                    String fileUrl = filePath + otherUrl + comFile.getServerName();
+                    deleteFile(fileUrl);
+                }
+            }
+        } catch (Exception e) {
+            message = "删除失败.";
+            log.error(message, e);
+        }
+        map.put("message", message);
+        map.put("success", success);
+        return new FebsResponse().data(map);
+    }
+
+    List<String> getFileTypeList(String fileType) {
+        List<String> list = new ArrayList<>();
+        if (fileType.equals("photo")) {
+            list.add(".jpg");
+            list.add(".jpeg");
+            list.add(".png");
+        } else if (fileType.equals("pdf")) {
+            list.add(".pdf");
+        } else if (fileType.equals("doc")) {
+            list.add(".doc");
+            list.add(".docx");
+        }  else if (fileType.equals("xls")) {
+            list.add(".xls");
+            list.add(".xlsx");
+        } else {
+            list.add(".jpg");
+            list.add(".jpeg");
+            list.add(".png");
+            list.add(".pdf");
+            list.add(".doc");
+            list.add(".docx");
+            list.add(".xls");
+            list.add(".xlsx");
+            list.add(".rar");
+            list.add(".zip");
+        }
+        return list;
+    }
+
+    private boolean isSuffixTrue(String fileType, String suffix) {
+        if (StringUtils.isNotBlank(fileType)) {
+            List<String> list = this.getFileTypeList(fileType);
+            if(list.size() > 0) {
+                if(list.contains(suffix)) {
+                    return true;
+                } else {
+                    return false;
+                }
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
+    }
+
 
     private List<YbDrgResult> getInResult(List<YbDrgResult> resultList, List<String> orderNumberList) {
         List<YbDrgResult> list = new ArrayList<>();
