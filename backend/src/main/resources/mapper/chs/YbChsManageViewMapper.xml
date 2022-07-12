@@ -76,9 +76,11 @@
         am.areaType
         from
         yb_chs_manage am
-        STRAIGHT_JOIN yb_chs_apply_data ad ON
-        am.applyDataId = ad.id and ad.pid = #{ybChsManageView.pid}
-        STRAIGHT_JOIN yb_chs_apply ra ON ra.id = ad.pid
+        LEFT JOIN yb_chs_apply_data ad ON
+            am.applyDataId = ad.id
+            and ad.pid = #{ybChsManageView.pid}
+        LEFT JOIN yb_chs_apply ra ON
+            ra.id = ad.pid
         where
         am.applyDateStr = #{ybChsManageView.applyDateStr}
         <if test="ybChsManageView.areaType != null">
@@ -96,8 +98,9 @@
         count(1)
         from
         yb_chs_manage am
-        STRAIGHT_JOIN yb_chs_apply_data ad ON
-        am.applyDataId = ad.id and ad.pid = #{ybChsManageView.pid}
+        LEFT JOIN yb_chs_apply_data ad ON
+            am.applyDataId = ad.id and
+            ad.pid = #{ybChsManageView.pid}
         where
         am.applyDateStr = #{ybChsManageView.applyDateStr}
         <if test="ybChsManageView.areaType != null">
@@ -182,9 +185,11 @@
         am.areaType
         from
         yb_chs_manage am
-        STRAIGHT_JOIN yb_chs_apply_data ad ON
-        am.applyDataId = ad.id and ad.pid = #{ybChsManageView.pid}
-        STRAIGHT_JOIN yb_chs_apply ra ON ra.id = ad.pid
+        LEFT JOIN yb_chs_apply_data ad ON
+            am.applyDataId = ad.id
+            and ad.pid = #{ybChsManageView.pid}
+        LEFT JOIN yb_chs_apply ra ON
+            ra.id = ad.pid
         where
         am.applyDateStr = #{ybChsManageView.applyDateStr}
         <if test="ybChsManageView.areaType != null">

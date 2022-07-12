@@ -171,4 +171,17 @@
     <delete id="batchRefIdDelete">
         delete from com_file where REF_TAB_ID = #{refTabId}
     </delete>
+
+    <select id="findChsResultComFile" resultType="cc.mrbird.febs.com.entity.ComFile">
+        SELECT
+            cf.*
+        FROM
+            com_file cf
+        inner join yb_chs_result cr on
+            cf.REF_TAB_ID = cr.id
+        WHERE
+            cf.REF_TAB_TABLE = 'yb_chs_result'
+            and cr.applyDateStr = #{applyDateStr}
+            and cr.areaType = #{areaType}
+    </select>
 </mapper>
