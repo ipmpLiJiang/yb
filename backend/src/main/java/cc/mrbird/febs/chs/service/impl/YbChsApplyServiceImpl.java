@@ -166,6 +166,7 @@ public class YbChsApplyServiceImpl extends ServiceImpl<YbChsApplyMapper, YbChsAp
                             YbChsManage update = new YbChsManage();
                             update.setId(item.getId());
                             update.setState(YbDefaultValue.ACCEPTSTATE_1);
+                            update.setOperateProcess("未申诉-待申诉");
                             updateList.add(update);
                         }
                         boolean isTrue = iYbChsManageService.updateBatchById(updateList);

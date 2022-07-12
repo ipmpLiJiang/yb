@@ -22,6 +22,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -163,8 +164,8 @@ public class YbChsManageServiceImpl extends ServiceImpl<YbChsManageMapper, YbChs
                         if (thisDate.compareTo(chsApply.getEndDate()) > 0) {
                             List<YbChsManage> list = this.baseMapper.findChsManageApplyEndDateList(chsApply.getId(), applyDateStr, areaType);
                             LambdaQueryWrapper<YbChsResult> resultWrapper = new LambdaQueryWrapper<>();
-                            resultWrapper.eq(YbChsResult::getApplyDateStr,applyDateStr);
-                            resultWrapper.eq(YbChsResult::getAreaType,areaType);
+                            resultWrapper.eq(YbChsResult::getApplyDateStr, applyDateStr);
+                            resultWrapper.eq(YbChsResult::getAreaType, areaType);
                             List<YbChsResult> resultList = iYbChsResultService.list(resultWrapper);
 
                             List<YbChsManage> updateList = new ArrayList<>();
@@ -181,8 +182,8 @@ public class YbChsManageServiceImpl extends ServiceImpl<YbChsManageMapper, YbChs
                                 );
                                 updateList.add(update);
 
-                                resultQueryList = resultList.stream().filter(s->s.getId().equals(item.getId())).collect(Collectors.toList());
-                                if(resultQueryList.size() == 0) {
+                                resultQueryList = resultList.stream().filter(s -> s.getId().equals(item.getId())).collect(Collectors.toList());
+                                if (resultQueryList.size() == 0) {
                                     YbChsResult create = new YbChsResult();
                                     create.setId(item.getId());
                                     create.setApplyDataId(item.getApplyDataId());
@@ -230,6 +231,7 @@ public class YbChsManageServiceImpl extends ServiceImpl<YbChsManageMapper, YbChs
     }
 
     private Lock lockChsEnableOverdue = new ReentrantLock();
+
     @Override
     @Transactional
     public void updateChsEnableOverdue(String applyDateStr, Integer areaType) {
@@ -702,5 +704,29 @@ public class YbChsManageServiceImpl extends ServiceImpl<YbChsManageMapper, YbChs
                 }
             }
         }
+    }
+
+    @Override
+    public List<YbChsManage> findChsResultByStateList(YbChsManage ybChsManage, boolean ispp) {
+        List<YbChsManage> list = new ArrayList<>();
+        LambdaQueryWrapper<YbChsManage> wrapper = new LambdaQueryWrapper<>();
+        if (StringUtils.isNotBlank(ybChsManage.getApplyDateStr())) {
+            wrapper.eq(YbChsManage::getApplyDateStr, ybChsManage.getApplyDateStr());
+        }
+        if (ybChsManage.getAreaType() != null) {
+            wrapper.eq(YbChsManage::getAreaType, ybChsManage.getAreaType());
+        }
+
+        if (ispp) {
+            List<Integer> stateList = Lists.newArrayList(0, 1, 2);
+            wrapper.in(YbChsManage::getState, stateList);
+        } else {
+            if (ybChsManage.getState() != null) {
+                wrapper.eq(YbChsManage::getState, ybChsManage.getState());
+            }
+        }
+
+        list = this.list(wrapper);
+        return list;
     }
 }

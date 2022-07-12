@@ -165,4 +165,9 @@ public class ComFileServiceImpl extends ServiceImpl<ComFileMapper, ComFile> impl
     public int batchRefIdDelete(String refTabId){
         return this.baseMapper.batchRefIdDelete(refTabId);
     }
+
+    @Override
+    public List<ComFile> findChsResultComFiles(String applyDateStr,Integer areaType){
+        return this.baseMapper.findChsResultComFile(applyDateStr,areaType);
+    }
 }

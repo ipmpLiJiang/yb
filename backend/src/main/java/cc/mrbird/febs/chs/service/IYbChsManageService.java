@@ -45,4 +45,6 @@ public interface IYbChsManageService extends IService<YbChsManage> {
 
     void updateAcceptRejectStates(List<YbChsManage> list);
 
+    List<YbChsManage> findChsResultByStateList(YbChsManage ybChsManage,boolean ispp);
+
 }

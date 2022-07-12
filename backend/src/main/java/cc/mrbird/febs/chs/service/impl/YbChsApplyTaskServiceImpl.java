@@ -42,7 +42,15 @@ public class YbChsApplyTaskServiceImpl extends ServiceImpl<YbChsApplyTaskMapper,
         try {
             LambdaQueryWrapper<YbChsApplyTask> queryWrapper = new LambdaQueryWrapper<>();
             queryWrapper.eq(YbChsApplyTask::getIsDeletemark, 1);//1是未删 0是已删
-
+            if(ybChsApplyTask.getApplyDateStr() != null) {
+                queryWrapper.eq(YbChsApplyTask::getApplyDateStr,ybChsApplyTask.getApplyDateStr());
+            }
+            if(ybChsApplyTask.getAreaType() != null) {
+                queryWrapper.eq(YbChsApplyTask::getAreaType,ybChsApplyTask.getAreaType());
+            }
+            if(ybChsApplyTask.getIsOutpfees() != null) {
+                queryWrapper.eq(YbChsApplyTask::getIsOutpfees,ybChsApplyTask.getIsOutpfees());
+            }
 
             Page<YbChsApplyTask> page = new Page<>();
             SortUtil.handlePageSort(request, page, false);//true 是属性  false是数据库字段可两个

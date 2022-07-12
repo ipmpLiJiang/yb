@@ -522,7 +522,7 @@ public class YbDrgManageServiceImpl extends ServiceImpl<YbDrgManageMapper, YbDrg
 
                 String filePath = febsProperties.getUploadPath(); // 上传后的路径
                 for (ComFile cf : list) {
-                    String fileUrl = filePath + entity.getApplyDateStr() + "/DRG" + entity.getAreaType() +
+                    String fileUrl = filePath + entity.getApplyDateStr() + "/drg" + entity.getAreaType() +
                             "/" + entity.getOrderNumber() + "/" + cf.getServerName();
                     DataTypeHelpers.deleteFile(fileUrl);
                 }

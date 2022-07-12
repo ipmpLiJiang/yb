@@ -27,4 +27,6 @@ public interface IYbChsResultService extends IService<YbChsResult> {
         void updateYbChsResult(YbChsResult ybChsResult);
 
         void deleteYbChsResults(String[]Ids);
+
+        List<YbChsResult> findChsResultList(YbChsResult ybChsResult);
         }

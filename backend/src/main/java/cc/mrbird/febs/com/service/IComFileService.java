@@ -50,5 +50,5 @@ public interface IComFileService extends IService<ComFile> {
 
     boolean loadLastComFiles(List<ComFile> listComFile);
 
-
+    List<ComFile> findChsResultComFiles(String applyDateStr,Integer areaType);
 }

@@ -11,16 +11,14 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import freemarker.template.utility.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.time.LocalDate;
 
 /**
@@ -88,5 +86,19 @@ public class YbChsResultServiceImpl extends ServiceImpl<YbChsResultMapper, YbChs
         this.baseMapper.deleteBatchIds(list);
     }
 
-
+    @Override
+    public List<YbChsResult> findChsResultList(YbChsResult ybChsResult) {
+        List<YbChsResult> list = new ArrayList<>();
+        LambdaQueryWrapper<YbChsResult> wrapper = new LambdaQueryWrapper<>();
+        if(StringUtils.isNotBlank(ybChsResult.getApplyDateStr())) {
+            wrapper.eq(YbChsResult::getApplyDateStr,ybChsResult.getApplyDateStr());
+        }
+        if(ybChsResult.getAreaType() != null) {
+            wrapper.eq(YbChsResult::getAreaType,ybChsResult.getAreaType());
+        }
+        if(ybChsResult.getState() != null) {
+            wrapper.eq(YbChsResult::getState,ybChsResult.getState());
+        }
+        return list;
+    }
 }

@@ -19,6 +19,7 @@ public class InUploadFile implements Serializable {
     private String deptId;
     private String deptName;
     private String applyDateStr;
+    private String orderNumber;
     private String serName;
     private Integer typeno;
     private Integer areaType;

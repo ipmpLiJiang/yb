@@ -1,58 +1,142 @@
 package cc.mrbird.febs.chs.entity;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-
 import com.baomidou.mybatisplus.annotation.TableField;
-
-import java.io.Serializable;
-
-
 import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.Data;
-import lombok.experimental.Accessors;
-
-import java.util.Date;
-
-import com.wuwenze.poi.annotation.Excel;
 import com.wuwenze.poi.annotation.ExcelField;
+import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
+
+import java.math.BigDecimal;
+import java.util.Date;
+import java.util.List;
 
 /**
  * <p>
- *
+ * VIEW
  * </p>
  *
  * @author viki
- * @since 2022-06-27
+ * @since 2020-07-30
  */
 
-@Excel("yb_chs_apply_data")
 @Data
-@Accessors(chain = true)
-public class YbChsApplyData implements Serializable, Comparable<YbChsApplyData> {
-
-    private static final long serialVersionUID = 1L;
+public class YbChsResultView {
 
     /**
-     * id
+     * pid
      */
-    @ExcelField(value = "id")
+    @TableField("pid")
+    @ExcelField(value = "pid")
+    private String pid;
+
+    /**
+     * 复议年月Str
+     */
+    @TableField("applyDateStr")
+    @ExcelField(value = "复议年月Str")
+    private String applyDateStr;
+
+    /**
+     * 结果Id
+     */
+    @ExcelField(value = "结果Id")
     private String id;
 
     /**
-     * 申请pid
+     * 申请数据明细
      */
-    @ExcelField(value = "申请pid")
-    private String pid;
+    @TableField("applyDataId")
+    @ExcelField(value = "申请数据明细")
+    private String applyDataId;
+
+
+    /**
+     * 复议医生编码
+     */
+    @TableField("resultDoctorCode")
+    @ExcelField(value = "复议医生编码")
+    private String resultDoctorCode;
+
+    /**
+     * 复议医生
+     */
+    @TableField("resultDoctorName")
+    @ExcelField(value = "复议医生")
+    private String resultDoctorName;
+
+    /**
+     * 科室编码
+     */
+    @TableField("resultDksId")
+    @ExcelField(value = "科室编码")
+    private String resultDksId;
+
+    /**
+     * 科室
+     */
+    @ExcelField(value = "科室")
+    private String resultDksName;
+
+
+    /**
+     * 复议截止日期
+     */
+    @TableField("applyEndDate")
+    @ExcelField(value = "复议截止日期")
+    private Date applyEndDate;
+
+    /**
+     * 操作理由
+     */
+    @TableField("operateReason")
+    @ExcelField(value = "操作理由")
+    private String operateReason;
+
+    /**
+     * 操作日期
+     */
+    @TableField("operateDate")
+    @ExcelField(value = "操作日期")
+    private Date operateDate;
+    private transient String operateDateFrom;
+    private transient String operateDateTo;
+
+
+    /**
+     * 序号
+     */
+    @TableField("orderNum")
+    @ExcelField(value = "序号")
+    private Integer orderNum;
+
+
+    /**
+     * 状态
+     */
+    @TableField("STATE")
+    @ExcelField(value = "状态")
+    private Integer state;
+
+    /**
+     * 通用
+     */
+    @TableField("currencyField")
+    @ExcelField(value = "通用")
+    private String currencyField;
+
+    /**
+     * 院区
+     */
+    @TableField("areaType")
+    @ExcelField(value = "院区")
+    private Integer areaType;
 
     /**
      * 申诉截止日期
      */
     @TableField("appealEndDate")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    @JsonFormat(timezone = "Asia/Shanghai",pattern = "yyyy-MM-dd")
+    @JsonFormat(timezone = "Asia/Shanghai", pattern = "yyyy-MM-dd")
     @ExcelField(value = "申诉截止日期")
     private Date appealEndDate;
     private transient String appealEndDateFrom;
@@ -133,27 +217,22 @@ public class YbChsApplyData implements Serializable, Comparable<YbChsApplyData> 
      */
     @TableField("enterHospitalDate")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    @JsonFormat(timezone = "Asia/Shanghai",pattern = "yyyy-MM-dd")
+    @JsonFormat(timezone = "Asia/Shanghai", pattern = "yyyy-MM-dd")
     @ExcelField(value = "入院日期")
     private Date enterHospitalDate;
-    private transient String enterHospitalDateFrom;
-    private transient String enterHospitalDateTo;
 
     /**
      * 出院日期
      */
     @TableField("outHospitalDate")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    @JsonFormat(timezone = "Asia/Shanghai",pattern = "yyyy-MM-dd")
+    @JsonFormat(timezone = "Asia/Shanghai", pattern = "yyyy-MM-dd")
     @ExcelField(value = "出院日期")
     private Date outHospitalDate;
-    private transient String outHospitalDateFrom;
-    private transient String outHospitalDateTo;
 
     /**
      * 出院日期Str
      */
-    @TableField("outHospitalDateStr")
     @ExcelField(value = "出院日期Str")
     private String outHospitalDateStr;
 
@@ -162,11 +241,9 @@ public class YbChsApplyData implements Serializable, Comparable<YbChsApplyData> 
      */
     @TableField("settlementDate")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    @JsonFormat(timezone = "Asia/Shanghai",pattern = "yyyy-MM-dd")
+    @JsonFormat(timezone = "Asia/Shanghai", pattern = "yyyy-MM-dd")
     @ExcelField(value = "结算日期")
     private Date settlementDate;
-    private transient String settlementDateFrom;
-    private transient String settlementDateTo;
 
     /**
      * 身份证号
@@ -244,10 +321,8 @@ public class YbChsApplyData implements Serializable, Comparable<YbChsApplyData> 
     @TableField("costDate")
     @ExcelField(value = "费用日期")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    @JsonFormat(timezone = "Asia/Shanghai",pattern = "yyyy-MM-dd")
+    @JsonFormat(timezone = "Asia/Shanghai", pattern = "yyyy-MM-dd")
     private Date costDate;
-    private transient String costDateFrom;
-    private transient String costDateTo;
 
     /**
      * 险种类型
@@ -301,156 +376,11 @@ public class YbChsApplyData implements Serializable, Comparable<YbChsApplyData> 
     @ExcelField(value = "机构等级")
     private String jgLevel;
 
-    /**
-     * 备注
-     */
-    @TableField("COMMENTS")
-    @ExcelField(value = "备注")
-    private String comments;
 
-    /**
-     * 状态
-     */
-    @TableField("STATE")
-    @ExcelField(value = "状态")
-    private Integer state;
+    private transient String fileSizeWork;
 
-    /**
-     * 是否删除
-     */
-    @TableField("IS_DELETEMARK")
-    @ExcelField(value = "是否删除")
-    private Integer isDeletemark;
-
-    /**
-     * 序号
-     */
-    @TableField("orderNum")
-    @ExcelField(value = "序号")
-    private Integer orderNum;
-
-    /**
-     * 是否门诊
-     */
-    @TableField("isOutpfees")
-    @ExcelField(value = "是否门诊")
-    private Integer isOutpfees;
-
-    /**
-     * 结算排序
-     */
-    @TableField("orderSettlementNum")
-    @ExcelField(value = "结算排序")
-    private Integer orderSettlementNum;
+    private transient String fileNumber;
 
 
-    /**
-     * 医保项目编码One
-     */
-    @TableField("projectCodeOne")
-    @ExcelField(value = "医保项目编码One")
-    private String projectCodeOne;
 
-    /**
-     * 医保项目名称One
-     */
-    @TableField("projectNameOne")
-    @ExcelField(value = "医保项目名称One")
-    private String projectNameOne;
-
-
-    public static final String ID = "id";
-
-    public static final String PID = "pid";
-
-    public static final String APPEALENDDATE = "appealEndDate";
-
-    public static final String PAYPLACETYPE = "payPlaceType";
-
-    public static final String YDSTATE = "ydState";
-
-    public static final String AREANAME = "areaName";
-
-    public static final String YYJGCODE = "yyjgCode";
-
-    public static final String YYJGNAME = "yyjgName";
-
-    public static final String DEPTNAME = "deptName";
-
-    public static final String DOCTORNAME = "doctorName";
-
-    public static final String MEDICALTYPE = "medicalType";
-
-    public static final String ZYMZNUMBER = "zymzNumber";
-
-    public static final String INSUREDNAME = "insuredName";
-
-    public static final String ENTERHOSPITALDATE = "enterHospitalDate";
-
-    public static final String OUTHOSPITALDATE = "outHospitalDate";
-
-    public static final String SETTLEMENTDATE = "settlementDate";
-
-    public static final String CARDNUMBER = "cardNumber";
-
-    public static final String PROJECTCODE = "projectCode";
-
-    public static final String PROJECTNAME = "projectName";
-
-    public static final String PROJECTYYNAME = "projectYyName";
-
-    public static final String RULENAME = "ruleName";
-
-    public static final String VIOLATECSPRICE = "violateCsPrice";
-
-    public static final String VIOLATEPRICE = "violatePrice";
-
-    public static final String VIOLATEREASON = "violateReason";
-
-    public static final String ZDNOTE = "zdNote";
-
-    public static final String COSTDATE = "costDate";
-
-    public static final String INSUREDTYPE = "insuredType";
-
-    public static final String NUM = "num";
-
-    public static final String PRICE = "price";
-
-    public static final String MEDICALPRICE = "medicalPrice";
-
-    public static final String TCPAYPRICE = "tcPayPrice";
-
-    public static final String SPECS = "specs";
-
-    public static final String JX = "jx";
-
-    public static final String JGLEVEL = "jgLevel";
-
-    public static final String COMMENTS = "COMMENTS";
-
-    public static final String STATE = "STATE";
-
-    public static final String IS_DELETEMARK = "IS_DELETEMARK";
-
-    public static final String ORDERNUM = "orderNum";
-
-    public static final String ISOUTPFEES = "isOutpfees";
-
-    public static final String ORDERSETTLEMENTNUM = "orderSettlementNum";
-
-    public static final String PROJECTCODEONE = "projectCodeOne";
-
-    public static final String PROJECTNAMEONE = "projectNameOne";
-
-    @Override
-    public int compareTo(YbChsApplyData o) {
-        if (this.getId() != null && o.getId() != null) {
-            return this.getId().compareTo(o.getId());
-        } else if (this.getId() != null) {
-            return 1;
-        } else {
-            return 0;
-        }
-    }
 }

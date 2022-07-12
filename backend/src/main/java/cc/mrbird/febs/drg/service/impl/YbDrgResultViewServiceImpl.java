@@ -203,7 +203,7 @@ public class YbDrgResultViewServiceImpl extends ServiceImpl<YbDrgResultViewMappe
             List<YbDrgResult> resultAllList = iYbDrgResultService.list(wrapperResult);
             List<YbDrgResult> resultList = this.getInResult(resultAllList,orderNumberList);
             String path = febsProperties.getUploadPath();
-            String address = path + drgApply.getApplyDateStr() + "/DRG" + drgApply.getAreaType() + "/";
+            String address = path + drgApply.getApplyDateStr() + "/drg" + drgApply.getAreaType() + "/";
             if (resultList.size() > 0) {
                 long sumSize = 0;
                 int sumFileNumber = 0;
@@ -212,8 +212,7 @@ public class YbDrgResultViewServiceImpl extends ServiceImpl<YbDrgResultViewMappe
                 wrapperData.eq(YbDrgApplyData::getPid, drgApply.getId());
 //                wrapperData.in(YbDrgApplyData::getOrderNumber, orderNumberList);
                 List<YbDrgApplyData> applyDataAllList = iYbDrgApplyDataService.list(wrapperData);
-                List<YbDrgApplyData> applyDataList = this.getInData(applyDataAllList,orderNumberList);
-                List<YbDrgApplyData> query = new ArrayList<>();
+                List<YbDrgApplyData> applyDataList = this.getInData(applyDataAllList, orderNumberList);
                 List<ComFile> fileList = iComFileService.findDrgResultComFiles(drgApply.getApplyDateStr(), drgApply.getAreaType());
                 List<ComFile> fileQuery = new ArrayList<>();
                 long size = 0;

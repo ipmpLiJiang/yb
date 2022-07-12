@@ -242,6 +242,7 @@ public class YbChsApplyDataController extends BaseController {
                                                 rrData.setEnterHospitalDate(formater.parse(enterHospitalDateStr));
                                             }
                                             String outHospitalDateStr = DataTypeHelpers.importTernaryOperate(objMx.get(i), 12);//出院日期
+                                            rrData.setOutHospitalDateStr(outHospitalDateStr);
                                             if(StringUtils.isNotBlank(outHospitalDateStr)) {
                                                 rrData.setOutHospitalDate(formater.parse(outHospitalDateStr));
                                             }
@@ -275,6 +276,7 @@ public class YbChsApplyDataController extends BaseController {
                                             rrData.setRuleName(ruleName);
                                             BigDecimal bd = new BigDecimal(0);
                                             String violateCsPrice = DataTypeHelpers.importTernaryOperate(objMx.get(i), 19);//初审违规金额
+                                            rrData.setViolateCsPriceStr(violateCsPrice);
                                             if (DataTypeHelpers.isNumeric(violateCsPrice)) {
                                                 bd = new BigDecimal(violateCsPrice);
                                                 rrData.setViolateCsPrice(bd);

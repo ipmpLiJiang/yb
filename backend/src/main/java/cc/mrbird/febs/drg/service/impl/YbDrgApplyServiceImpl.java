@@ -228,6 +228,7 @@ public class YbDrgApplyServiceImpl extends ServiceImpl<YbDrgApplyMapper, YbDrgAp
                             YbDrgManage update = new YbDrgManage();
                             update.setId(item.getId());
                             update.setState(YbDefaultValue.AMSTATE_1);
+                            update.setOperateProcess("未申诉-待申诉");
                             updateList.add(update);
                         }
                         boolean isTrue = iYbDrgManageService.updateBatchById(updateList);

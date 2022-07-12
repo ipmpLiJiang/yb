@@ -20,6 +20,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import freemarker.template.utility.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 import net.bytebuddy.dynamic.scaffold.MethodGraph;
 import org.apache.commons.lang3.StringUtils;
@@ -131,7 +132,7 @@ public class YbChsApplyDataServiceImpl extends ServiceImpl<YbChsApplyDataMapper,
         try {
             YbChsApply drgApply = this.iYbChsApplyService.findChsApplyByApplyDateStrs(applyDateStr, areaType);
             if (drgApply != null) {
-                if(drgApply.getState() == YbDefaultValue.APPLYSTATE_2) {
+                if (drgApply.getState() == YbDefaultValue.APPLYSTATE_2) {
                     LambdaQueryWrapper<YbChsApplyData> wrapper = new LambdaQueryWrapper<>();
                     wrapper.eq(YbChsApplyData::getPid, drgApply.getId());
                     List<YbChsApplyData> list = this.list(wrapper);
@@ -646,9 +647,9 @@ public class YbChsApplyDataServiceImpl extends ServiceImpl<YbChsApplyDataMapper,
         hisWhere = hisTaskWhere(chsApplyDataList, state);
 
         if (!hisWhere.equals("")) {
-            String tab = "V_SAP_INPFEES";
+            String tab = "V_SAP_INPFEES_NEW";
             if (isOutpfees == 1) {
-                tab = "V_SAP_OUTPFEES";
+                tab = "V_SAP_OUTPFEES_NEW";
             }
             hisSql = "select * from his." + tab + " where " + hisWhere +
                     "settlementdate >= to_date('" + dateStrForm + "',' yyyy-mm-dd') and " +
@@ -670,32 +671,35 @@ public class YbChsApplyDataServiceImpl extends ServiceImpl<YbChsApplyDataMapper,
 //            String[] arr = item.getSerialNo().split("-");
 //            String transno1 = state == 2 ? arr[1] + "-" + item.getProjectCode() : arr[1] + "-" + item.getProjectName();
             String zymzNumber = item.getZymzNumber();
-
-            if (strList.stream().filter(s -> s.equals(zymzNumber)).count() == 0) {
-                strList.add(zymzNumber);
-                if (sql.equals("")) {
-                    sql = "'" + zymzNumber + "'";
-                } else {
-                    sql += ",'" + zymzNumber + "'";
-                }
-            }
-
-            String project1 = state == 2 ? item.getProjectCode() : item.getProjectName();
-            project1 = project1.replace("，", ",");
-            String[] parr = project1.split(",");
-            for(String pcn : parr) {
-                project1 = pcn;
-                if (state == 2 && StringUtils.isNotBlank(project1)) {
-                    project1 = project1.toUpperCase();
-                }
-                String project = project1;
-
-                if (strList1.stream().filter(s -> s.equals(project)).count() == 0) {
-                    strList1.add(project);
-                    if (sql1.equals("")) {
-                        sql1 = "'" + project + "'";
+            if (StringUtils.isNotBlank(zymzNumber)) {
+                if (strList.stream().filter(s -> s.equals(zymzNumber)).count() == 0) {
+                    strList.add(zymzNumber);
+                    if (sql.equals("")) {
+                        sql = "'" + zymzNumber + "'";
                     } else {
-                        sql1 += ",'" + project + "'";
+                        sql += ",'" + zymzNumber + "'";
+                    }
+                }
+
+                String project1 = state == 2 ? item.getProjectCode() : item.getProjectName();
+                if (StringUtils.isNotBlank(project1)) {
+                    project1 = project1.replace("，", ",");
+                    String[] parr = project1.split(",");
+                    for (String pcn : parr) {
+                        project1 = pcn;
+                        if (state == 2 && StringUtils.isNotBlank(project1)) {
+                            project1 = project1.toUpperCase();
+                        }
+                        String project = project1;
+
+                        if (strList1.stream().filter(s -> s.equals(project)).count() == 0) {
+                            strList1.add(project);
+                            if (sql1.equals("")) {
+                                sql1 = "'" + project + "'";
+                            } else {
+                                sql1 += ",'" + project + "'";
+                            }
+                        }
                     }
                 }
             }
@@ -742,44 +746,68 @@ public class YbChsApplyDataServiceImpl extends ServiceImpl<YbChsApplyDataMapper,
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         String projects;
         for (YbChsApplyData item : chsApplyDataList) {
-            if (state == 1) {
-                projects =item.getProjectName();
-                projects = projects.replace("，", ",");
-                String[] projectArr = projects.split(",");
-                for (String project : projectArr) {
-                    queryRifDataList = rifDataList.stream().filter(
-                            s -> s.getInpatientId().equals(item.getZymzNumber()) &&
-                                    s.getHisName().equals(project) &&
-                                    sdf.format(s.getFeeDate()).equals(sdf.format(item.getCostDate()))
-                    ).collect(Collectors.toList());
-
-                    if (queryRifDataList.size() == 0) {
-                        queryRifDataList = rifDataList.stream().filter(
-                                s -> s.getInpatientId().equals(item.getZymzNumber()) &&
-                                        s.getHisName().equals(project)
-                        ).collect(Collectors.toList());
-                    }
-                    if (queryRifDataList.size() > 0) {
-                        break;
-                    }
-                }
-            } else if (state == 2) {
-                if (StringUtils.isNotBlank(item.getProjectCode())) {
-                    projects =item.getProjectCode();
+            projects = item.getProjectName();
+            if (StringUtils.isNotBlank(projects)) {
+                if (state == 1) {
                     projects = projects.replace("，", ",");
                     String[] projectArr = projects.split(",");
-
                     for (String project : projectArr) {
                         queryRifDataList = rifDataList.stream().filter(
                                 s -> s.getInpatientId().equals(item.getZymzNumber()) &&
-                                        s.getItemCode().equals(project.toUpperCase()) &&
+                                        s.getHisName().equals(project) &&
                                         sdf.format(s.getFeeDate()).equals(sdf.format(item.getCostDate()))
                         ).collect(Collectors.toList());
 
                         if (queryRifDataList.size() == 0) {
                             queryRifDataList = rifDataList.stream().filter(
                                     s -> s.getInpatientId().equals(item.getZymzNumber()) &&
-                                            s.getItemCode().equals(project.toUpperCase())
+                                            s.getHisName().equals(project)
+                            ).collect(Collectors.toList());
+                        }
+                        if (queryRifDataList.size() > 0) {
+                            break;
+                        }
+                    }
+                } else if (state == 2) {
+                    if (StringUtils.isNotBlank(item.getProjectCode())) {
+                        projects = item.getProjectCode();
+                        projects = projects.replace("，", ",");
+                        String[] projectArr = projects.split(",");
+
+                        for (String project : projectArr) {
+                            queryRifDataList = rifDataList.stream().filter(
+                                    s -> s.getInpatientId().equals(item.getZymzNumber()) &&
+                                            s.getItemCode().equals(project.toUpperCase()) &&
+                                            sdf.format(s.getFeeDate()).equals(sdf.format(item.getCostDate()))
+                            ).collect(Collectors.toList());
+
+                            if (queryRifDataList.size() == 0) {
+                                queryRifDataList = rifDataList.stream().filter(
+                                        s -> s.getInpatientId().equals(item.getZymzNumber()) &&
+                                                s.getItemCode().equals(project.toUpperCase())
+                                ).collect(Collectors.toList());
+                            }
+                            if (queryRifDataList.size() > 0) {
+                                break;
+                            }
+                        }
+                    }
+                } else {
+                    projects = item.getProjectName();
+                    projects = projects.replace("，", ",");
+                    String[] projectArr = projects.split(",");
+
+                    for (String project : projectArr) {
+                        queryRifDataList = rifDataList.stream().filter(
+                                s -> s.getInpatientId().equals(item.getZymzNumber()) &&
+                                        s.getItemName().equals(project) &&
+                                        sdf.format(s.getFeeDate()).equals(sdf.format(item.getCostDate()))
+                        ).collect(Collectors.toList());
+
+                        if (queryRifDataList.size() == 0) {
+                            queryRifDataList = rifDataList.stream().filter(
+                                    s -> s.getInpatientId().equals(item.getZymzNumber()) &&
+                                            s.getItemName().equals(project)
                             ).collect(Collectors.toList());
                         }
                         if (queryRifDataList.size() > 0) {
@@ -787,116 +815,94 @@ public class YbChsApplyDataServiceImpl extends ServiceImpl<YbChsApplyDataMapper,
                         }
                     }
                 }
-            } else {
-                projects =item.getProjectName();
-                projects = projects.replace("，", ",");
-                String[] projectArr = projects.split(",");
-
-                for (String project : projectArr) {
-                    queryRifDataList = rifDataList.stream().filter(
-                            s -> s.getInpatientId().equals(item.getZymzNumber()) &&
-                                    s.getItemName().equals(project) &&
-                                    sdf.format(s.getFeeDate()).equals(sdf.format(item.getCostDate()))
-                    ).collect(Collectors.toList());
-
-                    if (queryRifDataList.size() == 0) {
-                        queryRifDataList = rifDataList.stream().filter(
-                                s -> s.getInpatientId().equals(item.getZymzNumber()) &&
-                                        s.getItemName().equals(project)
+                if (queryRifDataList.size() > 0) {
+                    YbReconsiderInpatientfeesData obj = queryRifDataList.get(0);
+                    YbChsJk chsJk = new YbChsJk();
+                    chsJk.setId(UUID.randomUUID().toString());
+                    chsJk.setInpatientId(obj.getInpatientId());//住院号
+                    chsJk.setPatientName(obj.getPatientName());//患者姓名
+                    chsJk.setSettlementId(obj.getSettlementId());//HIS结算序号
+                    chsJk.setBillNo(obj.getBillNo());//'单据号'
+                    chsJk.setTransNo(obj.getTransNo());//'交易流水号'
+                    chsJk.setItemId(obj.getItemId());//'项目代码'
+                    chsJk.setItemCode(obj.getItemCode());//'项目医保编码'
+                    chsJk.setItemName(obj.getItemName());//'项目名称'
+                    chsJk.setItemCount(obj.getItemCount());//'项目数量'
+                    chsJk.setItemPrice(obj.getItemPrice());//'项目单价'
+                    chsJk.setItemAmount(obj.getItemAmount());//'项目金额'
+                    chsJk.setFeeDate(obj.getFeeDate());//'费用日期'
+                    chsJk.setDeptId(obj.getDeptId());//'住院科室代码'
+                    if (obj.getDeptId() != null && (obj.getDeptName() == null || obj.getDeptName().equals(""))) {
+                        queryDepartList = departList.stream().filter(
+                                s -> s.getDeptId().equals(obj.getDeptId())
                         ).collect(Collectors.toList());
+                        if (queryDepartList.size() > 0) {
+                            chsJk.setDeptName(queryDepartList.get(0).getDeptName());//'执行科室名称'
+                        }
+                    } else {
+                        chsJk.setDeptName(obj.getDeptName());//'住院科室名称'
                     }
-                    if (queryRifDataList.size() > 0) {
-                        break;
+                    chsJk.setOrderDocId(obj.getOrderDocId());//'开方医生代码'
+                    if (personList.size() > 0 && obj.getOrderDocId() != null && obj.getOrderDocName() == null) {
+                        queryPersontList = personList.stream().filter(p ->
+                                p.getPersonCode().equals(obj.getOrderDocId())).collect(Collectors.toList());
+                        if (queryPersontList.size() > 0) {
+                            chsJk.setOrderDocName(queryPersontList.get(0).getPersonName());//'开方医生名称'
+                        }
+                    } else {
+                        chsJk.setOrderDocName(obj.getOrderDocName());//'开方医生名称'
                     }
-                }
-            }
-            if (queryRifDataList.size() > 0) {
-                YbReconsiderInpatientfeesData obj = queryRifDataList.get(0);
-                YbChsJk chsJk = new YbChsJk();
-                chsJk.setId(UUID.randomUUID().toString());
-                chsJk.setInpatientId(obj.getInpatientId());//住院号
-                chsJk.setPatientName(obj.getPatientName());//患者姓名
-                chsJk.setSettlementId(obj.getSettlementId());//HIS结算序号
-                chsJk.setBillNo(obj.getBillNo());//'单据号'
-                chsJk.setTransNo(obj.getTransNo());//'交易流水号'
-                chsJk.setItemId(obj.getItemId());//'项目代码'
-                chsJk.setItemCode(obj.getItemCode());//'项目医保编码'
-                chsJk.setItemName(obj.getItemName());//'项目名称'
-                chsJk.setItemCount(obj.getItemCount());//'项目数量'
-                chsJk.setItemPrice(obj.getItemPrice());//'项目单价'
-                chsJk.setItemAmount(obj.getItemAmount());//'项目金额'
-                chsJk.setFeeDate(obj.getFeeDate());//'费用日期'
-                chsJk.setDeptId(obj.getDeptId());//'住院科室代码'
-                if (obj.getDeptId() != null && (obj.getDeptName() == null || obj.getDeptName().equals(""))) {
-                    queryDepartList = departList.stream().filter(
-                            s -> s.getDeptId().equals(obj.getDeptId())
-                    ).collect(Collectors.toList());
-                    if (queryDepartList.size() > 0) {
-                        chsJk.setDeptName(queryDepartList.get(0).getDeptName());//'执行科室名称'
+                    chsJk.setExcuteDeptId(obj.getExcuteDeptId());//'执行科室代码'
+                    if (obj.getExcuteDeptId() != null && (obj.getExcuteDeptName() == null || obj.getExcuteDeptName().equals(""))) {
+                        queryDepartList = departList.stream().filter(
+                                s -> s.getDeptId().equals(obj.getExcuteDeptId())
+                        ).collect(Collectors.toList());
+                        if (queryDepartList.size() > 0) {
+                            chsJk.setExcuteDeptName(queryDepartList.get(0).getDeptName());//'执行科室名称'
+                        }
+                    } else {
+                        chsJk.setExcuteDeptName(obj.getExcuteDeptName());//'执行科室名称'
                     }
-                } else {
-                    chsJk.setDeptName(obj.getDeptName());//'住院科室名称'
-                }
-                chsJk.setOrderDocId(obj.getOrderDocId());//'开方医生代码'
-                if (personList.size() > 0 && obj.getOrderDocId() != null && obj.getOrderDocName() == null) {
-                    queryPersontList = personList.stream().filter(p ->
-                            p.getPersonCode().equals(obj.getOrderDocId())).collect(Collectors.toList());
-                    if (queryPersontList.size() > 0) {
-                        chsJk.setOrderDocName(queryPersontList.get(0).getPersonName());//'开方医生名称'
+
+                    chsJk.setExcuteDocId(obj.getExcuteDocId());//'执行医生代码'
+                    if (personList.size() > 0 && obj.getExcuteDocId() != null && obj.getExcuteDocName() == null) {
+                        queryPersontList = personList.stream().filter(p ->
+                                p.getPersonCode().equals(obj.getExcuteDocId())).collect(Collectors.toList());
+                        if (queryPersontList.size() > 0) {
+                            chsJk.setExcuteDocName(queryPersontList.get(0).getPersonName());//'开方医生名称'
+                        }
+                    } else {
+                        chsJk.setExcuteDocName(obj.getExcuteDocName());//'执行医生名称'
                     }
-                } else {
-                    chsJk.setOrderDocName(obj.getOrderDocName());//'开方医生名称'
-                }
-                chsJk.setExcuteDeptId(obj.getExcuteDeptId());//'执行科室代码'
-                if (obj.getExcuteDeptId() != null && (obj.getExcuteDeptName() == null || obj.getExcuteDeptName().equals(""))) {
-                    queryDepartList = departList.stream().filter(
-                            s -> s.getDeptId().equals(obj.getExcuteDeptId())
-                    ).collect(Collectors.toList());
-                    if (queryDepartList.size() > 0) {
-                        chsJk.setExcuteDeptName(queryDepartList.get(0).getDeptName());//'执行科室名称'
-                    }
-                } else {
-                    chsJk.setExcuteDeptName(obj.getExcuteDeptName());//'执行科室名称'
-                }
 
-                chsJk.setExcuteDocId(obj.getExcuteDocId());//'执行医生代码'
-                if (personList.size() > 0 && obj.getExcuteDocId() != null && obj.getExcuteDocName() == null) {
-                    queryPersontList = personList.stream().filter(p ->
-                            p.getPersonCode().equals(obj.getExcuteDocId())).collect(Collectors.toList());
-                    if (queryPersontList.size() > 0) {
-                        chsJk.setExcuteDocName(queryPersontList.get(0).getPersonName());//'开方医生名称'
-                    }
-                } else {
-                    chsJk.setExcuteDocName(obj.getExcuteDocName());//'执行医生名称'
-                }
+                    chsJk.setSettlementDate(obj.getSettlementDate());//'结算时间'
 
-                chsJk.setSettlementDate(obj.getSettlementDate());//'结算时间'
+                    chsJk.setMiCode(obj.getMiCode());
+                    chsJk.setHisName(obj.getHisName());
+                    chsJk.setMiName(obj.getMiName());
 
-                chsJk.setMiCode(obj.getMiCode());
-                chsJk.setHisName(obj.getHisName());
-                chsJk.setMiName(obj.getMiName());
+                    chsJk.setDyyz(obj.getDyyz());
+                    chsJk.setAttendDocId(obj.getAttendDocId());
+                    chsJk.setAttendDocName(obj.getAttendDocName());
+                    chsJk.setItemTypeCode(obj.getItemTypeCode());
+                    chsJk.setItemTypeName(obj.getItemTypeName());
 
-                chsJk.setDyyz(obj.getDyyz());
-                chsJk.setAttendDocId(obj.getAttendDocId());
-                chsJk.setAttendDocName(obj.getAttendDocName());
-                chsJk.setItemTypeCode(obj.getItemTypeCode());
-                chsJk.setItemTypeName(obj.getItemTypeName());
+                    chsJk.setFeeOperatorId(obj.getFeeOperatorId());
+                    chsJk.setFeeOperatorName(obj.getFeeOperatorName());
+                    chsJk.setFeeDeptId(obj.getFeeDeptId());
+                    chsJk.setFeeDeptName(obj.getFeeDeptName());
 
-                chsJk.setFeeOperatorId(obj.getFeeOperatorId());
-                chsJk.setFeeOperatorName(obj.getFeeOperatorName());
-                chsJk.setFeeDeptId(obj.getFeeDeptId());
-                chsJk.setFeeDeptName(obj.getFeeDeptName());
-
-                chsJk.setApplyDataId(item.getId());
-                chsJk.setOrderNum(item.getOrderNum());//序号
-                chsJk.setApplyDateStr(applyDateStr);
-                chsJk.setIsDeletemark(1);
+                    chsJk.setApplyDataId(item.getId());
+                    chsJk.setOrderNum(item.getOrderNum());//序号
+                    chsJk.setApplyDateStr(applyDateStr);
+                    chsJk.setIsDeletemark(1);
 //                                            chsJk.setCreateTime(new Date());
-                chsJk.setState(state);
-                chsJk.setAreaType(areaType);
-                chsJk.setIsOutpfees(isOutpfees);
-                chsJk.setJzkh(obj.getJzkh());
-                createList.add(chsJk);
+                    chsJk.setState(state);
+                    chsJk.setAreaType(areaType);
+                    chsJk.setIsOutpfees(isOutpfees);
+                    chsJk.setJzkh(obj.getJzkh());
+                    createList.add(chsJk);
+                }
             }
         }
         return createList;

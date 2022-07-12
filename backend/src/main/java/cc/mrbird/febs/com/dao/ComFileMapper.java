@@ -33,4 +33,6 @@ public interface ComFileMapper extends BaseMapper<ComFile> {
 
     int batchRefIdDelete(@Param("refTabId") String refTabId);
 
+    List<ComFile> findChsResultComFile(@Param("applyDateStr") String applyDateStr,@Param("areaType") Integer areaType);
+
 }

@@ -16,7 +16,7 @@ import java.math.BigDecimal;
  */
 @Excel("YbChsApplyDataVerify")
 @Data
-public class YbChsApplyDataVerify  {
+public class YbChsApplyDataResultDetaile {
 
     /**
      * 序号
@@ -218,28 +218,34 @@ public class YbChsApplyDataVerify  {
     private String jgLevel;
 
     /**
+     * 复议理由
+     */
+    @ExcelField(value = "复议理由")
+    private String fyly;
+
+    /**
      * chs编码
      */
     @ExcelField(value = "复议科室编码")
-    private String verifyDksId;
+    private String resultDksId;
 
     /**
      * chs科室
      */
     @ExcelField(value = "复议科室名称")
-    private String verifyDksName;
+    private String resultDksName;
 
     /**
      * chs医生编码
      */
     @ExcelField(value = "复议医生编码")
-    private String verifyDoctorCode;
+    private String resultDoctorCode;
 
     /**
      * chs医生
      */
     @ExcelField(value = "复议医生")
-    private String verifyDoctorName;
+    private String resultDoctorName;
 
     /**
      * 项目类型编码
