@@ -22,6 +22,7 @@
         <div class="editable-row-operations">
           <span>
             <a
+              :disabled="record.isEnd===1?true:false"
               @click.stop="() => detail(record,index)"
             >变更详情</a>
           </span>

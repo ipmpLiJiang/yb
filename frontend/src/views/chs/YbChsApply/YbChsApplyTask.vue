@@ -187,8 +187,8 @@ export default {
         params.pageSize = this.pagination.defaultPageSize
         params.pageNum = this.pagination.defaultCurrent
       }
-      params.sortField = 'isOutpfees, state, startNum'
-      params.sortOrder = 'descend'
+      params.sortField = 'state, create_time'
+      params.sortOrder = 'ascend'
       this.$get('ybChsApplyTask', {
         ...params
       }).then((r) => {

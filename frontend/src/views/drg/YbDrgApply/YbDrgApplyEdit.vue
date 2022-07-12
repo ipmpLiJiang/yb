@@ -214,10 +214,9 @@ export default {
           }).then((r) => {
             if (r.data.data.success === 1) {
               if (!this.checked) {
-                this.reset()
-                this.$emit('success')
                 if (r.data.data.message === 'ok') {
-                  this.$message.success('修改成功')
+                  this.reset()
+                  this.$emit('success')
                 } else {
                   this.$message.warning(r.data.data.message)
                 }

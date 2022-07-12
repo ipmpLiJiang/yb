@@ -28,6 +28,7 @@
           <a-divider type="vertical" />
           <span>
             <a
+              :disabled="record.isEnd===1?true:false"
               @click.stop="() => change(record,index)"
             >变更</a>
           </span>

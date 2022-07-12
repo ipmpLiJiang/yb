@@ -25,6 +25,7 @@
         <div class="editable-row-operations">
           <span>
             <a
+              :disabled="record.isEnd===1?true:false"
               @click.stop="() => examine(record,index)"
             >审核</a>
           </span>

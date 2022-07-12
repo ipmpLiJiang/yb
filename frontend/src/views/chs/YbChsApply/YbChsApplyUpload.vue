@@ -142,6 +142,7 @@
               ref="ybChsApplyTask"
               :applyDateStr="ybChsApply.applyDateStr"
               :areaType="ybChsApply.areaType"
+              :isOutpfees="searchOutpfees"
             >
             </ybChsApply-task>
           </a-tab-pane>

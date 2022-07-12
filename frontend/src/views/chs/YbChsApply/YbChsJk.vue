@@ -50,6 +50,10 @@ export default {
       queryParams: {
       },
       tableFormat: 'YYYY-MM-DD',
+      orderDocTitle: '开方医生',
+      deptTitle: '住院科室',
+      excuteDocTitle: '执行医生',
+      excuteDeptTitle: '执行科室',
       loading: false,
       bordered: true,
       ybChsApplyTask: {}
@@ -86,12 +90,12 @@ export default {
       {
         title: '单据号',
         dataIndex: 'billNo',
-        width: 100
+        width: 170
       },
       {
         title: '交易流水号',
         dataIndex: 'transNo',
-        width: 120
+        width: 210
       },
       {
         title: '项目代码',

@@ -90,12 +90,12 @@ export default {
       {
         title: '单据号',
         dataIndex: 'billNo',
-        width: 150
+        width: 170
       },
       {
         title: '交易流水号',
         dataIndex: 'transNo',
-        width: 200
+        width: 210
       },
       {
         title: '项目代码',

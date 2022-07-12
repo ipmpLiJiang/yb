@@ -142,8 +142,7 @@ export default {
       previewImage: '',
       ybDrgResultLook: {},
       user: this.$store.state.account.user,
-      showDownLoad: true,
-      ybDrgManage: {}
+      showDownLoad: true
     }
   },
   computed: {
@@ -156,7 +155,6 @@ export default {
       this.previewVisible = false
       this.fileList = []
       this.previewImage = ''
-      this.ybDrgManage = {}
       this.ybDrgResultLook = {}
       this.$emit('close')
     },
