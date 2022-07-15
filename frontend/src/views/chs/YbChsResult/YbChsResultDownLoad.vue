@@ -18,10 +18,10 @@
       </a-col>
       <a-col :span=5>
       </a-col>
-      <a-col :span=2 style="margin-top:4px">
+      <a-col :span=3 style="margin-top:4px">
         最大序号期间
       </a-col>
-      <a-col :span=5>
+      <a-col :span=4>
         <a-input-number :step="10" :min="10" v-model="maxCount" />
       </a-col>
     </a-row>
@@ -52,7 +52,7 @@ export default {
       chsResultDownLoad: {
       },
       startOrderNum: 1,
-      endOrderNum: 50,
+      endOrderNum: 100,
       maxCount: 20,
       pagination: {
         pageSizeOptions: ['10', '20', '30', '40', '100'],
@@ -98,7 +98,7 @@ export default {
     setFormValues ({ ...chsResultDownLoad }) {
       this.chsResultDownLoad = chsResultDownLoad
       this.startOrderNum = 1
-      this.endOrderNum = 50
+      this.endOrderNum = 100
       this.search()
     },
     downloadFile (record) {

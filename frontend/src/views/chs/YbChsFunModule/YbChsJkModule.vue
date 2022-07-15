@@ -139,11 +139,11 @@ export default {
         },
         width: 110
       },
-      {
-        title: '项目类型',
-        dataIndex: 'itemTypeName',
-        width: 100
-      },
+      // {
+      //   title: '项目类型',
+      //   dataIndex: 'itemTypeName',
+      //   width: 100
+      // },
       {
         title: '门诊卡号',
         dataIndex: 'jzkh',

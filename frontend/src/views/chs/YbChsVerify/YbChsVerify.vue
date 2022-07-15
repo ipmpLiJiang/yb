@@ -223,6 +223,18 @@
         </a-row>
       </div>
       </a-spin>
+      <template>
+      <a-modal width="55%" :maskClosable="false" :footer="null"
+        v-model="wppVisible" title="未匹配规则项目" @ok="handleWppOk">
+        <a-table
+          :columns="wppColumns"
+          :rowKey="record => record.id"
+          :data-source="wppDataSource"
+          size="small"
+          bordered :scroll="{ x: 500 }">
+        </a-table>
+      </a-modal>
+    </template>
     </template>
     <!--表格-->
     <template>
@@ -527,6 +539,8 @@ export default {
       visibleJob: false,
       visibleMatch: false,
       pcmVisible: false,
+      wppVisible: false,
+      wppDataSource: [],
       selectedPcmRowKeys: [],
       spinning: false,
       delayTime: 500,
@@ -547,6 +561,18 @@ export default {
     }
   },
   computed: {
+    wppColumns () {
+      return [{
+        title: '规则名称',
+        dataIndex: 'ruleName',
+        width: 220
+      },
+      {
+        title: '项目名称',
+        dataIndex: 'projectName',
+        width: 220
+      }]
+    }
   },
   mounted () {
     this.initApplyDate(this.searchApplyDate)
@@ -809,15 +835,27 @@ export default {
         ...queryParams
       })
     },
+    handleWppOk () {
+      this.wppVisible = false
+    },
     addImport () {
       this.spinning = true
       let param = {
         applyDate: this.searchApplyDate, areaType: this.user.areaType.value
       }
-      this.$post('ybChsVerify/importChsVerify', param).then(() => {
-        this.spinning = false
-        this.$message.success('匹配完成')
-        this.$refs.ybChsVerifyStayed.searchPage()
+      this.$post('ybChsVerify/importChsVerify', param).then((r) => {
+        if (r.data.data.success === 1) {
+          this.spinning = false
+          this.$message.success('匹配完成')
+          this.$refs.ybChsVerifyStayed.searchPage()
+          if (r.data.data.data.length > 0) {
+            this.wppVisible = true
+            this.wppDataSource = r.data.data.data
+          }
+        } else {
+          this.$message.error(r.data.data.message)
+          this.spinning = false
+        }
       }).catch(() => {
         this.spinning = false
         this.$message.error('自动匹配操作失败.')

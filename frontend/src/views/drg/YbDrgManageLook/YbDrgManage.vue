@@ -14,7 +14,7 @@
             :default-value="searchApplyDate"
             :format="monthFormat"
           />
-          <a-select v-model="searchItem.keyField" style="width: 110px">
+          <a-select v-model="searchItem.keyField" style="width: 115px">
             <a-select-option
             v-for="d in searchDropDataSource"
             :key="d.value"

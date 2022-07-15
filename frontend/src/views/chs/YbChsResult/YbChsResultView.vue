@@ -11,7 +11,7 @@
           :default-value="searchApplyDate"
           :format="monthFormat"
         />
-        <a-select v-model="searchItem.keyField" style="width: 110px;margin-right: 6px">
+        <a-select v-model="searchItem.keyField" style="width: 115px">
           <a-select-option
           v-for="d in searchDropDataSource"
           :key="d.value"
@@ -67,6 +67,22 @@
         :bordered="bordered"
         :scroll="{ x: 900 }"
       >
+        <template
+          slot="resultDoctorName"
+          slot-scope="text, record, index"
+        >
+          <div :style="{color:record.state === 1 ? '':'red'}">
+            {{record.resultDoctorCode + '-' + record.resultDoctorName}}
+          </div>
+        </template>
+        <template
+          slot="resultDksName"
+          slot-scope="text, record, index"
+        >
+          <div :style="{color:record.state === 1 ? '':'red'}">
+            {{record.resultDksId + '-' + record.resultDksName}}
+          </div>
+        </template>
         <template
             slot="operation"
             slot-scope="text, record, index"
@@ -266,10 +282,8 @@ export default {
       {
         title: '复议科室',
         dataIndex: 'resultDksName',
-        customRender: (text, row, index) => {
-          if (text !== '' && text !== null) {
-            return row.resultDksId + '-' + row.resultDksName
-          }
+        scopedSlots: {
+          customRender: 'resultDksName'
         },
         fixed: 'right',
         width: 170
@@ -277,10 +291,8 @@ export default {
       {
         title: '复议医生',
         dataIndex: 'resultDoctorName',
-        customRender: (text, row, index) => {
-          if (text !== '' && text !== null) {
-            return row.resultDoctorCode + '-' + row.resultDoctorName
-          }
+        scopedSlots: {
+          customRender: 'resultDoctorName'
         },
         fixed: 'right',
         width: 120
@@ -437,6 +449,16 @@ export default {
       params.currencyField = this.searchItem.value
       params.areaType = this.user.areaType.value
       params.keyField = this.searchItem.keyField
+      if (params.keyField === 'orderNum' && params.currencyField) {
+        let number = params.currencyField
+        var numReg = /^[0-9]*$/
+        var numRe = new RegExp(numReg)
+        if (!numRe.test(number)) {
+          this.$message.warning('请输入正确序号.')
+          this.loading = false
+          return false
+        }
+      }
       if (this.paginationInfo) {
         // 如果分页信息不为空，则设置表格当前第几页，每页条数，并设置查询分页参数
         this.$refs.TableInfo.pagination.current = this.paginationInfo.current

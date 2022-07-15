@@ -11,7 +11,7 @@
           :default-value="searchApplyDate"
           :format="monthFormat"
         />
-        <a-select v-model="searchItem.keyField" style="width: 110px;margin-right: 6px">
+        <a-select v-model="searchItem.keyField" style="width: 115px">
           <a-select-option
           v-for="d in searchDropDataSource"
           :key="d.value"
@@ -77,6 +77,22 @@
         </template>
         <template slot="operationOperateReason" slot-scope="text, record, index">
           <span :title="record.operateReason">{{record.operateReason}}</span>
+        </template>
+        <template
+          slot="doctorName"
+          slot-scope="text, record, index"
+        >
+          <div :style="{color:record.state === 1 ? '':'red'}">
+            {{record.doctorCode + '-' + record.doctorName}}
+          </div>
+        </template>
+        <template
+          slot="dksName"
+          slot-scope="text, record, index"
+        >
+          <div :style="{color:record.state === 1 ? '':'red'}">
+            {{record.dksId + '-' + record.dksName}}
+          </div>
         </template>
         <template
             slot="operation"
@@ -245,10 +261,8 @@ export default {
       {
         title: '复议科室',
         dataIndex: 'dksName',
-        customRender: (text, row, index) => {
-          if (text !== '' && text !== null) {
-            return row.dksId + '-' + row.dksName
-          }
+        scopedSlots: {
+          customRender: 'dksName'
         },
         fixed: 'right',
         width: 170
@@ -256,10 +270,8 @@ export default {
       {
         title: '复议医生',
         dataIndex: 'doctorName',
-        customRender: (text, row, index) => {
-          if (text !== '' && text !== null) {
-            return row.doctorCode + '-' + row.doctorName
-          }
+        scopedSlots: {
+          customRender: 'doctorName'
         },
         fixed: 'right',
         width: 120

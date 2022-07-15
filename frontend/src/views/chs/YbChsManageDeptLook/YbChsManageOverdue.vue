@@ -318,6 +318,16 @@ export default {
       params.currencyField = this.searchItem.value
       params.areaType = this.user.areaType.value
       params.keyField = this.searchItem.keyField
+      if (params.keyField === 'orderNum' && params.currencyField) {
+        let number = params.currencyField
+        var numReg = /^[0-9]*$/
+        var numRe = new RegExp(numReg)
+        if (!numRe.test(number)) {
+          this.$message.warning('请输入正确序号.')
+          this.loading = false
+          return false
+        }
+      }
       if (this.paginationInfo) {
         // 如果分页信息不为空，则设置表格当前第几页，每页条数，并设置查询分页参数
         this.$refs.TableInfo.pagination.current = this.paginationInfo.current
