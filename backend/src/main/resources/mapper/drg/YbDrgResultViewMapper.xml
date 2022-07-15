@@ -37,7 +37,7 @@
     </sql>
 
     <select id="findDrgResultViewList" resultType="cc.mrbird.febs.drg.entity.YbDrgResultView"
-                     parameterType="cc.mrbird.febs.drg.entity.YbDrgResultView">
+            parameterType="cc.mrbird.febs.drg.entity.YbDrgResultView">
         select
             dr.id,
             ad.pid,
@@ -68,40 +68,8 @@
                 ad.id = dr.applyDataId
         where
             ad.pid = #{ybDrgResultView.pid}
-    </select>
-
-    <select id="findDrgResultViewInnerList" resultType="cc.mrbird.febs.drg.entity.YbDrgResultView"
-            parameterType="cc.mrbird.febs.drg.entity.YbDrgResultView">
-        select
-            dr.id,
-            ad.pid,
-            ad.id applyDataId,
-            #{ ybDrgResultView.applyDateStr} applyDateStr,
-            ad.ks,
-            ad.jzjlh,
-            ad.bah,
-            ad.wglx,
-            ad.wtms,
-            ad.ylzfy,
-            ad.wgje,
-            ad.sfbmzczjcw,
-            ad.ly,
-            ad.orderNumber,
-            ad.orderNum,
-            dr.doctorCode,
-            concat(dr.doctorCode,'-',dr.doctorName) doctorName,
-            dr.dksId,
-            dr.dksName,
-            dr.operateReason,
-            dr.operateDate,
-            dr.STATE,
-            dr.areaType
-        from
-            yb_drg_apply_data ad
-            INNER JOIN yb_drg_result dr ON
-                ad.id = dr.applyDataId
-        where
-            ad.pid = #{ybDrgResultView.pid}
-            and dr.operateReason != '未申诉'
+        <if test="ybDrgResultView.state != null">
+            and dr.state = #{ybDrgResultView.state}
+        </if>
     </select>
 </mapper>

@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cc.mrbird.febs.chs.dao.YbChsPriorityLevelMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="cc.mrbird.febs.chs.entity.YbChsPriorityLevel">
+        <id column="id" property="id"/>
+        <result column="zymzType" property="zymzType"/>
+        <result column="ruleName" property="ruleName"/>
+        <result column="projectName" property="projectName"/>
+        <result column="dksId" property="dksId"/>
+        <result column="dksName" property="dksName"/>
+        <result column="personType" property="personType"/>
+        <result column="deptType" property="deptType"/>
+        <result column="dksIdTo" property="dksIdTo"/>
+        <result column="dksNameTo" property="dksNameTo"/>
+        <result column="doctorCodeTo" property="doctorCodeTo"/>
+        <result column="doctorNameTo" property="doctorNameTo"/>
+        <result column="areaType" property="areaType"/>
+        <result column="operatorId" property="operatorId"/>
+        <result column="operatorName" property="operatorName"/>
+        <result column="currencyField" property="currencyField"/>
+        <result column="COMMENTS" property="comments"/>
+        <result column="STATE" property="state"/>
+        <result column="IS_DELETEMARK" property="isDeletemark"/>
+        <result column="MODIFY_TIME" property="modifyTime"/>
+        <result column="CREATE_TIME" property="createTime"/>
+        <result column="CREATE_USER_ID" property="createUserId"/>
+        <result column="MODIFY_USER_ID" property="modifyUserId"/>
+        <result column="isRule" property="isRule"/>
+        <result column="isProject" property="isProject"/>
+        <result column="plType" property="plType"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, zymzType, ruleName, projectName, dksId, dksName, personType, deptType, dksIdTo, dksNameTo, doctorCodeTo, doctorNameTo, areaType, operatorId, operatorName, currencyField, COMMENTS, STATE, IS_DELETEMARK, MODIFY_TIME, CREATE_TIME, CREATE_USER_ID, MODIFY_USER_ID, isRule, isProject, plType
+    </sql>
+    <update id="updateYbChsPriorityLevel" parameterType="cc.mrbird.febs.chs.entity.YbChsPriorityLevel">
+        update yb_chs_priority_level
+        <trim prefix="set" suffixOverrides=",">
+            <if test="zymzType != null">zymzType=#{zymzType},</if>
+            <if test="ruleName != null">ruleName=#{ruleName},</if>
+            <if test="projectName != null">projectName=#{projectName},</if>
+            <if test="dksId != null">dksId=#{dksId},</if>
+            <if test="dksName != null">dksName=#{dksName},</if>
+            <if test="personType != null">personType=#{personType},</if>
+            <if test="deptType != null">deptType=#{deptType},</if>
+            <if test="dksIdTo != null">dksIdTo=#{dksIdTo},</if>
+            <if test="dksNameTo != null">dksNameTo=#{dksNameTo},</if>
+            <if test="doctorCodeTo != null">doctorCodeTo=#{doctorCodeTo},</if>
+            <if test="doctorNameTo != null">doctorNameTo=#{doctorNameTo},</if>
+            <if test="areaType != null">areaType=#{areaType},</if>
+            <if test="operatorId != null">operatorId=#{operatorId},</if>
+            <if test="operatorName != null">operatorName=#{operatorName},</if>
+            <if test="currencyField != null">currencyField=#{currencyField},</if>
+            <if test="comments != null">COMMENTS=#{comments},</if>
+            <if test="state != null">STATE=#{state},</if>
+            <if test="isDeletemark != null">IS_DELETEMARK=#{isDeletemark},</if>
+            <if test="modifyTime != null">MODIFY_TIME=#{modifyTime},</if>
+            <if test="createTime != null">CREATE_TIME=#{createTime},</if>
+            <if test="createUserId != null">CREATE_USER_ID=#{createUserId},</if>
+            <if test="modifyUserId != null">MODIFY_USER_ID=#{modifyUserId},</if>
+            <if test="isRule != null">isRule=#{isRule},</if>
+            <if test="isProject != null">isProject=#{isProject},</if>
+            <if test="plType != null">plType=#{plType},</if>
+        </trim>
+        where id=#{id}
+
+    </update>
+    <select id="findYbChsPriorityLevel" resultType="cc.mrbird.febs.chs.entity.YbChsPriorityLevel"
+            parameterType="cc.mrbird.febs.chs.entity.YbChsPriorityLevel">
+        select * from yb_chs_priority_level
+        where 1=1
+        <if test="ybChsPriorityLevel.id != null">and id =#{ ybChsPriorityLevel.id}</if>
+        <if test="ybChsPriorityLevel.zymzType != null">and zymzType =#{ ybChsPriorityLevel.zymzType}</if>
+        <if test="ybChsPriorityLevel.ruleName != null and ybChsPriorityLevel.ruleName != ''">and ruleName like
+            concat('%', #{ ybChsPriorityLevel.ruleName} ,'%')
+        </if>
+        <if test="ybChsPriorityLevel.projectName != null and ybChsPriorityLevel.projectName != ''">and projectName like
+            concat('%', #{ ybChsPriorityLevel.projectName} ,'%')
+        </if>
+        <if test="ybChsPriorityLevel.dksId != null and ybChsPriorityLevel.dksId != ''">and dksId like concat('%',
+            #{ ybChsPriorityLevel.dksId} ,'%')
+        </if>
+        <if test="ybChsPriorityLevel.dksName != null and ybChsPriorityLevel.dksName != ''">and dksName like concat('%',
+            #{ ybChsPriorityLevel.dksName} ,'%')
+        </if>
+        <if test="ybChsPriorityLevel.personType != null">and personType =#{ ybChsPriorityLevel.personType}</if>
+        <if test="ybChsPriorityLevel.deptType != null">and deptType =#{ ybChsPriorityLevel.deptType}</if>
+        <if test="ybChsPriorityLevel.dksIdTo != null and ybChsPriorityLevel.dksIdTo != ''">and dksIdTo like concat('%',
+            #{ ybChsPriorityLevel.dksIdTo} ,'%')
+        </if>
+        <if test="ybChsPriorityLevel.dksNameTo != null and ybChsPriorityLevel.dksNameTo != ''">and dksNameTo like
+            concat('%', #{ ybChsPriorityLevel.dksNameTo} ,'%')
+        </if>
+        <if test="ybChsPriorityLevel.doctorCodeTo != null and ybChsPriorityLevel.doctorCodeTo != ''">and doctorCodeTo
+            like concat('%', #{ ybChsPriorityLevel.doctorCodeTo} ,'%')
+        </if>
+        <if test="ybChsPriorityLevel.doctorNameTo != null and ybChsPriorityLevel.doctorNameTo != ''">and doctorNameTo
+            like concat('%', #{ ybChsPriorityLevel.doctorNameTo} ,'%')
+        </if>
+        <if test="ybChsPriorityLevel.areaType != null">and areaType =#{ ybChsPriorityLevel.areaType}</if>
+        <if test="ybChsPriorityLevel.operatorName != null and ybChsPriorityLevel.operatorName != ''">and operatorName
+            like concat('%', #{ ybChsPriorityLevel.operatorName} ,'%')
+        </if>
+        <if test="ybChsPriorityLevel.currencyField != null and ybChsPriorityLevel.currencyField != ''">and currencyField
+            like concat('%', #{ ybChsPriorityLevel.currencyField} ,'%')
+        </if>
+        <if test="ybChsPriorityLevel.comments != null and ybChsPriorityLevel.comments != ''">and COMMENTS like
+            concat('%', #{ ybChsPriorityLevel.comments} ,'%')
+        </if>
+        <if test="ybChsPriorityLevel.state != null">and STATE =#{ ybChsPriorityLevel.state}</if>
+        <if test="ybChsPriorityLevel.isDeletemark != null">and IS_DELETEMARK =#{ ybChsPriorityLevel.isDeletemark}</if>
+        <if test="ybChsPriorityLevel.modifyTimeFrom!= null">
+            AND ybChsPriorityLevel.MODIFY_TIME <![CDATA[ >= ]]>  modifyTimeFrom}
+        </if>
+        <if test="ybChsPriorityLevel.modifyTimeTo!= null">
+            AND ybChsPriorityLevel.MODIFY_TIME <![CDATA[ <= ]]>  modifyTimeTo}
+        </if>
+        <if test="ybChsPriorityLevel.createTimeFrom!= null">
+            AND ybChsPriorityLevel.CREATE_TIME <![CDATA[ >= ]]>  createTimeFrom}
+        </if>
+        <if test="ybChsPriorityLevel.createTimeTo!= null">
+            AND ybChsPriorityLevel.CREATE_TIME <![CDATA[ <= ]]>  createTimeTo}
+        </if>
+        <if test="ybChsPriorityLevel.isRule != null">and isRule =#{ ybChsPriorityLevel.isRule}</if>
+        <if test="ybChsPriorityLevel.isProject != null">and isProject =#{ ybChsPriorityLevel.isProject}</if>
+        <if test="ybChsPriorityLevel.plType != null">and plType =#{ ybChsPriorityLevel.plType}</if>
+    </select>
+
+</mapper>

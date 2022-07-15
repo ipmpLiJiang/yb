@@ -87,66 +87,6 @@
         </if>
     </select>
 
-    <select id="findChsResultLeftDetailViewList" resultType="cc.mrbird.febs.chs.entity.YbChsResultView"
-            parameterType="cc.mrbird.febs.chs.entity.YbChsResultView">
-        select
-        cr.id,
-        ad.id applyDataId,
-        ad.pid,
-        ad.appealEndDate,
-        ad.orderNum,
-        ad.payPlaceType,
-        ad.ydState,
-        ad.areaName,
-        ad.yyjgCode,
-        ad.yyjgName,
-        ad.deptName,
-        ad.doctorName,
-        ad.medicalType,
-        ad.zymzNumber,
-        ad.insuredName,
-        ad.enterHospitalDate,
-        ad.outHospitalDate,
-        ad.outHospitalDateStr,
-        ad.settlementDate,
-        ad.cardNumber,
-        ad.projectCode,
-        ad.projectName,
-        ad.projectYyName,
-        ad.ruleName,
-        ad.violateCsPrice,
-        ad.violateCsPriceStr,
-        ad.violatePrice,
-        ad.violateReason,
-        ad.zdNote,
-        ad.costDate,
-        ad.insuredType,
-        ad.num,
-        ad.price,
-        ad.medicalPrice,
-        ad.tcPayPrice,
-        ad.specs,
-        ad.jx,
-        ad.jgLevel,
-        cr.doctorCode resultDoctorCode,
-        cr.doctorName resultDoctorName,
-        cr.dksId resultDksId,
-        cr.dksName resultDksName,
-        cr.operateReason,
-        cr.operateDate,
-        cr.state,
-        cr.areaType
-        from
-        yb_chs_apply_data ad
-        LEFT JOIN yb_chs_result cr ON
-            cr.applyDataId = ad.id
-        where
-            ad.pid = #{ybChsResultView.pid}
-        <if test="ybChsResultView.state != null">
-            and cr.state = #{ybChsResultView.state}
-        </if>
-    </select>
-
     <select id="findChsResultViewList" resultType="cc.mrbird.febs.chs.entity.YbChsResultView"
             parameterType="cc.mrbird.febs.chs.entity.YbChsResultView">
         select
@@ -198,7 +138,7 @@
         cr.areaType
         from
         yb_chs_apply_data ad
-        INNER JOIN yb_chs_result cr ON
+        LEFT JOIN yb_chs_result cr ON
         cr.applyDataId = ad.id
         where
         ad.pid = #{ybChsResultView.pid}
