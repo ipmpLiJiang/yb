@@ -24,6 +24,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import freemarker.template.utility.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -81,6 +82,9 @@ public class YbChsVerifyServiceImpl extends ServiceImpl<YbChsVerifyMapper, YbChs
     @Autowired
     IComConfiguremanageService iComConfiguremanageService;
 
+    @Autowired
+    IYbChsPriorityLevelService iYbChsPriorityLevelService;
+
     @Override
     public IPage<YbChsVerify> findYbChsVerifys(QueryRequest request, YbChsVerify ybChsVerify) {
         try {
@@ -132,9 +136,17 @@ public class YbChsVerifyServiceImpl extends ServiceImpl<YbChsVerifyMapper, YbChs
         this.baseMapper.deleteBatchIds(list);
     }
 
+    /**
+     * 执行数据匹配
+     *
+     * @param applyDateStr
+     * @param areaType
+     * @param matchPersonId
+     * @param matchPersonName
+     */
     @Override
     @Transactional
-    public void insertChsVerifyImports(String applyDateStr, Integer areaType, Long matchPersonId, String matchPersonName) {
+    public void insertChsVerifyImports(String applyDateStr, Integer areaType, Long matchPersonId, String matchPersonName, List<YbChsPriorityLevelBack> backList) {
         YbChsApply ybChsApply = this.iYbChsApplyService.findChsApplyByApplyDateStrs(applyDateStr, areaType);
         boolean isCreate = true;
         if (ybChsApply != null) {
@@ -142,18 +154,44 @@ public class YbChsVerifyServiceImpl extends ServiceImpl<YbChsVerifyMapper, YbChs
             if (state == YbDefaultValue.APPLYSTATE_2 || state == YbDefaultValue.APPLYSTATE_3) {
                 List<YbChsApplyData> radList = iYbChsApplyDataService.findChsApplyDataByNotVerifys(ybChsApply.getId(), ybChsApply.getApplyDateStr(), areaType);
 
-                LambdaQueryWrapper<YbChsJk> wrapper = new LambdaQueryWrapper<>();
-                wrapper.eq(YbChsJk::getApplyDateStr, applyDateStr);
-                wrapper.eq(YbChsJk::getAreaType, areaType);
-                List<YbChsJk> jkList = iYbChsJkService.list(wrapper);
-                List<YbChsJk> queryJkList = new ArrayList<>();
-
-                List<YbDept> deptList = iYbDeptService.findDeptList(new YbDept(), 0);
-                List<YbDept> deptQueryList = new ArrayList<>();
-
                 if (radList.size() > 0) {
+                    LambdaQueryWrapper<YbChsJk> wrapper = new LambdaQueryWrapper<>();
+                    wrapper.eq(YbChsJk::getApplyDateStr, applyDateStr);
+                    wrapper.eq(YbChsJk::getAreaType, areaType);
+                    List<YbChsJk> jkList = iYbChsJkService.list(wrapper);
+                    List<YbChsJk> queryJkList = new ArrayList<>();
+
+                    LambdaQueryWrapper<YbChsPriorityLevel> wrapperPl = new LambdaQueryWrapper<>();
+                    wrapperPl.eq(YbChsPriorityLevel::getAreaType, areaType);
+                    List<YbChsPriorityLevel> plList = iYbChsPriorityLevelService.list(wrapperPl);
+                    // 规则一 门诊
+                    List<YbChsPriorityLevel> plListMz1 = plList.stream().filter(s -> s.getState() == 1 && s.getZymzType() == 1).collect(Collectors.toList());
+                    // 规则一 住院
+                    List<YbChsPriorityLevel> plListZy1 = plList.stream().filter(s -> s.getState() == 1 && s.getZymzType() == 2).collect(Collectors.toList());
+                    // 规则二 门诊
+                    List<YbChsPriorityLevel> plListMz2 = plList.stream().filter(s -> s.getState() == 2 && s.getZymzType() == 1).collect(Collectors.toList());
+                    // 规则二 住院
+                    List<YbChsPriorityLevel> plListZy2 = plList.stream().filter(s -> s.getState() == 2 && s.getZymzType() == 2).collect(Collectors.toList());
+                    List<YbChsPriorityLevel> plQuery = new ArrayList<>();
+                    List<YbChsPriorityLevel> plQuery2 = new ArrayList<>();
+
+                    List<YbDept> deptList = iYbDeptService.findDeptList(new YbDept(), 0);
+                    List<YbDept> deptQueryList = new ArrayList<>();
+
                     List<YbChsVerify> createList = new ArrayList<>();
+                    YbChsPriorityLevel cpl = new YbChsPriorityLevel();
+                    YbChsPriorityLevel cpl2 = new YbChsPriorityLevel();
+                    // 是否固定
+                    int gdType = 0;
+                    boolean isProjectCode = false;
                     for (YbChsApplyData item : radList) {
+                        YbChsPriorityLevelBack back = new YbChsPriorityLevelBack();
+                        back.setRuleName(item.getRuleName());
+                        gdType = 0;
+                        isProjectCode = false;
+                        cpl = new YbChsPriorityLevel();
+                        cpl2 = new YbChsPriorityLevel();
+                        plQuery = new ArrayList<>();
                         YbChsVerify ybChsVerify = new YbChsVerify();
                         ybChsVerify.setId(UUID.randomUUID().toString());
                         ybChsVerify.setApplyDataId(item.getId());
@@ -162,15 +200,219 @@ public class YbChsVerifyServiceImpl extends ServiceImpl<YbChsVerifyMapper, YbChs
                         ybChsVerify.setState(YbDefaultValue.VERIFYSTATE_1);
                         ybChsVerify.setAreaType(areaType);
 
-                        queryJkList = jkList.stream().filter(s -> s.getApplyDataId().equals(item.getId())).collect(Collectors.toList());
-                        if (queryJkList.size() > 0) {
-                            YbChsJk jk = queryJkList.get(0);
-                            ybChsVerify.setVerifyDoctorCode(jk.getOrderDocId());
-                            ybChsVerify.setVerifyDoctorName(jk.getOrderDocName());
-                            deptQueryList = deptList.stream().filter(s->s.getDeptId().equals(jk.getDeptId())).collect(Collectors.toList());
-                            if(deptQueryList.size() > 0) {
-                                ybChsVerify.setVerifyDksId(deptQueryList.get(0).getDksId());
-                                ybChsVerify.setVerifyDksName(deptQueryList.get(0).getDksName());
+                        // 按照规则
+                        if (item.getIsOutpfees() == 1) {
+                            plQuery = plListMz1.stream().filter(s -> s.getIsProject() == 2 && s.getIsRule() == 1 &&
+                                    s.getRuleName().equals(item.getRuleName())).collect(Collectors.toList());
+                            // 规则二 科室
+                            plQuery2 = plListMz2.stream().filter(s -> s.getIsProject() == 2 && s.getIsRule() == 1 &&
+                                    s.getRuleName().equals(item.getRuleName())).collect(Collectors.toList());
+                        } else {
+                            plQuery = plListZy1.stream().filter(s -> s.getIsProject() == 2 && s.getIsRule() == 1 &&
+                                    s.getRuleName().equals(item.getRuleName())).collect(Collectors.toList());
+                            // 规则二 科室
+                            plQuery2 = plListZy2.stream().filter(s -> s.getIsProject() == 2 && s.getIsRule() == 1 &&
+                                    s.getRuleName().equals(item.getRuleName())).collect(Collectors.toList());
+                        }
+
+                        if (plQuery.size() > 0) {
+                            cpl = plQuery.get(0);
+                            // 复议科室和医生都是固定值
+                            if (cpl.getDeptType() == YbChsPriorityLevel.DEPT_TYPE_4 &&
+                                    cpl.getPersonType() == YbChsPriorityLevel.PERSON_TYPE_4) {
+                                ybChsVerify.setVerifyDoctorCode(cpl.getDoctorCodeTo());
+                                ybChsVerify.setVerifyDoctorName(cpl.getDoctorNameTo());
+                                ybChsVerify.setVerifyDksId(cpl.getDksIdTo());
+                                ybChsVerify.setVerifyDksName(cpl.getDksNameTo());
+                                gdType = 4;
+                                // 规则二 科室
+                                plQuery2 = plQuery2.stream().filter(s -> s.getDksId().equals(ybChsVerify.getVerifyDksId())).collect(Collectors.toList());
+                            }
+                            // 复议科室是固定值
+                            if (cpl.getDeptType() == YbChsPriorityLevel.DEPT_TYPE_4 &&
+                                    cpl.getPersonType() != YbChsPriorityLevel.PERSON_TYPE_4) {
+                                ybChsVerify.setVerifyDksId(cpl.getDksIdTo());
+                                ybChsVerify.setVerifyDksName(cpl.getDksNameTo());
+                                gdType = 1;
+                            }
+                            // 复议医生是固定值
+                            if (cpl.getDeptType() != YbChsPriorityLevel.DEPT_TYPE_4 &&
+                                    cpl.getPersonType() == YbChsPriorityLevel.PERSON_TYPE_4) {
+                                ybChsVerify.setVerifyDoctorCode(cpl.getDoctorCodeTo());
+                                ybChsVerify.setVerifyDoctorName(cpl.getDoctorNameTo());
+                                gdType = 2;
+                            }
+                        }
+
+                        if (gdType != 4) {
+                            queryJkList = jkList.stream().filter(s -> s.getApplyDataId().equals(item.getId())).collect(Collectors.toList());
+                            if (queryJkList.size() > 0) {
+                                YbChsJk jk = queryJkList.get(0);
+                                // 按照规则 并且复议 科室或者医生是固定值
+                                if (gdType == 1 || gdType == 2) {
+                                    this.setDksAndDoctorValue(ybChsVerify, cpl, jk, deptList);
+                                } else {
+                                    plQuery = new ArrayList<>();
+                                    plQuery2 = new ArrayList<>();
+                                    // 门诊
+                                    if (item.getIsOutpfees() == 1) {
+                                        if (item.getState() == 0) {
+                                            plQuery = plListMz1.stream().filter(s -> s.getIsProject() == 1 && s.getIsRule() == 1 &&
+                                                    s.getRuleName().equals(item.getRuleName()) &&
+                                                    s.getProjectName().equals(jk.getItemName())).collect(Collectors.toList());
+                                            if (plQuery.size() == 0) {
+                                                plQuery = plListMz1.stream().filter(s -> s.getIsProject() == 1 && s.getIsRule() == 2 &&
+                                                        s.getProjectName().equals(jk.getItemName())).collect(Collectors.toList());
+                                            }
+                                            // 规则二 科室
+                                            plQuery2 = plListMz2.stream().filter(s -> s.getIsProject() == 1 && s.getIsRule() == 1 &&
+                                                    s.getRuleName().equals(item.getRuleName()) &&
+                                                    s.getProjectName().equals(jk.getItemName())).collect(Collectors.toList());
+                                            if (plQuery2.size() == 0) {
+                                                plQuery2 = plListMz2.stream().filter(s -> s.getIsProject() == 1 && s.getIsRule() == 2 &&
+                                                        s.getProjectName().equals(jk.getItemName())).collect(Collectors.toList());
+                                            }
+                                        }
+                                        if (item.getState() == 1) {
+                                            plQuery = plListMz1.stream().filter(s -> s.getIsProject() == 1 && s.getIsRule() == 1 &&
+                                                    s.getRuleName().equals(item.getRuleName()) &&
+                                                    s.getProjectName().equals(jk.getHisName())).collect(Collectors.toList());
+                                            if (plQuery.size() == 0) {
+                                                plQuery = plListMz1.stream().filter(s -> s.getIsProject() == 1 && s.getIsRule() == 2 &&
+                                                        s.getProjectName().equals(jk.getHisName())).collect(Collectors.toList());
+                                            }
+                                            // 规则二 科室
+                                            plQuery2 = plListMz2.stream().filter(s -> s.getIsProject() == 1 && s.getIsRule() == 1 &&
+                                                    s.getRuleName().equals(item.getRuleName()) &&
+                                                    s.getProjectName().equals(jk.getHisName())).collect(Collectors.toList());
+                                            if (plQuery2.size() == 0) {
+                                                plQuery2 = plListMz2.stream().filter(s -> s.getIsProject() == 1 && s.getIsRule() == 2 &&
+                                                        s.getProjectName().equals(jk.getHisName())).collect(Collectors.toList());
+                                            }
+                                        }
+                                        if (item.getState() == 2) {
+                                            isProjectCode = true;
+                                        }
+                                    } else {
+                                        if (item.getState() == 0) {
+                                            plQuery = plListZy1.stream().filter(s -> s.getIsProject() == 1 && s.getIsRule() == 1 &&
+                                                    s.getRuleName().equals(item.getRuleName()) &&
+                                                    s.getProjectName().equals(jk.getItemName())).collect(Collectors.toList());
+                                            if (plQuery.size() == 0) {
+                                                plQuery = plListZy1.stream().filter(s -> s.getIsProject() == 1 && s.getIsRule() == 2 &&
+                                                        s.getProjectName().equals(jk.getItemName())).collect(Collectors.toList());
+                                            }
+                                            // 规则二 科室
+                                            plQuery2 = plListZy2.stream().filter(s -> s.getIsProject() == 1 && s.getIsRule() == 1 &&
+                                                    s.getRuleName().equals(item.getRuleName()) &&
+                                                    s.getProjectName().equals(jk.getItemName())).collect(Collectors.toList());
+                                            if (plQuery2.size() == 0) {
+                                                plQuery2 = plListZy2.stream().filter(s -> s.getIsProject() == 1 && s.getIsRule() == 2 &&
+                                                        s.getProjectName().equals(jk.getItemName())).collect(Collectors.toList());
+                                            }
+                                        }
+                                        if (item.getState() == 1) {
+                                            plQuery = plListZy1.stream().filter(s -> s.getIsProject() == 1 && s.getIsRule() == 1 &&
+                                                    s.getRuleName().equals(item.getRuleName()) &&
+                                                    s.getProjectName().equals(jk.getHisName())).collect(Collectors.toList());
+                                            if (plQuery.size() == 0) {
+                                                plQuery = plListZy1.stream().filter(s -> s.getIsProject() == 1 && s.getIsRule() == 2 &&
+                                                        s.getProjectName().equals(jk.getHisName())).collect(Collectors.toList());
+                                            }
+                                            // 规则二 科室
+                                            plQuery2 = plListZy2.stream().filter(s -> s.getIsProject() == 1 && s.getIsRule() == 1 &&
+                                                    s.getRuleName().equals(item.getRuleName()) &&
+                                                    s.getProjectName().equals(jk.getHisName())).collect(Collectors.toList());
+                                            if (plQuery2.size() == 0) {
+                                                plQuery2 = plListZy2.stream().filter(s -> s.getIsProject() == 1 && s.getIsRule() == 2 &&
+                                                        s.getProjectName().equals(jk.getHisName())).collect(Collectors.toList());
+                                            }
+                                        }
+                                        if (item.getState() == 2) {
+                                            isProjectCode = true;
+                                        }
+                                    }
+
+                                    if (plQuery.size() > 0) {
+                                        cpl = plQuery.get(0);
+                                        if (cpl.getDeptType() == YbChsPriorityLevel.DEPT_TYPE_4 &&
+                                                cpl.getPersonType() == YbChsPriorityLevel.PERSON_TYPE_4) {
+                                            ybChsVerify.setVerifyDoctorCode(cpl.getDoctorCodeTo());
+                                            ybChsVerify.setVerifyDoctorName(cpl.getDoctorNameTo());
+                                            ybChsVerify.setVerifyDksId(cpl.getDksIdTo());
+                                            ybChsVerify.setVerifyDksName(cpl.getDksNameTo());
+                                        } else {
+                                            this.setDksAndDoctorValue(ybChsVerify, cpl, jk, deptList);
+                                        }
+                                    } else {
+                                        back.setProjectName(jk.getHisName());
+                                        if (isProjectCode) {
+                                            ybChsVerify.setVerifyDoctorCode(jk.getOrderDocId());
+                                            ybChsVerify.setVerifyDoctorName(jk.getOrderDocName());
+                                            deptQueryList = deptList.stream().filter(s -> s.getDeptId().equals(jk.getDeptId())).collect(Collectors.toList());
+                                            if (deptQueryList.size() > 0) {
+                                                ybChsVerify.setVerifyDksId(deptQueryList.get(0).getDksId());
+                                                ybChsVerify.setVerifyDksName(deptQueryList.get(0).getDksName());
+                                            }
+                                        }
+                                    }
+                                }
+                                // 规则二 科室
+                                if (StringUtils.isNotBlank(ybChsVerify.getVerifyDksId())) {
+                                    if (plQuery2.size() > 0) {
+                                        plQuery2 = plQuery2.stream().filter(s -> s.getDksId().equals(ybChsVerify.getVerifyDksId())).collect(Collectors.toList());
+                                    } else {
+                                        if (item.getIsOutpfees() == 1) {
+                                            plQuery2 = plListMz2.stream().filter(s -> s.getIsProject() == 2 && s.getIsRule() == 2 &&
+                                                    s.getDksId().equals(ybChsVerify.getVerifyDksId())).collect(Collectors.toList());
+                                        } else {
+                                            plQuery2 = plListZy2.stream().filter(s -> s.getIsProject() == 2 && s.getIsRule() == 2 &&
+                                                    s.getDksId().equals(ybChsVerify.getVerifyDksId())).collect(Collectors.toList());
+                                        }
+                                    }
+                                    if (plQuery2.size() > 0) {
+                                        cpl2 = plQuery2.get(0);
+                                        // 固定科室 医生
+                                        if (cpl2.getDeptType() == YbChsPriorityLevel.DEPT_TYPE_4 &&
+                                                cpl2.getPersonType() == YbChsPriorityLevel.PERSON_TYPE_4) {
+                                            ybChsVerify.setVerifyDoctorCode(cpl2.getDoctorCodeTo());
+                                            ybChsVerify.setVerifyDoctorName(cpl2.getDoctorNameTo());
+                                            ybChsVerify.setVerifyDksId(cpl2.getDksIdTo());
+                                            ybChsVerify.setVerifyDksName(cpl2.getDksNameTo());
+                                        } else {
+                                            this.setDksAndDoctorValue(ybChsVerify, cpl2, jk, deptList);
+                                        }
+                                    }
+                                }
+                            }
+                        } else {
+                            // 规则二 科室
+                            if (plQuery2.size() > 0) {
+                                cpl2 = plQuery2.get(0);
+                                // 固定科室 医生
+                                if (cpl2.getDeptType() == YbChsPriorityLevel.DEPT_TYPE_4 &&
+                                        cpl2.getPersonType() == YbChsPriorityLevel.PERSON_TYPE_4) {
+                                    ybChsVerify.setVerifyDoctorCode(cpl2.getDoctorCodeTo());
+                                    ybChsVerify.setVerifyDoctorName(cpl2.getDoctorNameTo());
+                                    ybChsVerify.setVerifyDksId(cpl2.getDksIdTo());
+                                    ybChsVerify.setVerifyDksName(cpl2.getDksNameTo());
+                                } else {
+                                    queryJkList = jkList.stream().filter(s -> s.getApplyDataId().equals(item.getId())).collect(Collectors.toList());
+                                    if (queryJkList.size() > 0) {
+                                        YbChsJk jk = queryJkList.get(0);
+                                        back.setProjectName(jk.getHisName());
+                                        this.setDksAndDoctorValue(ybChsVerify, cpl2, jk, deptList);
+                                    }
+                                }
+                            }
+                        }
+                        if (StringUtils.isBlank(ybChsVerify.getVerifyDoctorCode()) ||
+                                StringUtils.isBlank(ybChsVerify.getVerifyDksId())) {
+                            long count = backList.stream().filter(s -> s.getProjectName().equals(back.getProjectName()) &&
+                                    s.getRuleName().equals(back.getRuleName())).count();
+                            if (count == 0) {
+                                back.setId(UUID.randomUUID().toString());
+                                backList.add(back);
                             }
                         }
                         createList.add(ybChsVerify);
@@ -188,6 +430,43 @@ public class YbChsVerifyServiceImpl extends ServiceImpl<YbChsVerifyMapper, YbChs
         }
     }
 
+    private void setDksAndDoctorValue(YbChsVerify ybChsVerify, YbChsPriorityLevel cpl, YbChsJk jk, List<YbDept> deptList) {
+        List<YbDept> deptQueryList = new ArrayList<>();
+        // 1开单科室、2执行科室、3计费科室
+        if (cpl.getDeptType() == YbChsPriorityLevel.DEPT_TYPE_1) {
+            deptQueryList = deptList.stream().filter(s -> s.getDeptId().equals(jk.getDeptId())).collect(Collectors.toList());
+        }
+        if (cpl.getDeptType() == YbChsPriorityLevel.DEPT_TYPE_2) {
+            deptQueryList = deptList.stream().filter(s -> s.getDeptId().equals(jk.getExcuteDeptId())).collect(Collectors.toList());
+
+        }
+        if (cpl.getDeptType() == YbChsPriorityLevel.DEPT_TYPE_3) {
+            deptQueryList = deptList.stream().filter(s -> s.getDeptId().equals(jk.getFeeDeptId())).collect(Collectors.toList());
+        }
+        if (deptQueryList.size() > 0) {
+            ybChsVerify.setVerifyDksId(deptQueryList.get(0).getDksId());
+            ybChsVerify.setVerifyDksName(deptQueryList.get(0).getDksName());
+        }
+        // 1开单人员、2执行人员、3计费人员
+        if (cpl.getPersonType() == YbChsPriorityLevel.PERSON_TYPE_1) {
+            ybChsVerify.setVerifyDoctorCode(jk.getOrderDocId());
+            ybChsVerify.setVerifyDoctorName(jk.getOrderDocName());
+        }
+        if (cpl.getPersonType() == YbChsPriorityLevel.PERSON_TYPE_2) {
+            ybChsVerify.setVerifyDoctorCode(jk.getExcuteDocId());
+            ybChsVerify.setVerifyDoctorName(jk.getExcuteDocName());
+        }
+        if (cpl.getPersonType() == YbChsPriorityLevel.PERSON_TYPE_3) {
+            ybChsVerify.setVerifyDoctorCode(jk.getFeeOperatorId());
+            ybChsVerify.setVerifyDoctorName(jk.getFeeOperatorName());
+        }
+    }
+
+    /**
+     * 批量更新数据
+     *
+     * @param list
+     */
     @Override
     @Transactional
     public void updateChsVerifyImports(List<YbChsVerify> list) {
@@ -195,28 +474,24 @@ public class YbChsVerifyServiceImpl extends ServiceImpl<YbChsVerifyMapper, YbChs
             if (StringUtils.isNotBlank(item.getVerifyDksId()) &&
                     StringUtils.isNotBlank(item.getVerifyDksName()) &&
                     StringUtils.isNotBlank(item.getVerifyDoctorCode()) &&
-                    StringUtils.isNotBlank(item.getVerifyDoctorName())) {
-
-                item.setState(YbDefaultValue.VERIFYSTATE_1);
+                    StringUtils.isNotBlank(item.getVerifyDoctorName()) &&
+                    StringUtils.isNotBlank(item.getId())
+            ) {
                 String strVerifyDksName = DataTypeHelpers.stringReplaceSetString(item.getVerifyDksName(), item.getVerifyDksId() + "-");
                 item.setVerifyDksName(strVerifyDksName);
                 String strVerifyDoctorName = DataTypeHelpers.stringReplaceSetString(item.getVerifyDoctorName(), item.getVerifyDoctorCode() + "-");
                 item.setVerifyDoctorName(strVerifyDoctorName);
 
-                if (StringUtils.isBlank(item.getId())) {
-                    item.setId(UUID.randomUUID().toString());
-                    this.baseMapper.insert(item);
-                } else {
-                    LambdaQueryWrapper<YbChsVerify> queryWrapper = new LambdaQueryWrapper<>();
-                    queryWrapper.eq(YbChsVerify::getId, item.getId());
-                    queryWrapper.eq(YbChsVerify::getState, YbDefaultValue.VERIFYSTATE_1);
-                    YbChsVerify updateVerify = new YbChsVerify();
-                    updateVerify.setVerifyDoctorCode(item.getVerifyDoctorCode());
-                    updateVerify.setVerifyDoctorName(item.getVerifyDoctorName());
-                    updateVerify.setVerifyDksId(item.getVerifyDksId());
-                    updateVerify.setVerifyDksName(item.getVerifyDksName());
-                    this.baseMapper.update(updateVerify, queryWrapper);
-                }
+                LambdaQueryWrapper<YbChsVerify> queryWrapper = new LambdaQueryWrapper<>();
+                queryWrapper.eq(YbChsVerify::getId, item.getId());
+                queryWrapper.eq(YbChsVerify::getState, YbDefaultValue.VERIFYSTATE_1);
+                YbChsVerify updateVerify = new YbChsVerify();
+                updateVerify.setVerifyDoctorCode(item.getVerifyDoctorCode());
+                updateVerify.setVerifyDoctorName(item.getVerifyDoctorName());
+                updateVerify.setVerifyDksId(item.getVerifyDksId());
+                updateVerify.setVerifyDksName(item.getVerifyDksName());
+                this.baseMapper.update(updateVerify, queryWrapper);
+
             }
 
         }
@@ -257,11 +532,12 @@ public class YbChsVerifyServiceImpl extends ServiceImpl<YbChsVerifyMapper, YbChs
             boolean isOpenSms = nOpenSms == 1 ? true : false;
 
             String sendContent = "";
+            int sendType21 = ComSms.SENDTYPE_21;
             if (isOpenSms && list.size() > 0) {
                 ComSms qu = new ComSms();
                 qu.setApplyDateStr(applyDateStr);
                 qu.setAreaType(areaType);
-                qu.setSendType(ComSms.SENDTYPE_21);
+                qu.setSendType(sendType21); // CHS 核对发送
                 qu.setState(ComSms.STATE_0);
                 smsList = iComSmsService.findLmdSmsList(qu);
                 sendContent = this.iYbChsApplyService.getSendMessage(applyDateStr, addDate, areaType, false);
@@ -271,7 +547,9 @@ public class YbChsVerifyServiceImpl extends ServiceImpl<YbChsVerifyMapper, YbChs
                 if (StringUtils.isNotBlank(ybChsVerify.getVerifyDksId()) &&
                         StringUtils.isNotBlank(ybChsVerify.getVerifyDksName()) &&
                         StringUtils.isNotBlank(ybChsVerify.getVerifyDoctorCode()) &&
-                        StringUtils.isNotBlank(ybChsVerify.getVerifyDoctorName())) {
+                        StringUtils.isNotBlank(ybChsVerify.getVerifyDoctorName()) &&
+                        StringUtils.isNotBlank(ybChsVerify.getId())
+                ) {
                     queryPersonList = personList.stream().filter(
                             s -> s.getPersonCode().equals(ybChsVerify.getVerifyDoctorCode())
                     ).collect(Collectors.toList());
@@ -295,14 +573,14 @@ public class YbChsVerifyServiceImpl extends ServiceImpl<YbChsVerifyMapper, YbChs
 
                         ybChsManage.setOperateDate(thisDate);
                         ybChsManage.setOperateProcess("发送操作-接受申请");
-                        ybChsManage.setState(YbDefaultValue.ACCEPTSTATE_0);
+                        ybChsManage.setState(YbDefaultValue.ACCEPTSTATE_0); //接受申请
                         ybChsManage.setEnableDate(addDate);
                         ybChsManage.setAreaType(areaType);
 
                         iYbChsManageService.createYbChsManage(ybChsManage);
                         LambdaQueryWrapper<YbChsVerify> queryWrapper = new LambdaQueryWrapper<>();
                         queryWrapper.eq(YbChsVerify::getId, ybChsVerify.getId());
-                        queryWrapper.eq(YbChsVerify::getState, YbDefaultValue.VERIFYSTATE_2);
+                        queryWrapper.eq(YbChsVerify::getState, YbDefaultValue.VERIFYSTATE_2); // 已核对
 
                         if (isOpenSms) {
                             if (userCodeList.stream().filter(s -> s.equals(ybChsVerify.getVerifyDoctorCode())).count() == 0) {
@@ -314,7 +592,7 @@ public class YbChsVerifyServiceImpl extends ServiceImpl<YbChsVerifyMapper, YbChs
                                         comSms.setSendcode(queryPersonList.get(0).getPersonCode());
                                         comSms.setSendname(queryPersonList.get(0).getPersonName());
                                         comSms.setMobile(queryPersonList.get(0).getTel());
-                                        comSms.setSendType(ComSms.SENDTYPE_21);
+                                        comSms.setSendType(sendType21); // CHS 核对发送
                                         comSms.setState(ComSms.STATE_0);
 
                                         comSms.setSendcontent(sendContent);
@@ -334,7 +612,7 @@ public class YbChsVerifyServiceImpl extends ServiceImpl<YbChsVerifyMapper, YbChs
                         updateVerify.setSendPersonId(uId);
                         updateVerify.setSendPersonName(Uname);
                         updateVerify.setSendDate(thisDate);
-                        updateVerify.setState(YbDefaultValue.VERIFYSTATE_3);
+                        updateVerify.setState(YbDefaultValue.VERIFYSTATE_3); // 已发送
                         this.baseMapper.update(updateVerify, queryWrapper);
                     }
                 }
@@ -357,23 +635,25 @@ public class YbChsVerifyServiceImpl extends ServiceImpl<YbChsVerifyMapper, YbChs
             List<String> userCodeList = new ArrayList<>();
             int nOpenSms = febsProperties.getOpenSms();
             List<YbChsVerify> list = this.baseMapper.findChsVerifyList(applyDateStr, areaType, state, false);
-            if(list.size() > 100) {
+            if (list.size() > 100) {
                 personList = iYbPersonService.findPersonList(new YbPerson(), 0);
             } else {
                 personList = this.findPerson(list);
             }
             String sendContent = "";
             boolean isOpenSms = nOpenSms == 1 ? true : false;
+            int sendType21 = ComSms.SENDTYPE_21;
             if (isOpenSms && list.size() > 0) {
                 ComSms qu = new ComSms();
                 qu.setApplyDateStr(applyDateStr);
                 qu.setAreaType(areaType);
-                qu.setSendType(ComSms.SENDTYPE_21);
+                qu.setSendType(sendType21);// Chs核对发送
                 qu.setState(ComSms.STATE_0);
                 smsList = iComSmsService.findLmdSmsList(qu);
                 sendContent = this.iYbChsApplyService.getSendMessage(applyDateStr, addDate, areaType, false);
             }
             for (YbChsVerify ybChsVerify : list) {
+                // 不等于 已发送
                 if (ybChsVerify.getState() != YbDefaultValue.VERIFYSTATE_3) {
                     queryPersonList = personList.stream().filter(
                             s -> s.getPersonCode().equals(ybChsVerify.getVerifyDoctorCode())
@@ -407,7 +687,7 @@ public class YbChsVerifyServiceImpl extends ServiceImpl<YbChsVerifyMapper, YbChs
 
                         LambdaQueryWrapper<YbChsVerify> queryWrapper = new LambdaQueryWrapper<>();
                         queryWrapper.eq(YbChsVerify::getId, ybChsVerify.getId());
-                        queryWrapper.eq(YbChsVerify::getState, YbDefaultValue.VERIFYSTATE_2);
+                        queryWrapper.eq(YbChsVerify::getState, YbDefaultValue.VERIFYSTATE_2); // 已核对
                         if (isOpenSms) {
                             if (userCodeList.stream().filter(s -> s.equals(ybChsVerify.getVerifyDoctorCode())).count() == 0) {
                                 if (smsList.stream().filter(s -> s.getSendcode().equals(ybChsVerify.getVerifyDoctorCode())).count() == 0) {
@@ -419,7 +699,7 @@ public class YbChsVerifyServiceImpl extends ServiceImpl<YbChsVerifyMapper, YbChs
                                             comSms.setSendcode(queryPersonList.get(0).getPersonCode());
                                             comSms.setSendname(queryPersonList.get(0).getPersonName());
                                             comSms.setMobile(queryPersonList.get(0).getTel());
-                                            comSms.setSendType(ComSms.SENDTYPE_21);
+                                            comSms.setSendType(sendType21); // Chs核对发送
                                             comSms.setState(ComSms.STATE_0);
                                             comSms.setSendcontent(sendContent);
                                             comSms.setOperatorId(uId);
@@ -439,7 +719,7 @@ public class YbChsVerifyServiceImpl extends ServiceImpl<YbChsVerifyMapper, YbChs
                         updateVerify.setSendPersonId(uId);
                         updateVerify.setSendPersonName(Uname);
                         updateVerify.setSendDate(thisDate);
-                        updateVerify.setState(YbDefaultValue.VERIFYSTATE_3);
+                        updateVerify.setState(YbDefaultValue.VERIFYSTATE_3); // 已发送
                         this.baseMapper.update(updateVerify, queryWrapper);
                     }
                 }
@@ -456,31 +736,26 @@ public class YbChsVerifyServiceImpl extends ServiceImpl<YbChsVerifyMapper, YbChs
             if (StringUtils.isNotBlank(item.getVerifyDksId()) &&
                     StringUtils.isNotBlank(item.getVerifyDksName()) &&
                     StringUtils.isNotBlank(item.getVerifyDoctorCode()) &&
-                    StringUtils.isNotBlank(item.getVerifyDoctorName())) {
+                    StringUtils.isNotBlank(item.getVerifyDoctorName()) &&
+                    StringUtils.isNotBlank(item.getId())
+            ) {
                 if (personList.stream().filter(s -> s.getPersonCode().equals(item.getVerifyDoctorCode())).count() > 0) {
                     String strVerifyDksName = DataTypeHelpers.stringReplaceSetString(item.getVerifyDksName(), item.getVerifyDksId() + "-");
                     item.setVerifyDksName(strVerifyDksName);
                     String strVerifyDoctorName = DataTypeHelpers.stringReplaceSetString(item.getVerifyDoctorName(), item.getVerifyDoctorCode() + "-");
                     item.setVerifyDoctorName(strVerifyDoctorName);
 
-                    item.setState(YbDefaultValue.VERIFYSTATE_2);
-                    item.setAreaType(item.getAreaType());
+                    YbChsVerify updateVerify = new YbChsVerify();
+                    updateVerify.setVerifyDoctorCode(item.getVerifyDoctorCode());
+                    updateVerify.setVerifyDoctorName(strVerifyDoctorName);
+                    updateVerify.setVerifyDksId(item.getVerifyDksId());
+                    updateVerify.setVerifyDksName(item.getVerifyDksName());
+                    updateVerify.setState(YbDefaultValue.VERIFYSTATE_2);
+                    LambdaQueryWrapper<YbChsVerify> queryWrapper = new LambdaQueryWrapper<>();
+                    queryWrapper.eq(YbChsVerify::getId, item.getId());
+                    queryWrapper.eq(YbChsVerify::getState, YbDefaultValue.VERIFYSTATE_1);
+                    this.baseMapper.update(updateVerify, queryWrapper);
 
-                    if (StringUtils.isBlank(item.getId())) {
-                        item.setId(UUID.randomUUID().toString());
-                        this.baseMapper.insert(item);
-                    } else {
-                        YbChsVerify updateVerify = new YbChsVerify();
-                        updateVerify.setVerifyDoctorCode(item.getVerifyDoctorCode());
-                        updateVerify.setVerifyDoctorName(strVerifyDoctorName);
-                        updateVerify.setVerifyDksId(item.getVerifyDksId());
-                        updateVerify.setVerifyDksName(item.getVerifyDksName());
-                        updateVerify.setState(YbDefaultValue.VERIFYSTATE_2);
-                        LambdaQueryWrapper<YbChsVerify> queryWrapper = new LambdaQueryWrapper<>();
-                        queryWrapper.eq(YbChsVerify::getId, item.getId());
-                        queryWrapper.eq(YbChsVerify::getState, YbDefaultValue.VERIFYSTATE_1);
-                        this.baseMapper.update(updateVerify, queryWrapper);
-                    }
                 }
             }
         }
@@ -496,7 +771,7 @@ public class YbChsVerifyServiceImpl extends ServiceImpl<YbChsVerifyMapper, YbChs
             List<YbChsVerify> list = this.baseMapper.findChsVerifyList(applyDateStr, areaType, state, false);
             List<YbChsVerify> updateList = new ArrayList<>();
             List<YbPerson> personList = new ArrayList<>();
-            if(list.size() > 100) {
+            if (list.size() > 100) {
                 personList = iYbPersonService.findPersonList(new YbPerson(), 0);
             } else {
                 personList = this.findPerson(list);
@@ -505,7 +780,8 @@ public class YbChsVerifyServiceImpl extends ServiceImpl<YbChsVerifyMapper, YbChs
                 if (StringUtils.isNotBlank(item.getVerifyDksId()) &&
                         StringUtils.isNotBlank(item.getVerifyDksName()) &&
                         StringUtils.isNotBlank(item.getVerifyDoctorCode()) &&
-                        StringUtils.isNotBlank(item.getVerifyDoctorName())) {
+                        StringUtils.isNotBlank(item.getVerifyDoctorName())
+                ) {
                     if (personList.stream().filter(s -> s.getPersonCode().equals(item.getVerifyDoctorCode())).count() > 0) {
                         YbChsVerify update = new YbChsVerify();
                         update.setId(item.getId());
@@ -534,10 +810,10 @@ public class YbChsVerifyServiceImpl extends ServiceImpl<YbChsVerifyMapper, YbChs
                 update.setState(YbDefaultValue.VERIFYSTATE_1);
                 updateList.add(update);
             }
+
             if (updateList.size() > 0) {
                 this.updateBatchById(updateList);
             }
-
         }
     }
 
@@ -552,7 +828,6 @@ public class YbChsVerifyServiceImpl extends ServiceImpl<YbChsVerifyMapper, YbChs
         List<YbChsVerify> queryList = new ArrayList<>();
         List<YbChsVerify> createList = new ArrayList<>();
         List<YbChsVerify> updateList = new ArrayList<>();
-
         boolean isCreate = false;
 
         if (list.size() > 0) {
@@ -568,7 +843,7 @@ public class YbChsVerifyServiceImpl extends ServiceImpl<YbChsVerifyMapper, YbChs
                             !isImportTrue(item.getVerifyDoctorCode(), rv.getVerifyDoctorCode()) ||
                             !isImportTrue(item.getVerifyDoctorName(), rv.getVerifyDoctorName())
                     ) {
-                        if(rv.getState() == YbDefaultValue.VERIFYSTATE_1) {
+                        if (rv.getState() == YbDefaultValue.VERIFYSTATE_1) {
                             YbChsVerify udpate = new YbChsVerify();
                             udpate.setId(rv.getId());
                             udpate.setVerifyDksId(item.getVerifyDksId());
@@ -600,21 +875,35 @@ public class YbChsVerifyServiceImpl extends ServiceImpl<YbChsVerifyMapper, YbChs
             this.iYbChsApplyService.updateChsApplyState3(drgApply);
         }
     }
+
     private boolean isImportTrue(String v1, String v2) {
         v1 = v1 == null ? "" : v1;
         v2 = v2 == null ? "" : v2;
         return v1.equals(v2);
     }
 
-
     @Override
     @Transactional
-    public void deleteChsVerifyState(YbChsVerify delVerify) {
+    public void deleteChsVerifyState(YbChsVerify delVerify, YbChsApply ybChsApply) {
+        delVerify.setState(1);
         LambdaQueryWrapper<YbChsVerify> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(YbChsVerify::getApplyDateStr, delVerify.getApplyDateStr());
+        wrapper.eq(YbChsVerify::getAreaType, delVerify.getAreaType());
+        wrapper.ne(YbChsVerify::getState, delVerify.getState());
+        List<YbChsVerify> neChsVerifyState1 = this.list(wrapper);
+
+        wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(YbChsVerify::getApplyDateStr, delVerify.getApplyDateStr());
         wrapper.eq(YbChsVerify::getAreaType, delVerify.getAreaType());
         wrapper.eq(YbChsVerify::getState, delVerify.getState());
         this.baseMapper.delete(wrapper);
+
+        if (neChsVerifyState1.size() == 0 && ybChsApply.getState() == YbDefaultValue.APPLYSTATE_3) {
+            YbChsApply update = new YbChsApply();
+            update.setId(ybChsApply.getId());
+            update.setState(YbDefaultValue.APPLYSTATE_2);
+            iYbChsApplyService.updateById(update);
+        }
     }
 
     @Override
@@ -697,7 +986,7 @@ public class YbChsVerifyServiceImpl extends ServiceImpl<YbChsVerifyMapper, YbChs
         return msg;
     }
 
-
+    // type == 1 截止日期, type == 2 执行时间 凌晨 0=3分、1=6分 确认日期, type == 3 执行时间 早上 0=6时、1=7时 提醒日期
     private String getCron(Date date, int type, Integer addTime, int areaType) {
         Calendar now = Calendar.getInstance();
         now.setTime(date);
@@ -720,17 +1009,17 @@ public class YbChsVerifyServiceImpl extends ServiceImpl<YbChsVerifyMapper, YbChs
         //enableDate
         if (type == 2) {
             if (areaType == 0) {
-                cron = "0 10 0 " + ri + " " + yue + " ? " + nian + "-" + nian;
+                cron = "0 3 0 " + ri + " " + yue + " ? " + nian + "-" + nian;
             } else {
-                cron = "0 15 0 " + ri + " " + yue + " ? " + nian + "-" + nian;
+                cron = "0 6 0 " + ri + " " + yue + " ? " + nian + "-" + nian;
             }
         }
         //
         if (type == 3) {
             if (areaType == 0) {
-                cron = "0 0/3 7 " + ri + " " + yue + " ? " + nian + "-" + nian;
+                cron = "0 0/3 6 " + ri + " " + yue + " ? " + nian + "-" + nian;
             } else {
-                cron = "0 0/3 8 " + ri + " " + yue + " ? " + nian + "-" + nian;
+                cron = "0 0/3 7 " + ri + " " + yue + " ? " + nian + "-" + nian;
             }
         }
         return cron;

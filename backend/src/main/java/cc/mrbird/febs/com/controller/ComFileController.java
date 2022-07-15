@@ -1000,7 +1000,7 @@ public class ComFileController extends BaseController {
                 }
 
                 for (ComFile item : list) {
-                    String fileUrl = "uploadFile/" + inUploadFile.getApplyDateStr() + "/drg" + inUploadFile.getAreaType() +
+                    String fileUrl = "uploadFile/" + "drg/" + inUploadFile.getApplyDateStr() + "/" + inUploadFile.getAreaType() +
                             "/" + inUploadFile.getOrderNumber() + "/" + item.getServerName();
                     OutComFile outComFile = new OutComFile();
                     outComFile.setUid(item.getId());
@@ -1040,7 +1040,7 @@ public class ComFileController extends BaseController {
             String suffixName = fileName2.substring(fileName2.lastIndexOf("."));  // 后缀名
             String filePath = febsProperties.getUploadPath(); // 上传后的路径
             String fileName = UUID.randomUUID().toString() + suffixName; // 新文件名
-            String furl = filePath + inUploadFile.getApplyDateStr() + "/drg" + inUploadFile.getAreaType() +
+            String furl = filePath + "drg/" + inUploadFile.getApplyDateStr() + "/" + inUploadFile.getAreaType() +
                     "/" + inUploadFile.getOrderNumber() + "/" + fileName;
             File dest = new File(furl);
             String Id = UUID.randomUUID().toString();
@@ -1062,7 +1062,7 @@ public class ComFileController extends BaseController {
             } catch (IOException e) {
                 throw new FebsException(e.getMessage());
             }
-            String fileUrl = febsProperties.getBaseUrl() + "/uploadFile/" + inUploadFile.getApplyDateStr() + "/drg" + inUploadFile.getAreaType() +
+            String fileUrl = febsProperties.getBaseUrl() + "/uploadFile/" + "drg/" + inUploadFile.getApplyDateStr() + "/" + inUploadFile.getAreaType() +
                     "/" + inUploadFile.getOrderNumber() + "/" + fileName;
 
             outComFile.setSuccess(1);
@@ -1097,7 +1097,7 @@ public class ComFileController extends BaseController {
                 ComFile comFile = this.iComFileService.findComFileById(strId);
                 if (comFile != null) {
                     String filePath = febsProperties.getUploadPath(); // 上传后的路径
-                    String fileUrl = filePath + inUploadFile.getApplyDateStr() + "/drg" + inUploadFile.getAreaType() + "/" +
+                    String fileUrl = filePath + "drg/" + inUploadFile.getApplyDateStr() + "/" + inUploadFile.getAreaType() + "/" +
                             "/" + inUploadFile.getOrderNumber() + "/" + comFile.getServerName();
                     int count = this.iComFileService.deleteComFile(inUploadFile.getId());
                     if (count > 0) {
@@ -1121,7 +1121,7 @@ public class ComFileController extends BaseController {
     @PostMapping("fileDrgImgZip")
     public void fileDrgImgZip(QueryRequest request, InDrgUploadFile inUploadFile, HttpServletResponse response) throws FebsException {
         String path = febsProperties.getUploadPath();
-        String address = path + inUploadFile.getApplyDateStr() + "/drg" + inUploadFile.getAreaType() + "/";
+        String address = path + "drg/" + inUploadFile.getApplyDateStr() + "/" + inUploadFile.getAreaType() + "/";
         String fileName = "";
         if (inUploadFile.getFileName() != null && !inUploadFile.getFileName().equals("")) {
             fileName = inUploadFile.getFileName();
@@ -1167,7 +1167,7 @@ public class ComFileController extends BaseController {
             }
         }
         String path = febsProperties.getUploadPath();
-        String address = path + inUploadFile.getApplyDateStr() + "/drg" + inUploadFile.getAreaType() + "/";
+        String address = path + "drg/" + inUploadFile.getApplyDateStr() + "/" + inUploadFile.getAreaType() + "/";
         String fileName = orderNumberList.get(0) + "-" + inUploadFile.getEndOrderNumber().toString();
         Random r = new Random();
         int nxt = r.nextInt(10000);
@@ -1521,7 +1521,7 @@ public class ComFileController extends BaseController {
                 wrapperResult.eq(YbChsResult::getAreaType, inUploadFile.getAreaType());
 //            wrapperResult.in(YbChsResult::getOrderNum, orderNumList);
                 List<YbChsResult> resultAllList = iYbChsResultService.list(wrapperResult);
-                List<YbChsResult> resultList = getInChsResult(resultAllList,orderNumList);
+                List<YbChsResult> resultList = getInChsResult(resultAllList, orderNumList);
                 if (resultList.size() > 0) {
                     String path = febsProperties.getUploadPath();
                     String address = path;
@@ -1549,9 +1549,9 @@ public class ComFileController extends BaseController {
                     List<ComFile> fileList = iComFileService.findChsResultComFiles(inUploadFile.getApplyDateStr(), inUploadFile.getAreaType());
                     List<ComFile> fileQuery = new ArrayList<>();
                     List<ComFile> list = new ArrayList<>();
-                    for (YbChsResult result: resultList) {
-                        fileQuery = fileList.stream().filter(s->s.getRefTabId().equals(result.getId())).collect(Collectors.toList());
-                        if(fileQuery.size() > 0) {
+                    for (YbChsResult result : resultList) {
+                        fileQuery = fileList.stream().filter(s -> s.getRefTabId().equals(result.getId())).collect(Collectors.toList());
+                        if (fileQuery.size() > 0) {
                             list.addAll(fileQuery);
                         }
                     }

@@ -484,7 +484,7 @@ public class ComSmsServiceImpl extends ServiceImpl<ComSmsMapper, ComSms> impleme
                     String thisDateStr = dateFormat.format(new Date());
                     String endDateStr = dateFormat.format(endDate);
                     if(thisDateStr.equals(endDateStr)){
-                        int sendType = ComSms.SENDTYPE_8;
+                        int sendType = ComSms.SENDTYPE_8; // 截止日期提醒
                         ComSms querySms = new ComSms();
                         querySms.setApplyDateStr(applyDateStr);
                         querySms.setAreaType(areaType);
@@ -572,7 +572,7 @@ public class ComSmsServiceImpl extends ServiceImpl<ComSmsMapper, ComSms> impleme
                     String thisDateStr = dateFormat.format(new Date());
                     String endDateStr = dateFormat.format(endDate);
                     if(thisDateStr.equals(endDateStr)){
-                        int sendType = ComSms.SENDTYPE_9;
+                        int sendType = ComSms.SENDTYPE_9; // 非常规截止日期提醒
                         ComSms querySms = new ComSms();
                         querySms.setApplyDateStr(applyDateStr);
                         querySms.setAreaType(areaType);
@@ -660,7 +660,7 @@ public class ComSmsServiceImpl extends ServiceImpl<ComSmsMapper, ComSms> impleme
                     String thisDateStr = dateFormat.format(new Date());
                     String endDateStr = dateFormat.format(endDate);
                     if(thisDateStr.equals(endDateStr)){
-                        int sendType = ComSms.SENDTYPE_12;
+                        int sendType = ComSms.SENDTYPE_12; // DRG截止日期提醒
                         ComSms querySms = new ComSms();
                         querySms.setApplyDateStr(applyDateStr);
                         querySms.setAreaType(areaType);
@@ -746,7 +746,7 @@ public class ComSmsServiceImpl extends ServiceImpl<ComSmsMapper, ComSms> impleme
                     String thisDateStr = dateFormat.format(new Date());
                     String endDateStr = dateFormat.format(endDate);
                     if(thisDateStr.equals(endDateStr)){
-                        int sendType = ComSms.SENDTYPE_25;
+                        int sendType = ComSms.SENDTYPE_25; // Chs截止日期提醒
                         ComSms querySms = new ComSms();
                         querySms.setApplyDateStr(applyDateStr);
                         querySms.setAreaType(areaType);

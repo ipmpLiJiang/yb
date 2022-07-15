@@ -22,7 +22,7 @@ import com.wuwenze.poi.annotation.ExcelField;
 
 @Excel("yb_chs_confire")
 @Data
-@Accessors(chain = true)
+//@Accessors(chain = true)
 public class YbChsConfire implements Serializable , Comparable<YbChsConfire>{
 
 private static final long serialVersionUID=1L;

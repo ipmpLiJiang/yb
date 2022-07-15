@@ -195,7 +195,7 @@ public class YbChsManageServiceImpl extends ServiceImpl<YbChsManageMapper, YbChs
                                     create.setDksName(item.getReadyDksName());
                                     create.setOperateReason("未申诉");
                                     create.setOperateDate(thisDate);
-                                    create.setState(1);
+                                    create.setState(2);
                                     create.setApplyDateStr(item.getApplyDateStr());
                                     create.setOrderNum(item.getOrderNum());
                                     create.setAreaType(item.getAreaType());
@@ -296,9 +296,7 @@ public class YbChsManageServiceImpl extends ServiceImpl<YbChsManageMapper, YbChs
         }
         if (findList.size() > 0) {
             for (YbChsManage item : list) {
-                queryList = findList.stream().filter(
-                        s -> s.getId().equals(item.getId())
-                ).collect(Collectors.toList());
+                queryList = findList.stream().filter(s -> s.getId().equals(item.getId())).collect(Collectors.toList());
                 if (queryList.size() > 0) {
                     if (queryList.get(0).getState() == YbDefaultValue.AMSTATE_0) {
                         Date thisDate = new Date();
@@ -446,7 +444,13 @@ public class YbChsManageServiceImpl extends ServiceImpl<YbChsManageMapper, YbChs
         return message;
     }
 
-
+    /**
+     * 审核变更 同意、拒绝
+     * @param ybChsManage
+     * @param uId
+     * @param Uname
+     * @param type
+     */
     @Override
     @Transactional
     public void updateCreateChsManage(YbChsManage ybChsManage, Long uId, String Uname, Integer type) {
@@ -527,7 +531,8 @@ public class YbChsManageServiceImpl extends ServiceImpl<YbChsManageMapper, YbChs
             boolean isOpenSms = nOpenSms == 1 ? true : false;
             if (isOpenSms) {
                 String sendContent = this.iYbChsApplyService.getSendMessage(entity.getApplyDateStr(), enableDate, entity.getAreaType(), true);
-                iComSmsService.sendSmsService(entity.getApplyDateStr(), null, personCode, ComSms.SENDTYPE_23, entity.getAreaType(), sendContent, uId, Uname);
+                int sendType23 = ComSms.SENDTYPE_23; // Chs医保办变更
+                iComSmsService.sendSmsService(entity.getApplyDateStr(), null, personCode, sendType23, entity.getAreaType(), sendContent, uId, Uname);
             }
         }
     }
@@ -539,6 +544,12 @@ public class YbChsManageServiceImpl extends ServiceImpl<YbChsManageMapper, YbChs
         return cal.getTime();
     }
 
+    /**
+     * 管理员变更
+     * @param ybChsManage
+     * @param uId
+     * @param Uname
+     */
     @Override
     @Transactional
     public void updateCreateAdminChsManage(YbChsManage ybChsManage, Long uId, String Uname) {
@@ -700,7 +711,8 @@ public class YbChsManageServiceImpl extends ServiceImpl<YbChsManageMapper, YbChs
                         enableDate = null;
                     }
                     String sendContent = this.iYbChsApplyService.getSendMessage(entity.getApplyDateStr(), enableDate, entity.getAreaType(), true);
-                    iComSmsService.sendSmsService(entity.getApplyDateStr(), null, personCode, ComSms.SENDTYPE_24, entity.getAreaType(), sendContent, uId, Uname);
+                    int sendType24 = ComSms.SENDTYPE_24;// Chs管理员变更
+                    iComSmsService.sendSmsService(entity.getApplyDateStr(), null, personCode, sendType24, entity.getAreaType(), sendContent, uId, Uname);
                 }
             }
         }

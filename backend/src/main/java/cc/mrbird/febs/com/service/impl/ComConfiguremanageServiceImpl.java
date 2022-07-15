@@ -105,7 +105,7 @@ public class ComConfiguremanageServiceImpl extends ServiceImpl<ComConfiguremanag
 
     @Override
     public String getConfigAreaName(int areaType){
-        int ctype = 5;
+        int ctype = 5; // 院区
         List<ComConfiguremanage> configList = new ArrayList<>();
         configList = configureManager.getConfigures(ctype,"area");
         if (configList.size() == 0) {

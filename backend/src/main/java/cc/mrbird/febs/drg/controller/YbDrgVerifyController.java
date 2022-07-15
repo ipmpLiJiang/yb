@@ -90,8 +90,7 @@ public class YbDrgVerifyController extends BaseController {
         try {
             YbDrgApply ybDrgApply = this.iYbDrgApplyService.findDrgApplyByApplyDateStrs(delVerify.getApplyDateStr(), delVerify.getAreaType());
             if (ybDrgApply != null) {
-                delVerify.setState(1);
-                this.iYbDrgVerifyService.deleteDrgVerifyState(delVerify);
+                this.iYbDrgVerifyService.deleteDrgVerifyState(delVerify,ybDrgApply);
                 message = "删除成功";
                 success = 1;
             } else {

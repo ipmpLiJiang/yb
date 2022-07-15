@@ -321,7 +321,13 @@ public class YbDrgManageServiceImpl extends ServiceImpl<YbDrgManageMapper, YbDrg
         return this.list(queryWrapper);
     }
 
-
+    /**
+     * 审核变更 同意、拒绝
+     * @param ybDrgManage
+     * @param uId
+     * @param Uname
+     * @param type
+     */
     @Override
     @Transactional
     public void updateCreateDrgManage(YbDrgManage ybDrgManage, Long uId, String Uname, Integer type) {
@@ -403,11 +409,18 @@ public class YbDrgManageServiceImpl extends ServiceImpl<YbDrgManageMapper, YbDrg
             boolean isOpenSms = nOpenSms == 1 ? true : false;
             if (isOpenSms) {
                 String sendContent = this.iYbDrgApplyService.getSendMessage(entity.getApplyDateStr(), enableDate, entity.getAreaType(), true);
-                iComSmsService.sendSmsService(entity.getApplyDateStr(), null, personCode, ComSms.SENDTYPE_11, entity.getAreaType(), sendContent, uId, Uname);
+                int sendType11 = ComSms.SENDTYPE_11; // DRG医保办变更
+                iComSmsService.sendSmsService(entity.getApplyDateStr(), null, personCode, sendType11, entity.getAreaType(), sendContent, uId, Uname);
             }
         }
     }
 
+    /**
+     * 管理员变更
+     * @param ybDrgManage
+     * @param uId
+     * @param Uname
+     */
     @Override
     @Transactional
     public void updateCreateAdminDrgManage(YbDrgManage ybDrgManage, Long uId, String Uname) {
@@ -522,7 +535,7 @@ public class YbDrgManageServiceImpl extends ServiceImpl<YbDrgManageMapper, YbDrg
 
                 String filePath = febsProperties.getUploadPath(); // 上传后的路径
                 for (ComFile cf : list) {
-                    String fileUrl = filePath + entity.getApplyDateStr() + "/drg" + entity.getAreaType() +
+                    String fileUrl = filePath + "drg/" + entity.getApplyDateStr() + "/" + entity.getAreaType() +
                             "/" + entity.getOrderNumber() + "/" + cf.getServerName();
                     DataTypeHelpers.deleteFile(fileUrl);
                 }
@@ -570,7 +583,8 @@ public class YbDrgManageServiceImpl extends ServiceImpl<YbDrgManageMapper, YbDrg
                         enableDate = null;
                     }
                     String sendContent = this.iYbDrgApplyService.getSendMessage(entity.getApplyDateStr(), enableDate, entity.getAreaType(), true);
-                    iComSmsService.sendSmsService(entity.getApplyDateStr(), null, personCode, ComSms.SENDTYPE_13, entity.getAreaType(), sendContent, uId, Uname);
+                    int sendType13 = ComSms.SENDTYPE_13; // DRG管理员变更
+                    iComSmsService.sendSmsService(entity.getApplyDateStr(), null, personCode, sendType13, entity.getAreaType(), sendContent, uId, Uname);
                 }
             }
         }
@@ -629,7 +643,7 @@ public class YbDrgManageServiceImpl extends ServiceImpl<YbDrgManageMapper, YbDrg
                                     create.setDksName(item.getReadyDksName());
                                     create.setOperateReason("未申诉");
                                     create.setOperateDate(thisDate);
-                                    create.setState(1);
+                                    create.setState(2);
                                     create.setApplyDateStr(item.getApplyDateStr());
                                     create.setOrderNum(item.getOrderNum());
                                     create.setOrderNumber(item.getOrderNumber());

@@ -13,6 +13,7 @@ import cc.mrbird.febs.common.utils.SortUtil;
 import cc.mrbird.febs.chs.entity.YbChsApply;
 import cc.mrbird.febs.chs.dao.YbChsApplyMapper;
 import cc.mrbird.febs.chs.service.IYbChsApplyService;
+import cc.mrbird.febs.drg.entity.YbDrgApply;
 import cc.mrbird.febs.yb.entity.YbDefaultValue;
 import cn.hutool.core.date.DateUnit;
 import cn.hutool.core.date.DateUtil;
@@ -64,8 +65,8 @@ public class YbChsApplyServiceImpl extends ServiceImpl<YbChsApplyMapper, YbChsAp
     public IPage<YbChsApply> findYbChsApplys(QueryRequest request, YbChsApply ybChsApply) {
         try {
             LambdaQueryWrapper<YbChsApply> queryWrapper = new LambdaQueryWrapper<>();
+            queryWrapper.eq(YbChsApply::getAreaType, ybChsApply.getAreaType());
             queryWrapper.eq(YbChsApply::getIsDeletemark, 1);//1是未删 0是已删
-
 
             Page<YbChsApply> page = new Page<>();
             SortUtil.handlePageSort(request, page, false);//true 是属性  false是数据库字段可两个
@@ -114,7 +115,7 @@ public class YbChsApplyServiceImpl extends ServiceImpl<YbChsApplyMapper, YbChsAp
             }
         } else {
             List<Integer> atList = new ArrayList<>();
-            atList.add(5);
+            atList.add(5);//院区
             List<ComConfiguremanage> ccsList = iComConfiguremanageService.getConfigLists(atList);
             if (ccsList.size() > 0) {
                 ccsList = ccsList.stream().filter(s -> s.getIntField().equals(ybChsApply.getAreaType())).collect(Collectors.toList());

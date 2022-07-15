@@ -22,7 +22,5 @@ public interface YbChsResultViewMapper extends BaseMapper<YbChsResultView> {
 
     int findChsResultCount(@Param("ybChsResultView") YbChsResultView ybChsResultView);
 
-    List<YbChsResultView> findChsResultLeftDetailViewList(@Param("ybChsResultView") YbChsResultView ybChsResultView);
-
     List<YbChsResultView> findChsResultViewList(@Param("ybChsResultView") YbChsResultView ybChsResultView);
 }

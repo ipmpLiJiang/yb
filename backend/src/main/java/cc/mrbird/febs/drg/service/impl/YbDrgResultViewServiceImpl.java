@@ -181,14 +181,10 @@ public class YbDrgResultViewServiceImpl extends ServiceImpl<YbDrgResultViewMappe
         return drv;
     }
 
+
     @Override
     public List<YbDrgResultView> findDrgResultViewLists(YbDrgResultView ybDrgResultView) {
         return this.baseMapper.findDrgResultViewList(ybDrgResultView);
-    }
-
-    @Override
-    public List<YbDrgResultView> findDrgResultViewInnerLists(YbDrgResultView ybDrgResultView) {
-        return this.baseMapper.findDrgResultViewInnerList(ybDrgResultView);
     }
 
     @Override
@@ -203,7 +199,7 @@ public class YbDrgResultViewServiceImpl extends ServiceImpl<YbDrgResultViewMappe
             List<YbDrgResult> resultAllList = iYbDrgResultService.list(wrapperResult);
             List<YbDrgResult> resultList = this.getInResult(resultAllList,orderNumberList);
             String path = febsProperties.getUploadPath();
-            String address = path + drgApply.getApplyDateStr() + "/drg" + drgApply.getAreaType() + "/";
+            String address = path + "drg/" + drgApply.getApplyDateStr() + "/" + drgApply.getAreaType() + "/";
             if (resultList.size() > 0) {
                 long sumSize = 0;
                 int sumFileNumber = 0;

@@ -131,7 +131,7 @@ public class YbReconsiderApplyServiceImpl extends ServiceImpl<YbReconsiderApplyM
             }
         } else {
             List<Integer> atList = new ArrayList<>();
-            atList.add(5);
+            atList.add(5);//院区
             List<ComConfiguremanage> ccsList = iComConfiguremanageService.getConfigLists(atList);
             if (ccsList.size() > 0) {
                 ccsList = ccsList.stream().filter(s -> s.getIntField().equals(ybReconsiderApply.getAreaType())).collect(Collectors.toList());

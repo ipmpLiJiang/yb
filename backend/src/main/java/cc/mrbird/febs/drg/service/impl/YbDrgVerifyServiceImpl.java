@@ -2,10 +2,8 @@ package cc.mrbird.febs.drg.service.impl;
 
 import cc.mrbird.febs.com.controller.DataTypeHelpers;
 import cc.mrbird.febs.com.entity.ComSms;
-import cc.mrbird.febs.com.entity.ComType;
 import cc.mrbird.febs.com.service.IComConfiguremanageService;
 import cc.mrbird.febs.com.service.IComSmsService;
-import cc.mrbird.febs.com.service.IComTypeService;
 import cc.mrbird.febs.common.domain.QueryRequest;
 import cc.mrbird.febs.common.properties.FebsProperties;
 import cc.mrbird.febs.common.utils.SortUtil;
@@ -25,7 +23,6 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -136,12 +133,27 @@ public class YbDrgVerifyServiceImpl extends ServiceImpl<YbDrgVerifyMapper, YbDrg
 
     @Override
     @Transactional
-    public void deleteDrgVerifyState(YbDrgVerify delVerify) {
+    public void deleteDrgVerifyState(YbDrgVerify delVerify,YbDrgApply ybDrgApply) {
+        delVerify.setState(1);
         LambdaQueryWrapper<YbDrgVerify> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(YbDrgVerify::getApplyDateStr, delVerify.getApplyDateStr());
+        wrapper.eq(YbDrgVerify::getAreaType, delVerify.getAreaType());
+        wrapper.ne(YbDrgVerify::getState, delVerify.getState());
+        List<YbDrgVerify> neDrgVerifyState1 =  this.list(wrapper);
+
+        wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(YbDrgVerify::getApplyDateStr, delVerify.getApplyDateStr());
         wrapper.eq(YbDrgVerify::getAreaType, delVerify.getAreaType());
         wrapper.eq(YbDrgVerify::getState, delVerify.getState());
         this.baseMapper.delete(wrapper);
+
+        if(neDrgVerifyState1.size() == 0 && ybDrgApply.getState() == YbDefaultValue.DRGAPPLYSTATE_3) {
+            YbDrgApply update = new YbDrgApply();
+            update.setId(ybDrgApply.getId());
+            update.setState(YbDefaultValue.DRGAPPLYSTATE_2);
+            iYbDrgApplyService.updateById(update);
+
+        }
     }
 
     private boolean isImportTrue(String v1, String v2) {
@@ -168,12 +180,9 @@ public class YbDrgVerifyServiceImpl extends ServiceImpl<YbDrgVerifyMapper, YbDrg
 //        boolean isDept = false;
         if (list.size() > 0) {
             for (YbDrgVerify item : verifyList) {
-                queryList = list.stream().filter(
-                        s -> s.getApplyDataId().equals(item.getApplyDataId())
-                ).collect(Collectors.toList());
+                queryList = list.stream().filter(s -> s.getApplyDataId().equals(item.getApplyDataId())).collect(Collectors.toList());
                 if (queryList.size() > 0) {
                     YbDrgVerify rv = queryList.get(0);
-
                     if (!isImportTrue(item.getVerifyDksId(), rv.getVerifyDksId()) ||
                             !isImportTrue(item.getVerifyDksName(), rv.getVerifyDksName()) ||
                             !isImportTrue(item.getVerifyDoctorCode(), rv.getVerifyDoctorCode()) ||
@@ -224,6 +233,13 @@ public class YbDrgVerifyServiceImpl extends ServiceImpl<YbDrgVerifyMapper, YbDrg
         }
     }
 
+    /**
+     * 数据匹配
+     * @param applyDateStr
+     * @param areaType
+     * @param matchPersonId
+     * @param matchPersonName
+     */
     @Override
     @Transactional
     public void insertDrgVerifyImports(String applyDateStr, Integer areaType, Long matchPersonId, String matchPersonName) {
@@ -231,6 +247,7 @@ public class YbDrgVerifyServiceImpl extends ServiceImpl<YbDrgVerifyMapper, YbDrg
         boolean isCreate = true;
         if (ybDrgApply != null) {
             int state = ybDrgApply.getState();
+            // 2、上传 3、申诉
             if (state == YbDefaultValue.DRGAPPLYSTATE_2 || state == YbDefaultValue.DRGAPPLYSTATE_3) {
                 List<YbDrgApplyData> radList = iYbDrgApplyDataService.findDrgApplyDataByNotVerifys(ybDrgApply.getId(), ybDrgApply.getApplyDateStr(), areaType);
 
@@ -240,12 +257,13 @@ public class YbDrgVerifyServiceImpl extends ServiceImpl<YbDrgVerifyMapper, YbDrg
                 List<YbDrgJk> jkList = iYbDrgJkService.list(wrapper);
                 List<YbDrgJk> queryJkList = new ArrayList<>();
                 List<Integer> stateList = new ArrayList<>();
-                stateList.add(YbReconsiderPriorityLevel.PL_STATE_4);
+                stateList.add(YbReconsiderPriorityLevel.PL_STATE_4); // 4、DRG数据
                 List<YbReconsiderPriorityLevel> rplList = iYbReconsiderPriorityLevelService.findReconsiderPriorityLevelList(areaType, stateList);
                 List<YbReconsiderPriorityLevel> rplQueryList = new ArrayList<>();
                 List<YbDrgDks> dksList = iYbDrgDksService.findDksList(new YbDrgDks(), 0);
                 List<YbDrgDks> dksQueryList = new ArrayList<>();
 
+                // NOT IN ApplyData
                 if (radList.size() > 0) {
                     List<YbDrgVerify> createList = new ArrayList<>();
                     for (YbDrgApplyData item : radList) {
@@ -362,6 +380,10 @@ public class YbDrgVerifyServiceImpl extends ServiceImpl<YbDrgVerifyMapper, YbDrg
         return false;
     }
 
+    /**
+     * 批量更新数据
+     * @param list
+     */
     @Override
     @Transactional
     public void updateDrgVerifyImports(List<YbDrgVerify> list) {
@@ -369,28 +391,24 @@ public class YbDrgVerifyServiceImpl extends ServiceImpl<YbDrgVerifyMapper, YbDrg
             if (StringUtils.isNotBlank(item.getVerifyDksId()) &&
                     StringUtils.isNotBlank(item.getVerifyDksName()) &&
                     StringUtils.isNotBlank(item.getVerifyDoctorCode()) &&
-                    StringUtils.isNotBlank(item.getVerifyDoctorName())) {
-
-                item.setState(YbDefaultValue.VERIFYSTATE_1);
+                    StringUtils.isNotBlank(item.getVerifyDoctorName()) &&
+                    StringUtils.isNotBlank(item.getId())
+            ) {
                 String strVerifyDksName = DataTypeHelpers.stringReplaceSetString(item.getVerifyDksName(), item.getVerifyDksId() + "-");
                 item.setVerifyDksName(strVerifyDksName);
                 String strVerifyDoctorName = DataTypeHelpers.stringReplaceSetString(item.getVerifyDoctorName(), item.getVerifyDoctorCode() + "-");
                 item.setVerifyDoctorName(strVerifyDoctorName);
 
-                if (StringUtils.isBlank(item.getId())) {
-                    item.setId(UUID.randomUUID().toString());
-                    this.baseMapper.insert(item);
-                } else {
-                    LambdaQueryWrapper<YbDrgVerify> queryWrapper = new LambdaQueryWrapper<>();
-                    queryWrapper.eq(YbDrgVerify::getId, item.getId());
-                    queryWrapper.eq(YbDrgVerify::getState, YbDefaultValue.VERIFYSTATE_1);
-                    YbDrgVerify updateVerify = new YbDrgVerify();
-                    updateVerify.setVerifyDoctorCode(item.getVerifyDoctorCode());
-                    updateVerify.setVerifyDoctorName(item.getVerifyDoctorName());
-                    updateVerify.setVerifyDksId(item.getVerifyDksId());
-                    updateVerify.setVerifyDksName(item.getVerifyDksName());
-                    this.baseMapper.update(updateVerify, queryWrapper);
-                }
+                LambdaQueryWrapper<YbDrgVerify> queryWrapper = new LambdaQueryWrapper<>();
+                queryWrapper.eq(YbDrgVerify::getId, item.getId());
+                queryWrapper.eq(YbDrgVerify::getState, YbDefaultValue.VERIFYSTATE_1);
+                YbDrgVerify updateVerify = new YbDrgVerify();
+                updateVerify.setVerifyDoctorCode(item.getVerifyDoctorCode());
+                updateVerify.setVerifyDoctorName(item.getVerifyDoctorName());
+                updateVerify.setVerifyDksId(item.getVerifyDksId());
+                updateVerify.setVerifyDksName(item.getVerifyDksName());
+                this.baseMapper.update(updateVerify, queryWrapper);
+
             }
 
         }
@@ -429,11 +447,12 @@ public class YbDrgVerifyServiceImpl extends ServiceImpl<YbDrgVerifyMapper, YbDrg
             boolean isOpenSms = nOpenSms == 1 ? true : false;
 
             String sendContent = "";
+            int sendType10 = ComSms.SENDTYPE_10;
             if (isOpenSms && list.size() > 0) {
                 ComSms qu = new ComSms();
                 qu.setApplyDateStr(applyDateStr);
                 qu.setAreaType(areaType);
-                qu.setSendType(ComSms.SENDTYPE_10);
+                qu.setSendType(sendType10); // DRG核对发送
                 qu.setState(ComSms.STATE_0);
                 smsList = iComSmsService.findLmdSmsList(qu);
                 sendContent = this.iYbDrgApplyService.getSendMessage(applyDateStr, addDate, areaType, false);
@@ -443,7 +462,9 @@ public class YbDrgVerifyServiceImpl extends ServiceImpl<YbDrgVerifyMapper, YbDrg
                 if (StringUtils.isNotBlank(ybDrgVerify.getVerifyDksId()) &&
                         StringUtils.isNotBlank(ybDrgVerify.getVerifyDksName()) &&
                         StringUtils.isNotBlank(ybDrgVerify.getVerifyDoctorCode()) &&
-                        StringUtils.isNotBlank(ybDrgVerify.getVerifyDoctorName())) {
+                        StringUtils.isNotBlank(ybDrgVerify.getVerifyDoctorName()) &&
+                        StringUtils.isNotBlank(ybDrgVerify.getId())
+                ) {
                     queryPersonList = personList.stream().filter(
                             s -> s.getPersonCode().equals(ybDrgVerify.getVerifyDoctorCode())
                     ).collect(Collectors.toList());
@@ -487,7 +508,7 @@ public class YbDrgVerifyServiceImpl extends ServiceImpl<YbDrgVerifyMapper, YbDrg
                                         comSms.setSendcode(queryPersonList.get(0).getPersonCode());
                                         comSms.setSendname(queryPersonList.get(0).getPersonName());
                                         comSms.setMobile(queryPersonList.get(0).getTel());
-                                        comSms.setSendType(ComSms.SENDTYPE_10);
+                                        comSms.setSendType(sendType10);// DRG核对发送
                                         comSms.setState(ComSms.STATE_0);
 
                                         comSms.setSendcontent(sendContent);
@@ -535,13 +556,14 @@ public class YbDrgVerifyServiceImpl extends ServiceImpl<YbDrgVerifyMapper, YbDrg
                 personList = this.findPerson(list);
             }
             String sendContent = "";
+            int sendType10 = ComSms.SENDTYPE_10;
             boolean isOpenSms = nOpenSms == 1 ? true : false;
             if (isOpenSms && list.size() > 0) {
                 ComSms qu = new ComSms();
                 qu.setApplyDateStr(applyDateStr);
                 qu.setAreaType(areaType);
-                qu.setSendType(ComSms.SENDTYPE_10);
-                qu.setState(ComSms.STATE_0);
+                qu.setSendType(sendType10); // DRG核对发送
+                qu.setState(ComSms.STATE_0); // 未发送
                 smsList = iComSmsService.findLmdSmsList(qu);
                 sendContent = this.iYbDrgApplyService.getSendMessage(applyDateStr, addDate, areaType, false);
             }
@@ -592,7 +614,7 @@ public class YbDrgVerifyServiceImpl extends ServiceImpl<YbDrgVerifyMapper, YbDrg
                                             comSms.setSendcode(queryPersonList.get(0).getPersonCode());
                                             comSms.setSendname(queryPersonList.get(0).getPersonName());
                                             comSms.setMobile(queryPersonList.get(0).getTel());
-                                            comSms.setSendType(ComSms.SENDTYPE_10);
+                                            comSms.setSendType(sendType10); // DRG核对发送
                                             comSms.setState(ComSms.STATE_0);
                                             comSms.setSendcontent(sendContent);
                                             comSms.setOperatorId(uId);
@@ -630,31 +652,25 @@ public class YbDrgVerifyServiceImpl extends ServiceImpl<YbDrgVerifyMapper, YbDrg
             if (StringUtils.isNotBlank(item.getVerifyDksId()) &&
                     StringUtils.isNotBlank(item.getVerifyDksName()) &&
                     StringUtils.isNotBlank(item.getVerifyDoctorCode()) &&
-                    StringUtils.isNotBlank(item.getVerifyDoctorName())) {
+                    StringUtils.isNotBlank(item.getVerifyDoctorName()) &&
+                    StringUtils.isNotBlank(item.getId())) {
                 if (personList.stream().filter(s -> s.getPersonCode().equals(item.getVerifyDoctorCode())).count() > 0) {
                     String strVerifyDksName = DataTypeHelpers.stringReplaceSetString(item.getVerifyDksName(), item.getVerifyDksId() + "-");
                     item.setVerifyDksName(strVerifyDksName);
                     String strVerifyDoctorName = DataTypeHelpers.stringReplaceSetString(item.getVerifyDoctorName(), item.getVerifyDoctorCode() + "-");
                     item.setVerifyDoctorName(strVerifyDoctorName);
 
-                    item.setState(YbDefaultValue.VERIFYSTATE_2);
-                    item.setAreaType(item.getAreaType());
+                    YbDrgVerify updateVerify = new YbDrgVerify();
+                    updateVerify.setVerifyDoctorCode(item.getVerifyDoctorCode());
+                    updateVerify.setVerifyDoctorName(strVerifyDoctorName);
+                    updateVerify.setVerifyDksId(item.getVerifyDksId());
+                    updateVerify.setVerifyDksName(item.getVerifyDksName());
+                    updateVerify.setState(YbDefaultValue.VERIFYSTATE_2);
+                    LambdaQueryWrapper<YbDrgVerify> queryWrapper = new LambdaQueryWrapper<>();
+                    queryWrapper.eq(YbDrgVerify::getId, item.getId());
+                    queryWrapper.eq(YbDrgVerify::getState, YbDefaultValue.VERIFYSTATE_1);
+                    this.baseMapper.update(updateVerify, queryWrapper);
 
-                    if (StringUtils.isBlank(item.getId())) {
-                        item.setId(UUID.randomUUID().toString());
-                        this.baseMapper.insert(item);
-                    } else {
-                        YbDrgVerify updateVerify = new YbDrgVerify();
-                        updateVerify.setVerifyDoctorCode(item.getVerifyDoctorCode());
-                        updateVerify.setVerifyDoctorName(strVerifyDoctorName);
-                        updateVerify.setVerifyDksId(item.getVerifyDksId());
-                        updateVerify.setVerifyDksName(item.getVerifyDksName());
-                        updateVerify.setState(YbDefaultValue.VERIFYSTATE_2);
-                        LambdaQueryWrapper<YbDrgVerify> queryWrapper = new LambdaQueryWrapper<>();
-                        queryWrapper.eq(YbDrgVerify::getId, item.getId());
-                        queryWrapper.eq(YbDrgVerify::getState, YbDefaultValue.VERIFYSTATE_1);
-                        this.baseMapper.update(updateVerify, queryWrapper);
-                    }
                 }
             }
         }
@@ -794,7 +810,7 @@ public class YbDrgVerifyServiceImpl extends ServiceImpl<YbDrgVerifyMapper, YbDrg
         }
         return msg;
     }
-
+    // type == 1 截止日期, type == 2 执行时间 凌晨 0=5分、1=8分 确认日期, type == 3 执行时间 早上 0=8时、1=9时 提醒日期
     private String getCron(Date date, int type, Integer addTime, int areaType) {
         Calendar now = Calendar.getInstance();
         now.setTime(date);
@@ -817,17 +833,17 @@ public class YbDrgVerifyServiceImpl extends ServiceImpl<YbDrgVerifyMapper, YbDrg
         //enableDate
         if (type == 2) {
             if (areaType == 0) {
-                cron = "0 10 0 " + ri + " " + yue + " ? " + nian + "-" + nian;
+                cron = "0 5 0 " + ri + " " + yue + " ? " + nian + "-" + nian;
             } else {
-                cron = "0 15 0 " + ri + " " + yue + " ? " + nian + "-" + nian;
+                cron = "0 8 0 " + ri + " " + yue + " ? " + nian + "-" + nian;
             }
         }
         //
         if (type == 3) {
             if (areaType == 0) {
-                cron = "0 0/3 6 " + ri + " " + yue + " ? " + nian + "-" + nian;
+                cron = "0 0/3 8 " + ri + " " + yue + " ? " + nian + "-" + nian;
             } else {
-                cron = "0 0/3 7 " + ri + " " + yue + " ? " + nian + "-" + nian;
+                cron = "0 0/3 9 " + ri + " " + yue + " ? " + nian + "-" + nian;
             }
         }
         return cron;

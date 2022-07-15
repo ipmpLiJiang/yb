@@ -30,7 +30,7 @@ public interface IYbDrgVerifyService extends IService<YbDrgVerify> {
 
     void deleteYbDrgVerifys(String[] Ids);
 
-    void deleteDrgVerifyState(YbDrgVerify delVerify);
+    void deleteDrgVerifyState(YbDrgVerify delVerify,YbDrgApply ybDrgApply);
 
     void importDrgDataVerifys(YbDrgApply drgApply, List<YbDrgVerify> verifyList);
 

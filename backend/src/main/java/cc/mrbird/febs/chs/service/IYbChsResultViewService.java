@@ -21,8 +21,6 @@ public interface IYbChsResultViewService extends IService<YbChsResultView> {
 
     IPage<YbChsResultView> findYbChsResultViews(QueryRequest request, YbChsResultView ybChsResultView);
 
-    List<YbChsResultView> findChsResultLeftDetailViewLists(YbChsResultView ybChsResultView);
-
     List<YbChsResultView> findChsResultViewLists(YbChsResultView ybChsResultView);
 
     List<YbChsResultView> findChsResultFileSizeByOrderNumList(String applyDateStr, int areaType, List<Integer> orderNumList,Integer maxCount) throws IOException;

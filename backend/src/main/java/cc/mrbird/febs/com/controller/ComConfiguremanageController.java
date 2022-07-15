@@ -63,6 +63,7 @@ public class ComConfiguremanageController extends BaseController {
 
     @GetMapping("getAreaList")
     public List<OutComArea> getAreaLists() {
+        // 5 院区
         List<ComConfiguremanage> list = configureManager.getConfigures(5,"area");
         List<OutComArea> outAreaList = new ArrayList<>();
         for (ComConfiguremanage item : list){

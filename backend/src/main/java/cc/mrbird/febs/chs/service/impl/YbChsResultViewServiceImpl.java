@@ -215,11 +215,6 @@ public class YbChsResultViewServiceImpl extends ServiceImpl<YbChsResultViewMappe
     }
 
     @Override
-    public List<YbChsResultView> findChsResultLeftDetailViewLists(YbChsResultView ybChsResultView) {
-        return this.baseMapper.findChsResultLeftDetailViewList(ybChsResultView);
-    }
-
-    @Override
     public List<YbChsResultView> findChsResultViewLists(YbChsResultView ybChsResultView) {
         return this.baseMapper.findChsResultViewList(ybChsResultView);
     }

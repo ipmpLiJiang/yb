@@ -21,7 +21,5 @@ public interface IYbDrgResultViewService extends IService<YbDrgResultView> {
 
     List<YbDrgResultView> findDrgResultViewLists(YbDrgResultView ybDrgResultView);
 
-    List<YbDrgResultView> findDrgResultViewInnerLists(YbDrgResultView ybDrgResultView);
-
     List<YbDrgResultView> findDrgResultFileSizeByOrderNumberList(String applyDateStr, int areaType, List<String> orderNumberList) throws IOException;
 }

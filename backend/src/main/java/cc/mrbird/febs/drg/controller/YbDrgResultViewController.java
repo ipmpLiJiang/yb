@@ -77,7 +77,6 @@ public class YbDrgResultViewController extends BaseController {
             YbDrgApply drgApply = this.iYbDrgApplyService.findDrgApplyByApplyDateStrs(ybDrgResultView.getApplyDateStr(), ybDrgResultView.getAreaType());
             if (drgApply != null) {
                 ybDrgResultView.setPid(drgApply.getId());
-                ybDrgResultView.setAreaType(ybDrgResultView.getAreaType());
                 List<YbDrgResultView> list = this.iYbDrgResultViewService.findDrgResultViewLists(ybDrgResultView);
                 list = list.stream().sorted(Comparator.comparing(YbDrgResultView::getOrderNum)).collect(Collectors.toList());
 
@@ -218,22 +217,21 @@ public class YbDrgResultViewController extends BaseController {
             YbDrgApply drgApply = this.iYbDrgApplyService.findDrgApplyByApplyDateStrs(ybDrgResultView.getApplyDateStr(), ybDrgResultView.getAreaType());
             if (drgApply != null) {
                 ybDrgResultView.setPid(drgApply.getId());
-                ybDrgResultView.setAreaType(ybDrgResultView.getAreaType());
-                List<YbDrgResultView> list = this.iYbDrgResultViewService.findDrgResultViewInnerLists(ybDrgResultView);
-                list = list.stream().sorted(Comparator.comparing(YbDrgResultView::getOrderNum)).collect(Collectors.toList());
-
+                ybDrgResultView.setState(1);
+                List<YbDrgResultView> list = this.iYbDrgResultViewService.findDrgResultViewLists(ybDrgResultView);
                 List<YbDrgApplyDataResultYj> exportList = new ArrayList<>();
-                for (YbDrgResultView item : list) {
-                    YbDrgApplyDataResultYj dataExport = new YbDrgApplyDataResultYj();
-                    dataExport.setJzjlh(item.getJzjlh());//就诊记录号
-                    dataExport.setBah(item.getBah());//病案号
-                    dataExport.setOperateReason(item.getOperateReason());
+                if(list.size() > 0) {
+                    list = list.stream().sorted(Comparator.comparing(YbDrgResultView::getOrderNum)).collect(Collectors.toList());
+                    for (YbDrgResultView item : list) {
+                        YbDrgApplyDataResultYj dataExport = new YbDrgApplyDataResultYj();
+                        dataExport.setJzjlh(item.getJzjlh());//就诊记录号
+                        dataExport.setBah(item.getBah());//病案号
+                        dataExport.setOperateReason(item.getOperateReason());
 
-                    exportList.add(dataExport);
+                        exportList.add(dataExport);
+                    }
                 }
-
                 ExportExcelUtils.exportExcel(response, YbDrgApplyDataResultYj.class, exportList, "DRG结果意见明细数据");
-
             } else {
                 isError = true;
                 message = "未找到 " + ybDrgResultView.getApplyDateStr() + " 上传数据.";
@@ -259,11 +257,11 @@ public class YbDrgResultViewController extends BaseController {
             YbDrgApply drgApply = this.iYbDrgApplyService.findDrgApplyByApplyDateStrs(ybDrgResultView.getApplyDateStr(), ybDrgResultView.getAreaType());
             if (drgApply != null) {
                 ybDrgResultView.setPid(drgApply.getId());
-                ybDrgResultView.setAreaType(ybDrgResultView.getAreaType());
-                List<YbDrgResultView> list = this.iYbDrgResultViewService.findDrgResultViewInnerLists(ybDrgResultView);
-                list = list.stream().sorted(Comparator.comparing(YbDrgResultView::getOrderNum)).collect(Collectors.toList());
+                ybDrgResultView.setState(1);
+                List<YbDrgResultView> list = this.iYbDrgResultViewService.findDrgResultViewLists(ybDrgResultView);
                 List<YbDrgApplyDataResultWj> exportList = new ArrayList<>();
                 if (list.size() > 0) {
+                    list = list.stream().sorted(Comparator.comparing(YbDrgResultView::getOrderNum)).collect(Collectors.toList());
                     List<ComFile> fileList = iComFileService.findDrgResultComFiles(drgApply.getApplyDateStr(), drgApply.getAreaType());
                     if (fileList.size() > 0) {
                         ComType typeQuery = new ComType();

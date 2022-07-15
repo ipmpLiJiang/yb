@@ -251,7 +251,7 @@ public class YbDrgApplyDataController extends BaseController {
                                 break;
                             }
                             if (objMx.size() > 1) {
-                                List<YbDrgApplyData> ListData = new ArrayList<>();
+                                List<YbDrgApplyData> insertDataList = new ArrayList<>();
                                 if (objMx.get(0).length >= 10) {
                                     for (int i = 1; i < objMx.size(); i++) {
                                         message = "上传数据读取失败，请确保Excel列表数据正确无误.";
@@ -290,20 +290,20 @@ public class YbDrgApplyDataController extends BaseController {
 
                                         String strLy = DataTypeHelpers.importTernaryOperate(objMx.get(i), 9);//理由
                                         rrData.setLy(strLy);
-                                        ListData.add(rrData);
+                                        insertDataList.add(rrData);
                                     }
                                 } else {
                                     blError = true;
                                     message = "Excel导入失败，Sheet明细扣款 列表列数不正确";
                                 }
                                 if (!blError) {
-                                    if (ListData.size() > 0) {
+                                    if (insertDataList.size() > 0) {
                                         YbDrgApply ybDrgApply = new YbDrgApply();
                                         ybDrgApply.setState(YbDefaultValue.DRGAPPLYSTATE_2);
                                         ybDrgApply.setId(pid);
                                         ybDrgApply.setUploadFileName(uploadFileName);
 
-                                        this.iYbDrgApplyDataService.importDrgApply(ybDrgApply, ListData);
+                                        this.iYbDrgApplyDataService.importDrgApply(ybDrgApply, insertDataList);
                                         success = 1;
                                         message = "Excel导入成功.";
                                     } else {

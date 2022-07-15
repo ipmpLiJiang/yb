@@ -20,6 +20,12 @@ import cn.hutool.poi.excel.ExcelWriter;
 import cn.hutool.poi.excel.StyleSet;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
+import net.sourceforge.pinyin4j.PinyinHelper;
+import net.sourceforge.pinyin4j.format.HanyuPinyinCaseType;
+import net.sourceforge.pinyin4j.format.HanyuPinyinOutputFormat;
+import net.sourceforge.pinyin4j.format.HanyuPinyinToneType;
+import net.sourceforge.pinyin4j.format.HanyuPinyinVCharType;
+import net.sourceforge.pinyin4j.format.exception.BadHanyuPinyinOutputFormatCombination;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Font;
@@ -40,26 +46,42 @@ import java.util.stream.Collectors;
  * @createDate 2020/11/5
  */
 public class Test {
-    public static void main(String[] args) {
-        List<YbDept> list = new ArrayList<>();
-        Random r= new Random();
-        for (int i = 1; i < 10; i++) {
-            YbDept dept = new YbDept();
-            dept.setId(r.nextInt(20));
-            dept.setDeptId("dept" + i);
-            dept.setDeptName("科室" + i);
-            dept.setIsDeletemark(1);
-            if (i < 3) {
-                dept.setCreateTime(new Date());
-            }
-            dept.setComments("d" + i);
-            list.add(dept);
+    public static void main(String[] args) throws BadHanyuPinyinOutputFormatCombination {
+        HanyuPinyinOutputFormat format = new HanyuPinyinOutputFormat();
+        //拼音小写
+        format.setCaseType(HanyuPinyinCaseType.LOWERCASE);
+        //不带声调
+        format.setToneType(HanyuPinyinToneType.WITHOUT_TONE);
+//        format.setVCharType(HanyuPinyinVCharType.WITH_V);
+        //要转换的中文，格式，转换之后的拼音的分隔符，遇到不能转换的是否保留   wo,shi,zhong,guo,ren,，hello
+//        System.out.println(PinyinHelper.toHanYuPinyinString("我是中国人，hello", format, ",", true));
+        String str = "我是中国人";
+        char[] array = str.toCharArray();
+        if(array[0] >128) {
+            String[] arr = PinyinHelper.toHanyuPinyinStringArray(array[0], format);
+            System.out.println(arr);
+        } else {
+            System.out.println("no");
         }
-
-
-        String dataJson = "[{'title':'科室编码','dataIndex':'deptCode'}," +
-                "{'title':'科室名称','dataIndex':'deptName'}," +
-                "{'title':'备注','dataIndex':'comments'}]";
+        //        List<YbDept> list = new ArrayList<>();
+//        Random r= new Random();
+//        for (int i = 1; i < 10; i++) {
+//            YbDept dept = new YbDept();
+//            dept.setId(r.nextInt(20));
+//            dept.setDeptId("dept" + i);
+//            dept.setDeptName("科室" + i);
+//            dept.setIsDeletemark(1);
+//            if (i < 3) {
+//                dept.setCreateTime(new Date());
+//            }
+//            dept.setComments("d" + i);
+//            list.add(dept);
+//        }
+//
+//
+//        String dataJson = "[{'title':'科室编码','dataIndex':'deptCode'}," +
+//                "{'title':'科室名称','dataIndex':'deptName'}," +
+//                "{'title':'备注','dataIndex':'comments'}]";
 
         try {
 //            AA(list, dataJson,"d:/writeMapTest.xlsx");
@@ -88,9 +110,9 @@ public class Test {
 //                new Rectangle(50, 50, 448, 448)//裁剪的矩形区域
 //            );
 
-            Img.from(FileUtil.file("C:/Users/dajiang/Desktop/img/234.jpg"))
-                    .setQuality(0.2)//压缩比率
-                    .write(FileUtil.file("C:/Users/dajiang/Desktop/img/234_target.jpg"));
+//            Img.from(FileUtil.file("C:/Users/dajiang/Desktop/img/234.jpg"))
+//                    .setQuality(0.2)//压缩比率
+//                    .write(FileUtil.file("C:/Users/dajiang/Desktop/img/234_target.jpg"));
 
         } catch (Exception e) {
             System.out.println(e.getMessage());

@@ -1,8 +1,6 @@
 package cc.mrbird.febs.chs.controller;
 
-import cc.mrbird.febs.chs.entity.YbChsApply;
-import cc.mrbird.febs.chs.entity.YbChsApplyData;
-import cc.mrbird.febs.chs.entity.YbChsJk;
+import cc.mrbird.febs.chs.entity.*;
 import cc.mrbird.febs.chs.service.IYbChsApplyDataService;
 import cc.mrbird.febs.chs.service.IYbChsApplyService;
 import cc.mrbird.febs.com.controller.DataTypeHelpers;
@@ -16,7 +14,6 @@ import cc.mrbird.febs.common.exception.FebsException;
 import cc.mrbird.febs.common.domain.QueryRequest;
 
 import cc.mrbird.febs.chs.service.IYbChsVerifyService;
-import cc.mrbird.febs.chs.entity.YbChsVerify;
 
 import cc.mrbird.febs.common.properties.FebsProperties;
 import cc.mrbird.febs.common.utils.FebsUtil;
@@ -146,8 +143,7 @@ public class YbChsVerifyController extends BaseController {
         try {
             YbChsApply ybChsApply = this.iYbChsApplyService.findChsApplyByApplyDateStrs(delVerify.getApplyDateStr(), delVerify.getAreaType());
             if (ybChsApply != null) {
-                delVerify.setState(1);
-                this.iYbChsVerifyService.deleteChsVerifyState(delVerify);
+                this.iYbChsVerifyService.deleteChsVerifyState(delVerify,ybChsApply);
                 message = "删除成功";
                 success = 1;
             } else {
@@ -184,15 +180,23 @@ public class YbChsVerifyController extends BaseController {
 
     @PostMapping("importChsVerify")
     @RequiresPermissions("ybChsVerify:addImport")
-    public void importChsVerifys(String applyDate, Integer areaType) throws FebsException {
+    public FebsResponse importChsVerifys(String applyDate, Integer areaType) throws FebsException {
+        ModelMap map = new ModelMap();
+        int success = 0;
+        List<YbChsPriorityLevelBack> backList = new ArrayList<>();
         try {
             User currentUser = FebsUtil.getCurrentUser();
-            this.iYbChsVerifyService.insertChsVerifyImports(applyDate, areaType, currentUser.getUserId(), currentUser.getUsername());
+            this.iYbChsVerifyService.insertChsVerifyImports(applyDate, areaType, currentUser.getUserId(), currentUser.getUsername(), backList);
+            success = 1;
         } catch (Exception e) {
             message = "匹配失败";
             log.error(message, e);
             throw new FebsException(message);
         }
+        map.put("message",message);
+        map.put("success",success);
+        map.put("data",backList);
+        return  new FebsResponse().data(map);
     }
 
     @Log("修改")

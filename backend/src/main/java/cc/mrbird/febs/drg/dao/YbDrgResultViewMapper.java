@@ -17,6 +17,4 @@ import java.util.List;
 public interface YbDrgResultViewMapper extends BaseMapper<YbDrgResultView> {
 
     List<YbDrgResultView> findDrgResultViewList(@Param("ybDrgResultView") YbDrgResultView ybDrgResultView);
-
-    List<YbDrgResultView> findDrgResultViewInnerList(@Param("ybDrgResultView") YbDrgResultView ybDrgResultView);
 }

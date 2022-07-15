@@ -74,7 +74,7 @@ public class ComSms implements Serializable, Comparable<ComSms> {
     public static final int SENDTYPE_9 = 9;
 
     /**
-     * 10 DRG核对发生
+     * 10 DRG核对发送
      */
     public static final int SENDTYPE_10 = 10;
 

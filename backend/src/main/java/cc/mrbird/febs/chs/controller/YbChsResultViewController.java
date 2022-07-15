@@ -74,7 +74,7 @@ public class YbChsResultViewController extends BaseController {
             YbChsApply drgApply = this.iYbChsApplyService.findChsApplyByApplyDateStrs(ybChsResultView.getApplyDateStr(), ybChsResultView.getAreaType());
             if (drgApply != null) {
                 ybChsResultView.setPid(drgApply.getId());
-                List<YbChsResultView> list = this.iYbChsResultViewService.findChsResultLeftDetailViewLists(ybChsResultView);
+                List<YbChsResultView> list = this.iYbChsResultViewService.findChsResultViewLists(ybChsResultView);
                 list = list.stream().sorted(Comparator.comparing(YbChsResultView::getOrderNum)).collect(Collectors.toList());
 
                 List<YbChsManage> manageList = new ArrayList<>();
@@ -207,8 +207,9 @@ public class YbChsResultViewController extends BaseController {
             YbChsApply chsApply = this.iYbChsApplyService.findChsApplyByApplyDateStrs(ybChsResultView.getApplyDateStr(), ybChsResultView.getAreaType());
             if (chsApply != null) {
                 ybChsResultView.setPid(chsApply.getId());
-                List<YbChsApplyDataResult> exportList = new ArrayList<>();
+                ybChsResultView.setState(1);
                 List<YbChsResultView> list = this.iYbChsResultViewService.findChsResultViewLists(ybChsResultView);
+                List<YbChsApplyDataResult> exportList = new ArrayList<>();
                 if(list.size()>0) {
                     list = list.stream().sorted(Comparator.comparing(YbChsResultView::getOrderNum)).collect(Collectors.toList());
 

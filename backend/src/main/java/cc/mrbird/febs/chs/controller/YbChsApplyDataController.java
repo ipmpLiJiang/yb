@@ -188,7 +188,7 @@ public class YbChsApplyDataController extends BaseController {
                                 break;
                             }
                             if (objMx.size() > 1) {
-                                List<YbChsApplyData> ListData = new ArrayList<>();
+                                List<YbChsApplyData> insertDataList = new ArrayList<>();
                                 DateFormat formater = new SimpleDateFormat("yyyy-MM-dd");
                                 if (objMx.size() > 1) {
                                     int orderZy = 1;
@@ -330,7 +330,7 @@ public class YbChsApplyDataController extends BaseController {
                                             rrData.setJgLevel(jgLevel);
                                             rrData.setState(0);
                                             rrData.setIsDeletemark(1);
-                                            ListData.add(rrData);
+                                            insertDataList.add(rrData);
                                         }
                                     } else {
                                         blError = true;
@@ -338,13 +338,13 @@ public class YbChsApplyDataController extends BaseController {
                                     }
                                 }
                                 if (!blError) {
-                                    if (ListData.size() > 0) {
+                                    if (insertDataList.size() > 0) {
                                         YbChsApply ybChsApply = new YbChsApply();
                                         ybChsApply.setState(YbDefaultValue.APPLYSTATE_2);
                                         ybChsApply.setId(pid);
                                         ybChsApply.setUploadFileName(uploadFileName);
                                         message = "Excel导入失败，插入数据异常.";
-                                        this.iYbChsApplyDataService.importChsApply(ybChsApply, ListData);
+                                        this.iYbChsApplyDataService.importChsApply(ybChsApply, insertDataList);
                                         success = 1;
                                         message = "Excel导入成功.";
                                     } else {
