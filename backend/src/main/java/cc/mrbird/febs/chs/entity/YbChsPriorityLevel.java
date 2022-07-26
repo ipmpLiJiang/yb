@@ -35,12 +35,12 @@ public class YbChsPriorityLevel implements Serializable, Comparable<YbChsPriorit
     private static final long serialVersionUID = 1L;
 
     /**
-     * 1开单人员
+     * 1开单医生
      */
     public static final Integer PERSON_TYPE_1 = 1;
 
     /**
-     * 2执行人员
+     * 2执行医生
      */
     public static final Integer PERSON_TYPE_2 = 2;
 
@@ -53,6 +53,11 @@ public class YbChsPriorityLevel implements Serializable, Comparable<YbChsPriorit
      * 4固定人员
      */
     public static final Integer PERSON_TYPE_4 = 4;
+
+    /**
+     * 5主治医生
+     */
+    public static final Integer PERSON_TYPE_5 = 5;
 
 
     /**
@@ -74,6 +79,11 @@ public class YbChsPriorityLevel implements Serializable, Comparable<YbChsPriorit
      * 4固定科室
      */
     public static final Integer DEPT_TYPE_4 = 4;
+
+    /**
+     * 5主治科室
+     */
+    public static final Integer DEPT_TYPE_5 = 5;
 
     /**
      * id
@@ -313,6 +323,7 @@ public class YbChsPriorityLevel implements Serializable, Comparable<YbChsPriorit
     public static final String ISPROJECT = "isProject";
 
     public static final String PLTYPE = "plType";
+
 
     @Override
     public int compareTo(YbChsPriorityLevel o) {

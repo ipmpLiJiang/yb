@@ -123,6 +123,13 @@ public class YbChsVerify implements Serializable, Comparable<YbChsVerify> {
     private transient String sendDateFrom;
     private transient String sendDateTo;
 
+    /**
+     * 数据类型
+     */
+    @TableField("dataType")
+    @ExcelField(value = "数据类型")
+    private Integer dataType;
+
 
     public static final String ID = "id";
 
@@ -149,6 +156,8 @@ public class YbChsVerify implements Serializable, Comparable<YbChsVerify> {
     public static final String SENDPERSONNAME = "sendPersonName";
 
     public static final String SENDDATE = "sendDate";
+
+    public static final String DATATYPE = "dataType";
 
     @Override
     public int compareTo(YbChsVerify o) {

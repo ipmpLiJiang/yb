@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cc.mrbird.febs.chs.dao.YbChsVerifyMsgMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="cc.mrbird.febs.chs.entity.YbChsVerifyMsg">
+        <id column="id" property="id"/>
+        <result column="applyDateStr" property="applyDateStr"/>
+        <result column="projectName" property="projectName"/>
+        <result column="ruleName" property="ruleName"/>
+        <result column="zymzName" property="zymzName"/>
+        <result column="areaType" property="areaType"/>
+        <result column="currencyField" property="currencyField"/>
+        <result column="currencyField2" property="currencyField2"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, applyDateStr, projectName, ruleName, zymzName, areaType, currencyField, currencyField2
+    </sql>
+    <update id="updateYbChsVerifyMsg" parameterType="cc.mrbird.febs.chs.entity.YbChsVerifyMsg">
+        update yb_chs_verify_msg
+        <trim prefix="set" suffixOverrides=",">
+            <if test="applyDateStr != null">applyDateStr=#{applyDateStr},</if>
+            <if test="projectName != null">projectName=#{projectName},</if>
+            <if test="ruleName != null">ruleName=#{ruleName},</if>
+            <if test="zymzName != null">zymzName=#{zymzName},</if>
+            <if test="areaType != null">areaType=#{areaType},</if>
+            <if test="currencyField != null">currencyField=#{currencyField},</if>
+            <if test="currencyField2 != null">currencyField2=#{currencyField2},</if>
+        </trim>
+        where id=#{id}
+
+    </update>
+    <select id="findYbChsVerifyMsg" resultType="cc.mrbird.febs.chs.entity.YbChsVerifyMsg"
+            parameterType="cc.mrbird.febs.chs.entity.YbChsVerifyMsg">
+        select * from yb_chs_verify_msg
+        where 1=1
+        <if test="ybChsVerifyMsg.id != null">and id =#{ ybChsVerifyMsg.id}</if>
+        <if test="ybChsVerifyMsg.applyDateStr != null and ybChsVerifyMsg.applyDateStr != ''">and applyDateStr like
+            concat('%', #{ ybChsVerifyMsg.applyDateStr} ,'%')
+        </if>
+        <if test="ybChsVerifyMsg.projectName != null and ybChsVerifyMsg.projectName != ''">and projectName like
+            concat('%', #{ ybChsVerifyMsg.projectName} ,'%')
+        </if>
+        <if test="ybChsVerifyMsg.ruleName != null and ybChsVerifyMsg.ruleName != ''">and ruleName like concat('%',
+            #{ ybChsVerifyMsg.ruleName} ,'%')
+        </if>
+        <if test="ybChsVerifyMsg.zymzName != null and ybChsVerifyMsg.zymzName != ''">and zymzName like concat('%',
+            #{ ybChsVerifyMsg.zymzName} ,'%')
+        </if>
+        <if test="ybChsVerifyMsg.areaType != null">and areaType =#{ ybChsVerifyMsg.areaType}</if>
+    </select>
+
+</mapper>

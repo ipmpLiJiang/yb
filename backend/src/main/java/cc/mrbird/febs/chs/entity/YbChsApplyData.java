@@ -358,6 +358,13 @@ public class YbChsApplyData implements Serializable, Comparable<YbChsApplyData> 
     @ExcelField(value = "医保项目名称One")
     private String projectNameOne;
 
+    /**
+     * 数据类型
+     */
+    @TableField("dataType")
+    @ExcelField(value ="数据类型")
+    private Integer dataType;
+
 
     public static final String ID = "id";
 
@@ -442,6 +449,8 @@ public class YbChsApplyData implements Serializable, Comparable<YbChsApplyData> 
     public static final String PROJECTCODEONE = "projectCodeOne";
 
     public static final String PROJECTNAMEONE = "projectNameOne";
+
+    public static final String DATATYPE = "dataType";
 
     @Override
     public int compareTo(YbChsApplyData o) {

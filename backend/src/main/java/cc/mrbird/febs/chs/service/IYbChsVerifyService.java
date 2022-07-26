@@ -3,6 +3,7 @@ package cc.mrbird.febs.chs.service;
 import cc.mrbird.febs.chs.entity.YbChsApply;
 import cc.mrbird.febs.chs.entity.YbChsPriorityLevelBack;
 import cc.mrbird.febs.chs.entity.YbChsVerify;
+import cc.mrbird.febs.chs.entity.YbChsVerifyMsg;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.util.List;
@@ -31,7 +32,7 @@ public interface IYbChsVerifyService extends IService<YbChsVerify> {
 
     void deleteYbChsVerifys(String[] Ids);
 
-    void insertChsVerifyImports(String applyDateStr, Integer areaType, Long matchPersonId, String matchPersonName, List<YbChsPriorityLevelBack> backList);
+    void insertChsVerifyImports(String applyDateStr, Integer areaType, Long matchPersonId, String matchPersonName, List<YbChsVerifyMsg> backList);
 
     void updateReviewerStates(List<YbChsVerify> list);
 

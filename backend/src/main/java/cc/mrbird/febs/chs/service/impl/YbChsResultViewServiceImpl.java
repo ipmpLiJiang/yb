@@ -211,6 +211,7 @@ public class YbChsResultViewServiceImpl extends ServiceImpl<YbChsResultViewMappe
         crv.setOperateDate(cr.getOperateDate());
         crv.setState(cr.getState());
         crv.setAreaType(cr.getAreaType());
+        crv.setDataType(cr.getDataType());
         return crv;
     }
 

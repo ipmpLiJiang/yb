@@ -2,70 +2,91 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cc.mrbird.febs.chs.dao.YbChsResultMapper">
 
-        <!-- 通用查询映射结果 -->
-        <resultMap id="BaseResultMap" type="cc.mrbird.febs.chs.entity.YbChsResult">
-                    <id column="id" property="id"/>
-                    <result column="applyDataId" property="applyDataId"/>
-                    <result column="verifyId" property="verifyId"/>
-                    <result column="manageId" property="manageId"/>
-                    <result column="doctorCode" property="doctorCode"/>
-                    <result column="doctorName" property="doctorName"/>
-                    <result column="dksId" property="dksId"/>
-                    <result column="dksName" property="dksName"/>
-                    <result column="operateReason" property="operateReason"/>
-                    <result column="operateDate" property="operateDate"/>
-                    <result column="STATE" property="state"/>
-                    <result column="applyDateStr" property="applyDateStr"/>
-                    <result column="orderNum" property="orderNum"/>
-                    <result column="areaType" property="areaType"/>
-        </resultMap>
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="cc.mrbird.febs.chs.entity.YbChsResult">
+        <id column="id" property="id"/>
+        <result column="applyDataId" property="applyDataId"/>
+        <result column="verifyId" property="verifyId"/>
+        <result column="manageId" property="manageId"/>
+        <result column="doctorCode" property="doctorCode"/>
+        <result column="doctorName" property="doctorName"/>
+        <result column="dksId" property="dksId"/>
+        <result column="dksName" property="dksName"/>
+        <result column="operateReason" property="operateReason"/>
+        <result column="operateDate" property="operateDate"/>
+        <result column="STATE" property="state"/>
+        <result column="applyDateStr" property="applyDateStr"/>
+        <result column="orderNum" property="orderNum"/>
+        <result column="areaType" property="areaType"/>
+        <result column="dataType" property="dataType"/>
+    </resultMap>
 
-        <!-- 通用查询结果列 -->
-        <sql id="Base_Column_List">
-        id, applyDataId, verifyId, manageId, doctorCode, doctorName, dksId, dksName, operateReason, operateDate, STATE, applyDateStr, orderNum, areaType
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, applyDataId, verifyId, manageId, doctorCode, doctorName, dksId, dksName, operateReason, operateDate, STATE, applyDateStr, orderNum, areaType, dataType
     </sql>
     <update id="updateYbChsResult" parameterType="cc.mrbird.febs.chs.entity.YbChsResult">
         update yb_chs_result
         <trim prefix="set" suffixOverrides=",">
-<if test="applyDataId != null">applyDataId=#{applyDataId},</if>
-<if test="verifyId != null">verifyId=#{verifyId},</if>
-<if test="manageId != null">manageId=#{manageId},</if>
-<if test="doctorCode != null">doctorCode=#{doctorCode},</if>
-<if test="doctorName != null">doctorName=#{doctorName},</if>
-<if test="dksId != null">dksId=#{dksId},</if>
-<if test="dksName != null">dksName=#{dksName},</if>
-<if test="operateReason != null">operateReason=#{operateReason},</if>
-<if test="operateDate != null">operateDate=#{operateDate},</if>
-<if test="state != null">STATE=#{state},</if>
-<if test="applyDateStr != null">applyDateStr=#{applyDateStr},</if>
-<if test="orderNum != null">orderNum=#{orderNum},</if>
-<if test="areaType != null">areaType=#{areaType},</if>
+            <if test="applyDataId != null">applyDataId=#{applyDataId},</if>
+            <if test="verifyId != null">verifyId=#{verifyId},</if>
+            <if test="manageId != null">manageId=#{manageId},</if>
+            <if test="doctorCode != null">doctorCode=#{doctorCode},</if>
+            <if test="doctorName != null">doctorName=#{doctorName},</if>
+            <if test="dksId != null">dksId=#{dksId},</if>
+            <if test="dksName != null">dksName=#{dksName},</if>
+            <if test="operateReason != null">operateReason=#{operateReason},</if>
+            <if test="operateDate != null">operateDate=#{operateDate},</if>
+            <if test="state != null">STATE=#{state},</if>
+            <if test="applyDateStr != null">applyDateStr=#{applyDateStr},</if>
+            <if test="orderNum != null">orderNum=#{orderNum},</if>
+            <if test="areaType != null">areaType=#{areaType},</if>
+            <if test="dataType != null">dataType=#{dataType},</if>
         </trim>
-                where id=#{id}
+        where id=#{id}
 
     </update>
-    <select id="findYbChsResult" resultType="cc.mrbird.febs.chs.entity.YbChsResult" parameterType="cc.mrbird.febs.chs.entity.YbChsResult">
-        select  *  from yb_chs_result
-        where  1=1
-            <if test="ybChsResult.id != null and ybChsResult.id != ''"> and id =#{ ybChsResult.id} </if>
-            <if test="ybChsResult.applyDataId != null and ybChsResult.applyDataId != ''"> and applyDataId like concat('%', #{ ybChsResult.applyDataId} ,'%')</if>
-            <if test="ybChsResult.verifyId != null and ybChsResult.verifyId != ''"> and verifyId like concat('%', #{ ybChsResult.verifyId} ,'%')</if>
-            <if test="ybChsResult.manageId != null and ybChsResult.manageId != ''"> and manageId like concat('%', #{ ybChsResult.manageId} ,'%')</if>
-            <if test="ybChsResult.doctorCode != null and ybChsResult.doctorCode != ''"> and doctorCode like concat('%', #{ ybChsResult.doctorCode} ,'%')</if>
-            <if test="ybChsResult.doctorName != null and ybChsResult.doctorName != ''"> and doctorName like concat('%', #{ ybChsResult.doctorName} ,'%')</if>
-            <if test="ybChsResult.dksId != null and ybChsResult.dksId != ''"> and dksId like concat('%', #{ ybChsResult.dksId} ,'%')</if>
-            <if test="ybChsResult.dksName != null and ybChsResult.dksName != ''"> and dksName like concat('%', #{ ybChsResult.dksName} ,'%')</if>
-            <if test="ybChsResult.operateReason != null and ybChsResult.operateReason != ''"> and operateReason like concat('%', #{ ybChsResult.operateReason} ,'%')</if>
+    <select id="findYbChsResult" resultType="cc.mrbird.febs.chs.entity.YbChsResult"
+            parameterType="cc.mrbird.febs.chs.entity.YbChsResult">
+        select * from yb_chs_result
+        where 1=1
+        <if test="ybChsResult.id != null and ybChsResult.id != ''">and id =#{ ybChsResult.id}</if>
+        <if test="ybChsResult.applyDataId != null and ybChsResult.applyDataId != ''">and applyDataId like concat('%',
+            #{ ybChsResult.applyDataId} ,'%')
+        </if>
+        <if test="ybChsResult.verifyId != null and ybChsResult.verifyId != ''">and verifyId like concat('%',
+            #{ ybChsResult.verifyId} ,'%')
+        </if>
+        <if test="ybChsResult.manageId != null and ybChsResult.manageId != ''">and manageId like concat('%',
+            #{ ybChsResult.manageId} ,'%')
+        </if>
+        <if test="ybChsResult.doctorCode != null and ybChsResult.doctorCode != ''">and doctorCode like concat('%',
+            #{ ybChsResult.doctorCode} ,'%')
+        </if>
+        <if test="ybChsResult.doctorName != null and ybChsResult.doctorName != ''">and doctorName like concat('%',
+            #{ ybChsResult.doctorName} ,'%')
+        </if>
+        <if test="ybChsResult.dksId != null and ybChsResult.dksId != ''">and dksId like concat('%',
+            #{ ybChsResult.dksId} ,'%')
+        </if>
+        <if test="ybChsResult.dksName != null and ybChsResult.dksName != ''">and dksName like concat('%',
+            #{ ybChsResult.dksName} ,'%')
+        </if>
+        <if test="ybChsResult.operateReason != null and ybChsResult.operateReason != ''">and operateReason like
+            concat('%', #{ ybChsResult.operateReason} ,'%')
+        </if>
         <if test="ybChsResult.operateDateFrom!= null">
             AND ybChsResult.operateDate <![CDATA[ >= ]]>  operateDateFrom}
         </if>
         <if test="ybChsResult.operateDateTo!= null">
             AND ybChsResult.operateDate <![CDATA[ <= ]]>  operateDateTo}
         </if>
-        <if test="ybChsResult.state != null"> and STATE =#{ ybChsResult.state} </if>
-            <if test="ybChsResult.applyDateStr != null and ybChsResult.applyDateStr != ''"> and applyDateStr like concat('%', #{ ybChsResult.applyDateStr} ,'%')</if>
-        <if test="ybChsResult.orderNum != null"> and orderNum =#{ ybChsResult.orderNum} </if>
-        <if test="ybChsResult.areaType != null"> and areaType =#{ ybChsResult.areaType} </if>
-</select>
+        <if test="ybChsResult.state != null">and STATE =#{ ybChsResult.state}</if>
+        <if test="ybChsResult.applyDateStr != null and ybChsResult.applyDateStr != ''">and applyDateStr like concat('%',
+            #{ ybChsResult.applyDateStr} ,'%')
+        </if>
+        <if test="ybChsResult.orderNum != null">and orderNum =#{ ybChsResult.orderNum}</if>
+        <if test="ybChsResult.areaType != null">and areaType =#{ ybChsResult.areaType}</if>
+    </select>
 
 </mapper>

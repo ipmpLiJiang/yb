@@ -143,11 +143,15 @@ public class YbDrgApplyDataController extends BaseController {
         int success = 0;
         try {
             int count = this.iYbDrgApplyDataService.deleteDrgApplyDataByPid(ybDrgApplyData);
-            success = count == 1 ? 1 : 0;
-            if (success == 1) {
-                message = "删除明细成功.";
+            if (count == 2) {
+                message = "删除明细失败，请先删除DRG接口数据.";
             } else {
-                message = "删除明细失败.";
+                success = count == 1 ? 1 : 0;
+                if (success == 1) {
+                    message = "删除明细成功.";
+                } else {
+                    message = "删除明细失败 或 状态已更新无法删除.";
+                }
             }
         } catch (Exception e) {
             message = "删除明细失败.";
@@ -162,11 +166,11 @@ public class YbDrgApplyDataController extends BaseController {
 
     @PostMapping("getJk")
     @RequiresPermissions("ybDrgApplyData:add")
-    public FebsResponse getJk(String applyDateStr,Integer areaType) {
+    public FebsResponse getJk(String applyDateStr, Integer areaType) {
         int success = 0;
         try {
-            message= this.iYbDrgApplyDataService.getDrgJk(applyDateStr,areaType);
-            if(message.equals("ok")){
+            message = this.iYbDrgApplyDataService.getDrgJk(applyDateStr, areaType);
+            if (message.equals("ok")) {
                 success = 1;
             } else {
                 message = message.equals("") ? "未获取到DRG数据." : message;
@@ -184,17 +188,17 @@ public class YbDrgApplyDataController extends BaseController {
 
     @PostMapping("delJk")
     @RequiresPermissions("ybDrgApplyData:add")
-    public FebsResponse delJk1(String applyDateStr,Integer areaType) {
+    public FebsResponse delJk1(String applyDateStr, Integer areaType) {
         int success = 0;
         try {
-            message= this.iYbDrgApplyDataService.delDrgJk(applyDateStr,areaType);
-            if(message.equals("ok")){
+            message = this.iYbDrgApplyDataService.delDrgJk(applyDateStr, areaType);
+            if (message.equals("ok")) {
                 success = 1;
             } else {
-                if(message.equals("no")) {
+                if (message.equals("no")) {
                     message = applyDateStr + "未获申请数据.";
                 }
-                if(message.equals("no1")) {
+                if (message.equals("no1")) {
                     message = "未查询到" + applyDateStr + "DRG数据.";
                 }
             }

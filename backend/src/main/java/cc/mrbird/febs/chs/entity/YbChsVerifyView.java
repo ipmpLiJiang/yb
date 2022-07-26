@@ -367,6 +367,11 @@ public class YbChsVerifyView {
     @ExcelField(value = "是否医生")
     private Integer isPerson;
 
-
+    /**
+     * 数据类型
+     */
+    @TableField("dataType")
+    @ExcelField(value = "数据类型")
+    private Integer dataType;
 
 }

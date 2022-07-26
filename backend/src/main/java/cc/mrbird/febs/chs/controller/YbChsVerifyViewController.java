@@ -151,10 +151,10 @@ public class YbChsVerifyViewController extends BaseController {
                     queryJkList = jkList.stream().filter(s -> s.getApplyDataId().equals(item.getApplyDataId())).collect(Collectors.toList());
                     if (queryJkList.size() > 0) {
                         YbChsJk jk = queryJkList.get(0);
-                        if(jk.getItemTypeCode() !=null) {
-                            dataExport.setItemTypeCode(jk.getItemTypeCode());
-                            dataExport.setItemTypeName(jk.getItemTypeName());
-                        }
+//                        if(jk.getItemTypeCode() !=null) {
+//                            dataExport.setItemTypeCode(jk.getItemTypeCode());
+//                            dataExport.setItemTypeName(jk.getItemTypeName());
+//                        }
                         if(jk.getAttendDocId() !=null) {
                             dataExport.setAttendDocId(jk.getAttendDocId());
                             dataExport.setAttendDocName(jk.getAttendDocName());

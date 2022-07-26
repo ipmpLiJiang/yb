@@ -26,4 +26,14 @@ public class YbChsPriorityLevelBack {
      */
     private String projectName;
 
+    /**
+     * 数据类型
+     */
+    private String type;
+
+    /**
+     * 名称
+     */
+    private String ruleProject;
+
 }

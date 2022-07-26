@@ -376,6 +376,13 @@ public class YbChsResultView {
     @ExcelField(value = "机构等级")
     private String jgLevel;
 
+    /**
+     * 数据类型
+     */
+    @TableField("dataType")
+    @ExcelField(value = "数据类型")
+    private Integer dataType;
+
 
     private transient String fileSizeWork;
 

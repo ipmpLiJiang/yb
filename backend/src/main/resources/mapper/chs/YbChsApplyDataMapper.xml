@@ -48,11 +48,12 @@
         <result column="projectNameOne" property="projectNameOne"/>
         <result column="outHospitalDateStr" property="outHospitalDateStr"/>
         <result column="violateCsPriceStr" property="violateCsPriceStr"/>
+        <result column="dataType" property="dataType"/>
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, pid, appealEndDate, payPlaceType, ydState, areaName, yyjgCode, yyjgName, deptName, doctorName, medicalType, zymzNumber, insuredName, enterHospitalDate, outHospitalDate, settlementDate, cardNumber, projectCode, projectName, projectYyName, ruleName, violateCsPrice, violatePrice, violateReason, zdNote, costDate, insuredType, num, price, medicalPrice, tcPayPrice, specs, jx, jgLevel, COMMENTS, STATE, IS_DELETEMARK, orderNum, isOutpfees, orderSettlementNum, projectCodeOne, projectNameOne, outHospitalDateStr, violateCsPriceStr
+        id, pid, appealEndDate, payPlaceType, ydState, areaName, yyjgCode, yyjgName, deptName, doctorName, medicalType, zymzNumber, insuredName, enterHospitalDate, outHospitalDate, settlementDate, cardNumber, projectCode, projectName, projectYyName, ruleName, violateCsPrice, violatePrice, violateReason, zdNote, costDate, insuredType, num, price, medicalPrice, tcPayPrice, specs, jx, jgLevel, COMMENTS, STATE, IS_DELETEMARK, orderNum, isOutpfees, orderSettlementNum, projectCodeOne, projectNameOne, outHospitalDateStr, violateCsPriceStr, dataType
     </sql>
     <update id="updateYbChsApplyData" parameterType="cc.mrbird.febs.chs.entity.YbChsApplyData">
         update yb_chs_apply_data
@@ -100,6 +101,8 @@
             <if test="projectNameOne != null">projectNameOne=#{projectNameOne},</if>
             <if test="outHospitalDateStr != null">outHospitalDateStr=#{outHospitalDateStr},</if>
             <if test="violateCsPriceStr != null">violateCsPriceStr=#{violateCsPriceStr},</if>
+            <if test="dataType != null">dataType=#{dataType},</if>
+
         </trim>
         where id=#{id}
 
@@ -221,7 +224,8 @@
         FROM
         yb_chs_apply_data
         where
-        pid = #{pid}
+        pid = #{pid} and
+        dataType = #{dataType}
         <if test="isOutpfees != null">and isOutpfees =#{ isOutpfees}</if>
     </select>
 
@@ -232,10 +236,11 @@
         yb_chs_apply_data
         where
         pid = #{pid} and
+        dataType = #{dataType} and
         <if test="isOutpfees != null">isOutpfees =#{ isOutpfees} and</if>
         id not in(
         select applyDataId from yb_chs_jk where
-        applyDateStr = #{applyDateStr} and areaType = #{areaType}
+        applyDateStr = #{applyDateStr} and areaType = #{areaType} and dataType = #{dataType}
         <if test="isOutpfees != null">and isOutpfees =#{ isOutpfees}</if>
         )
     </select>
@@ -247,10 +252,11 @@
         yb_chs_apply_data
         where
         pid = #{pid} and
+        dataType = #{dataType} and
         <if test="isOutpfees != null">isOutpfees =#{ isOutpfees} and</if>
         id not in(
         select applyDataId from yb_chs_jk where
-        applyDateStr = #{applyDateStr} and areaType = #{areaType}
+        applyDateStr = #{applyDateStr} and areaType = #{areaType} and dataType = #{dataType}
         <if test="isOutpfees != null">and isOutpfees =#{ isOutpfees}</if>
         )
     </select>
@@ -262,6 +268,7 @@
         yb_chs_apply_data
         where
         pid = #{pid} and
+        dataType = #{dataType} and
         <if test="state != null">state = #{state} and</if>
         <if test="isOutpfees != null">isOutpfees =#{ isOutpfees} and</if>
         orderSettlementNum between #{startNum} and #{endNum}

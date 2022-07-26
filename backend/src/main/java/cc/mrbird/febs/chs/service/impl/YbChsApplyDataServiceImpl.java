@@ -139,14 +139,20 @@ public class YbChsApplyDataServiceImpl extends ServiceImpl<YbChsApplyDataMapper,
                     List<YbChsApplyData> updateList = new ArrayList<>();
                     if (list.size() > 0) {
                         list.sort(Comparator.comparing(YbChsApplyData::getOrderNum));
-                        int orderZy = 1;
+                        int orderZyMx = 1;
+                        int orderZyZd = 1;
                         int orderMz = 1;
                         for (YbChsApplyData item : list) {
                             YbChsApplyData update = new YbChsApplyData();
                             update.setId(item.getId());
                             if (item.getIsOutpfees() == 2) {
-                                update.setOrderSettlementNum(orderZy);
-                                orderZy++;
+                                if(item.getDataType() == 0) {
+                                    update.setOrderSettlementNum(orderZyMx);
+                                    orderZyMx++;
+                                } else {
+                                    update.setOrderSettlementNum(orderZyZd);
+                                    orderZyZd++;
+                                }
                             } else {
                                 update.setOrderSettlementNum(orderMz);
                                 orderMz++;
@@ -155,19 +161,22 @@ public class YbChsApplyDataServiceImpl extends ServiceImpl<YbChsApplyDataMapper,
                             updateList.add(update);
                         }
                     }
+
+                    this.updateBatchById(updateList);
+
                     LambdaQueryWrapper<YbChsApplyTask> wrapperTask = new LambdaQueryWrapper<>();
                     wrapperTask.eq(YbChsApplyTask::getApplyDateStr, applyDateStr);
                     wrapperTask.eq(YbChsApplyTask::getAreaType, areaType);
+                    iYbChsApplyTaskService.remove(wrapperTask);
+
                     LambdaQueryWrapper<YbChsJk> wrapperJk = new LambdaQueryWrapper<>();
                     wrapperJk.eq(YbChsJk::getApplyDateStr, applyDateStr);
                     wrapperJk.eq(YbChsJk::getAreaType, areaType);
+                    iYbChsJkService.remove(wrapperJk);
+
                     YbChsApply updateApply = new YbChsApply();
                     updateApply.setId(drgApply.getId());
                     updateApply.setState(YbDefaultValue.APPLYSTATE_2);
-
-                    this.updateBatchById(updateList);
-                    iYbChsApplyTaskService.remove(wrapperTask);
-                    iYbChsJkService.remove(wrapperJk);
                     iYbChsApplyService.updateYbChsApply(updateApply);
                     msg = "ok";
                 } else {
@@ -191,16 +200,25 @@ public class YbChsApplyDataServiceImpl extends ServiceImpl<YbChsApplyDataMapper,
         wrapperApply.eq(YbChsApply::getId, ybChsApplyData.getPid());
         List<YbChsApply> applyList = iYbChsApplyService.list(wrapperApply);
         if (applyList.size() > 0) {
-            if (applyList.get(0).getState() == YbDefaultValue.APPLYSTATE_2) {
-                LambdaQueryWrapper<YbChsApplyData> wrapper = new LambdaQueryWrapper<>();
-                wrapper.eq(YbChsApplyData::getPid, applyList.get(0).getId());
-                this.baseMapper.delete(wrapper);
+            YbChsApply apply = applyList.get(0);
+            if (apply.getState() == YbDefaultValue.APPLYSTATE_2) {
+                LambdaQueryWrapper<YbChsJk> wrapperJk = new LambdaQueryWrapper<>();
+                wrapperJk.eq(YbChsJk::getApplyDateStr, apply.getApplyDateStr());
+                wrapperJk.eq(YbChsJk::getAreaType, apply.getAreaType());
+                List<YbChsJk> jkList = iYbChsJkService.list(wrapperJk);
+                if (jkList.size() == 0) {
+                    LambdaQueryWrapper<YbChsApplyData> wrapper = new LambdaQueryWrapper<>();
+                    wrapper.eq(YbChsApplyData::getPid, applyList.get(0).getId());
+                    this.baseMapper.delete(wrapper);
 
-                YbChsApply updateApply = new YbChsApply();
-                updateApply.setId(applyList.get(0).getId());
-                updateApply.setState(YbDefaultValue.APPLYSTATE_1);
-                iYbChsApplyService.updateYbChsApply(updateApply);
-                count = 1;
+                    YbChsApply updateApply = new YbChsApply();
+                    updateApply.setId(applyList.get(0).getId());
+                    updateApply.setState(YbDefaultValue.APPLYSTATE_1);
+                    iYbChsApplyService.updateYbChsApply(updateApply);
+                    count = 1;
+                } else {
+                    count = 2;
+                }
             }
         }
         return count;
@@ -213,6 +231,7 @@ public class YbChsApplyDataServiceImpl extends ServiceImpl<YbChsApplyDataMapper,
     @Override
     @Transactional
     public String findChsApplyProjCodeTask(String applyDateStr, Integer areaType, Integer isOutpfees) {
+        int dataType = 0;
         String msg = "";
         if (lockChsProjCodeAppNot.tryLock()) {
             try {
@@ -235,12 +254,12 @@ public class YbChsApplyDataServiceImpl extends ServiceImpl<YbChsApplyDataMapper,
                 boolean noUpdate = false;
                 YbChsApplyTask createTask = new YbChsApplyTask();
                 if (raTask == null) {
-                    totalRow = this.baseMapper.findChsApplyDataNotCount(chsApply.getId(), chsApply.getApplyDateStr(), chsApply.getAreaType(), isOutpfees);
+                    totalRow = this.baseMapper.findChsApplyDataNotCount(chsApply.getId(), chsApply.getApplyDateStr(), chsApply.getAreaType(), dataType, isOutpfees);
                     if (totalRow == 0) {
                         noUpdate = true;
                     } else {
-                        createTask = createChsApplyTask(chsApply.getApplyDateStr(), chsApply.getAreaType(), state, currentPage, totalRow, isOutpfees);
-                        List<YbChsApplyData> chsApplyDataList = this.baseMapper.findChsApplyDataNotJk(chsApply.getId(), chsApply.getApplyDateStr(), chsApply.getAreaType(), isOutpfees);
+                        createTask = createChsApplyTask(chsApply.getApplyDateStr(), chsApply.getAreaType(), state, dataType, currentPage, totalRow, isOutpfees);
+                        List<YbChsApplyData> chsApplyDataList = this.baseMapper.findChsApplyDataNotJk(chsApply.getId(), chsApply.getApplyDateStr(), chsApply.getAreaType(), dataType, isOutpfees);
 //                        chsApplyDataList = chsApplyDataList.stream().sorted(Comparator.comparing(YbChsApplyData::getOrderNum)).collect(Collectors.toList());
                         if (chsApplyDataList.size() > 0) {
                             List<YbChsApplyData> updateList = new ArrayList<>();
@@ -266,7 +285,7 @@ public class YbChsApplyDataServiceImpl extends ServiceImpl<YbChsApplyDataMapper,
                     } else {
                         currentPage = raTask.getCurrentPage() + 1;
                         totalRow = raTask.getTotalRow();
-                        createTask = createChsApplyTask(chsApply.getApplyDateStr(), chsApply.getAreaType(), state, currentPage, totalRow, isOutpfees);
+                        createTask = createChsApplyTask(chsApply.getApplyDateStr(), chsApply.getAreaType(), state, dataType, currentPage, totalRow, isOutpfees);
                     }
                 }
                 if (!noUpdate) {
@@ -275,10 +294,10 @@ public class YbChsApplyDataServiceImpl extends ServiceImpl<YbChsApplyDataMapper,
                     //从orderNum结束
                     int endNum = createTask.getEndNum();
 
-                    List<YbChsApplyData> chsApplyDataList = this.baseMapper.findChsApplyDataBetween(chsApply.getId(), startNum, endNum, state, isOutpfees);
+                    List<YbChsApplyData> chsApplyDataList = this.baseMapper.findChsApplyDataBetween(chsApply.getId(), startNum, endNum, state, dataType, isOutpfees);
 //                    chsApplyDataList = chsApplyDataList.stream().sorted(Comparator.comparing(YbChsApplyData::getOrderNum)).collect(Collectors.toList());
                     if (chsApplyDataList.size() > 0) {
-                        String hisSql = this.getHisSql(chsApply, chsApplyDataList, state, isOutpfees);
+                        String hisSql = this.getHisSql(chsApply, chsApplyDataList, state, dataType, isOutpfees);
 
                         if (!hisSql.equals("")) {
                             List<YbDeptHis> departList = this.getDeptHisList();
@@ -334,6 +353,7 @@ public class YbChsApplyDataServiceImpl extends ServiceImpl<YbChsApplyDataMapper,
     @Override
     @Transactional
     public String findChsApplyDataNotTask(String applyDateStr, Integer areaType, Integer isOutpfees) {
+        int dataType = 0;
         String msg = "";
         if (lockChsAppNot.tryLock()) {
             try {
@@ -357,12 +377,12 @@ public class YbChsApplyDataServiceImpl extends ServiceImpl<YbChsApplyDataMapper,
                 boolean noUpdate = false;
                 YbChsApplyTask createTask = new YbChsApplyTask();
                 if (raTask == null) {
-                    totalRow = this.baseMapper.findChsApplyDataNotCount(chsApply.getId(), chsApply.getApplyDateStr(), chsApply.getAreaType(), isOutpfees);
+                    totalRow = this.baseMapper.findChsApplyDataNotCount(chsApply.getId(), chsApply.getApplyDateStr(), chsApply.getAreaType(), dataType, isOutpfees);
                     if (totalRow == 0) {
                         noUpdate = true;
                     } else {
-                        createTask = createChsApplyTask(chsApply.getApplyDateStr(), chsApply.getAreaType(), state, currentPage, totalRow, isOutpfees);
-                        List<YbChsApplyData> chsApplyDataList = this.baseMapper.findChsApplyDataNotJk(chsApply.getId(), chsApply.getApplyDateStr(), chsApply.getAreaType(), isOutpfees);
+                        createTask = createChsApplyTask(chsApply.getApplyDateStr(), chsApply.getAreaType(), state, dataType, currentPage, totalRow, isOutpfees);
+                        List<YbChsApplyData> chsApplyDataList = this.baseMapper.findChsApplyDataNotJk(chsApply.getId(), chsApply.getApplyDateStr(), chsApply.getAreaType(), dataType, isOutpfees);
 //                        chsApplyDataList = chsApplyDataList.stream().sorted(Comparator.comparing(YbChsApplyData::getOrderNum)).collect(Collectors.toList());
                         if (chsApplyDataList.size() > 0) {
                             List<YbChsApplyData> updateList = new ArrayList<>();
@@ -388,7 +408,7 @@ public class YbChsApplyDataServiceImpl extends ServiceImpl<YbChsApplyDataMapper,
                     } else {
                         currentPage = raTask.getCurrentPage() + 1;
                         totalRow = raTask.getTotalRow();
-                        createTask = createChsApplyTask(chsApply.getApplyDateStr(), chsApply.getAreaType(), state, currentPage, totalRow, isOutpfees);
+                        createTask = createChsApplyTask(chsApply.getApplyDateStr(), chsApply.getAreaType(), state, dataType, currentPage, totalRow, isOutpfees);
                     }
                 }
                 if (!noUpdate) {
@@ -397,10 +417,10 @@ public class YbChsApplyDataServiceImpl extends ServiceImpl<YbChsApplyDataMapper,
                     //从orderNum结束
                     int endNum = createTask.getEndNum();
 
-                    List<YbChsApplyData> chsApplyDataList = this.baseMapper.findChsApplyDataBetween(chsApply.getId(), startNum, endNum, state, isOutpfees);
+                    List<YbChsApplyData> chsApplyDataList = this.baseMapper.findChsApplyDataBetween(chsApply.getId(), startNum, endNum, state, dataType, isOutpfees);
 //                    chsApplyDataList = chsApplyDataList.stream().sorted(Comparator.comparing(YbChsApplyData::getOrderNum)).collect(Collectors.toList());
                     if (chsApplyDataList.size() > 0) {
-                        String hisSql = this.getHisSql(chsApply, chsApplyDataList, state, isOutpfees);
+                        String hisSql = this.getHisSql(chsApply, chsApplyDataList, state, dataType, isOutpfees);
 
                         if (!hisSql.equals("")) {
                             List<YbDeptHis> departList = this.getDeptHisList();
@@ -455,6 +475,7 @@ public class YbChsApplyDataServiceImpl extends ServiceImpl<YbChsApplyDataMapper,
     @Override
     @Transactional
     public String findChsApplyDataTask(String applyDateStr, Integer areaType, Integer isOutpfees) {
+        int dataType = 0;
         String msg = "";
         if (lockChsApp.tryLock()) {
             try {
@@ -476,21 +497,37 @@ public class YbChsApplyDataServiceImpl extends ServiceImpl<YbChsApplyDataMapper,
                 boolean noUpdate = false;
                 YbChsApplyTask createTask = new YbChsApplyTask();
                 if (raTask == null) {
-                    totalRow = this.baseMapper.findChsApplyDataCount(chsApply.getId(), isOutpfees);
+                    totalRow = this.baseMapper.findChsApplyDataCount(chsApply.getId(), dataType, isOutpfees);
+                    if (totalRow == 0) {
+                        dataType = 1;
+                        totalRow = this.baseMapper.findChsApplyDataCount(chsApply.getId(), dataType, isOutpfees);
+                    }
                     if (totalRow == 0) {
                         noUpdate = true;
                     } else {
-                        createTask = createChsApplyTask(applyDateStr, areaType, state, currentPage, totalRow, isOutpfees);
+                        createTask = createChsApplyTask(applyDateStr, areaType, state, dataType, currentPage, totalRow, isOutpfees);
                     }
                 } else {
                     if (raTask.getCurrentPage().equals(raTask.getTotalPage())) {
-                        msg = "no";
-                        log.error("findChsApplyDataTask 没有数据了");
-                        noUpdate = true;
+                        if (raTask.getDataType() == 0) {
+                            dataType = 1;
+                            totalRow = this.baseMapper.findChsApplyDataCount(chsApply.getId(), dataType, isOutpfees);
+                            if (totalRow == 0) {
+                                msg = "no";
+                                log.error("findChsApplyDataTask 没有数据了");
+                                noUpdate = true;
+                            } else {
+                                createTask = createChsApplyTask(applyDateStr, areaType, state, dataType, currentPage, totalRow, isOutpfees);
+                            }
+                        } else {
+                            msg = "no";
+                            log.error("findChsApplyDataTask 没有数据了");
+                            noUpdate = true;
+                        }
                     } else {
                         currentPage = raTask.getCurrentPage() + 1;
                         totalRow = raTask.getTotalRow();
-                        createTask = createChsApplyTask(applyDateStr, areaType, state, currentPage, totalRow, isOutpfees);
+                        createTask = createChsApplyTask(applyDateStr, areaType, state, dataType, currentPage, totalRow, isOutpfees);
                     }
                 }
                 if (!noUpdate) {
@@ -499,10 +536,10 @@ public class YbChsApplyDataServiceImpl extends ServiceImpl<YbChsApplyDataMapper,
                     //从orderNum结束
                     int endNum = createTask.getEndNum();
 
-                    List<YbChsApplyData> chsApplyDataList = this.baseMapper.findChsApplyDataBetween(chsApply.getId(), startNum, endNum, state, isOutpfees);
+                    List<YbChsApplyData> chsApplyDataList = this.baseMapper.findChsApplyDataBetween(chsApply.getId(), startNum, endNum, state, dataType, isOutpfees);
                     //chsApplyDataList = chsApplyDataList.stream().sorted(Comparator.comparing(YbChsApplyData::getOrderNum)).collect(Collectors.toList());
                     if (chsApplyDataList.size() > 0) {
-                        String hisSql = this.getHisSql(chsApply, chsApplyDataList, state, isOutpfees);
+                        String hisSql = this.getHisSql(chsApply, chsApplyDataList, state, dataType, isOutpfees);
 
                         if (!hisSql.equals("")) {
                             List<YbDeptHis> departList = new ArrayList<>();
@@ -521,16 +558,27 @@ public class YbChsApplyDataServiceImpl extends ServiceImpl<YbChsApplyDataMapper,
 
                             if (departList.size() > 0) {
                                 List<YbChsJk> createList = new ArrayList<>();
-                                List<YbReconsiderInpatientfeesData> rifDataList = new ArrayList<>();
+                                if(dataType == 0) {
+                                    List<YbReconsiderInpatientfeesData> rifDataList = new ArrayList<>();
+                                    OracleDB<YbReconsiderInpatientfeesData> oracleDB = new OracleDB<>();
+                                    rifDataList = oracleDB.excuteSqlRS(new YbReconsiderInpatientfeesData(), hisSql);
+                                    if (rifDataList.size() > 0) {
+                                        createList = this.getCreateDataList(chsApplyDataList, rifDataList, departList, personList, applyDateStr, state, areaType, isOutpfees);
 
-                                OracleDB<YbReconsiderInpatientfeesData> oracleDB = new OracleDB<>();
-                                rifDataList = oracleDB.excuteSqlRS(new YbReconsiderInpatientfeesData(), hisSql);
-                                if (rifDataList.size() > 0) {
-                                    createList = this.getCreateDataList(chsApplyDataList, rifDataList, departList, personList, applyDateStr, state, areaType, isOutpfees);
-
+                                    } else {
+                                        msg = "hisDataNo";
+                                        log.error("his接口明细扣款无数据.");
+                                    }
                                 } else {
-                                    msg = "hisDataNo";
-                                    log.error("his接口明细扣款无数据.");
+                                    List<YbReconsiderInpatientfeesMain> rifMainList = new ArrayList<>();
+                                    OracleDB<YbReconsiderInpatientfeesMain> oracleDB = new OracleDB<>();
+                                    rifMainList = oracleDB.excuteSqlRS(new YbReconsiderInpatientfeesMain(), hisSql);
+                                    if (rifMainList.size() > 0) {
+                                        createList = this.getCreateMainList(chsApplyDataList, rifMainList, applyDateStr, state, areaType);
+                                    } else {
+                                        msg = "hisMainNo";
+                                        log.error("his接口主单扣款无数据.");
+                                    }
                                 }
                                 if (createList.size() > 0) {
                                     createTask.setHisCount(createList.size());
@@ -577,7 +625,7 @@ public class YbChsApplyDataServiceImpl extends ServiceImpl<YbChsApplyDataMapper,
         return this.iYbChsApplyTaskService.findChsApplyTasks(ybChsApplyTask);
     }
 
-    private YbChsApplyTask createChsApplyTask(String applyDateStr, int areaType, int state, int currentPage, int totalRow, int isOutpfees) {
+    private YbChsApplyTask createChsApplyTask(String applyDateStr, int areaType, int state, int dataType, int currentPage, int totalRow, int isOutpfees) {
         YbChsApplyTask createTask = new YbChsApplyTask();
         //从orderNum开始
         int startNum = 0;
@@ -627,13 +675,14 @@ public class YbChsApplyDataServiceImpl extends ServiceImpl<YbChsApplyDataMapper,
         createTask.setTotalPage(totalPage);
         createTask.setState(state);
         createTask.setAreaType(areaType);
+        createTask.setDataType(dataType);
         createTask.setIsOutpfees(isOutpfees);
 //        createTask.setIsDeletemark(1);
 //        createTask.setCreateTime(new Date());
         return createTask;
     }
 
-    private String getHisSql(YbChsApply chsApply, List<YbChsApplyData> chsApplyDataList, int state, int isOutpfees) {
+    private String getHisSql(YbChsApply chsApply, List<YbChsApplyData> chsApplyDataList, int state, int dataType, int isOutpfees) {
         String hisSql = "";
         String hisWhere = "";
 
@@ -644,22 +693,29 @@ public class YbChsApplyDataServiceImpl extends ServiceImpl<YbChsApplyDataMapper,
         //查询his日期区间 结束
         String dateStrTo = DataTypeHelpers.stringDateFormatAddMonth(1, dateStrForm, "", false);
 //                String dateStrTo = dateArr[1];
-        hisWhere = hisTaskWhere(chsApplyDataList, state);
-
-        if (!hisWhere.equals("")) {
-            String tab = "V_SAP_INPFEES_NEW";
-            if (isOutpfees == 1) {
-                tab = "V_SAP_OUTPFEES_NEW";
+        hisWhere = hisTaskWhere(chsApplyDataList, state, dataType);
+        if(dataType == 0) {
+            if (!hisWhere.equals("")) {
+                String tab = "V_SAP_INPFEES_NEW";
+                if (isOutpfees == 1) {
+                    tab = "V_SAP_OUTPFEES_NEW";
+                }
+                hisSql = "select * from his." + tab + " where " + hisWhere +
+                        "settlementdate >= to_date('" + dateStrForm + "',' yyyy-mm-dd') and " +
+                        "settlementdate < to_date('" + dateStrTo + "',' yyyy-mm-dd') ";
             }
-            hisSql = "select * from his." + tab + " where " + hisWhere +
-                    "settlementdate >= to_date('" + dateStrForm + "',' yyyy-mm-dd') and " +
-                    "settlementdate < to_date('" + dateStrTo + "',' yyyy-mm-dd') ";
+        } else {
+            if (!hisWhere.equals("")) {
+                hisSql = "select * from his.V_SAP_INPSETTLEINFO where " + hisWhere +
+                        "settledate >= to_date('" + dateStrForm + "',' yyyy-mm-dd') and " +
+                        "settledate < to_date('" + dateStrTo + "',' yyyy-mm-dd') ";
+            }
         }
         return hisSql;
     }
 
     //获取集合中，拼接his Where in 语句
-    private String hisTaskWhere(List<YbChsApplyData> chsApplyDataList, int state) {
+    private String hisTaskWhere(List<YbChsApplyData> chsApplyDataList, int state, int dataType) {
         String hisWhere = "";
         String sql = "";
         String sql1 = "";
@@ -680,24 +736,25 @@ public class YbChsApplyDataServiceImpl extends ServiceImpl<YbChsApplyDataMapper,
                         sql += ",'" + zymzNumber + "'";
                     }
                 }
+                if (dataType == 0) {
+                    String project1 = state == 2 ? item.getProjectCode() : item.getProjectName();
+                    if (StringUtils.isNotBlank(project1)) {
+                        project1 = project1.replace("，", ",");
+                        String[] parr = project1.split(",");
+                        for (String pcn : parr) {
+                            project1 = pcn;
+                            if (state == 2 && StringUtils.isNotBlank(project1)) {
+                                project1 = project1.toUpperCase();
+                            }
+                            String project = project1;
 
-                String project1 = state == 2 ? item.getProjectCode() : item.getProjectName();
-                if (StringUtils.isNotBlank(project1)) {
-                    project1 = project1.replace("，", ",");
-                    String[] parr = project1.split(",");
-                    for (String pcn : parr) {
-                        project1 = pcn;
-                        if (state == 2 && StringUtils.isNotBlank(project1)) {
-                            project1 = project1.toUpperCase();
-                        }
-                        String project = project1;
-
-                        if (strList1.stream().filter(s -> s.equals(project)).count() == 0) {
-                            strList1.add(project);
-                            if (sql1.equals("")) {
-                                sql1 = "'" + project + "'";
-                            } else {
-                                sql1 += ",'" + project + "'";
+                            if (strList1.stream().filter(s -> s.equals(project)).count() == 0) {
+                                strList1.add(project);
+                                if (sql1.equals("")) {
+                                    sql1 = "'" + project + "'";
+                                } else {
+                                    sql1 += ",'" + project + "'";
+                                }
                             }
                         }
                     }
@@ -705,14 +762,17 @@ public class YbChsApplyDataServiceImpl extends ServiceImpl<YbChsApplyDataMapper,
             }
         }
 
-        hisWhere = " inpatientId in(" + sql + ")";
-
-        if (state == 0) {
-            hisWhere += " and itemname in(" + sql1 + ") and ";
-        } else if (state == 1) {
-            hisWhere += " and HisName in(" + sql1 + ") and ";
+        if (dataType == 0) {
+            hisWhere = " inpatientId in(" + sql + ")";
+            if (state == 0) {
+                hisWhere += " and itemname in(" + sql1 + ") and ";
+            } else if (state == 1) {
+                hisWhere += " and HisName in(" + sql1 + ") and ";
+            } else {
+                hisWhere += " and itemcode in(" + sql1 + ") and ";
+            }
         } else {
-            hisWhere += " and itemcode in(" + sql1 + ") and ";
+            hisWhere = " inpatientId in(" + sql + ") and ";
         }
         return hisWhere;
     }
@@ -832,7 +892,8 @@ public class YbChsApplyDataServiceImpl extends ServiceImpl<YbChsApplyDataMapper,
                     chsJk.setItemAmount(obj.getItemAmount());//'项目金额'
                     chsJk.setFeeDate(obj.getFeeDate());//'费用日期'
                     chsJk.setDeptId(obj.getDeptId());//'住院科室代码'
-                    if (obj.getDeptId() != null && (obj.getDeptName() == null || obj.getDeptName().equals(""))) {
+                    // getDeptId 不是 null and getDeptName() 是 null
+                    if (StringUtils.isNotBlank(obj.getDeptId()) && StringUtils.isBlank(obj.getDeptName())) {
                         queryDepartList = departList.stream().filter(
                                 s -> s.getDeptId().equals(obj.getDeptId())
                         ).collect(Collectors.toList());
@@ -843,7 +904,9 @@ public class YbChsApplyDataServiceImpl extends ServiceImpl<YbChsApplyDataMapper,
                         chsJk.setDeptName(obj.getDeptName());//'住院科室名称'
                     }
                     chsJk.setOrderDocId(obj.getOrderDocId());//'开方医生代码'
-                    if (personList.size() > 0 && obj.getOrderDocId() != null && obj.getOrderDocName() == null) {
+
+                    // getOrderDocId 不是 null and getOrderDocName() 是 null
+                    if (personList.size() > 0 && StringUtils.isNotBlank(obj.getOrderDocId()) && StringUtils.isBlank(obj.getOrderDocName())) {
                         queryPersontList = personList.stream().filter(p ->
                                 p.getPersonCode().equals(obj.getOrderDocId())).collect(Collectors.toList());
                         if (queryPersontList.size() > 0) {
@@ -853,7 +916,8 @@ public class YbChsApplyDataServiceImpl extends ServiceImpl<YbChsApplyDataMapper,
                         chsJk.setOrderDocName(obj.getOrderDocName());//'开方医生名称'
                     }
                     chsJk.setExcuteDeptId(obj.getExcuteDeptId());//'执行科室代码'
-                    if (obj.getExcuteDeptId() != null && (obj.getExcuteDeptName() == null || obj.getExcuteDeptName().equals(""))) {
+                    // getExcuteDeptId 不是 null and getExcuteDeptName() 是 null
+                    if (StringUtils.isNotBlank(obj.getExcuteDeptId()) && StringUtils.isBlank(obj.getExcuteDeptName())) {
                         queryDepartList = departList.stream().filter(
                                 s -> s.getDeptId().equals(obj.getExcuteDeptId())
                         ).collect(Collectors.toList());
@@ -865,7 +929,8 @@ public class YbChsApplyDataServiceImpl extends ServiceImpl<YbChsApplyDataMapper,
                     }
 
                     chsJk.setExcuteDocId(obj.getExcuteDocId());//'执行医生代码'
-                    if (personList.size() > 0 && obj.getExcuteDocId() != null && obj.getExcuteDocName() == null) {
+                    // getExcuteDocId 不是 null and getExcuteDocName() 是 null
+                    if (personList.size() > 0 && StringUtils.isNotBlank(obj.getExcuteDocId()) && StringUtils.isBlank(obj.getExcuteDocName())) {
                         queryPersontList = personList.stream().filter(p ->
                                 p.getPersonCode().equals(obj.getExcuteDocId())).collect(Collectors.toList());
                         if (queryPersontList.size() > 0) {
@@ -899,6 +964,7 @@ public class YbChsApplyDataServiceImpl extends ServiceImpl<YbChsApplyDataMapper,
 //                                            chsJk.setCreateTime(new Date());
                     chsJk.setState(state);
                     chsJk.setAreaType(areaType);
+                    chsJk.setDataType(item.getDataType());
                     chsJk.setIsOutpfees(isOutpfees);
                     chsJk.setJzkh(obj.getJzkh());
                     createList.add(chsJk);
@@ -907,6 +973,55 @@ public class YbChsApplyDataServiceImpl extends ServiceImpl<YbChsApplyDataMapper,
         }
         return createList;
     }
+
+    private List<YbChsJk> getCreateMainList(List<YbChsApplyData> chsApplyDataList,
+                                            List<YbReconsiderInpatientfeesMain> rifMainList,
+                                            String applyDateStr, int state, int areaType) {
+        List<YbChsJk> createList = new ArrayList<>();
+        List<YbReconsiderInpatientfeesMain> queryRifMainList = new ArrayList<>();
+        for (YbChsApplyData item : chsApplyDataList) {
+            queryRifMainList = rifMainList.stream().filter(
+                    s -> s.getInpatientId().equals(item.getZymzNumber())
+            ).collect(Collectors.toList());
+
+            if (queryRifMainList.size() > 0) {
+                YbReconsiderInpatientfeesMain obj = queryRifMainList.get(0);
+                YbChsJk chsJk = new YbChsJk();
+                chsJk.setId(UUID.randomUUID().toString());
+                chsJk.setInpatientId(obj.getInpatientId());//住院号
+                chsJk.setPatientName(obj.getPatientName());//患者姓名
+                chsJk.setSettlementId(obj.getSettlementId());//HIS结算序号
+                chsJk.setBillNo(obj.getBillNo());//'单据号'
+                chsJk.setTransNo(obj.getTransNo());//'交易流水号'
+
+                chsJk.setOrderDocId(obj.getInHospDocId());//'入院责任医生代码'
+                chsJk.setOrderDocName(obj.getInHospDocName());//'入院责任医生名称'
+
+                chsJk.setDeptId(obj.getInHosDeptId());//'入院科室代码
+                chsJk.setDeptName(obj.getInHosDeptName());//'入院科室名称
+
+                chsJk.setExcuteDocId(obj.getInHospOpterId());//办入院操作员代码
+                chsJk.setExcuteDocName(obj.getInHospOpterName());//办入院操作员名称
+
+                chsJk.setExcuteDeptId(obj.getOpterDeptId());//办入院操作员科室代码
+                chsJk.setExcuteDeptName(obj.getOpterDeptName());//办入院操作员科室名称
+
+                chsJk.setSettlementDate(obj.getSettleDate());//'结算时间'
+
+                chsJk.setApplyDataId(item.getId());
+                chsJk.setOrderNum(item.getOrderNum());//序号
+                chsJk.setApplyDateStr(applyDateStr);
+                chsJk.setDataType(item.getDataType());
+                chsJk.setIsDeletemark(1);
+                chsJk.setState(state);
+                chsJk.setAreaType(areaType);
+                chsJk.setIsOutpfees(2);
+                createList.add(chsJk);
+            }
+        }
+        return createList;
+    }
+
 
     @Override
     public List<YbChsApplyData> findChsApplyDataByNotVerifys(String pid, String applyDateStr, Integer areaType) {

@@ -113,16 +113,25 @@ public class YbDrgApplyDataServiceImpl extends ServiceImpl<YbDrgApplyDataMapper,
         wrapperApply.eq(YbDrgApply::getId, ybDrgApplyData.getPid());
         List<YbDrgApply> applyList = iYbDrgApplyService.list(wrapperApply);
         if (applyList.size() > 0) {
-            if (applyList.get(0).getState() == YbDefaultValue.DRGAPPLYSTATE_2) {
-                LambdaQueryWrapper<YbDrgApplyData> wrapper = new LambdaQueryWrapper<>();
-                wrapper.eq(YbDrgApplyData::getPid, applyList.get(0).getId());
-                this.baseMapper.delete(wrapper);
+            YbDrgApply apply = applyList.get(0);
+            if (apply.getState() == YbDefaultValue.DRGAPPLYSTATE_2) {
+                LambdaQueryWrapper<YbDrgJk> wrapperJk = new LambdaQueryWrapper<>();
+                wrapperJk.eq(YbDrgJk::getApplyDateStr,apply.getApplyDateStr());
+                wrapperJk.eq(YbDrgJk::getAreaType,apply.getAreaType());
+                List<YbDrgJk> jkList =  iYbDrgJkService.list(wrapperJk);
+                if(jkList.size() == 0) {
+                    LambdaQueryWrapper<YbDrgApplyData> wrapper = new LambdaQueryWrapper<>();
+                    wrapper.eq(YbDrgApplyData::getPid, apply.getId());
+                    this.baseMapper.delete(wrapper);
 
-                YbDrgApply updateApply = new YbDrgApply();
-                updateApply.setId(applyList.get(0).getId());
-                updateApply.setState(YbDefaultValue.DRGAPPLYSTATE_1);
-                iYbDrgApplyService.updateYbDrgApply(updateApply);
-                count = 1;
+                    YbDrgApply updateApply = new YbDrgApply();
+                    updateApply.setId(applyList.get(0).getId());
+                    updateApply.setState(YbDefaultValue.DRGAPPLYSTATE_1);
+                    iYbDrgApplyService.updateYbDrgApply(updateApply);
+                    count = 1;
+                } else  {
+                    count = 2;
+                }
             }
         }
         return count;

@@ -5,6 +5,8 @@ import cc.mrbird.febs.chs.service.IYbChsApplyService;
 import cc.mrbird.febs.com.controller.DataTypeHelpers;
 import cc.mrbird.febs.com.controller.FileHelpers;
 import cc.mrbird.febs.com.controller.ImportExcelUtils;
+import cc.mrbird.febs.com.entity.ComConfiguremanage;
+import cc.mrbird.febs.com.service.IComConfiguremanageService;
 import cc.mrbird.febs.common.annotation.Log;
 import cc.mrbird.febs.common.controller.BaseController;
 import cc.mrbird.febs.common.domain.FebsResponse;
@@ -41,6 +43,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * @author viki
@@ -62,6 +65,9 @@ public class YbChsApplyDataController extends BaseController {
 
     @Autowired
     FebsProperties febsProperties;
+
+    @Autowired
+    IComConfiguremanageService iComConfiguremanageService;
 
     /**
      * 分页查询数据
@@ -190,153 +196,174 @@ public class YbChsApplyDataController extends BaseController {
                             if (objMx.size() > 1) {
                                 List<YbChsApplyData> insertDataList = new ArrayList<>();
                                 DateFormat formater = new SimpleDateFormat("yyyy-MM-dd");
-                                if (objMx.size() > 1) {
-                                    int orderZy = 1;
-                                    int orderMz = 1;
-                                    if (objMx.get(0).length >= 21) {
-                                        for (int i = 1; i < objMx.size(); i++) {
-                                            message = "上传数据读取失败，请确保Excel列表数据正确无误.";
-                                            YbChsApplyData rrData = new YbChsApplyData();
-                                            rrData.setId(UUID.randomUUID().toString());
-                                            rrData.setPid(pid);
-                                            rrData.setOrderNum(i);
+                                int orderZyMx = 1;
+                                int orderZyZd = 1;
+                                int orderMz = 1;
+                                // 主单数据 配置
+                                List<ComConfiguremanage> comConfiguremanageList = iComConfiguremanageService.getConfigLists(10);
+                                List<ComConfiguremanage> comConfiguremanageQuery = new ArrayList<>();
+                                if (objMx.get(0).length >= 21) {
+                                    for (int i = 1; i < objMx.size(); i++) {
+                                        message = "上传数据读取失败，请确保Excel列表数据正确无误.";
+                                        YbChsApplyData rrData = new YbChsApplyData();
+                                        rrData.setId(UUID.randomUUID().toString());
+                                        rrData.setPid(pid);
+                                        rrData.setOrderNum(i);
 
-                                            String appealEndDateStr = DataTypeHelpers.importTernaryOperate(objMx.get(i), 0);//申诉截止日期
-                                            if(StringUtils.isNotBlank(appealEndDateStr)) {
-                                                rrData.setAppealEndDate(formater.parse(appealEndDateStr));
-                                            }
-                                            String payPlaceType = DataTypeHelpers.importTernaryOperate(objMx.get(i), 1);//支付地点类别
-                                            rrData.setPayPlaceType(payPlaceType);
-                                            String ydState = DataTypeHelpers.importTernaryOperate(objMx.get(i), 2);//疑点状态
-                                            rrData.setYdState(ydState);
-                                            String areaName = DataTypeHelpers.importTernaryOperate(objMx.get(i), 3);//医保区划
-                                            rrData.setAreaName(areaName);
-                                            String yyjgCode = DataTypeHelpers.importTernaryOperate(objMx.get(i), 4);//医药机构编码
-                                            rrData.setYyjgCode(yyjgCode);
-                                            String yyjgName = DataTypeHelpers.importTernaryOperate(objMx.get(i), 5);//医药机构名称
-                                            rrData.setYyjgName(yyjgName);
-                                            String deptName = DataTypeHelpers.importTernaryOperate(objMx.get(i), 6);//科室名称
-                                            rrData.setDeptName(deptName);
-                                            String doctorName = DataTypeHelpers.importTernaryOperate(objMx.get(i), 7);//	医生姓名
-                                            rrData.setDoctorName(doctorName);
-                                            String medicalType = DataTypeHelpers.importTernaryOperate(objMx.get(i), 8);//医疗类别
-                                            if(StringUtils.isNotBlank(medicalType)) {
-                                                rrData.setMedicalType(medicalType);
-                                                if(medicalType.contains("门诊")) {
-                                                    rrData.setIsOutpfees(1);
-                                                    rrData.setOrderSettlementNum(orderMz);
-                                                    orderMz ++;
+                                        String appealEndDateStr = DataTypeHelpers.importTernaryOperate(objMx.get(i), 0);//申诉截止日期
+                                        if (StringUtils.isNotBlank(appealEndDateStr)) {
+                                            rrData.setAppealEndDate(formater.parse(appealEndDateStr));
+                                        }
+                                        String payPlaceType = DataTypeHelpers.importTernaryOperate(objMx.get(i), 1);//支付地点类别
+                                        rrData.setPayPlaceType(payPlaceType);
+                                        String ydState = DataTypeHelpers.importTernaryOperate(objMx.get(i), 2);//疑点状态
+                                        rrData.setYdState(ydState);
+                                        String areaName = DataTypeHelpers.importTernaryOperate(objMx.get(i), 3);//医保区划
+                                        rrData.setAreaName(areaName);
+                                        String yyjgCode = DataTypeHelpers.importTernaryOperate(objMx.get(i), 4);//医药机构编码
+                                        rrData.setYyjgCode(yyjgCode);
+                                        String yyjgName = DataTypeHelpers.importTernaryOperate(objMx.get(i), 5);//医药机构名称
+                                        rrData.setYyjgName(yyjgName);
+                                        String deptName = DataTypeHelpers.importTernaryOperate(objMx.get(i), 6);//科室名称
+                                        rrData.setDeptName(deptName);
+                                        String doctorName = DataTypeHelpers.importTernaryOperate(objMx.get(i), 7);//	医生姓名
+                                        rrData.setDoctorName(doctorName);
+                                        String medicalType = DataTypeHelpers.importTernaryOperate(objMx.get(i), 8);//医疗类别
+
+                                        String ruleName = DataTypeHelpers.importTernaryOperate(objMx.get(i), 18);//规则名称
+                                        rrData.setRuleName(ruleName);
+
+                                        if (StringUtils.isNotBlank(medicalType)) {
+                                            rrData.setMedicalType(medicalType);
+                                            if (medicalType.contains("门诊")) {
+                                                rrData.setDataType(0);
+                                                rrData.setIsOutpfees(1);
+                                                rrData.setOrderSettlementNum(orderMz);
+                                                orderMz++;
+                                            } else {
+                                                rrData.setIsOutpfees(2);
+                                                if (StringUtils.isNotBlank(ruleName)) {
+                                                    comConfiguremanageQuery = comConfiguremanageList.stream().filter(s -> s.getStringField().equals(ruleName)).collect(Collectors.toList());
+                                                    if (comConfiguremanageQuery.size() > 0) {
+                                                        rrData.setDataType(1);
+                                                        rrData.setOrderSettlementNum(orderZyZd);
+                                                        orderZyZd++;
+
+                                                    } else {
+                                                        rrData.setDataType(0);
+                                                        rrData.setOrderSettlementNum(orderZyMx);
+                                                        orderZyMx++;
+                                                    }
                                                 } else {
-                                                    rrData.setIsOutpfees(2);
-                                                    rrData.setOrderSettlementNum(i);
-                                                    rrData.setOrderSettlementNum(orderZy);
-                                                    orderZy ++;
+                                                    rrData.setDataType(0);
+                                                    rrData.setOrderSettlementNum(orderZyMx);
+                                                    orderZyMx++;
                                                 }
                                             }
-                                            String zymzNumber = DataTypeHelpers.importTernaryOperate(objMx.get(i), 9);//	住院门诊号
-                                            rrData.setZymzNumber(zymzNumber);
-                                            String insuredName = DataTypeHelpers.importTernaryOperate(objMx.get(i), 10);//参保人
-                                            rrData.setInsuredName(insuredName);
-                                            String enterHospitalDateStr = DataTypeHelpers.importTernaryOperate(objMx.get(i), 11);//入院日期
-                                            if(StringUtils.isNotBlank(enterHospitalDateStr)) {
-                                                rrData.setEnterHospitalDate(formater.parse(enterHospitalDateStr));
-                                            }
-                                            String outHospitalDateStr = DataTypeHelpers.importTernaryOperate(objMx.get(i), 12);//出院日期
-                                            rrData.setOutHospitalDateStr(outHospitalDateStr);
-                                            if(StringUtils.isNotBlank(outHospitalDateStr)) {
-                                                rrData.setOutHospitalDate(formater.parse(outHospitalDateStr));
-                                            }
-                                            String settlementDateStr = DataTypeHelpers.importTernaryOperate(objMx.get(i), 13);//	结算日期
-                                            if(StringUtils.isNotBlank(settlementDateStr)) {
-                                                rrData.setSettlementDate(formater.parse(settlementDateStr));
-                                            }
-                                            String cardNumber = DataTypeHelpers.importTernaryOperate(objMx.get(i), 14);//身份证号
-                                            rrData.setCardNumber(cardNumber);
-                                            String projectCode = DataTypeHelpers.importTernaryOperate(objMx.get(i), 15);//医保项目编码
-                                            if(StringUtils.isNotBlank(projectCode)) {
-                                                rrData.setProjectCode(projectCode);
-
-                                                projectCode = projectCode.replace("，", ",");
-                                                String[] pcArr = projectCode.split(",");
-                                                projectCode = pcArr[0];
-                                                rrData.setProjectCodeOne(projectCode);
-                                            }
-                                            String projectName = DataTypeHelpers.importTernaryOperate(objMx.get(i), 16);//医保项目名称
-                                            if(StringUtils.isNotBlank(projectName)) {
-                                                rrData.setProjectName(projectName);
-
-                                                projectName = projectName.replace("，", ",");
-                                                String[] pnArr = projectName.split(",");
-                                                projectName = pnArr[0];
-                                                rrData.setProjectNameOne(projectName);
-                                            }
-                                            String projectYyName = DataTypeHelpers.importTernaryOperate(objMx.get(i), 17);//医院项目名称
-                                            rrData.setProjectYyName(projectYyName);
-                                            String ruleName = DataTypeHelpers.importTernaryOperate(objMx.get(i), 18);//规则名称
-                                            rrData.setRuleName(ruleName);
-                                            BigDecimal bd = new BigDecimal(0);
-                                            String violateCsPrice = DataTypeHelpers.importTernaryOperate(objMx.get(i), 19);//初审违规金额
-                                            rrData.setViolateCsPriceStr(violateCsPrice);
-                                            if (DataTypeHelpers.isNumeric(violateCsPrice)) {
-                                                bd = new BigDecimal(violateCsPrice);
-                                                rrData.setViolateCsPrice(bd);
-                                            }
-
-                                            String violatePrice = DataTypeHelpers.importTernaryOperate(objMx.get(i), 20);//违规金额
-                                            bd = new BigDecimal(0);
-                                            if (DataTypeHelpers.isNumeric(violatePrice)) {
-                                                bd = new BigDecimal(violatePrice);
-                                                rrData.setViolatePrice(bd);
-                                            }
-                                            String violateReason = DataTypeHelpers.importTernaryOperate(objMx.get(i), 21);//违规内容
-                                            rrData.setViolateReason(violateReason);
-                                            String zdNote = DataTypeHelpers.importTernaryOperate(objMx.get(i), 22);//诊断信息
-                                            rrData.setZdNote(zdNote);
-                                            String costDateStr = DataTypeHelpers.importTernaryOperate(objMx.get(i), 23);//费用日期
-                                            if(StringUtils.isNotBlank(costDateStr)){
-                                                rrData.setCostDate(formater.parse(costDateStr));
-                                            }
-                                            String insuredType = DataTypeHelpers.importTernaryOperate(objMx.get(i), 24);//险种类型
-                                            rrData.setInsuredType(insuredType);
-                                            String num = DataTypeHelpers.importTernaryOperate(objMx.get(i), 25);//数量
-                                            bd = new BigDecimal(0);
-                                            if (DataTypeHelpers.isNumeric(num)) {
-                                                bd = new BigDecimal(num);
-                                                rrData.setNum(bd);
-                                            }
-                                            String price = DataTypeHelpers.importTernaryOperate(objMx.get(i), 26);//	单价
-                                            bd = new BigDecimal(0);
-                                            if (DataTypeHelpers.isNumeric(price)) {
-                                                bd = new BigDecimal(price);
-                                                rrData.setPrice(bd);
-                                            }
-                                            String medicalPrice = DataTypeHelpers.importTernaryOperate(objMx.get(i), 27);//金额
-                                            bd = new BigDecimal(0);
-                                            if (DataTypeHelpers.isNumeric(medicalPrice)) {
-                                                bd = new BigDecimal(medicalPrice);
-                                                rrData.setMedicalPrice(bd);
-                                            }
-                                            String tcPayPrice = DataTypeHelpers.importTernaryOperate(objMx.get(i), 28);//统筹支付
-                                            bd = new BigDecimal(0);
-                                            if (DataTypeHelpers.isNumeric(tcPayPrice)) {
-                                                bd = new BigDecimal(tcPayPrice);
-                                                rrData.setTcPayPrice(bd);
-                                            }
-                                            String specs = DataTypeHelpers.importTernaryOperate(objMx.get(i), 29);//	规格
-                                            rrData.setSpecs(specs);
-                                            String jx = DataTypeHelpers.importTernaryOperate(objMx.get(i), 30);//剂型
-                                            rrData.setJx(jx);
-                                            String jgLevel = DataTypeHelpers.importTernaryOperate(objMx.get(i), 31);//机构等级
-                                            rrData.setJgLevel(jgLevel);
-                                            rrData.setState(0);
-                                            rrData.setIsDeletemark(1);
-                                            insertDataList.add(rrData);
                                         }
-                                    } else {
-                                        blError = true;
-                                        message = "Excel导入失败，Sheet明细扣款 列表列数不正确";
+                                        String zymzNumber = DataTypeHelpers.importTernaryOperate(objMx.get(i), 9);//	住院门诊号
+                                        rrData.setZymzNumber(zymzNumber);
+                                        String insuredName = DataTypeHelpers.importTernaryOperate(objMx.get(i), 10);//参保人
+                                        rrData.setInsuredName(insuredName);
+                                        String enterHospitalDateStr = DataTypeHelpers.importTernaryOperate(objMx.get(i), 11);//入院日期
+                                        if (StringUtils.isNotBlank(enterHospitalDateStr)) {
+                                            rrData.setEnterHospitalDate(formater.parse(enterHospitalDateStr));
+                                        }
+                                        String outHospitalDateStr = DataTypeHelpers.importTernaryOperate(objMx.get(i), 12);//出院日期
+                                        rrData.setOutHospitalDateStr(outHospitalDateStr);
+                                        if (StringUtils.isNotBlank(outHospitalDateStr)) {
+                                            rrData.setOutHospitalDate(formater.parse(outHospitalDateStr));
+                                        }
+                                        String settlementDateStr = DataTypeHelpers.importTernaryOperate(objMx.get(i), 13);//	结算日期
+                                        if (StringUtils.isNotBlank(settlementDateStr)) {
+                                            rrData.setSettlementDate(formater.parse(settlementDateStr));
+                                        }
+                                        String cardNumber = DataTypeHelpers.importTernaryOperate(objMx.get(i), 14);//身份证号
+                                        rrData.setCardNumber(cardNumber);
+                                        String projectCode = DataTypeHelpers.importTernaryOperate(objMx.get(i), 15);//医保项目编码
+                                        if (StringUtils.isNotBlank(projectCode)) {
+                                            rrData.setProjectCode(projectCode);
+
+                                            projectCode = projectCode.replace("，", ",");
+                                            String[] pcArr = projectCode.split(",");
+                                            projectCode = pcArr[0];
+                                            rrData.setProjectCodeOne(projectCode);
+                                        }
+                                        String projectName = DataTypeHelpers.importTernaryOperate(objMx.get(i), 16);//医保项目名称
+                                        if (StringUtils.isNotBlank(projectName)) {
+                                            rrData.setProjectName(projectName);
+
+                                            projectName = projectName.replace("，", ",");
+                                            String[] pnArr = projectName.split(",");
+                                            projectName = pnArr[0];
+                                            rrData.setProjectNameOne(projectName);
+                                        }
+                                        String projectYyName = DataTypeHelpers.importTernaryOperate(objMx.get(i), 17);//医院项目名称
+                                        rrData.setProjectYyName(projectYyName);
+
+                                        BigDecimal bd = new BigDecimal(0);
+                                        String violateCsPrice = DataTypeHelpers.importTernaryOperate(objMx.get(i), 19);//初审违规金额
+                                        rrData.setViolateCsPriceStr(violateCsPrice);
+                                        if (DataTypeHelpers.isNumeric(violateCsPrice)) {
+                                            bd = new BigDecimal(violateCsPrice);
+                                            rrData.setViolateCsPrice(bd);
+                                        }
+
+                                        String violatePrice = DataTypeHelpers.importTernaryOperate(objMx.get(i), 20);//违规金额
+                                        bd = new BigDecimal(0);
+                                        if (DataTypeHelpers.isNumeric(violatePrice)) {
+                                            bd = new BigDecimal(violatePrice);
+                                            rrData.setViolatePrice(bd);
+                                        }
+                                        String violateReason = DataTypeHelpers.importTernaryOperate(objMx.get(i), 21);//违规内容
+                                        rrData.setViolateReason(violateReason);
+                                        String zdNote = DataTypeHelpers.importTernaryOperate(objMx.get(i), 22);//诊断信息
+                                        rrData.setZdNote(zdNote);
+                                        String costDateStr = DataTypeHelpers.importTernaryOperate(objMx.get(i), 23);//费用日期
+                                        if (StringUtils.isNotBlank(costDateStr)) {
+                                            rrData.setCostDate(formater.parse(costDateStr));
+                                        }
+                                        String insuredType = DataTypeHelpers.importTernaryOperate(objMx.get(i), 24);//险种类型
+                                        rrData.setInsuredType(insuredType);
+                                        String num = DataTypeHelpers.importTernaryOperate(objMx.get(i), 25);//数量
+                                        bd = new BigDecimal(0);
+                                        if (DataTypeHelpers.isNumeric(num)) {
+                                            bd = new BigDecimal(num);
+                                            rrData.setNum(bd);
+                                        }
+                                        String price = DataTypeHelpers.importTernaryOperate(objMx.get(i), 26);//	单价
+                                        bd = new BigDecimal(0);
+                                        if (DataTypeHelpers.isNumeric(price)) {
+                                            bd = new BigDecimal(price);
+                                            rrData.setPrice(bd);
+                                        }
+                                        String medicalPrice = DataTypeHelpers.importTernaryOperate(objMx.get(i), 27);//金额
+                                        bd = new BigDecimal(0);
+                                        if (DataTypeHelpers.isNumeric(medicalPrice)) {
+                                            bd = new BigDecimal(medicalPrice);
+                                            rrData.setMedicalPrice(bd);
+                                        }
+                                        String tcPayPrice = DataTypeHelpers.importTernaryOperate(objMx.get(i), 28);//统筹支付
+                                        bd = new BigDecimal(0);
+                                        if (DataTypeHelpers.isNumeric(tcPayPrice)) {
+                                            bd = new BigDecimal(tcPayPrice);
+                                            rrData.setTcPayPrice(bd);
+                                        }
+                                        String specs = DataTypeHelpers.importTernaryOperate(objMx.get(i), 29);//	规格
+                                        rrData.setSpecs(specs);
+                                        String jx = DataTypeHelpers.importTernaryOperate(objMx.get(i), 30);//剂型
+                                        rrData.setJx(jx);
+                                        String jgLevel = DataTypeHelpers.importTernaryOperate(objMx.get(i), 31);//机构等级
+                                        rrData.setJgLevel(jgLevel);
+                                        rrData.setState(0);
+                                        rrData.setIsDeletemark(1);
+                                        insertDataList.add(rrData);
                                     }
+                                } else {
+                                    blError = true;
+                                    message = "Excel导入失败，Sheet明细扣款 列表列数不正确";
                                 }
+
                                 if (!blError) {
                                     if (insertDataList.size() > 0) {
                                         YbChsApply ybChsApply = new YbChsApply();
@@ -372,26 +399,26 @@ public class YbChsApplyDataController extends BaseController {
             }
         }
 
-        map.put("message",message);
-        map.put("success",success);
-        map.put("fileName",uploadFileName);
+        map.put("message", message);
+        map.put("success", success);
+        map.put("fileName", uploadFileName);
         return new FebsResponse().data(map);
     }
 
     @PostMapping("delJk")
     @RequiresPermissions("ybChsApplyData:add")
-    public FebsResponse delJk1(String applyDateStr,Integer areaType) {
+    public FebsResponse delJk1(String applyDateStr, Integer areaType) {
         ModelMap map = new ModelMap();
         int success = 0;
         try {
-            message= this.iYbChsApplyDataService.delChsJk(applyDateStr,areaType);
-            if(message.equals("ok")){
+            message = this.iYbChsApplyDataService.delChsJk(applyDateStr, areaType);
+            if (message.equals("ok")) {
                 success = 1;
             } else {
-                if(message.equals("no")) {
+                if (message.equals("no")) {
                     message = applyDateStr + "未获申请数据.";
                 }
-                if(message.equals("no1")) {
+                if (message.equals("no1")) {
                     message = applyDateStr + "数据，当前状态无法删除.";
                 }
             }
@@ -400,8 +427,8 @@ public class YbChsApplyDataController extends BaseController {
             log.error(message, e);
         }
 
-        map.put("message",message);
-        map.put("success",success);
+        map.put("message", message);
+        map.put("success", success);
         return new FebsResponse().data(map);
     }
 
@@ -413,19 +440,23 @@ public class YbChsApplyDataController extends BaseController {
         int success = 0;
         try {
             int count = this.iYbChsApplyDataService.deleteChsApplyDataByPid(ybChsApplyData);
-            success = count == 1 ? 1 : 0;
-            if (success == 1) {
-                message = "删除明细成功.";
+            if (count == 2) {
+                message = "删除明细失败，请先删除HIS接口数据.";
             } else {
-                message = "删除明细失败.";
+                success = count == 1 ? 1 : 0;
+                if (success == 1) {
+                    message = "删除明细成功.";
+                } else {
+                    message = "删除明细失败 或 状态已更新无法删除.";
+                }
             }
         } catch (Exception e) {
             message = "删除明细失败.";
             log.error(message, e);
         }
 
-        map.put("message",message);
-        map.put("success",success);
+        map.put("message", message);
+        map.put("success", success);
         return new FebsResponse().data(map);
     }
 
@@ -473,8 +504,8 @@ public class YbChsApplyDataController extends BaseController {
             log.error(message, e);
         }
 
-        map.put("message",message);
-        map.put("success",success);
+        map.put("message", message);
+        map.put("success", success);
         return new FebsResponse().data(map);
     }
 

@@ -250,14 +250,14 @@ public class YbChsApplyDataResultDetaile {
     /**
      * 项目类型编码
      */
-    @ExcelField(value = "项目类型编码")
-    private String itemTypeCode;
+//    @ExcelField(value = "项目类型编码")
+//    private String itemTypeCode;
 
     /**
      * 项目类型名称
      */
-    @ExcelField(value = "项目类型名称")
-    private String itemTypeName;
+//    @ExcelField(value = "项目类型名称")
+//    private String itemTypeName;
 
 
     /**

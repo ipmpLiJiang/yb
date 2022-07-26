@@ -22,11 +22,12 @@
         <result column="areaType" property="areaType"/>
         <result column="hisCount" property="hisCount"/>
         <result column="isOutpfees" property="isOutpfees"/>
+        <result column="dataType" property="dataType"/>
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, applyDateStr, startNum, endNum, totalRow, currentPage, pageSize, totalPage, COMMENTS, STATE, IS_DELETEMARK, MODIFY_TIME, CREATE_TIME, CREATE_USER_ID, MODIFY_USER_ID, areaType, hisCount, isOutpfees
+        id, applyDateStr, startNum, endNum, totalRow, currentPage, pageSize, totalPage, COMMENTS, STATE, IS_DELETEMARK, MODIFY_TIME, CREATE_TIME, CREATE_USER_ID, MODIFY_USER_ID, areaType, hisCount, isOutpfees, dataType
     </sql>
     <update id="updateYbChsApplyTask" parameterType="cc.mrbird.febs.chs.entity.YbChsApplyTask">
         update yb_chs_apply_task
@@ -48,6 +49,7 @@
             <if test="areaType != null">areaType=#{areaType},</if>
             <if test="hisCount != null">hisCount=#{hisCount},</if>
             <if test="isOutpfees != null">isOutpfees=#{isOutpfees},</if>
+            <if test="dataType != null">dataType=#{dataType},</if>
         </trim>
         where id=#{id}
 
@@ -99,6 +101,6 @@
         areaType = #{ ybChsApplyTask.areaType} and
         state = #{ ybChsApplyTask.state} and
         isOutpfees = #{ ybChsApplyTask.isOutpfees}
-        order by currentPage desc LIMIT 0,1
+        order by dataType desc,currentPage desc LIMIT 0,1
     </select>
 </mapper>

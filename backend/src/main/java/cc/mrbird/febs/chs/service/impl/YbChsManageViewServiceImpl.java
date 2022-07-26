@@ -260,6 +260,7 @@ public class YbChsManageViewServiceImpl extends ServiceImpl<YbChsManageViewMappe
         amv.setApprovalState(am.getApprovalState());
 //        amv.setIsEnd(); //分页时赋值
 //        amv.setEnableType();//分页时赋值
+        amv.setDataType(am.getDataType());
         amv.setAreaType(am.getAreaType());
         return amv;
     }

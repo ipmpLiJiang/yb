@@ -52,8 +52,8 @@
         <result column="isPerson" property="isPerson"/>
         <result column="STATE" property="state"/>
         <result column="areaType" property="areaType"/>
+        <result column="dataType" property="dataType"/>
     </resultMap>
-
 
 
     <select id="findChsVerifyView" resultType="cc.mrbird.febs.chs.entity.YbChsVerifyView"
@@ -96,6 +96,7 @@
         ad.jx,
         ad.jgLevel,
         ad.orderNum,
+        ad.dataType,
         rv.verifyDoctorCode,
         concat(rv.verifyDoctorCode,'-',rv.verifyDoctorName) verifyDoctorName,
         rv.verifyDksId,
@@ -230,6 +231,7 @@
             ad.jx,
             ad.jgLevel,
             ad.orderNum,
+            ad.dataType,
             rv.verifyDoctorCode,
             concat(rv.verifyDoctorCode,'-',rv.verifyDoctorName) verifyDoctorName,
             rv.verifyDksId,

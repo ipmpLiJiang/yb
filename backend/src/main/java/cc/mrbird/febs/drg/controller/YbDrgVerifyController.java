@@ -225,18 +225,16 @@ public class YbDrgVerifyController extends BaseController {
                             List<Object[]> objMx = ImportExcelUtils.importExcelBySheetIndex(getFile, 0, 0, 0);
                             if (objMx.size() > 1) {
                                 List<YbDrgVerify> verifyList = new ArrayList<>();
-                                if (objMx.size() > 1) {
-                                    if (objMx.get(0).length >= 14) {
-                                        for (int i = 1; i < objMx.size(); i++) {
-                                            YbDrgVerify rv = this.getDrgVerify(objMx, i, applyDateStr, applyDataList);
-                                            if (rv != null) {
-                                                verifyList.add(rv);
-                                            }
+                                if (objMx.get(0).length >= 14) {
+                                    for (int i = 1; i < objMx.size(); i++) {
+                                        YbDrgVerify rv = this.getDrgVerify(objMx, i, applyDateStr, applyDataList);
+                                        if (rv != null) {
+                                            verifyList.add(rv);
                                         }
-                                    } else {
-                                        blError = true;
-                                        message = "Excel导入失败，Sheet明细扣款 列表列数不正确";
                                     }
+                                } else {
+                                    blError = true;
+                                    message = "Excel导入失败，Sheet明细扣款 列表列数不正确";
                                 }
 
                                 if (!blError) {
@@ -249,10 +247,10 @@ public class YbDrgVerifyController extends BaseController {
                                     }
                                 }
                             } else {
-                                message = "Excel导入失败，请确认 " + ssm + " 列表数据是否正确.";
+                                message = "Excel导入失败，请确认列表数据是否正确.";
                             }
                         } else {
-                            message = "Excel导入失败，确保Sheet页名为 " + ssm + " .";
+                            message = "Excel导入失败,需确保存在1个Sheet.";
                         }
                     } catch (Exception ex) {
                         //message = ex.getMessage();

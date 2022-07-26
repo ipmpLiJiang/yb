@@ -2,6 +2,7 @@ package cc.mrbird.febs.chs.service.impl;
 
 import cc.mrbird.febs.chs.entity.YbChsConfireData;
 import cc.mrbird.febs.chs.service.IYbChsConfireDataService;
+import cc.mrbird.febs.com.controller.DataTypeHelpers;
 import cc.mrbird.febs.common.domain.QueryRequest;
 import cc.mrbird.febs.common.utils.SortUtil;
 import cc.mrbird.febs.chs.entity.YbDks;
@@ -14,6 +15,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import freemarker.template.utility.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -139,6 +141,10 @@ public class YbDksServiceImpl extends ServiceImpl<YbDksMapper, YbDks> implements
                     dept.setDksName(item.getBm_mc());
                     dept.setCreateTime(new Date());
                     dept.setIsDeletemark(1);
+                    String py = DataTypeHelpers.chineseZpySzm(dept.getDksName());
+                    if(StringUtils.isNotBlank(py)) {
+                        dept.setSpellCode(py);
+                    }
                     createList.add(dept);
                 }
             }

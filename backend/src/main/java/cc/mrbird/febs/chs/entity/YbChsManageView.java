@@ -502,6 +502,13 @@ public class YbChsManageView {
     @ExcelField(value = "变更科室")
     private String changeDksName;
 
+    /**
+     * 数据类型
+     */
+    @TableField("dataType")
+    @ExcelField(value = "数据类型")
+    private Integer dataType;
+
     private transient List<String> listPid;
 
 

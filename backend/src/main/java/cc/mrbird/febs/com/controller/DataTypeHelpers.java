@@ -2,7 +2,12 @@ package cc.mrbird.febs.com.controller;
 
 import cn.hutool.core.date.DateUnit;
 import cn.hutool.core.date.DateUtil;
+import freemarker.template.utility.StringUtil;
 import lombok.val;
+import net.sourceforge.pinyin4j.PinyinHelper;
+import net.sourceforge.pinyin4j.format.HanyuPinyinCaseType;
+import net.sourceforge.pinyin4j.format.HanyuPinyinOutputFormat;
+import net.sourceforge.pinyin4j.format.HanyuPinyinToneType;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
@@ -398,5 +403,30 @@ public class DataTypeHelpers {
             fileSizeString = df.format((double) fileS / 1073741824) + "G";
         }
         return fileSizeString;
+    }
+
+    public static String chineseZpySzm(String chinese) {
+        String result = "";
+        if(StringUtils.isNotBlank(chinese)) {
+            HanyuPinyinOutputFormat format = new HanyuPinyinOutputFormat();
+            //拼音小写
+            format.setCaseType(HanyuPinyinCaseType.LOWERCASE);
+            //不带声调
+            format.setToneType(HanyuPinyinToneType.WITHOUT_TONE);
+            try {
+                char[] array = chinese.toCharArray();
+                for (char c : array) {
+                    if (c > 128) {
+                        String[] arr = PinyinHelper.toHanyuPinyinStringArray(c, format);
+                        if (arr.length > 0)
+                            result += arr[0].charAt(0);
+                    }
+                }
+            }catch (Exception e) {
+                result = null;
+            }
+        }
+
+        return result;
     }
 }

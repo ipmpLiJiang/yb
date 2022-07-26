@@ -846,7 +846,7 @@ public class YbReconsiderApplyDataServiceImpl extends ServiceImpl<YbReconsiderAp
                 }
                 int state = 0;
                 // isOutpfees 1 是门诊 2是住院 0未区分
-                YbReconsiderApplyTask raTask = this.getApplyTask(applyDateStr,areaType,typeno,state,isOutpfees);
+                YbReconsiderApplyTask raTask = this.getApplyTask(applyDateStr, areaType, typeno, state, isOutpfees);
                 //总数
                 int totalRow = 0;
                 //当前页

@@ -80,12 +80,12 @@ febs:
   openAopLog: true
   uploadPath: D:/Yb/UploadFile/
   baseUrl: http://127.0.0.1:9527
-  openSms: 1
+  openSms: 2
   in0: hrp_hr
   in1: hrp_hr
   in2: MAC
   in3: FC
-  taskInpatientCount: 500
+  taskInpatientCount: 300
   smsWebsite: 登录网址（内网）：http://192.168.78.136:3086/#/login，用户名为工号，初始密码为身份证后6位。
 
   #baseUrl: http://192.168.78.136:9527

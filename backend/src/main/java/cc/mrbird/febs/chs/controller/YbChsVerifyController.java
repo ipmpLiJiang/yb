@@ -37,10 +37,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -143,7 +140,7 @@ public class YbChsVerifyController extends BaseController {
         try {
             YbChsApply ybChsApply = this.iYbChsApplyService.findChsApplyByApplyDateStrs(delVerify.getApplyDateStr(), delVerify.getAreaType());
             if (ybChsApply != null) {
-                this.iYbChsVerifyService.deleteChsVerifyState(delVerify,ybChsApply);
+                this.iYbChsVerifyService.deleteChsVerifyState(delVerify, ybChsApply);
                 message = "删除成功";
                 success = 1;
             } else {
@@ -153,9 +150,9 @@ public class YbChsVerifyController extends BaseController {
             message = "删除失败.";
             log.error(message, e);
         }
-        map.put("message",message);
-        map.put("success",success);
-        return  new FebsResponse().data(map);
+        map.put("message", message);
+        map.put("success", success);
+        return new FebsResponse().data(map);
     }
 
 
@@ -183,20 +180,23 @@ public class YbChsVerifyController extends BaseController {
     public FebsResponse importChsVerifys(String applyDate, Integer areaType) throws FebsException {
         ModelMap map = new ModelMap();
         int success = 0;
-        List<YbChsPriorityLevelBack> backList = new ArrayList<>();
+        List<YbChsVerifyMsg> backList = new ArrayList<>();
         try {
             User currentUser = FebsUtil.getCurrentUser();
             this.iYbChsVerifyService.insertChsVerifyImports(applyDate, areaType, currentUser.getUserId(), currentUser.getUsername(), backList);
+            if (backList.size() > 0) {
+                backList.sort(Comparator.comparing(YbChsVerifyMsg::getZymzName).thenComparing(YbChsVerifyMsg::getRuleName));
+            }
             success = 1;
         } catch (Exception e) {
             message = "匹配失败";
             log.error(message, e);
             throw new FebsException(message);
         }
-        map.put("message",message);
-        map.put("success",success);
-        map.put("data",backList);
-        return  new FebsResponse().data(map);
+        map.put("message", message);
+        map.put("success", success);
+        map.put("data", backList);
+        return new FebsResponse().data(map);
     }
 
     @Log("修改")
@@ -322,18 +322,16 @@ public class YbChsVerifyController extends BaseController {
                             List<Object[]> objMx = ImportExcelUtils.importExcelBySheetIndex(getFile, 0, 0, 0);
                             if (objMx.size() > 1) {
                                 List<YbChsVerify> verifyList = new ArrayList<>();
-                                if (objMx.size() > 1) {
-                                    if (objMx.get(0).length >= 37) {
-                                        for (int i = 1; i < objMx.size(); i++) {
-                                            YbChsVerify rv = this.getChsVerify(objMx, i, applyDateStr, applyDataList);
-                                            if (rv != null) {
-                                                verifyList.add(rv);
-                                            }
+                                if (objMx.get(0).length >= 36) {
+                                    for (int i = 1; i < objMx.size(); i++) {
+                                        YbChsVerify rv = this.getChsVerify(objMx, i, applyDateStr, applyDataList);
+                                        if (rv != null) {
+                                            verifyList.add(rv);
                                         }
-                                    } else {
-                                        blError = true;
-                                        message = "Excel导入失败，Sheet明细扣款 列表列数不正确";
                                     }
+                                } else {
+                                    blError = true;
+                                    message = "Excel导入失败，Sheet明细扣款 列表列数不正确";
                                 }
 
                                 if (!blError) {
@@ -346,10 +344,10 @@ public class YbChsVerifyController extends BaseController {
                                     }
                                 }
                             } else {
-                                message = "Excel导入失败，请确认 " + ssm + " 列表数据是否正确.";
+                                message = "Excel导入失败，请确认列表数据是否正确.";
                             }
                         } else {
-                            message = "Excel导入失败，确保Sheet页名为 " + ssm + " .";
+                            message = "Excel导入失败,需确保存在1个Sheet.";
                         }
                     } catch (Exception ex) {
                         //message = ex.getMessage();
@@ -366,10 +364,10 @@ public class YbChsVerifyController extends BaseController {
             }
         }
 
-        map.put("message",message);
-        map.put("success",success);
-        map.put("fileName",uploadFileName);
-        return  new FebsResponse().data(map);
+        map.put("message", message);
+        map.put("success", success);
+        map.put("fileName", uploadFileName);
+        return new FebsResponse().data(map);
     }
 
     private YbChsVerify getChsVerify(List<Object[]> obj, int i, String applyDateStr, List<YbChsApplyData> applyDataList) {
@@ -436,11 +434,10 @@ public class YbChsVerifyController extends BaseController {
             log.error(message, e);
         }
 
-        map.put("message",message);
-        map.put("success",success);
-        return  new FebsResponse().data(map);
+        map.put("message", message);
+        map.put("success", success);
+        return new FebsResponse().data(map);
     }
-
 
 
 }

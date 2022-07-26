@@ -45,10 +45,10 @@ public class CacheInitRunner implements ApplicationRunner {
             log.info("缓存初始化 ······");
             log.info("缓存用户数据 ······");
             //服务器开启缓存User相关数据
-//            List<User> list = this.userService.list();
-//            for (User user : list) {
-//                userManager.loadUserRedisCache(user);
-//            }
+            List<User> list = this.userService.list();
+            for (User user : list) {
+                userManager.loadUserRedisCache(user);
+            }
             configureManager.loadgetConfigureCache(5,"area");
 
         } catch (Exception e) {

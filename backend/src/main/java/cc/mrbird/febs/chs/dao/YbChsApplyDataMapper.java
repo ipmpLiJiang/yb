@@ -21,16 +21,16 @@ public interface YbChsApplyDataMapper extends BaseMapper<YbChsApplyData> {
 
     IPage<YbChsApplyData> findYbChsApplyData(Page page, @Param("ybChsApplyData") YbChsApplyData ybChsApplyData);
 
-    int findChsApplyDataCount(@Param("pid") String pid,@Param("isOutpfees")  Integer isOutpfees);
+    int findChsApplyDataCount(@Param("pid") String pid,@Param("dataType")  Integer dataType,@Param("isOutpfees")  Integer isOutpfees);
 
     int findChsApplyDataNotCount(@Param("pid") String pid,@Param("applyDateStr") String applyDateStr,
-                                 @Param("areaType") Integer areaType,@Param("isOutpfees")  Integer isOutpfees);
+                                 @Param("areaType") Integer areaType,@Param("dataType")  Integer dataType,@Param("isOutpfees")  Integer isOutpfees);
 
     List<YbChsApplyData> findChsApplyDataNotJk(@Param("pid") String pid,@Param("applyDateStr") String applyDateStr,
-                                               @Param("areaType") Integer areaType,@Param("isOutpfees")  Integer isOutpfees);
+                                               @Param("areaType") Integer areaType,@Param("dataType")  Integer dataType,@Param("isOutpfees")  Integer isOutpfees);
 
     List<YbChsApplyData> findChsApplyDataBetween(@Param("pid") String pid, @Param("startNum") Integer startNum, @Param("endNum") Integer endNum,
-                                                 @Param("state") Integer state, @Param("isOutpfees") Integer isOutpfees);
+                                                 @Param("state") Integer state,@Param("dataType")  Integer dataType, @Param("isOutpfees") Integer isOutpfees);
 
     List<YbChsApplyData> findChsApplyDataByNotVerify(@Param("pid") String pid,@Param("applyDateStr") String applyDateStr,
                                                      @Param("areaType") Integer areaType);

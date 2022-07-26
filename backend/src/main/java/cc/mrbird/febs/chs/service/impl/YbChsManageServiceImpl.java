@@ -199,6 +199,7 @@ public class YbChsManageServiceImpl extends ServiceImpl<YbChsManageMapper, YbChs
                                     create.setApplyDateStr(item.getApplyDateStr());
                                     create.setOrderNum(item.getOrderNum());
                                     create.setAreaType(item.getAreaType());
+                                    create.setDataType(item.getDataType());
                                     createList.add(create);
                                 }
                             }
@@ -337,12 +338,19 @@ public class YbChsManageServiceImpl extends ServiceImpl<YbChsManageMapper, YbChs
                     isUpdate = true;
                     YbChsManage updateChsManage = new YbChsManage();
                     if (ybChsManage.getState() == YbDefaultValue.ACCEPTSTATE_6) {
-                        ybChsManage.setApplyDateStr(entity.getApplyDateStr());
-                        ybChsManage.setOrderNum(entity.getOrderNum());
-                        ybChsManage.setAreaType(entity.getAreaType());
-                        isUpdate = this.createUpdateAcceptChsResult(ybChsManage, thisDate);
+                        List<ComFile> list = this.iComFileService.findListComFile(entity.getId(), null);
+                        if (list.size() > 0) {
+                            ybChsManage.setApplyDateStr(entity.getApplyDateStr());
+                            ybChsManage.setOrderNum(entity.getOrderNum());
+                            ybChsManage.setAreaType(entity.getAreaType());
+                            ybChsManage.setDataType(entity.getDataType());
+                            isUpdate = this.createUpdateAcceptChsResult(ybChsManage, thisDate);
 
-                        updateChsManage.setOperateProcess("待申诉-已申诉");
+                            updateChsManage.setOperateProcess("待申诉-已申诉");
+                        } else {
+                            isUpdate = false;
+                            message = "未上传申诉附件，无法提交！";
+                        }
                     }
                     updateChsManage.setId(ybChsManage.getId());
                     updateChsManage.setOperateDate(thisDate);
@@ -360,7 +368,8 @@ public class YbChsManageServiceImpl extends ServiceImpl<YbChsManageMapper, YbChs
                             message = "ok";
                         }
                     } else {
-                        message = "结果数据创建失败.";
+                        if(StringUtils.isBlank(message))
+                            message = "结果数据创建失败.";
                     }
                 } else {
                     message = "该申诉数据已申诉.";
@@ -395,6 +404,7 @@ public class YbChsManageServiceImpl extends ServiceImpl<YbChsManageMapper, YbChs
         newChsResult.setApplyDateStr(ybChsManage.getApplyDateStr());
         newChsResult.setOrderNum(ybChsManage.getOrderNum());
         newChsResult.setAreaType(ybChsManage.getAreaType());
+        newChsResult.setDataType(ybChsManage.getDataType());
         newChsResult.setOperateDate(thisDate);
         newChsResult.setOperateReason(ybChsManage.getOperateReason());
         newChsResult.setState(1);
@@ -474,6 +484,7 @@ public class YbChsManageServiceImpl extends ServiceImpl<YbChsManageMapper, YbChs
 
             newChsManage.setApplyDateStr(entity.getApplyDateStr());
             newChsManage.setOrderNum(entity.getOrderNum());
+            newChsManage.setDataType(entity.getDataType());
 
             String strReadyDksName = DataTypeHelpers.stringReplaceSetString(ybChsManage.getReadyDksName(), ybChsManage.getReadyDksId() + "-");
             ybChsManage.setReadyDksName(strReadyDksName);
@@ -698,6 +709,7 @@ public class YbChsManageServiceImpl extends ServiceImpl<YbChsManageMapper, YbChs
                 newChsManage.setReadyDoctorName(ybChsManage.getReadyDoctorName());
 
                 newChsManage.setAreaType(entity.getAreaType());
+                newChsManage.setDataType(entity.getDataType());
                 newChsManage.setOperateProcess("管理员更改-创建");
 
                 String personCode = newChsManage.getReadyDoctorCode();

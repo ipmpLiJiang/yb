@@ -334,6 +334,13 @@ public class YbChsJk implements Serializable, Comparable<YbChsJk> {
     @ExcelField(value = "就诊卡号")
     private String jzkh;
 
+    /**
+     * 数据类型
+     */
+    @TableField("dataType")
+    @ExcelField(value = "数据类型")
+    private Integer dataType;
+
 
     public static final String ID = "id";
 
@@ -420,6 +427,8 @@ public class YbChsJk implements Serializable, Comparable<YbChsJk> {
     public static final String ISOUTPFEES = "isOutpfees";
 
     public static final String JZKH = "jzkh";
+
+    public static final String DATATYPE = "dataType";
 
     @Override
     public int compareTo(YbChsJk o) {

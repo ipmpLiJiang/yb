@@ -55,14 +55,17 @@ public class Test {
 //        format.setVCharType(HanyuPinyinVCharType.WITH_V);
         //要转换的中文，格式，转换之后的拼音的分隔符，遇到不能转换的是否保留   wo,shi,zhong,guo,ren,，hello
 //        System.out.println(PinyinHelper.toHanYuPinyinString("我是中国人，hello", format, ",", true));
-        String str = "我是中国人";
+        String str = "我#是!中%国@人,22，1，dd哈啊哈dd";
         char[] array = str.toCharArray();
-        if(array[0] >128) {
-            String[] arr = PinyinHelper.toHanyuPinyinStringArray(array[0], format);
-            System.out.println(arr);
-        } else {
-            System.out.println("no");
+        String result = "";
+        for (char c : array) {
+            if (c > 128) {
+                String[] arr = PinyinHelper.toHanyuPinyinStringArray(c, format);
+                if(arr.length > 0)
+                    result += arr[0].charAt(0);
+            }
         }
+        System.out.println(result);
         //        List<YbDept> list = new ArrayList<>();
 //        Random r= new Random();
 //        for (int i = 1; i < 10; i++) {

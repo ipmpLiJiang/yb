@@ -47,11 +47,12 @@
         <result column="areaType" property="areaType"/>
         <result column="isOutpfees" property="isOutpfees"/>
         <result column="jzkh" property="jzkh"/>
+        <result column="dataType" property="dataType"/>
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, inpatientId, patientName, settlementId, billNo, transNo, itemId, itemCode, itemName, itemCount, itemPrice, itemAmount, feeDate, deptId, deptName, orderDocId, orderDocName, excuteDeptId, excuteDeptName, excuteDocId, excuteDocName, settlementDate, COMMENTS, STATE, IS_DELETEMARK, applyDateStr, orderNum, applyDataId, miCode, hisName, miName, dyyz, attendDocId, attendDocName, itemTypeCode, itemTypeName, feeOperatorId, feeOperatorName, feeDeptId, feeDeptName, areaType, isOutpfees, jzkh
+        id, inpatientId, patientName, settlementId, billNo, transNo, itemId, itemCode, itemName, itemCount, itemPrice, itemAmount, feeDate, deptId, deptName, orderDocId, orderDocName, excuteDeptId, excuteDeptName, excuteDocId, excuteDocName, settlementDate, COMMENTS, STATE, IS_DELETEMARK, applyDateStr, orderNum, applyDataId, miCode, hisName, miName, dyyz, attendDocId, attendDocName, itemTypeCode, itemTypeName, feeOperatorId, feeOperatorName, feeDeptId, feeDeptName, areaType, isOutpfees, jzkh, dataType
     </sql>
     <update id="updateYbChsJk" parameterType="cc.mrbird.febs.chs.entity.YbChsJk">
         update yb_chs_jk
@@ -98,6 +99,7 @@
             <if test="areaType != null">areaType=#{areaType},</if>
             <if test="isOutpfees != null">isOutpfees=#{isOutpfees},</if>
             <if test="jzkh != null">jzkh=#{jzkh},</if>
+            <if test="dataType != null">dataType=#{dataType},</if>
         </trim>
         where id=#{id}
 
