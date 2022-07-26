@@ -288,6 +288,17 @@ export default {
     },
     fetch (params = {}) {
       this.dataSource = []
+      if (this.ybChsData.dataType === 0) {
+        this.orderDocTitle = '开方医生'
+        this.deptTitle = '住院科室'
+        this.excuteDocTitle = '执行医生'
+        this.excuteDeptTitle = '执行科室'
+      } else {
+        this.orderDocTitle = '入院责任人'
+        this.deptTitle = '入院责任科室'
+        this.excuteDocTitle = '办入院操作员'
+        this.excuteDeptTitle = '办入院操作员科室'
+      }
       params.applyDateStr = this.ybChsData.applyDateStr
       params.applyDataId = this.ybChsData.applyDataId
       this.loading = true

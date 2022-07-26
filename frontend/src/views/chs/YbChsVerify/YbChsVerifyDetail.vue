@@ -2,7 +2,7 @@
   <a-drawer
     title="核对明细"
     :maskClosable="false"
-    width=85%
+    width=82%
     placement="right"
     :closable="true"
     @close="onClose"
@@ -147,6 +147,7 @@ export default {
           verifyDksName: this.ybChsVerify.verifyDksName,
           applyDateStr: this.ybChsVerifyView.applyDateStr,
           orderNum: this.ybChsVerifyView.orderNum,
+          dataType: this.ybChsVerifyView.dataType,
           areaType: this.user.areaType.value
         }]
 
@@ -198,6 +199,7 @@ export default {
         verifyDoctorCode: target.verifyDoctorCode,
         verifyDoctorName: target.verifyDoctorName,
         verifyDksId: target.verifyDksId,
+        dataType: target.dataType,
         verifyDksName: target.verifyDksName,
         state: 2
       }

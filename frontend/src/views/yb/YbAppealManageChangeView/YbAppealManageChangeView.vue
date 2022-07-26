@@ -18,7 +18,9 @@
           </a-col>
           <a-col flex="200px">
             版本类型：
-            <a-select :value="searchTypeno" style="width: 110px" @change="handleTypenoChange">
+            <a-select :value="searchTypeno"
+              style="width: 110px"
+              @change="handleTypenoChange">
               <a-select-option
               v-for="d in selectTypenoDataSource"
               :key="d.value"

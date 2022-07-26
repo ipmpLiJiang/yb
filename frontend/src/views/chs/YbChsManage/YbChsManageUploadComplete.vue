@@ -2,7 +2,7 @@
   <a-drawer
     title="申诉更改"
     :maskClosable="false"
-    width="85%"
+    width="82%"
     placement="right"
     :closable="true"
     @close="onClose"
@@ -24,7 +24,7 @@
         <template>
           <a-form :form="form">
             <a-row type="flex" justify="start">
-              <a-col :span="22">
+              <a-col :span="23">
                 <!--复议科室、医生-->
                 <a-row type="flex" justify="center">
                   <a-col :span="8">
@@ -75,7 +75,9 @@
                       :remove="handleImageRemove"
                       :beforeUpload="beforeUpload"
                     >
-                      <a-button>
+                      <a-button
+                        v-if="fileBtnVisiable"
+                      >
                         <a-icon type="upload" /> 上传附件
                       </a-button>
                     </a-upload>
@@ -142,6 +144,7 @@ export default {
       ybChsManageUpload: {},
       ybChsManage: {},
       fileList: [],
+      fileBtnVisiable: true,
       lableErr: '',
       user: this.$store.state.account.user,
       form: this.$form.createForm(this)

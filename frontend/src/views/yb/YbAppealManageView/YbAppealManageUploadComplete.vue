@@ -2,7 +2,7 @@
   <a-drawer
     title="申诉更改"
     :maskClosable="false"
-    width=80%
+    width=82%
     placement="right"
     :closable="true"
     @close="onClose"

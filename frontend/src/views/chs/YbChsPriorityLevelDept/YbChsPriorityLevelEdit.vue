@@ -2,7 +2,7 @@
   <a-drawer
     title="修改"
     :maskClosable="false"
-    width=800
+    width=850
     placement="right"
     :closable="false"
     @close="onClose"
@@ -36,6 +36,9 @@
           </a-radio>
           <a-radio value="3">
             材料
+          </a-radio>
+          <a-radio value="4">
+            其他
           </a-radio>
         </a-radio-group>
       </a-form-item>
@@ -102,6 +105,9 @@
           v-bind="formItemLayout"
         >
         <a-radio-group  v-decorator="['deptType']" @change="handleDeptChange">
+          <a-radio value="5">
+            主治科室
+          </a-radio>
           <a-radio value="1">
             开单科室
           </a-radio>
@@ -132,11 +138,14 @@
           v-bind="formItemLayout"
         >
         <a-radio-group  v-decorator="['personType']" @change="handlePersonChange">
+          <a-radio value="5">
+            主治医生
+          </a-radio>
           <a-radio value="1">
-            开单人员
+            开单医生
           </a-radio>
           <a-radio value="2">
-            执行人员
+            执行医生
           </a-radio>
           <a-radio value="3">
             计费人员

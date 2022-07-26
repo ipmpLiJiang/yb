@@ -51,6 +51,7 @@
           selectedRowKeys: selectedRowKeys,
           onChange: onSelectChange,
         }"
+        size="small"
         @change="handleTableChange"
         :bordered="bordered"
         :scroll="{ x: 900 }"

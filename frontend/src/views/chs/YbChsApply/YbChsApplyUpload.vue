@@ -216,7 +216,7 @@ export default {
             this.showBtn = true
             this.showDelBtn = false
           } else {
-            this.$message.error('删除明细失败或状态已更新无法删除？')
+            this.$message.error(r.data.data.message)
           }
         })
       } else {

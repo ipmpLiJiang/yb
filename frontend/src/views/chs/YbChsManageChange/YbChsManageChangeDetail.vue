@@ -2,7 +2,7 @@
   <a-drawer
     title="变更详情"
     :maskClosable="false"
-    width=85%
+    width=82%
     placement="right"
     :closable="true"
     @close="onClose"

@@ -143,7 +143,7 @@ export default {
       {
         title: '身份证号',
         dataIndex: 'cardNumber',
-        width: 120
+        width: 160
       },
       {
         title: '医保项目编码',
@@ -158,7 +158,7 @@ export default {
       {
         title: '医院项目名称',
         dataIndex: 'projectYyName',
-        width: 120
+        width: 250
       },
       {
         title: '规则名称',

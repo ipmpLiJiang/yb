@@ -76,13 +76,28 @@ export default {
       },
       {
         title: '数据类型',
+        dataIndex: 'dataType',
+        customRender: (text, row, index) => {
+          switch (text) {
+            case 0:
+              return '明细扣款'
+            case 1:
+              return '主单扣款'
+            default:
+              return text
+          }
+        },
+        width: 100
+      },
+      {
+        title: '类型',
         dataIndex: 'isOutpfees',
         customRender: (text, row, index) => {
           switch (text) {
             case 1:
-              return '门诊扣款'
+              return '门诊'
             case 2:
-              return '住院扣款'
+              return '住院'
             default:
               return text
           }

@@ -57,6 +57,9 @@
                   <a-select-option value="3">
                     材料
                   </a-select-option>
+                  <a-select-option value="4">
+                    其他
+                  </a-select-option>
                 </a-select>
               </a-form-item>
             </a-col>
@@ -256,6 +259,8 @@ export default {
               return '项目'
             case 3:
               return '材料'
+            case 4:
+              return '其他'
             default:
               return text
           }
@@ -293,7 +298,7 @@ export default {
       {
         title: '规则名称',
         dataIndex: 'ruleName',
-        width: 200
+        width: 220
       },
       // {
       //   title: '是否项目',
@@ -329,6 +334,8 @@ export default {
               return '计费科室'
             case 4:
               return '固定科室'
+            case 5:
+              return '主治科室'
             default:
               return text
           }
@@ -358,6 +365,8 @@ export default {
               return '计费人员'
             case 4:
               return '固定人员'
+            case 5:
+              return '主治医生'
             default:
               return text
           }

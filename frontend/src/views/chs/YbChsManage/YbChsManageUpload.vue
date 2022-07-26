@@ -2,7 +2,7 @@
   <a-drawer
     title="申诉填报"
     :maskClosable="false"
-    width="85%"
+    width="82%"
     placement="right"
     :closable="true"
     @close="onClose"
@@ -24,7 +24,7 @@
         <template>
           <a-form :form="form">
             <a-row type="flex" justify="start">
-              <a-col :span="22">
+              <a-col :span="23">
                 <!--复议科室、医生-->
                 <a-row type="flex" justify="center">
                   <a-col :span="8">
@@ -75,7 +75,9 @@
                       :remove="handleImageRemove"
                       :beforeUpload="beforeUpload"
                     >
-                      <a-button>
+                      <a-button
+                        v-if="fileBtnVisiable"
+                      >
                         <a-icon type="upload" /> 上传附件
                       </a-button>
                     </a-upload>
@@ -155,6 +157,7 @@ export default {
       ybChsManage: {},
       fileList: [],
       lableErr: '',
+      fileBtnVisiable: true,
       user: this.$store.state.account.user,
       form: this.$form.createForm(this)
     }
@@ -203,6 +206,11 @@ export default {
           this.uploading = false
           this.$message.success('上传成功.')
           this.lableErr = ''
+          if (that.fileList.length === 0) {
+            that.fileBtnVisiable = true
+          } else {
+            that.fileBtnVisiable = false
+          }
         } else {
           this.$message.error(r.data.data.message)
         }
@@ -212,11 +220,11 @@ export default {
       })
     },
     handleImageRemove (file) {
-      if (this.fileList.length === 1) {
-        this.$message.warning('申诉附件无法删除，申诉复议必须上传附件！')
-        this.lableErr = '申诉附件无法删除，申诉复议必须上传附件！'
-        return false
-      }
+      // if (this.fileList.length === 1) {
+      //   this.$message.warning('申诉附件无法删除，申诉复议必须上传附件！')
+      //   this.lableErr = '申诉附件无法删除，申诉复议必须上传附件！'
+      //   return false
+      // }
       let that = this
       this.$confirm({
         title: '确定删除所选中的附件?',
@@ -233,6 +241,7 @@ export default {
             that.uploading = false
             if (r.data.data.success === 1) {
               that.$message.success('删除成功')
+              that.fileBtnVisiable = true
               const index = that.fileList.indexOf(file)
               const newFileList = that.fileList.slice()
               newFileList.splice(index, 1)
@@ -252,6 +261,7 @@ export default {
       this.ybChsManage = {}
       this.ybChsManageUpload = {}
       this.fileList = []
+      this.fileBtnVisiable = false
       this.$emit('close')
     },
     handleSubmit (type) {
@@ -292,6 +302,7 @@ export default {
               }
             } else {
               this.$message.error(r.data.data.message)
+              this.lableErr = r.data.data.message
             }
           }).catch(() => {
             this.loading = false
@@ -302,6 +313,7 @@ export default {
     setFormValues ({
       ...ybChsManageUpload
     }) {
+      this.fileBtnVisiable = false
       this.lableErr = ''
       this.ybChsManageUpload = ybChsManageUpload
 
@@ -353,6 +365,11 @@ export default {
           data.url = this.$baseURL + data.url
           data.thumbUrl = this.$baseURL + data.thumbUrl
           this.fileList.push(data)
+        }
+        if (this.fileList.length === 0) {
+          this.fileBtnVisiable = true
+        } else {
+          this.fileBtnVisiable = false
         }
       })
     }

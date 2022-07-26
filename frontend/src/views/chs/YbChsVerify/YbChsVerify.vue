@@ -11,20 +11,16 @@
           justify="center"
           align="middle"
         >
-          <a-col :span=5>
-            <a-form-item
-              v-bind="formItemLayout"
-              label="复议年月"
-            >
-              <a-month-picker
-                placeholder="请输入复议年月"
-                style="width: 105px"
-                @change="monthChange"
-                v-model="searchApplyDate"
-                :default-value="searchApplyDate"
-                :format="monthFormat"
-              />
-            </a-form-item>
+          <a-col :span=5 style="margin-bottom:16px">
+            复议年月：
+            <a-month-picker
+              placeholder="请输入复议年月"
+              style="width: 105px;margin-right: 3px"
+              @change="monthChange"
+              v-model="searchApplyDate"
+              :default-value="searchApplyDate"
+              :format="monthFormat"
+            />
           </a-col>
           <a-col :span=15>
             <a-button
@@ -41,7 +37,6 @@
             自动匹配
           </a-button>
           <a-popover v-model="visibleMatch" trigger="click" title="自动匹配">
-            <p slot="content">
             <a-popconfirm
               title="确定执行匹配？"
               slot="content"
@@ -61,7 +56,7 @@
             >
               <a-button type="danger">删除匹配</a-button>
             </a-popconfirm>
-            </p>
+            <a-button slot="content" style="margin-left: 8px" @click="handleWppShow">显示</a-button>
           </a-popover>
             <a-button
               type="primary"
@@ -122,7 +117,10 @@
             >
               <a-button type="primary">全部发送</a-button>
             </a-popconfirm>
-            <a-button type="danger" @click="showDateModal" v-show="tableSelectKey==2||tableSelectKey==3||tableSelectKey==4?true:false" style="margin-right: 15px">日期</a-button>
+            <a-button type="danger"
+              @click="showDateModal"
+              v-show="tableSelectKey==2||tableSelectKey==3||tableSelectKey==4?true:false"
+              style="margin-right: 8px">日期</a-button>
             <a-button  v-show="tableSelectKey==4?false:true"
               type="primary"
               style="margin-right: 8px"
@@ -202,12 +200,10 @@
             <a-upload
                 name="file"
                 accept=".xlsx,.xls"
-                style="margin-right: 8px"
                 :fileList="fileList"
                 :beforeUpload="beforeUpload"
               >
-                <a-button type="primary">
-                  <a-icon type="upload" /> 上传 </a-button>
+                <a-button type="primary"> 上传 </a-button>
               </a-upload>
           </a-col>
           <a-col :span=2 v-show="tableSelectKey==1?true:false">
@@ -228,7 +224,8 @@
         v-model="wppVisible" title="未匹配规则项目" @ok="handleWppOk">
         <a-table
           :columns="wppColumns"
-          :rowKey="record => record.id"
+          :rowKey="record => record.ids"
+          :pagination="{defaultPageSize: 15}"
           :data-source="wppDataSource"
           size="small"
           bordered :scroll="{ x: 500 }">
@@ -565,12 +562,22 @@ export default {
       return [{
         title: '规则名称',
         dataIndex: 'ruleName',
-        width: 220
+        width: 180
       },
       {
         title: '项目名称',
         dataIndex: 'projectName',
-        width: 220
+        width: 180
+      },
+      {
+        title: '是否项目',
+        dataIndex: 'currencyField',
+        width: 60
+      },
+      {
+        title: '类型',
+        dataIndex: 'zymzName',
+        width: 80
       }]
     }
   },
@@ -737,6 +744,7 @@ export default {
       this.$delete('ybChsVerify/deleteVerifyState', param).then((r) => {
         if (r.data.data.success === 1) {
           this.$message.success('删除成功.')
+          this.wppDataSource = []
           this.$refs.ybChsVerifyStayed.searchPage()
         } else {
           this.$message.warning(r.data.data.message)
@@ -837,6 +845,18 @@ export default {
     },
     handleWppOk () {
       this.wppVisible = false
+    },
+    handleWppShow () {
+      this.wppVisible = true
+      this.wppDataSource = []
+      let params = {}
+      params.applyDateStr = this.searchApplyDate
+      params.areaType = this.user.areaType.value
+      this.$get('ybChsVerifyMsg/getList', {
+        ...params
+      }).then((r) => {
+        this.wppDataSource = r.data.data
+      })
     },
     addImport () {
       this.spinning = true

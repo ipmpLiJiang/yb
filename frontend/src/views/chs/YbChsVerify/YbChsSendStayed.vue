@@ -127,7 +127,7 @@ export default {
       {
         title: '身份证号',
         dataIndex: 'cardNumber',
-        width: 100
+        width: 120
       },
       {
         title: '医保项目名称',
@@ -138,8 +138,7 @@ export default {
       {
         title: '规则名称',
         dataIndex: 'ruleName',
-        width: 150,
-        ellipsis: true
+        width: 200
       },
       {
         title: '初审违规金额（元）',
@@ -154,7 +153,7 @@ export default {
       {
         title: '违规内容',
         dataIndex: 'violateReason',
-        width: 150,
+        width: 200,
         ellipsis: true
       },
       {
@@ -239,6 +238,7 @@ export default {
           verifyDksName: target.verifyDksName,
           applyDateStr: target.applyDateStr,
           orderNum: target.orderNum,
+          dataType: target.dataType,
           areaType: this.user.areaType.value
         }]
         this.sendService(data)
@@ -263,6 +263,7 @@ export default {
               verifyDksName: target.verifyDksName,
               applyDateStr: target.applyDateStr,
               orderNum: target.orderNum,
+              dataType: target.dataType,
               areaType: this.user.areaType.value}
 
             data.push(arrData)

@@ -11,20 +11,16 @@
           justify="center"
           align="middle"
         >
-          <a-col :span=5>
-            <a-form-item
-              v-bind="formItemLayout"
-              label="复议年月"
-            >
-              <a-month-picker
-                placeholder="请输入复议年月"
-                style="width: 105px"
-                @change="monthChange"
-                v-model="searchApplyDate"
-                :default-value="searchApplyDate"
-                :format="monthFormat"
-              />
-            </a-form-item>
+          <a-col :span=5 style="margin-bottom:16px">
+            复议年月：
+            <a-month-picker
+              placeholder="请输入复议年月"
+              style="width: 105px;margin-right: 3px"
+              @change="monthChange"
+              v-model="searchApplyDate"
+              :default-value="searchApplyDate"
+              :format="monthFormat"
+            />
           </a-col>
           <a-col :span=15>
             <a-button
@@ -122,7 +118,10 @@
             >
               <a-button type="primary">全部发送</a-button>
             </a-popconfirm>
-            <a-button type="danger" @click="showDateModal" v-show="tableSelectKey==2||tableSelectKey==3||tableSelectKey==4?true:false" style="margin-right: 15px">DRG日期</a-button>
+            <a-button type="danger"
+              @click="showDateModal"
+              v-show="tableSelectKey==2||tableSelectKey==3||tableSelectKey==4?true:false"
+              style="margin-right: 8px">DRG日期</a-button>
             <a-button  v-show="tableSelectKey==4?false:true"
               type="primary"
               style="margin-right: 8px"
@@ -202,12 +201,10 @@
             <a-upload
                 name="file"
                 accept=".xlsx,.xls"
-                style="margin-right: 8px"
                 :fileList="fileList"
                 :beforeUpload="beforeUpload"
               >
-                <a-button type="primary">
-                  <a-icon type="upload" /> 上传 </a-button>
+                <a-button type="primary"> 上传 </a-button>
               </a-upload>
           </a-col>
           <a-col :span=2 v-show="tableSelectKey==1?true:false">

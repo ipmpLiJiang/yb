@@ -57,6 +57,9 @@
                   <a-select-option value="3">
                     材料
                   </a-select-option>
+                  <a-select-option value="4">
+                    其他
+                  </a-select-option>
                 </a-select>
               </a-form-item>
             </a-col>
@@ -256,6 +259,8 @@ export default {
               return '项目'
             case 3:
               return '材料'
+            case 4:
+              return '其他'
             default:
               return text
           }
@@ -318,6 +323,8 @@ export default {
               return '计费科室'
             case 4:
               return '固定科室'
+            case 5:
+              return '主治科室'
             default:
               return text
           }
@@ -340,13 +347,15 @@ export default {
         customRender: (text, row, index) => {
           switch (text) {
             case 1:
-              return '开单人员'
+              return '开单医生'
             case 2:
-              return '执行人员'
+              return '执行医生'
             case 3:
               return '计费人员'
             case 4:
               return '固定人员'
+            case 5:
+              return '主治医生'
             default:
               return text
           }

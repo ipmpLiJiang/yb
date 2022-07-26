@@ -9,13 +9,15 @@
           复议年月：
           <a-month-picker
             placeholder="请输入复议年月"
-            style="width: 105px;margin-right: 6px"
+            style="width: 105px;margin-right: 3px"
             @change="monthChange"
             :default-value="searchApplyDate"
             :format="monthFormat"
           />
           版本类型：
-          <a-select :value="searchTypeno" style="width: 110px;margin-right: 6px" @change="handleTypenoChange">
+          <a-select :value="searchTypeno"
+            style="width: 115px;margin-right: 3px"
+            @change="handleTypenoChange">
             <a-select-option
             v-for="d in selectTypenoDataSource"
             :key="d.value"

@@ -2,7 +2,7 @@
   <a-drawer
     title="历史申诉记录"
     :maskClosable="false"
-    width=80%
+    width=82%
     placement="right"
     :closable="true"
     @close="onClose"

@@ -5,13 +5,14 @@
         复议年月：
         <a-month-picker
           placeholder="请输入复议年月"
-          style="width: 105px;margin-right: 6px"
+          style="width: 105px;margin-right: 3px"
           @change="monthChange"
           v-model="searchApplyDate"
           :default-value="searchApplyDate"
           :format="monthFormat"
         />
-        <a-select v-model="searchItem.keyField" style="width: 115px">
+        <a-select v-model="searchItem.keyField"
+          style="width: 115px">
           <a-select-option
           v-for="d in searchDropDataSource"
           :key="d.value"
@@ -224,7 +225,7 @@ export default {
       {
         title: '身份证号',
         dataIndex: 'cardNumber',
-        width: 100
+        width: 120
       },
       {
         title: '医保项目名称',
@@ -235,8 +236,7 @@ export default {
       {
         title: '规则名称',
         dataIndex: 'ruleName',
-        width: 150,
-        ellipsis: true
+        width: 200
       },
       {
         title: '初审违规金额（元）',
@@ -251,7 +251,7 @@ export default {
       {
         title: '违规内容',
         dataIndex: 'violateReason',
-        width: 150,
+        width: 200,
         ellipsis: true
       },
       {
