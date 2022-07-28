@@ -2,47 +2,59 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cc.mrbird.febs.drg.dao.YbDrgDksMapper">
 
-        <!-- 通用查询映射结果 -->
-        <resultMap id="BaseResultMap" type="cc.mrbird.febs.drg.entity.YbDrgDks">
-                    <id column="id" property="id"/>
-                    <result column="dksId" property="dksId"/>
-                    <result column="dksName" property="dksName"/>
-                    <result column="areaId" property="areaId"/>
-                    <result column="areaName" property="areaName"/>
-                    <result column="currencyField" property="currencyField"/>
-                    <result column="COMMENTS" property="comments"/>
-                    <result column="STATE" property="state"/>
-        </resultMap>
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="cc.mrbird.febs.drg.entity.YbDrgDks">
+        <id column="id" property="id"/>
+        <result column="dksId" property="dksId"/>
+        <result column="dksName" property="dksName"/>
+        <result column="areaId" property="areaId"/>
+        <result column="areaName" property="areaName"/>
+        <result column="currencyField" property="currencyField"/>
+        <result column="COMMENTS" property="comments"/>
+        <result column="STATE" property="state"/>
+        <result column="spellCode" property="spellCode"/>
+    </resultMap>
 
-        <!-- 通用查询结果列 -->
-        <sql id="Base_Column_List">
-        id, dksId, dksName, areaId, areaName, currencyField, COMMENTS, STATE
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, dksId, dksName, areaId, areaName, currencyField, COMMENTS, STATE, spellCode
     </sql>
     <update id="updateYbDrgDks" parameterType="cc.mrbird.febs.drg.entity.YbDrgDks">
         update yb_drg_dks
         <trim prefix="set" suffixOverrides=",">
-<if test="dksId != null">dksId=#{dksId},</if>
-<if test="dksName != null">dksName=#{dksName},</if>
-<if test="areaId != null">areaId=#{areaId},</if>
-<if test="areaName != null">areaName=#{areaName},</if>
-<if test="currencyField != null">currencyField=#{currencyField},</if>
-<if test="comments != null">COMMENTS=#{comments},</if>
-<if test="state != null">STATE=#{state},</if>
+            <if test="dksId != null">dksId=#{dksId},</if>
+            <if test="dksName != null">dksName=#{dksName},</if>
+            <if test="areaId != null">areaId=#{areaId},</if>
+            <if test="areaName != null">areaName=#{areaName},</if>
+            <if test="currencyField != null">currencyField=#{currencyField},</if>
+            <if test="comments != null">COMMENTS=#{comments},</if>
+            <if test="state != null">STATE=#{state},</if>
+            <if test="spellCode != null">spellCode=#{spellCode},</if>
         </trim>
-                where id=#{id}
+        where id=#{id}
 
     </update>
-    <select id="findYbDrgDks" resultType="cc.mrbird.febs.drg.entity.YbDrgDks" parameterType="cc.mrbird.febs.drg.entity.YbDrgDks">
-        select  *  from yb_drg_dks
-        where  1=1
-        <if test="ybDrgDks.id != null"> and id =#{ ybDrgDks.id} </if>
-            <if test="ybDrgDks.dksId != null and ybDrgDks.dksId != ''"> and dksId like concat('%', #{ ybDrgDks.dksId} ,'%')</if>
-            <if test="ybDrgDks.dksName != null and ybDrgDks.dksName != ''"> and dksName like concat('%', #{ ybDrgDks.dksName} ,'%')</if>
-        <if test="ybDrgDks.areaId != null"> and areaId =#{ ybDrgDks.areaId} </if>
-            <if test="ybDrgDks.areaName != null and ybDrgDks.areaName != ''"> and areaName like concat('%', #{ ybDrgDks.areaName} ,'%')</if>
-            <if test="ybDrgDks.currencyField != null and ybDrgDks.currencyField != ''"> and currencyField like concat('%', #{ ybDrgDks.currencyField} ,'%')</if>
-            <if test="ybDrgDks.comments != null and ybDrgDks.comments != ''"> and COMMENTS like concat('%', #{ ybDrgDks.comments} ,'%')</if>
-        <if test="ybDrgDks.state != null"> and STATE =#{ ybDrgDks.state} </if>
-</select>
+    <select id="findYbDrgDks" resultType="cc.mrbird.febs.drg.entity.YbDrgDks"
+            parameterType="cc.mrbird.febs.drg.entity.YbDrgDks">
+        select * from yb_drg_dks
+        where 1=1
+        <if test="ybDrgDks.id != null">and id =#{ ybDrgDks.id}</if>
+        <if test="ybDrgDks.dksId != null and ybDrgDks.dksId != ''">and dksId like concat('%', #{ ybDrgDks.dksId} ,'%')
+        </if>
+        <if test="ybDrgDks.dksName != null and ybDrgDks.dksName != ''">and dksName like concat('%', #{ ybDrgDks.dksName}
+            ,'%')
+        </if>
+        <if test="ybDrgDks.areaId != null">and areaId =#{ ybDrgDks.areaId}</if>
+        <if test="ybDrgDks.areaName != null and ybDrgDks.areaName != ''">and areaName like concat('%',
+            #{ ybDrgDks.areaName} ,'%')
+        </if>
+        <if test="ybDrgDks.currencyField != null and ybDrgDks.currencyField != ''">and currencyField like concat('%',
+            #{ ybDrgDks.currencyField} ,'%')
+        </if>
+        <if test="ybDrgDks.comments != null and ybDrgDks.comments != ''">and COMMENTS like concat('%',
+            #{ ybDrgDks.comments} ,'%')
+        </if>
+        <if test="ybDrgDks.state != null">and STATE =#{ ybDrgDks.state}</if>
+    </select>
 
 </mapper>

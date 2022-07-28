@@ -228,7 +228,7 @@ public class YbChsResultViewController extends BaseController {
                         }
 
                         exportList.add(dataExport);
-                    }
+                   }
                 }
 
                 ExportExcelUtils.exportExcel(response, YbChsApplyDataResult.class, exportList, "结果文件数据");

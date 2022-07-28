@@ -306,6 +306,7 @@ public class YbChsResultViewServiceImpl extends ServiceImpl<YbChsResultViewMappe
             LambdaQueryWrapper<YbChsResult> wrapperResult = new LambdaQueryWrapper<>();
             wrapperResult.eq(YbChsResult::getApplyDateStr, drgApply.getApplyDateStr());
             wrapperResult.eq(YbChsResult::getAreaType, drgApply.getAreaType());
+            wrapperResult.eq(YbChsResult::getState, 1);
 //            wrapperResult.in(YbChsResult::getOrderNum, orderNumList);
             List<YbChsResult> resultAllList = iYbChsResultService.list(wrapperResult);
             if(resultAllList.size() > 0) {

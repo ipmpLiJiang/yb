@@ -1178,6 +1178,7 @@ public class ComFileController extends BaseController {
             LambdaQueryWrapper<YbDrgResult> wrapperResult = new LambdaQueryWrapper<>();
             wrapperResult.eq(YbDrgResult::getApplyDateStr, inUploadFile.getApplyDateStr());
             wrapperResult.eq(YbDrgResult::getAreaType, inUploadFile.getAreaType());
+            wrapperResult.eq(YbDrgResult::getState, 1);
             List<YbDrgResult> resultAllList = iYbDrgResultService.list(wrapperResult);
             List<YbDrgResult> resultList = this.getInResult(resultAllList, orderNumberList);
             if (resultList.size() > 0) {
@@ -1519,6 +1520,7 @@ public class ComFileController extends BaseController {
                 LambdaQueryWrapper<YbChsResult> wrapperResult = new LambdaQueryWrapper<>();
                 wrapperResult.eq(YbChsResult::getApplyDateStr, inUploadFile.getApplyDateStr());
                 wrapperResult.eq(YbChsResult::getAreaType, inUploadFile.getAreaType());
+                wrapperResult.eq(YbChsResult::getState, 1);
 //            wrapperResult.in(YbChsResult::getOrderNum, orderNumList);
                 List<YbChsResult> resultAllList = iYbChsResultService.list(wrapperResult);
                 List<YbChsResult> resultList = getInChsResult(resultAllList, orderNumList);

@@ -195,6 +195,7 @@ public class YbDrgResultViewServiceImpl extends ServiceImpl<YbDrgResultViewMappe
             LambdaQueryWrapper<YbDrgResult> wrapperResult = new LambdaQueryWrapper<>();
             wrapperResult.eq(YbDrgResult::getApplyDateStr, drgApply.getApplyDateStr());
             wrapperResult.eq(YbDrgResult::getAreaType, drgApply.getAreaType());
+            wrapperResult.eq(YbDrgResult::getState, 1);
 //            wrapperResult.in(YbDrgResult::getOrderNumber, orderNumberList);
             List<YbDrgResult> resultAllList = iYbDrgResultService.list(wrapperResult);
             List<YbDrgResult> resultList = this.getInResult(resultAllList,orderNumberList);

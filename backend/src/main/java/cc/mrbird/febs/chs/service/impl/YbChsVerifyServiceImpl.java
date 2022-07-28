@@ -205,6 +205,7 @@ public class YbChsVerifyServiceImpl extends ServiceImpl<YbChsVerifyMapper, YbChs
                         ybChsVerify.setDataType(item.getDataType());
 
                         queryJkList = jkList.stream().filter(s -> s.getApplyDataId().equals(item.getId())).collect(Collectors.toList());
+                        // 住院 明细扣款
                         if (item.getDataType() == 0) {
                             if (queryJkList.size() > 0) {
                                 back.setCurrencyField("是");
@@ -466,13 +467,16 @@ public class YbChsVerifyServiceImpl extends ServiceImpl<YbChsVerifyMapper, YbChs
                             }
                         }
                         else {
-                            YbChsJk jk = queryJkList.get(0);
-                            ybChsVerify.setVerifyDoctorCode(jk.getOrderDocId());
-                            ybChsVerify.setVerifyDoctorName(jk.getOrderDocName());
-                            deptQueryList = deptList.stream().filter(s -> s.getDeptId().equals(jk.getDeptId())).collect(Collectors.toList());
-                            if (deptQueryList.size() > 0) {
-                                ybChsVerify.setVerifyDksId(deptQueryList.get(0).getDksId());
-                                ybChsVerify.setVerifyDksName(deptQueryList.get(0).getDksName());
+                            // 住院 主单扣款
+                            if (queryJkList.size() > 0) {
+                                YbChsJk jk = queryJkList.get(0);
+                                ybChsVerify.setVerifyDoctorCode(jk.getOrderDocId());
+                                ybChsVerify.setVerifyDoctorName(jk.getOrderDocName());
+                                deptQueryList = deptList.stream().filter(s -> s.getDeptId().equals(jk.getDeptId())).collect(Collectors.toList());
+                                if (deptQueryList.size() > 0) {
+                                    ybChsVerify.setVerifyDksId(deptQueryList.get(0).getDksId());
+                                    ybChsVerify.setVerifyDksName(deptQueryList.get(0).getDksName());
+                                }
                             }
                         }
                         createList.add(ybChsVerify);

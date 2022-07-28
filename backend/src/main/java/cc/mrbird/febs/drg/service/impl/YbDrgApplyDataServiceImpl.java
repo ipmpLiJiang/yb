@@ -1,5 +1,6 @@
 package cc.mrbird.febs.drg.service.impl;
 
+import cc.mrbird.febs.com.controller.DataTypeHelpers;
 import cc.mrbird.febs.com.entity.ComConfiguremanage;
 import cc.mrbird.febs.com.entity.ComType;
 import cc.mrbird.febs.com.service.IComTypeService;
@@ -347,6 +348,10 @@ public class YbDrgApplyDataServiceImpl extends ServiceImpl<YbDrgApplyDataMapper,
                                         dksCtrate.setDksName(item.getDksName());
                                         dksCtrate.setAreaId(item.getAreaId());
                                         dksCtrate.setAreaName(item.getAreaName());
+                                        String py = DataTypeHelpers.chineseZpySzm(item.getDksName());
+                                        if(StringUtils.isNotBlank(py)) {
+                                            dksCtrate.setSpellCode(py);
+                                        }
                                         createDksList.add(dksCtrate);
                                     }
                                 }

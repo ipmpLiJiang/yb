@@ -46,9 +46,12 @@ public class YbDksServiceImpl extends ServiceImpl<YbDksMapper, YbDks> implements
     public IPage<YbDks> findYbDkss(QueryRequest request, YbDks ybDks) {
         try {
             LambdaQueryWrapper<YbDks> queryWrapper = new LambdaQueryWrapper<>();
-            queryWrapper.eq(YbDks::getIsDeletemark, 1);//1是未删 0是已删
-
-
+//            queryWrapper.eq(YbDks::getIsDeletemark, 1);//1是未删 0是已删
+            String sql = "IS_DELETEMARK = 1 ";
+            if(StringUtils.isNotBlank(ybDks.getDksName())) {
+                sql += " and (dksName like '%" + ybDks.getDksName() + "%' or spellCode like '%" + ybDks.getDksName() + "%' )";
+            }
+            queryWrapper.apply(sql);
             Page<YbDks> page = new Page<>();
             SortUtil.handlePageSort(request, page, false);//true 是属性  false是数据库字段可两个
             return this.page(page, queryWrapper);

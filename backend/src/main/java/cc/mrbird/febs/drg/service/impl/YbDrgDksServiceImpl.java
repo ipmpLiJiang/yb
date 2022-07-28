@@ -44,6 +44,7 @@ public class YbDrgDksServiceImpl extends ServiceImpl<YbDrgDksMapper, YbDrgDks> i
                 String sql = "dksId like '%"+ybDrgDks.getCurrencyField()+"%'";
                 sql += "or dksName like '%"+ybDrgDks.getCurrencyField()+"%'";
                 sql += "or areaName like '%"+ybDrgDks.getCurrencyField()+"%'";
+                sql += "or spellCode like '%"+ybDrgDks.getCurrencyField()+"%'";
                 queryWrapper.apply(sql);
             }
 
@@ -97,7 +98,7 @@ public class YbDrgDksServiceImpl extends ServiceImpl<YbDrgDksMapper, YbDrgDks> i
         if (type == 1) {
             String sql = "areaId = " + ybDrgDks.getAreaId();
             if (ybDrgDks.getComments() != null) {
-                sql += " and (dksId like '%" + ybDrgDks.getComments() + "%' or dksName like '%" + ybDrgDks.getComments() + "%')";
+                sql += " and (dksId like '%" + ybDrgDks.getComments() + "%' or dksName like '%" + ybDrgDks.getComments() + "%' or spellCode like '%" + ybDrgDks.getComments() + "%')";
             } else {
                 sql += " and 1=2";
             }
