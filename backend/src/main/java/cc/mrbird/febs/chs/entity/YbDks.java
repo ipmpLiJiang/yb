@@ -115,6 +115,20 @@ public class YbDks implements Serializable, Comparable<YbDks> {
     @ExcelField(value = "修改人")
     private Long modifyUserId;
 
+    /**
+     * 分院
+     */
+    @TableField("fyid")
+    @ExcelField(value = "分院")
+    private String fyid;
+
+    /**
+     * 大科室分院编码
+     */
+    @TableField("dksFyid")
+    @ExcelField(value = "大科室分院编码")
+    private String dksFyid;
+
 
     public static final String ID = "id";
 
@@ -137,6 +151,10 @@ public class YbDks implements Serializable, Comparable<YbDks> {
     public static final String CREATE_USER_ID = "CREATE_USER_ID";
 
     public static final String MODIFY_USER_ID = "MODIFY_USER_ID";
+
+    public static final String FYID = "fyid";
+
+    public static final String DKSFYID = "dksFyid";
 
     @Override
     public int compareTo(YbDks o) {

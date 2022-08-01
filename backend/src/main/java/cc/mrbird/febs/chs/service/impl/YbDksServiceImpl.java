@@ -136,12 +136,15 @@ public class YbDksServiceImpl extends ServiceImpl<YbDksMapper, YbDks> implements
         List<YbDks> findList = this.findDksList(new YbDks(), 0);
         List<String> codeList = new ArrayList<>();
         for (YbDeptHis item : list) {
-            if (findList.stream().filter(s -> s.getDksId().equals(item.getParentCode())).count() == 0) {
-                if (codeList.stream().filter(s -> s.equals(item.getParentCode())).count() == 0) {
-                    codeList.add(item.getParentCode());
+            String code = item.getParentCode() + "" + item.getFy_id();
+            if (findList.stream().filter(s -> s.getDksFyid().equals(code)).count() == 0) {
+                if (codeList.stream().filter(s -> s.equals(code)).count() == 0) {
+                    codeList.add(code);
                     YbDks dept = new YbDks();
                     dept.setDksId(item.getParentCode());
                     dept.setDksName(item.getBm_mc());
+                    dept.setFyid(item.getFy_id());
+                    dept.setDksFyid(code);
                     dept.setCreateTime(new Date());
                     dept.setIsDeletemark(1);
                     String py = DataTypeHelpers.chineseZpySzm(dept.getDksName());

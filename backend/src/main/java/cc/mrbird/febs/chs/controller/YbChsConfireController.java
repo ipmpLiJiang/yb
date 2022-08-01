@@ -1,11 +1,11 @@
 package cc.mrbird.febs.chs.controller;
 
-import cc.mrbird.febs.chs.entity.YbChsConfireData;
-import cc.mrbird.febs.chs.entity.YbChsConfireDataJson;
-import cc.mrbird.febs.chs.entity.YbChsConfireJson;
+import cc.mrbird.febs.chs.entity.*;
 import cc.mrbird.febs.chs.service.IYbChsConfireDataService;
 import cc.mrbird.febs.com.controller.DataTypeHelpers;
+import cc.mrbird.febs.com.entity.ComType;
 import cc.mrbird.febs.com.service.IComConfiguremanageService;
+import cc.mrbird.febs.com.service.IComTypeService;
 import cc.mrbird.febs.common.annotation.Log;
 import cc.mrbird.febs.common.controller.BaseController;
 import cc.mrbird.febs.common.domain.FebsResponse;
@@ -14,9 +14,9 @@ import cc.mrbird.febs.common.exception.FebsException;
 import cc.mrbird.febs.common.domain.QueryRequest;
 
 import cc.mrbird.febs.chs.service.IYbChsConfireService;
-import cc.mrbird.febs.chs.entity.YbChsConfire;
 
 import cc.mrbird.febs.common.utils.FebsUtil;
+import cc.mrbird.febs.export.excel.ExportExcelUtils;
 import cc.mrbird.febs.system.domain.User;
 import com.alibaba.fastjson.TypeReference;
 import com.alibaba.fastjson.JSON;
@@ -33,6 +33,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author viki
@@ -54,6 +55,9 @@ public class YbChsConfireController extends BaseController {
 
     @Autowired
     IYbChsConfireDataService iYbChsConfireDataService;
+
+    @Autowired
+    IComTypeService iComTypeService;
 
     @GetMapping
     @RequiresPermissions("ybChsConfire:view")
@@ -89,8 +93,8 @@ public class YbChsConfireController extends BaseController {
                 YbChsConfire create = new YbChsConfire();
                 create.setId(id);
                 create.setDoctorCode(chsConfireJson.getDoctorCode());
-                String strDoctorName = DataTypeHelpers.stringReplaceSetString(chsConfireJson.getDoctorName(), chsConfireJson.getDoctorCode() + "-");
-                create.setDoctorName(strDoctorName);
+//                String strDoctorName = DataTypeHelpers.stringReplaceSetString(chsConfireJson.getDoctorName(), chsConfireJson.getDoctorCode() + "-");
+                create.setDoctorName(chsConfireJson.getDoctorName());
                 create.setAdminType(chsConfireJson.getAdminType());
                 create.setAreaType(chsConfireJson.getAreaType());
                 create.setIsDeletemark(1);
@@ -103,8 +107,9 @@ public class YbChsConfireController extends BaseController {
                     createData.setId(UUID.randomUUID().toString());
                     createData.setPid(id);
                     createData.setDksId(item.getDksId());
-                    String strDksName = DataTypeHelpers.stringReplaceSetString(item.getDksName(), item.getDksId() + "-");
-                    createData.setDksName(strDksName);
+//                    String strDksName = DataTypeHelpers.stringReplaceSetString(item.getDksName(), item.getDksId() + "-");
+                    createData.setDksName(item.getDksName());
+                    createData.setFyid(item.getFyid());
                     createDataList.add(createData);
                 }
                 this.iYbChsConfireService.createChsConfire(create, createDataList);
@@ -119,10 +124,10 @@ public class YbChsConfireController extends BaseController {
             log.error(message, e);
         }
 
-        map.put("message",message);
-        map.put("success",success);
-        map.put("data",id);
-        return  new FebsResponse().data(map);
+        map.put("message", message);
+        map.put("success", success);
+        map.put("data", id);
+        return new FebsResponse().data(map);
     }
 
     @Log("修改")
@@ -155,8 +160,9 @@ public class YbChsConfireController extends BaseController {
                     updateData.setId(item.getId());
                     updateData.setPid(chsConfireJson.getId());
                     updateData.setDksId(item.getDksId());
-                    String strDksName = DataTypeHelpers.stringReplaceSetString(item.getDksName(), item.getDksId() + "-");
-                    updateData.setDksName(strDksName);
+//                    String strDksName = DataTypeHelpers.stringReplaceSetString(item.getDksName(), item.getDksId() + "-");
+                    updateData.setDksName(item.getDksName());
+                    updateData.setFyid(item.getFyid());
 //                    String strDksName = item.getDksName();
 //                    updateData.setDksName(strDksName);
                     if (updateData.getId() == null) {
@@ -180,7 +186,8 @@ public class YbChsConfireController extends BaseController {
                         success = 1;
                     } else {
                         message = iComConfiguremanageService.getConfigAreaName(chsConfireJson.getAreaType());
-                        message = message + " " + createDataList.get(0).getDksId() + "-" + createDataList.get(0).getDksName() + " 科室已存在!";
+                        String fyidName = DataTypeHelpers.getFyidName(createDataList.get(0).getFyid());
+                        message = message + " " + createDataList.get(0).getDksName() + "(" + fyidName + ")" + " 科室已存在 !";
 //                        message = message + " " + createDataList.get(0).getDksName() + " 已存在!";
                     }
                 }
@@ -193,10 +200,10 @@ public class YbChsConfireController extends BaseController {
             log.error(message, e);
         }
 
-        map.put("message",message);
-        map.put("success",success);
-        map.put("data","");
-        return  new FebsResponse().data(map);
+        map.put("message", message);
+        map.put("success", success);
+        map.put("data", "");
+        return new FebsResponse().data(map);
     }
 
 
@@ -269,6 +276,45 @@ public class YbChsConfireController extends BaseController {
             throw new FebsException(message);
         }
     }
+
+    @PostMapping("exportChsConfire")
+    @RequiresPermissions("ybChsConfire:add")
+    public void exportChsConfire(QueryRequest request, String doctorContent, Integer adminType, Integer areaType, String deptContent, String operatorName, HttpServletResponse response) throws FebsException {
+        try {
+            request.setPageSize(-1);
+            List<YbChsConfire> list = list = this.iYbChsConfireService.findChsConfireView(request, doctorContent, adminType, areaType, deptContent, operatorName, "excel").getRecords();
+
+            List<YbChsConfireExport> exportList = new ArrayList<>();
+            if (list.size() > 0) {
+                List<ComType> ctQuery = new ArrayList<>();
+                ComType query = new ComType();
+                query.setCtType(1);
+                query.setIsDeletemark(1);
+                List<ComType> ctList = iComTypeService.findComTypeList(query);
+                for (YbChsConfire item : list) {
+                    YbChsConfireExport dataExport = new YbChsConfireExport();
+                    dataExport.setDoctorCode(item.getDoctorCode());
+                    dataExport.setDoctorName(item.getDoctorName());
+                    ctQuery = ctList.stream().filter(s -> s.getId().equals(item.getAdminType())).collect(Collectors.toList());
+                    if (ctQuery.size() > 0) {
+                        dataExport.setAdminTypeName(ctQuery.get(0).getCtName());
+                    }
+                    dataExport.setDeptNames(item.getCurrencyField());
+                    dataExport.setOperatorName(item.getOperatorName());
+
+                    exportList.add(dataExport);
+                }
+            }
+            ExportExcelUtils.exportExcel(response, YbChsConfireExport.class, exportList, "CHS医管人员明细数据");
+
+        } catch (Exception e) {
+            message = "导出Excel失败";
+            log.error(message, e);
+            throw new FebsException(message);
+        }
+
+    }
+
 
     @GetMapping("/{id}")
     public YbChsConfire detail(@NotBlank(message = "{required}") @PathVariable String id) {

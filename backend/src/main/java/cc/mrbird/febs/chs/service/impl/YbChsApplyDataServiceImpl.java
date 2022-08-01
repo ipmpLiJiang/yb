@@ -787,6 +787,7 @@ public class YbChsApplyDataServiceImpl extends ServiceImpl<YbChsApplyDataMapper,
             his.setSpellCode(item.getSpellCode());
             his.setParentCode(item.getDksId());
             his.setBm_mc(item.getDksName());
+            his.setFy_id(item.getFyid());
             departList.add(his);
         }
         return departList;

@@ -140,13 +140,13 @@ public class YbChsVerifyViewController extends BaseController {
                     dataExport.setJx(item.getJx());//剂型
                     dataExport.setJgLevel(item.getJgLevel());//机构等级
 
-                    String strVerifyDksName = DataTypeHelpers.stringReplaceSetString(item.getVerifyDksName(), item.getVerifyDksId() + "-");
-                    String strVerifyDoctorName = DataTypeHelpers.stringReplaceSetString(item.getVerifyDoctorName(), item.getVerifyDoctorCode() + "-");
+//                    String strVerifyDksName = DataTypeHelpers.stringReplaceSetString(item.getVerifyDksName(), item.getVerifyDksId() + "-");
+//                    String strVerifyDoctorName = DataTypeHelpers.stringReplaceSetString(item.getVerifyDoctorName(), item.getVerifyDoctorCode() + "-");
 
                     dataExport.setVerifyDoctorCode(item.getVerifyDoctorCode());//复议医生编码
-                    dataExport.setVerifyDoctorName(strVerifyDoctorName);//复议医生姓名
+                    dataExport.setVerifyDoctorName(item.getVerifyDoctorName());//复议医生姓名
                     dataExport.setVerifyDksId(item.getVerifyDksId());//科室名称
-                    dataExport.setVerifyDksName(strVerifyDksName);//科室名称
+                    dataExport.setVerifyDksName(item.getVerifyDksName());//科室名称
 
                     queryJkList = jkList.stream().filter(s -> s.getApplyDataId().equals(item.getApplyDataId())).collect(Collectors.toList());
                     if (queryJkList.size() > 0) {

@@ -98,7 +98,12 @@
         p.CREATE_TIME,
         p.CREATE_USER_ID,
         p.MODIFY_USER_ID,
-        GROUP_CONCAT(CONCAT(d.dksId,'-',d.dksName)) currencyField,
+        GROUP_CONCAT(
+        case when d.fyid = '1001' then CONCAT( d.dksName, '(本院)' )
+        when d.fyid = '1002' then CONCAT( d.dksName, '(西院)' )
+        when d.fyid = '1003' then CONCAT( d.dksName, '(金银湖)' )
+        else d.dksName end
+        ) currencyField,
         p.areaType,
         p.operatorId,
         p.operatorName
@@ -186,7 +191,12 @@
         p.CREATE_TIME,
         p.CREATE_USER_ID,
         p.MODIFY_USER_ID,
-        GROUP_CONCAT(CONCAT(d.dksId,'-',d.dksName)) currencyField,
+        GROUP_CONCAT(
+        case when d.fyid = '1001' then CONCAT( d.dksName, '(本院)' )
+        when d.fyid = '1002' then CONCAT( d.dksName, '(西院)' )
+        when d.fyid = '1003' then CONCAT( d.dksName, '(金银湖)' )
+        else d.dksName end
+        ) currencyField,
         p.areaType,
         p.operatorId,
         p.operatorName

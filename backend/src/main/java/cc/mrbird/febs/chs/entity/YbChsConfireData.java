@@ -55,6 +55,13 @@ public class YbChsConfireData implements Serializable, Comparable<YbChsConfireDa
     @ExcelField(value = "科室")
     private String dksName;
 
+    /**
+     * 分院
+     */
+    @TableField("fyid")
+    @ExcelField(value = "分院")
+    private String fyid;
+
 
     public static final String ID = "id";
 
@@ -63,6 +70,8 @@ public class YbChsConfireData implements Serializable, Comparable<YbChsConfireDa
     public static final String DKSID = "dksId";
 
     public static final String DKSNAME = "dksName";
+
+    public static final String FYID = "fyid";
 
     @Override
     public int compareTo(YbChsConfireData o) {

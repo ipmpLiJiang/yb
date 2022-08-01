@@ -271,6 +271,20 @@ public class YbChsPriorityLevel implements Serializable, Comparable<YbChsPriorit
     @ExcelField(value = "数据类型")
     private Integer plType;
 
+    /**
+     * 分院
+     */
+    @TableField("fyid")
+    @ExcelField(value = "分院")
+    private String fyid;
+
+    /**
+     * 分院To
+     */
+    @TableField("fyidTo")
+    @ExcelField(value = "分院To")
+    private String fyidTo;
+
 
     public static final String ID = "id";
 
@@ -323,6 +337,10 @@ public class YbChsPriorityLevel implements Serializable, Comparable<YbChsPriorit
     public static final String ISPROJECT = "isProject";
 
     public static final String PLTYPE = "plType";
+
+    public static final String FYID = "fyid";
+
+    public static final String FYIDTO = "fyidTo";
 
 
     @Override

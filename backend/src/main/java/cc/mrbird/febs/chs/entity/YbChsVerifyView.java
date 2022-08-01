@@ -374,4 +374,10 @@ public class YbChsVerifyView {
     @ExcelField(value = "数据类型")
     private Integer dataType;
 
+    /**
+     * 分院
+     */
+    @TableField("verifyFyid")
+    @ExcelField(value = "分院")
+    private String verifyFyid;
 }

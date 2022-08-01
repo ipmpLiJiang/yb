@@ -378,6 +378,7 @@ public class YbChsVerifyServiceImpl extends ServiceImpl<YbChsVerifyMapper, YbChs
                                         ybChsVerify.setVerifyDoctorName(cpl.getDoctorNameTo());
                                         ybChsVerify.setVerifyDksId(cpl.getDksIdTo());
                                         ybChsVerify.setVerifyDksName(cpl.getDksNameTo());
+                                        ybChsVerify.setVerifyFyid(cpl.getFyidTo());
                                     } else {
                                         this.setDksAndDoctorValue(ybChsVerify, cpl, jk, deptList);
                                     }
@@ -388,8 +389,9 @@ public class YbChsVerifyServiceImpl extends ServiceImpl<YbChsVerifyMapper, YbChs
                                         ybChsVerify.setVerifyDoctorName(jk.getOrderDocName());
                                         deptQueryList = deptList.stream().filter(s -> s.getDeptId().equals(jk.getDeptId())).collect(Collectors.toList());
                                         if (deptQueryList.size() > 0) {
-                                            ybChsVerify.setVerifyDksId(deptQueryList.get(0).getDksId());
+                                            ybChsVerify.setVerifyDksId(deptQueryList.get(0).getDksId() + "" + deptQueryList.get(0).getFyid());
                                             ybChsVerify.setVerifyDksName(deptQueryList.get(0).getDksName());
+                                            ybChsVerify.setVerifyFyid(deptQueryList.get(0).getFyid());
                                         }
                                     }
                                 }
@@ -416,6 +418,7 @@ public class YbChsVerifyServiceImpl extends ServiceImpl<YbChsVerifyMapper, YbChs
                                             ybChsVerify.setVerifyDoctorName(cpl2.getDoctorNameTo());
                                             ybChsVerify.setVerifyDksId(cpl2.getDksIdTo());
                                             ybChsVerify.setVerifyDksName(cpl2.getDksNameTo());
+                                            ybChsVerify.setVerifyFyid(cpl2.getFyidTo());
                                         } else {
                                             this.setDksAndDoctorValue(ybChsVerify, cpl2, jk, deptList);
                                         }
@@ -439,13 +442,14 @@ public class YbChsVerifyServiceImpl extends ServiceImpl<YbChsVerifyMapper, YbChs
 
                                 if (plQuery.size() > 0) {
                                     cpl = plQuery.get(0);
-                                    // 复议科室和医生都是固定值
+                                    // 汇总科室和医生都是固定值
                                     if (cpl.getDeptType() == YbChsPriorityLevel.DEPT_TYPE_4 &&
                                             cpl.getPersonType() == YbChsPriorityLevel.PERSON_TYPE_4) {
                                         ybChsVerify.setVerifyDoctorCode(cpl.getDoctorCodeTo());
                                         ybChsVerify.setVerifyDoctorName(cpl.getDoctorNameTo());
                                         ybChsVerify.setVerifyDksId(cpl.getDksIdTo());
                                         ybChsVerify.setVerifyDksName(cpl.getDksNameTo());
+                                        ybChsVerify.setVerifyFyid(cpl.getFyidTo());
                                     }
                                 }
                             }
@@ -474,8 +478,9 @@ public class YbChsVerifyServiceImpl extends ServiceImpl<YbChsVerifyMapper, YbChs
                                 ybChsVerify.setVerifyDoctorName(jk.getOrderDocName());
                                 deptQueryList = deptList.stream().filter(s -> s.getDeptId().equals(jk.getDeptId())).collect(Collectors.toList());
                                 if (deptQueryList.size() > 0) {
-                                    ybChsVerify.setVerifyDksId(deptQueryList.get(0).getDksId());
+                                    ybChsVerify.setVerifyDksId(deptQueryList.get(0).getDksId() + "" + deptQueryList.get(0).getFyid());
                                     ybChsVerify.setVerifyDksName(deptQueryList.get(0).getDksName());
+                                    ybChsVerify.setVerifyFyid(deptQueryList.get(0).getFyid());
                                 }
                             }
                         }
@@ -514,8 +519,9 @@ public class YbChsVerifyServiceImpl extends ServiceImpl<YbChsVerifyMapper, YbChs
             deptQueryList = deptList.stream().filter(s -> s.getDeptId().equals(jk.getFeeDeptId())).collect(Collectors.toList());
         }
         if (deptQueryList.size() > 0) {
-            ybChsVerify.setVerifyDksId(deptQueryList.get(0).getDksId());
+            ybChsVerify.setVerifyDksId(deptQueryList.get(0).getDksId() + "" + deptQueryList.get(0).getFyid());
             ybChsVerify.setVerifyDksName(deptQueryList.get(0).getDksName());
+            ybChsVerify.setVerifyFyid(deptQueryList.get(0).getFyid());
         }
         // 5主治医生 1开单医生、2执行医生、3计费人员
         if (cpl.getPersonType() == YbChsPriorityLevel.PERSON_TYPE_5) {
@@ -551,10 +557,10 @@ public class YbChsVerifyServiceImpl extends ServiceImpl<YbChsVerifyMapper, YbChs
                     StringUtils.isNotBlank(item.getVerifyDoctorName()) &&
                     StringUtils.isNotBlank(item.getId())
             ) {
-                String strVerifyDksName = DataTypeHelpers.stringReplaceSetString(item.getVerifyDksName(), item.getVerifyDksId() + "-");
-                item.setVerifyDksName(strVerifyDksName);
-                String strVerifyDoctorName = DataTypeHelpers.stringReplaceSetString(item.getVerifyDoctorName(), item.getVerifyDoctorCode() + "-");
-                item.setVerifyDoctorName(strVerifyDoctorName);
+//                String strVerifyDksName = DataTypeHelpers.stringReplaceSetString(item.getVerifyDksName(), item.getVerifyDksId() + "-");
+                item.setVerifyDksName(item.getVerifyDksName());
+//                String strVerifyDoctorName = DataTypeHelpers.stringReplaceSetString(item.getVerifyDoctorName(), item.getVerifyDoctorCode() + "-");
+                item.setVerifyDoctorName(item.getVerifyDoctorName());
 
                 LambdaQueryWrapper<YbChsVerify> queryWrapper = new LambdaQueryWrapper<>();
                 queryWrapper.eq(YbChsVerify::getId, item.getId());
@@ -564,6 +570,7 @@ public class YbChsVerifyServiceImpl extends ServiceImpl<YbChsVerifyMapper, YbChs
                 updateVerify.setVerifyDoctorName(item.getVerifyDoctorName());
                 updateVerify.setVerifyDksId(item.getVerifyDksId());
                 updateVerify.setVerifyDksName(item.getVerifyDksName());
+                updateVerify.setVerifyFyid(item.getVerifyFyid());
                 this.baseMapper.update(updateVerify, queryWrapper);
 
             }
@@ -628,10 +635,10 @@ public class YbChsVerifyServiceImpl extends ServiceImpl<YbChsVerifyMapper, YbChs
                             s -> s.getPersonCode().equals(ybChsVerify.getVerifyDoctorCode())
                     ).collect(Collectors.toList());
                     if (queryPersonList.size() > 0) {
-                        String strVerifyDksName = DataTypeHelpers.stringReplaceSetString(ybChsVerify.getVerifyDksName(), ybChsVerify.getVerifyDksId() + "-");
-                        ybChsVerify.setVerifyDksName(strVerifyDksName);
-                        String strVerifyDoctorName = DataTypeHelpers.stringReplaceSetString(ybChsVerify.getVerifyDoctorName(), ybChsVerify.getVerifyDoctorCode() + "-");
-                        ybChsVerify.setVerifyDoctorName(strVerifyDoctorName);
+//                        String strVerifyDksName = DataTypeHelpers.stringReplaceSetString(ybChsVerify.getVerifyDksName(), ybChsVerify.getVerifyDksId() + "-");
+                        ybChsVerify.setVerifyDksName(ybChsVerify.getVerifyDksName());
+//                        String strVerifyDoctorName = DataTypeHelpers.stringReplaceSetString(ybChsVerify.getVerifyDoctorName(), ybChsVerify.getVerifyDoctorCode() + "-");
+                        ybChsVerify.setVerifyDoctorName(ybChsVerify.getVerifyDoctorName());
 
                         //插入申诉管理
                         YbChsManage ybChsManage = new YbChsManage();
@@ -639,6 +646,7 @@ public class YbChsVerifyServiceImpl extends ServiceImpl<YbChsVerifyMapper, YbChs
                         ybChsManage.setApplyDataId(ybChsVerify.getApplyDataId());
                         ybChsManage.setReadyDksId(ybChsVerify.getVerifyDksId());
                         ybChsManage.setReadyDksName(ybChsVerify.getVerifyDksName());
+                        ybChsManage.setReadyFyid(ybChsVerify.getVerifyFyid());
                         ybChsManage.setReadyDoctorCode(ybChsVerify.getVerifyDoctorCode());
                         ybChsManage.setReadyDoctorName(ybChsVerify.getVerifyDoctorName());
 
@@ -735,10 +743,10 @@ public class YbChsVerifyServiceImpl extends ServiceImpl<YbChsVerifyMapper, YbChs
                     ).collect(Collectors.toList());
 
                     if (queryPersonList.size() > 0) {
-                        String strVerifyDksName = DataTypeHelpers.stringReplaceSetString(ybChsVerify.getVerifyDksName(), ybChsVerify.getVerifyDksId() + "-");
-                        ybChsVerify.setVerifyDksName(strVerifyDksName);
-                        String strVerifyDoctorName = DataTypeHelpers.stringReplaceSetString(ybChsVerify.getVerifyDoctorName(), ybChsVerify.getVerifyDoctorCode() + "-");
-                        ybChsVerify.setVerifyDoctorName(strVerifyDoctorName);
+//                        String strVerifyDksName = DataTypeHelpers.stringReplaceSetString(ybChsVerify.getVerifyDksName(), ybChsVerify.getVerifyDksId() + "-");
+                        ybChsVerify.setVerifyDksName(ybChsVerify.getVerifyDksName());
+//                        String strVerifyDoctorName = DataTypeHelpers.stringReplaceSetString(ybChsVerify.getVerifyDoctorName(), ybChsVerify.getVerifyDoctorCode() + "-");
+                        ybChsVerify.setVerifyDoctorName(ybChsVerify.getVerifyDoctorName());
 
                         //插入申诉管理
                         YbChsManage ybChsManage = new YbChsManage();
@@ -746,6 +754,7 @@ public class YbChsVerifyServiceImpl extends ServiceImpl<YbChsVerifyMapper, YbChs
                         ybChsManage.setApplyDataId(ybChsVerify.getApplyDataId());
                         ybChsManage.setReadyDksId(ybChsVerify.getVerifyDksId());
                         ybChsManage.setReadyDksName(ybChsVerify.getVerifyDksName());
+                        ybChsManage.setReadyFyid(ybChsVerify.getVerifyFyid());
                         ybChsManage.setReadyDoctorCode(ybChsVerify.getVerifyDoctorCode());
                         ybChsManage.setReadyDoctorName(ybChsVerify.getVerifyDoctorName());
 
@@ -816,16 +825,17 @@ public class YbChsVerifyServiceImpl extends ServiceImpl<YbChsVerifyMapper, YbChs
                     StringUtils.isNotBlank(item.getId())
             ) {
                 if (personList.stream().filter(s -> s.getPersonCode().equals(item.getVerifyDoctorCode())).count() > 0) {
-                    String strVerifyDksName = DataTypeHelpers.stringReplaceSetString(item.getVerifyDksName(), item.getVerifyDksId() + "-");
-                    item.setVerifyDksName(strVerifyDksName);
-                    String strVerifyDoctorName = DataTypeHelpers.stringReplaceSetString(item.getVerifyDoctorName(), item.getVerifyDoctorCode() + "-");
-                    item.setVerifyDoctorName(strVerifyDoctorName);
+//                    String strVerifyDksName = DataTypeHelpers.stringReplaceSetString(item.getVerifyDksName(), item.getVerifyDksId() + "-");
+                    item.setVerifyDksName(item.getVerifyDksName());
+//                    String strVerifyDoctorName = DataTypeHelpers.stringReplaceSetString(item.getVerifyDoctorName(), item.getVerifyDoctorCode() + "-");
+                    item.setVerifyDoctorName(item.getVerifyDoctorName());
 
                     YbChsVerify updateVerify = new YbChsVerify();
                     updateVerify.setVerifyDoctorCode(item.getVerifyDoctorCode());
-                    updateVerify.setVerifyDoctorName(strVerifyDoctorName);
+                    updateVerify.setVerifyDoctorName(item.getVerifyDoctorName());
                     updateVerify.setVerifyDksId(item.getVerifyDksId());
                     updateVerify.setVerifyDksName(item.getVerifyDksName());
+                    updateVerify.setVerifyFyid(item.getVerifyFyid());
                     updateVerify.setState(YbDefaultValue.VERIFYSTATE_2);
                     LambdaQueryWrapper<YbChsVerify> queryWrapper = new LambdaQueryWrapper<>();
                     queryWrapper.eq(YbChsVerify::getId, item.getId());
@@ -924,6 +934,7 @@ public class YbChsVerifyServiceImpl extends ServiceImpl<YbChsVerifyMapper, YbChs
                             udpate.setId(rv.getId());
                             udpate.setVerifyDksId(item.getVerifyDksId());
                             udpate.setVerifyDksName(item.getVerifyDksName());
+                            udpate.setVerifyFyid(item.getVerifyFyid());
                             udpate.setVerifyDoctorCode(item.getVerifyDoctorCode());
                             udpate.setVerifyDoctorName(item.getVerifyDoctorName());
                             updateList.add(udpate);

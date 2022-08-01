@@ -509,6 +509,20 @@ public class YbChsManageView {
     @ExcelField(value = "数据类型")
     private Integer dataType;
 
+    /**
+     * 分院
+     */
+    @TableField("readyFyid")
+    @ExcelField(value = "分院")
+    private String readyFyid;
+
+    /**
+     * 变更分院
+     */
+    @TableField("changeFyid")
+    @ExcelField(value = "变更分院")
+    private String changeFyid;
+
     private transient List<String> listPid;
 
 

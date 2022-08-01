@@ -35,4 +35,9 @@ public class YbChsConfireDataJson {
      */
     private String dksName;
 
+    /**
+     * 分院
+     */
+    private String fyid;
+
 }

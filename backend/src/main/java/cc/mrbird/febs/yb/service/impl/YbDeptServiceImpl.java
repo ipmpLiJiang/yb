@@ -153,6 +153,7 @@ public class YbDeptServiceImpl extends ServiceImpl<YbDeptMapper, YbDept> impleme
                 dept.setSpellCode(item.getSpellCode());
                 dept.setDksId(item.getParentCode());
                 dept.setDksName(item.getBm_mc());
+                dept.setFyid(item.getFy_id());
                 dept.setCreateTime(new Date());
                 dept.setIsDeletemark(1);
                 createList.add(dept);

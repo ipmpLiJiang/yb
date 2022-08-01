@@ -30,11 +30,13 @@
         <result column="isRule" property="isRule"/>
         <result column="isProject" property="isProject"/>
         <result column="plType" property="plType"/>
+        <result column="fyid" property="fyid"/>
+        <result column="fyidTo" property="fyidTo"/>
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, zymzType, ruleName, projectName, dksId, dksName, personType, deptType, dksIdTo, dksNameTo, doctorCodeTo, doctorNameTo, areaType, operatorId, operatorName, currencyField, COMMENTS, STATE, IS_DELETEMARK, MODIFY_TIME, CREATE_TIME, CREATE_USER_ID, MODIFY_USER_ID, isRule, isProject, plType
+        id, zymzType, ruleName, projectName, dksId, dksName, personType, deptType, dksIdTo, dksNameTo, doctorCodeTo, doctorNameTo, areaType, operatorId, operatorName, currencyField, COMMENTS, STATE, IS_DELETEMARK, MODIFY_TIME, CREATE_TIME, CREATE_USER_ID, MODIFY_USER_ID, isRule, isProject, plType, fyid, fyidTo
     </sql>
     <update id="updateYbChsPriorityLevel" parameterType="cc.mrbird.febs.chs.entity.YbChsPriorityLevel">
         update yb_chs_priority_level
@@ -64,6 +66,8 @@
             <if test="isRule != null">isRule=#{isRule},</if>
             <if test="isProject != null">isProject=#{isProject},</if>
             <if test="plType != null">plType=#{plType},</if>
+            <if test="fyid != null">fyid=#{fyid},</if>
+            <if test="fyidTo != null">fyidTo=#{fyidTo},</if>
         </trim>
         where id=#{id}
 

@@ -83,17 +83,17 @@ public class YbChsPriorityLevelController extends BaseController {
                 ybChsPriorityLevel.setDksNameTo("");
             }
             if(StringUtils.isNotBlank(ybChsPriorityLevel.getDoctorNameTo())) {
-                String strDoctorNameTo = DataTypeHelpers.stringReplaceSetString(ybChsPriorityLevel.getDoctorNameTo(), ybChsPriorityLevel.getDoctorCodeTo() + "-");
-                ybChsPriorityLevel.setDoctorNameTo(strDoctorNameTo);
+//                String strDoctorNameTo = DataTypeHelpers.stringReplaceSetString(ybChsPriorityLevel.getDoctorNameTo(), ybChsPriorityLevel.getDoctorCodeTo() + "-");
+                ybChsPriorityLevel.setDoctorNameTo(ybChsPriorityLevel.getDoctorNameTo());
             }
 
             if(StringUtils.isNotBlank(ybChsPriorityLevel.getDksNameTo())) {
-                String strDksNameTo = DataTypeHelpers.stringReplaceSetString(ybChsPriorityLevel.getDksNameTo(), ybChsPriorityLevel.getDksIdTo() + "-");
-                ybChsPriorityLevel.setDksNameTo(strDksNameTo);
+//                String strDksNameTo = DataTypeHelpers.stringReplaceSetString(ybChsPriorityLevel.getDksNameTo(), ybChsPriorityLevel.getDksIdTo() + "-");
+                ybChsPriorityLevel.setDksNameTo(ybChsPriorityLevel.getDksNameTo());
             }
             if(StringUtils.isNotBlank(ybChsPriorityLevel.getDksName())) {
-                String strDksName = DataTypeHelpers.stringReplaceSetString(ybChsPriorityLevel.getDksName(), ybChsPriorityLevel.getDksId() + "-");
-                ybChsPriorityLevel.setDksName(strDksName);
+//                String strDksName = DataTypeHelpers.stringReplaceSetString(ybChsPriorityLevel.getDksName(), ybChsPriorityLevel.getDksId() + "-");
+                ybChsPriorityLevel.setDksName(ybChsPriorityLevel.getDksName());
             }
             this.iYbChsPriorityLevelService.createYbChsPriorityLevel(ybChsPriorityLevel);
         } catch (Exception e) {
@@ -131,17 +131,17 @@ public class YbChsPriorityLevelController extends BaseController {
                 ybChsPriorityLevel.setDksNameTo("");
             }
             if(StringUtils.isNotBlank(ybChsPriorityLevel.getDoctorNameTo())) {
-                String strDoctorNameTo = DataTypeHelpers.stringReplaceSetString(ybChsPriorityLevel.getDoctorNameTo(), ybChsPriorityLevel.getDoctorCodeTo() + "-");
-                ybChsPriorityLevel.setDoctorNameTo(strDoctorNameTo);
+//                String strDoctorNameTo = DataTypeHelpers.stringReplaceSetString(ybChsPriorityLevel.getDoctorNameTo(), ybChsPriorityLevel.getDoctorCodeTo() + "-");
+                ybChsPriorityLevel.setDoctorNameTo(ybChsPriorityLevel.getDoctorNameTo());
             }
 
             if(StringUtils.isNotBlank(ybChsPriorityLevel.getDksNameTo())) {
-                String strDksNameTo = DataTypeHelpers.stringReplaceSetString(ybChsPriorityLevel.getDksNameTo(), ybChsPriorityLevel.getDksIdTo() + "-");
-                ybChsPriorityLevel.setDksNameTo(strDksNameTo);
+//                String strDksNameTo = DataTypeHelpers.stringReplaceSetString(ybChsPriorityLevel.getDksNameTo(), ybChsPriorityLevel.getDksIdTo() + "-");
+                ybChsPriorityLevel.setDksNameTo(ybChsPriorityLevel.getDksNameTo());
             }
             if(StringUtils.isNotBlank(ybChsPriorityLevel.getDksName())) {
-                String strDksName = DataTypeHelpers.stringReplaceSetString(ybChsPriorityLevel.getDksName(), ybChsPriorityLevel.getDksId() + "-");
-                ybChsPriorityLevel.setDksName(strDksName);
+//                String strDksName = DataTypeHelpers.stringReplaceSetString(ybChsPriorityLevel.getDksName(), ybChsPriorityLevel.getDksId() + "-");
+                ybChsPriorityLevel.setDksName(ybChsPriorityLevel.getDksName());
             }
             this.iYbChsPriorityLevelService.updateYbChsPriorityLevel(ybChsPriorityLevel);
         } catch (Exception e) {

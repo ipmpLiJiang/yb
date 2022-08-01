@@ -137,6 +137,13 @@ public class YbChsResult implements Serializable, Comparable<YbChsResult> {
     @ExcelField(value = "数据类型")
     private Integer dataType;
 
+    /**
+     * 分院
+     */
+    @TableField("fyid")
+    @ExcelField(value = "分院")
+    private String fyid;
+
 
     public static final String ID = "id";
 
@@ -167,6 +174,8 @@ public class YbChsResult implements Serializable, Comparable<YbChsResult> {
     public static final String AREATYPE = "areaType";
 
     public static final String DATATYPE = "dataType";
+
+    public static final String FYID = "fyid";
 
     @Override
     public int compareTo(YbChsResult o) {

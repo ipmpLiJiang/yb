@@ -3,6 +3,7 @@ package cc.mrbird.febs.chs.controller;
 import cc.mrbird.febs.chs.entity.*;
 import cc.mrbird.febs.chs.service.IYbChsApplyDataService;
 import cc.mrbird.febs.chs.service.IYbChsApplyService;
+import cc.mrbird.febs.chs.service.IYbDksService;
 import cc.mrbird.febs.com.controller.DataTypeHelpers;
 import cc.mrbird.febs.com.controller.FileHelpers;
 import cc.mrbird.febs.com.controller.ImportExcelUtils;
@@ -60,6 +61,8 @@ public class YbChsVerifyController extends BaseController {
     IYbChsApplyDataService iYbChsApplyDataService;
     @Autowired
     FebsProperties febsProperties;
+    @Autowired
+    public IYbDksService iYbDksService;
 
     /**
      * 分页查询数据
@@ -317,6 +320,7 @@ public class YbChsVerifyController extends BaseController {
                         String filePath = febsProperties.getUploadPath(); // 上传后的路径
                         File getFile = FileHelpers.fileUpLoad(file, filePath, chsApply.getId(), "chsVerifyTemp");
                         Map<Integer, String> sheetMap = ImportExcelUtils.getSheelNames(getFile);
+                        List<YbDks> findDksList = iYbDksService.findDksList(new YbDks(), 0);
 
                         if (sheetMap.size() > 0) {
                             List<Object[]> objMx = ImportExcelUtils.importExcelBySheetIndex(getFile, 0, 0, 0);
@@ -324,7 +328,7 @@ public class YbChsVerifyController extends BaseController {
                                 List<YbChsVerify> verifyList = new ArrayList<>();
                                 if (objMx.get(0).length >= 36) {
                                     for (int i = 1; i < objMx.size(); i++) {
-                                        YbChsVerify rv = this.getChsVerify(objMx, i, applyDateStr, applyDataList);
+                                        YbChsVerify rv = this.getChsVerify(objMx, i, applyDateStr, applyDataList,findDksList);
                                         if (rv != null) {
                                             verifyList.add(rv);
                                         }
@@ -370,7 +374,7 @@ public class YbChsVerifyController extends BaseController {
         return new FebsResponse().data(map);
     }
 
-    private YbChsVerify getChsVerify(List<Object[]> obj, int i, String applyDateStr, List<YbChsApplyData> applyDataList) {
+    private YbChsVerify getChsVerify(List<Object[]> obj, int i, String applyDateStr, List<YbChsApplyData> applyDataList,List<YbDks> findDksList) {
         YbChsVerify ybChsVerify = null;
         List<YbChsApplyData> queryApplyDataList = new ArrayList<>();
         String strOrderNumber = DataTypeHelpers.importTernaryOperate(obj.get(i), 0);//序号
@@ -379,6 +383,8 @@ public class YbChsVerifyController extends BaseController {
         String strDksName = DataTypeHelpers.importTernaryOperate(obj.get(i), 34);//科室名称
         String strDocCode = DataTypeHelpers.importTernaryOperate(obj.get(i), 35);//医生编码
         String strDocName = DataTypeHelpers.importTernaryOperate(obj.get(i), 36);//医生名称
+
+        List<YbDks> dksQueryList = new ArrayList<>();
 
         if (StringUtils.isNotBlank(strOrderNumber)) {
             int orderNum = Integer.parseInt(strOrderNumber);
@@ -398,7 +404,10 @@ public class YbChsVerifyController extends BaseController {
                     ybChsVerify.setVerifyDksName(strDksName);
                     ybChsVerify.setVerifyDoctorCode(strDocCode);
                     ybChsVerify.setVerifyDoctorName(strDocName);
-
+                    dksQueryList = findDksList.stream().filter(s->s.getDksFyid().equals(strDksId)).collect(Collectors.toList());
+                    if(dksQueryList.size() > 0) {
+                        ybChsVerify.setVerifyFyid(dksQueryList.get(0).getFyid());
+                    }
                     ybChsVerify.setApplyDateStr(applyDateStr);
                     ybChsVerify.setOrderNum(entity.getOrderNum());
                 }

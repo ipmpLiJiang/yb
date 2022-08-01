@@ -429,4 +429,18 @@ public class DataTypeHelpers {
 
         return result;
     }
+
+    public static  String getFyidName(String fyid){
+        if(fyid.equals("1001")) {
+            fyid = "本院";
+        } else if(fyid.equals("1002")) {
+            fyid = "西院";
+        } else if(fyid.equals("1003")) {
+            fyid = "金银湖";
+        } else{
+            fyid = "";
+        }
+//        1001本院、1002西院、1003金银湖
+        return fyid;
+    }
 }

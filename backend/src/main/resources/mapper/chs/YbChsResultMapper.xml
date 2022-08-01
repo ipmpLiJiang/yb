@@ -19,11 +19,12 @@
         <result column="orderNum" property="orderNum"/>
         <result column="areaType" property="areaType"/>
         <result column="dataType" property="dataType"/>
+        <result column="fyid" property="fyid"/>
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, applyDataId, verifyId, manageId, doctorCode, doctorName, dksId, dksName, operateReason, operateDate, STATE, applyDateStr, orderNum, areaType, dataType
+        id, applyDataId, verifyId, manageId, doctorCode, doctorName, dksId, dksName, operateReason, operateDate, STATE, applyDateStr, orderNum, areaType, dataType, fyid
     </sql>
     <update id="updateYbChsResult" parameterType="cc.mrbird.febs.chs.entity.YbChsResult">
         update yb_chs_result
@@ -42,6 +43,7 @@
             <if test="orderNum != null">orderNum=#{orderNum},</if>
             <if test="areaType != null">areaType=#{areaType},</if>
             <if test="dataType != null">dataType=#{dataType},</if>
+            <if test="fyid != null">fyid=#{fyid},</if>
         </trim>
         where id=#{id}
 

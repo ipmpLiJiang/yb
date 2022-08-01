@@ -220,13 +220,13 @@ public class YbChsApplyDataVerify  {
     /**
      * chs编码
      */
-    @ExcelField(value = "复议科室编码")
+    @ExcelField(value = "汇总科室编码")
     private String verifyDksId;
 
     /**
      * chs科室
      */
-    @ExcelField(value = "复议科室名称")
+    @ExcelField(value = "汇总科室名称")
     private String verifyDksName;
 
     /**

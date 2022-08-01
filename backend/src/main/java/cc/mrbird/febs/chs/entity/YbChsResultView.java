@@ -383,6 +383,12 @@ public class YbChsResultView {
     @ExcelField(value = "数据类型")
     private Integer dataType;
 
+    /**
+     * 分院
+     */
+    @TableField("fyid")
+    @ExcelField(value = "分院")
+    private String fyid;
 
     private transient String fileSizeWork;
 

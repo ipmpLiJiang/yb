@@ -193,6 +193,7 @@ public class YbChsManageServiceImpl extends ServiceImpl<YbChsManageMapper, YbChs
                                     create.setDoctorName(item.getReadyDoctorName());
                                     create.setDksId(item.getReadyDksId());
                                     create.setDksName(item.getReadyDksName());
+                                    create.setFyid(item.getReadyFyid());
                                     create.setOperateReason("未申诉");
                                     create.setOperateDate(thisDate);
                                     create.setState(2);
@@ -312,10 +313,10 @@ public class YbChsManageServiceImpl extends ServiceImpl<YbChsManageMapper, YbChs
                         queryWrapper.eq(YbChsManage::getState, YbDefaultValue.AMSTATE_0);
                         queryWrapper.eq(YbChsManage::getId, item.getId());
 
-                        String strChangeDksName = DataTypeHelpers.stringReplaceSetString(item.getChangeDksName(), item.getChangeDksId() + "-");
-                        item.setChangeDksName(strChangeDksName);
-                        String strChangeDoctorName = DataTypeHelpers.stringReplaceSetString(item.getChangeDoctorName(), item.getChangeDoctorCode() + "-");
-                        item.setChangeDoctorName(strChangeDoctorName);
+//                        String strChangeDksName = DataTypeHelpers.stringReplaceSetString(item.getChangeDksName(), item.getChangeDksId() + "-");
+                        item.setChangeDksName(item.getChangeDksName());
+//                        String strChangeDoctorName = DataTypeHelpers.stringReplaceSetString(item.getChangeDoctorName(), item.getChangeDoctorCode() + "-");
+                        item.setChangeDoctorName(item.getChangeDoctorName());
 
                         this.baseMapper.update(item, queryWrapper);
                     }
@@ -344,6 +345,7 @@ public class YbChsManageServiceImpl extends ServiceImpl<YbChsManageMapper, YbChs
                             ybChsManage.setOrderNum(entity.getOrderNum());
                             ybChsManage.setAreaType(entity.getAreaType());
                             ybChsManage.setDataType(entity.getDataType());
+                            ybChsManage.setReadyFyid(entity.getReadyFyid());
                             isUpdate = this.createUpdateAcceptChsResult(ybChsManage, thisDate);
 
                             updateChsManage.setOperateProcess("待申诉-已申诉");
@@ -391,13 +393,14 @@ public class YbChsManageServiceImpl extends ServiceImpl<YbChsManageMapper, YbChs
         newChsResult.setVerifyId(ybChsManage.getVerifyId());
         newChsResult.setManageId(ybChsManage.getId());
 
-        String strReadyDksName = DataTypeHelpers.stringReplaceSetString(ybChsManage.getReadyDksName(), ybChsManage.getReadyDksId() + "-");
-        ybChsManage.setReadyDksName(strReadyDksName);
-        String strReadyDoctorName = DataTypeHelpers.stringReplaceSetString(ybChsManage.getReadyDoctorName(), ybChsManage.getReadyDoctorCode() + "-");
-        ybChsManage.setReadyDoctorName(strReadyDoctorName);
+//        String strReadyDksName = DataTypeHelpers.stringReplaceSetString(ybChsManage.getReadyDksName(), ybChsManage.getReadyDksId() + "-");
+        ybChsManage.setReadyDksName(ybChsManage.getReadyDksName());
+//        String strReadyDoctorName = DataTypeHelpers.stringReplaceSetString(ybChsManage.getReadyDoctorName(), ybChsManage.getReadyDoctorCode() + "-");
+        ybChsManage.setReadyDoctorName(ybChsManage.getReadyDoctorName());
 
         newChsResult.setDksId(ybChsManage.getReadyDksId());
         newChsResult.setDksName(ybChsManage.getReadyDksName());
+        newChsResult.setFyid(ybChsManage.getReadyFyid());
         newChsResult.setDoctorCode(ybChsManage.getReadyDoctorCode());
         newChsResult.setDoctorName(ybChsManage.getReadyDoctorName());
 
@@ -486,15 +489,15 @@ public class YbChsManageServiceImpl extends ServiceImpl<YbChsManageMapper, YbChs
             newChsManage.setOrderNum(entity.getOrderNum());
             newChsManage.setDataType(entity.getDataType());
 
-            String strReadyDksName = DataTypeHelpers.stringReplaceSetString(ybChsManage.getReadyDksName(), ybChsManage.getReadyDksId() + "-");
-            ybChsManage.setReadyDksName(strReadyDksName);
-            String strReadyDoctorName = DataTypeHelpers.stringReplaceSetString(ybChsManage.getReadyDoctorName(), ybChsManage.getReadyDoctorCode() + "-");
-            ybChsManage.setReadyDoctorName(strReadyDoctorName);
+//            String strReadyDksName = DataTypeHelpers.stringReplaceSetString(ybChsManage.getReadyDksName(), ybChsManage.getReadyDksId() + "-");
+            ybChsManage.setReadyDksName(ybChsManage.getReadyDksName());
+//            String strReadyDoctorName = DataTypeHelpers.stringReplaceSetString(ybChsManage.getReadyDoctorName(), ybChsManage.getReadyDoctorCode() + "-");
+            ybChsManage.setReadyDoctorName(ybChsManage.getReadyDoctorName());
 
-            String strChangeDksName = DataTypeHelpers.stringReplaceSetString(ybChsManage.getChangeDksName(), ybChsManage.getChangeDksId() + "-");
-            ybChsManage.setChangeDksName(strChangeDksName);
-            String strChangeDoctorName = DataTypeHelpers.stringReplaceSetString(ybChsManage.getChangeDoctorName(), ybChsManage.getChangeDoctorCode() + "-");
-            ybChsManage.setChangeDoctorName(strChangeDoctorName);
+//            String strChangeDksName = DataTypeHelpers.stringReplaceSetString(ybChsManage.getChangeDksName(), ybChsManage.getChangeDksId() + "-");
+            ybChsManage.setChangeDksName(ybChsManage.getChangeDksName());
+//            String strChangeDoctorName = DataTypeHelpers.stringReplaceSetString(ybChsManage.getChangeDoctorName(), ybChsManage.getChangeDoctorCode() + "-");
+            ybChsManage.setChangeDoctorName(ybChsManage.getChangeDoctorName());
 
             YbChsManage updateManage = new YbChsManage();
             updateManage.setState(YbDefaultValue.ACCEPTSTATE_4);
@@ -503,6 +506,7 @@ public class YbChsManageServiceImpl extends ServiceImpl<YbChsManageMapper, YbChs
                 //拒绝
                 newChsManage.setReadyDksId(ybChsManage.getReadyDksId());
                 newChsManage.setReadyDksName(ybChsManage.getReadyDksName());
+                newChsManage.setReadyFyid(ybChsManage.getReadyFyid());
                 newChsManage.setReadyDoctorCode(ybChsManage.getReadyDoctorCode());
                 newChsManage.setReadyDoctorName(ybChsManage.getReadyDoctorName());
 
@@ -518,6 +522,7 @@ public class YbChsManageServiceImpl extends ServiceImpl<YbChsManageMapper, YbChs
                 //同意
                 newChsManage.setReadyDksId(ybChsManage.getChangeDksId());
                 newChsManage.setReadyDksName(ybChsManage.getChangeDksName());
+                newChsManage.setReadyFyid(ybChsManage.getReadyFyid());
                 newChsManage.setReadyDoctorCode(ybChsManage.getChangeDoctorCode());
                 newChsManage.setReadyDoctorName(ybChsManage.getChangeDoctorName());
 
@@ -526,6 +531,7 @@ public class YbChsManageServiceImpl extends ServiceImpl<YbChsManageMapper, YbChs
 
                 updateManage.setChangeDksId(ybChsManage.getChangeDksId());
                 updateManage.setChangeDksName(ybChsManage.getChangeDksName());
+                updateManage.setChangeFyid(ybChsManage.getChangeFyid());
                 updateManage.setChangeDoctorCode(ybChsManage.getChangeDoctorCode());
                 updateManage.setChangeDoctorName(ybChsManage.getChangeDoctorName());
 
@@ -572,8 +578,11 @@ public class YbChsManageServiceImpl extends ServiceImpl<YbChsManageMapper, YbChs
                 entity.getState() == YbDefaultValue.ACCEPTSTATE_7)) {
             YbChsManage updateChsManage = new YbChsManage();
             updateChsManage.setId(ybChsManage.getId());
-            String strReadyDksName = DataTypeHelpers.stringReplaceSetString(ybChsManage.getReadyDksName(), ybChsManage.getReadyDksId() + "-");
-            String strReadyDoctorName = DataTypeHelpers.stringReplaceSetString(ybChsManage.getReadyDoctorName(), ybChsManage.getReadyDoctorCode() + "-");
+//            String strReadyDksName = DataTypeHelpers.stringReplaceSetString(ybChsManage.getReadyDksName(), ybChsManage.getReadyDksId() + "-");
+//            String strReadyDoctorName = DataTypeHelpers.stringReplaceSetString(ybChsManage.getReadyDoctorName(), ybChsManage.getReadyDoctorCode() + "-");
+            String strReadyDksName = ybChsManage.getReadyDksName();
+            String strReadyDoctorName = ybChsManage.getReadyDoctorName();
+            String strReadyFyid = ybChsManage.getReadyFyid();
             boolean isChang = false;
 
             if (!entity.getReadyDoctorCode().equals(ybChsManage.getReadyDoctorCode()) ||
@@ -602,10 +611,12 @@ public class YbChsManageServiceImpl extends ServiceImpl<YbChsManageMapper, YbChs
                     updateChsManage.setReadyDoctorName(strReadyDoctorName);
                     updateChsManage.setReadyDksId(ybChsManage.getReadyDksId());
                     updateChsManage.setReadyDksName(strReadyDksName);
+                    updateChsManage.setReadyFyid(strReadyFyid);
                     updateChsManage.setChangeDoctorCode(entity.getReadyDoctorCode());
                     updateChsManage.setChangeDoctorName(entity.getReadyDoctorName());
                     updateChsManage.setChangeDksId(entity.getReadyDksId());
                     updateChsManage.setChangeDksName(entity.getReadyDksName());
+                    updateChsManage.setChangeFyid(ybChsManage.getChangeFyid());
                 }
                 updateChsManage.setState(ybChsManage.getState());
                 updateChsManage.setOperateReason("");
@@ -615,6 +626,7 @@ public class YbChsManageServiceImpl extends ServiceImpl<YbChsManageMapper, YbChs
                 updateChsManage.setChangeDoctorName(strReadyDoctorName);
                 updateChsManage.setChangeDksId(ybChsManage.getReadyDksId());
                 updateChsManage.setChangeDksName(strReadyDksName);
+                updateChsManage.setChangeFyid(strReadyFyid);
             }
             if (entity.getState() == YbDefaultValue.ACCEPTSTATE_7 && ybChsManage.getState() == YbDefaultValue.ACCEPTSTATE_6) {
                 updateChsManage.setOperateProcess("未申诉-已申诉");
@@ -662,6 +674,7 @@ public class YbChsManageServiceImpl extends ServiceImpl<YbChsManageMapper, YbChs
                 ybChsResult.setDoctorName(strReadyDoctorName);
                 ybChsResult.setDksId(ybChsManage.getReadyDksId());
                 ybChsResult.setDksName(strReadyDksName);
+                ybChsResult.setVerifyId(strReadyFyid);
                 iYbChsResultService.updateById(ybChsResult);
             }
             // 待申诉 和 已申诉 删除 结果和附件
@@ -698,13 +711,14 @@ public class YbChsManageServiceImpl extends ServiceImpl<YbChsManageMapper, YbChs
 
                 newChsManage.setApplyDateStr(entity.getApplyDateStr());
                 newChsManage.setOrderNum(entity.getOrderNum());
-
-                ybChsManage.setReadyDksId(ybChsManage.getReadyDksId());
                 ybChsManage.setReadyDksName(strReadyDksName);
+                ybChsManage.setReadyFyid(ybChsManage.getReadyFyid());
+                ybChsManage.setReadyDksId(ybChsManage.getReadyDksId());
                 ybChsManage.setReadyDoctorName(strReadyDoctorName);
 
                 newChsManage.setReadyDksId(ybChsManage.getReadyDksId());
                 newChsManage.setReadyDksName(strReadyDksName);
+                newChsManage.setReadyFyid(strReadyFyid);
                 newChsManage.setReadyDoctorCode(ybChsManage.getReadyDoctorCode());
                 newChsManage.setReadyDoctorName(ybChsManage.getReadyDoctorName());
 

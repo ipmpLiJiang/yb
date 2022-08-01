@@ -33,11 +33,13 @@
         <result column="orderNum" property="orderNum"/>
         <result column="areaType" property="areaType"/>
         <result column="dataType" property="dataType"/>
+        <result column="readyFyid" property="readyFyid"/>
+        <result column="changeFyid" property="changeFyid"/>
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, applyDataId, verifyId, readyDoctorCode, readyDoctorName, readyDksId, readyDksName, changeDoctorCode, changeDoctorName, changeDksId, changeDksName, operateReason, operateDate, refuseId, refuseName, refuseReason, refuseDate, adminPersonId, adminPersonName, adminChangeDate, adminReason, STATE, enableDate, operateProcess, approvalState, applyDateStr, orderNum, areaType, dataType
+        id, applyDataId, verifyId, readyDoctorCode, readyDoctorName, readyDksId, readyDksName, changeDoctorCode, changeDoctorName, changeDksId, changeDksName, operateReason, operateDate, refuseId, refuseName, refuseReason, refuseDate, adminPersonId, adminPersonName, adminChangeDate, adminReason, STATE, enableDate, operateProcess, approvalState, applyDateStr, orderNum, areaType, dataType, readyFyid, changeFyid
     </sql>
     <update id="updateYbChsManage" parameterType="cc.mrbird.febs.chs.entity.YbChsManage">
         update yb_chs_manage
@@ -70,6 +72,8 @@
             <if test="orderNum != null">orderNum=#{orderNum},</if>
             <if test="areaType != null">areaType=#{areaType},</if>
             <if test="dataType != null">dataType=#{dataType},</if>
+            <if test="readyFyid != null">readyFyid=#{readyFyid},</if>
+            <if test="changeFyid != null">changeFyid=#{changeFyid},</if>
         </trim>
         where id=#{id}
 

@@ -15,11 +15,13 @@
         <result column="CREATE_TIME" property="createTime"/>
         <result column="CREATE_USER_ID" property="createUserId"/>
         <result column="MODIFY_USER_ID" property="modifyUserId"/>
+        <result column="fyid" property="fyid"/>
+        <result column="dksFyid" property="dksFyid"/>
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, dksId, dksName, spellCode, COMMENTS, STATE, IS_DELETEMARK, MODIFY_TIME, CREATE_TIME, CREATE_USER_ID, MODIFY_USER_ID
+        id, dksId, dksName, spellCode, COMMENTS, STATE, IS_DELETEMARK, MODIFY_TIME, CREATE_TIME, CREATE_USER_ID, MODIFY_USER_ID, fyid, dksFyid
     </sql>
     <update id="updateYbDks" parameterType="cc.mrbird.febs.chs.entity.YbDks">
         update yb_dks
@@ -34,6 +36,8 @@
             <if test="createTime != null">CREATE_TIME=#{createTime},</if>
             <if test="createUserId != null">CREATE_USER_ID=#{createUserId},</if>
             <if test="modifyUserId != null">MODIFY_USER_ID=#{modifyUserId},</if>
+            <if test="fyid != null">fyid=#{fyid},</if>
+            <if test="dksFyid != null">dksFyid=#{dksFyid},</if>
         </trim>
         where id=#{id}
 

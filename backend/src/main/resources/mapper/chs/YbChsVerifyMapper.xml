@@ -18,11 +18,12 @@
         <result column="sendPersonName" property="sendPersonName"/>
         <result column="sendDate" property="sendDate"/>
         <result column="dataType" property="dataType"/>
+        <result column="verifyFyid" property="verifyFyid"/>
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, applyDataId, verifyDoctorCode, verifyDoctorName, verifyDksId, verifyDksName, STATE, applyDateStr, orderNum, areaType, sendPersonId, sendPersonName, sendDate, dataType
+        id, applyDataId, verifyDoctorCode, verifyDoctorName, verifyDksId, verifyDksName, STATE, applyDateStr, orderNum, areaType, sendPersonId, sendPersonName, sendDate, dataType, verifyFyid
     </sql>
     <update id="updateYbChsVerify" parameterType="cc.mrbird.febs.chs.entity.YbChsVerify">
         update yb_chs_verify
@@ -40,6 +41,7 @@
             <if test="sendPersonName != null">sendPersonName=#{sendPersonName},</if>
             <if test="sendDate != null">sendDate=#{sendDate},</if>
             <if test="dataType != null">dataType=#{dataType},</if>
+            <if test="verifyFyid != null">verifyFyid=#{verifyFyid},</if>
         </trim>
         where id=#{id}
 
