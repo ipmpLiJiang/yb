@@ -79,6 +79,26 @@ const data = {
     {text: '明细扣款', value: 0},
     {text: '主单扣款', value: 1}
   ]
-
 }
-export { custom, data }
+const fy = {
+  getFyName (fyid) {
+    // 1001 本院  1002 西院 1003 金银湖
+    if (fyid === '1001') {
+      return '本院'
+    } else if (fyid === '1002') {
+      return '西院'
+    } else if (fyid === '1003') {
+      return '金银湖'
+    } else {
+      return ''
+    }
+  },
+  getDksFyName (dksName, fyid) {
+    if (dksName) {
+      return dksName + '(' + this.getFyName(fyid) + ')'
+    } else {
+      return dksName
+    }
+  }
+}
+export { custom, data, fy }

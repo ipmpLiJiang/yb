@@ -33,6 +33,7 @@
 
 <script>
 import moment from 'moment'
+import { fy } from '../../js/custom'
 export default {
   name: 'YbChsManageAccept',
   props: {
@@ -207,11 +208,11 @@ export default {
         width: 108
       },
       {
-        title: '复议科室',
+        title: '汇总科室',
         dataIndex: 'readyDksName',
         customRender: (text, row, index) => {
           if (text !== '' && text !== null) {
-            return row.readyDksId + '-' + row.readyDksName
+            return fy.getDksFyName(text, row.readyFyid)
           }
         },
         fixed: 'right',

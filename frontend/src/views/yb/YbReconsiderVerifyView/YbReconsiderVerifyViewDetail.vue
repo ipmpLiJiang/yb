@@ -184,17 +184,20 @@ export default {
       }, 200)
     },
     setForms (target) {
-      this.$refs.inputSelectVerifyDept.dataSource = [{
-        text: target.verifyDeptName,
-        value: target.verifyDeptCode
-      }]
-      this.$refs.inputSelectVerifyDept.value = target.verifyDeptCode
-
-      this.$refs.inputSelectVerifyDoctor.dataSource = [{
-        text: target.verifyDoctorName,
-        value: target.verifyDoctorCode
-      }]
-      this.$refs.inputSelectVerifyDoctor.value = target.verifyDoctorCode
+      if (target.verifyDeptCode) {
+        this.$refs.inputSelectVerifyDept.dataSource = [{
+          text: target.verifyDeptName,
+          value: target.verifyDeptCode
+        }]
+        this.$refs.inputSelectVerifyDept.value = target.verifyDeptCode
+      }
+      if (target.verifyDoctorCode) {
+        this.$refs.inputSelectVerifyDoctor.dataSource = [{
+          text: target.verifyDoctorName,
+          value: target.verifyDoctorCode
+        }]
+        this.$refs.inputSelectVerifyDoctor.value = target.verifyDoctorCode
+      }
 
       this.ybReconsiderVerify = {
         id: target.id,

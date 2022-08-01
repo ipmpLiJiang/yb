@@ -2,7 +2,7 @@
   <a-drawer
     title="修改"
     :maskClosable="false"
-    width="650"
+    width="750"
     placement="right"
     :closable="false"
     @close="onClose"
@@ -10,6 +10,35 @@
     style="height: calc(100% - 55px); overflow: auto; padding-bottom: 53px"
   >
     <a-form :form="form">
+      <a-form-item v-bind="formItemLayout" label="大科室分院编码">
+        <a-input
+          placeholder="请输入大科室分院编码"
+          v-decorator="[
+            'dksFyid',
+            { rules: [{ required: true, message: '大科室分院编码不能为空' }] },
+          ]"
+        />
+      </a-form-item>
+      <a-form-item
+        v-bind="formItemLayout"
+        label="院区"
+      >
+        <a-select
+          style="width: 120px"
+          placeholder="请选择院区"
+          v-decorator="['fyid', {rules: [{ required: true, message: '院区不能为空' }], initialValue: '2' }]"
+        >
+          <a-select-option value="1001">
+            本院
+          </a-select-option>
+          <a-select-option value="1002">
+            西院
+          </a-select-option>
+          <a-select-option value="1003">
+            金银湖
+          </a-select-option>
+        </a-select>
+      </a-form-item>
       <a-form-item v-bind="formItemLayout" label="大科室编码">
         <a-input
           placeholder="请输入大科室编码"
@@ -59,10 +88,10 @@ import moment from 'moment'
 
 const formItemLayout = {
   labelCol: {
-    span: 3
+    span: 4
   },
   wrapperCol: {
-    span: 18
+    span: 17
   }
 }
 export default {
@@ -92,7 +121,7 @@ export default {
     setFormValues ({
       ...ybDks
     }) {
-      let fields = ['dksId', 'dksName', 'spellCode']
+      let fields = ['dksId', 'dksName', 'spellCode', 'fyid', 'dksFyid']
       let fieldDates = []
       Object.keys(ybDks).forEach((key) => {
         if (fields.indexOf(key) !== -1) {

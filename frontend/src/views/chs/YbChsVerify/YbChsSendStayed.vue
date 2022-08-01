@@ -44,6 +44,7 @@
 
 <script>
 import moment from 'moment'
+import { fy } from '../../js/custom'
 export default {
   name: 'YbChsSendStayed',
   props: {
@@ -74,6 +75,7 @@ export default {
         },
         showTotal: (total, range) => `显示 ${range[0]} ~ ${range[1]} 条记录，共 ${total} 条记录`
       },
+      fy,
       queryParams: {
       },
       loading: false,
@@ -182,14 +184,28 @@ export default {
         width: 90
       },
       {
-        title: '复议科室',
+        title: '汇总科室',
         dataIndex: 'verifyDksName',
+        customRender: (text, row, index) => {
+          if (text !== '' && text !== null) {
+            return fy.getDksFyName(text, row.verifyFyid)
+          } else {
+            return text
+          }
+        },
         fixed: 'right',
         width: 180
       },
       {
         title: '复议医生',
         dataIndex: 'verifyDoctorName',
+        customRender: (text, row, index) => {
+          if (text !== '' && text !== null) {
+            return row.verifyDoctorCode + '-' + text
+          } else {
+            return text
+          }
+        },
         fixed: 'right',
         width: 120
       },
@@ -236,6 +252,7 @@ export default {
           verifyDoctorName: target.verifyDoctorName,
           verifyDksId: target.verifyDksId,
           verifyDksName: target.verifyDksName,
+          verifyFyid: target.verifyFyid,
           applyDateStr: target.applyDateStr,
           orderNum: target.orderNum,
           dataType: target.dataType,
@@ -261,6 +278,7 @@ export default {
               verifyDoctorName: target.verifyDoctorName,
               verifyDksId: target.verifyDksId,
               verifyDksName: target.verifyDksName,
+              verifyFyid: target.verifyFyid,
               applyDateStr: target.applyDateStr,
               orderNum: target.orderNum,
               dataType: target.dataType,

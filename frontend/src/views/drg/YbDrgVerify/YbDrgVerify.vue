@@ -340,7 +340,7 @@
             </a-form-item>
             <a-form-item
               v-bind="formItemLayout"
-              label="复议科室："
+              label="复议科室"
             >
               <a-input style="width: 255px" v-model="searchItem.dept.dksName" />
             </a-form-item>

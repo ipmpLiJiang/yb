@@ -56,7 +56,7 @@
               <a-col :span=10>
                 <a-form-item
                   v-bind="formItemLayout1"
-                  label="复议科室"
+                  label="汇总科室"
                 >
                   <inputSelectChs-dks
                   ref="inputSelectVerifyDks"
@@ -122,6 +122,7 @@ import InputSelect from '../../common/InputSelect'
 import InputSelectChsDks from '../../common/InputSelectChsDks'
 import YbChsDataModule from '../YbChsFunModule/YbChsDataModule'
 import YbChsJkModule from '../YbChsFunModule/YbChsJkModule'
+import { fy } from '../../js/custom'
 const formItemLayout = {
   labelCol: { span: 3 },
   wrapperCol: { span: 20 }
@@ -151,6 +152,7 @@ export default {
       state: 0,
       accStateDisabled: true,
       spinning: false,
+      fy,
       type: 0,
       delayTime: 500,
       changePersons: ''
@@ -181,11 +183,13 @@ export default {
     },
     selectDoctorChang (item) {
       this.ybChsManage.readyDoctorCode = item.value
-      this.ybChsManage.readyDoctorName = item.text
+      this.ybChsManage.readyDoctorName = item.personName
     },
     selectDksChang (item) {
+      console.log(item)
       this.ybChsManage.readyDksId = item.value
-      this.ybChsManage.readyDksName = item.text
+      this.ybChsManage.readyDksName = item.dksName
+      this.ybChsManage.readyFyid = item.fyid
     },
     setFormValues (ybChsManageChangeAdminHandle, type) {
       this.type = type
@@ -207,14 +211,15 @@ export default {
       this.ybChsManage.verifyId = ybChsManageChangeAdminHandle.verifyId
       this.ybChsManage.applyDataId = ybChsManageChangeAdminHandle.applyDataId
       this.ybChsManage.state = ybChsManageChangeAdminHandle.state
-      this.changePersons = this.ybChsManageChangeAdminHandle.readyDksId + '-' + this.ybChsManageChangeAdminHandle.readyDksName + ' - ' + this.ybChsManageChangeAdminHandle.readyDoctorCode + '-' + this.ybChsManageChangeAdminHandle.readyDoctorName
+
+      this.changePersons = fy.getDksFyName(this.ybChsManageChangeAdminHandle.readyDksName, this.ybChsManageChangeAdminHandle.readyFyid) + '  -  ' + this.ybChsManageChangeAdminHandle.readyDoctorCode + '-' + this.ybChsManageChangeAdminHandle.readyDoctorName
       setTimeout(() => {
         this.setForms(ybChsManageChangeAdminHandle)
       }, 200)
     },
     setForms (target) {
       this.$refs.inputSelectVerifyDks.dataSource = [{
-        text: target.readyDksId + '-' + target.readyDksName,
+        text: fy.getDksFyName(target.readyDksName, target.readyFyid),
         value: target.readyDksId
       }]
       this.$refs.inputSelectVerifyDks.value = target.readyDksId
@@ -230,6 +235,7 @@ export default {
 
       this.ybChsManage.readyDksId = target.readyDksId
       this.ybChsManage.readyDksName = target.readyDksName
+      this.ybChsManage.readyFyid = target.readyFyid
 
       setTimeout(() => {
         this.$refs.ybChsJkModule.search()
@@ -240,6 +246,7 @@ export default {
       this.spinning = true
       let ybChsManage = this.ybChsManage
       ybChsManage.state = this.state
+      console.log(ybChsManage)
       // ybChsManage.id = this.ybChsManageChangeAdminHandle.id
       // ybChsManage.sourceType = this.ybChsManageChangeAdminHandle.sourceType
       // ybChsManage.verifyId = this.ybChsManageChangeAdminHandle.verifyId
@@ -251,7 +258,7 @@ export default {
       if (this.type === 0 || this.type === 3) {
         if (ybChsManage.readyDoctorCode === this.ybChsManageChangeAdminHandle.readyDoctorCode &&
             ybChsManage.readyDksId === this.ybChsManageChangeAdminHandle.readyDksId) {
-          this.$message.error('未更改 复议科室 和 复议医生 , 不可提交数据.')
+          this.$message.error('未更改 汇总科室 和 复议医生 , 不可提交数据.')
           this.loading = false
           this.spinning = false
           return

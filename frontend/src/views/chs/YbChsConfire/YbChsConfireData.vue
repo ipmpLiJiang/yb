@@ -42,6 +42,7 @@
 
 <script>
 import moment from 'moment'
+import { fy } from '../../js/custom'
 export default {
   name: 'YbChsConfireData',
   props: {
@@ -66,6 +67,7 @@ export default {
       },
       queryParams: {
       },
+      fy,
       pid: '',
       loading: false,
       bordered: true,
@@ -87,7 +89,7 @@ export default {
         dataIndex: 'dksName',
         customRender: (text, row, index) => {
           if (text !== '' && text !== null) {
-            return row.dksId + '-' + row.dksName
+            return fy.getDksFyName(text, row.fyid)
           }
         }
       },

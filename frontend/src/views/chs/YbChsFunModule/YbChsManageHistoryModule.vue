@@ -55,6 +55,7 @@
 import moment from 'moment'
 import YbChsDataModule from '../YbChsFunModule/YbChsDataModule'
 import YbChsJkModule from '../YbChsFunModule/YbChsJkModule'
+import { fy } from '../../js/custom'
 export default {
   name: 'YbChsManageHistoryModule',
   components: {
@@ -84,6 +85,7 @@ export default {
       },
       queryParams: {
       },
+      fy,
       loading: false,
       bordered: true,
       ybChsManageHistory: {}
@@ -92,11 +94,11 @@ export default {
   computed: {
     columns () {
       return [{
-        title: '复议科室',
+        title: '汇总科室',
         dataIndex: 'readyDksName',
         customRender: (text, row, index) => {
           if (text !== '' && text !== null) {
-            return row.readyDksId + '-' + row.readyDksName
+            return fy.getDksFyName(text, row.readyFyid)
           }
         },
         width: 200

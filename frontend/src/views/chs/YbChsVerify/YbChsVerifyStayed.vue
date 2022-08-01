@@ -47,10 +47,10 @@
         </a-select>
         <template v-else>
           <div v-if="record.isPerson===0" style="color:#FF0000">
-            <b>{{ text }}</b>
+            <b>{{ record.verifyDoctorCode ? record.verifyDoctorCode + '-' + text : '' }}</b>
           </div>
           <div v-else>
-            {{ text }}
+            {{ record.verifyDoctorCode ? record.verifyDoctorCode + '-' + text : '' }}
           </div>
         </template>
         </div>
@@ -72,19 +72,19 @@
             @search="handleDksSearch"
             @change="e => handleDksChange(e, record.id, 'verifyDksName')"
         >
-        <a-icon
-        slot="suffixIcon"
-        type="search"
-        ></a-icon>
-        <a-select-option
-        v-for="d in selectDksDataSource"
-        :key="d.value"
-        >
-        {{ d.text }}
-        </a-select-option>
+          <a-icon
+            slot="suffixIcon"
+            type="search"
+          ></a-icon>
+          <a-select-option
+            v-for="d in selectDksDataSource"
+            :key="d.value"
+          >
+          {{ d.text }}
+          </a-select-option>
         </a-select>
         <template v-else>
-            {{ text }}
+            {{ fy.getDksFyName(text, record.verifyFyid) }}
         </template>
         </div>
     </template>
@@ -121,6 +121,7 @@
 
 <script>
 import moment from 'moment'
+import { fy } from '../../js/custom'
 export default {
   name: 'YbChsVerifyStayed',
   props: {
@@ -153,6 +154,7 @@ export default {
       },
       queryParams: {
       },
+      fy,
       loading: false,
       bordered: true,
       editingKey: '',
@@ -266,7 +268,7 @@ export default {
         width: 90
       },
       {
-        title: '复议科室',
+        title: '汇总科室',
         dataIndex: 'verifyDksName',
         scopedSlots: { customRender: 'verifyDksName' },
         fixed: 'right',
@@ -326,7 +328,8 @@ export default {
             verifyDoctorCode: target.verifyDoctorCode,
             verifyDoctorName: target.verifyDoctorName,
             verifyDksId: target.verifyDksId,
-            verifyDksName: target.verifyDksName
+            verifyDksName: target.verifyDksName,
+            verifyFyid: target.verifyFyid
           }
           data.push(arrData)
         }
@@ -355,6 +358,7 @@ export default {
             applyDateStr: target.applyDateStr,
             orderNum: target.orderNum,
             dataType: target.dataType,
+            verifyFyid: selectDate.fyid,
             areaType: this.user.areaType.value
           }
           data.push(arrData)
@@ -395,6 +399,7 @@ export default {
             applyDateStr: target.applyDateStr,
             orderNum: target.orderNum,
             dataType: target.dataType,
+            verifyFyid: target.verifyFyid,
             areaType: this.user.areaType.value
           }
           data.push(arrData)
@@ -442,15 +447,20 @@ export default {
     },
     // 模拟往服务器发送请求
     ajaxDks (keyword) {
+      debugger
       let dataSource = []
+      let fyname = ''
       let params = {comments: keyword, areaId: this.user.areaType.value}
       this.$get('ybDks/findChsDksList', {
         ...params
       }).then((r) => {
         r.data.data.forEach((item, i) => {
+          fyname = fy.getFyName(item.fyid)
           dataSource.push({
-            value: item.dksId,
-            text: item.dksId + '-' + item.dksName
+            value: item.dksFyid,
+            text: item.dksName + '(' + fyname + ')',
+            dksName: item.dksName,
+            fyid: item.fyid
           })
         })
       })
@@ -465,7 +475,8 @@ export default {
         r.data.data.forEach((item, i) => {
           dataSource.push({
             value: item.personCode,
-            text: item.personCode + '-' + item.personName
+            text: item.personCode + '-' + item.personName,
+            personName: item.personName
           })
         })
       })
@@ -483,7 +494,7 @@ export default {
         target[column] = value
         const textData = this.selectDoctorDataSource.filter(item => value === item.value)[0]
         target.verifyDoctorCode = value
-        target.verifyDoctorName = textData.text
+        target.verifyDoctorName = textData.personName
         this.ybChsVerify.verifyDoctorCode = target.verifyDoctorCode
         this.ybChsVerify.verifyDoctorName = target.verifyDoctorName
         this.dataSource = newData
@@ -502,9 +513,11 @@ export default {
         target[column] = value
         const textData = this.selectDksDataSource.filter(item => value === item.value)[0]
         target.verifyDksId = textData.value
-        target.verifyDksName = textData.text
+        target.verifyDksName = textData.dksName
+        target.verifyFyid = textData.fyid
         this.ybChsVerify.verifyDksId = target.verifyDksId
         this.ybChsVerify.verifyDksName = target.verifyDksName
+        this.ybChsVerify.verifyFyid = target.verifyFyid
         this.dataSource = newData
       }
       this.selectDksValue = value
@@ -514,24 +527,28 @@ export default {
       const newData = [...this.dataSource]
       const target = newData.filter(item => key === item.id)[0]
       if (target !== undefined) {
-        this.selectDksDataSource = [{
-          text: target.verifyDksName,
-          value: target.verifyDksId
-        }]
-        this.selectDoctorDataSource = [{
-          text: target.verifyDoctorName,
-          value: target.verifyDoctorCode
-        }]
+        if (target.verifyDksId) {
+          this.selectDksDataSource = [{
+            text: fy.getDksFyName(target.verifyDksName, target.verifyFyid),
+            value: target.verifyDksId
+          }]
+          this.selectDksValue = target.verifyDksId
+          this.ybChsVerify.verifyDksId = target.verifyDksId
+          this.ybChsVerify.verifyDksName = target.verifyDksName
+          this.ybChsVerify.verifyFyid = target.verifyFyid
+        }
 
-        this.selectDoctorValue = target.verifyDoctorCode
-        this.selectDksValue = target.verifyDksId
-
+        if (target.verifyDoctorCode) {
+          this.selectDoctorDataSource = [{
+            text: target.verifyDoctorCode + '-' + target.verifyDoctorName,
+            value: target.verifyDoctorCode
+          }]
+          this.selectDoctorValue = target.verifyDoctorCode
+          this.ybChsVerify.verifyDoctorCode = target.verifyDoctorCode
+          this.ybChsVerify.verifyDoctorName = target.verifyDoctorName
+        }
         this.ybChsVerify.id = key
         this.ybChsVerify.applyDataId = target.applyDataId
-        this.ybChsVerify.verifyDoctorCode = target.verifyDoctorCode
-        this.ybChsVerify.verifyDoctorName = target.verifyDoctorName
-        this.ybChsVerify.verifyDksId = target.verifyDksId
-        this.ybChsVerify.verifyDksName = target.verifyDksName
 
         this.editingKey = key
         if (target) {
@@ -569,6 +586,7 @@ export default {
             verifyDoctorName: this.ybChsVerify.verifyDoctorName,
             verifyDksId: this.ybChsVerify.verifyDksId,
             verifyDksName: this.ybChsVerify.verifyDksName,
+            verifyFyid: this.ybChsVerify.verifyFyid,
             applyDateStr: target.applyDateStr,
             orderNum: target.orderNum,
             dataType: target.dataType,
@@ -576,7 +594,7 @@ export default {
           }]
           this.verifyService(arrData)
         } else {
-          this.$message.warning('未选择，复议科室 或 复议医生.')
+          this.$message.warning('未选择，汇总科室 或 复议医生.')
         }
       } else {
         this.$message.warning('未找到对象.')

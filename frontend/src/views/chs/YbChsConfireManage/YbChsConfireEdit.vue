@@ -131,6 +131,7 @@ export default {
       this.loading = false
       this.ksList = []
       this.ybChsConfire = {}
+      this.ybAcData = {}
       this.$refs.inputSelectDoctor.dataSource = []
       this.$refs.inputSelectDoctor.value = ''
       this.$refs.inputSelectDept.dataSource = []
@@ -184,20 +185,19 @@ export default {
     },
     selectDoctorChange (item) {
       this.ybChsConfire.doctorCode = item.value
-      this.ybChsConfire.doctorName = item.text
+      this.ybChsConfire.doctorName = item.personName
     },
     handleAdminTypeChange (value) {
       this.ybChsConfire.adminType = value
     },
     selectDeptChange (item) {
       this.ybAcData.dksId = item.value
-      this.ybAcData.dksName = item.text
-    },
-    selectKsTypeChange (value) {
-      this.ybAcData.dksName = value
+      this.ybAcData.dksName = item.dksName
+      this.ybAcData.fyid = item.fyid
     },
     setFormValues (obj, areaType, atDataSource) {
       // this.ybAcData.dksName = ''
+      this.ybAcData = {}
       this.ybChsConfire.areaType = areaType
       this.findComType3(obj)
       this.isUpdate = false
@@ -252,7 +252,7 @@ export default {
       if (this.ybAcData.dksId !== '' && this.ybAcData.dksId !== undefined) {
       // if (this.ybAcData.dksName !== '' && this.ybAcData.dksName !== undefined) {
         this.ybChsConfire.child = [
-          { dksId: this.ybAcData.dksId, dksName: this.ybAcData.dksName }
+          { dksId: this.ybAcData.dksId, dksName: this.ybAcData.dksName, fyid: this.ybAcData.fyid }
           // { dksName: this.ybAcData.dksName }
         ]
         isData = true

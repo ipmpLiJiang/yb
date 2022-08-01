@@ -31,9 +31,9 @@
               <a-col :span=10>
                 <a-form-item
                   v-bind="formItemLayout"
-                  label="科室名称"
+                  label="汇总科室"
                 >
-                  {{ybChsManageLook.readyDksId}}-{{ybChsManageLook.readyDksName}}
+                  {{ fy.getDksFyName(ybChsManageLook.readyDksName, ybChsManageLook.readyFyid) }}
                 </a-form-item>
               </a-col>
               <a-col :span=14>
@@ -91,7 +91,7 @@
                 v-bind="formItemLayout"
                 label="申请科室"
               >
-                {{ ybChsManageLook.readyDksId }}-{{ybChsManageLook.readyDksName}}
+                {{ fy.getDksFyName(ybChsManageLook.readyDksName, ybChsManageLook.readyFyid) }}
               </a-form-item>
             </a-col>
             <a-col :span=6>
@@ -157,6 +157,7 @@
 import moment from 'moment'
 import YbChsDataModule from '../YbChsFunModule/YbChsDataModule'
 import YbChsJkModule from '../YbChsFunModule/YbChsJkModule'
+import { fy } from '../../js/custom'
 const formItemLayout = {
   labelCol: { span: 10 },
   wrapperCol: { span: 13, offset: 1 }
@@ -176,6 +177,7 @@ export default {
       formItemLayout,
       fileList: [],
       ybChsManageLook: {},
+      fy,
       user: this.$store.state.account.user,
       ybChsManage: {}
     }

@@ -177,7 +177,6 @@ export default {
       this.$get('ybDrgResultView/fileDownLoadList', {
         ...this.queryParams
       }).then((r) => {
-        debugger
         this.loading = false
         if (r.data.data.success === 1) {
           this.dataSource = r.data.data.data

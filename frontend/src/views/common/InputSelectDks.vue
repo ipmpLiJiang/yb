@@ -59,7 +59,9 @@ export default {
         r.data.data.forEach((item, i) => {
           body.push({
             value: item.dksId,
-            text: item.dksId + '-' + item.dksName + '(' + item.areaName + ')'
+            text: item.dksId + '-' + item.dksName + '(' + item.areaName + ')',
+            dksName: item.dksName,
+            fyid: item.fyid
           })
         })
       })

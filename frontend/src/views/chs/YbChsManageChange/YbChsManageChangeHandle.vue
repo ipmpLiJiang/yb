@@ -33,7 +33,7 @@
                         v-bind="formItemLayout0"
                         label="申请科室"
                       >
-                        {{ybChsManageChangeHandle.readyDksId}}-{{ybChsManageChangeHandle.readyDksName}}
+                        {{ fy.getDksFyName(ybChsManageChangeHandle.readyDksName, ybChsManageChangeHandle.readyFyid) }}
                       </a-form-item>
                     </a-col>
                     <a-col :span=14>
@@ -154,6 +154,7 @@ import InputSelect from '../../common/InputSelect'
 import InputSelectChsDks from '../../common/InputSelectChsDks'
 import YbChsDataModule from '../YbChsFunModule/YbChsDataModule'
 import YbChsJkModule from '../YbChsFunModule/YbChsJkModule'
+import { fy } from '../../js/custom'
 const formItemLayout0 = {
   labelCol: { span: 8 },
   wrapperCol: { span: 15 }
@@ -190,6 +191,7 @@ export default {
       spinning: false,
       delayTime: 500,
       user: this.$store.state.account.user,
+      fy,
       ybChsManageChangeHandle: {}
     }
   },
@@ -216,16 +218,17 @@ export default {
       }, 200)
     },
     setForms (amch) {
-      let deptId = amch.changeDksId !== '' && amch.changeDksId !== undefined ? amch.changeDksId : amch.readyDksId
-      let deptName = amch.changeDksName !== '' && amch.changeDksName !== undefined ? amch.changeDksName : amch.readyDksName
+      let dksId = amch.changeDksId !== '' && amch.changeDksId !== undefined ? amch.changeDksId : amch.readyDksId
+      let dksName = amch.changeDksName !== '' && amch.changeDksName !== undefined ? amch.changeDksName : amch.readyDksName
+      let fyid = amch.changeFyid !== '' && amch.changeFyid !== undefined ? amch.changeFyid : amch.readyFyid
       let doctorName = amch.changeDoctorCode !== '' && amch.changeDoctorCode !== undefined ? amch.changeDoctorName : amch.readyDoctorName
       let doctorCode = amch.changeDoctorCode !== '' && amch.changeDoctorCode !== undefined ? amch.changeDoctorCode : amch.readyDoctorCode
 
       this.$refs.inputSelectChangeDks.dataSource = [{
-        text: deptId + '-' + deptName,
-        value: deptId
+        text: fy.getDksFyName(dksName, fyid),
+        value: dksId
       }]
-      this.$refs.inputSelectChangeDks.value = deptId
+      this.$refs.inputSelectChangeDks.value = dksId
 
       this.$refs.inputSelectChangeDoctor.dataSource = [{
         text: doctorCode + '-' + doctorName,
@@ -235,8 +238,9 @@ export default {
 
       this.ybChsManageChangeHandle.changeDoctorCode = doctorCode
       this.ybChsManageChangeHandle.changeDoctorName = doctorName
-      this.ybChsManageChangeHandle.changeDksName = deptName
-      this.ybChsManageChangeHandle.changeDksId = deptId
+      this.ybChsManageChangeHandle.changeDksName = dksName
+      this.ybChsManageChangeHandle.changeDksId = dksId
+      this.ybChsManageChangeHandle.changeFyid = fyid
 
       setTimeout(() => {
         this.$refs.ybChsJkModule.search()
@@ -244,11 +248,12 @@ export default {
     },
     selectDoctorChang (item) {
       this.ybChsManageChangeHandle.changeDoctorCode = item.value
-      this.ybChsManageChangeHandle.changeDoctorName = item.text
+      this.ybChsManageChangeHandle.changeDoctorName = item.personName
     },
     selectDksChange (item) {
       this.ybChsManageChangeHandle.changeDksId = item.value
-      this.ybChsManageChangeHandle.changeDksName = item.text
+      this.ybChsManageChangeHandle.changeDksName = item.dksName
+      this.ybChsManageChangeHandle.changeFyid = item.fyid
     },
     handleRejectSubmit () {
       this.form.validateFields(['refuseReason'], (err, values) => {
@@ -264,6 +269,7 @@ export default {
           ybChsManage.verifyId = this.ybChsManageChangeHandle.verifyId
           ybChsManage.readyDksId = this.ybChsManageChangeHandle.readyDksId
           ybChsManage.readyDksName = this.ybChsManageChangeHandle.readyDksName
+          ybChsManage.readyFyid = this.ybChsManageChangeHandle.readyFyid
           ybChsManage.readyDoctorCode = this.ybChsManageChangeHandle.readyDoctorCode
           ybChsManage.readyDoctorName = this.ybChsManageChangeHandle.readyDoctorName
           ybChsManage.areaType = this.user.areaType.value
@@ -293,8 +299,10 @@ export default {
           ybChsManage.changeDksName = this.ybChsManageChangeHandle.changeDksName
           ybChsManage.changeDoctorCode = this.ybChsManageChangeHandle.changeDoctorCode
           ybChsManage.changeDoctorName = this.ybChsManageChangeHandle.changeDoctorName
+          ybChsManage.changeFyid = this.ybChsManageChangeHandle.changeFyid
           ybChsManage.readyDksId = this.ybChsManageChangeHandle.readyDksId
           ybChsManage.readyDksName = this.ybChsManageChangeHandle.readyDksName
+          ybChsManage.readyFyid = this.ybChsManageChangeHandle.readyFyid
           ybChsManage.readyDoctorCode = this.ybChsManageChangeHandle.readyDoctorCode
           ybChsManage.readyDoctorName = this.ybChsManageChangeHandle.readyDoctorName
           ybChsManage.areaType = this.user.areaType.value

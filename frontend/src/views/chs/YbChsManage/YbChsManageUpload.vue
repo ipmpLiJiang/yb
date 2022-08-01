@@ -25,11 +25,11 @@
           <a-form :form="form">
             <a-row type="flex" justify="start">
               <a-col :span="23">
-                <!--复议科室、医生-->
+                <!--汇总科室、医生-->
                 <a-row type="flex" justify="center">
                   <a-col :span="8">
-                    <a-form-item v-bind="formItemLayout" label="复议科室">
-                      {{ ybChsManageUpload.readyDksId }}-{{ ybChsManageUpload.readyDksName }}
+                    <a-form-item v-bind="formItemLayout" label="汇总科室">
+                      {{ fy.getDksFyName(ybChsManageUpload.readyDksName, ybChsManageUpload.readyFyid) }}
                     </a-form-item>
                   </a-col>
                   <a-col :span="8">
@@ -128,6 +128,7 @@
 import moment from 'moment'
 import YbChsDataModule from '../YbChsFunModule/YbChsDataModule'
 import YbChsJkModule from '../YbChsFunModule/YbChsJkModule'
+import { fy } from '../../js/custom'
 const formItemLayout = {
   labelCol: {
     span: 8
@@ -158,6 +159,7 @@ export default {
       fileList: [],
       lableErr: '',
       fileBtnVisiable: true,
+      fy,
       user: this.$store.state.account.user,
       form: this.$form.createForm(this)
     }
@@ -283,6 +285,7 @@ export default {
             verifyId: this.ybChsManageUpload.verifyId,
             readyDksId: this.ybChsManageUpload.readyDksId,
             readyDksName: this.ybChsManageUpload.readyDksName,
+            readyFyid: this.ybChsManageUpload.readyFyid,
             readyDoctorCode: this.ybChsManageUpload.readyDoctorCode,
             readyDoctorName: this.ybChsManageUpload.readyDoctorName,
             operateReason: fromData.operateReason
@@ -341,6 +344,7 @@ export default {
           this.ybChsManageUpload.operateReason = ybChsResult.operateReason
           this.ybChsManageUpload.readyDksId = ybChsResult.dksId
           this.ybChsManageUpload.readyDksName = ybChsResult.dksName
+          this.ybChsManageUpload.readyFyid = ybChsResult.readyFyid
           this.ybChsManageUpload.readyDoctorCode = ybChsResult.doctorCode
           this.ybChsManageUpload.readyDoctorName = ybChsResult.doctorName
 

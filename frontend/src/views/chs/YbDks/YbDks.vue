@@ -3,7 +3,19 @@
     <div :class="advanced ? 'search' : null">
       <a-form layout="horizontal">
         <a-row>
-          <div :class="advanced ? null : 'fold'"></div>
+          <div :class="advanced ? null : 'fold'">
+            <a-col
+              :md="8"
+              :sm="24"
+            >
+              <a-form-item
+                label="关键字"
+                v-bind="formItemLayout"
+              >
+                <a-input v-model="queryParams.dksName" />
+              </a-form-item>
+            </a-col>
+          </div>
           <span style="float: right; margin-top: 3px">
             <a-button type="primary" @click="search">查询</a-button>
             <a-button style="margin-left: 8px" @click="reset">重置</a-button>
@@ -83,6 +95,7 @@
     </div>
     <!-- 新增字典 -->
     <ybDks-add
+      ref="ybDksAdd"
       @close="handleAddClose"
       @success="handleAddSuccess"
       :addVisiable="addVisiable"
@@ -144,13 +157,45 @@ export default {
   computed: {
     columns () {
       return [{
+        title: '大科室分院编码',
+        dataIndex: 'dksFyid',
+        width: 130
+      },
+      {
         title: '大科室编码',
         dataIndex: 'dksId',
-        width: 200
+        width: 100
       },
       {
         title: '大科室名称',
-        dataIndex: 'dksName'
+        dataIndex: 'dksName',
+        width: 150
+      },
+      {
+        title: '院区编码',
+        dataIndex: 'fyid',
+        width: 100
+      },
+      {
+        title: '院区',
+        customRender: (text, row, index) => {
+          switch (row.fyid) {
+            case '1001':
+              return '本院'
+            case '1002':
+              return '西院'
+            case '1003':
+              return '金银湖'
+            default:
+              return row.fyid
+          }
+        },
+        width: 100
+      },
+      {
+        title: '拼音编码',
+        dataIndex: 'spellCode',
+        width: 100
       },
       {
         title: '操作',
@@ -187,6 +232,7 @@ export default {
     },
     add () {
       this.addVisiable = true
+      this.$refs.ybDksAdd.setFormValues()
     },
     handleEditSuccess () {
       this.editVisiable = false

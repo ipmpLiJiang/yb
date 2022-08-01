@@ -474,24 +474,28 @@ export default {
       const newData = [...this.dataSource]
       const target = newData.filter(item => key === item.id)[0]
       if (target !== undefined) {
-        this.selectDksDataSource = [{
-          text: target.verifyDksName,
-          value: target.verifyDksId
-        }]
-        this.selectDoctorDataSource = [{
-          text: target.verifyDoctorName,
-          value: target.verifyDoctorCode
-        }]
+        if (target.verifyDksId) {
+          this.selectDksDataSource = [{
+            text: target.verifyDksName,
+            value: target.verifyDksId
+          }]
+          this.selectDksValue = target.verifyDksId
+          this.ybDrgVerify.verifyDksId = target.verifyDksId
+          this.ybDrgVerify.verifyDksName = target.verifyDksName
+        }
+        if (target.verifyDoctorCode) {
+          this.selectDoctorDataSource = [{
+            text: target.verifyDoctorName,
+            value: target.verifyDoctorCode
+          }]
 
-        this.selectDoctorValue = target.verifyDoctorCode
-        this.selectDksValue = target.verifyDksId
+          this.selectDoctorValue = target.verifyDoctorCode
+          this.ybDrgVerify.verifyDoctorCode = target.verifyDoctorCode
+          this.ybDrgVerify.verifyDoctorName = target.verifyDoctorName
+        }
 
         this.ybDrgVerify.id = key
         this.ybDrgVerify.applyDataId = target.applyDataId
-        this.ybDrgVerify.verifyDoctorCode = target.verifyDoctorCode
-        this.ybDrgVerify.verifyDoctorName = target.verifyDoctorName
-        this.ybDrgVerify.verifyDksId = target.verifyDksId
-        this.ybDrgVerify.verifyDksName = target.verifyDksName
 
         this.editingKey = key
         if (target) {
@@ -536,7 +540,7 @@ export default {
           }]
           this.verifyService(arrData)
         } else {
-          this.$message.warning('未选择，复议科室 或 复议医生.')
+          this.$message.warning('未选择，汇总科室 或 复议医生.')
         }
       } else {
         this.$message.warning('未找到对象.')

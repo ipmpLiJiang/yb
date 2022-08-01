@@ -31,7 +31,7 @@
               <a-col :span=10>
                 <a-form-item
                   v-bind="formItemLayout"
-                  label="科室名称"
+                  label="汇总科室"
                 >
                   {{ybChsManageLook.readyDksId}}-{{ybChsManageLook.readyDksName}}
                 </a-form-item>

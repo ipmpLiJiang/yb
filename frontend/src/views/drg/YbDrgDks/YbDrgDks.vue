@@ -153,6 +153,11 @@ export default {
         width: 350
       },
       {
+        title: '拼音编码',
+        dataIndex: 'spellCode',
+        width: 100
+      },
+      {
         title: '院区',
         dataIndex: 'areaName',
         width: 100

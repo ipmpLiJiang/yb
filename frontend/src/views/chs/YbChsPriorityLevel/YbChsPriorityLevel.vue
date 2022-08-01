@@ -176,6 +176,7 @@
 <script>
 import YbChsPriorityLevelAdd from './YbChsPriorityLevelAdd'
 import YbChsPriorityLevelEdit from './YbChsPriorityLevelEdit'
+import { fy } from '../../js/custom'
 
 const formItemLayout = {
   labelCol: {
@@ -213,6 +214,7 @@ export default {
         showTotal: (total, range) => `显示 ${range[0]} ~ ${range[1]} 条记录，共 ${total} 条记录`
       },
       queryParams: {zymzType: '2', plType: ''},
+      fy,
       addVisiable: false,
       editVisiable: false,
       user: this.$store.state.account.user,
@@ -311,7 +313,7 @@ export default {
         width: 200
       },
       {
-        title: '复议科室类型',
+        title: '汇总科室类型',
         dataIndex: 'deptType',
         customRender: (text, row, index) => {
           switch (text) {
@@ -332,11 +334,11 @@ export default {
         width: 110
       },
       {
-        title: '科室名称',
+        title: '汇总科室',
         dataIndex: 'dksNameTo',
         customRender: (text, row, index) => {
           if (text !== '' && text !== null) {
-            return row.dksIdTo + '-' + row.dksNameTo
+            return fy.getDksFyName(text, row.fyidTo)
           }
         },
         width: 160

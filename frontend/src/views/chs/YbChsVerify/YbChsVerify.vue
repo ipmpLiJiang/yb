@@ -352,7 +352,7 @@
             </a-form-item>
             <a-form-item
               v-bind="formItemLayout"
-              label="复议科室："
+              label="汇总科室："
             >
               <a-input style="width: 255px" v-model="searchItem.dept.dksName" />
             </a-form-item>
@@ -404,7 +404,7 @@
           </template>
           <a-form-item
             v-bind="formItemLayout"
-            label="复议科室"
+            label="汇总科室"
           >
             <inputSelectChs-dks
               ref="inputSelectVerifyChsDks"
@@ -513,6 +513,7 @@ import YbChsVerifyDetail from './YbChsVerifyDetail'
 import YbChsVerifySms from './YbChsVerifySms'
 import InputSelect from '../../common/InputSelect'
 import InputSelectChsDks from '../../common/InputSelectChsDks'
+import { fy } from '../../js/custom'
 const formItemLayout = {
   labelCol: { span: 7 },
   wrapperCol: { span: 14, offset: 1 }
@@ -620,13 +621,13 @@ export default {
     },
     setSelect (item) {
       this.$refs.inputSelectVerifyChsDks.dataSource = [{
-        text: item.verifyDksName,
+        text: fy.getDksFyName(item.verifyDksName, item.verifyFyid),
         value: item.verifyDksId
       }]
       this.$refs.inputSelectVerifyChsDks.value = item.verifyDksId
 
       this.$refs.inputSelectVerifyDoctor.dataSource = [{
-        text: item.verifyDoctorName,
+        text: item.verifyDoctorCode + '-' + item.verifyDoctorName,
         value: item.verifyDoctorCode
       }]
       this.$refs.inputSelectVerifyDoctor.value = item.verifyDoctorCode
@@ -635,14 +636,16 @@ export default {
       this.selectDate.doctorName = item.verifyDoctorName
       this.selectDate.dksId = item.verifyDksId
       this.selectDate.dksName = item.verifyDksName
+      this.selectDate.fyid = item.verifyFyid
     },
     selectDoctorChange (item) {
       this.selectDate.doctorCode = item.value
-      this.selectDate.doctorName = item.text
+      this.selectDate.doctorName = item.personName
     },
     selectDksChange (item) {
       this.selectDate.dksId = item.value
-      this.selectDate.dksName = item.text
+      this.selectDate.dksName = item.dksName
+      this.selectDate.fyid = item.fyid
     },
     onIsDateChange () {
       this.dateChecked = !this.dateChecked

@@ -101,7 +101,7 @@
       </a-form-item>
       <a-divider orientation="left">更改信息</a-divider>
       <a-form-item
-          label="复议科室类型"
+          label="汇总科室类型"
           v-bind="formItemLayout"
         >
         <a-radio-group  v-decorator="['deptType']" @change="handleDeptChange">
@@ -124,11 +124,11 @@
       </a-form-item>
       <a-form-item
         v-bind="formItemLayout"
-        label="科室名称"
+        label="汇总科室"
       >
         <inputSelectChs-dks
           ref="inputSelectDks"
-          v-decorator="['dksIdTo', {rules: [{ required: checkDeptType, message: '科室名称不能为空' }] }]"
+          v-decorator="['dksIdTo', {rules: [{ required: checkDeptType, message: '汇总科室不能为空' }] }]"
           @selectChange=selectDksChange
         >
         </inputSelectChs-dks>
@@ -190,6 +190,7 @@
 <script>
 import InputSelect from '../../common/InputSelect'
 import InputSelectChsDks from '../../common/InputSelectChsDks'
+import { fy } from '../../js/custom'
 import moment from 'moment'
 
 const formItemLayout = {
@@ -240,15 +241,17 @@ export default {
     },
     selectDoctorChange (item) {
       this.ybPriorityLevel.doctorCodeTo = item.value
-      this.ybPriorityLevel.doctorNameTo = item.text
+      this.ybPriorityLevel.doctorNameTo = item.personName
     },
     selectDksChange (item) {
       this.ybPriorityLevel.dksIdTo = item.value
-      this.ybPriorityLevel.dksNameTo = item.text
+      this.ybPriorityLevel.dksNameTo = item.dksName
+      this.ybPriorityLevel.fyidTo = item.fyid
     },
     selectThDksChange (item) {
       this.ybPriorityLevel.dksId = item.value
-      this.ybPriorityLevel.dksName = item.text
+      this.ybPriorityLevel.dksName = item.dksName
+      this.ybPriorityLevel.fyid = item.fyid
       this.checkThDeptType = false
     },
     handleRuleChange (e) {
@@ -304,6 +307,7 @@ export default {
         this.$refs.inputSelectDks.value = ''
         this.ybPriorityLevel.dksIdTo = ''
         this.ybPriorityLevel.dksNameTo = ''
+        this.ybPriorityLevel.fyidTo = ''
         this.form.getFieldDecorator('dksIdTo')
         this.form.getFieldDecorator('dksNameTo')
 
@@ -396,7 +400,7 @@ export default {
       setTimeout(() => {
         if (ybChsPriorityLevel.dksIdTo !== '' && ybChsPriorityLevel.dksIdTo !== null) {
           this.$refs.inputSelectDks.dataSource = [{
-            text: ybChsPriorityLevel.dksIdTo + '-' + ybChsPriorityLevel.dksNameTo,
+            text: fy.getDksFyName(ybChsPriorityLevel.dksNameTo, ybChsPriorityLevel.fyidTo),
             value: ybChsPriorityLevel.dksIdTo
           }]
         }
@@ -404,7 +408,7 @@ export default {
 
         if (ybChsPriorityLevel.dksId !== '' && ybChsPriorityLevel.dksId !== null) {
           this.$refs.inputSelectThDks.dataSource = [{
-            text: ybChsPriorityLevel.dksId + '-' + ybChsPriorityLevel.dksName,
+            text: fy.getDksFyName(ybChsPriorityLevel.dksName, ybChsPriorityLevel.fyid),
             value: ybChsPriorityLevel.dksId
           }]
           this.checkThDeptType = false
@@ -425,6 +429,7 @@ export default {
         this.ybPriorityLevel.doctorNameTo = ybChsPriorityLevel.doctorNameTo
         this.ybPriorityLevel.dksIdTo = ybChsPriorityLevel.dksIdTo
         this.ybPriorityLevel.dksNameTo = ybChsPriorityLevel.dksNameTo
+        this.ybPriorityLevel.fyidTo = ybChsPriorityLevel.fyidTo
       }, 200)
     },
     handleSubmit () {
@@ -462,14 +467,18 @@ export default {
         if (!err) {
           let ybChsPriorityLevel = this.form.getFieldsValue()
           ybChsPriorityLevel.id = this.ybChsPriorityLevel.id
+          ybChsPriorityLevel.fyidTo = this.ybPriorityLevel.fyidTo
+          ybChsPriorityLevel.fyid = this.ybPriorityLevel.fyid
           if (ybChsPriorityLevel.doctorCodeTo === '') {
             ybChsPriorityLevel.doctorNameTo = ''
           }
           if (ybChsPriorityLevel.dksIdTo === '') {
             ybChsPriorityLevel.dksNameTo = ''
+            ybChsPriorityLevel.fyidTo = ''
           }
           if (this.ybChsPriorityLevel.dksId === '') {
             this.ybChsPriorityLevel.dksName = ''
+            ybChsPriorityLevel.fyid = ''
           }
           this.$put('ybChsPriorityLevel', {
             ...ybChsPriorityLevel

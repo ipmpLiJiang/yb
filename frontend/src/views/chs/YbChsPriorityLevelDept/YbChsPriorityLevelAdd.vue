@@ -101,7 +101,7 @@
       </a-form-item>
       <a-divider orientation="left">更改信息</a-divider>
       <a-form-item
-          label="复议科室类型"
+          label="汇总科室类型"
           v-bind="formItemLayout"
         >
         <a-radio-group  v-decorator="['deptType']" @change="handleDeptChange">
@@ -124,11 +124,11 @@
       </a-form-item>
       <a-form-item
         v-bind="formItemLayout"
-        label="科室名称"
+        label="汇总科室"
       >
         <inputSelectChs-dks
           ref="inputSelectDks"
-          v-decorator="['dksIdTo', {rules: [{ required: checkDeptType, message: '科室名称不能为空' }] }]"
+          v-decorator="['dksIdTo', {rules: [{ required: checkDeptType, message: '汇总科室不能为空' }] }]"
           @selectChange=selectDksChange
         >
         </inputSelectChs-dks>
@@ -240,16 +240,20 @@ export default {
     },
     selectDoctorChange (item) {
       this.ybPriorityLevel.doctorCodeTo = item.value
-      this.ybPriorityLevel.doctorNameTo = item.text
+      this.ybPriorityLevel.doctorNameTo = item.personName
     },
     selectThDksChange (item) {
+      console.log(item)
       this.ybPriorityLevel.dksId = item.value
-      this.ybPriorityLevel.dksName = item.text
+      this.ybPriorityLevel.dksName = item.dksName
+      this.ybPriorityLevel.fyid = item.fyid
       this.checkThDeptType = false
     },
     selectDksChange (item) {
+      console.log(item)
       this.ybPriorityLevel.dksIdTo = item.value
-      this.ybPriorityLevel.dksNameTo = item.text
+      this.ybPriorityLevel.dksNameTo = item.dksName
+      this.ybPriorityLevel.fyidTo = item.fyid
     },
     handleRuleChange (e) {
       if (e.target.value === '1') {
@@ -304,6 +308,7 @@ export default {
         this.$refs.inputSelectDks.value = ''
         this.ybPriorityLevel.dksIdTo = ''
         this.ybPriorityLevel.dksNameTo = ''
+        this.ybPriorityLevel.fyidTo = ''
         this.form.getFieldDecorator('dksIdTo')
         this.form.getFieldDecorator('dksNameTo')
 
@@ -394,14 +399,18 @@ export default {
         if (!err) {
           this.setFields()
           this.ybChsPriorityLevel.state = 2
+          this.ybChsPriorityLevel.fyidTo = this.ybPriorityLevel.fyidTo
+          this.ybChsPriorityLevel.fyid = this.ybPriorityLevel.fyid
           if (this.ybChsPriorityLevel.doctorCodeTo === '') {
             this.ybChsPriorityLevel.doctorNameTo = ''
           }
           if (this.ybChsPriorityLevel.dksIdTo === '') {
             this.ybChsPriorityLevel.dksNameTo = ''
+            this.ybChsPriorityLevel.fyidTo = ''
           }
           if (this.ybChsPriorityLevel.dksId === '') {
             this.ybChsPriorityLevel.dksName = ''
+            this.ybChsPriorityLevel.fyid = ''
           }
           this.ybChsPriorityLevel.areaType = this.areaType
           this.$post('ybChsPriorityLevel', {

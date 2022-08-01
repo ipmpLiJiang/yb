@@ -2,7 +2,7 @@
   <a-drawer
     title="新增"
     :maskClosable="false"
-    width="650"
+    width="750"
     placement="right"
     :closable="false"
     @close="onClose"
@@ -10,6 +10,35 @@
     style="height: calc(100% - 55px); overflow: auto; padding-bottom: 53px"
   >
     <a-form :form="form">
+      <a-form-item v-bind="formItemLayout" label="大科室分院编码">
+        <a-input
+          placeholder="请输入大科室分院编码"
+          v-decorator="[
+            'dksFyid',
+            { rules: [{ required: true, message: '大科室分院编码不能为空' }] },
+          ]"
+        />
+      </a-form-item>
+      <a-form-item
+        v-bind="formItemLayout"
+        label="院区"
+      >
+        <a-select
+          style="width: 120px"
+          placeholder="请选择院区"
+          v-decorator="['fyid', {rules: [{ required: true, message: '院区不能为空' }], initialValue: '1001' }]"
+        >
+          <a-select-option value="1001">
+            本院
+          </a-select-option>
+          <a-select-option value="1002">
+            西院
+          </a-select-option>
+          <a-select-option value="1003">
+            金银湖
+          </a-select-option>
+        </a-select>
+      </a-form-item>
       <a-form-item v-bind="formItemLayout" label="大科室编码">
         <a-input
           placeholder="请输入大科室编码"
@@ -57,10 +86,10 @@
 <script>
 const formItemLayout = {
   labelCol: {
-    span: 3
+    span: 4
   },
   wrapperCol: {
-    span: 18
+    span: 17
   }
 }
 export default {
@@ -88,6 +117,12 @@ export default {
       this.reset()
       this.$emit('close')
     },
+    setFormValues () {
+      this.form.getFieldDecorator('fyid')
+      this.form.setFieldsValue({
+        fyid: '1001'
+      })
+    },
     handleSubmit () {
       this.form.validateFields((err, values) => {
         if (!err) {
@@ -104,7 +139,7 @@ export default {
       })
     },
     setFields () {
-      let values = this.form.getFieldsValue(['dksId', 'dksName', 'spellCode'])
+      let values = this.form.getFieldsValue(['dksId', 'dksName', 'spellCode', 'fyid', 'dksFyid'])
       if (typeof values !== 'undefined') {
         Object.keys(values).forEach(_key => {
           this.ybDks[_key] = values[_key]

@@ -96,7 +96,7 @@ export default {
         width: 120
       },
       {
-        title: '复议科室',
+        title: '汇总科室',
         dataIndex: 'resultDksName',
         customRender: (text, row, index) => {
           if (text !== '' && text !== null) {
@@ -177,7 +177,6 @@ export default {
       this.$get('ybChsResultView/fileDownLoadList', {
         ...this.queryParams
       }).then((r) => {
-        debugger
         this.loading = false
         if (r.data.data.success === 1) {
           this.dataSource = r.data.data.data

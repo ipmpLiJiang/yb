@@ -35,7 +35,7 @@
                     labelCol: { span: 7 },
                     wrapperCol: { span: 16 }
                   }"
-                  label="复议科室">
+                  label="汇总科室">
                     <inputSelectChs-dks
                       ref="inputSelectVerifyChsDks"
                       @selectChange=selectDksChang
@@ -94,6 +94,7 @@ import InputSelect from '../../common/InputSelect'
 import InputSelectChsDks from '../../common/InputSelectChsDks'
 import YbChsDataModule from '../YbChsFunModule/YbChsDataModule'
 import YbChsJkModule from '../YbChsFunModule/YbChsJkModule'
+import { fy } from '../../js/custom'
 
 export default {
   name: 'YbChsVerifyDetail',
@@ -145,6 +146,7 @@ export default {
           verifyDoctorName: this.ybChsVerify.verifyDoctorName,
           verifyDksId: this.ybChsVerify.verifyDksId,
           verifyDksName: this.ybChsVerify.verifyDksName,
+          verifyFyid: this.ybChsVerify.verifyFyid,
           applyDateStr: this.ybChsVerifyView.applyDateStr,
           orderNum: this.ybChsVerifyView.orderNum,
           dataType: this.ybChsVerifyView.dataType,
@@ -163,16 +165,17 @@ export default {
           this.spinning = false
         })
       } else {
-        this.$message.warning('未选择，复议科室 或 复议医生.')
+        this.$message.warning('未选择，汇总科室 或 复议医生.')
       }
     },
     selectDoctorChang (item) {
       this.ybChsVerify.verifyDoctorCode = item.value
-      this.ybChsVerify.verifyDoctorName = item.text
+      this.ybChsVerify.verifyDoctorName = item.personName
     },
     selectDksChang (item) {
       this.ybChsVerify.verifyDksId = item.value
-      this.ybChsVerify.verifyDksName = item.text
+      this.ybChsVerify.verifyDksName = item.dksName
+      this.ybChsVerify.verifyFyid = item.fyid
     },
     setFormValues ({ ...ybChsVerifyView }) {
       this.ybChsVerifyView = ybChsVerifyView
@@ -182,23 +185,26 @@ export default {
       }, 200)
     },
     setForms (target) {
-      this.$refs.inputSelectVerifyChsDks.dataSource = [{
-        text: target.verifyDksName,
-        value: target.verifyDksId
-      }]
-      this.$refs.inputSelectVerifyChsDks.value = target.verifyDksId
-
-      this.$refs.inputSelectVerifyDoctor.dataSource = [{
-        text: target.verifyDoctorName,
-        value: target.verifyDoctorCode
-      }]
-      this.$refs.inputSelectVerifyDoctor.value = target.verifyDoctorCode
-
+      if (target.verifyDksId) {
+        this.$refs.inputSelectVerifyChsDks.dataSource = [{
+          text: fy.getDksFyName(target.verifyDksName, target.verifyFyid),
+          value: target.verifyDksId
+        }]
+        this.$refs.inputSelectVerifyChsDks.value = target.verifyDksId
+      }
+      if (target.verifyDoctorCode) {
+        this.$refs.inputSelectVerifyDoctor.dataSource = [{
+          text: target.verifyDoctorCode + '-' + target.verifyDoctorName,
+          value: target.verifyDoctorCode
+        }]
+        this.$refs.inputSelectVerifyDoctor.value = target.verifyDoctorCode
+      }
       this.ybChsVerify = {
         id: target.id,
         verifyDoctorCode: target.verifyDoctorCode,
         verifyDoctorName: target.verifyDoctorName,
         verifyDksId: target.verifyDksId,
+        verifyFyid: target.verifyFyid,
         dataType: target.dataType,
         verifyDksName: target.verifyDksName,
         state: 2

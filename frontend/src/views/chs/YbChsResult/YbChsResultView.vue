@@ -81,7 +81,7 @@
           slot-scope="text, record, index"
         >
           <div :style="{color:record.state === 1 ? '':'red'}">
-            {{record.resultDksId + '-' + record.resultDksName}}
+            {{ fy.getDksFyName(record.resultDksName, record.fyid) }}
           </div>
         </template>
         <template
@@ -129,7 +129,8 @@
 import moment from 'moment'
 import YbChsManageHistory from '../YbChsFunModule/YbChsManageHistoryModule'
 import YbChsResultLook from './YbChsResultLook'
-import YbChsResultDownLoad from './YbChsResultDownLoad.vue'
+import YbChsResultDownLoad from './YbChsResultDownLoad'
+import { fy } from '../../js/custom'
 const formItemLayout = {
   labelCol: {
     span: 8
@@ -160,6 +161,7 @@ export default {
         showTotal: (total, range) => `显示 ${range[0]} ~ ${range[1]} 条记录，共 ${total} 条记录`
       },
       queryParams: {},
+      fy,
       loading: false,
       bordered: true,
       historyVisiable: false,
@@ -280,7 +282,7 @@ export default {
         width: 90
       },
       {
-        title: '复议科室',
+        title: '汇总科室',
         dataIndex: 'resultDksName',
         scopedSlots: {
           customRender: 'resultDksName'

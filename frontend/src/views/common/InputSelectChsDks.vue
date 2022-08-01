@@ -22,7 +22,9 @@
     </a-select-option>
   </a-select>
 </template>
+
 <script>
+import { fy } from '../js/custom'
 export default {
   props: {
     type: {
@@ -55,15 +57,19 @@ export default {
     // 模拟往服务器发送请求
     ajax (keyword) {
       let body = []
+      let fyname = ''
       let params = {comments: keyword}
       if (this.type === 1) {
         this.$get('ybDks/findChsDksList', {
           ...params
         }).then((r) => {
           r.data.data.forEach((item, i) => {
+            fyname = fy.getFyName(item.fyid)
             body.push({
-              value: item.dksId,
-              text: item.dksId + '-' + item.dksName
+              value: item.dksFyid,
+              fyid: item.fyid,
+              text: item.dksName + '(' + fyname + ')',
+              dksName: item.dksName
             })
           })
         })
@@ -75,8 +81,10 @@ export default {
         }).then((r) => {
           r.data.data.forEach((item, i) => {
             body.push({
-              value: item.dksId,
-              text: item.dksId + '-' + item.dksName
+              value: item.dksFyid,
+              fyid: item.fyid,
+              text: item.dksName + '(' + fyname + ')',
+              dksName: item.dksName
             })
           })
         })

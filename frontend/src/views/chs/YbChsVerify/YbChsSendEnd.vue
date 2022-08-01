@@ -32,6 +32,7 @@
 
 <script>
 import moment from 'moment'
+import { fy } from '../../js/custom'
 export default {
   name: 'YbChsSendEnd',
   props: {
@@ -64,6 +65,7 @@ export default {
       },
       queryParams: {
       },
+      fy,
       loading: false,
       bordered: true,
       ybChsVerify: {},
@@ -170,14 +172,28 @@ export default {
         width: 90
       },
       {
-        title: '复议科室',
+        title: '汇总科室',
         dataIndex: 'verifyDksName',
+        customRender: (text, row, index) => {
+          if (text !== '' && text !== null) {
+            return fy.getDksFyName(text, row.verifyFyid)
+          } else {
+            return text
+          }
+        },
         fixed: 'right',
         width: 180
       },
       {
         title: '复议医生',
         dataIndex: 'verifyDoctorName',
+        customRender: (text, row, index) => {
+          if (text !== '' && text !== null) {
+            return row.verifyDoctorCode + '-' + text
+          } else {
+            return text
+          }
+        },
         fixed: 'right',
         width: 120
       },

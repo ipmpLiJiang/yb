@@ -128,6 +128,7 @@ export default {
     reset () {
       this.loading = false
       this.ybDrgConfire = {}
+      this.ybAcData = {}
       this.$refs.inputSelectDoctor.dataSource = []
       this.$refs.inputSelectDoctor.value = ''
       this.$refs.inputSelectDks.dataSource = []

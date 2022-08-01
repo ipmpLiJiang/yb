@@ -505,24 +505,26 @@ export default {
       const newData = [...this.dataSource]
       const target = newData.filter(item => key === item.id)[0]
       if (target !== undefined) {
-        this.selectDeptDataSource = [{
-          text: target.verifyDeptName,
-          value: target.verifyDeptCode
-        }]
-        this.selectDoctorDataSource = [{
-          text: target.verifyDoctorName,
-          value: target.verifyDoctorCode
-        }]
-
-        this.selectDoctorValue = target.verifyDoctorCode
-        this.selectDeptValue = target.verifyDeptCode
-
+        if (target.verifyDeptCode) {
+          this.selectDeptDataSource = [{
+            text: target.verifyDeptName,
+            value: target.verifyDeptCode
+          }]
+          this.selectDeptValue = target.verifyDeptCode
+          this.ybReconsiderVerify.verifyDeptCode = target.verifyDeptCode
+          this.ybReconsiderVerify.verifyDeptName = target.verifyDeptName
+        }
+        if (target.verifyDoctorCode) {
+          this.selectDoctorDataSource = [{
+            text: target.verifyDoctorName,
+            value: target.verifyDoctorCode
+          }]
+          this.selectDoctorValue = target.verifyDoctorCode
+          this.ybReconsiderVerify.verifyDoctorCode = target.verifyDoctorCode
+          this.ybReconsiderVerify.verifyDoctorName = target.verifyDoctorName
+        }
         this.ybReconsiderVerify.id = key
         this.ybReconsiderVerify.applyDataId = target.applyDataId
-        this.ybReconsiderVerify.verifyDoctorCode = target.verifyDoctorCode
-        this.ybReconsiderVerify.verifyDoctorName = target.verifyDoctorName
-        this.ybReconsiderVerify.verifyDeptCode = target.verifyDeptCode
-        this.ybReconsiderVerify.verifyDeptName = target.verifyDeptName
         this.ybReconsiderVerify.dataType = target.dataType
 
         this.editingKey = key

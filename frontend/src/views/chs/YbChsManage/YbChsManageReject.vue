@@ -37,7 +37,7 @@
               labelCol: { span: 7 },
               wrapperCol: { span: 15, offset: 2 }
             }"
-            label="复议科室"
+            label="汇总科室"
           >
             <inputSelectChs-dks
             ref="inputSelectChangeDks"
@@ -130,6 +130,7 @@ import InputSelect from '../../common/InputSelect'
 import InputSelectChsDks from '../../common/InputSelectChsDks'
 import YbChsDataModule from '../YbChsFunModule/YbChsDataModule'
 import YbChsJkModule from '../YbChsFunModule/YbChsJkModule'
+import { fy } from '../../js/custom'
 const formItemLayout = {
   labelCol: { span: 7 },
   wrapperCol: { span: 16, offset: 1 }
@@ -149,7 +150,7 @@ export default {
       formItemLayout,
       ybChsManageReject: {},
       ybChsManage: {},
-      warningMessage: '非本人复议，请线下确认并 更换 复议科室 和 复议医生',
+      warningMessage: '非本人复议，请线下确认并 更换 汇总科室 和 复议医生',
       form: this.$form.createForm(this)
     }
   },
@@ -167,11 +168,12 @@ export default {
     },
     selectDoctorChang (item) {
       this.ybChsManageReject.changeDoctorCode = item.value
-      this.ybChsManageReject.changeDoctorName = item.text
+      this.ybChsManageReject.changeDoctorName = item.personName
     },
     selectDksChange (item) {
       this.ybChsManageReject.changeDksId = item.value
-      this.ybChsManageReject.changeDksName = item.text
+      this.ybChsManageReject.changeDksName = item.dksName
+      this.ybChsManageReject.changeFyid = item.fyid
     },
     onClose () {
       this.reset()
@@ -188,10 +190,10 @@ export default {
         if (!err) {
           let fromData = this.form.getFieldsValue(['refuseReason'])
           let ybChsManage = this.ybChsManage
-
           let dksId = this.ybChsManageReject.changeDksId !== this.ybChsManageReject.readyDksId ? this.ybChsManageReject.changeDksId : ''
           let dksName = this.ybChsManageReject.changeDksName !== this.ybChsManageReject.readyDksName ? this.ybChsManageReject.changeDksName : ''
-          let doctorName = this.ybChsManageReject.changeDoctorCode !== this.ybChsManageReject.readyDoctorCode ? this.ybChsManageReject.changeDoctorName : ''
+          let fyid = this.ybChsManageReject.changeFyid !== this.ybChsManageReject.readyFyid ? this.ybChsManageReject.changeFyid : ''
+          let doctorName = this.ybChsManageReject.changeDoctorName !== this.ybChsManageReject.readyDoctorName ? this.ybChsManageReject.changeDoctorName : ''
           let doctorCode = this.ybChsManageReject.changeDoctorCode !== this.ybChsManageReject.readyDoctorCode ? this.ybChsManageReject.changeDoctorCode : ''
 
           ybChsManage.state = 2
@@ -200,6 +202,7 @@ export default {
           ybChsManage.changeDoctorName = dksId !== '' && dksName !== '' && (doctorCode === '' || doctorCode === undefined) ? this.ybChsManageReject.readyDoctorName : doctorName
           ybChsManage.changeDksId = (dksId === '' || dksId === undefined) && doctorCode !== '' ? this.ybChsManageReject.readyDksId : dksId
           ybChsManage.changeDksName = (dksName === '' || dksName === undefined) && doctorCode !== '' ? this.ybChsManageReject.readyDksName : dksName
+          ybChsManage.changeFyid = (fyid === '' || fyid === undefined) && doctorCode !== '' ? this.ybChsManageReject.readyFyid : fyid
 
           if (ybChsManage.changeDksId !== '' && ybChsManage.changeDksId !== undefined) {
             this.loading = true
@@ -210,7 +213,8 @@ export default {
               changeDoctorCode: ybChsManage.changeDoctorCode,
               changeDoctorName: ybChsManage.changeDoctorName,
               changeDksId: ybChsManage.changeDksId,
-              changeDksName: ybChsManage.changeDksName
+              changeDksName: ybChsManage.changeDksName,
+              changeFyid: ybChsManage.changeFyid
             }]
             let jsonString = JSON.stringify(data)
             this.$put('ybChsManage/updateAcceptRejectState', {
@@ -235,13 +239,16 @@ export default {
       this.ybChsManageReject.changeDoctorName = ybChsManageReject.readyDoctorName
       this.ybChsManageReject.changeDksId = ybChsManageReject.readyDksId
       this.ybChsManageReject.changeDksName = ybChsManageReject.readyDksName
+      this.ybChsManageReject.changeFyid = ybChsManageReject.readyFyid
       setTimeout(() => {
         this.fromSetTimeoutValue(ybChsManageReject)
       }, 200)
+
+      console.log(this.ybChsManageReject)
     },
     fromSetTimeoutValue (item) {
       this.$refs.inputSelectChangeDks.dataSource = [{
-        text: item.readyDksId + '-' + item.readyDksName,
+        text: fy.getDksFyName(item.readyDksName, item.readyFyid),
         value: item.readyDksId
       }]
       this.$refs.inputSelectChangeDks.value = item.readyDksId
