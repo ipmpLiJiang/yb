@@ -80,7 +80,7 @@
         >
         <a-radio-group  v-decorator="['personType']" @change="handleChange">
           <a-radio value="1">
-            开单人员
+            开方人员
           </a-radio>
           <a-radio value="2">
             执行人员

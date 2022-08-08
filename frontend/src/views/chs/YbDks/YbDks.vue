@@ -157,17 +157,17 @@ export default {
   computed: {
     columns () {
       return [{
-        title: '大科室分院编码',
+        title: '汇总科室分院编码',
         dataIndex: 'dksFyid',
         width: 130
       },
       {
-        title: '大科室编码',
+        title: '汇总科室编码',
         dataIndex: 'dksId',
         width: 100
       },
       {
-        title: '大科室名称',
+        title: '汇总科室名称',
         dataIndex: 'dksName',
         width: 150
       },
@@ -279,6 +279,7 @@ export default {
         sortField = sortedInfo.field
         sortOrder = sortedInfo.order
       }
+      this.queryParams.dataJson = '[{title: "汇总科室分院编码", dataIndex: "dksFyid"},{title: "汇总科室编码",dataIndex: "dksId"},{title: "汇总科室名称", dataIndex: "dksName"},{title: "拼音编码", dataIndex: "spellCode"},{title: "院区编码", dataIndex: "fyid"}]'
       this.$export('ybDks/excel', {
         sortField: sortField,
         sortOrder: sortOrder,

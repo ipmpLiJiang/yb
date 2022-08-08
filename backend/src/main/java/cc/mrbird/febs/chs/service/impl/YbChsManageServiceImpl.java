@@ -616,7 +616,7 @@ public class YbChsManageServiceImpl extends ServiceImpl<YbChsManageMapper, YbChs
                     updateChsManage.setChangeDoctorName(entity.getReadyDoctorName());
                     updateChsManage.setChangeDksId(entity.getReadyDksId());
                     updateChsManage.setChangeDksName(entity.getReadyDksName());
-                    updateChsManage.setChangeFyid(ybChsManage.getChangeFyid());
+                    updateChsManage.setChangeFyid(entity.getReadyFyid());
                 }
                 updateChsManage.setState(ybChsManage.getState());
                 updateChsManage.setOperateReason("");
@@ -674,7 +674,7 @@ public class YbChsManageServiceImpl extends ServiceImpl<YbChsManageMapper, YbChs
                 ybChsResult.setDoctorName(strReadyDoctorName);
                 ybChsResult.setDksId(ybChsManage.getReadyDksId());
                 ybChsResult.setDksName(strReadyDksName);
-                ybChsResult.setVerifyId(strReadyFyid);
+                ybChsResult.setFyid(strReadyFyid);
                 iYbChsResultService.updateById(ybChsResult);
             }
             // 待申诉 和 已申诉 删除 结果和附件

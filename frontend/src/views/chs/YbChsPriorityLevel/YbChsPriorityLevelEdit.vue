@@ -98,7 +98,7 @@
             主治科室
           </a-radio>
           <a-radio value="1">
-            开单科室
+            开方科室
           </a-radio>
           <a-radio value="2">
             执行科室
@@ -131,7 +131,7 @@
             主治医生
           </a-radio>
           <a-radio value="1">
-            开单医生
+            开方医生
           </a-radio>
           <a-radio value="2">
             执行医生

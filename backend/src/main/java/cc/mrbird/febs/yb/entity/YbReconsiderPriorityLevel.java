@@ -62,7 +62,7 @@ public class YbReconsiderPriorityLevel implements Serializable, Comparable<YbRec
     public static final Integer DEPT_STATE_2 = 2;
 
     /**
-     * 1开单人员
+     * 1开方人员
      */
     public static final Integer PERSON_TYPE_1 = 1;
 
@@ -83,7 +83,7 @@ public class YbReconsiderPriorityLevel implements Serializable, Comparable<YbRec
 
 
     /**
-     * 1开单科室
+     * 1开方科室
      */
     public static final Integer DEPT_TYPE_1 = 1;
 

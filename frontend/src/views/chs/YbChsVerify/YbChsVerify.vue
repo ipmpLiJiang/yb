@@ -620,17 +620,27 @@ export default {
       }, 200)
     },
     setSelect (item) {
-      this.$refs.inputSelectVerifyChsDks.dataSource = [{
-        text: fy.getDksFyName(item.verifyDksName, item.verifyFyid),
-        value: item.verifyDksId
-      }]
-      this.$refs.inputSelectVerifyChsDks.value = item.verifyDksId
+      if (item.verifyFyid) {
+        this.$refs.inputSelectVerifyChsDks.dataSource = [{
+          text: fy.getDksFyName(item.verifyDksName, item.verifyFyid),
+          value: item.verifyDksId
+        }]
+        this.$refs.inputSelectVerifyChsDks.value = item.verifyDksId
+      } else {
+        this.$refs.inputSelectVerifyChsDks.dataSource = []
+        this.$refs.inputSelectVerifyChsDks.value = ''
+      }
 
-      this.$refs.inputSelectVerifyDoctor.dataSource = [{
-        text: item.verifyDoctorCode + '-' + item.verifyDoctorName,
-        value: item.verifyDoctorCode
-      }]
-      this.$refs.inputSelectVerifyDoctor.value = item.verifyDoctorCode
+      if (item.verifyDoctorCode) {
+        this.$refs.inputSelectVerifyDoctor.dataSource = [{
+          text: item.verifyDoctorCode + '-' + item.verifyDoctorName,
+          value: item.verifyDoctorCode
+        }]
+        this.$refs.inputSelectVerifyDoctor.value = item.verifyDoctorCode
+      } else {
+        this.$refs.inputSelectVerifyDoctor.dataSource = []
+        this.$refs.inputSelectVerifyDoctor.value = ''
+      }
 
       this.selectDate.doctorCode = item.verifyDoctorCode
       this.selectDate.doctorName = item.verifyDoctorName

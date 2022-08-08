@@ -695,17 +695,26 @@ export default {
       }, 200)
     },
     setSelect (item) {
-      this.$refs.inputSelectVerifyDept.dataSource = [{
-        text: item.verifyDeptName,
-        value: item.verifyDeptCode
-      }]
-      this.$refs.inputSelectVerifyDept.value = item.verifyDeptCode
-
-      this.$refs.inputSelectVerifyDoctor.dataSource = [{
-        text: item.verifyDoctorName,
-        value: item.verifyDoctorCode
-      }]
-      this.$refs.inputSelectVerifyDoctor.value = item.verifyDoctorCode
+      if (item.verifyDeptCode) {
+        this.$refs.inputSelectVerifyDept.dataSource = [{
+          text: item.verifyDeptName,
+          value: item.verifyDeptCode
+        }]
+        this.$refs.inputSelectVerifyDept.value = item.verifyDeptCode
+      } else {
+        this.$refs.inputSelectVerifyDept.dataSource = []
+        this.$refs.inputSelectVerifyDept.value = ''
+      }
+      if (item.verifyDoctorCode) {
+        this.$refs.inputSelectVerifyDoctor.dataSource = [{
+          text: item.verifyDoctorName,
+          value: item.verifyDoctorCode
+        }]
+        this.$refs.inputSelectVerifyDoctor.value = item.verifyDoctorCode
+      } else {
+        this.$refs.inputSelectVerifyDoctor.dataSource = []
+        this.$refs.inputSelectVerifyDoctor.value = ''
+      }
 
       this.selectDate.doctorCode = item.verifyDoctorCode
       this.selectDate.doctorName = item.verifyDoctorName

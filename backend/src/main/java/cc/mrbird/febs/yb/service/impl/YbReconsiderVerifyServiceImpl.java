@@ -567,7 +567,7 @@ public class YbReconsiderVerifyServiceImpl extends ServiceImpl<YbReconsiderVerif
     }
 
     /**
-     * 1type 开单医生 2type 执行医生 3type计费人
+     * 1type 开方医生 2type 执行医生 3type计费人
      */
     private String getInpatientfeesDocName(YbReconsiderInpatientfees item, List<YbPerson> personList, int type) {
         List<YbPerson> queryPersontList = new ArrayList<>();

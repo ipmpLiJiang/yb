@@ -190,6 +190,9 @@ export default {
           value: target.verifyDeptCode
         }]
         this.$refs.inputSelectVerifyDept.value = target.verifyDeptCode
+      } else {
+        this.$refs.inputSelectVerifyDept.dataSource = []
+        this.$refs.inputSelectVerifyDept.value = ''
       }
       if (target.verifyDoctorCode) {
         this.$refs.inputSelectVerifyDoctor.dataSource = [{
@@ -197,6 +200,9 @@ export default {
           value: target.verifyDoctorCode
         }]
         this.$refs.inputSelectVerifyDoctor.value = target.verifyDoctorCode
+      } else {
+        this.$refs.inputSelectVerifyDoctor.dataSource = []
+        this.$refs.inputSelectVerifyDoctor.value = ''
       }
 
       this.ybReconsiderVerify = {

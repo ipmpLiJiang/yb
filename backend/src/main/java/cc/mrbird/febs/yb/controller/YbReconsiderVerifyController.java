@@ -530,7 +530,7 @@ public class YbReconsiderVerifyController extends BaseController {
                         }
                     }
 
-                    //住院科室、开单医生
+                    //住院科室、开方医生
 //                    if (!strOrderDeptCode.equals("") && strOrderDeptCode != null)
                     ybReconsiderVerify.setOrderDeptCode(strOrderDeptCode);
 

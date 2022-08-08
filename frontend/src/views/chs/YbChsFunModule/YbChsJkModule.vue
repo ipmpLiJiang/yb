@@ -54,7 +54,7 @@ export default {
       },
       queryParams: {
       },
-      orderDocTitle: '开方医生',
+      attendDocTitle: '主治医生',
       deptTitle: '住院科室',
       excuteDocTitle: '执行医生',
       excuteDeptTitle: '执行科室',
@@ -103,13 +103,35 @@ export default {
         width: 120
       },
       {
-        title: '项目医保编码',
+        title: '匹配',
+        dataIndex: 'state',
+        customRender: (text, row, index) => {
+          switch (text) {
+            case 0:
+              return 'I'
+            case 1:
+              return 'H'
+            case 2:
+              return 'C'
+            default:
+              return text
+          }
+        },
+        width: 50
+      },
+      {
+        title: 'C项目医保编码',
         dataIndex: 'itemCode',
         width: 130
       },
       {
-        title: '项目名称',
+        title: 'I项目名称',
         dataIndex: 'itemName',
+        width: 150
+      },
+      {
+        title: 'H项目名称',
+        dataIndex: 'hisName',
         width: 150
       },
       {
@@ -160,7 +182,7 @@ export default {
         width: 150
       },
       {
-        title: '主治医生',
+        title: this.attendDocTitle,
         dataIndex: 'attendDocName',
         customRender: (text, row, index) => {
           if (text !== '' && text !== null) {
@@ -170,7 +192,7 @@ export default {
         width: 130
       },
       {
-        title: this.orderDocTitle,
+        title: '开方医生',
         dataIndex: 'orderDocName',
         customRender: (text, row, index) => {
           if (text !== '' && text !== null) {
@@ -289,12 +311,12 @@ export default {
     fetch (params = {}) {
       this.dataSource = []
       if (this.ybChsData.dataType === 0) {
-        this.orderDocTitle = '开方医生'
+        this.attendDocTitle = '主治医生'
         this.deptTitle = '住院科室'
         this.excuteDocTitle = '执行医生'
         this.excuteDeptTitle = '执行科室'
       } else {
-        this.orderDocTitle = '入院责任人'
+        this.attendDocTitle = '入院责任人'
         this.deptTitle = '入院责任科室'
         this.excuteDocTitle = '办入院操作员'
         this.excuteDeptTitle = '办入院操作员科室'

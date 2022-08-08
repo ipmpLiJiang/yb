@@ -35,7 +35,7 @@ public class YbChsPriorityLevel implements Serializable, Comparable<YbChsPriorit
     private static final long serialVersionUID = 1L;
 
     /**
-     * 1开单医生
+     * 1开方医生
      */
     public static final Integer PERSON_TYPE_1 = 1;
 
@@ -61,7 +61,7 @@ public class YbChsPriorityLevel implements Serializable, Comparable<YbChsPriorit
 
 
     /**
-     * 1开单科室
+     * 1开方科室
      */
     public static final Integer DEPT_TYPE_1 = 1;
 

@@ -80,7 +80,7 @@ febs:
   openAopLog: true
   uploadPath: D:/Yb/UploadFile/
   baseUrl: http://127.0.0.1:9527
-  openSms: 1
+  openSms: 2
   in0: hrp_hr
   in1: hrp_hr
   in2: MAC

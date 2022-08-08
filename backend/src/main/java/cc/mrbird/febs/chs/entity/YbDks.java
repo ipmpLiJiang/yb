@@ -35,24 +35,24 @@ public class YbDks implements Serializable, Comparable<YbDks> {
     private static final long serialVersionUID = 1L;
 
     /**
-     * 大科室Id
+     * 汇总科室Id
      */
     @TableId(value = "id", type = IdType.AUTO)
-    @ExcelField(value = "大科室Id")
+    @ExcelField(value = "汇总科室Id")
     private Integer id;
 
     /**
-     * 大科室编码
+     * 汇总科室编码
      */
     @TableField("dksId")
-    @ExcelField(value = "大科室编码")
+    @ExcelField(value = "汇总科室编码")
     private String dksId;
 
     /**
-     * 大科室名称
+     * 汇总科室名称
      */
     @TableField("dksName")
-    @ExcelField(value = "大科室名称")
+    @ExcelField(value = "汇总科室名称")
     private String dksName;
 
     /**

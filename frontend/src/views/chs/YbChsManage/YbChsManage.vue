@@ -269,7 +269,7 @@ export default {
     },
     handleChsClose () {
       this.chsVisiable = false
-      // 保存数据返回时，医院意见未更新，刷新后更新数据
+      // 保存数据返回时，复议理由未更新，刷新后更新数据
       this.$refs.ybChsManageStayed.search()
     },
     chs (record) {
@@ -278,7 +278,7 @@ export default {
     },
     handleChsCompleteClose () {
       this.chsCompleteVisiable = false
-      // 保存数据返回时，医院意见未更新，刷新后更新数据
+      // 保存数据返回时，复议理由未更新，刷新后更新数据
       this.$refs.ybChsManageCompleted.search()
     },
     chsComplete (record) {

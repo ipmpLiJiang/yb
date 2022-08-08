@@ -761,7 +761,7 @@ public class YbChsApplyDataServiceImpl extends ServiceImpl<YbChsApplyDataMapper,
                 }
             }
         }
-
+        // 医保项目名称影响 itemName\hisName
         if (dataType == 0) {
             hisWhere = " inpatientId in(" + sql + ")";
             if (state == 0) {
@@ -808,6 +808,7 @@ public class YbChsApplyDataServiceImpl extends ServiceImpl<YbChsApplyDataMapper,
         String projects;
         for (YbChsApplyData item : chsApplyDataList) {
             projects = item.getProjectName();
+            // 医保项目名称影响 itemName\hisName
             if (StringUtils.isNotBlank(projects)) {
                 if (state == 1) {
                     projects = projects.replace("，", ",");
@@ -907,7 +908,8 @@ public class YbChsApplyDataServiceImpl extends ServiceImpl<YbChsApplyDataMapper,
                     chsJk.setOrderDocId(obj.getOrderDocId());//'开方医生代码'
 
                     // getOrderDocId 不是 null and getOrderDocName() 是 null
-                    if (personList.size() > 0 && StringUtils.isNotBlank(obj.getOrderDocId()) && StringUtils.isBlank(obj.getOrderDocName())) {
+                    if (personList.size() > 0 && StringUtils.isNotBlank(obj.getOrderDocId()) &&
+                            StringUtils.isBlank(obj.getOrderDocName())) {
                         queryPersontList = personList.stream().filter(p ->
                                 p.getPersonCode().equals(obj.getOrderDocId())).collect(Collectors.toList());
                         if (queryPersontList.size() > 0) {
@@ -931,7 +933,8 @@ public class YbChsApplyDataServiceImpl extends ServiceImpl<YbChsApplyDataMapper,
 
                     chsJk.setExcuteDocId(obj.getExcuteDocId());//'执行医生代码'
                     // getExcuteDocId 不是 null and getExcuteDocName() 是 null
-                    if (personList.size() > 0 && StringUtils.isNotBlank(obj.getExcuteDocId()) && StringUtils.isBlank(obj.getExcuteDocName())) {
+                    if (personList.size() > 0 && StringUtils.isNotBlank(obj.getExcuteDocId()) &&
+                            StringUtils.isBlank(obj.getExcuteDocName())) {
                         queryPersontList = personList.stream().filter(p ->
                                 p.getPersonCode().equals(obj.getExcuteDocId())).collect(Collectors.toList());
                         if (queryPersontList.size() > 0) {
@@ -995,8 +998,8 @@ public class YbChsApplyDataServiceImpl extends ServiceImpl<YbChsApplyDataMapper,
                 chsJk.setBillNo(obj.getBillNo());//'单据号'
                 chsJk.setTransNo(obj.getTransNo());//'交易流水号'
 
-                chsJk.setOrderDocId(obj.getInHospDocId());//'入院责任医生代码'
-                chsJk.setOrderDocName(obj.getInHospDocName());//'入院责任医生名称'
+                chsJk.setAttendDocId(obj.getInHospDocId());//'入院责任医生代码'
+                chsJk.setAttendDocName(obj.getInHospDocName());//'入院责任医生名称'
 
                 chsJk.setDeptId(obj.getInHosDeptId());//'入院科室代码
                 chsJk.setDeptName(obj.getInHosDeptName());//'入院科室名称

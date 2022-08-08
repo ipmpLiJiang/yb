@@ -33,7 +33,7 @@
                   v-bind="formItemLayout"
                   label="汇总科室"
                 >
-                  {{ ybChsManageLook.readyDksId }}-{{ybChsManageLook.readyDksName}}
+                  {{ fy.getDksFyName(ybChsManageLook.readyDksName, ybChsManageLook.readyFyid) }}
                 </a-form-item>
               </a-col>
               <a-col :span=14>
@@ -45,7 +45,7 @@
                 </a-form-item>
               </a-col>
             </a-row>
-            <!--医院意见-->
+            <!--复议理由-->
             <a-row type="flex" justify="start">
               <a-col :span=24>
                   <a-form-item
@@ -53,7 +53,7 @@
                     labelCol: { span: 4 },
                     wrapperCol: { span: 19, offset: 1 }
                   }"
-                  label="医院意见"
+                  label="复议理由"
                 >
                 {{ybChsManageLook.operateReason}}
                 </a-form-item>
@@ -83,7 +83,7 @@
         <!--拒绝-->
         <div v-show="ybChsManageLook.state === 2?true:false">
         <a-row type="flex" justify="start">
-        <a-col :span=20>
+        <a-col :span=22>
           <!--科室、医生-->
           <a-row>
             <a-col :span=6>
@@ -91,7 +91,7 @@
                 v-bind="formItemLayout"
                 label="申请科室"
               >
-                {{ybChsManageLook.readyDksId}}-{{ybChsManageLook.readyDksName}}
+                {{ fy.getDksFyName(ybChsManageLook.readyDksName, ybChsManageLook.readyFyid) }}
               </a-form-item>
             </a-col>
             <a-col :span=6>
@@ -107,7 +107,7 @@
                 v-bind="formItemLayout"
                 label="更改科室"
               >
-                {{ybChsManageLook.changeDksName}}
+                {{ fy.getDksFyName(ybChsManageLook.changeDksName, ybChsManageLook.changeFyid) }}
               </a-form-item>
             </a-col>
             <a-col :span=6>
@@ -119,7 +119,7 @@
               </a-form-item>
             </a-col>
           </a-row>
-          <!--医院意见-->
+          <!--复议理由-->
           <a-row type="flex" justify="start">
             <a-col :span=20>
                 <a-form-item
@@ -127,7 +127,7 @@
                   labelCol: { span: 3 },
                   wrapperCol: { span: 19 }
                 }"
-                label="医院意见"
+                label="复议理由"
               >
               {{ybChsManageLook.operateReason}}
               </a-form-item>
@@ -157,6 +157,7 @@
 import moment from 'moment'
 import YbChsDataModule from '../YbChsFunModule/YbChsDataModule'
 import YbChsJkModule from '../YbChsFunModule/YbChsJkModule'
+import { fy } from '../../js/custom'
 const formItemLayout = {
   labelCol: { span: 10 },
   wrapperCol: { span: 13, offset: 1 }
@@ -177,6 +178,7 @@ export default {
       fileList: [],
       ybChsManageLook: {},
       user: this.$store.state.account.user,
+      fy,
       ybChsManage: {}
     }
   },

@@ -87,7 +87,7 @@
                     <a-col :span=24>
                       <a-form-item
                         v-bind="formItemLayout1"
-                        label="医院意见"
+                        label="复议理由"
                       >
                         {{ybChsManageChangeHandle.operateReason}}
                       </a-form-item>

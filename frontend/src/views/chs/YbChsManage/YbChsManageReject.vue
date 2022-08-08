@@ -202,7 +202,7 @@ export default {
           ybChsManage.changeDoctorName = dksId !== '' && dksName !== '' && (doctorCode === '' || doctorCode === undefined) ? this.ybChsManageReject.readyDoctorName : doctorName
           ybChsManage.changeDksId = (dksId === '' || dksId === undefined) && doctorCode !== '' ? this.ybChsManageReject.readyDksId : dksId
           ybChsManage.changeDksName = (dksName === '' || dksName === undefined) && doctorCode !== '' ? this.ybChsManageReject.readyDksName : dksName
-          ybChsManage.changeFyid = (fyid === '' || fyid === undefined) && doctorCode !== '' ? this.ybChsManageReject.readyFyid : fyid
+          ybChsManage.changeFyid = fyid === '' || fyid === undefined ? this.ybChsManageReject.readyFyid : fyid
 
           if (ybChsManage.changeDksId !== '' && ybChsManage.changeDksId !== undefined) {
             this.loading = true

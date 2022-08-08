@@ -109,7 +109,7 @@
             主治科室
           </a-radio>
           <a-radio value="1">
-            开单科室
+            开方科室
           </a-radio>
           <a-radio value="2">
             执行科室
@@ -142,7 +142,7 @@
             主治医生
           </a-radio>
           <a-radio value="1">
-            开单医生
+            开方医生
           </a-radio>
           <a-radio value="2">
             执行医生
@@ -243,14 +243,12 @@ export default {
       this.ybPriorityLevel.doctorNameTo = item.personName
     },
     selectThDksChange (item) {
-      console.log(item)
       this.ybPriorityLevel.dksId = item.value
       this.ybPriorityLevel.dksName = item.dksName
       this.ybPriorityLevel.fyid = item.fyid
       this.checkThDeptType = false
     },
     selectDksChange (item) {
-      console.log(item)
       this.ybPriorityLevel.dksIdTo = item.value
       this.ybPriorityLevel.dksNameTo = item.dksName
       this.ybPriorityLevel.fyidTo = item.fyid

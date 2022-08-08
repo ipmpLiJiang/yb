@@ -103,13 +103,35 @@ export default {
         width: 120
       },
       {
-        title: '项目医保编码',
+        title: '匹配',
+        dataIndex: 'state',
+        customRender: (text, row, index) => {
+          switch (text) {
+            case 0:
+              return 'I'
+            case 1:
+              return 'H'
+            case 2:
+              return 'C'
+            default:
+              return text
+          }
+        },
+        width: 50
+      },
+      {
+        title: 'C项目医保编码',
         dataIndex: 'itemCode',
         width: 130
       },
       {
-        title: '项目名称',
+        title: 'I项目名称',
         dataIndex: 'itemName',
+        width: 150
+      },
+      {
+        title: 'H项目名称',
+        dataIndex: 'hisName',
         width: 150
       },
       {

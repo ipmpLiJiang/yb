@@ -191,6 +191,9 @@ export default {
           value: target.verifyDksId
         }]
         this.$refs.inputSelectVerifyChsDks.value = target.verifyDksId
+      } else {
+        this.$refs.inputSelectVerifyChsDks.dataSource = []
+        this.$refs.inputSelectVerifyChsDks.value = ''
       }
       if (target.verifyDoctorCode) {
         this.$refs.inputSelectVerifyDoctor.dataSource = [{
@@ -198,6 +201,9 @@ export default {
           value: target.verifyDoctorCode
         }]
         this.$refs.inputSelectVerifyDoctor.value = target.verifyDoctorCode
+      } else {
+        this.$refs.inputSelectVerifyDoctor.dataSource = []
+        this.$refs.inputSelectVerifyDoctor.value = ''
       }
       this.ybChsVerify = {
         id: target.id,

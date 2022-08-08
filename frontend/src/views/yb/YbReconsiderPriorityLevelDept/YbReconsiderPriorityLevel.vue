@@ -233,7 +233,7 @@ export default {
         customRender: (text, row, index) => {
           switch (text) {
             case 1:
-              return '开单人员'
+              return '开方人员'
             case 2:
               return '执行人员'
             case 3:

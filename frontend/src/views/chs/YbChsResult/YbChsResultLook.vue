@@ -43,7 +43,7 @@
                 </a-form-item>
               </a-col>
             </a-row>
-            <!--医院意见-->
+            <!--复议理由-->
             <a-row type="flex" justify="start">
               <a-col :span=24>
                   <a-form-item
@@ -51,7 +51,7 @@
                     labelCol: { span: 4 },
                     wrapperCol: { span: 19, offset: 1 }
                   }"
-                  label="医院意见"
+                  label="复议理由"
                 >
                 {{ybChsResultLook.operateReason}}
                 </a-form-item>

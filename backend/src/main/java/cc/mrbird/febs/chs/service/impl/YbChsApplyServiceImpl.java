@@ -274,12 +274,12 @@ public class YbChsApplyServiceImpl extends ServiceImpl<YbChsApplyMapper, YbChsAp
 
             String date2 = sdf2.format(cal.getTime()) + " 24:00 ";
             if (enableDate.compareTo(endDate) == 1) {
-                ssm = "武汉市医保" + applyDateStr + "月 医保复议数据已发给您，请在复议截止时间前完成 责任人确认工作和复议工作，此次复议截止时间是 " + date1 + "，请及时登录医保管理系统处理。" + wangz;
+                ssm = "武汉市医保" + applyDateStr + "月 医保复议数据已发给您，请在复议截止时间前完成 责任人确认工作和复议工作，此次复议截止时间是 " + date1 + "，请及时登录医保管理系统-新医保复议模块处理。" + wangz;
             } else {
-                ssm = "武汉市医保" + applyDateStr + "月 医保复议数据已发给您，请在 " + date2 + "前完成责任人确认工作，否则默认责任人为本人。此次复议截止时间是 " + date1 + "，请及时登录医保管理系统处理。" + wangz;
+                ssm = "武汉市医保" + applyDateStr + "月 医保复议数据已发给您，请在 " + date2 + "前完成责任人确认工作，否则默认责任人为本人。此次复议截止时间是 " + date1 + "，请及时登录医保管理系统-新医保复议模块处理。" + wangz;
             }
         } else {
-            ssm = "您有其他医生转发的医保医保违规项目需复议，此次复议截止时间是" + date1 + "，请及时登录医保管理系统处理。" + wangz;
+            ssm = "您有其他医生转发的医保医保违规项目需复议，此次复议截止时间是" + date1 + "，请及时登录医保管理系统-新医保复议模块处理。" + wangz;
         }
         return ssm + this.areaMsg(areaType);
     }

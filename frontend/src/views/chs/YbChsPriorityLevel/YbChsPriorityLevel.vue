@@ -318,7 +318,7 @@ export default {
         customRender: (text, row, index) => {
           switch (text) {
             case 1:
-              return '开单科室'
+              return '开方科室'
             case 2:
               return '执行科室'
             case 3:
@@ -349,7 +349,7 @@ export default {
         customRender: (text, row, index) => {
           switch (text) {
             case 1:
-              return '开单医生'
+              return '开方医生'
             case 2:
               return '执行医生'
             case 3:

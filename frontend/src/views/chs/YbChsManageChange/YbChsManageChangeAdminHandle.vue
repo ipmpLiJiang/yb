@@ -212,7 +212,7 @@ export default {
       this.ybChsManage.applyDataId = ybChsManageChangeAdminHandle.applyDataId
       this.ybChsManage.state = ybChsManageChangeAdminHandle.state
 
-      this.changePersons = fy.getDksFyName(this.ybChsManageChangeAdminHandle.readyDksName, this.ybChsManageChangeAdminHandle.readyFyid) + '  -  ' + this.ybChsManageChangeAdminHandle.readyDoctorCode + '-' + this.ybChsManageChangeAdminHandle.readyDoctorName
+      this.changePersons = fy.getDksFyName(this.ybChsManageChangeAdminHandle.readyDksName, this.ybChsManageChangeAdminHandle.readyFyid) + ' - ' + this.ybChsManageChangeAdminHandle.readyDoctorCode + '-' + this.ybChsManageChangeAdminHandle.readyDoctorName
       setTimeout(() => {
         this.setForms(ybChsManageChangeAdminHandle)
       }, 200)

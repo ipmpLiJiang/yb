@@ -1239,7 +1239,7 @@ public class ComFileController extends BaseController {
     }
 
     @PostMapping("uploadCheck")
-    public FebsResponse Uploads(@RequestParam("file") MultipartFile file, InUploadFile inUploadFile) throws FebsException {
+    public FebsResponse uploadChecks(@RequestParam("file") MultipartFile file, InUploadFile inUploadFile) throws FebsException {
         if (file.isEmpty()) {
             throw new FebsException("空文件");
         }
@@ -1285,6 +1285,82 @@ public class ComFileController extends BaseController {
             String fileUrl = febsProperties.getBaseUrl() + "/uploadFile/" + otherUrl + fileName;
             outComFile.setSuccess(1);
             outComFile.setUid(Id);
+            outComFile.setName(fileName2);
+            outComFile.setStatus("done");
+            outComFile.setUrl(fileUrl);
+            outComFile.setThumbUrl(fileUrl);
+            outComFile.setSerName(fileName);
+        } else {
+            List<String> fileTypeList = this.getFileTypeList(inUploadFile.getFileType());
+            outComFile.setSuccess(0);
+            outComFile.setMessage("上传文件的格式不正确，应上传" + fileTypeList.toString() + "格式.");
+        }
+        return new FebsResponse().put("data", outComFile);
+    }
+
+    @PostMapping("uploadCheckOne")
+    public FebsResponse uploadCheckOnes(@RequestParam("file") MultipartFile file, InUploadFile inUploadFile) throws FebsException {
+        if (file.isEmpty()) {
+            throw new FebsException("空文件");
+        }
+        OutComFile outComFile = new OutComFile();
+        String fileName2 = file.getOriginalFilename();  // 文件名
+        String suffixName = fileName2.substring(fileName2.lastIndexOf("."));  // 后缀名
+        suffixName = suffixName.toLowerCase();
+        if (this.isSuffixTrue(inUploadFile.getFileType(), suffixName)) {
+            String strId = inUploadFile.getId();
+            Date thisDate = new Date();
+            String filePath = febsProperties.getUploadPath(); // 上传后的路径
+            String fileName = UUID.randomUUID().toString() + suffixName;
+            String otherUrl = "";
+            if (StringUtils.isNotBlank(inUploadFile.getRefType())) {
+                otherUrl += inUploadFile.getRefType() + "/";
+            }
+            if (StringUtils.isNotBlank(inUploadFile.getApplyDateStr())) {
+                otherUrl += inUploadFile.getApplyDateStr() + "/";
+            }
+            if (inUploadFile.getAreaType() != null) {
+                otherUrl += inUploadFile.getAreaType() + "/";
+            }
+            File dest = new File(filePath + otherUrl + fileName);
+            String fileId = UUID.randomUUID().toString();
+            if (!dest.getParentFile().exists()) {
+                dest.getParentFile().mkdirs();
+            }
+            try {
+                file.transferTo(dest);
+                List<ComFile> list = this.iComFileService.findListComFile(inUploadFile.getId(), inUploadFile.getRefType());
+                if (list.size() == 0) {
+                    ComFile cf = new ComFile();
+                    cf.setId(fileId);
+                    cf.setCreateTime(thisDate);
+                    cf.setClientName(fileName2);//客户端的名称
+                    cf.setServerName(fileName);
+                    cf.setRefTabId(strId);
+                    cf.setRefType(inUploadFile.getRefType());
+                    cf.setRefTabTable(inUploadFile.getRefTab());
+                    iComFileService.createComFile(cf);
+                } else {
+                    ComFile item = list.get(0);
+                    fileId = item.getId();
+                    ComFile update = new ComFile();
+                    update.setId(item.getId());
+                    update.setClientName(fileName2);//客户端的名称
+                    update.setServerName(fileName);
+                    update.setRefTabId(strId);
+                    update.setRefType(inUploadFile.getRefType());
+                    update.setRefTabTable(inUploadFile.getRefTab());
+                    iComFileService.updateComFile(update);
+                    String deleteUrl = filePath + otherUrl + item.getServerName();
+                    deleteFile(deleteUrl);
+                }
+
+            } catch (IOException e) {
+                throw new FebsException(e.getMessage());
+            }
+            String fileUrl = febsProperties.getBaseUrl() + "/uploadFile/" + otherUrl + fileName;
+            outComFile.setSuccess(1);
+            outComFile.setUid(fileId);
             outComFile.setName(fileName2);
             outComFile.setStatus("done");
             outComFile.setUrl(fileUrl);
@@ -1345,6 +1421,12 @@ public class ComFileController extends BaseController {
         } else if (fileType.equals("doc")) {
             list.add(".doc");
             list.add(".docx");
+        }  else if (fileType.equals("docjpg")) {
+            list.add(".doc");
+            list.add(".docx");
+            list.add(".jpg");
+            list.add(".jpeg");
+            list.add(".png");
         } else if (fileType.equals("xls")) {
             list.add(".xls");
             list.add(".xlsx");

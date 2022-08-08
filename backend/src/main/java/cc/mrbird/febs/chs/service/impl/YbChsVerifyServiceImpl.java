@@ -158,6 +158,7 @@ public class YbChsVerifyServiceImpl extends ServiceImpl<YbChsVerifyMapper, YbChs
                 List<YbChsApplyData> radList = iYbChsApplyDataService.findChsApplyDataByNotVerifys(ybChsApply.getId(), ybChsApply.getApplyDateStr(), areaType);
 
                 if (radList.size() > 0) {
+                    radList.sort(Comparator.comparing(YbChsApplyData::getOrderNum));
                     LambdaQueryWrapper<YbChsJk> wrapper = new LambdaQueryWrapper<>();
                     wrapper.eq(YbChsJk::getApplyDateStr, applyDateStr);
                     wrapper.eq(YbChsJk::getAreaType, areaType);
@@ -190,6 +191,11 @@ public class YbChsVerifyServiceImpl extends ServiceImpl<YbChsVerifyMapper, YbChs
                     for (YbChsApplyData item : radList) {
                         YbChsVerifyMsg back = new YbChsVerifyMsg();
                         back.setRuleName(item.getRuleName());
+                        if (item.getIsOutpfees() == 1) {
+                            back.setZymzName("门诊");
+                        } else {
+                            back.setZymzName("住院");
+                        }
                         isProjectCode = false;
                         cpl = new YbChsPriorityLevel();
                         cpl2 = new YbChsPriorityLevel();
@@ -206,13 +212,12 @@ public class YbChsVerifyServiceImpl extends ServiceImpl<YbChsVerifyMapper, YbChs
 
                         queryJkList = jkList.stream().filter(s -> s.getApplyDataId().equals(item.getId())).collect(Collectors.toList());
                         // 住院 明细扣款
-                        if (item.getDataType() == 0) {
+//                        if (item.getDataType() == 0) {
                             if (queryJkList.size() > 0) {
                                 back.setCurrencyField("是");
                                 YbChsJk jk = queryJkList.get(0);
                                 // 门诊
                                 if (item.getIsOutpfees() == 1) {
-                                    back.setZymzName("门诊");
                                     // 项目 getItemName
                                     if (item.getState() == 0) {
                                         // 规则一
@@ -284,15 +289,14 @@ public class YbChsVerifyServiceImpl extends ServiceImpl<YbChsVerifyMapper, YbChs
                                             ).collect(Collectors.toList());
                                         }
                                     }
-
                                     // 项目编码匹配
                                     if (item.getState() == 2) {
                                         isProjectCode = true;
                                     }
                                 } else {
-                                    back.setZymzName("住院");
                                     // 住院
                                     // 项目 getItemName
+                                    // 医保项目名称影响 itemName\hisName
                                     if (item.getState() == 0) {
                                         // 规则一
                                         // 规则 + 项目
@@ -372,18 +376,14 @@ public class YbChsVerifyServiceImpl extends ServiceImpl<YbChsVerifyMapper, YbChs
 
                                 if (plQuery.size() > 0) {
                                     cpl = plQuery.get(0);
-                                    if (cpl.getDeptType() == YbChsPriorityLevel.DEPT_TYPE_4 &&
-                                            cpl.getPersonType() == YbChsPriorityLevel.PERSON_TYPE_4) {
-                                        ybChsVerify.setVerifyDoctorCode(cpl.getDoctorCodeTo());
-                                        ybChsVerify.setVerifyDoctorName(cpl.getDoctorNameTo());
-                                        ybChsVerify.setVerifyDksId(cpl.getDksIdTo());
-                                        ybChsVerify.setVerifyDksName(cpl.getDksNameTo());
-                                        ybChsVerify.setVerifyFyid(cpl.getFyidTo());
-                                    } else {
-                                        this.setDksAndDoctorValue(ybChsVerify, cpl, jk, deptList);
-                                    }
+                                    this.setDksAndDoctorValue(ybChsVerify, cpl, jk, deptList);
                                 } else {
-                                    back.setProjectName(jk.getHisName());
+                                    if (item.getState() == 0) {
+                                        back.setProjectName(jk.getItemName());
+                                    }
+                                    if (item.getState() == 1) {
+                                        back.setProjectName(jk.getHisName());
+                                    }
                                     if (isProjectCode) {
                                         ybChsVerify.setVerifyDoctorCode(jk.getOrderDocId());
                                         ybChsVerify.setVerifyDoctorName(jk.getOrderDocName());
@@ -411,30 +411,19 @@ public class YbChsVerifyServiceImpl extends ServiceImpl<YbChsVerifyMapper, YbChs
                                     }
                                     if (plQuery2.size() > 0) {
                                         cpl2 = plQuery2.get(0);
-                                        // 固定科室 医生
-                                        if (cpl2.getDeptType() == YbChsPriorityLevel.DEPT_TYPE_4 &&
-                                                cpl2.getPersonType() == YbChsPriorityLevel.PERSON_TYPE_4) {
-                                            ybChsVerify.setVerifyDoctorCode(cpl2.getDoctorCodeTo());
-                                            ybChsVerify.setVerifyDoctorName(cpl2.getDoctorNameTo());
-                                            ybChsVerify.setVerifyDksId(cpl2.getDksIdTo());
-                                            ybChsVerify.setVerifyDksName(cpl2.getDksNameTo());
-                                            ybChsVerify.setVerifyFyid(cpl2.getFyidTo());
-                                        } else {
-                                            this.setDksAndDoctorValue(ybChsVerify, cpl2, jk, deptList);
-                                        }
+                                        this.setDksAndDoctorValue(ybChsVerify, cpl2, jk, deptList);
                                     }
                                 }
                             } else {
                                 back.setCurrencyField("否");
+                                back.setProjectName(item.getProjectName());
                                 // 无HIS项目
                                 // 按照规则
                                 if (item.getIsOutpfees() == 1) {
-                                    back.setZymzName("门诊");
                                     plQuery = plListMz1.stream().filter(s -> s.getIsProject() == 2 && s.getIsRule() == 1 &&
                                             StringUtils.isNotBlank(s.getRuleName()) && s.getRuleName().equals(item.getRuleName())
                                     ).collect(Collectors.toList());
                                 } else {
-                                    back.setZymzName("住院");
                                     plQuery = plListZy1.stream().filter(s -> s.getIsProject() == 2 && s.getIsRule() == 1 &&
                                             StringUtils.isNotBlank(s.getRuleName()) && s.getRuleName().equals(item.getRuleName())
                                     ).collect(Collectors.toList());
@@ -469,21 +458,54 @@ public class YbChsVerifyServiceImpl extends ServiceImpl<YbChsVerifyMapper, YbChs
                                     backList.add(back);
                                 }
                             }
+                        //region 主单
+                        /*
                         }
                         else {
+                            plQuery = plListZy1.stream().filter(s -> s.getIsProject() == 2 && s.getIsRule() == 1 &&
+                                    StringUtils.isNotBlank(s.getRuleName()) && s.getRuleName().equals(item.getRuleName())
+                            ).collect(Collectors.toList());
                             // 住院 主单扣款
                             if (queryJkList.size() > 0) {
+                                back.setCurrencyField("是");
                                 YbChsJk jk = queryJkList.get(0);
-                                ybChsVerify.setVerifyDoctorCode(jk.getOrderDocId());
-                                ybChsVerify.setVerifyDoctorName(jk.getOrderDocName());
-                                deptQueryList = deptList.stream().filter(s -> s.getDeptId().equals(jk.getDeptId())).collect(Collectors.toList());
-                                if (deptQueryList.size() > 0) {
-                                    ybChsVerify.setVerifyDksId(deptQueryList.get(0).getDksId() + "" + deptQueryList.get(0).getFyid());
-                                    ybChsVerify.setVerifyDksName(deptQueryList.get(0).getDksName());
-                                    ybChsVerify.setVerifyFyid(deptQueryList.get(0).getFyid());
+                                if (plQuery.size() > 0) {
+                                    cpl = plQuery.get(0);
+                                    this.setDksAndDoctorValue(ybChsVerify, cpl, jk, deptList);
+                                }
+                            } else {
+                                back.setCurrencyField("否");
+                                if (plQuery.size() > 0) {
+                                    cpl = plQuery.get(0);
+                                    if (cpl.getDeptType() == YbChsPriorityLevel.DEPT_TYPE_4 &&
+                                            cpl.getPersonType() == YbChsPriorityLevel.PERSON_TYPE_4) {
+                                        ybChsVerify.setVerifyDoctorCode(cpl.getDoctorCodeTo());
+                                        ybChsVerify.setVerifyDoctorName(cpl.getDoctorNameTo());
+                                        ybChsVerify.setVerifyDksId(cpl.getDksIdTo());
+                                        ybChsVerify.setVerifyDksName(cpl.getDksNameTo());
+                                        ybChsVerify.setVerifyFyid(cpl.getFyidTo());
+                                    }
+                                }
+                            }
+
+                            if (StringUtils.isBlank(ybChsVerify.getVerifyDoctorCode()) ||
+                                    StringUtils.isBlank(ybChsVerify.getVerifyDksId())) {
+                                String rp = back.getRuleName() + "-" + back.getProjectName();
+                                long count = backList.stream().filter(s ->
+                                        StringUtils.isNotBlank(s.getRuleProject()) && s.getRuleProject().equals(rp)
+                                ).count();
+                                if (count == 0) {
+                                    nid++;
+                                    back.setApplyDateStr(ybChsApply.getApplyDateStr());
+                                    back.setAreaType(ybChsApply.getAreaType());
+                                    back.setIds(UUID.randomUUID().toString());
+                                    back.setRuleProject(rp);
+                                    backList.add(back);
                                 }
                             }
                         }
+                         */
+                        //endregion
                         createList.add(ybChsVerify);
                     }
                     LambdaQueryWrapper<YbChsVerifyMsg> vmWrapper = new LambdaQueryWrapper<>();
@@ -506,24 +528,30 @@ public class YbChsVerifyServiceImpl extends ServiceImpl<YbChsVerifyMapper, YbChs
     }
 
     private void setDksAndDoctorValue(YbChsVerify ybChsVerify, YbChsPriorityLevel cpl, YbChsJk jk, List<YbDept> deptList) {
-        List<YbDept> deptQueryList = new ArrayList<>();
-        // 5主治科室 1开单科室、2执行科室、3计费科室
-        if (cpl.getDeptType() == YbChsPriorityLevel.DEPT_TYPE_1 || cpl.getDeptType() == YbChsPriorityLevel.DEPT_TYPE_5) {
-            deptQueryList = deptList.stream().filter(s -> s.getDeptId().equals(jk.getDeptId())).collect(Collectors.toList());
-        }
-        if (cpl.getDeptType() == YbChsPriorityLevel.DEPT_TYPE_2) {
-            deptQueryList = deptList.stream().filter(s -> s.getDeptId().equals(jk.getExcuteDeptId())).collect(Collectors.toList());
+        if (cpl.getDeptType() == YbChsPriorityLevel.DEPT_TYPE_4) {
+            ybChsVerify.setVerifyDksId(cpl.getDksIdTo());
+            ybChsVerify.setVerifyDksName(cpl.getDksNameTo());
+            ybChsVerify.setVerifyFyid(cpl.getFyidTo());
+        } else {
+            List<YbDept> deptQueryList = new ArrayList<>();
+            // 5主治科室 1开方科室、2执行科室、3计费科室
+            if (cpl.getDeptType() == YbChsPriorityLevel.DEPT_TYPE_1 || cpl.getDeptType() == YbChsPriorityLevel.DEPT_TYPE_5) {
+                deptQueryList = deptList.stream().filter(s -> s.getDeptId().equals(jk.getDeptId())).collect(Collectors.toList());
+            }
+            if (cpl.getDeptType() == YbChsPriorityLevel.DEPT_TYPE_2) {
+                deptQueryList = deptList.stream().filter(s -> s.getDeptId().equals(jk.getExcuteDeptId())).collect(Collectors.toList());
 
+            }
+            if (cpl.getDeptType() == YbChsPriorityLevel.DEPT_TYPE_3) {
+                deptQueryList = deptList.stream().filter(s -> s.getDeptId().equals(jk.getFeeDeptId())).collect(Collectors.toList());
+            }
+            if (deptQueryList.size() > 0) {
+                ybChsVerify.setVerifyDksId(deptQueryList.get(0).getDksId() + "" + deptQueryList.get(0).getFyid());
+                ybChsVerify.setVerifyDksName(deptQueryList.get(0).getDksName());
+                ybChsVerify.setVerifyFyid(deptQueryList.get(0).getFyid());
+            }
         }
-        if (cpl.getDeptType() == YbChsPriorityLevel.DEPT_TYPE_3) {
-            deptQueryList = deptList.stream().filter(s -> s.getDeptId().equals(jk.getFeeDeptId())).collect(Collectors.toList());
-        }
-        if (deptQueryList.size() > 0) {
-            ybChsVerify.setVerifyDksId(deptQueryList.get(0).getDksId() + "" + deptQueryList.get(0).getFyid());
-            ybChsVerify.setVerifyDksName(deptQueryList.get(0).getDksName());
-            ybChsVerify.setVerifyFyid(deptQueryList.get(0).getFyid());
-        }
-        // 5主治医生 1开单医生、2执行医生、3计费人员
+        // 5主治医生 1开方医生、2执行医生、3计费人员
         if (cpl.getPersonType() == YbChsPriorityLevel.PERSON_TYPE_5) {
             ybChsVerify.setVerifyDoctorCode(jk.getAttendDocId());
             ybChsVerify.setVerifyDoctorName(jk.getAttendDocName());
@@ -539,6 +567,10 @@ public class YbChsVerifyServiceImpl extends ServiceImpl<YbChsVerifyMapper, YbChs
         if (cpl.getPersonType() == YbChsPriorityLevel.PERSON_TYPE_3) {
             ybChsVerify.setVerifyDoctorCode(jk.getFeeOperatorId());
             ybChsVerify.setVerifyDoctorName(jk.getFeeOperatorName());
+        }
+        if (cpl.getPersonType() == YbChsPriorityLevel.PERSON_TYPE_4) {
+            ybChsVerify.setVerifyDoctorCode(cpl.getDoctorCodeTo());
+            ybChsVerify.setVerifyDoctorName(cpl.getDoctorNameTo());
         }
     }
 

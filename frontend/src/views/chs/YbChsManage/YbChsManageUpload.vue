@@ -39,10 +39,10 @@
                   </a-col>
                   <a-col :span="1"> &nbsp; </a-col>
                   <a-col :span="6" style="color:red">
-                    *复议上传附件：大小不得大于4MB，格式为.doc, .docx
+                    *复议上传附件：大小不得大于4MB，格式为.doc，.docx，.jpg，.png
                   </a-col>
                 </a-row>
-                <!--医院意见-->
+                <!--复议理由-->
                 <a-row type="flex" justify="center">
                   <a-col :span="16">
                     <a-form-item
@@ -50,17 +50,18 @@
                         labelCol: { span: 4 },
                         wrapperCol: { span: 19, offset: 1 },
                       }"
-                      label="医院意见"
+                      label="复议理由"
                     >
                       <a-textarea
-                        placeholder="请输入医院意见"
+                        placeholder="请输入复议理由"
                         style="width: 100%"
-                        :rows="5"
+                        :rows="7"
+                        :maxLength="400"
                         v-decorator="[
                           'operateReason',
                           {
                             rules: [
-                              { required: true, message: '医院意见不能为空' },
+                              { required: true, message: '复议理由不能为空' },
                             ],
                           },
                         ]"
@@ -70,7 +71,7 @@
                   <a-col :span="1"> &nbsp; </a-col>
                   <a-col :span="6">
                     <a-upload
-                      accept=".doc,.docx"
+                      accept=".doc,.docx,.jpg,.png"
                       :file-list="fileList"
                       :remove="handleImageRemove"
                       :beforeUpload="beforeUpload"
@@ -176,9 +177,11 @@ export default {
       testmsg = testmsg.toLowerCase()
       const isfile1 = testmsg === 'doc'
       const isfile2 = testmsg === 'docx'
-      if (!(isfile1 || isfile2)) {
+      const isfile3 = testmsg === 'jpg'
+      const isfile4 = testmsg === 'png'
+      if (!(isfile1 || isfile2 || isfile3 || isfile4)) {
         this.$error({
-          title: '只能上传.doc, .docx 格式的文件~'
+          title: '只能上传.doc,.docx,.jpg,.png 格式的文件~'
         })
         return
       }
@@ -189,7 +192,7 @@ export default {
         })
         return
       }
-      return (isfile1 || isfile2) && isLt && this.customRequest(file)
+      return (isfile1 || isfile2 || isfile3 || isfile4) && isLt && this.customRequest(file)
     },
     customRequest (file) {
       const formData = new FormData()
@@ -197,7 +200,7 @@ export default {
       formData.append('id', this.ybChsManageUpload.id)
       formData.append('refTab', 'yb_chs_result')
       formData.append('refType', 'chs')
-      formData.append('fileType', 'doc')
+      formData.append('fileType', 'docjpg')
       formData.append('applyDateStr', this.ybChsManageUpload.applyDateStr)
       formData.append('areaType', this.user.areaType.value)
       this.uploading = true

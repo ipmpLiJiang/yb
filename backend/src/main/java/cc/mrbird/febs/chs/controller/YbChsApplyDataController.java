@@ -423,7 +423,7 @@ public class YbChsApplyDataController extends BaseController {
                 }
             }
         } catch (Exception e) {
-            message = "获取HIS数据失败.";
+            message = "删除HIS数据失败.";
             log.error(message, e);
         }
 

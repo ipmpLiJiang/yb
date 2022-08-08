@@ -25,7 +25,7 @@
         >
         <a-radio-group  v-decorator="['deptType']" @change="handleDeptChange">
           <a-radio value="1">
-            开单科室
+            开方科室
           </a-radio>
           <a-radio value="2">
             执行科室
@@ -56,7 +56,7 @@
         >
         <a-radio-group  v-decorator="['personType']" @change="handlePersonChange">
           <a-radio value="1">
-            开单人员
+            开方人员
           </a-radio>
           <a-radio value="2">
             执行人员

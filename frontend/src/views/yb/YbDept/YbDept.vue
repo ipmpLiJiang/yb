@@ -236,6 +236,22 @@ export default {
         dataIndex: 'dksName'
       },
       {
+        title: '院区',
+        dataIndex: 'fyid',
+        customRender: (text, row, index) => {
+          switch (row.fyid) {
+            case '1001':
+              return '本院'
+            case '1002':
+              return '西院'
+            case '1003':
+              return '金银湖'
+            default:
+              return row.fyid
+          }
+        }
+      },
+      {
         title: '操作',
         dataIndex: 'operation',
         scopedSlots: { customRender: 'operation' },
@@ -341,7 +357,7 @@ export default {
         sortField = sortedInfo.field
         sortOrder = sortedInfo.order
       }
-      this.queryParams.dataJson = '[{title: "科室编码", dataIndex: "deptId"},{title: "科室名称",dataIndex: "deptName"},{title: "拼音编码", dataIndex: "spellCode"},{title: "大专业",dataIndex: "dksName"}]'
+      this.queryParams.dataJson = '[{title: "楼层编码", dataIndex: "deptId"},{title: "楼层名称",dataIndex: "deptName"},{title: "拼音编码", dataIndex: "spellCode"},{title: "汇总科室",dataIndex: "dksName"},{title: "院区",dataIndex: "fyid"}]'
       this.$export('ybDept/excel', {
         sortField: sortField,
         sortOrder: sortOrder,
