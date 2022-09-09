@@ -179,7 +179,7 @@ public class YbReconsiderApplyDataController extends BaseController {
     private String getHisMsg(String msg) {
         //"","no","deptNo","getMessage","hisSqlNo","dataNo",hisDataNo,hisMainNo,
         if (msg.equals("deptNo")) {
-            return "获取科室数据异常.";
+            return "获取科室无数据或异常，请重新获取.";
         } else if (msg.equals("hisSqlNo")) {
             return "获取查询语句异常.";
         } else if (msg.equals("dataNo")) {

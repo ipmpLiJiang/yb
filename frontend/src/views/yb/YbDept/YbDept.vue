@@ -246,6 +246,8 @@ export default {
               return '西院'
             case '1003':
               return '金银湖'
+            case '1004':
+              return '肿瘤'
             default:
               return row.fyid
           }
@@ -357,11 +359,13 @@ export default {
         sortField = sortedInfo.field
         sortOrder = sortedInfo.order
       }
-      this.queryParams.dataJson = '[{title: "楼层编码", dataIndex: "deptId"},{title: "楼层名称",dataIndex: "deptName"},{title: "拼音编码", dataIndex: "spellCode"},{title: "汇总科室",dataIndex: "dksName"},{title: "院区",dataIndex: "fyid"}]'
+      let params = {
+        dataJson: '[{title: "楼层编码", dataIndex: "deptId"},{title: "楼层名称",dataIndex: "deptName"},{title: "拼音编码", dataIndex: "spellCode"},{title: "汇总科室",dataIndex: "dksName"},{title: "院区",dataIndex: "fyid"}]'
+      }
       this.$export('ybDept/excel', {
         sortField: sortField,
         sortOrder: sortOrder,
-        ...this.queryParams
+        ...params
       })
     },
     searchPage () {
@@ -424,6 +428,7 @@ export default {
         params.pageSize = this.pagination.defaultPageSize
         params.pageNum = this.pagination.defaultCurrent
       }
+      params.dataJson = null
       if (params.dksName === undefined) {
         params.dksName = ''
       }

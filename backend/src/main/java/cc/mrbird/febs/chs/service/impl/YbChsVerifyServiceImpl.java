@@ -213,251 +213,425 @@ public class YbChsVerifyServiceImpl extends ServiceImpl<YbChsVerifyMapper, YbChs
                         queryJkList = jkList.stream().filter(s -> s.getApplyDataId().equals(item.getId())).collect(Collectors.toList());
                         // 住院 明细扣款
 //                        if (item.getDataType() == 0) {
-                            if (queryJkList.size() > 0) {
-                                back.setCurrencyField("是");
-                                YbChsJk jk = queryJkList.get(0);
-                                // 门诊
-                                if (item.getIsOutpfees() == 1) {
-                                    // 项目 getItemName
-                                    if (item.getState() == 0) {
-                                        // 规则一
-                                        // 规则 + 项目
-                                        plQuery = plListMz1.stream().filter(s -> s.getIsProject() == 1 && s.getIsRule() == 1 &&
-                                                StringUtils.isNotBlank(s.getRuleName()) && s.getRuleName().equals(item.getRuleName()) &&
-                                                StringUtils.isNotBlank(s.getProjectName()) && s.getProjectName().equals(jk.getItemName())
-                                        ).collect(Collectors.toList());
+                        if (queryJkList.size() > 0) {
+                            back.setCurrencyField("是");
+                            YbChsJk jk = queryJkList.get(0);
+                            // 门诊
+                            if (item.getIsOutpfees() == 1) {
+                                // 项目 getItemName / 改 getHisName
+                                if (item.getState() == 0) {
+                                    // 规则一
+                                    // 规则 + 项目
+                                    plQuery = plListMz1.stream().filter(s -> s.getIsProject() == 1 && s.getIsRule() == 1 &&
+                                            StringUtils.isNotBlank(s.getRuleName()) && s.getRuleName().equals(item.getRuleName()) &&
+                                            StringUtils.isNotBlank(s.getProjectName()) && s.getProjectName().equals(jk.getHisName())
+                                    ).collect(Collectors.toList());
 
-                                        // 项目
-                                        if (plQuery.size() == 0) {
-                                            plQuery = plListMz1.stream().filter(s -> s.getIsProject() == 1 && s.getIsRule() == 2 &&
-                                                    StringUtils.isNotBlank(s.getProjectName()) && s.getProjectName().equals(jk.getItemName())
-                                            ).collect(Collectors.toList());
-                                        }
-                                        // 规则二 科室
-                                        // 规则 + 项目
-                                        plQuery2 = plListMz2.stream().filter(s -> s.getIsProject() == 1 && s.getIsRule() == 1 &&
-                                                StringUtils.isNotBlank(s.getRuleName()) && s.getRuleName().equals(item.getRuleName()) &&
-                                                StringUtils.isNotBlank(s.getProjectName()) && s.getProjectName().equals(jk.getItemName())
-                                        ).collect(Collectors.toList());
-
-                                        // 项目
-                                        if (plQuery2.size() == 0) {
-                                            plQuery2 = plListMz2.stream().filter(s -> s.getIsProject() == 1 && s.getIsRule() == 2 &&
-                                                    StringUtils.isNotBlank(s.getProjectName()) && s.getProjectName().equals(jk.getItemName())
-                                            ).collect(Collectors.toList());
-                                        }
-                                    }
-                                    // 项目 getHisName
-                                    if (item.getState() == 1) {
-                                        // 规则一
-                                        // 规则 + 项目
-                                        plQuery = plListMz1.stream().filter(s -> s.getIsProject() == 1 && s.getIsRule() == 1 &&
-                                                StringUtils.isNotBlank(s.getRuleName()) && s.getRuleName().equals(item.getRuleName()) &&
+                                    // 项目
+                                    if (plQuery.size() == 0) {
+                                        plQuery = plListMz1.stream().filter(s -> s.getIsProject() == 1 && s.getIsRule() == 2 &&
                                                 StringUtils.isNotBlank(s.getProjectName()) && s.getProjectName().equals(jk.getHisName())
                                         ).collect(Collectors.toList());
+                                    }
+                                    // 规则二 科室
+                                    // 规则 + 项目
+                                    plQuery2 = plListMz2.stream().filter(s -> s.getIsProject() == 1 && s.getIsRule() == 1 &&
+                                            StringUtils.isNotBlank(s.getRuleName()) && s.getRuleName().equals(item.getRuleName()) &&
+                                            StringUtils.isNotBlank(s.getProjectName()) && s.getProjectName().equals(jk.getHisName())
+                                    ).collect(Collectors.toList());
 
-                                        // 项目
-                                        if (plQuery.size() == 0) {
-                                            plQuery = plListMz1.stream().filter(s -> s.getIsProject() == 1 && s.getIsRule() == 2 &&
-                                                    StringUtils.isNotBlank(s.getProjectName()) && s.getProjectName().equals(jk.getHisName())
-                                            ).collect(Collectors.toList());
-                                        }
-                                        // 规则二 科室
-                                        // 规则 + 项目
-                                        plQuery2 = plListMz2.stream().filter(s -> s.getIsProject() == 1 && s.getIsRule() == 1 &&
-                                                StringUtils.isNotBlank(s.getRuleName()) && s.getRuleName().equals(item.getRuleName()) &&
+                                    // 项目
+                                    if (plQuery2.size() == 0) {
+                                        plQuery2 = plListMz2.stream().filter(s -> s.getIsProject() == 1 && s.getIsRule() == 2 &&
                                                 StringUtils.isNotBlank(s.getProjectName()) && s.getProjectName().equals(jk.getHisName())
                                         ).collect(Collectors.toList());
-
-                                        // 项目
-                                        if (plQuery2.size() == 0) {
-                                            plQuery2 = plListMz2.stream().filter(s -> s.getIsProject() == 1 && s.getIsRule() == 2 &&
-                                                    StringUtils.isNotBlank(s.getProjectName()) && s.getProjectName().equals(jk.getHisName())
-                                            ).collect(Collectors.toList());
-                                        }
-                                    }
-                                    if (item.getState() == 0 || item.getState() == 1) {
-                                        if (plQuery.size() == 0) {
-                                            plQuery = plListMz1.stream().filter(s -> s.getIsProject() == 2 && s.getIsRule() == 1 &&
-                                                    StringUtils.isNotBlank(s.getRuleName()) && s.getRuleName().equals(item.getRuleName())
-                                            ).collect(Collectors.toList());
-                                        }
-                                        // 规则二 科室
-                                        if (plQuery2.size() == 0) {
-                                            plQuery2 = plListMz2.stream().filter(s -> s.getIsProject() == 2 && s.getIsRule() == 1 &&
-                                                    StringUtils.isNotBlank(s.getRuleName()) && s.getRuleName().equals(item.getRuleName())
-                                            ).collect(Collectors.toList());
-                                        }
-                                    }
-                                    // 项目编码匹配
-                                    if (item.getState() == 2) {
-                                        isProjectCode = true;
-                                    }
-                                } else {
-                                    // 住院
-                                    // 项目 getItemName
-                                    // 医保项目名称影响 itemName\hisName
-                                    if (item.getState() == 0) {
-                                        // 规则一
-                                        // 规则 + 项目
-                                        plQuery = plListZy1.stream().filter(s -> s.getIsProject() == 1 && s.getIsRule() == 1 &&
-                                                StringUtils.isNotBlank(s.getRuleName()) && s.getRuleName().equals(item.getRuleName()) &&
-                                                StringUtils.isNotBlank(s.getProjectName()) && s.getProjectName().equals(jk.getItemName())
-                                        ).collect(Collectors.toList());
-
-                                        // 规则一
-                                        // 项目
-                                        if (plQuery.size() == 0) {
-                                            plQuery = plListZy1.stream().filter(s -> s.getIsProject() == 1 && s.getIsRule() == 2 &&
-                                                    StringUtils.isNotBlank(s.getProjectName()) && s.getProjectName().equals(jk.getItemName())
-                                            ).collect(Collectors.toList());
-                                        }
-                                        // 规则二 科室
-                                        // 规则 + 项目
-                                        plQuery2 = plListZy2.stream().filter(s -> s.getIsProject() == 1 && s.getIsRule() == 1 &&
-                                                StringUtils.isNotBlank(s.getRuleName()) && s.getRuleName().equals(item.getRuleName()) &&
-                                                StringUtils.isNotBlank(s.getProjectName()) && s.getProjectName().equals(jk.getItemName())
-                                        ).collect(Collectors.toList());
-
-                                        // 项目
-                                        if (plQuery2.size() == 0) {
-                                            plQuery2 = plListZy2.stream().filter(s -> s.getIsProject() == 1 && s.getIsRule() == 2 &&
-                                                    StringUtils.isNotBlank(s.getProjectName()) && s.getProjectName().equals(jk.getItemName())
-                                            ).collect(Collectors.toList());
-                                        }
-                                    }
-                                    // 项目 getHisName
-                                    if (item.getState() == 1) {
-                                        // 规则一
-                                        // 规则 + 项目
-                                        plQuery = plListZy1.stream().filter(s -> s.getIsProject() == 1 && s.getIsRule() == 1 &&
-                                                StringUtils.isNotBlank(s.getRuleName()) && s.getRuleName().equals(item.getRuleName()) &&
-                                                StringUtils.isNotBlank(s.getProjectName()) && s.getProjectName().equals(jk.getHisName())
-                                        ).collect(Collectors.toList());
-
-                                        // 项目
-                                        if (plQuery.size() == 0) {
-                                            plQuery = plListZy1.stream().filter(s -> s.getIsProject() == 1 && s.getIsRule() == 2 &&
-                                                    StringUtils.isNotBlank(s.getProjectName()) && s.getProjectName().equals(jk.getHisName())
-                                            ).collect(Collectors.toList());
-                                        }
-                                        // 规则二 科室
-                                        // 规则 + 项目
-                                        plQuery2 = plListZy2.stream().filter(s -> s.getIsProject() == 1 && s.getIsRule() == 1 &&
-                                                StringUtils.isNotBlank(s.getRuleName()) && s.getRuleName().equals(item.getRuleName()) &&
-                                                StringUtils.isNotBlank(s.getProjectName()) && s.getProjectName().equals(jk.getHisName())
-                                        ).collect(Collectors.toList());
-
-                                        // 项目
-                                        if (plQuery2.size() == 0) {
-                                            plQuery2 = plListZy2.stream().filter(s -> s.getIsProject() == 1 && s.getIsRule() == 2 &&
-                                                    StringUtils.isNotBlank(s.getProjectName()) && s.getProjectName().equals(jk.getHisName())
-                                            ).collect(Collectors.toList());
-                                        }
-                                    }
-                                    if (item.getState() == 0 || item.getState() == 1) {
-                                        if (plQuery.size() == 0) {
-                                            plQuery = plListZy1.stream().filter(s -> s.getIsProject() == 2 && s.getIsRule() == 1 &&
-                                                    StringUtils.isNotBlank(s.getRuleName()) && s.getRuleName().equals(item.getRuleName())
-                                            ).collect(Collectors.toList());
-                                        }
-                                        // 规则二 科室
-                                        if (plQuery2.size() == 0) {
-                                            plQuery2 = plListZy2.stream().filter(s -> s.getIsProject() == 2 && s.getIsRule() == 1 &&
-                                                    StringUtils.isNotBlank(s.getRuleName()) && s.getRuleName().equals(item.getRuleName())
-                                            ).collect(Collectors.toList());
-                                        }
-                                    }
-                                    // 项目编码匹配
-                                    if (item.getState() == 2) {
-                                        isProjectCode = true;
                                     }
                                 }
+                                // 项目 getHisName / 改 getItemName
+                                if (item.getState() == 1) {
+                                    // 规则一
+                                    // 规则 + 项目
+                                    plQuery = plListMz1.stream().filter(s -> s.getIsProject() == 1 && s.getIsRule() == 1 &&
+                                            StringUtils.isNotBlank(s.getRuleName()) && s.getRuleName().equals(item.getRuleName()) &&
+                                            StringUtils.isNotBlank(s.getProjectName()) && s.getProjectName().equals(jk.getItemName())
+                                    ).collect(Collectors.toList());
 
-                                if (plQuery.size() > 0) {
-                                    cpl = plQuery.get(0);
-                                    this.setDksAndDoctorValue(ybChsVerify, cpl, jk, deptList);
-                                } else {
-                                    if (item.getState() == 0) {
+                                    // 项目
+                                    if (plQuery.size() == 0) {
+                                        plQuery = plListMz1.stream().filter(s -> s.getIsProject() == 1 && s.getIsRule() == 2 &&
+                                                StringUtils.isNotBlank(s.getProjectName()) && s.getProjectName().equals(jk.getItemName())
+                                        ).collect(Collectors.toList());
+                                    }
+                                    // 规则二 科室
+                                    // 规则 + 项目
+                                    plQuery2 = plListMz2.stream().filter(s -> s.getIsProject() == 1 && s.getIsRule() == 1 &&
+                                            StringUtils.isNotBlank(s.getRuleName()) && s.getRuleName().equals(item.getRuleName()) &&
+                                            StringUtils.isNotBlank(s.getProjectName()) && s.getProjectName().equals(jk.getItemName())
+                                    ).collect(Collectors.toList());
+
+                                    // 项目
+                                    if (plQuery2.size() == 0) {
+                                        plQuery2 = plListMz2.stream().filter(s -> s.getIsProject() == 1 && s.getIsRule() == 2 &&
+                                                StringUtils.isNotBlank(s.getProjectName()) && s.getProjectName().equals(jk.getItemName())
+                                        ).collect(Collectors.toList());
+                                    }
+                                }
+                                if (item.getState() == 0 || item.getState() == 1) {
+                                    if (plQuery.size() == 0) {
+                                        plQuery = plListMz1.stream().filter(s -> s.getIsProject() == 2 && s.getIsRule() == 1 &&
+                                                StringUtils.isNotBlank(s.getRuleName()) && s.getRuleName().equals(item.getRuleName())
+                                        ).collect(Collectors.toList());
+                                    }
+                                    // 规则二 科室
+                                    if (plQuery2.size() == 0) {
+                                        plQuery2 = plListMz2.stream().filter(s -> s.getIsProject() == 2 && s.getIsRule() == 1 &&
+                                                StringUtils.isNotBlank(s.getRuleName()) && s.getRuleName().equals(item.getRuleName())
+                                        ).collect(Collectors.toList());
+                                    }
+                                }
+                                // 项目编码匹配
+                                if (item.getState() == 2) {
+                                    // 规则 + 项目
+                                    plQuery = plListMz1.stream().filter(s -> s.getIsProject() == 1 && s.getIsRule() == 1 &&
+                                            StringUtils.isNotBlank(s.getRuleName()) && s.getRuleName().equals(item.getRuleName()) &&
+                                            StringUtils.isNotBlank(s.getProjectName()) && s.getProjectName().equals(jk.getItemName())
+                                    ).collect(Collectors.toList());
+                                    // 规则二 科室 规则+项目
+                                    plQuery2 = plListMz2.stream().filter(s -> s.getIsProject() == 1 && s.getIsRule() == 1 &&
+                                            StringUtils.isNotBlank(s.getRuleName()) && s.getRuleName().equals(item.getRuleName()) &&
+                                            StringUtils.isNotBlank(s.getProjectName()) && s.getProjectName().equals(jk.getItemName())
+                                    ).collect(Collectors.toList());
+
+                                    if (plQuery.size() == 0) {
                                         back.setProjectName(jk.getItemName());
+                                        plQuery = plListMz1.stream().filter(s -> s.getIsProject() == 1 && s.getIsRule() == 1 &&
+                                                StringUtils.isNotBlank(s.getRuleName()) && s.getRuleName().equals(item.getRuleName()) &&
+                                                StringUtils.isNotBlank(s.getProjectName()) && s.getProjectName().equals(jk.getHisName())
+                                        ).collect(Collectors.toList());
+                                        // 规则二 科室 规则+项目
+                                        plQuery2 = plListMz2.stream().filter(s -> s.getIsProject() == 1 && s.getIsRule() == 1 &&
+                                                StringUtils.isNotBlank(s.getRuleName()) && s.getRuleName().equals(item.getRuleName()) &&
+                                                StringUtils.isNotBlank(s.getProjectName()) && s.getProjectName().equals(jk.getHisName())
+                                        ).collect(Collectors.toList());
                                     }
-                                    if (item.getState() == 1) {
+                                    if (plQuery.size() == 0) {
                                         back.setProjectName(jk.getHisName());
+                                        plQuery = plListMz1.stream().filter(s -> s.getIsProject() == 1 && s.getIsRule() == 1 &&
+                                                StringUtils.isNotBlank(s.getRuleName()) && s.getRuleName().equals(item.getRuleName()) &&
+                                                StringUtils.isNotBlank(s.getProjectName()) && s.getProjectName().equals(item.getProjectName())
+                                        ).collect(Collectors.toList());
+                                        // 规则二 科室 规则+项目
+                                        plQuery2 = plListMz2.stream().filter(s -> s.getIsProject() == 1 && s.getIsRule() == 1 &&
+                                                StringUtils.isNotBlank(s.getRuleName()) && s.getRuleName().equals(item.getRuleName()) &&
+                                                StringUtils.isNotBlank(s.getProjectName()) && s.getProjectName().equals(item.getProjectName())
+                                        ).collect(Collectors.toList());
                                     }
-                                    if (isProjectCode) {
-                                        ybChsVerify.setVerifyDoctorCode(jk.getOrderDocId());
-                                        ybChsVerify.setVerifyDoctorName(jk.getOrderDocName());
-                                        deptQueryList = deptList.stream().filter(s -> s.getDeptId().equals(jk.getDeptId())).collect(Collectors.toList());
-                                        if (deptQueryList.size() > 0) {
-                                            ybChsVerify.setVerifyDksId(deptQueryList.get(0).getDksId() + "" + deptQueryList.get(0).getFyid());
-                                            ybChsVerify.setVerifyDksName(deptQueryList.get(0).getDksName());
-                                            ybChsVerify.setVerifyFyid(deptQueryList.get(0).getFyid());
-                                        }
-                                    }
-                                }
+                                    // 项目
+                                    if (plQuery.size() == 0) {
+                                        back.setProjectName(item.getProjectName());
+                                        plQuery = plListMz1.stream().filter(s -> s.getIsProject() == 1 && s.getIsRule() == 2 &&
+                                                StringUtils.isNotBlank(s.getProjectName()) && s.getProjectName().equals(jk.getItemName())
+                                        ).collect(Collectors.toList());
+                                        // 规则二 科室 项目
+                                        plQuery2 = plListMz2.stream().filter(s -> s.getIsProject() == 1 && s.getIsRule() == 2 &&
+                                                StringUtils.isNotBlank(s.getProjectName()) && s.getProjectName().equals(jk.getItemName())
+                                        ).collect(Collectors.toList());
 
-                                // 规则二 科室
-                                if (StringUtils.isNotBlank(ybChsVerify.getVerifyDksId())) {
-                                    if (plQuery2.size() > 0) {
-                                        plQuery2 = plQuery2.stream().filter(s -> s.getDksId().equals(ybChsVerify.getVerifyDksId())).collect(Collectors.toList());
-                                    } else {
-                                        if (item.getIsOutpfees() == 1) {
-                                            plQuery2 = plListMz2.stream().filter(s -> s.getIsProject() == 2 && s.getIsRule() == 2 &&
-                                                    s.getDksId().equals(ybChsVerify.getVerifyDksId())).collect(Collectors.toList());
-                                        } else {
-                                            plQuery2 = plListZy2.stream().filter(s -> s.getIsProject() == 2 && s.getIsRule() == 2 &&
-                                                    s.getDksId().equals(ybChsVerify.getVerifyDksId())).collect(Collectors.toList());
+                                        if (plQuery.size() == 0) {
+                                            back.setProjectName(jk.getItemName());
+                                            plQuery = plListMz1.stream().filter(s -> s.getIsProject() == 1 && s.getIsRule() == 2 &&
+                                                    StringUtils.isNotBlank(s.getProjectName()) && s.getProjectName().equals(jk.getHisName())
+                                            ).collect(Collectors.toList());
+                                            // 规则二 科室 项目
+                                            plQuery2 = plListMz2.stream().filter(s -> s.getIsProject() == 1 && s.getIsRule() == 2 &&
+                                                    StringUtils.isNotBlank(s.getProjectName()) && s.getProjectName().equals(jk.getHisName())
+                                            ).collect(Collectors.toList());
                                         }
-                                    }
-                                    if (plQuery2.size() > 0) {
-                                        cpl2 = plQuery2.get(0);
-                                        this.setDksAndDoctorValue(ybChsVerify, cpl2, jk, deptList);
+
+                                        if (plQuery.size() == 0) {
+                                            back.setProjectName(jk.getHisName());
+                                            plQuery = plListMz1.stream().filter(s -> s.getIsProject() == 1 && s.getIsRule() == 2 &&
+                                                    StringUtils.isNotBlank(s.getProjectName()) && s.getProjectName().equals(item.getProjectName())
+                                            ).collect(Collectors.toList());
+                                            // 规则二 科室 项目
+                                            plQuery2 = plListMz2.stream().filter(s -> s.getIsProject() == 1 && s.getIsRule() == 2 &&
+                                                    StringUtils.isNotBlank(s.getProjectName()) && s.getProjectName().equals(item.getProjectName())
+                                            ).collect(Collectors.toList());
+                                        }
+                                    } else {
+                                        isProjectCode = true;
                                     }
                                 }
                             } else {
-                                back.setCurrencyField("否");
-                                back.setProjectName(item.getProjectName());
-                                // 无HIS项目
-                                // 按照规则
-                                if (item.getIsOutpfees() == 1) {
+                                // 住院
+                                // 项目 getItemName / 改 getHisName
+                                // 医保项目名称影响 itemName\hisName
+                                if (item.getState() == 0) {
+                                    // 规则一
+                                    // 规则 + 项目
+                                    plQuery = plListZy1.stream().filter(s -> s.getIsProject() == 1 && s.getIsRule() == 1 &&
+                                            StringUtils.isNotBlank(s.getRuleName()) && s.getRuleName().equals(item.getRuleName()) &&
+                                            StringUtils.isNotBlank(s.getProjectName()) && s.getProjectName().equals(jk.getHisName())
+                                    ).collect(Collectors.toList());
+
+                                    // 规则一
+                                    // 项目
+                                    if (plQuery.size() == 0) {
+                                        plQuery = plListZy1.stream().filter(s -> s.getIsProject() == 1 && s.getIsRule() == 2 &&
+                                                StringUtils.isNotBlank(s.getProjectName()) && s.getProjectName().equals(jk.getHisName())
+                                        ).collect(Collectors.toList());
+                                    }
+                                    // 规则二 科室
+                                    // 规则 + 项目
+                                    plQuery2 = plListZy2.stream().filter(s -> s.getIsProject() == 1 && s.getIsRule() == 1 &&
+                                            StringUtils.isNotBlank(s.getRuleName()) && s.getRuleName().equals(item.getRuleName()) &&
+                                            StringUtils.isNotBlank(s.getProjectName()) && s.getProjectName().equals(jk.getHisName())
+                                    ).collect(Collectors.toList());
+
+                                    // 项目
+                                    if (plQuery2.size() == 0) {
+                                        plQuery2 = plListZy2.stream().filter(s -> s.getIsProject() == 1 && s.getIsRule() == 2 &&
+                                                StringUtils.isNotBlank(s.getProjectName()) && s.getProjectName().equals(jk.getHisName())
+                                        ).collect(Collectors.toList());
+                                    }
+                                }
+                                // 项目 getHisName / 改 getItemName
+                                if (item.getState() == 1) {
+                                    // 规则一
+                                    // 规则 + 项目
+                                    plQuery = plListZy1.stream().filter(s -> s.getIsProject() == 1 && s.getIsRule() == 1 &&
+                                            StringUtils.isNotBlank(s.getRuleName()) && s.getRuleName().equals(item.getRuleName()) &&
+                                            StringUtils.isNotBlank(s.getProjectName()) && s.getProjectName().equals(jk.getItemName())
+                                    ).collect(Collectors.toList());
+
+                                    // 项目
+                                    if (plQuery.size() == 0) {
+                                        plQuery = plListZy1.stream().filter(s -> s.getIsProject() == 1 && s.getIsRule() == 2 &&
+                                                StringUtils.isNotBlank(s.getProjectName()) && s.getProjectName().equals(jk.getItemName())
+                                        ).collect(Collectors.toList());
+                                    }
+                                    // 规则二 科室
+                                    // 规则 + 项目
+                                    plQuery2 = plListZy2.stream().filter(s -> s.getIsProject() == 1 && s.getIsRule() == 1 &&
+                                            StringUtils.isNotBlank(s.getRuleName()) && s.getRuleName().equals(item.getRuleName()) &&
+                                            StringUtils.isNotBlank(s.getProjectName()) && s.getProjectName().equals(jk.getItemName())
+                                    ).collect(Collectors.toList());
+
+                                    // 项目
+                                    if (plQuery2.size() == 0) {
+                                        plQuery2 = plListZy2.stream().filter(s -> s.getIsProject() == 1 && s.getIsRule() == 2 &&
+                                                StringUtils.isNotBlank(s.getProjectName()) && s.getProjectName().equals(jk.getItemName())
+                                        ).collect(Collectors.toList());
+                                    }
+                                }
+                                if (item.getState() == 0 || item.getState() == 1) {
+                                    if (plQuery.size() == 0) {
+                                        plQuery = plListZy1.stream().filter(s -> s.getIsProject() == 2 && s.getIsRule() == 1 &&
+                                                StringUtils.isNotBlank(s.getRuleName()) && s.getRuleName().equals(item.getRuleName())
+                                        ).collect(Collectors.toList());
+                                    }
+                                    // 规则二 科室
+                                    if (plQuery2.size() == 0) {
+                                        plQuery2 = plListZy2.stream().filter(s -> s.getIsProject() == 2 && s.getIsRule() == 1 &&
+                                                StringUtils.isNotBlank(s.getRuleName()) && s.getRuleName().equals(item.getRuleName())
+                                        ).collect(Collectors.toList());
+                                    }
+                                }
+                                // 项目编码匹配
+                                if (item.getState() == 2) {
+                                    // 规则 + 项目
+
+                                    plQuery = plListZy1.stream().filter(s -> s.getIsProject() == 1 && s.getIsRule() == 1 &&
+                                            StringUtils.isNotBlank(s.getRuleName()) && s.getRuleName().equals(item.getRuleName()) &&
+                                            StringUtils.isNotBlank(s.getProjectName()) && s.getProjectName().equals(jk.getItemName())
+                                    ).collect(Collectors.toList());
+
+                                    // 规则二 科室 规则+项目
+                                    plQuery2 = plListZy2.stream().filter(s -> s.getIsProject() == 1 && s.getIsRule() == 1 &&
+                                            StringUtils.isNotBlank(s.getRuleName()) && s.getRuleName().equals(item.getRuleName()) &&
+                                            StringUtils.isNotBlank(s.getProjectName()) && s.getProjectName().equals(jk.getItemName())
+                                    ).collect(Collectors.toList());
+
+                                    if(plQuery.size() == 0) {
+                                        back.setProjectName(jk.getItemName());
+                                        plQuery = plListZy1.stream().filter(s -> s.getIsProject() == 1 && s.getIsRule() == 1 &&
+                                                StringUtils.isNotBlank(s.getRuleName()) && s.getRuleName().equals(item.getRuleName()) &&
+                                                StringUtils.isNotBlank(s.getProjectName()) && s.getProjectName().equals(jk.getHisName())
+                                        ).collect(Collectors.toList());
+
+                                        // 规则二 科室 规则+项目
+                                        plQuery2 = plListZy2.stream().filter(s -> s.getIsProject() == 1 && s.getIsRule() == 1 &&
+                                                StringUtils.isNotBlank(s.getRuleName()) && s.getRuleName().equals(item.getRuleName()) &&
+                                                StringUtils.isNotBlank(s.getProjectName()) && s.getProjectName().equals(jk.getHisName())
+                                        ).collect(Collectors.toList());
+                                    }
+
+                                    if(plQuery.size() == 0) {
+                                        back.setProjectName(jk.getHisName());
+                                        plQuery = plListZy1.stream().filter(s -> s.getIsProject() == 1 && s.getIsRule() == 1 &&
+                                                StringUtils.isNotBlank(s.getRuleName()) && s.getRuleName().equals(item.getRuleName()) &&
+                                                StringUtils.isNotBlank(s.getProjectName()) && s.getProjectName().equals(item.getProjectName())
+                                        ).collect(Collectors.toList());
+
+                                        // 规则二 科室 规则+项目
+                                        plQuery2 = plListZy2.stream().filter(s -> s.getIsProject() == 1 && s.getIsRule() == 1 &&
+                                                StringUtils.isNotBlank(s.getRuleName()) && s.getRuleName().equals(item.getRuleName()) &&
+                                                StringUtils.isNotBlank(s.getProjectName()) && s.getProjectName().equals(item.getProjectName())
+                                        ).collect(Collectors.toList());
+                                    }
+
+                                    // 规则一
+                                    // 项目
+                                    if (plQuery.size() == 0) {
+                                        back.setProjectName(item.getProjectName());
+                                        plQuery = plListZy1.stream().filter(s -> s.getIsProject() == 1 && s.getIsRule() == 2 &&
+                                                StringUtils.isNotBlank(s.getProjectName()) && s.getProjectName().equals(jk.getItemName())
+                                        ).collect(Collectors.toList());
+
+                                        // 规则二 科室 项目
+                                        plQuery2 = plListZy2.stream().filter(s -> s.getIsProject() == 1 && s.getIsRule() == 2 &&
+                                                StringUtils.isNotBlank(s.getProjectName()) && s.getProjectName().equals(jk.getItemName())
+                                        ).collect(Collectors.toList());
+
+                                        if(plQuery.size() == 0) {
+                                            back.setProjectName(jk.getItemName());
+                                            plQuery = plListZy1.stream().filter(s -> s.getIsProject() == 1 && s.getIsRule() == 2 &&
+                                                    StringUtils.isNotBlank(s.getProjectName()) && s.getProjectName().equals(jk.getHisName())
+                                            ).collect(Collectors.toList());
+
+                                            // 规则二 科室 项目
+                                            plQuery2 = plListZy2.stream().filter(s -> s.getIsProject() == 1 && s.getIsRule() == 2 &&
+                                                    StringUtils.isNotBlank(s.getProjectName()) && s.getProjectName().equals(jk.getHisName())
+                                            ).collect(Collectors.toList());
+                                        }
+
+                                        if(plQuery.size() == 0) {
+                                            back.setProjectName(jk.getHisName());
+                                            plQuery = plListZy1.stream().filter(s -> s.getIsProject() == 1 && s.getIsRule() == 2 &&
+                                                    StringUtils.isNotBlank(s.getProjectName()) && s.getProjectName().equals(item.getProjectName())
+                                            ).collect(Collectors.toList());
+
+                                            // 规则二 科室 项目
+                                            plQuery2 = plListZy2.stream().filter(s -> s.getIsProject() == 1 && s.getIsRule() == 2 &&
+                                                    StringUtils.isNotBlank(s.getProjectName()) && s.getProjectName().equals(item.getProjectName())
+                                            ).collect(Collectors.toList());
+                                        }
+                                    } else {
+                                        isProjectCode = true;
+                                    }
+                                }
+                            }
+
+                            if (plQuery.size() > 0) {
+                                cpl = plQuery.get(0);
+                                this.setDksAndDoctorValue(ybChsVerify, cpl, jk, deptList);
+                            } else {
+                                if (item.getState() == 0) {
+                                    back.setProjectName(jk.getItemName());
+                                }
+                                if (item.getState() == 1) {
+                                    back.setProjectName(jk.getHisName());
+                                }
+                                if (isProjectCode) {
+                                    ybChsVerify.setVerifyDoctorCode(jk.getOrderDocId());
+                                    ybChsVerify.setVerifyDoctorName(jk.getOrderDocName());
+                                    deptQueryList = deptList.stream().filter(s -> s.getDeptId().equals(jk.getDeptId())).collect(Collectors.toList());
+                                    if (deptQueryList.size() > 0) {
+                                        ybChsVerify.setVerifyDksId(deptQueryList.get(0).getDksId() + "" + deptQueryList.get(0).getFyid());
+                                        ybChsVerify.setVerifyDksName(deptQueryList.get(0).getDksName());
+                                        ybChsVerify.setVerifyFyid(deptQueryList.get(0).getFyid());
+                                    }
+                                }
+                            }
+
+                            // 规则二 科室
+                            if (StringUtils.isNotBlank(ybChsVerify.getVerifyDksId())) {
+                                if (plQuery2.size() > 0) {
+                                    plQuery2 = plQuery2.stream().filter(s -> s.getDksId().equals(ybChsVerify.getVerifyDksId())).collect(Collectors.toList());
+                                } else {
+                                    if (item.getIsOutpfees() == 1) {
+                                        plQuery2 = plListMz2.stream().filter(s -> s.getIsProject() == 2 && s.getIsRule() == 2 &&
+                                                s.getDksId().equals(ybChsVerify.getVerifyDksId())).collect(Collectors.toList());
+                                    } else {
+                                        plQuery2 = plListZy2.stream().filter(s -> s.getIsProject() == 2 && s.getIsRule() == 2 &&
+                                                s.getDksId().equals(ybChsVerify.getVerifyDksId())).collect(Collectors.toList());
+                                    }
+                                }
+                                if (plQuery2.size() > 0) {
+                                    cpl2 = plQuery2.get(0);
+                                    this.setDksAndDoctorValue(ybChsVerify, cpl2, jk, deptList);
+                                }
+                            }
+                        } else {
+                            back.setCurrencyField("否");
+                            back.setProjectName(item.getProjectName());
+                            // 无HIS项目
+                            // 按照规则
+                            if (item.getIsOutpfees() == 1) {
+                                plQuery = plListMz1.stream().filter(s -> s.getIsProject() == 1 && s.getIsRule() == 1 &&
+                                        StringUtils.isNotBlank(s.getProjectName()) && s.getProjectName().equals(item.getProjectName()) &&
+                                        StringUtils.isNotBlank(s.getRuleName()) && s.getRuleName().equals(item.getRuleName())
+                                ).collect(Collectors.toList());
+
+                                if (plQuery.size() == 0) {
+                                    plQuery = plListMz1.stream().filter(s -> s.getIsProject() == 1 && s.getIsRule() == 2 &&
+                                            StringUtils.isNotBlank(s.getProjectName()) && s.getProjectName().equals(item.getProjectName())
+                                    ).collect(Collectors.toList());
+                                }
+
+                                if (plQuery.size() == 0) {
                                     plQuery = plListMz1.stream().filter(s -> s.getIsProject() == 2 && s.getIsRule() == 1 &&
                                             StringUtils.isNotBlank(s.getRuleName()) && s.getRuleName().equals(item.getRuleName())
                                     ).collect(Collectors.toList());
-                                } else {
+                                }
+                            } else {
+                                plQuery = plListZy1.stream().filter(s -> s.getIsProject() == 1 && s.getIsRule() == 1 &&
+                                        StringUtils.isNotBlank(s.getProjectName()) && s.getProjectName().equals(item.getProjectName()) &&
+                                        StringUtils.isNotBlank(s.getRuleName()) && s.getRuleName().equals(item.getRuleName())
+                                ).collect(Collectors.toList());
+
+                                if (plQuery.size() == 0) {
+                                    plQuery = plListZy1.stream().filter(s -> s.getIsProject() == 1 && s.getIsRule() == 2 &&
+                                            StringUtils.isNotBlank(s.getProjectName()) && s.getProjectName().equals(item.getProjectName())
+                                    ).collect(Collectors.toList());
+                                }
+
+                                if (plQuery.size() == 0) {
                                     plQuery = plListZy1.stream().filter(s -> s.getIsProject() == 2 && s.getIsRule() == 1 &&
                                             StringUtils.isNotBlank(s.getRuleName()) && s.getRuleName().equals(item.getRuleName())
                                     ).collect(Collectors.toList());
                                 }
-
-                                if (plQuery.size() > 0) {
-                                    cpl = plQuery.get(0);
-                                    // 汇总科室和医生都是固定值
-                                    if (cpl.getDeptType() == YbChsPriorityLevel.DEPT_TYPE_4 &&
-                                            cpl.getPersonType() == YbChsPriorityLevel.PERSON_TYPE_4) {
-                                        ybChsVerify.setVerifyDoctorCode(cpl.getDoctorCodeTo());
-                                        ybChsVerify.setVerifyDoctorName(cpl.getDoctorNameTo());
-                                        ybChsVerify.setVerifyDksId(cpl.getDksIdTo());
-                                        ybChsVerify.setVerifyDksName(cpl.getDksNameTo());
-                                        ybChsVerify.setVerifyFyid(cpl.getFyidTo());
-                                    }
-                                }
                             }
 
-                            if (StringUtils.isBlank(ybChsVerify.getVerifyDoctorCode()) ||
-                                    StringUtils.isBlank(ybChsVerify.getVerifyDksId())) {
-                                String rp = back.getRuleName() + "-" + back.getProjectName();
-                                long count = backList.stream().filter(s ->
-                                        StringUtils.isNotBlank(s.getRuleProject()) && s.getRuleProject().equals(rp)
-                                ).count();
-                                if (count == 0) {
-                                    nid++;
-                                    back.setApplyDateStr(ybChsApply.getApplyDateStr());
-                                    back.setAreaType(ybChsApply.getAreaType());
-                                    back.setIds(UUID.randomUUID().toString());
-                                    back.setRuleProject(rp);
-                                    backList.add(back);
+                            if (plQuery.size() > 0) {
+                                cpl = plQuery.get(0);
+                                // 汇总科室和医生都是固定值
+                                if (cpl.getDeptType() == YbChsPriorityLevel.DEPT_TYPE_4 &&
+                                        cpl.getPersonType() == YbChsPriorityLevel.PERSON_TYPE_4) {
+                                    ybChsVerify.setVerifyDoctorCode(cpl.getDoctorCodeTo());
+                                    ybChsVerify.setVerifyDoctorName(cpl.getDoctorNameTo());
+                                    ybChsVerify.setVerifyDksId(cpl.getDksIdTo());
+                                    ybChsVerify.setVerifyDksName(cpl.getDksNameTo());
+                                    ybChsVerify.setVerifyFyid(cpl.getFyidTo());
                                 }
                             }
+                        }
+
+                        if (StringUtils.isBlank(ybChsVerify.getVerifyDoctorCode()) ||
+                                StringUtils.isBlank(ybChsVerify.getVerifyDksId())) {
+                            String rp = back.getRuleName() + "-" + back.getProjectName();
+                            long count = backList.stream().filter(s ->
+                                    StringUtils.isNotBlank(s.getRuleProject()) && s.getRuleProject().equals(rp)
+                            ).count();
+                            if (count == 0) {
+                                nid++;
+                                back.setApplyDateStr(ybChsApply.getApplyDateStr());
+                                back.setAreaType(ybChsApply.getAreaType());
+                                back.setIds(UUID.randomUUID().toString());
+                                back.setRuleProject(rp);
+                                backList.add(back);
+                            }
+                        }
                         //region 主单
                         /*
                         }

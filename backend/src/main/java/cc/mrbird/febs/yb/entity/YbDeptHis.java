@@ -53,4 +53,11 @@ public class YbDeptHis implements Serializable {
     @ExcelField(value ="分院")
     private String fy_id;
 
+    /**
+     * 肿瘤
+     */
+    @TableField("fb_id")
+    @ExcelField(value ="肿瘤")
+    private String fb_id;
+
 }

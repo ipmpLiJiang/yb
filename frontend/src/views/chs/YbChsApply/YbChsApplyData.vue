@@ -183,7 +183,7 @@ export default {
       {
         title: '诊断信息',
         dataIndex: 'zdNote',
-        width: 120
+        width: 260
       },
       {
         title: '费用日期',

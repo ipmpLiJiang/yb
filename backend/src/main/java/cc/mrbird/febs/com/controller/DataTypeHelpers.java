@@ -437,10 +437,12 @@ public class DataTypeHelpers {
             fyid = "西院";
         } else if(fyid.equals("1003")) {
             fyid = "金银湖";
+        } else if(fyid.equals("1004")) {
+            fyid = "肿瘤";
         } else{
             fyid = "";
         }
-//        1001本院、1002西院、1003金银湖
+//        1001本院、1002西院、1003金银湖、1004肿瘤
         return fyid;
     }
 }

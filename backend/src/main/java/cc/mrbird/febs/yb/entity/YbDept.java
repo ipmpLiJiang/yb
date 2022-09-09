@@ -136,6 +136,20 @@ public class YbDept implements Serializable {
     @ExcelField(value = "分院")
     private String fyid;
 
+    /**
+     * lod分院
+     */
+    @TableField("lodfyid")
+    @ExcelField(value = "分院")
+    private String lodfyid;
+
+    /**
+     * 肿瘤
+     */
+    @TableField("fbid")
+    @ExcelField(value = "肿瘤")
+    private String fbid;
+
 
     public static final String ID = "id";
 

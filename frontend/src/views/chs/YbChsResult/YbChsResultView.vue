@@ -85,6 +85,14 @@
           </div>
         </template>
         <template
+          slot="orderNum"
+          slot-scope="text, record, index"
+        >
+          <div :style="{color:record.state === 1 ? '':'red'}">
+            {{ record.orderNum }}
+          </div>
+        </template>
+        <template
             slot="operation"
             slot-scope="text, record, index"
           >
@@ -178,6 +186,7 @@ export default {
         {text: '项目名称', value: 'projectName'},
         {text: '医生工号', value: 'doctorCode'},
         {text: '医生姓名', value: 'doctorName'},
+        {text: '汇总科室', value: 'resultDksName'},
         {text: '序号', value: 'orderNum'}
       ],
       user: this.$store.state.account.user
@@ -188,6 +197,9 @@ export default {
       return [{
         title: '序号',
         dataIndex: 'orderNum',
+        scopedSlots: {
+          customRender: 'orderNum'
+        },
         fixed: 'left',
         width: 70
       },

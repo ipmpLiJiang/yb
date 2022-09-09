@@ -102,6 +102,7 @@
         case when d.fyid = '1001' then CONCAT( d.dksName, '(本院)' )
         when d.fyid = '1002' then CONCAT( d.dksName, '(西院)' )
         when d.fyid = '1003' then CONCAT( d.dksName, '(金银湖)' )
+        when d.fyid = '1004' then CONCAT( d.dksName, '(肿瘤)' )
         else d.dksName end
         ) currencyField,
         p.areaType,
@@ -195,6 +196,7 @@
         case when d.fyid = '1001' then CONCAT( d.dksName, '(本院)' )
         when d.fyid = '1002' then CONCAT( d.dksName, '(西院)' )
         when d.fyid = '1003' then CONCAT( d.dksName, '(金银湖)' )
+        when d.fyid = '1004' then CONCAT( d.dksName, '(肿瘤)' )
         else d.dksName end
         ) currencyField,
         p.areaType,

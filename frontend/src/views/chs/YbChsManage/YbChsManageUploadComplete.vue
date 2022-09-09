@@ -39,7 +39,7 @@
                   </a-col>
                   <a-col :span="1"> &nbsp; </a-col>
                   <a-col :span="6" style="color:red">
-                    *复议上传附件：大小不得大于4MB，格式为.doc，.docx，.jpg，.png，修改附件请重新上传，重新上传则覆盖已存在附件，附件只能存在一个
+                    *复议上传附件：大小不得大于4MB，格式为.doc，.docx，.jpg，.png，修改附件请重新上传，重新上传则覆盖已存在附件，附件只能上传一个
                   </a-col>
                 </a-row>
                 <!--复议理由-->
@@ -56,7 +56,7 @@
                         placeholder="请输入复议理由"
                         style="width: 100%"
                         :rows="7"
-                        :maxLength="400"
+                        :maxLength="500"
                         v-decorator="[
                           'operateReason',
                           {
@@ -66,6 +66,7 @@
                           },
                         ]"
                       />
+                    <font style="color:red">复议理由不得超过500字</font>
                     </a-form-item>
                   </a-col>
                   <a-col :span="1"> &nbsp; </a-col>

@@ -91,6 +91,9 @@ public class YbChsResultViewServiceImpl extends ServiceImpl<YbChsResultViewMappe
                     if (StringUtils.isNotBlank(value) && keyField.equals("doctorCode")) {
                         queryWrapper.eq(YbChsResult::getDoctorCode, value);
                     }
+                    if (StringUtils.isNotBlank(value) && keyField.equals("resultDksName")) {
+                        queryWrapper.eq(YbChsResult::getDksName, value);
+                    }
                     if (StringUtils.isNotBlank(value) && keyField.equals("orderNum")) {
                         queryWrapper.eq(YbChsResult::getOrderNum, value);
                     }
@@ -207,6 +210,7 @@ public class YbChsResultViewServiceImpl extends ServiceImpl<YbChsResultViewMappe
         crv.setResultDoctorName(cr.getDoctorName());
         crv.setResultDksId(cr.getDksId());
         crv.setResultDksName(cr.getDksName());
+        crv.setFyid(cr.getFyid());
         crv.setOperateReason(cr.getOperateReason());
         crv.setOperateDate(cr.getOperateDate());
         crv.setState(cr.getState());
@@ -391,7 +395,7 @@ public class YbChsResultViewServiceImpl extends ServiceImpl<YbChsResultViewMappe
         Integer jscount = 1;
         List<Integer> fdList = new ArrayList<>();
         for (Integer it : orderNumList) {
-            if (jscount != maxCount) {
+            if (!jscount.equals(maxCount)) {
                 fdList.add(it);
                 jscount++;
             } else {

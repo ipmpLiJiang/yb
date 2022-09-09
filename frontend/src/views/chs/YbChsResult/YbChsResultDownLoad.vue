@@ -99,6 +99,7 @@ export default {
       this.chsResultDownLoad = chsResultDownLoad
       this.startOrderNum = 1
       this.endOrderNum = 100
+      this.maxCount = 20
       this.search()
     },
     downloadFile (record) {

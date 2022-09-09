@@ -522,7 +522,7 @@ public class YbChsManageServiceImpl extends ServiceImpl<YbChsManageMapper, YbChs
                 //同意
                 newChsManage.setReadyDksId(ybChsManage.getChangeDksId());
                 newChsManage.setReadyDksName(ybChsManage.getChangeDksName());
-                newChsManage.setReadyFyid(ybChsManage.getReadyFyid());
+                newChsManage.setReadyFyid(ybChsManage.getChangeFyid());
                 newChsManage.setReadyDoctorCode(ybChsManage.getChangeDoctorCode());
                 newChsManage.setReadyDoctorName(ybChsManage.getChangeDoctorName());
 

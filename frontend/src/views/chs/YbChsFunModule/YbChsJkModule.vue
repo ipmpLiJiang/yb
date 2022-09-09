@@ -108,9 +108,9 @@ export default {
         customRender: (text, row, index) => {
           switch (text) {
             case 0:
-              return 'I'
-            case 1:
               return 'H'
+            case 1:
+              return 'I'
             case 2:
               return 'C'
             default:

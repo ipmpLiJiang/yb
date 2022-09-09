@@ -123,11 +123,25 @@ public class YbDks implements Serializable, Comparable<YbDks> {
     private String fyid;
 
     /**
+     * lod分院
+     */
+    @TableField("lodfyid")
+    @ExcelField(value = "lod分院")
+    private String lodfyid;
+
+    /**
      * 大科室分院编码
      */
     @TableField("dksFyid")
     @ExcelField(value = "大科室分院编码")
     private String dksFyid;
+
+    /**
+     * 肿瘤
+     */
+    @TableField("fbid")
+    @ExcelField(value = "肿瘤")
+    private String fbid;
 
 
     public static final String ID = "id";

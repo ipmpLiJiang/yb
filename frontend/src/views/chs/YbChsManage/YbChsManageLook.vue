@@ -119,7 +119,7 @@
               </a-form-item>
             </a-col>
           </a-row>
-          <!--复议理由-->
+          <!--拒绝理由-->
           <a-row type="flex" justify="start">
             <a-col :span=20>
                 <a-form-item
@@ -127,7 +127,7 @@
                   labelCol: { span: 3 },
                   wrapperCol: { span: 19 }
                 }"
-                label="复议理由"
+                label="拒绝理由"
               >
               {{ybChsManageLook.operateReason}}
               </a-form-item>

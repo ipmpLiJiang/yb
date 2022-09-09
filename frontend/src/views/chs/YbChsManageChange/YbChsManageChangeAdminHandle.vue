@@ -186,7 +186,6 @@ export default {
       this.ybChsManage.readyDoctorName = item.personName
     },
     selectDksChang (item) {
-      console.log(item)
       this.ybChsManage.readyDksId = item.value
       this.ybChsManage.readyDksName = item.dksName
       this.ybChsManage.readyFyid = item.fyid

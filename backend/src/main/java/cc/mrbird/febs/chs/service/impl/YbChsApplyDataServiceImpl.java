@@ -765,9 +765,11 @@ public class YbChsApplyDataServiceImpl extends ServiceImpl<YbChsApplyDataMapper,
         if (dataType == 0) {
             hisWhere = " inpatientId in(" + sql + ")";
             if (state == 0) {
-                hisWhere += " and itemname in(" + sql1 + ") and ";
-            } else if (state == 1) {
+//                hisWhere += " and itemname in(" + sql1 + ") and ";
                 hisWhere += " and HisName in(" + sql1 + ") and ";
+            } else if (state == 1) {
+//                hisWhere += " and HisName in(" + sql1 + ") and ";
+                hisWhere += " and itemname in(" + sql1 + ") and ";
             } else {
                 hisWhere += " and itemcode in(" + sql1 + ") and ";
             }
@@ -788,6 +790,7 @@ public class YbChsApplyDataServiceImpl extends ServiceImpl<YbChsApplyDataMapper,
             his.setParentCode(item.getDksId());
             his.setBm_mc(item.getDksName());
             his.setFy_id(item.getFyid());
+            his.setFb_id(item.getFbid());
             departList.add(his);
         }
         return departList;
@@ -814,16 +817,28 @@ public class YbChsApplyDataServiceImpl extends ServiceImpl<YbChsApplyDataMapper,
                     projects = projects.replace("，", ",");
                     String[] projectArr = projects.split(",");
                     for (String project : projectArr) {
+//                        queryRifDataList = rifDataList.stream().filter(
+//                                s -> s.getInpatientId().equals(item.getZymzNumber()) &&
+//                                        s.getHisName().equals(project) &&
+//                                        sdf.format(s.getFeeDate()).equals(sdf.format(item.getCostDate()))
+//                        ).collect(Collectors.toList());
+//
+//                        if (queryRifDataList.size() == 0) {
+//                            queryRifDataList = rifDataList.stream().filter(
+//                                    s -> s.getInpatientId().equals(item.getZymzNumber()) &&
+//                                            s.getHisName().equals(project)
+//                            ).collect(Collectors.toList());
+//                        }
                         queryRifDataList = rifDataList.stream().filter(
                                 s -> s.getInpatientId().equals(item.getZymzNumber()) &&
-                                        s.getHisName().equals(project) &&
+                                        s.getItemName().equals(project) &&
                                         sdf.format(s.getFeeDate()).equals(sdf.format(item.getCostDate()))
                         ).collect(Collectors.toList());
 
                         if (queryRifDataList.size() == 0) {
                             queryRifDataList = rifDataList.stream().filter(
                                     s -> s.getInpatientId().equals(item.getZymzNumber()) &&
-                                            s.getHisName().equals(project)
+                                            s.getItemName().equals(project)
                             ).collect(Collectors.toList());
                         }
                         if (queryRifDataList.size() > 0) {
@@ -860,16 +875,28 @@ public class YbChsApplyDataServiceImpl extends ServiceImpl<YbChsApplyDataMapper,
                     String[] projectArr = projects.split(",");
 
                     for (String project : projectArr) {
+//                        queryRifDataList = rifDataList.stream().filter(
+//                                s -> s.getInpatientId().equals(item.getZymzNumber()) &&
+//                                        s.getItemName().equals(project) &&
+//                                        sdf.format(s.getFeeDate()).equals(sdf.format(item.getCostDate()))
+//                        ).collect(Collectors.toList());
+//
+//                        if (queryRifDataList.size() == 0) {
+//                            queryRifDataList = rifDataList.stream().filter(
+//                                    s -> s.getInpatientId().equals(item.getZymzNumber()) &&
+//                                            s.getItemName().equals(project)
+//                            ).collect(Collectors.toList());
+//                        }
                         queryRifDataList = rifDataList.stream().filter(
                                 s -> s.getInpatientId().equals(item.getZymzNumber()) &&
-                                        s.getItemName().equals(project) &&
+                                        s.getHisName().equals(project) &&
                                         sdf.format(s.getFeeDate()).equals(sdf.format(item.getCostDate()))
                         ).collect(Collectors.toList());
 
                         if (queryRifDataList.size() == 0) {
                             queryRifDataList = rifDataList.stream().filter(
                                     s -> s.getInpatientId().equals(item.getZymzNumber()) &&
-                                            s.getItemName().equals(project)
+                                            s.getHisName().equals(project)
                             ).collect(Collectors.toList());
                         }
                         if (queryRifDataList.size() > 0) {

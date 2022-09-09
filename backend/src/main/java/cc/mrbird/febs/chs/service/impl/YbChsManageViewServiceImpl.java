@@ -86,6 +86,9 @@ public class YbChsManageViewServiceImpl extends ServiceImpl<YbChsManageViewMappe
                     if (ybChsManageView.getReadyDoctorCode() != null && !isConf) {
                         queryWrapper.eq(YbChsManage::getReadyDoctorCode, ybChsManageView.getReadyDoctorCode());
                     }
+                    if (StringUtils.isNotBlank(value) && keyField.equals("readyDksName")) {
+                        queryWrapper.eq(YbChsManage::getReadyDksName, value);
+                    }
                     if (StringUtils.isNotBlank(value) && keyField.equals("orderNum")) {
                         queryWrapper.eq(YbChsManage::getOrderNum, value);
                     }

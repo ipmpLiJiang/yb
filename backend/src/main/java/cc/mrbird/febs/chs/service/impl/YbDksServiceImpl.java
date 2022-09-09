@@ -136,14 +136,22 @@ public class YbDksServiceImpl extends ServiceImpl<YbDksMapper, YbDks> implements
         List<YbDks> findList = this.findDksList(new YbDks(), 0);
         List<String> codeList = new ArrayList<>();
         for (YbDeptHis item : list) {
-            String code = item.getParentCode() + "" + item.getFy_id();
+            String fyid = "";
+            if(item.getFy_id().equals("1001") && item.getFb_id().equals("01")) {
+                fyid = "1004";
+            } else {
+                fyid = item.getFy_id();
+            }
+            String code = item.getParentCode() + "" + fyid;
             if (findList.stream().filter(s -> s.getDksFyid().equals(code)).count() == 0) {
                 if (codeList.stream().filter(s -> s.equals(code)).count() == 0) {
                     codeList.add(code);
                     YbDks dept = new YbDks();
                     dept.setDksId(item.getParentCode());
                     dept.setDksName(item.getBm_mc());
-                    dept.setFyid(item.getFy_id());
+                    dept.setFyid(fyid);
+                    dept.setFbid(item.getFb_id());
+                    dept.setLodfyid(item.getFy_id());
                     dept.setDksFyid(code);
                     dept.setCreateTime(new Date());
                     dept.setIsDeletemark(1);

@@ -82,13 +82,15 @@ const data = {
 }
 const fy = {
   getFyName (fyid) {
-    // 1001 本院  1002 西院 1003 金银湖
+    // 1001 本院  1002 西院 1003 金银湖 1004 肿瘤
     if (fyid === '1001') {
       return '本院'
     } else if (fyid === '1002') {
       return '西院'
     } else if (fyid === '1003') {
       return '金银湖'
+    } else if (fyid === '1004') {
+      return '肿瘤'
     } else {
       return ''
     }

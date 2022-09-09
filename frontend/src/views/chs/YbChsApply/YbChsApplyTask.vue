@@ -110,9 +110,9 @@ export default {
         customRender: (text, row, index) => {
           switch (text) {
             case 0:
-              return '第一次,Item项目名称'
+              return '第一次,His项目名称'
             case 1:
-              return '第二次,His项目名称'
+              return '第二次,Item项目名称'
             case 2:
               return '第三次,项目编码'
             default:

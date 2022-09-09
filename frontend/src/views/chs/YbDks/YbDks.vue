@@ -186,6 +186,8 @@ export default {
               return '西院'
             case '1003':
               return '金银湖'
+            case '1004':
+              return '肿瘤'
             default:
               return row.fyid
           }

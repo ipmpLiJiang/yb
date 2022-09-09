@@ -167,6 +167,7 @@ export default {
         {text: '项目名称', value: 'projectName'},
         {text: '医生工号', value: 'readyDoctorCode'},
         {text: '医生姓名', value: 'readyDoctorName'},
+        {text: '汇总科室', value: 'readyDksName'},
         {text: '序号', value: 'orderNum'}
       ],
       tableSelectKey: '1',

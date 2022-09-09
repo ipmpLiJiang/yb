@@ -571,7 +571,7 @@ export default {
         width: 180
       },
       {
-        title: '是否项目',
+        title: '接口是否匹配',
         dataIndex: 'currencyField',
         width: 60
       },
