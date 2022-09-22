@@ -135,6 +135,9 @@ public class YbChsResultViewController extends BaseController {
                     dataExport.setResultDksId(item.getResultDksId());//汇总科室名称
                     dataExport.setResultDksName(item.getResultDksName());//汇总科室名称
 
+                    dataExport.setInitDeptId(item.getInitDeptId());//初始楼层名称
+                    dataExport.setInitDeptName(item.getInitDeptName());//初始楼层名称
+
                     if (item.getResultDoctorCode() == null) {
                         queryManageList = manageList.stream().filter(s -> s.getApplyDataId().equals(item.getApplyDataId())).collect(Collectors.toList());
                         if (queryManageList.size() > 0) {
@@ -142,6 +145,8 @@ public class YbChsResultViewController extends BaseController {
                             dataExport.setResultDoctorName(queryManageList.get(0).getReadyDoctorName());//复议医生姓名
                             dataExport.setResultDksId(queryManageList.get(0).getReadyDksId());//汇总科室名称
                             dataExport.setResultDksName(queryManageList.get(0).getReadyDksName());//汇总科室名称
+                            dataExport.setInitDeptId(queryManageList.get(0).getInitDeptId());//初始楼层名称
+                            dataExport.setInitDeptName(queryManageList.get(0).getInitDeptName());//初始楼层名称
                         }
                     }
 

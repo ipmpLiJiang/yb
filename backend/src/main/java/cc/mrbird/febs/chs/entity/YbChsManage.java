@@ -255,6 +255,20 @@ public class YbChsManage implements Serializable, Comparable<YbChsManage> {
     @ExcelField(value = "变更分院")
     private String changeFyid;
 
+    /**
+     * 初始楼层编码
+     */
+    @TableField("initDeptId")
+    @ExcelField(value = "初始楼层编码")
+    private String initDeptId;
+
+    /**
+     * 初始楼层
+     */
+    @TableField("initDeptName")
+    @ExcelField(value = "初始楼层")
+    private String initDeptName;
+
 
     public static final String ID = "id";
 
@@ -317,6 +331,10 @@ public class YbChsManage implements Serializable, Comparable<YbChsManage> {
     public static final String READYFYID = "readyFyid";
 
     public static final String CHANGEFYID = "changeFyid";
+
+    public static final String INITDEPTID = "initDeptId";
+
+    public static final String INITDEPTNAME = "initDeptName";
 
     @Override
     public int compareTo(YbChsManage o) {

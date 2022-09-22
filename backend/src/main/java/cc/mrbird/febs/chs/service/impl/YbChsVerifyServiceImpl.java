@@ -535,6 +535,8 @@ public class YbChsVerifyServiceImpl extends ServiceImpl<YbChsVerifyMapper, YbChs
                                 if (isProjectCode) {
                                     ybChsVerify.setVerifyDoctorCode(jk.getOrderDocId());
                                     ybChsVerify.setVerifyDoctorName(jk.getOrderDocName());
+                                    ybChsVerify.setInitDeptId(jk.getDeptId());
+                                    ybChsVerify.setInitDeptName(jk.getDeptName());
                                     deptQueryList = deptList.stream().filter(s -> s.getDeptId().equals(jk.getDeptId())).collect(Collectors.toList());
                                     if (deptQueryList.size() > 0) {
                                         ybChsVerify.setVerifyDksId(deptQueryList.get(0).getDksId() + "" + deptQueryList.get(0).getFyid());
@@ -711,13 +713,18 @@ public class YbChsVerifyServiceImpl extends ServiceImpl<YbChsVerifyMapper, YbChs
             // 5主治科室 1开方科室、2执行科室、3计费科室
             if (cpl.getDeptType() == YbChsPriorityLevel.DEPT_TYPE_1 || cpl.getDeptType() == YbChsPriorityLevel.DEPT_TYPE_5) {
                 deptQueryList = deptList.stream().filter(s -> s.getDeptId().equals(jk.getDeptId())).collect(Collectors.toList());
+                ybChsVerify.setInitDeptId(jk.getDeptId());
+                ybChsVerify.setInitDeptName(jk.getDeptName());
             }
             if (cpl.getDeptType() == YbChsPriorityLevel.DEPT_TYPE_2) {
                 deptQueryList = deptList.stream().filter(s -> s.getDeptId().equals(jk.getExcuteDeptId())).collect(Collectors.toList());
-
+                ybChsVerify.setInitDeptId(jk.getExcuteDeptId());
+                ybChsVerify.setInitDeptName(jk.getExcuteDeptName());
             }
             if (cpl.getDeptType() == YbChsPriorityLevel.DEPT_TYPE_3) {
                 deptQueryList = deptList.stream().filter(s -> s.getDeptId().equals(jk.getFeeDeptId())).collect(Collectors.toList());
+                ybChsVerify.setInitDeptId(jk.getFeeDeptId());
+                ybChsVerify.setInitDeptName(jk.getFeeDeptName());
             }
             if (deptQueryList.size() > 0) {
                 ybChsVerify.setVerifyDksId(deptQueryList.get(0).getDksId() + "" + deptQueryList.get(0).getFyid());
@@ -856,6 +863,9 @@ public class YbChsVerifyServiceImpl extends ServiceImpl<YbChsVerifyMapper, YbChs
                         ybChsManage.setReadyDoctorCode(ybChsVerify.getVerifyDoctorCode());
                         ybChsManage.setReadyDoctorName(ybChsVerify.getVerifyDoctorName());
 
+                        ybChsManage.setInitDeptId(ybChsVerify.getInitDeptId());
+                        ybChsManage.setInitDeptName(ybChsVerify.getInitDeptName());
+
                         ybChsManage.setApplyDateStr(ybChsVerify.getApplyDateStr());
                         ybChsManage.setOrderNum(ybChsVerify.getOrderNum());
 
@@ -963,6 +973,8 @@ public class YbChsVerifyServiceImpl extends ServiceImpl<YbChsVerifyMapper, YbChs
                         ybChsManage.setReadyFyid(ybChsVerify.getVerifyFyid());
                         ybChsManage.setReadyDoctorCode(ybChsVerify.getVerifyDoctorCode());
                         ybChsManage.setReadyDoctorName(ybChsVerify.getVerifyDoctorName());
+                        ybChsManage.setInitDeptId(ybChsVerify.getInitDeptId());
+                        ybChsManage.setInitDeptName(ybChsVerify.getInitDeptName());
 
                         ybChsManage.setApplyDateStr(ybChsVerify.getApplyDateStr());
                         ybChsManage.setOrderNum(ybChsVerify.getOrderNum());

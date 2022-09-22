@@ -52,7 +52,9 @@
         cr.operateReason,
         cr.operateDate,
         cr.state,
-        cr.areaType
+        cr.areaType,
+        cr.initDeptId,
+        cr.initDeptName
         from
         yb_chs_result cr
         LEFT JOIN yb_chs_apply_data ad ON
@@ -139,7 +141,9 @@
         cr.operateReason,
         cr.operateDate,
         cr.state,
-        cr.areaType
+        cr.areaType,
+        cr.initDeptId,
+        cr.initDeptName
         from
         yb_chs_apply_data ad
         LEFT JOIN yb_chs_result cr ON

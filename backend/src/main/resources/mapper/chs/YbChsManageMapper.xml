@@ -35,11 +35,13 @@
         <result column="dataType" property="dataType"/>
         <result column="readyFyid" property="readyFyid"/>
         <result column="changeFyid" property="changeFyid"/>
+        <result column="initDeptId" property="initDeptId"/>
+        <result column="initDeptName" property="initDeptName"/>
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, applyDataId, verifyId, readyDoctorCode, readyDoctorName, readyDksId, readyDksName, changeDoctorCode, changeDoctorName, changeDksId, changeDksName, operateReason, operateDate, refuseId, refuseName, refuseReason, refuseDate, adminPersonId, adminPersonName, adminChangeDate, adminReason, STATE, enableDate, operateProcess, approvalState, applyDateStr, orderNum, areaType, dataType, readyFyid, changeFyid
+        id, applyDataId, verifyId, readyDoctorCode, readyDoctorName, readyDksId, readyDksName, changeDoctorCode, changeDoctorName, changeDksId, changeDksName, operateReason, operateDate, refuseId, refuseName, refuseReason, refuseDate, adminPersonId, adminPersonName, adminChangeDate, adminReason, STATE, enableDate, operateProcess, approvalState, applyDateStr, orderNum, areaType, dataType, readyFyid, changeFyid, initDeptId, initDeptName
     </sql>
     <update id="updateYbChsManage" parameterType="cc.mrbird.febs.chs.entity.YbChsManage">
         update yb_chs_manage
@@ -74,6 +76,8 @@
             <if test="dataType != null">dataType=#{dataType},</if>
             <if test="readyFyid != null">readyFyid=#{readyFyid},</if>
             <if test="changeFyid != null">changeFyid=#{changeFyid},</if>
+            <if test="initDeptId != null">initDeptId=#{initDeptId},</if>
+            <if test="initDeptName != null">initDeptName=#{initDeptName},</if>
         </trim>
         where id=#{id}
 

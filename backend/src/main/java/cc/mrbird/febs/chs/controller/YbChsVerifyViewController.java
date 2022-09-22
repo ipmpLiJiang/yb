@@ -148,6 +148,9 @@ public class YbChsVerifyViewController extends BaseController {
                     dataExport.setVerifyDksId(item.getVerifyDksId());//科室名称
                     dataExport.setVerifyDksName(item.getVerifyDksName());//科室名称
 
+                    dataExport.setInitDeptId(item.getInitDeptId());//初始楼层名称
+                    dataExport.setInitDeptName(item.getInitDeptName());//初始楼层名称
+
                     queryJkList = jkList.stream().filter(s -> s.getApplyDataId().equals(item.getApplyDataId())).collect(Collectors.toList());
                     if (queryJkList.size() > 0) {
                         YbChsJk jk = queryJkList.get(0);

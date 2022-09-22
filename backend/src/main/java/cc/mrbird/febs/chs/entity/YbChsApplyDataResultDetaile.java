@@ -248,6 +248,18 @@ public class YbChsApplyDataResultDetaile {
     private String resultDoctorName;
 
     /**
+     * 初始楼层编码
+     */
+    @ExcelField(value = "初始楼层编码")
+    private String initDeptId;
+
+    /**
+     * 初始楼层
+     */
+    @ExcelField(value = "初始楼层")
+    private String initDeptName;
+
+    /**
      * 项目类型编码
      */
 //    @ExcelField(value = "项目类型编码")

@@ -346,6 +346,8 @@ public class YbChsManageServiceImpl extends ServiceImpl<YbChsManageMapper, YbChs
                             ybChsManage.setAreaType(entity.getAreaType());
                             ybChsManage.setDataType(entity.getDataType());
                             ybChsManage.setReadyFyid(entity.getReadyFyid());
+                            ybChsManage.setInitDeptId(entity.getInitDeptId());
+                            ybChsManage.setInitDeptName(entity.getInitDeptName());
                             isUpdate = this.createUpdateAcceptChsResult(ybChsManage, thisDate);
 
                             updateChsManage.setOperateProcess("待申诉-已申诉");
@@ -397,6 +399,9 @@ public class YbChsManageServiceImpl extends ServiceImpl<YbChsManageMapper, YbChs
         ybChsManage.setReadyDksName(ybChsManage.getReadyDksName());
 //        String strReadyDoctorName = DataTypeHelpers.stringReplaceSetString(ybChsManage.getReadyDoctorName(), ybChsManage.getReadyDoctorCode() + "-");
         ybChsManage.setReadyDoctorName(ybChsManage.getReadyDoctorName());
+
+        newChsResult.setInitDeptId(ybChsManage.getInitDeptId());
+        newChsResult.setInitDeptName(ybChsManage.getInitDeptName());
 
         newChsResult.setDksId(ybChsManage.getReadyDksId());
         newChsResult.setDksName(ybChsManage.getReadyDksName());
@@ -488,6 +493,8 @@ public class YbChsManageServiceImpl extends ServiceImpl<YbChsManageMapper, YbChs
             newChsManage.setApplyDateStr(entity.getApplyDateStr());
             newChsManage.setOrderNum(entity.getOrderNum());
             newChsManage.setDataType(entity.getDataType());
+            newChsManage.setInitDeptId(entity.getInitDeptId());
+            newChsManage.setInitDeptName(entity.getInitDeptName());
 
 //            String strReadyDksName = DataTypeHelpers.stringReplaceSetString(ybChsManage.getReadyDksName(), ybChsManage.getReadyDksId() + "-");
             ybChsManage.setReadyDksName(ybChsManage.getReadyDksName());
@@ -721,6 +728,8 @@ public class YbChsManageServiceImpl extends ServiceImpl<YbChsManageMapper, YbChs
                 newChsManage.setReadyFyid(strReadyFyid);
                 newChsManage.setReadyDoctorCode(ybChsManage.getReadyDoctorCode());
                 newChsManage.setReadyDoctorName(ybChsManage.getReadyDoctorName());
+                newChsManage.setInitDeptId(entity.getInitDeptId());
+                newChsManage.setInitDeptName(entity.getInitDeptName());
 
                 newChsManage.setAreaType(entity.getAreaType());
                 newChsManage.setDataType(entity.getDataType());

@@ -137,6 +137,20 @@ public class YbChsVerify implements Serializable, Comparable<YbChsVerify> {
     @ExcelField(value = "分院")
     private String verifyFyid;
 
+    /**
+     * 初始楼层编码
+     */
+    @TableField("initDeptId")
+    @ExcelField(value = "初始楼层编码")
+    private String initDeptId;
+
+    /**
+     * 初始楼层
+     */
+    @TableField("initDeptName")
+    @ExcelField(value = "初始楼层")
+    private String initDeptName;
+
 
     public static final String ID = "id";
 
@@ -167,6 +181,10 @@ public class YbChsVerify implements Serializable, Comparable<YbChsVerify> {
     public static final String DATATYPE = "dataType";
 
     public static final String VERIFYFYID = "verifyFyid";
+
+    public static final String INITDEPTID = "initDeptId";
+
+    public static final String INITDEPTNAME = "initDeptName";
 
     @Override
     public int compareTo(YbChsVerify o) {

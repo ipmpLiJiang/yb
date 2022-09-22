@@ -53,6 +53,8 @@
         <result column="STATE" property="state"/>
         <result column="areaType" property="areaType"/>
         <result column="dataType" property="dataType"/>
+        <result column="initDeptId" property="initDeptId"/>
+        <result column="initDeptName" property="initDeptName"/>
     </resultMap>
 
 
@@ -108,7 +110,9 @@
         rv.sendDate,
         rv.verifyFyid,
         rv.STATE,
-        rv.areaType
+        rv.areaType,
+        rv.initDeptId,
+        rv.initDeptName
         from
         yb_chs_verify rv
         INNER JOIN yb_chs_apply_data ad ON
@@ -243,7 +247,9 @@
             rv.sendDate,
             rv.verifyFyid,
             rv.STATE,
-            rv.areaType
+            rv.areaType,
+            rv.initDeptId,
+            rv.initDeptName
         from
             yb_chs_apply_data ad
             LEFT JOIN yb_chs_verify rv ON

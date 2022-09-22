@@ -394,6 +394,18 @@ public class YbChsResultView {
 
     private transient String fileNumber;
 
+    /**
+     * 初始楼层编码
+     */
+    @TableField("initDeptId")
+    @ExcelField(value = "初始楼层编码")
+    private String initDeptId;
 
+    /**
+     * 初始楼层
+     */
+    @TableField("initDeptName")
+    @ExcelField(value = "初始楼层")
+    private String initDeptName;
 
 }
