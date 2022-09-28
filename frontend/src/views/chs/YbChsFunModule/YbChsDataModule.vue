@@ -107,6 +107,10 @@
       <a-col :span="3">
         {{ ybChsData.jgLevel }}
       </a-col>
+      <a-col :span="3" style="color:red"> 初始楼层： </a-col>
+      <a-col :span="3" style="color:red">
+        {{ ybChsData.initDeptId }}-{{ ybChsData.initDeptName }}
+      </a-col>
       <!-- <a-col :span="3"> 统筹支付（元）： </a-col>
       <a-col :span="4">
         {{ ybChsData. }}

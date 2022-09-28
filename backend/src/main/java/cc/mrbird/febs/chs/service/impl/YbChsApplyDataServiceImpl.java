@@ -616,6 +616,26 @@ public class YbChsApplyDataServiceImpl extends ServiceImpl<YbChsApplyDataMapper,
         return msg;
     }
 
+    @Override
+    @Transactional
+    public String getHisDept() {
+        String msg = "ok";
+        List<YbDeptHis> departList = new ArrayList<>();
+        OracleDB<YbDeptHis> oracleDB = new OracleDB<>();
+        try {
+            departList = oracleDB.excuteSqlRS(new YbDeptHis(), "select * from his.V_SAP_DEPART");
+            if (departList.size() > 0) {
+                iYbDeptService.createBatchDepts(departList);
+                iYbDksService.createBatchDkss(departList);
+            }
+        } catch (Exception e) {
+            msg = e.getMessage();
+            log.error(msg);
+        }
+        System.out.println("getHisDept end:" + msg);
+        return msg;
+    }
+
     private YbChsApplyTask getApplyTask(String applyDateStr, int areaType, int state, int isOutpfees) {
         YbChsApplyTask ybChsApplyTask = new YbChsApplyTask();
         ybChsApplyTask.setApplyDateStr(applyDateStr);

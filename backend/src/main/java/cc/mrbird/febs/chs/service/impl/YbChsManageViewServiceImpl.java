@@ -244,6 +244,8 @@ public class YbChsManageViewServiceImpl extends ServiceImpl<YbChsManageViewMappe
         amv.setReadyDksId(am.getReadyDksId());
         amv.setReadyDksName(am.getReadyDksName());
         amv.setReadyFyid(am.getReadyFyid());
+        amv.setInitDeptId(am.getInitDeptId());
+        amv.setInitDeptName(am.getInitDeptName());
         amv.setChangeDoctorCode(am.getChangeDoctorCode());
         amv.setChangeDoctorName(am.getChangeDoctorName());
         amv.setChangeDksId(am.getChangeDksId());

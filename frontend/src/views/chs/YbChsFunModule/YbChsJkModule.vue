@@ -1,31 +1,31 @@
 <template>
-    <!-- 表格区域 -->
-    <a-table
+  <!-- 表格区域 -->
+  <a-table
     ref="TableInfo"
     :columns="columns"
-    :rowKey="record => record.id"
+    :rowKey="(record) => record.id"
     :dataSource="dataSource"
     :pagination="pagination"
     :loading="loading"
-    :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
+    :rowSelection="{
+      selectedRowKeys: selectedRowKeys,
+      onChange: onSelectChange,
+    }"
     @change="handleTableChange"
     size="small"
     :bordered="bordered"
     :scroll="{ x: 900 }"
-    >
+  >
     <a slot="action" slot-scope="text">action</a>
-    <template
-        slot="remark"
-        slot-scope="text,record"
-    >
-        <a-popover placement="topLeft">
+    <template slot="remark" slot-scope="text, record">
+      <a-popover placement="topLeft">
         <template slot="content">
-            <div style="max-width: 200px">{{text}}</div>
+          <div style="max-width: 200px">{{ text }}</div>
         </template>
-        <p style="width: 200px;margin-bottom: 0">{{text}}</p>
-        </a-popover>
+        <p style="width: 200px; margin-bottom: 0">{{ text }}</p>
+      </a-popover>
     </template>
-    </a-table>
+  </a-table>
 </template>
 <script>
 import moment from 'moment'
@@ -262,7 +262,7 @@ export default {
     moment,
     rowNo (index) {
       return (this.pagination.defaultCurrent - 1) *
-            this.pagination.defaultPageSize + index + 1
+        this.pagination.defaultPageSize + index + 1
     },
     reset () {
       // 取消选中

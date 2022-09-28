@@ -1,5 +1,6 @@
 package cc.mrbird.febs.job.task;
 
+import cc.mrbird.febs.chs.service.IYbChsApplyDataService;
 import cc.mrbird.febs.chs.service.IYbChsManageService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,9 @@ public class ChsManageTask {
     }
     @Autowired
     private IYbChsManageService iYbChsManageService;
+
+    @Autowired
+    IYbChsApplyDataService iYbChsApplyDataService;
 
     public void endDate(String params) {
         if(params == null || params.equals("no")){
@@ -39,6 +43,14 @@ public class ChsManageTask {
 
                 iYbChsManageService.updateChsEnableOverdue(params,areaType);
             }
+        }
+    }
+
+    public void deptTask(String params) {
+        if(params == null || params.equals("no")){
+            params = "";
+        } else {
+            iYbChsApplyDataService.getHisDept();
         }
     }
 }

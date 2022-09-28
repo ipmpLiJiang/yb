@@ -200,7 +200,7 @@ export default {
       {
         title: '操作员',
         dataIndex: 'operatorName',
-        width: 130
+        width: 140
       },
       {
         title: '状态',
@@ -233,7 +233,7 @@ export default {
             return text
           }
         },
-        width: 160
+        width: 150
       },
       {
         title: '确认日期',
@@ -249,7 +249,7 @@ export default {
             return text
           }
         },
-        width: 135
+        width: 100
       },
       {
         title: '创建日期',
@@ -265,7 +265,7 @@ export default {
             return text
           }
         },
-        width: 115
+        width: 100
       },
       {
         title: '操作',

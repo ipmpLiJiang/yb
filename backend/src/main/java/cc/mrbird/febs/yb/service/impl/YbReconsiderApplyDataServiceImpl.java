@@ -1017,20 +1017,29 @@ public class YbReconsiderApplyDataServiceImpl extends ServiceImpl<YbReconsiderAp
         }
         return hisSql;
     }
+
+    private Lock lockDept = new ReentrantLock();
+
     @Override
     @Transactional
     public String getHisDept() {
         String msg = "ok";
         List<YbDeptHis> departList = new ArrayList<>();
         OracleDB<YbDeptHis> oracleDB = new OracleDB<>();
-        try {
-            departList = oracleDB.excuteSqlRS(new YbDeptHis(), "select * from his.V_SAP_DEPART");
-            if (departList.size() > 0) {
-                iYbDeptService.createBatchDepts(departList);
+        if (lockDept.tryLock()) {
+            try {
+                departList = oracleDB.excuteSqlRS(new YbDeptHis(), "select * from his.V_SAP_DEPART");
+                if (departList.size() > 0) {
+                    iYbDeptService.createBatchDepts(departList);
+                }
+            } catch (Exception e) {
+                msg = e.getMessage();
+                log.error(msg);
+            } finally {
+                lockDept.unlock();
             }
-        } catch (Exception e) {
-            msg = e.getMessage();
-            log.error(msg);
+        } else {
+            msg = "lockNo";
         }
         System.out.println("getHisDept end:" + msg);
         return msg;
