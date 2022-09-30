@@ -12,7 +12,7 @@
       @change="changePage"
       @edit="editPage">
       <a-tab-pane :id="page.fullPath" :key="page.fullPath" v-for="page in pageList" forceRender>
-        <span slot="tab" :pagekey="page.fullPath">{{page.name}}</span>
+        <span slot="tab" :pagekey="page.fullPath">{{page.name}}-{{hdAreaName}}</span>
       </a-tab-pane>
     </a-tabs>
       <keep-alive v-if="multipage">
@@ -34,6 +34,7 @@ export default {
       pageList: [],
       linkList: [],
       activePage: '',
+      hdAreaName: this.$store.state.account.user.areaType.text,
       menuVisible: false,
       menuItemList: [
         {key: '1', icon: 'arrow-left', text: '关闭左侧'},

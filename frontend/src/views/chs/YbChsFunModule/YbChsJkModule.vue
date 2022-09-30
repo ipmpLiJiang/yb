@@ -1,4 +1,10 @@
 <template>
+  <div>
+  <a-divider>HIS数据</a-divider>
+  <a-row type="flex" justify="center" style="color:red">
+    <a-col :span="6">初始楼层：{{ ybChsData.initDeptId }}-{{ ybChsData.initDeptName }}</a-col>
+  </a-row>
+  <br>
   <!-- 表格区域 -->
   <a-table
     ref="TableInfo"
@@ -26,6 +32,7 @@
       </a-popover>
     </template>
   </a-table>
+  </div>
 </template>
 <script>
 import moment from 'moment'
