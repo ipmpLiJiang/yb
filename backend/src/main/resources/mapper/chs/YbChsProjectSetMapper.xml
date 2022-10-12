@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cc.mrbird.febs.chs.dao.YbChsProjectSetMapper">
+
+        <!-- 通用查询映射结果 -->
+        <resultMap id="BaseResultMap" type="cc.mrbird.febs.chs.entity.YbChsProjectSet">
+                    <id column="id" property="id"/>
+                    <result column="zymzType" property="zymzType"/>
+                    <result column="ruleName" property="ruleName"/>
+                    <result column="projectName" property="projectName"/>
+                    <result column="qdName" property="qdName"/>
+                    <result column="areaType" property="areaType"/>
+                    <result column="operatorId" property="operatorId"/>
+                    <result column="operatorName" property="operatorName"/>
+                    <result column="currencyField" property="currencyField"/>
+                    <result column="COMMENTS" property="comments"/>
+                    <result column="STATE" property="state"/>
+                    <result column="IS_DELETEMARK" property="isDeletemark"/>
+                    <result column="MODIFY_TIME" property="modifyTime"/>
+                    <result column="CREATE_TIME" property="createTime"/>
+                    <result column="CREATE_USER_ID" property="createUserId"/>
+                    <result column="MODIFY_USER_ID" property="modifyUserId"/>
+        </resultMap>
+
+        <!-- 通用查询结果列 -->
+        <sql id="Base_Column_List">
+        id, zymzType, ruleName, projectName, qdName, areaType, operatorId, operatorName, currencyField, COMMENTS, STATE, IS_DELETEMARK, MODIFY_TIME, CREATE_TIME, CREATE_USER_ID, MODIFY_USER_ID
+    </sql>
+    <update id="updateYbChsProjectSet" parameterType="cc.mrbird.febs.chs.entity.YbChsProjectSet">
+        update yb_chs_project_set
+        <trim prefix="set" suffixOverrides=",">
+<if test="zymzType != null">zymzType=#{zymzType},</if>
+<if test="ruleName != null">ruleName=#{ruleName},</if>
+<if test="projectName != null">projectName=#{projectName},</if>
+<if test="qdName != null">qdName=#{qdName},</if>
+<if test="areaType != null">areaType=#{areaType},</if>
+<if test="operatorId != null">operatorId=#{operatorId},</if>
+<if test="operatorName != null">operatorName=#{operatorName},</if>
+<if test="currencyField != null">currencyField=#{currencyField},</if>
+<if test="comments != null">COMMENTS=#{comments},</if>
+<if test="state != null">STATE=#{state},</if>
+<if test="isDeletemark != null">IS_DELETEMARK=#{isDeletemark},</if>
+<if test="modifyTime != null">MODIFY_TIME=#{modifyTime},</if>
+<if test="createTime != null">CREATE_TIME=#{createTime},</if>
+<if test="createUserId != null">CREATE_USER_ID=#{createUserId},</if>
+<if test="modifyUserId != null">MODIFY_USER_ID=#{modifyUserId},</if>
+        </trim>
+                where id=#{id}
+
+    </update>
+    <select id="findYbChsProjectSet" resultType="cc.mrbird.febs.chs.entity.YbChsProjectSet" parameterType="cc.mrbird.febs.chs.entity.YbChsProjectSet">
+        select  *  from yb_chs_project_set
+        where  1=1
+        <if test="ybChsProjectSet.id != null"> and id =#{ ybChsProjectSet.id} </if>
+        <if test="ybChsProjectSet.zymzType != null"> and zymzType =#{ ybChsProjectSet.zymzType} </if>
+            <if test="ybChsProjectSet.ruleName != null and ybChsProjectSet.ruleName != ''"> and ruleName like concat('%', #{ ybChsProjectSet.ruleName} ,'%')</if>
+            <if test="ybChsProjectSet.projectName != null and ybChsProjectSet.projectName != ''"> and projectName like concat('%', #{ ybChsProjectSet.projectName} ,'%')</if>
+            <if test="ybChsProjectSet.qdName != null and ybChsProjectSet.qdName != ''"> and qdName like concat('%', #{ ybChsProjectSet.qdName} ,'%')</if>
+        <if test="ybChsProjectSet.areaType != null"> and areaType =#{ ybChsProjectSet.areaType} </if>
+            <if test="ybChsProjectSet.operatorName != null and ybChsProjectSet.operatorName != ''"> and operatorName like concat('%', #{ ybChsProjectSet.operatorName} ,'%')</if>
+            <if test="ybChsProjectSet.currencyField != null and ybChsProjectSet.currencyField != ''"> and currencyField like concat('%', #{ ybChsProjectSet.currencyField} ,'%')</if>
+            <if test="ybChsProjectSet.comments != null and ybChsProjectSet.comments != ''"> and COMMENTS like concat('%', #{ ybChsProjectSet.comments} ,'%')</if>
+        <if test="ybChsProjectSet.state != null"> and STATE =#{ ybChsProjectSet.state} </if>
+        <if test="ybChsProjectSet.isDeletemark != null"> and IS_DELETEMARK =#{ ybChsProjectSet.isDeletemark} </if>
+        <if test="ybChsProjectSet.modifyTimeFrom!= null">
+            AND ybChsProjectSet.MODIFY_TIME <![CDATA[ >= ]]>  modifyTimeFrom}
+        </if>
+        <if test="ybChsProjectSet.modifyTimeTo!= null">
+            AND ybChsProjectSet.MODIFY_TIME <![CDATA[ <= ]]>  modifyTimeTo}
+        </if>
+        <if test="ybChsProjectSet.createTimeFrom!= null">
+            AND ybChsProjectSet.CREATE_TIME <![CDATA[ >= ]]>  createTimeFrom}
+        </if>
+        <if test="ybChsProjectSet.createTimeTo!= null">
+            AND ybChsProjectSet.CREATE_TIME <![CDATA[ <= ]]>  createTimeTo}
+        </if>
+</select>
+
+</mapper>

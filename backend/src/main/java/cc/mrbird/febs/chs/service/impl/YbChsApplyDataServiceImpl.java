@@ -1,15 +1,12 @@
 package cc.mrbird.febs.chs.service.impl;
 
-import cc.mrbird.febs.chs.entity.YbChsApply;
-import cc.mrbird.febs.chs.entity.YbChsApplyTask;
-import cc.mrbird.febs.chs.entity.YbChsJk;
+import cc.mrbird.febs.chs.entity.*;
 import cc.mrbird.febs.chs.service.*;
 import cc.mrbird.febs.com.controller.DataTypeHelpers;
 import cc.mrbird.febs.common.domain.QueryRequest;
 import cc.mrbird.febs.common.properties.FebsProperties;
 import cc.mrbird.febs.common.utils.OracleDB;
 import cc.mrbird.febs.common.utils.SortUtil;
-import cc.mrbird.febs.chs.entity.YbChsApplyData;
 import cc.mrbird.febs.chs.dao.YbChsApplyDataMapper;
 import cc.mrbird.febs.yb.entity.*;
 import cc.mrbird.febs.yb.service.IYbDeptService;
@@ -63,6 +60,8 @@ public class YbChsApplyDataServiceImpl extends ServiceImpl<YbChsApplyDataMapper,
     IYbDksService iYbDksService;
     @Autowired
     IYbPersonService iYbPersonService;
+    @Autowired
+    IYbChsProjectSetService iYbChsProjectSetService;
 
     @Override
     public IPage<YbChsApplyData> findYbChsApplyDatas(QueryRequest request, YbChsApplyData ybChsApplyData) {
@@ -823,32 +822,30 @@ public class YbChsApplyDataServiceImpl extends ServiceImpl<YbChsApplyDataMapper,
                                             List<YbPerson> personList,
                                             String applyDateStr,
                                             int state, int areaType, int isOutpfees) {
+        LambdaQueryWrapper<YbChsProjectSet> wrapperProjectSet = new LambdaQueryWrapper<>();
+        wrapperProjectSet.eq(YbChsProjectSet::getAreaType,areaType);
+        List<YbChsProjectSet> projectSetList = iYbChsProjectSetService.list(wrapperProjectSet);
         List<YbChsJk> createList = new ArrayList<>();
         List<YbReconsiderInpatientfeesData> queryRifDataList = new ArrayList<>();
         List<YbDeptHis> queryDepartList = new ArrayList<>();
         List<YbPerson> queryPersontList = new ArrayList<>();
+        List<YbChsProjectSet> queryProjectSet = new ArrayList<>();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         String projects;
         for (YbChsApplyData item : chsApplyDataList) {
+            // queryRifDataList 必须 重新 new ArrayList<>() 要不然 queryRifDataList.size() 因为前一次筛选就大于0 值重复
+            queryRifDataList = new ArrayList<>();
             projects = item.getProjectName();
             // 医保项目名称影响 itemName\hisName
             if (StringUtils.isNotBlank(projects)) {
                 if (state == 1) {
-                    projects = projects.replace("，", ",");
-                    String[] projectArr = projects.split(",");
-                    for (String project : projectArr) {
-//                        queryRifDataList = rifDataList.stream().filter(
-//                                s -> s.getInpatientId().equals(item.getZymzNumber()) &&
-//                                        s.getHisName().equals(project) &&
-//                                        sdf.format(s.getFeeDate()).equals(sdf.format(item.getCostDate()))
-//                        ).collect(Collectors.toList());
-//
-//                        if (queryRifDataList.size() == 0) {
-//                            queryRifDataList = rifDataList.stream().filter(
-//                                    s -> s.getInpatientId().equals(item.getZymzNumber()) &&
-//                                            s.getHisName().equals(project)
-//                            ).collect(Collectors.toList());
-//                        }
+                    queryProjectSet = projectSetList.stream().filter(s->
+                            s.getRuleName().equals(item.getRuleName()) &&
+                            s.getProjectName().equals(item.getProjectName())).collect(Collectors.toList()
+                    );
+
+                    if(queryProjectSet.size() > 0) {
+                        String project = queryProjectSet.get(0).getQdName();
                         queryRifDataList = rifDataList.stream().filter(
                                 s -> s.getInpatientId().equals(item.getZymzNumber()) &&
                                         s.getItemName().equals(project) &&
@@ -861,8 +858,27 @@ public class YbChsApplyDataServiceImpl extends ServiceImpl<YbChsApplyDataMapper,
                                             s.getItemName().equals(project)
                             ).collect(Collectors.toList());
                         }
-                        if (queryRifDataList.size() > 0) {
-                            break;
+                    }
+
+                    if (queryRifDataList.size() == 0) {
+                        projects = projects.replace("，", ",");
+                        String[] projectArr = projects.split(",");
+                        for (String project : projectArr) {
+                            queryRifDataList = rifDataList.stream().filter(
+                                    s -> s.getInpatientId().equals(item.getZymzNumber()) &&
+                                            s.getItemName().equals(project) &&
+                                            sdf.format(s.getFeeDate()).equals(sdf.format(item.getCostDate()))
+                            ).collect(Collectors.toList());
+
+                            if (queryRifDataList.size() == 0) {
+                                queryRifDataList = rifDataList.stream().filter(
+                                        s -> s.getInpatientId().equals(item.getZymzNumber()) &&
+                                                s.getItemName().equals(project)
+                                ).collect(Collectors.toList());
+                            }
+                            if (queryRifDataList.size() > 0) {
+                                break;
+                            }
                         }
                     }
                 } else if (state == 2) {
@@ -890,23 +906,13 @@ public class YbChsApplyDataServiceImpl extends ServiceImpl<YbChsApplyDataMapper,
                         }
                     }
                 } else {
-                    projects = item.getProjectName();
-                    projects = projects.replace("，", ",");
-                    String[] projectArr = projects.split(",");
+                    queryProjectSet = projectSetList.stream().filter(s->
+                            s.getRuleName().equals(item.getRuleName()) &&
+                                    s.getProjectName().equals(item.getProjectName())
+                    ).collect(Collectors.toList());
 
-                    for (String project : projectArr) {
-//                        queryRifDataList = rifDataList.stream().filter(
-//                                s -> s.getInpatientId().equals(item.getZymzNumber()) &&
-//                                        s.getItemName().equals(project) &&
-//                                        sdf.format(s.getFeeDate()).equals(sdf.format(item.getCostDate()))
-//                        ).collect(Collectors.toList());
-//
-//                        if (queryRifDataList.size() == 0) {
-//                            queryRifDataList = rifDataList.stream().filter(
-//                                    s -> s.getInpatientId().equals(item.getZymzNumber()) &&
-//                                            s.getItemName().equals(project)
-//                            ).collect(Collectors.toList());
-//                        }
+                    if(queryProjectSet.size() > 0) {
+                        String project = queryProjectSet.get(0).getQdName();
                         queryRifDataList = rifDataList.stream().filter(
                                 s -> s.getInpatientId().equals(item.getZymzNumber()) &&
                                         s.getHisName().equals(project) &&
@@ -919,8 +925,29 @@ public class YbChsApplyDataServiceImpl extends ServiceImpl<YbChsApplyDataMapper,
                                             s.getHisName().equals(project)
                             ).collect(Collectors.toList());
                         }
-                        if (queryRifDataList.size() > 0) {
-                            break;
+                    }
+
+                    if (queryRifDataList.size() == 0) {
+                        projects = item.getProjectName();
+                        projects = projects.replace("，", ",");
+                        String[] projectArr = projects.split(",");
+
+                        for (String project : projectArr) {
+                            queryRifDataList = rifDataList.stream().filter(
+                                    s -> s.getInpatientId().equals(item.getZymzNumber()) &&
+                                            s.getHisName().equals(project) &&
+                                            sdf.format(s.getFeeDate()).equals(sdf.format(item.getCostDate()))
+                            ).collect(Collectors.toList());
+
+                            if (queryRifDataList.size() == 0) {
+                                queryRifDataList = rifDataList.stream().filter(
+                                        s -> s.getInpatientId().equals(item.getZymzNumber()) &&
+                                                s.getHisName().equals(project)
+                                ).collect(Collectors.toList());
+                            }
+                            if (queryRifDataList.size() > 0) {
+                                break;
+                            }
                         }
                     }
                 }

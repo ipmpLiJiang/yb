@@ -44,15 +44,11 @@
           }"
           label="院区"
         >
-      <a-select v-model="logAreaType" style="width: 150px" @change="handleAreaTypeChange"
-      >
-        <a-select-option
-        v-for="d in areaTypeDataSource"
-        :key="d.value"
-        >
-        {{ d.text }}
-        </a-select-option>
-      </a-select>
+      <a-radio-group v-model="logAreaType" size="large" @change="handleAreaTypeChange">
+        <a-radio-button :value="d.value" v-for="(d, index) in areaTypeDataSource" :key="index">
+          {{ d.text }}
+        </a-radio-button>
+      </a-radio-group>
       </a-form-item>
       <a-form-item>
         <a-button :loading="loading" style="width: 100%; margin-top: 4px" size="large" htmlType="submit" type="primary">
@@ -116,8 +112,11 @@ export default {
         this.areaTypeDataSource.push(this.defaultAreaType)
       })
     },
-    handleAreaTypeChange (value) {
-      this.logAreaType = value
+    // handleAreaTypeChange (value) {
+    //   this.logAreaType = value
+    // },
+    handleAreaTypeChange (e) {
+      this.logAreaType = e.target.value
     },
     doLogin () {
       if (this.activeKey === '1') {

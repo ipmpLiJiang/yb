@@ -3,7 +3,13 @@
     <div :class="advanced ? 'search' : null">
       <a-form layout="horizontal">
         <a-row>
-          <div :class="advanced ? null : 'fold'"></div>
+          <div :class="advanced ? null : 'fold'">
+            <a-col :md="8" :sm="24">
+              <a-form-item label="通用字段" v-bind="formItemLayout">
+                <a-input v-model="queryParams.currencyField" />
+              </a-form-item>
+            </a-col>
+          </div>
           <span style="float: right; margin-top: 3px">
             <a-button type="primary" @click="search">查询</a-button>
             <a-button style="margin-left: 8px" @click="reset">重置</a-button>
@@ -18,16 +24,18 @@
     <div>
       <div class="operator">
         <a-button
-          v-hasPermission="['ybChsApply:add']"
+          v-hasPermission="['ybChsProjectSet:add']"
           type="primary"
           ghost
           @click="add"
           >新增</a-button
         >
-        <a-button v-hasPermission="['ybChsApply:delete']" @click="batchDelete"
+        <a-button
+          v-hasPermission="['ybChsProjectSet:delete']"
+          @click="batchDelete"
           >删除</a-button
         >
-        <a-dropdown v-hasPermission="['ybChsApply:export']">
+        <a-dropdown v-hasPermission="['ybChsProjectSet:export']">
           <a-menu slot="overlay">
             <a-menu-item key="export-data" @click="exportExcel"
               >导出Excel</a-menu-item
@@ -52,7 +60,6 @@
           onChange: onSelectChange,
         }"
         @change="handleTableChange"
-        size="small"
         :bordered="bordered"
         :scroll="{ x: 900 }"
       >
@@ -66,30 +73,15 @@
         </template>
         <template slot="operation" slot-scope="text, record">
           <a-icon
-            v-hasPermission="['ybChsApply:update']"
+            v-hasPermission="['ybChsProjectSet:update']"
             type="setting"
             theme="twoTone"
             twoToneColor="#4a9ff5"
             @click="edit(record)"
             title="修改"
           ></a-icon>
-          <a-divider type="vertical" />
-          <a
-            v-hasPermission="['ybChsApply:delete']"
-            @click="del(record)"
-            :disabled="record.state==1?false:true"
-            title="删除"
-          >
-          <a-icon
-            type="delete"
-            theme="outlined"
-            twoToneColor="record.state==1?#4a9ff5:#D3D3D3"
-          ></a-icon>
-          </a>
-          <a-divider type="vertical" />
-          <a @click="goto(record)">{{record.state === 3 ? '查看数据' : '上传数据'}}</a>
           <a-badge
-            v-hasNoPermission="['ybChsApply:update']"
+            v-hasNoPermission="['ybChsProjectSet:update']"
             status="warning"
             text="无权限"
           ></a-badge>
@@ -97,45 +89,27 @@
       </a-table>
     </div>
     <!-- 新增字典 -->
-    <ybChsApply-add
-      ref="ybChsApplyAdd"
+    <ybChsProjectSet-add
+      ref="ybChsProjectSetAdd"
       @close="handleAddClose"
       @success="handleAddSuccess"
       :addVisiable="addVisiable"
     >
-    </ybChsApply-add>
+    </ybChsProjectSet-add>
     <!-- 修改字典 -->
-    <ybChsApply-edit
-      ref="ybChsApplyEdit"
+    <ybChsProjectSet-edit
+      ref="ybChsProjectSetEdit"
       @close="handleEditClose"
       @success="handleEditSuccess"
       :editVisiable="editVisiable"
     >
-    </ybChsApply-edit>
-    <!-- 审核字典 -->
-    <a-modal
-      title="上传数据"
-      :visible="gotoVisiable"
-      :footer="null"
-      width="99%"
-      style="padding-top:0px;"
-      :maskClosable="false"
-      @cancel="handleCancel"
-    >
-      <ybChsApply-upload
-      ref="ybChsApplyUpload"
-      @cancel="handleCancel"
-      >
-      </ybChsApply-upload>
-    </a-modal>
+    </ybChsProjectSet-edit>
   </a-card>
 </template>
 
 <script>
-import moment from 'moment'
-import YbChsApplyAdd from './YbChsApplyAdd'
-import YbChsApplyEdit from './YbChsApplyEdit'
-import YbChsApplyUpload from './YbChsApplyUpload'
+import YbChsProjectSetAdd from './YbChsProjectSetAdd'
+import YbChsProjectSetEdit from './YbChsProjectSetEdit'
 
 const formItemLayout = {
   labelCol: {
@@ -147,11 +121,10 @@ const formItemLayout = {
   }
 }
 export default {
-  name: 'YbChsApply',
+  name: 'YbChsProjectSet',
   components: {
-    YbChsApplyAdd,
-    YbChsApplyEdit,
-    YbChsApplyUpload
+    YbChsProjectSetAdd,
+    YbChsProjectSetEdit
   },
   data () {
     return {
@@ -161,22 +134,22 @@ export default {
       sortedInfo: null,
       paginationInfo: null,
       formItemLayout,
-      tableFormat: 'YYYY-MM-DD',
-      tableFormat1: 'YYYY-MM-DD HH:mm:ss',
-      user: this.$store.state.account.user,
       pagination: {
         pageSizeOptions: ['10', '20', '30', '40', '100'],
         defaultCurrent: 1,
         defaultPageSize: 10,
         showQuickJumper: true,
         showSizeChanger: true,
+        onChange: (current, size) => {
+          this.pagination.defaultCurrent = current
+          this.pagination.defaultPageSize = size
+        },
         showTotal: (total, range) => `显示 ${range[0]} ~ ${range[1]} 条记录，共 ${total} 条记录`
       },
       queryParams: {},
+      user: this.$store.state.account.user,
       addVisiable: false,
       editVisiable: false,
-      gotoVisiable: false,
-      ctType: 2,
       loading: false,
       bordered: true
     }
@@ -190,97 +163,45 @@ export default {
             this.pagination.defaultPageSize +
             index +
             1}`,
+        fixed: 'left',
         width: 70
       },
       {
-        title: '复议年月',
-        dataIndex: 'applyDateStr',
-        width: 90
+        title: '规则名称',
+        dataIndex: 'ruleName',
+        width: 150
+      },
+      {
+        title: '项目名称',
+        dataIndex: 'projectName',
+        width: 250
+      },
+      {
+        title: '匹配项目名称',
+        dataIndex: 'qdName',
+        width: 150
       },
       {
         title: '操作员',
         dataIndex: 'operatorName',
-        width: 140
-      },
-      {
-        title: '状态',
-        dataIndex: 'state',
-        customRender: (text, row, index) => {
-          switch (text) {
-            case 1:
-              return '待上传'
-            case 2:
-              return '已上传'
-            case 3:
-              return '申诉'
-            default:
-              return text
-          }
-        },
-        width: 80
-      },
-      {
-        title: '截止日期',
-        dataIndex: 'endDate',
-        customRender: (text, row, index) => {
-          if (text !== '' && text !== null) {
-            if (isNaN(text) && !isNaN(Date.parse(text))) {
-              return moment(text).format(this.tableFormat1)
-            } else {
-              return text
-            }
-          } else {
-            return text
-          }
-        },
-        width: 150
-      },
-      {
-        title: '确认日期',
-        dataIndex: 'enableDate',
-        customRender: (text, row, index) => {
-          if (text !== '' && text !== null) {
-            if (isNaN(text) && !isNaN(Date.parse(text))) {
-              return moment(text).format(this.tableFormat)
-            } else {
-              return text
-            }
-          } else {
-            return text
-          }
-        },
-        width: 100
-      },
-      {
-        title: '创建日期',
-        dataIndex: 'createTime',
-        customRender: (text, row, index) => {
-          if (text !== '' && text !== null) {
-            if (isNaN(text) && !isNaN(Date.parse(text))) {
-              return moment(text).format(this.tableFormat)
-            } else {
-              return text
-            }
-          } else {
-            return text
-          }
-        },
-        width: 100
+        width: 130
       },
       {
         title: '操作',
         dataIndex: 'operation',
-        scopedSlots: { customRender: 'operation' },
+        scopedSlots: {
+          customRender: 'operation'
+        },
         fixed: 'right',
-        width: 170
-      }]
+        width: 100
+      }
+      ]
     }
   },
   mounted () {
     this.fetch()
   },
   methods: {
-    moment,
     onSelectChange (selectedRowKeys) {
       this.selectedRowKeys = selectedRowKeys
     },
@@ -290,45 +211,17 @@ export default {
         this.queryParams.comments = ''
       }
     },
-    handleCancel () {
-      this.gotoVisiable = false
-      // this.$message.success('审核上传成功')
-      this.search()
-    },
-    goto (record) {
-      setTimeout(() => {
-        this.$refs.ybChsApplyUpload.setFormValues(record)
-      }, 200)
-      this.gotoVisiable = true
-    },
     handleAddSuccess () {
       this.addVisiable = false
       this.$message.success('新增成功')
       this.search()
     },
     handleAddClose () {
+      this.$refs.ybChsProjectSetAdd.setFormValues(this.user.areaType.value)
       this.addVisiable = false
     },
     add () {
-      this.$refs.ybChsApplyAdd.setFormValues()
       this.addVisiable = true
-    },
-    del (record) {
-      let that = this
-      this.$confirm({
-        title: '确定删除该记录?',
-        content: '当您点击确定按钮后，这条记录将会被彻底删除',
-        centered: true,
-        onOk () {
-          let ybChsApplyIds = record.id
-          that.$delete('ybChsApply/' + ybChsApplyIds).then(() => {
-            that.$message.success('删除成功')
-            that.selectedRowKeys = []
-            that.search()
-          }
-          )
-        }
-      })
     },
     handleEditSuccess () {
       this.editVisiable = false
@@ -339,7 +232,7 @@ export default {
       this.editVisiable = false
     },
     edit (record) {
-      this.$refs.ybChsApplyEdit.setFormValues(record)
+      this.$refs.ybChsProjectSetEdit.setFormValues(record)
       this.editVisiable = true
     },
     batchDelete () {
@@ -353,8 +246,8 @@ export default {
         content: '当您点击确定按钮后，这些记录将会被彻底删除',
         centered: true,
         onOk () {
-          let ybChsApplyIds = that.selectedRowKeys.join(',')
-          that.$delete('ybChsApply/' + ybChsApplyIds).then(() => {
+          let ybChsProjectSetIds = that.selectedRowKeys.join(',')
+          that.$delete('ybChsProjectSet/' + ybChsProjectSetIds).then(() => {
             that.$message.success('删除成功')
             that.selectedRowKeys = []
             that.search()
@@ -375,7 +268,7 @@ export default {
         sortField = sortedInfo.field
         sortOrder = sortedInfo.order
       }
-      this.$export('ybChsApply/excel', {
+      this.$export('ybChsProjectSet/excel', {
         sortField: sortField,
         sortOrder: sortOrder,
         ...this.queryParams
@@ -435,11 +328,8 @@ export default {
         params.pageSize = this.pagination.defaultPageSize
         params.pageNum = this.pagination.defaultCurrent
       }
-      params.sortField = 'create_Time'
-      params.sortOrder = 'descend'
-      // params.sortOrder = 'ascend'
       params.areaType = this.user.areaType.value
-      this.$get('ybChsApply', {
+      this.$get('ybChsProjectSet', {
         ...params
       }).then((r) => {
         let data = r.data

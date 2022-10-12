@@ -71,7 +71,6 @@ public class YbChsPriorityLevelController extends BaseController {
         try {
             User currentUser = FebsUtil.getCurrentUser();
             ybChsPriorityLevel.setCreateUserId(currentUser.getUserId());
-            ybChsPriorityLevel.setCreateUserId(currentUser.getUserId());
             ybChsPriorityLevel.setOperatorId(currentUser.getUserId());
             ybChsPriorityLevel.setOperatorName(currentUser.getUsername() + "-" + currentUser.getXmname());
             if(ybChsPriorityLevel.getPersonType() != YbChsPriorityLevel.PERSON_TYPE_4){
